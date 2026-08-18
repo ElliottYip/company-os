@@ -4746,6 +4746,24 @@
       ]
     },
     {
+      "id": "application:server/__tests__/cases-routes",
+      "path": "server/src/__tests__/cases-routes.test.ts",
+      "lineCount": 904,
+      "sha256": "2aeef54575c7a705d1325028adbe6cc59a697834b4d746ae1d2a85fdaee74bc7",
+      "linkedEvidence": { "history": ["5c85ae64a0dd5af79996cf32e397dbee588522fb Cases: experimental first-class case object (#9198)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 904 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Registered before test source reading.",
+        "Lines 1-460 use real embedded PostgreSQL, real auth middleware/JWT, real route/service persistence and a fake storage boundary. They cover feature gating, shared-path fallthrough, keyed/keyless/concurrent upsert, identifiers, Agent Run auto-link causality and a run-scoped JWT happy path.",
+        "Lines 461-904 cover Agent/board cross-Company non-disclosure, filtered lists, actor/run attribution, document revisions/locks/restore, annotation lifecycle/remapping, hierarchy and issue reverse links. Same-Company roles, exact approvals, negative JWTs and storage rollback are absent.",
+        "Focused Vitest skipped all 15 tests both sandboxed and approved unsandboxed because embedded PostgreSQL was unavailable; no passing runtime claim is made. Decision: ADAPT the Case/revision/attribution patterns, not the responsibility semantics."
+      ],
+      "completionRequirements": ["Read lines 1-904 exactly once; assess behavioral coverage for tenancy, human/Agent authorization, idempotency, versions/leases, review/approval, blockers, events, failure paths and whether mocks provide real boundary proof."]
+    },
+    {
       "id": "application:cli/README.md",
       "path": "cli/README.md", "lineCount": 442,
       "sha256": "93766fd0edf0c24e52c6f49f830298cd2ea8db632b176f5167527d80c985e2df",

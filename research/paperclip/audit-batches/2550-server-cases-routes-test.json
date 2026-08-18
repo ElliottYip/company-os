@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/cases-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Fifteen route-level cases for experimental first-class Cases spanning feature gating, route coexistence, creation/upsert, Agent Run attribution, tenancy, lists, documents, revisions, locks, annotations, attachments, issue links, hierarchy and events.",
+      "dependencyDirection": "Supertest/Express -> real actor middleware and case routes/services -> real Drizzle schema on embedded PostgreSQL; storage is an in-memory fake and most board actors are injected directly.",
+      "keyDataModels": "Case, CaseEvent, IssueLink, label, attachment/asset, document/revision/annotation, Agent, HeartbeatRun, Issue, Project, Company and actor JWT context.",
+      "lifecycle": "Enable experimental flag -> create/upsert Case -> auto/manual link to work -> revise/lock/annotate documents and add assets -> transition/list/filter/hierarchically project -> retrieve attributed events.",
+      "testAssessment": "Source contains 15 substantial cases. Both sandboxed and approved unsandboxed focused Vitest runs on 2026-08-19 skipped the file and all 15 tests because embedded PostgreSQL support was unavailable, so no runtime pass is claimed. Static source gives strong intended-behavior evidence but not executed proof on this host.",
+      "designRationale": "A flexible Case object handles durable business artifacts and review work that do not fit ordinary task execution while preserving links, revisions and actor/run causality.",
+      "companyOsProblem": "Company OS needs reviewable business artifacts with deterministic identity, human/Agent authorship, evidence links, collaboration, concurrency and lifecycle independent from executable Tasks.",
+      "companyOsFit": "ADAPT the real-database route-test pattern, stable keyed upsert, run-to-origin/work auto-linking, document revision/annotation model, 404 tenant non-disclosure and event attribution. Keep Case distinct from exact high-risk approval and ResponsibilityContract; add accountable-human roles, policy decisions, stable codes and storage outbox/compensation.",
+      "responsibilityConflict": "A Case can reach in_review via an Agent and records actor/run events, but no test requires a responsible human, review assignment, approval decision, exact action/data digest or evidence acceptance. Board actors are usually injected as instance admin, so collaboration is not a responsibility contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/cases-routes.test.ts:1-904 (SHA-256 2aeef54575c7a705d1325028adbe6cc59a697834b4d746ae1d2a85fdaee74bc7)",
+        "git history: 5c85ae64a0dd5af79996cf32e397dbee588522fb Cases: experimental first-class case object (#9198)",
+        "2026-08-19 sandboxed focused Vitest: 1 file/15 tests skipped because embedded PostgreSQL unsupported",
+        "2026-08-19 approved unsandboxed focused Vitest: 1 file/15 tests skipped for the same reason"
+      ],
+      "securityFindings": "Positive intended coverage includes full surface gating, Agent and limited-board cross-company denial with 404 non-disclosure, real run-scoped JWT happy path, concurrent keyed upsert convergence, revision preconditions/locks and persisted attribution. Gaps: most board tests bypass real authentication/authorization with an injected instance-admin actor; no same-company role/permission denials, expired/revoked/mismatched run token, CSRF/session/MFA, invalid/oversized payload, upload limits/MIME/hash mismatch, storage failure/rollback/orphan cleanup, event immutability, delete/retention, pagination cursor, rate limit or stable error-code assertions. Shared /cases fallthrough intentionally depends on database existence and router order, creating ambiguous namespace/authorization coupling between two Case concepts. Keyless upsert by company+type permits one mutable singleton per type and may overwrite independent business records unless the schema is intentionally singleton."
+    }
+  ]
+}
