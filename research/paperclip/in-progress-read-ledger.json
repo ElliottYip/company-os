@@ -3971,6 +3971,19 @@
         "Lines 301-359 expose only get/reconcile/reset. Reconcile with an already bound Skill silently refreshes defaults metadata without activity; missing reconcile/reset logs Plugin actor and stable keys only after import/binding. Reset always uses replace and is callable without human identity, approval or expected prior digest. There is no detach/uninstall/upgrade/rollback API, deletion/tombstone handling, responsibility evidence, outbox or Connector-node activation boundary. Linked tests were not reread and their 6 cases were skipped after embedded PostgreSQL failed five times."
       ],
       "completionRequirements": ["Read lines 1-359 exactly once and trace Plugin manifest-to-Skill compilation, stable ownership/binding, tenant isolation, reconcile/adopt/reset, drift hashing, transactions/concurrency, upgrade/downgrade/uninstall, path/content safety, executable admission, activity/events, Agent assignment and Company OS Plugin/Connector reuse decision. Link the completed test evidence without rereading it."]
+    },
+    {
+      "id": "application:server/__tests__/company-portability",
+      "path": "server/src/__tests__/company-portability.test.ts",
+      "lineCount": 5421,
+      "sha256": "621734dbcb5c74e00c4c17a6a9f71ef40baf643a3afa84981e919a209907b8be",
+      "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-5421 exactly once, run the focused suite in an isolated Paperclip home, and map coverage for export/import schemas, compatibility versions, selection/data minimization, path/parser/archive safety, secrets and consent, every entity lifecycle, collision/merge/idempotency, transactions/crash recovery/concurrency, external fetch/resource limits, responsibility evidence, performance and the completed service findings. Before reading, confirm no formal audit batch or prior completed ledger exists for this exact unit."]
     }
   ]
 }
