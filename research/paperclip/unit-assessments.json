@@ -3041,18 +3041,21 @@
     },
     {
       "id": "application:server/__tests__/bundled-plugins",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Vitest coverage for resolving a first-party bundled-plugin allowlist and reconciling selected bundles into the plugin registry during managed or self-hosted startup.",
+      "dependencyDirection": "Environment configuration and a static bundled catalog resolve to local filesystem paths; the startup provisioner queries the plugin registry, delegates installation to the loader and then asks the lifecycle service to load newly installed plugins. Tests inject those service dependencies and do not cross into Company OS code.",
+      "keyDataModels": "Bundled catalog entry key/pluginKey/relativePath/env override, resolved bundle key/pluginKey/localPath, registry row id/pluginKey/status, catalog root, mode-specific reinstallUninstalled policy and SELF_HOSTED_AUTO_INSTALL_KEYS.",
+      "lifecycle": "Known keys are deduplicated and resolved; managed enforcement rejects lexical or realpath/symlink escapes and unknown keys fail startup. The reconciler skips already registered plugins, optionally reinstalls soft-uninstalled rows, silently skips absent bundles, logs install/registry/manifest failures while continuing later entries, loads successful installs and deliberately never removes bundles omitted from the desired list.",
+      "testAssessment": "Focused tests cover allowlisting, unknown-key diagnostics, empty and duplicate lists, path normalization, symlink escape, environment overrides, managed versus self-hosted policy, every catalog entry, install/load, disabled/error/uninstalled rows, missing bundles, partial failure continuation, missing manifest/registry rows and non-destructive reconciliation. Missing are signed provenance, artifact hashes, license/SBOM and dependency validation, semantic version upgrades, schema migration/rollback/uninstall, atomic reconciliation and crash recovery, distributed locks, sandbox/capability enforcement, operator-visible degraded health and tests proving that an explicitly removed or rejected managed bundle is not silently restored.",
+      "designRationale": "Keep image-bundled capabilities convenient and boot-resilient: use a small explicit catalog, constrain managed paths, make repeated startup reconciliation idempotent and avoid destructive removal when desired configuration changes.",
+      "companyOsProblem": "Company OS needs independently deployable Connector, FDE template and industry-package installation with trustworthy provenance, operator control, predictable upgrades and safe managed-cloud/self-hosted behavior.",
+      "companyOsFit": "ADAPT the static allowlist, canonical-path containment, idempotent lookup/install/load sequence and non-destructive default as one input to a Company OS package manager. Require signed manifests, hash-pinned artifacts, license/SBOM and capability declarations, explicit operator intent, versioned dependencies and data migrations, transactional plan/apply receipts, health projection, rollback/uninstall and identical security semantics across deployment profiles unless a documented enterprise policy opts out.",
+      "responsibilityConflict": "Self-hosted mode intentionally permits a legacy environment override outside the catalog root. Managed mode may reinstall a plugin that an operator soft-uninstalled, while a missing bundle is silently ignored and a failed install merely logs before startup continues; those choices can leave execution capability different from the approved deployment plan without a responsible-human acknowledgement or durable evidence. The tests bind no plugin installation to an accountable owner, approved digest, data authority or execution capability contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/bundled-plugins.test.ts:1-353",
+        "c4cdcc48 Generalize bundled plugin provisioning: `ensureBundledKubernetesPlugin` → `ensureBundledPlugins` (#10063)"
+      ]
     },
     {
       "id": "application:server/__tests__/cases-routes",
