@@ -3953,6 +3953,19 @@
         "Focused Vitest was run outside the sandbox with an isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the file and all 6 tests were skipped; 0 tests executed and no runtime pass is claimed."
       ],
       "completionRequirements": ["Read lines 1-281 exactly once, run the focused suite, and assess Plugin-owned Skill discovery/install/update/removal, ownership and tenant boundaries, idempotency/reconciliation, version/hash/provenance/license, executable capability admission, failure recovery, uninstall cleanup, Agent assignment impact and Company OS Plugin/Connector fit."]
+    },
+    {
+      "id": "application:server/services/plugin-managed-skills",
+      "path": "server/src/services/plugin-managed-skills.ts",
+      "lineCount": 359,
+      "sha256": "8ce9b497c51c6dbc1d2b4b0effbe0f0e0ea5cb39c08c085d59556ec8a3eadce4",
+      "linkedEvidence": { "history": ["0096b56a1c4e69c077320c0194c804cdaea7615d [codex] Add LLM Wiki plugin host support (#5597)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-359 exactly once and trace Plugin manifest-to-Skill compilation, stable ownership/binding, tenant isolation, reconcile/adopt/reset, drift hashing, transactions/concurrency, upgrade/downgrade/uninstall, path/content safety, executable admission, activity/events, Agent assignment and Company OS Plugin/Connector reuse decision. Link the completed test evidence without rereading it."]
     }
   ]
 }
