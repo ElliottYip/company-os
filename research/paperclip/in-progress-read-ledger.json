@@ -4746,6 +4746,51 @@
       ]
     },
     {
+      "id": "application:cli/README.md",
+      "path": "cli/README.md", "lineCount": 442,
+      "sha256": "93766fd0edf0c24e52c6f49f830298cd2ea8db632b176f5167527d80c985e2df",
+      "linkedEvidence": { "history": ["916c13501f80c1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)", "d3e26a8d0291762a422c5de4250c12aa5fe87f5f docs: point Paperclip docs links at docs.paperclip.ing (#9300)", "e78c06464eb4cc00e9e6f346576b09269f8a74ec fix: replace zero-human-companies tagline with new positioning (#7580)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 442 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before full documentation read."],
+      "completionRequirements": ["Read lines 1-442 exactly once; reconcile documented product/deployment/identity/data claims with completed code evidence and identify drift."]
+    },
+    {
+      "id": "application:cli/utils/banner",
+      "path": "cli/src/utils/banner.ts", "lineCount": 24,
+      "sha256": "edda05a287d40ba8f01ebb70208d6e4de71c7fca2d56c493f476e29ae35db220",
+      "linkedEvidence": { "history": ["e78c06464eb4cc00e9e6f346576b09269f8a74ec fix: replace zero-human-companies tagline with new positioning (#7580)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 24 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-24 exactly once; assess branding/presentation coupling and output behavior."]
+    },
+    {
+      "id": "application:cli/utils/health-url",
+      "path": "cli/src/utils/health-url.ts", "lineCount": 10,
+      "sha256": "da9633f85a2a98a7083a2ed14a4b694dbe99eb738262619c0bffa1ee124feb15",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 10 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-10 exactly once; assess health endpoint authority, IPv6 and scheme policy."]
+    },
+    {
+      "id": "application:cli/utils/net",
+      "path": "cli/src/utils/net.ts", "lineCount": 18,
+      "sha256": "c8e35c31e794c6bc4682d1ac79ce541f6242c2655acbe49ba389c54856b8eaa7",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 18 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-18 exactly once; assess probes, timeouts, host binding, races and tests."]
+    },
+    {
+      "id": "application:cli/utils/path-resolver",
+      "path": "cli/src/utils/path-resolver.ts", "lineCount": 25,
+      "sha256": "a9304354cf7f32649b34f15d498bc79f7e0f5df3ef6f4dbd87381e6cffa970ed",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 25 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-25 exactly once; assess environment/path expansion, config relativity, traversal and tests."]
+    },
+    {
       "id": "application:cli/prompts/database",
       "path": "cli/src/prompts/database.ts", "lineCount": 157,
       "sha256": "2c83fd459ae924812d7c971f61036677227f3e4a2f6f62e35f6cea1c8a28ede5",
