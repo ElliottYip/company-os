@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/tool-access-policy",
+      "auditStatus": "COMPLETE",
+      "function": "Tool policy control-plane service combining canonical context loading, profile precedence, selectors/conditions, explicit grants, block/allow/approval/rate-limit/trust-rule decisions, redacted audit summaries, Invocation/ActionRequest creation, progressive trust promotion and revocation.",
+      "dependencyDirection": "The 1,834-line application service directly queries Agent/Run/Issue/Project/Routine, tool catalog/application/connection/profile/policy/grant/rate-limit/invocation/approval/audit tables, imports shared transport schemas and HTTP errors, and is consumed by the Tool Gateway and Tool Access APIs. Policy evaluation, persistence, approval projection, idempotency, audit and migration compatibility are coupled in one module.",
+      "keyDataModels": "ToolAccessContext/Decision/reason code; Application/Connection/Catalog version and risk; Profile/binding/entry; generic Policy selector/condition/config/priority; Principal tools:use grant; RateLimitCounter; Invocation and ActionRequest; redacted argument summary/hash; expiring/revocable TrustRule with exact argument hash, catalog/schema hashes and hit metadata.",
+      "lifecycle": "Input context is reconciled against Agent, Run snapshot, Issue/Project/Routine and tool catalog ownership/status. Narrowest profile bindings are selected. Enabled policies are evaluated in priority order, then explicit grants and profiles, otherwise deny by default. Optional rate-limit consumption is atomic. Invocation and approval request are recorded afterward; audits are separate writes. Repeated approved actions may promote an exact-scope/exact-argument Trust Rule that falls back to review on catalog change and can be revoked.",
+      "testAssessment": "The implementation contains several high-quality safety choices: default deny, Company reconciliation, fail-closed unknown legacy semantics, exact selector names, schema-checked conditions, basic regex ReDoS defenses, atomic final-slot rate limiting, catalog/schema pinning, non-broadening trust promotion and redacted audit events. Critical gaps prevent direct reuse. argumentsHash is the SHA-256 of redacted/truncated arguments, not canonical raw arguments; calls differing only in a Secret value collapse to the same hash, derived idempotency key and exact-hash Trust Rule. A no-caller-key side-effect invocation can also deduplicate identical legitimate actions indefinitely, especially without a Run ID. Idempotency is select-then-insert without a shown conflict replay path. Invocation and ActionRequest inserts are not transactional, nor are decision/rate consumption/invocation/audit; partial states and consumed quota are possible. Explicit tools:use grants do not require active membership or Agent lifecycle and unknown scope keys can evaluate unconstrained. Unknown/missing catalog risk can still reach grant/profile allows. Trust promotion counts approved ActionRequest rows, not distinct accountable humans or signed approvals; it accepts optional/system creator identity. Audit reloads mutable context and stores IDs but no policy/profile/grant versions or decision digest. Trust-rule hit count is read-modify-write and loses concurrent increments. Lists/full binding/policy/approval scans are unbounded.",
+      "designRationale": "Put a deny-by-default policy gateway in front of legacy tool execution, retain simple reusable profiles, support explicit overrides and risk/argument conditions, and turn repeated reviewed actions into narrowly scoped progressive autonomy without storing obvious Secret values.",
+      "companyOsProblem": "Company OS needs a vendor-neutral Tool/Data Egress Admission boundary that binds exact canonical action bytes, Connector/tool version, capability, data contract, accountable human, approval and execution evidence atomically while allowing safe progressive autonomy.",
+      "companyOsFit": "ADAPT the decision envelope/reason codes, canonical context reconciliation, narrowest-scope profile precedence, exact selectors, validated conditions, default deny, atomic rate-limit pattern, catalog/schema change review, non-broadening promotion and revocation. Split into pure PolicyEvaluator, ContextResolver, ApprovalPort, IdempotencyClaimStore and DecisionReceipt/Audit outbox. Hash canonical raw bytes (or keyed digest) independently from redacted presentation; require caller/Work-scoped idempotency semantics; transactionally claim Invocation/Approval/outbox; validate typed grant scopes and active Principal/Responsibility/Data contracts; pin all policy facts/digests; count distinct authorized approvers with separation-of-duties; fail closed for unknown risk/catalog/capability.",
+      "responsibilityConflict": "Approval-required actions are not bound here to an approver identity, accountable human, ResponsibilityContract, exact action digest plus data authorization, or immutable approval evidence. Repeated approved rows can mint durable authority without distinct human decisions. An optional/system actor may create or revoke trust, and redacted-hash collisions mean the bytes approved, deduplicated and later trusted need not be the bytes actually requested.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/tool-access-policy.ts:1-1834",
+        "server/src/services/tool-access-policy.ts:105-285",
+        "server/src/services/tool-access-policy.ts:328-631",
+        "server/src/services/tool-access-policy.ts:837-1034",
+        "server/src/services/tool-access-policy.ts:1036-1276",
+        "server/src/services/tool-access-policy.ts:1278-1434",
+        "server/src/services/tool-access-policy.ts:1436-1811",
+        "server/src/__tests__/tool-access-policy-service.test.ts:1-1670",
+        "7e00f671 feat(connections): add v3 schema core (#9958)",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/tool-access-policy-service",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL integration suite for Tool policy/profile precedence, application/catalog state, selectors/conditions, context isolation, redaction/audit, idempotency, rate limiting, progressive trust, gateway enforcement and selected Tool Access tenant boundaries.",
+      "dependencyDirection": "Tests exercise the real Policy Service and database schema; final cases cross into ToolGateway and ToolAccessService, providing useful vertical evidence but mixing three audit units. External MCP execution remains fixture-based.",
+      "keyDataModels": "Company/Agent/Run/Issue, Application/Connection/Catalog, Profile/binding/entry, Policy and conditions, grant, audit/call events, Invocation/ActionRequest, rate counter, TrustRule, Secret reference.",
+      "lifecycle": "Each case seeds a production-like PostgreSQL graph, evaluates/records decisions and inspects persisted outcomes. Concurrency races two rate-limit decisions; progressive-trust cases approve repeated actions, constrain promotion, detect catalog changes and revoke the resulting rule; gateway cases prove legacy allowAll cannot bypass policy.",
+      "testAssessment": "ADAPT; this is a strong reference suite with real SQL, fail-closed legacy cases, hostile selectors/regex, concurrency, policy precedence and non-broadening trust promotion. It misses the most important integrity failures: two raw payloads that differ only in redacted/truncated fields, concurrent same-idempotency claims, legitimate repeated side effects without a key, crash/rollback between rate decision, Invocation, ActionRequest and audit, distinct approver/separation-of-duties requirements, approval digest mismatch, policy mutation after decision, Agent termination/grant revocation races, unknown grant scope/risk/catalog fail-closed behavior, multi-replica trust-hit updates, large policy/binding sets and all condition combinations. The test helper directly marks approvals in SQL, so it does not prove approval authorization or evidence.",
+      "designRationale": "Verify policy behavior against real database constraints and prove the gateway cannot bypass the new deny-by-default control plane while exercising progressive autonomy conservatively.",
+      "companyOsProblem": "Company OS needs adversarial integration tests proving that exact action bytes, approvals, idempotency, policy snapshots and audit receipts remain one responsibility chain across crashes, races and Connector retries.",
+      "companyOsFit": "ADAPT the fixture structure and adversarial policy matrix, then add fault injection, raw-vs-redacted digest collision tests, transaction/outbox recovery, distinct human approvers, stale policy/grant/runtime versions, data-egress conditions and Connector conformance. Keep Policy, Approval and Execution integration suites separately attributable.",
+      "responsibilityConflict": "Tests simulate approval by directly changing status and never establish who approved, under what role, against which responsibility/action/data digest or with what evidence. Consequently green progressive-trust tests do not prove the human responsibility semantics Company OS requires.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/tool-access-policy-service.test.ts:1-1670",
+        "server/src/services/tool-access-policy.ts:1-1834",
+        "7e00f671 feat(connections): add v3 schema core (#9958)",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+      ]
+    }
+  ]
+}
