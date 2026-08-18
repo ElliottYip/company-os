@@ -1269,18 +1269,34 @@
     },
     {
       "id": "application:cli/adapters/http",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Minimal CLI adapter registration for type `http`; trims each raw stdout event and prints any non-empty line unchanged.",
+      "dependencyDirection": "The adapter depends only on the shared CLIAdapterModule type and console output. It is registered by the CLI adapter registry; it has no HTTP client, schema parser, transport lifecycle, capability declaration or test of its own.",
+      "keyDataModels": "Adapter type string `http`, raw stdout string and ignored debug boolean.",
+      "lifecycle": "Receive a raw event string; trim surrounding whitespace; discard empty input; write remaining content to stdout.",
+      "testAssessment": "No focused tests were found for this 11-line unit. CLI no-emit TypeScript passed on 2026-08-19. Empty/non-empty behavior is obvious from source, but escaping, binary/large input, redaction, structured event parsing, error routing and debug semantics are entirely unverified.",
+      "designRationale": "Provide a fallback presentation adapter for HTTP runtimes whose output is already human-readable, avoiding provider-specific parsing in the CLI.",
+      "companyOsProblem": "Company OS Connectors must emit stable structured progress/evidence/result/error events with version, sequence, run identity, classification and runtime proof; operator CLI rendering is a separate concern.",
+      "companyOsFit": "REJECT as a Connector or evidence reference. A raw passthrough may exist only in an internal diagnostic view after server-side classification/redaction and explicit untrusted-output labeling. Company OS should render normalized Connector events, not treat arbitrary stdout as the event contract.",
+      "responsibilityConflict": "Raw stdout has no requester, accountable human, Work/contract, permission/data scope, approval, evidence digest, result identity or runtime attestation and therefore cannot enter the responsibility chain as authoritative evidence.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/adapters/http/format-event.ts:1-4",
+        "SHA-256 69865fd2f9d2e3589a62d147f88516d51a0c01632c6455b24a4321802be891e5",
+        "cli/src/adapters/http/index.ts:1-7",
+        "SHA-256 e787f6d072c9978ef7ea9f23e9298cb3d06b6830b8ccfa8871a8ce1c69bd1c1e",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed",
+        "2026-08-19 no focused tests found by repository reference search"
+      ],
+      "securityFindings": [
+        "Arbitrary runtime stdout is printed unchanged after trim, with no Secret/path/token/private-session redaction or content classification.",
+        "Terminal control sequences, escape injection, misleading formatting and log-forging content are not neutralized.",
+        "No size/rate/backpressure bound exists at this adapter surface, so high-volume or huge lines can degrade terminals/log collectors.",
+        "The debug parameter is ignored and no distinction exists between customer-safe output and privileged diagnostics.",
+        "No stable event schema, version, sequence, timestamp, source, severity, evidence digest or completeness marker is parsed or displayed.",
+        "Calling the unit `http` can imply a transport boundary, but it performs presentation only; ownership naming is ambiguous."
+      ]
     },
     {
       "id": "application:cli/adapters/index",
