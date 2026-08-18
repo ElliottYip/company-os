@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/openclaw-invite-prompt-route",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked HTTP tests for creating an OpenClaw-focused Agent invitation prompt by a same-Company CEO Agent or a board user with invite permission, plus branded invite-summary projection.",
+      "dependencyDirection": "Agent-key or board-session actor identity enters an access route; Agent service role lookup or accessService permission decides authority, database stubs create an Agent-only invite, and Company/storage projections supply branding and onboarding links.",
+      "keyDataModels": "Agent/board actor source and Company scope, Agent free-form role, users:invite-style permission decision, Agent-only Company invite/default agentMessage, bearer invite URL/onboarding text path and public Company branding.",
+      "lifecycle": "Cross-Company and non-CEO Agents are rejected; a same-Company Agent whose role equals CEO creates an Agent-only invite and may attach a message. Board users require an explicit permission. The returned prompt references the public invite and onboarding document.",
+      "testAssessment": "Tests cover cross-Company short-circuiting, negative/positive Agent role cases, positive/negative board permission and basic invite/branding response. Missing are accountable-human approval for Agent-created invites, role provenance and lifecycle, explicit Agent capability grants, rate/budget limits, inviter attribution, activity evidence, prompt injection, invite expiry/revocation, duplicate/idempotent creation, transactionality and proof that a CEO Agent cannot bootstrap uncontrolled Agents or delegate greater authority than it owns.",
+      "designRationale": "Let a top-level Agent self-expand its workforce while retaining a conventional human permission path and same-Company guard.",
+      "companyOsProblem": "Company OS may let Agents propose hiring or Connector onboarding, but a real accountable human must authorize new Agent principals, roles, permissions, data access and reporting responsibility.",
+      "companyOsFit": "Reject Agent-title-based invitation authority. An Agent may create a HireProposal containing capability requirements and evidence under its own bounded permission, but a qualified human accepts a ResponsibilityContract and ConnectorBinding digest before any credential or principal is issued. Board/human invitation authority must use IdentityPort principal and scoped policy, not a generic board abstraction.",
+      "responsibilityConflict": "A same-Company Agent becomes an inviter solely because its free-form role is CEO; the created invite has no human approver and the stored inviter user is null. Free-form agentMessage enters an Agent-consumed onboarding flow. This permits an Agent to expand organizational authority without a legal/accountable human decision.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/openclaw-invite-prompt-route.test.ts:1-299",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "a9573944 [codex] Add structured issue-thread interactions (#4244)",
+        "9a8d2199 [codex] Stabilize tests and local maintenance assets (#4423)",
+        "93fdb9c2 [codex] Harden same-company CEO authorization (#8276)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/first-admin-claim",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres tests for atomically claiming the first instance administrator and running additional initialization inside the winning database transaction.",
+      "dependencyDirection": "An authenticated caller-supplied user ID enters a bootstrap service; the service writes instanceUserRoles and optionally invokes a transaction-scoped callback, returning claimed or already_claimed with the existing principal.",
+      "keyDataModels": "User ID, instance_admin role, claimed/already_claimed status, existingUserId and generic onClaim transaction result.",
+      "lifecycle": "The first sequential claimant inserts one instance-admin role and may perform related database initialization in the same transaction; later claimants receive the existing winner and no extra role row.",
+      "testAssessment": "Real database coverage proves sequential uniqueness and callback visibility inside the winning transaction. Missing are simultaneous claims from separate connections/processes, callback failure rollback, retry/idempotency, invalid/deleted users, authenticated identity proof, endpoint exposure and CSRF, local-presence/bootstrap-token policy, audit event, timeout/deadlock and recovery when the first admin is lost.",
+      "designRationale": "Provide a race-resistant zero-admin bootstrap while allowing membership or other initial state to commit atomically with the role.",
+      "companyOsProblem": "Self-hosted Company OS requires a secure first-owner ceremony that cannot be claimed remotely by an arbitrary early request and remains recoverable without hidden vendor control.",
+      "companyOsFit": "ADAPT the single-winner database transaction and structured conflict result. Gate it behind an explicit uninitialized state plus local-console or one-time bootstrap proof, bind the claimed IdentityPort principal and deployment instance, log an immutable ceremony event, test true concurrency and callback rollback, then permanently disable the endpoint; define a separate audited recovery ceremony.",
+      "responsibilityConflict": "The tested function trusts a supplied userId and proves no identity assurance or local presence. Returning an existing user ID may also disclose administrator identity. Without a bootstrap ceremony and audit evidence, first network arrival could become the ultimate authority.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/first-admin-claim.test.ts:1-56",
+        "8da50dbc [codex] Add private browser first-admin claim flow (#6755)"
+      ]
+    }
+  ]
+}
