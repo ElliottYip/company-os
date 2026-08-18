@@ -4310,6 +4310,56 @@
         "No focused behavioral test was found. The standard pnpm-filter command stopped before compilation because pnpm requested an interactive modules-directory purge; no dependency mutation was allowed in the read-only source. A direct no-emit, non-incremental TypeScript check against ui/tsconfig.json passed on 2026-08-19. Formal decision: REIMPLEMENT as a governed Connector catalog/deployment lifecycle; adapt only installed/effective source, version and override visibility."
       ],
       "completionRequirements": ["Read the file exactly once and assess adapter discovery/configuration boundaries, vendor leakage, engine selection, secrets handling, capability/health semantics, auth/tenant scope, stable codes, responsive/accessibility behavior and whether any focused or indirect verification owns the behavior."]
+    },
+    {
+      "id": "application:ui/pages/agent-skills",
+      "paths": [
+        { "path": "ui/src/pages/agent-skills/AgentSkillReleasePicker.test.ts", "lineCount": 77, "sha256": "73c28a4eabce4ff0886b9361141aeccebf83a934e50d81a64b112b7346a5ffc6" },
+        { "path": "ui/src/pages/agent-skills/AgentSkillReleasePicker.tsx", "lineCount": 104, "sha256": "d56b6404434bc7d724642b61deac4720e808ef5b35e380a56f7019dab7fd57b4" },
+        { "path": "ui/src/pages/agent-skills/AgentSkillRow.tsx", "lineCount": 159, "sha256": "52f3202b35e860f1575dc21cd14ffb99a7aa7db1cc91bb684f011cfdaf30b33a" },
+        { "path": "ui/src/pages/agent-skills/AgentSkillsTab.test.ts", "lineCount": 19, "sha256": "4d10323d268655d3214f344f3a1ff4608d5e170faddc34f11b3563df88aeeba0" },
+        { "path": "ui/src/pages/agent-skills/AgentSkillsTab.tsx", "lineCount": 620, "sha256": "a0114b5d4c96802eedb6ca25cc9fd1135e707cdb57378ed787b4a4ae2f1e15f6" },
+        { "path": "ui/src/pages/agent-skills/agent-skill-filter.test.ts", "lineCount": 77, "sha256": "1f4eaf4b426d3425187bb96f8cf5a46f87bcdfcf86150ac1298b5820d4149ccb" },
+        { "path": "ui/src/pages/agent-skills/agent-skill-filter.ts", "lineCount": 44, "sha256": "22828a0468f1cd413c0bc960dd92c4098ea6192493e41724bc0d24dfcbd607a2" },
+        { "path": "ui/src/pages/agent-skills/agent-skill-source.test.ts", "lineCount": 53, "sha256": "10ee05d7ab387c52737a49bf129e1c0b7804fbce4f759ef17fdd061941065c80" },
+        { "path": "ui/src/pages/agent-skills/agent-skill-source.ts", "lineCount": 118, "sha256": "b4528a2b5958019cea0ac1557e0c0a8d309558976839ca049021eb66cf3d0314" }
+      ],
+      "linkedEvidence": {
+        "history": [
+          "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+          "c3bd0c5d50a45cda3c9fddbb0f80a85f44a84242 feat(skills): add beta releases for the core Paperclip skill (#10228)",
+          "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [
+        { "path": "ui/src/pages/agent-skills/AgentSkillReleasePicker.test.ts", "completedRanges": [{ "start": 1, "end": 77 }] },
+        { "path": "ui/src/pages/agent-skills/AgentSkillsTab.test.ts", "completedRanges": [{ "start": 1, "end": 19 }] },
+        { "path": "ui/src/pages/agent-skills/agent-skill-filter.test.ts", "completedRanges": [{ "start": 1, "end": 77 }] },
+        { "path": "ui/src/pages/agent-skills/agent-skill-source.test.ts", "completedRanges": [{ "start": 1, "end": 53 }] },
+        { "path": "ui/src/pages/agent-skills/AgentSkillReleasePicker.tsx", "completedRanges": [{ "start": 1, "end": 104 }] },
+        { "path": "ui/src/pages/agent-skills/agent-skill-filter.ts", "completedRanges": [{ "start": 1, "end": 44 }] },
+        { "path": "ui/src/pages/agent-skills/agent-skill-source.ts", "completedRanges": [{ "start": 1, "end": 118 }] },
+        { "path": "ui/src/pages/agent-skills/AgentSkillRow.tsx", "completedRanges": [{ "start": 1, "end": 159 }] },
+        { "path": "ui/src/pages/agent-skills/AgentSkillsTab.tsx", "completedRanges": [{ "start": 1, "end": 620 }] }
+      ],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "Repository inventory assigns nine files and 1,271 lines to this unit: four tests/fixtures and five first-party source files. Reading order is all tests first, then their implementation helpers and the main tab.",
+        "All four test files are complete. Release-picker tests cover date/name/short-label formatting only. The tab test proves beta-off omits a saved version pin while beta-on restores it, but not server effects. Filter tests cover a lowercase concatenated haystack and order preservation. Source tests intentionally suppress absolute filesystem labels for local/catalog items and condense GitHub URLs. Missing are component interaction, auth/tenant, assignment mutations, merge modes, release compatibility, provenance/trust, errors, accessibility/mobile and responsibility/approval behavior.",
+        "AgentSkillReleasePicker.tsx lines 1-104 offer a live-default sentinel or frozen CompanySkillVersion id, with beta gating delegated to the parent. Pinning by version id is useful, but the default is explicitly live/recommended and may drift without content digest, compatibility/certification or rollout evidence. Date formatting uses the viewer's local calendar for timestamps. agent-skill-filter.ts lines 1-44 implement simple unbounded substring search over concatenated public metadata; suitable only for small client lists.",
+        "agent-skill-source.ts lines 1-118 normalize GitHub/skills.sh/URL/Paperclip/catalog/local provenance labels and deliberately hide filesystem-like locations. This reduces accidental path disclosure but provenance is only presentation metadata—no commit, digest, license or trust state. AgentSkillRow.tsx lines 1-159 provide a clear responsive row with accessible toggle labels, disabled tooltips and read-only adapter-detected items; this low-coupling presentation pattern is adaptable, though enable/disable still lacks risk/approval semantics.",
+        "AgentSkillsTab.tsx lines 1-100 coordinate Agent, company Skill and instance experimental-setting APIs with local autosave state. Desired Skills accept string keys or version-pinned entries; pins are entirely disabled when a global beta flag is off. The page says enabled Skills materialize into the next-run prompt bundle, making selection an execution/data-injection decision, but it is modeled as UI preference state rather than a capability or approved deployment revision.",
+        "AgentSkillsTab.tsx lines 101-200 fetch only seeded releases, then autosave the complete desired list using explicit replace mode. Successful snapshots rehydrate state; a failed payload is remembered to prevent an infinite 422 retry. This is careful client convergence, but switching the global beta flag off strips stored pins on the next save, silently moving Agents from frozen releases to live content. No optimistic concurrency token binds the edited snapshot to the current Agent configuration.",
+        "AgentSkillsTab.tsx lines 201-300 project company-library Skills, adapter-detected unmanaged entries, enabled/available lists and stale desired keys entirely in the browser. Adapter-detected items are read-only and library membership controls editability, a useful separation. However key-based joining lacks displayed content/version trust, and stale Skills remain actionable warnings rather than a server policy deciding whether the Agent may run with missing or changed instructions.",
+        "AgentSkillsTab.tsx lines 301-400 encode vendor-specific unsupported messages for custom ACP and OpenClaw, toggle Skills locally and save release changes immediately. Vendor branches in a generic Agent Skills page confirm adapter types leak into product logic. Immediate pin mutation is not disabled at the handler level and calls payload generation with its default versionPinsEnabled=true, while toggles rely on a separate debounce—concurrent edits can race without revision/CAS semantics.",
+        "AgentSkillsTab.tsx lines 401-500 render autosave state, responsive search/store navigation, raw mutation errors, unsupported banners and removable stale-Skill warnings. Removal is a one-click autosaved mutation with no confirmation or impact preview. The UI does not show instruction contents, permissions/tools/data access, source digest, license, certification, accountable approver or effective Agent configuration revision before enabling or removing a Skill.",
+        "AgentSkillsTab.tsx lines 501-600 render adapter-detected read-only rows, raw adapter labels, save-state chips and reusable section shells. The distinction between desired managed Skills and detected runtime Skills is valuable for Company OS truthfulness. However 'Saved' reflects API synchronization, not proof that the Connector materialized the exact Skill digest or that the next execution attested to it.",
+        "AgentSkillsTab.tsx lines 601-620 close with a responsive empty-library call to browse the Skill store. All nine files and 1,271 lines are now read exactly once; focused verification remains.",
+        "Focused Vitest passed 23/23 tests across four files and a no-emit/non-incremental UI TypeScript check passed on 2026-08-19. Formal decision: ADAPT only AgentSkillRow, filter/source-display and desired-versus-detected projection patterns; replace autosave orchestration with digest-bound, concurrency-safe, policy/approval-governed Skill assignment and runtime attestation."
+      ],
+      "completionRequirements": ["Read all nine files exactly once, run four focused tests and no-emit UI typecheck, then assess release pinning, merge modes, provenance/trust, capability compatibility, Agent assignment lifecycle, auth/tenant and accountable-human semantics, failure UX, stable codes, accessibility/mobile behavior and long-term applicability to Company OS training/certification versus runtime Skills."]
     }
   ]
 }
