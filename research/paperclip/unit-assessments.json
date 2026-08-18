@@ -7590,18 +7590,24 @@
     },
     {
       "id": "application:server/__tests__/issue-agent-mutation-ownership-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Large mocked route-policy suite for Agent Issue/comment/document/artifact/attachment/approval mutations, Run checkout ownership, attribution anti-spoofing, recovery containment and task-watchdog scoped authority.",
+      "dependencyDirection": "Supertest -> monolithic Issue routes -> access/Run/watchdog/recovery/Issue/storage/activity services; services and transactions are mocked, while authorization spans company, Issue, checkout, assignment and special Run scopes.",
+      "keyDataModels": "Human/Agent actor, scoped API key, Issue assignee/responsible human, heartbeat Run/context snapshot, active checkout, artifact/document/attachment, recovery action, task watchdog, subtree and policy decision.",
+      "lifecycle": "Resolve tenant and actor -> load Issue/Run special scope -> decide read/mutate/assign -> enforce checkout and capability restrictions -> derive attribution -> mutate -> perform best-effort revalidation/wakeup/activity; watchdog paths revalidate current source and serialize recovery fan-out.",
+      "testAssessment": "Sandboxed run failed 76/76 only because TCP bind was prohibited; approved unsandboxed run passed 76/76 with expected non-fatal cleanup/revalidation warnings. Policy breadth is excellent, but mocked transactions cannot prove atomicity, races, tenant filtering, idempotency or audit durability.",
+      "designRationale": "Permit collaboration and bounded recovery without letting peer Agents overwrite active work, forge human/Run attribution, escape tenant boundaries, turn cheap recovery into deliverable work or let stale watchdogs fan out mutations.",
+      "companyOsProblem": "Company OS needs vendor-neutral execution contracts that bind every Agent mutation to capability, Run, Work, tenant, responsible human and evidence while allowing narrowly governed cross-Agent intervention and human collaboration.",
+      "companyOsFit": "ADAPT the layered tenant/read/mutate/checkout/assignment decisions, 404 existence-oracle defense, server-derived Agent/Run attribution, cheap-recovery capability restrictions, actionable typed denials, watchdog persisted backing/subtree/current-state revalidation and serialized recovery lane. Reimplement behind smaller application policies with transactional authorization/write/evidence, grant provenance/version/expiry, accountable-human approval, idempotency and runtime attestation.",
+      "responsibilityConflict": "Board actors and checkout-management grants bypass active Agent ownership, while watchdogs can change cross-Agent state and assignment without asserted accountable-human authorization. Activity and post-commit revalidation are not atomic evidence; a named operational owner is not the legally accountable human.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-agent-mutation-ownership-routes.test.ts:1-2169 (SHA-256 4abefc3ce5d2c78f40f793c93b80a0f779849b57849e684ac66b9cc05971a890)",
+        "git history: 28 commits from e8ae5286eb92a86ddd7421d1ca22398982a3381d through 7a329fb8bb9f74cdd75f3f7789c43fab0b2e7581 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/76 passed due TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 76/76 passed with expected best-effort warnings"
+      ],
+      "securityFindings": "HIGH responsibility gap: special grants/watchdogs lack asserted accountable-human issuer, approval and evidence chain. HIGH TOCTOU gap: mocked pass-through transactions do not prove authorization/revalidation/write atomicity. HIGH audit gap: anti-spoof activity is asserted but durable transactional receipts for all mutations are not. HIGH runtime-proof gap: Run context is database/environment identity, not short-lived attestation. MEDIUM revocation/idempotency gap: grant/watchdog revocation races and duplicate requests are absent. MEDIUM broad-route risk: many mutation surfaces share a monolithic orchestration boundary."
     },
     {
       "id": "application:server/__tests__/issue-assigned-backlog-contract-routes",

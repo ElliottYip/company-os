@@ -7045,6 +7045,75 @@
       "completionRequirements": [
         "Read lines 1-690 exactly once and assess issue activity/event transactionality, tenant and Work containment, human/Agent attribution, replay/idempotency, evidence authority and test quality against Company OS responsibility-chain semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-agent-mutation-ownership-routes",
+      "path": "server/src/__tests__/issue-agent-mutation-ownership-routes.test.ts",
+      "lineCount": 2169,
+      "sha256": "4abefc3ce5d2c78f40f793c93b80a0f779849b57849e684ac66b9cc05971a890",
+      "linkedEvidence": {
+        "history": [
+          "e8ae5286eb92a86ddd7421d1ca22398982a3381d explain cross-task agent writes with attribution, audit receipts, and actionable denials (#10843)",
+          "f91a6e27c0feb7f92dcde981c9a741b869484e83 contain cross-issue agent side effects (#10837)",
+          "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed agent addressees (#10252)",
+          "dfcda67650d4fc60b1cca537efca7fc9d52c718c default-open visible issue writes (#10804)",
+          "148a5b11f5ffd101d9586d3222f553f99e3ad85f route blocked transitions to explicit unblock owners (#10112)",
+          "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 close cross-tenant existence oracle (#3967)",
+          "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed test runs (#9241)",
+          "ad961227f57a217655c9e05e5987e6d0e5524409 user-specific runtime secrets (#8825)",
+          "fd2f82ac5bba6ce2db0c5d17c573733af5f2bbb8 built-in Hermes adapters (#8543)",
+          "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f external object references (#8512)",
+          "67f97e8fb08b64799d314fb4ecf7499b90b09acd enforce read auth for comments (#8346)",
+          "364f0f5a8d4426910bb630e65570fd3b3df4ff4c enforce issue thread read (#8331)",
+          "a71c4b678292a73ea9ddebbb96a861ce5c1687f7 task watchdog control plane (#8339)",
+          "11a64819f98f1d31deb7e9cf81ca01b19e0d028e keep agent-created follow-ups in run workspace",
+          "8b85fdfa3cc855cda7620b56eaa4f85be0e26cd3 send Run ID for CLI mutations (#7642)",
+          "4693d770aab4ec8342833cfed78dd4ac43c49f7a company artifacts page (#7621)",
+          "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+          "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+          "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions/controls (#6386)",
+          "bfe6369ef58cce7bbfa2dcbd09414d4809fe7bf7 guard cheap recovery model usage (#6371)",
+          "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 rollup (#6210)",
+          "03ad5c5bea50e3d89e2b8153cbd11c932c6ae298 issue document locking (#6009)",
+          "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+          "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL slice (#4700)",
+          "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests (#4423)",
+          "a95739442027bdec8d291030a91e351dc434f635 structured issue-thread interactions (#4244)",
+          "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class issue references (#4214)",
+          "7a329fb8bb9f74cdd75f3f7789c43fab0b2e7581 harden API route authorization (#4122)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 2169 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Read lines 1-900 exactly once. The route harness spans Issue/comment/document/work-product/attachment mutations, access decisions, Run context, checkout ownership, recovery/watchdog state, storage, external objects, activity and cross-issue influence, exposing a very broad orchestration boundary.",
+        "Run context is reconstructed through a mocked database query over Run and Agent company identity; transaction is a pass-through and most downstream services are mocked successful, so later tests must be checked carefully for real atomicity and concurrency evidence.",
+        "Default access allows task assignment, Issue comment/read/mutate and company-scope read, while explicit tests can override decisions with structured reason/explanation. Fixed actors cover owner Agent, peer Agent and human board user.",
+        "Task-bridge keys are denied company-wide Issue list enumeration. Company-scope readers use one fast-path authorization rather than per-Issue checks; this is efficient but requires trustworthy scope grants and tenant-filtered service queries.",
+        "Seven materially different mutations by a peer Agent against another Agent's active checkout return HTTP 409 with stable code issue_write_assignee_run_lock, named Run checkout boundary and actionable comment alternative, before mutation/storage services execute.",
+        "Peer comments remain an intentionally open collaboration channel under mention-scoped or visible-Issue grants. Request authorType cannot smuggle human privileges: downstream wakeup attribution remains Agent type/ID.",
+        "Comments on a closed Issue are accepted but do not mutate Issue state. Read authorization independently protects comment and interaction listing.",
+        "Read lines 901-1800 exactly once. Cross-company Agent access returns indistinguishable 404 before authorization evaluation, closing an existence oracle. Mention grants can expose comment reads but specific comment lookup is blocked before service access when Issue read is denied.",
+        "The checked-out owner must present matching Run ID for mutations. Server-derived Run ID is stored on documents/work products; forged Agent Run IDs and foreign-company board-supplied Run IDs are rejected before writes.",
+        "Cheap status-only recovery Run context is contained from deliverable work, documents, attachments, approvals and propagating the cheap model profile into downstream root/child/update work. This is a strong capability-by-Run-context restriction but relies on the integrity of stored contextSnapshot.",
+        "Agent-created follow-ups inherit the current Run workspace unless an explicit alternate workspace is supplied. Peer child creation uses the shared visible-Issue mutation path, so workspace/data isolation depends on that broad grant and service validation.",
+        "Agents cannot supply responsibleUserId on root, child or accepted-plan decomposition; attempts return 422 and generate spoof-rejection activity. Agent-supplied createdByUserId is stripped, authenticated Agent/Run attribution is derived, and board actors may explicitly assign a responsible human.",
+        "Post-commit recovery revalidation failure intentionally preserves completed Issue/comment/document/work-product writes. Board actors bypass active checkout ownership, while Agents with tasks:manage_active_checkouts can also bypass it; grant provenance, human notice and audit remain to be checked.",
+        "Peer Agents may mutate todo/blocked Issues and even unassigned in-progress Issues under visible mutation grants, but direct terminal follow-up/restoration transitions are restricted. Agents cannot name a human/board unblock owner, only themselves; board users can name the board.",
+        "Recovery resolution is restricted to the named Agent owner even on a board-owned source Issue, and may update the source plus wake an Agent. This preserves operational ownership but does not yet prove accountable-human approval or atomic action/evidence binding.",
+        "Read lines 1801-2169 exactly once. Assignment changes traverse a separate tasks:assign policy decision and preserve its actionable denial even when the actor may otherwise mutate the Issue.",
+        "Task-watchdog authority deliberately widens a denied base mutation boundary only when Run context names the watched Issue, a matching active persisted watchdog exists and the target lies within the watched subtree. Missing persisted backing is denied even if the ordinary boundary would allow the write.",
+        "Watchdog Runs can comment, transition status, enter review with a live review path and reassign within the same company, while stale live-path revalidation returns 409 before mutation and normal assignment guards remain effective. This is strong layered capability containment.",
+        "Watchdog accepted-plan decomposition serializes two follow-ups behind one active child, wakes only the first and blocks the watchdog report on it; normal decomposition preserves parallel wakeups. This addresses runaway recovery fan-out but is not tested with concurrent requests or partial creation failure.",
+        "The watchdog scope still grants powerful cross-Agent writes without an asserted accountable human, grant issuer/version/expiry, explicit risk approval, mutation digest or immutable evidence receipt. Persisted active state plus Run snapshot is authorization evidence, not organizational responsibility by itself.",
+        "Sandboxed focused Vitest failed all 76 because Supertest could not bind a temporary TCP port. Approved unsandboxed rerun passed 76/76 while expected post-commit recovery revalidation and sandbox cleanup warnings remained non-fatal.",
+        "The entire unit uses mocked services and pass-through transactions; it strongly specifies route policy but does not prove database locks, TOCTOU resistance between authorization/revalidation/write, audit atomicity, duplicate request idempotency, grant revocation races or real tenant filtering."
+      ],
+      "completionRequirements": [
+        "Read lines 1-2169 exactly once and assess Agent mutation ownership, cross-Work containment, Run/checkout binding, human responsibility, authorization denials, audit receipts, idempotency/concurrency and test quality against Company OS execution contracts."
+      ]
     }
   ]
 }
