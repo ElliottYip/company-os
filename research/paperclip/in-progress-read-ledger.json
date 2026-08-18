@@ -3616,6 +3616,27 @@
         "Focused verbose Vitest: both embedded-PostgreSQL tests were explicitly skipped after the database failed to start following five attempts; 0 passed and no behavior is claimed on this host."
       ],
       "completionRequirements": ["Read lines 1-232 exactly once and assess detail query batching/performance, company/provenance isolation, source/version/test/policy visibility, missing/notfound semantics and regression quality."]
+    },
+    {
+      "id": "application:server/__tests__/company-skills",
+      "path": "server/src/__tests__/company-skills.test.ts",
+      "lineCount": 433,
+      "sha256": "5673ab57ce4c16bac18f0183ebbc3e853cb5af1e5d34d056a1cd9ec208d70074",
+      "linkedEvidence": { "history": ["717684ad8f5f33fd3b6e8cf7a96aa7062d8ff29b Add project folder browsing to skill imports (#9930)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 433 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 are pure/local-filesystem tests for source parsing, GitHub/skills.sh normalization, secret-bearing URL rejection without echo, supported workspace discovery, bounded root inventory, symlink rejection and frontmatter metadata parsing.",
+        "Strong security patterns include no shell execution, no query/fragment credentials, canonical remote locators, explicit support folders and rejecting reachable symlinks. Missing here are shell-metacharacter/quoted command adversaries, non-GitHub hosts/schemes, Unicode/path normalization, hard links, TOCTOU swaps, device/FIFO files and size/depth/count bombs.",
+        "Project-root import deliberately includes scripts and assets, turning local discovery into executable supply-chain admission. Tests prove file selection but not human approval, publisher/digest, code capability, data/egress scope or sandbox requirements.",
+        "Lines 251-433 cover custom YAML folded/literal/chomping behavior, explicitly selected non-standard directories and reconciliation when a local directory/SKILL.md disappears.",
+        "Explicit selected paths have no adversarial tests for ../ escape, absolute paths, Unicode separators, symlinked parents or selection outside workspace. YAML cases omit duplicate/reserved keys, anchors/tags, deep nesting, huge scalars and prototype pollution.",
+        "Missing-source reconciliation is useful honest-state behavior but only returns IDs; tests do not require observedAt, reason/evidence, affected Agents, automatic execution pause or accountable-human remediation.",
+        "Focused isolated run: 17/19 passed and 2 discovery tests failed because implementation returns macOS realpath /private/var/... while expectations use path.resolve /var/.... This proves path identity/expectation is not canonicalized consistently across filesystem aliases. The initial non-isolated run could not import because logger attempted ~/.paperclip; final result uses isolated PAPERCLIP_HOME."
+      ],
+      "completionRequirements": ["Read lines 1-433 exactly once and assess Skill import/source/path parsing, filesystem/network trust, collision/version/provenance, tenant context, safety limits and test quality."]
     }
   ]
 }

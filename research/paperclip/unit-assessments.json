@@ -3892,18 +3892,29 @@
     },
     {
       "id": "application:server/__tests__/company-skills",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure/local-filesystem tests for Skill source parsing, GitHub/skills.sh normalization, workspace discovery, inventory/frontmatter parsing and missing-local reconciliation.",
+      "dependencyDirection": "Tests import selected helpers from the 6,956-line company Skill service and exercise temporary local filesystem trees without a database.",
+      "keyDataModels": "Parsed remote source and requested slug, workspace Skill directory/root/mode, local file inventory/frontmatter metadata and missing Skill IDs.",
+      "lifecycle": "Parse input; discover supported/explicit directories; read SKILL.md/support files; reject symlinks; parse YAML variants; remove local source and reconcile missing IDs; clean temp trees.",
+      "testAssessment": "The suite has strong no-shell, secret-redaction, symlink, bounded-root-inventory, YAML-variant and missing-source cases. The isolated focused run passed 17/19; two discovery assertions failed on macOS because implementation returned realpath `/private/var/...` while tests expected unresolved `/var/...`. Missing adversaries include explicit-path traversal/absolute paths, Unicode aliases, symlink-parent/TOCTOU/hardlink/device files, resource bombs, YAML reserved/duplicate/deep keys, remote host/scheme policy and executable-script approval.",
+      "designRationale": "Support ergonomic imports from popular Skill ecosystems and local projects while constraining obvious credential and symlink hazards.",
+      "companyOsProblem": "Company OS needs a hardened, portable Connector Capability package admission suite across cloud and local enterprise filesystems.",
+      "companyOsFit": "ADAPT source parsing, no-shell, secret-redaction, canonical URL, symlink, bounded inventory, frontmatter and missing-state scenarios. Fix expected/actual realpath canonicalization and add containment after canonicalization, file-type/size/count/depth/TOCTOU, signature/digest, capability/data/egress classification and human approval tests.",
+      "responsibilityConflict": "The tests admit executable scripts as ordinary Skill files and do not bind importer, responsible human, approval, source attestation, permissions/data scope or affected Agent execution pause.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skills.test.ts:1-433",
+        "full source SHA-256 5673ab57ce4c16bac18f0183ebbc3e853cb5af1e5d34d056a1cd9ec208d70074",
+        "717684ad8f5f33fd3b6e8cf7a96aa7062d8ff29b Add project folder browsing to skill imports (#9930)",
+        "2026-08-19 isolated focused Vitest: 17 passed / 2 failed due /var versus /private/var canonical-path mismatch"
+      ],
+      "securityFindings": [
+        "Explicit non-standard Skill selections are not tested against ../, absolute-path, Unicode-separator, symlink-parent or workspace-escape inputs.",
+        "Project-root inventory intentionally admits scripts without tests for signature/digest, executable capabilities, sandboxing or accountable-human approval.",
+        "Frontmatter tests do not exercise duplicate/reserved keys, prototype pollution, deep nesting or size/resource exhaustion.",
+        "Filesystem canonical identity differs between implementation and tests on macOS aliases, which can undermine containment, deduplication and provenance comparisons if different layers normalize differently."
+      ]
     },
     {
       "id": "application:server/__tests__/company-skills-catalog-service",
