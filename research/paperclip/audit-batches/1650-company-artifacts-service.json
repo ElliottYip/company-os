@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-artifacts-service",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL and Express regression suite for artifact gallery projection, stars, filters, flat/grouped cursors, hierarchy aggregation, malformed relations and route tenancy.",
+      "dependencyDirection": "Real Drizzle tables and storage stubs drive the service directly; a real company router verifies selected transport authorization cases.",
+      "keyDataModels": "Agent- and user-authored documents, document membership/star, attachments/assets, Paperclip work products, heartbeat runs, issues/parents/projects, artifact/group projections and cursors.",
+      "lifecycle": "Seed two companies and multiple provenance/source variants; list/star/filter/page/group artifacts; inject malformed cross-company references; assert exclusions and route denial; clean all rows.",
+      "testAssessment": "The suite is strong on malformed foreign issue/project/run references, source-noise exclusions, attachment/work-product dedupe intent, user-specific stars, storage previews, filters, flat/grouped/selected-group cursors and parent-task grouping. Focused Vitest passed the one non-database cross-company Agent route case; all 11 embedded-PostgreSQL cases were explicitly skipped after the database failed to start. Missing coverage includes arbitrary-depth dedupe, group truncation, cycles, signed/filter-bound cursors, concurrent paging, storage concurrency/timeouts, unsafe metadata paths, private data contracts, provenance quarantine and immutable evidence.",
+      "designRationale": "Project a practical cross-source output gallery while defending against historically malformed tenant link rows.",
+      "companyOsProblem": "Company OS needs similarly adversarial evidence-projection tests, but evidence must bind goals, actions, responsible humans, Agents, data authority, approvals, integrity and results—not only gallery media.",
+      "companyOsFit": "ADAPT same-company join, malformed-link, hidden-record, bounded-preview, source-deduplication, flat/grouped cursor and parent-hierarchy scenarios into EvidenceProjection integration tests. Add complete provenance/responsibility contracts, confidential data ACL, corrupted hierarchy, stable snapshots, arbitrary volume, signed cursors and Connector evidence cases.",
+      "responsibilityConflict": "The expected model silently accepts a work product whose creator run belongs elsewhere by setting createdByAgent=null. Human authorship appears only in starred documents, and no test requires accountable human, approval, data contract or evidence digest.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-artifacts-service.test.ts:1-892",
+        "full source SHA-256 ee9164432dbd98f84d42317a4af7c3aebba07185c5ab7ec53492c52c70bb1445",
+        "c111ee4cb3312077ce4df7b128002079345c083e feat(server): add per-user document stars (#9952)",
+        "2026-08-18 focused verbose Vitest: 1 route test passed / 11 embedded-PostgreSQL tests explicitly skipped; no database pass claim"
+      ]
+    },
+    {
+      "id": "application:server/services/company-artifacts",
+      "auditStatus": "COMPLETE",
+      "function": "Cross-source company artifact gallery over Agent-created documents, Paperclip work products, direct Agent attachments and user-starred documents, with flat/task/parent-task views.",
+      "dependencyDirection": "A 773-line service owns PostgreSQL queries and joins, Paperclip provider heuristics, storage reads, Markdown cleanup, media classification, cursors, hierarchy traversal, route URLs and UI-oriented response DTOs. Callers provide companyId, optional raw userId and SQL issue conditions.",
+      "keyDataModels": "Artifact source/media projection, starred document membership, work-product metadata paths, attachment asset, issue/project/Agent summaries, artifact cursor and task group.",
+      "lifecycle": "Parse query; load company; independently fetch source branches; infer provenance/media; read text previews; deduplicate some attachment-backed work products; merge/sort/page or load ancestors/build in-memory groups; return presentation URLs.",
+      "testAssessment": "Source and skipped database tests demonstrate careful company-bound joins, hidden/harness exclusions, 4KB preview ranges and stable timestamp/ID intent. Source also proves untested/incompletely tested defects: capped/nondeterministic dedupe, grouped pre-aggregation truncation, raw metadata paths, unbounded storage concurrency, corrupted-hierarchy ambiguity and caller-supplied identity/SQL policy.",
+      "designRationale": "Offer one useful gallery across heterogeneous Agent outputs without creating a separate canonical artifact table, while hiding internal/system/noisy sources and preserving task context.",
+      "companyOsProblem": "Company OS requires a canonical Evidence/Result model and read projection that can prove who produced what, under which work/responsibility/data/approval contract, across every Connector and deployment profile.",
+      "companyOsFit": "REIMPLEMENT around immutable Evidence and Result records plus an EvidenceProjectionPort. Store canonical source principal/run/work/action/contract/approval/data-authority/content-digest/integrity state; use explicit visibility policy and verified Principal; represent human and Agent provenance; quarantine invalid links; return neutral IDs rather than UI routes; paginate from a complete indexed projection. ADAPT company-bound join patterns, visibility guards, byte-range previews, media adapter concept, deterministic tie-breaking and malformed-reference fixtures.",
+      "responsibilityConflict": "Artifact membership is inferred from Agent creator fields, provider='paperclip', system-key exclusions and stars. Foreign/missing run provenance becomes null instead of invalid evidence; human creators, accountable owners, approvals, permissions/data contracts and content attestations are absent.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-artifacts.ts:1-773",
+        "full source SHA-256 c4552f005703dd2bb898b4901676b3f1d3a709200fcf34e07f8c18c75e0f1061",
+        "c111ee4cb3312077ce4df7b128002079345c083e feat(server): add per-user document stars (#9952)",
+        "focused companion evidence: 1 route test passed / 11 database tests skipped; source fully reviewed"
+      ],
+      "securityFindings": [
+        "The service accepts caller-selected companyId, raw userId and arbitrary SQL issueConditions rather than a verified Principal and typed data-access decision.",
+        "Work-product metadata content/open/download paths are returned directly; fallback openPath accepts any string without proving an internal attachment capability, safe scheme or content provenance.",
+        "Attachment/work-product dedupe is capped by an unordered sourceFetchLimit query, so deeper backing records can be emitted twice with contradictory identities/provenance.",
+        "Grouped modes truncate each source before aggregation and expose no truncation indicator, causing incomplete counts/groups and potentially hiding evidence from responsibility review.",
+        "Up to 500 text attachments can trigger concurrent storage reads with no concurrency, deadline or cancellation budget; failures are silently erased from the projection.",
+        "Cursors are unsigned and unbound to company/query/snapshot; hierarchy cycles and invalid source provenance are silently projected instead of producing integrity warnings or quarantine states."
+      ]
+    }
+  ]
+}

@@ -3408,6 +3408,59 @@
         "There is no dedicated test file; the already-audited portability suite only exercises broader package flows and does not prove adversarial escaping, ID collisions, deterministic output, localization or responsibility completeness."
       ],
       "completionRequirements": ["Read lines 1-172 exactly once and assess presentation/domain coupling, escaping/injection, portability accuracy, i18n, responsibility semantics, drift and test coverage."]
+    },
+    {
+      "id": "application:server/__tests__/company-artifacts-service",
+      "path": "server/src/__tests__/company-artifacts-service.test.ts",
+      "lineCount": 892,
+      "sha256": "ee9164432dbd98f84d42317a4af7c3aebba07185c5ab7ec53492c52c70bb1445",
+      "linkedEvidence": { "history": ["c111ee4cb3312077ce4df7b128002079345c083e feat(server): add per-user document stars (#9952)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 892 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 set up real embedded-PostgreSQL service/route fixtures plus a storage stub. Seed data deliberately spans two companies, Agent- and user-authored documents, a system continuation summary, human plan, runs, comments and assets.",
+        "The taxonomy already equates Agent-created documents and selected work products/attachments with artifacts while user-authored context and system documents are intended exclusions. This is provenance heuristic by creator/key/provider, not a responsibility/evidence classification contract.",
+        "Lines 251-500 cover per-user starred document views through a real Express route, Agent callers receiving an empty starred view, company isolation, exclusion of user/comment/system sources, deduplication of attachment-backed work products, storage-backed text previews, filters and cursor ordering.",
+        "Starred mode intentionally expands beyond Agent artifacts to human plan/upload documents for the current user, so one endpoint has two different domain definitions. A viewer membership is sufficient for the route test; no document-level ACL/data contract is exercised.",
+        "Lines 501-750 add unusually strong malformed-reference regressions: attachment dedupe beyond the visible work-product window, foreign-run Agent attribution suppressed, foreign issue/project links excluded in flat/grouped/selected-group modes.",
+        "A work product with a foreign run remains visible but creator attribution becomes null. For Company OS this should be an explicit provenance-integrity failure/quarantine state, not silently converted into an unattributed valid artifact.",
+        "Grouping tests cover filters and task summaries but assert presentation URLs in the service contract, reinforcing route/UI coupling. Full dedupe beyond a page implies broader prefetch/query work whose scalability must be checked in implementation.",
+        "Lines 751-892 cover grouped cursor pagination, parent-task ancestor aggregation, selected-group paging/filter metadata, foreign selected-group exclusion and deny-before-read for cross-company Agent route access.",
+        "Missing cases include cyclic/cross-company parent graphs, malformed/forged cursors, concurrent insert pagination, very large groups, storage timeout/oversized text/invalid encoding, unsafe content/open paths, private document membership ACL, Agent lifecycle/authority and evidence immutability.",
+        "Focused verbose Vitest: the cross-company Agent route authorization case passed 1/1; all 11 embedded-PostgreSQL service cases were explicitly skipped after five database-start attempts (init exit code null). No database behavior is claimed as passing on this host."
+      ],
+      "completionRequirements": ["Read lines 1-892 exactly once and assess artifact ownership/provenance, company and issue visibility, human/Agent access, star identity, pagination/filter/count semantics, unsafe content paths, lifecycle and test quality."]
+    },
+    {
+      "id": "application:server/services/company-artifacts",
+      "path": "server/src/services/company-artifacts.ts",
+      "lineCount": 773,
+      "sha256": "c4552f005703dd2bb898b4901676b3f1d3a709200fcf34e07f8c18c75e0f1061",
+      "linkedEvidence": { "history": ["c111ee4cb3312077ce4df7b128002079345c083e feat(server): add per-user document stars (#9952)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 773 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 mix database/service projection with HTTP route construction, Markdown preview cleanup, storage range reads, media classification, cursor encoding and task hierarchy grouping.",
+        "Text storage previews are bounded to 4096 bytes and storage failures degrade to no preview, useful resilience controls. Content type and UTF-8 suitability are trusted from database metadata, errors are silent, and there is no timeout/cancellation or classification redaction.",
+        "Cursors are unsigned/unscoped timestamp+ID payloads, not bound to company/query/snapshot. pageByCursor always compares item.updatedAt even when sorting can use an external sortDates map, creating a potential order/cursor mismatch examined in later code.",
+        "Ancestor loading is company-scoped and cycles terminate, but different nodes in a cycle can resolve to different roots; hierarchy corruption is silently projected rather than surfaced as an integrity failure.",
+        "Lines 251-500 reveal two modes in one service: normal artifacts are Agent-authorship/provider heuristics, while starred mode is any current user's starred document including human plans. A caller-supplied userId selects membership rows; the service itself receives no verified Principal or document ACL.",
+        "Document joins are carefully company-bound and exclude hidden/harness issues, system keys and malformed foreign projects/Agents. However createdByAgent coalesces creator and updater, mislabeling an updater as creator, and the model cannot represent human authorship/responsibility.",
+        "Document queries select full latestBody for up to 500 grouped items then reduce it to 280 display characters; q also performs ILIKE over full bodies. Grouping caps source rows before aggregation, so large tenants can receive incomplete groups/counts without a truncation contract.",
+        "Starred ordering uses membership.starredAt and stores it only in artifactSortDates while returned artifact.updatedAt remains document.updatedAt. Flat paging correctly encodes the map's sort date later, but any generic cursor helper using artifact.updatedAt remains unsafe for starred/grouped combinations.",
+        "Lines 501-750 have strong company-bound joins from work products/attachments through issues, projects, runs and Agents. A malformed foreign run yields null Agent attribution rather than cross-tenant identity leakage.",
+        "Work-product identity is hardcoded to type=artifact/provider=paperclip and metadata paths are returned as content/open/download URLs. The fallback accepts any string metadata.openPath; there is no allowlisted internal-path/asset capability or provenance verification in this service.",
+        "Attachment dedupe queries attachment IDs separately but limits them to sourceFetchLimit without ordering. A backing work product outside that nondeterministic window can reappear as a duplicate direct attachment; the test's narrow fixture does not prove arbitrary-depth correctness.",
+        "Text attachment previews launch one storage getObject per fetched attachment in unbounded Promise.all (up to grouped cap 500), each silently swallowing errors. Range size is bounded, but concurrency, latency and aggregate backend pressure are not.",
+        "Grouping fetches at most max-limit×10 rows per source before computing counts/groups, with no returned truncation flag. Parent-task selected groups cannot be pushed down by descendant membership and therefore depend on this incomplete global window.",
+        "Lines 751-773 page selected artifacts and group summaries entirely in memory. The helper compares returned updatedAt, not artifactSortDates; if the schema permits starred grouping, ordering/cursors are inconsistent. Group updatedAt likewise uses issue/artifact updates rather than starredAt.",
+        "The final API returns presentation-rich groups/artifacts but no canonical evidence ID, content digest, producing run/action, approval decision, responsible human, data authorization, integrity state or provenance warning. It is a gallery projection, not Company OS's evidence chain."
+      ],
+      "completionRequirements": ["Read lines 1-773 exactly once and trace all artifact source branches, joins/tenancy, provenance, content access, filtering/sorting/pagination/counts, authorization boundary, performance and Company OS evidence fit."]
     }
   ]
 }
