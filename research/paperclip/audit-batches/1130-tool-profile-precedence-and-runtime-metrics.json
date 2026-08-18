@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/tool-profile-binding-precedence",
+      "auditStatus": "COMPLETE",
+      "function": "Pure helper defining Tool Profile binding specificity, selecting only the narrowest matching scope and deterministically ordering/deduplicating Profile IDs.",
+      "dependencyDirection": "Depends only on the shared target-type union; ToolAccessPolicyService feeds it all matching database bindings before loading Profiles and entries. It is policy infrastructure, not a domain authority.",
+      "keyDataModels": "Profile binding with profileId, target type, priority and creation time; specificity order gateway, issue, routine, agent, project, company.",
+      "lifecycle": "Find the minimum specificity rank among matching bindings, discard every broader binding, sort winners by priority/creation/profile ID and deduplicate Profile IDs while retaining first occurrence.",
+      "testAssessment": "No dedicated test unit was found; issue-over-company and agent-over-project behavior is covered indirectly by the audited Tool Policy integration suite. Missing are every precedence pair, same-scope ties, duplicate Profile bindings, invalid dates, empty input, deterministic property tests and semantic conflicts between exclude/default-deny/allow entries across multiple winner Profiles. In the consumer, an exclude skips only that Profile; a later same-scope Profile may still allow, so 'exclude' is not a hard deny and the name can be misleading.",
+      "designRationale": "Let the most context-specific Tool configuration replace broad defaults while producing stable evaluation order for multiple Profiles at the same scope.",
+      "companyOsProblem": "Company OS needs explicit, explainable composition rules across Company, department/position, project, Work, Agent, Connector and runtime Tool/Data policies without accidentally treating a local allow as stronger than a mandatory global deny.",
+      "companyOsFit": "ADAPT the pure specificity ranking and deterministic ordering, but separate mandatory guardrails from overridable defaults. Define deny/allow composition algebra, provenance and conflict codes; generate exhaustive precedence tests and include Responsibility/Data/Approval scope layers. Return a compiled policy explanation rather than only Profile IDs.",
+      "responsibilityConflict": "Specificity alone cannot decide authority: a narrow Issue/Profile allow may not override Company data-egress, legal, separation-of-duties or accountable-human requirements. The helper carries no owner, approver, effective version or evidence.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/tool-profile-binding-precedence.ts:1-50",
+        "server/src/__tests__/tool-access-policy-service.test.ts:244-416 (read in batch 1120)",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+      ]
+    },
+    {
+      "id": "application:server/services/tool-runtime-metrics",
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed per-Company/minute metric counter, currently specialized to recording Tool runtime audit-write failures with a best-effort wrapper.",
+      "dependencyDirection": "Depends directly on Drizzle and the Tool runtime metric table. Tool Policy and execution services call it when durable audit writes fail; the fallback logs to process stderr.",
+      "keyDataModels": "Company ID, arbitrary metric string, UTC minute bucket, atomic count and timestamps; audit_write_failed constant.",
+      "lifecycle": "Insert count=1 for the current minute or atomically increment on the Company/metric/bucket conflict key. If that write fails, swallow the error after logging Company and error message.",
+      "testAssessment": "No dedicated tests were found for bucketing, concurrent increments, tenant isolation, failure swallowing, time boundaries, retention/cardinality or the fallback path. The atomic SQL increment is sound for one database, but audit failure and metric failure share the same persistence dependency, so a database outage removes both evidence and the counter. Console output is not an independently durable alert channel.",
+      "designRationale": "Avoid masking the original Tool operation with observability failures while retaining a cheap tenant-scoped signal when an audit write fails transiently.",
+      "companyOsProblem": "Company OS must surface missing audit/evidence writes through an independent operational channel and may need fail-stop behavior for high-risk execution rather than best-effort continuation.",
+      "companyOsFit": "REFERENCE ONLY. Keep atomic low-cardinality counters, but emit through an ObservabilityPort independent of the evidence store, alert on sustained failures and define risk-tier behavior: fail closed before high-risk execution when a DecisionReceipt cannot be durably committed; allow explicitly classified low-risk degradation only with a local tamper-evident spool.",
+      "responsibilityConflict": "Swallowing an audit-write failure can leave an action without responsibility evidence. A best-effort counter in the same failing database does not restore the chain of custody or prove who authorized and executed the Tool action.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/services/tool-runtime-metrics.ts:1-57",
+        "server/src/services/tool-access-policy.ts:1365-1367 (read in batch 1120)",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+      ]
+    }
+  ]
+}
