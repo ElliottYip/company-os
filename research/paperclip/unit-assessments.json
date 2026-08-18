@@ -5112,18 +5112,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-workspace-finalize-branch",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "A 538-line real-Git and embedded-PostgreSQL integration suite for finalizing managed workspaces after an Agent switches away from the recorded branch.",
+      "dependencyDirection": "Heartbeat realizes an isolated Git workspace, invokes an adapter, observes Agent-side Git and Issue/workspace mutations, runs finalization repair/adoption and persists WorkspaceOperation metadata plus Run/runtime state.",
+      "keyDataModels": "ExecutionWorkspace recorded branch; actual Git branch/commits; Work/Issue status; worktree_prepare and workspace_finalize operations with validation/repair metadata.",
+      "lifecycle": "If an unrecorded branch switch has no new commits, checkout the recorded branch before finalization; if it is a clean forward branch with commits, adopt that branch for the finalization operation without changing the durable workspace record; if the transition was already recorded, accept it directly; in all three cases persist operation evidence and allow the successful Run.",
+      "testAssessment": "Three end-to-end cases use real Git and verify Run outcome, resulting branch/record and structured workspace operations. Missing are dirty/untracked/conflicted/diverged/detached HEAD, concurrent mutation, failed checkout/adoption, rollback after operation write failure, exact commit/tree evidence on the final Result, authorization for an Agent to update the workspace record, remote push/publication and restart between adapter exit and finalization.",
+      "designRationale": "Preserve a coherent managed-workspace baseline while accepting legitimate forward work performed on a new publish branch and recording how finalization resolved the mismatch.",
+      "companyOsProblem": "Company OS must bind every code/data result to the exact finalized workspace snapshot even when a Connector changes branches or produces a derivative workspace during execution.",
+      "companyOsFit": "ADAPT the post-execution validation and structured operation receipt. The ResultReceipt must name immutable commit/tree/content digests and the workspace lease epoch; branch labels are presentation only. A Connector may propose a transition but cannot update durable workspace identity directly: WorkspacePort validates and applies an authorized transition, with approval when risk policy requires it and an atomic audit outbox.",
+      "responsibilityConflict": "Paperclip treats a successful adapter plus clean forward ancestry as sufficient for automatic finalization, without binding the branch transition to accountable-human authority or an approval/action digest. One test allows the Agent path to update ExecutionWorkspace directly, and another intentionally finalizes a branch not persisted as the workspace's durable branch, which can make later responsibility reconstruction ambiguous unless the exact commit is preserved elsewhere.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-workspace-finalize-branch.test.ts:1-538",
+        "d68c34f2cc90181c540dd4aec8c8b01726d31d16 Fix managed workspace branch coherence recovery (#8826)",
+        "936687ca55827121b6adb3a86584ae91ca59d089 Restore clean branch drift on finalize (#8914)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-workspace-ready-comment",
