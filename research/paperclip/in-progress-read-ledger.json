@@ -1462,6 +1462,25 @@
         "The test verifies call selection and lifecycle event behavior, but not migration application, registry status transitions, reload failure recovery, concurrency, or cleanup after a partial restart."
       ],
       "completionRequirements": ["Read lines 1-129 exactly once, run focused tests and map restart regression coverage against the complete lifecycle implementation."]
+    },
+    {
+      "id": "application:server/services/plugin-manifest-validator",
+      "path": "server/src/services/plugin-manifest-validator.ts",
+      "lineCount": 163,
+      "sha256": "e8367009fd33e566d97b57c68acc9cb6aaa078c75dced85cfc1aef966e363726",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 163 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "This is a thin Zod wrapper; the shared pluginManifestV1Schema, not this service, is the true authority for fields, capability vocabulary and most compatibility semantics.",
+        "SUPPORTED_VERSIONS is exposed but not independently checked here, so compatibility correctness depends entirely on the imported schema and the host keeping the two definitions aligned.",
+        "Failure details preserve paths but provide only human-readable messages, with no stable machine error code, schema keyword, rejected version metadata or localization-neutral parameters.",
+        "Validation establishes shape only: no package digest/signature/provenance, entrypoint/path containment, migration immutability, capability-policy approval or cross-field runtime compatibility is owned by this boundary.",
+        "There is no dedicated focused validator test in the repository path set; indirect coverage cannot demonstrate unknown-field policy, all invalid capability/version cases, hostile input limits or backward-compatibility fixtures."
+      ],
+      "completionRequirements": ["Read lines 1-163 exactly once and assess schema authority, semantic validation, compatibility/versioning, path/package safety, capability governance, diagnostics and test ownership."]
     }
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/plugin-manifest-validator",
+      "auditStatus": "COMPLETE",
+      "function": "Thin host-side wrapper around the shared Zod plugin manifest v1 schema, offering safe and throwing parse modes plus a supported-version list.",
+      "dependencyDirection": "Depends directly on @paperclipai/shared schema/types/version and the server HTTP error factory; all substantive manifest field rules live outside this service.",
+      "keyDataModels": "PaperclipPluginManifestV1, Zod issue path/message pairs, a human-readable aggregate error and numeric API versions.",
+      "lifecycle": "Parses an untrusted value into a v1 manifest or turns schema issues into a 400 error; it does not install, authorize, sign, persist or activate the package.",
+      "testAssessment": "No dedicated focused test targets this validator. Indirect plugin tests do not establish a version compatibility matrix, unknown-field policy, structured error stability, hostile-input limits or semantic package invariants.",
+      "designRationale": "Keep one shared schema authority for server and SDK consumers while standardizing install-time HTTP errors.",
+      "companyOsProblem": "Company OS needs a versioned, implementation-neutral Connector package descriptor whose syntactic validation is separate from provenance, compatibility, permission review and installation policy.",
+      "companyOsFit": "ADAPT the single-schema-authority and safe-result pattern, but emit stable error codes and parameters, independently test supported-version alignment, and layer digest/signature/provenance, path containment, capability-policy and cross-field semantic validators.",
+      "responsibilityConflict": "Shape validation alone does not bind a package or requested capabilities to a company, accountable approver, exact digest, data authorization or evidence record; its English error strings are also unsuitable as an API contract.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/services/plugin-manifest-validator.ts:1-163", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    }
+  ]
+}
