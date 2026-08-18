@@ -2725,18 +2725,25 @@
     },
     {
       "id": "application:server/__tests__/authorization-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Large embedded-Postgres authorization decision suite covering user/Agent grants, Company boundaries, responsible-human ceilings, Agent/skill changes, task assignment, issue visibility and mutation, low-trust review boundaries, protected/private Agents, mention-derived access, instance administration, scoped runtime tokens, inbox delegation and Secret proposals.",
+      "dependencyDirection": "Authenticated actor, action, typed resource and optional scope enter AuthorizationService; it reads Company memberships, explicit Principal grants, Agent permission-policy JSON, hierarchy, Issues/comments, instance roles and inbox policy, then emits a structured allow/deny decision with reason, code, explanation and optional matching grant. Routes and services consume that decision before mutation.",
+      "keyDataModels": "Human/Agent Principal, Company membership and role, PermissionKey grant with JSON scope, responsible-user delegation, action/resource/scope tuple, Agent trustPreset/authorizationPolicy/visibility/assignment policy/hierarchy, Issue/project/assignee/origin/comment mention, task_bridge and skill_test key scopes, instance admin, inbox Agent policy and structured decision reason/code.",
+      "lifecycle": "Cross-Company Agent access is denied first. Low-trust boundaries precede explicit change grants and constrain projects, root/child Issues and allowed Agents. Direct grants or consented suggest grants authorize configuration changes; protected/private targets add hard blocks or scoped grants. Standard-trust same-Company Agents receive default-open visible Issue writes and assignment, while active board members receive several null-mapped actions without explicit grants. Mention comments can dynamically grant Issue read/comment. Scoped JWTs constrain task bridges and skill tests. Responsible-human membership/grants cap delegated Agent actions, and per-user inbox policy controls self or cross-user inbox management.",
+      "testAssessment": "More than fifty database-backed cases exercise a broad decision matrix, real SQL filtering, boundary precedence, structured reasons, low-trust containment, cross-Company denial and scope variants; this is one of Paperclip's strongest test assets. Major gaps remain: grant expiry/revocation/version and concurrent runs, deny grants and policy conflict ordering, immutable consent/approval evidence, purpose/data/tool/export conditions, organization position and accountable role, time/network/environment attributes, exhaustive action-resource coverage, property-level mutation, decision audit receipts, performance/query plans and generated completeness checks. Some tests codify fail-open compatibility rather than safe policy.",
+      "designRationale": "Evolve from a simple same-Company collaborative board toward granular governance without breaking existing Agent workflows: keep default-open collaboration and legacy CEO/member behavior, layer explicit grants and scoped tokens, then introduce low-trust presets and responsible-user ceilings as hard constraints.",
+      "companyOsProblem": "Company OS needs a single explainable policy decision point for mixed humans and Agents, but authority must derive from organization responsibility, explicit grants, approved actions and data contracts rather than product-era compatibility defaults.",
+      "companyOsFit": "REIMPLEMENT the policy core while ADAPTing the typed action/resource decision envelope, structured reason/code, explicit scope tests, low-trust precedence, responsible-human ceiling and capability-limited token concepts. Use versioned deny-by-default policy with validated scope schemas, explicit action/resource registry, Principal/Position/ResponsibilityContract, Work/action digest, permission and data grants, risk/approval/evidence context, expiry/revocation and immutable decision receipt. Generate matrix completeness tests and tenant-scope queries.",
+      "responsibilityConflict": "Several intentional defaults violate Company OS invariants: standard-trust Agents may comment on and mutate peer-owned visible Issues without grants; an active non-viewer board member can receive runtime:manage and secrets:read through simple membership; unknown grant-scope metadata is treated as unconstrained; legacy CEO Agents can create Agents without explicit authority; and mutable comment mentions mint access. Responsible-human checks often prove only membership/non-viewer status, not responsibility for the exact action, data or outcome.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/authorization-service.test.ts:1-2443",
+        "dfcda67650d4fc60b1cca537efca7fc9d52c718c feat(auth): default-open visible issue writes (#10804)",
+        "6ffe9df842aae16f761fcf4ff688b1bb15c8a377 fix(auth): clarify protected-agent assignment blocks (#10893)",
+        "e43f187cad3b05c9f00d1b9d4e924f43f7ab125e feat(secrets): add human-approved secret proposals (#9934)",
+        "59fb27ff794ce60b81b859922112f3d658376918 feat(inbox): let agents safely tidy user inboxes (#9724)",
+        "c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)"
+      ]
     },
     {
       "id": "application:server/__tests__/authz-company-access",
