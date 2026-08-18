@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/commands/env",
+      "auditStatus": "COMPLETE",
+      "function": "Collects deployment-related values from process environment, Paperclip config, an Agent JWT Secret file and defaults, labels their source/requiredness, prints every resolved value and emits a POSIX shell export block for JWT, database, auth origin, scheduler, Secret-provider and storage settings.",
+      "dependencyDirection": "env command -> config store/schema and env/home path helpers -> process environment, config file and JWT Secret file -> terminal output. Secret material and deployment topology move directly from privileged local sources into display/log output without a redaction or export-policy boundary.",
+      "keyDataModels": "EnvVarRow{key,value,source,required,note}; Agent JWT Secret/TTL/issuer/audience; DATABASE_URL; public/auth trusted origins; heartbeat scheduler; Secret provider/strict mode/key-file path; local/S3 storage provider, paths, bucket, region, endpoint and prefix; config path override.",
+      "lifecycle": "Resolve/read config -> read JWT from environment or adjacent file -> merge environment/config/default values -> mark missing required rows -> print required and optional rows including shell-quoted values -> print a complete export block with placeholders for missing values -> report readiness. No deployment profile, sensitivity class or output destination policy changes this behavior.",
+      "testAssessment": "Repository search found no focused test referencing envCommand, collectDeploymentEnvRows or the paperclip env command. CLI TypeScript checking passes, but there is no regression proof for Secret redaction, shell portability/injection, credential-bearing URLs, invalid origins, profile-specific requiredness, precedence, file permissions or log capture.",
+      "designRationale": "A generated deployment-variable checklist reduces setup friction and makes precedence/defaults visible, especially for self-hosting. Fixed keys plus single-quote escaping avoid some shell syntax errors, and source labels help operators understand where configuration came from.",
+      "companyOsProblem": "Company OS needs managed/self-hosted deployment diagnostics and configuration export without ever exposing live credentials. It must distinguish public configuration, sensitive references and Secret values, support offline/local enterprise profiles and make Connector/data-node settings portable through references rather than plaintext.",
+      "companyOsFit": "Replace with a schema-driven deployment manifest generator that emits only non-secret settings and Secret reference names. Provide redacted diagnostics by default, explicit destination/permission controls, profile-specific requirements, multiple shell/orchestrator formats and a separate one-time secure Secret provisioning channel.",
+      "responsibilityConflict": "The command discloses deployment credentials to whoever can see terminal history or captured logs and records no accountable export actor, purpose, recipient or evidence. It treats production Secret extraction as a convenience rather than a governed data-export action.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/commands/env.ts (411 lines; SHA-256 dd3867f4471486e0415a4647deb355a416edc58c190ea1203a21f96ff8a774ec)",
+        "git history: all current implementation attributed to 73eb23734f25c570d88665e672f80d740797c632",
+        "Repository search found no focused envCommand/collectDeploymentEnvRows CLI test"
+      ],
+      "securityFindings": "Critical: PAPERCLIP_AGENT_JWT_SECRET is read from process environment or Secret file and printed verbatim twice, including a copy-paste export block. DATABASE_URL is also printed and commonly embeds database credentials. Config errors, public origins, provider endpoints, local paths, bucket/prefix and config path disclose infrastructure topology. The default Agent JWT lifetime is 172800 seconds, scheduler is enabled, Secret strict mode defaults false, and trusted origins silently become empty when the public URL is invalid. DATABASE_URL is marked required even for embedded mode, while the command lacks profile-aware validation. Output targets only POSIX shell semantics and has no redacted/JSON/reference-only mode, permission control, audit record or user confirmation before Secret disclosure."
+    }
+  ]
+}
