@@ -4,6 +4,41 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/__tests__/company-portability-import-batching",
+      "path": "server/src/__tests__/company-portability-import-batching.test.ts",
+      "lineCount": 485,
+      "sha256": "f964b5a772adf2fb368c4f1acd0d6343f6fb4328fc484f0521f14f5dae4e2150",
+      "linkedEvidence": { "history": ["075951f6bde525de0ff5b0daad216f60c3083ded Fix import completion UX: inbox flood, false-failure message, stale company list (#10538)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 485 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 use embedded PostgreSQL and monkey-patch Drizzle db/transaction insert methods to count statements. This can detect regressions to one-insert-per-row but couples the test to implementation mechanics and does not measure query size, parameters, memory, locks or commit duration.",
+        "Synthetic schema-v6 bundles exercise issues, comments, documents and inbox behavior. Test data is rendered with a hand-rolled block-YAML algorithm specifically because the importer is not a general YAML reader; round-trip compatibility is covered, but adversarial YAML/parser divergence and schema evolution are not yet visible.",
+        "Lines 251-485 prove 50 issues/comments use at most two insert statements per table, imported row counts and identifier uniqueness, per-user inbox suppression, and transaction rollback when the second of two 500-row work-product chunks violates a foreign key. The optional 500-issue benchmark asserts at least 50x statement reduction but is skipped unless explicitly enabled.",
+        "Atomicity coverage is limited to createManyForImport for work products, not the full multi-entity company import. No memory/ZIP/parser limits, cancellation, progress, concurrent import, retry/idempotency, lock duration, deadlock or crash-recovery cases appear.",
+        "Imported comments marked authorType=user are deliberately re-attributed to the importing board user. This makes inbox behavior convenient but changes authorship provenance; Company OS must preserve original author/source and separately record importer/normalization actor rather than rewriting responsibility history."
+      ],
+      "completionRequirements": ["Read lines 1-485 exactly once and assess batching semantics, transaction/rollback, progress/event volume, large import safety, ordering and test quality."]
+    },
+    {
+      "id": "application:server/routes/company-import-paths",
+      "path": "server/src/routes/company-import-paths.ts",
+      "lineCount": 2,
+      "sha256": "91f11b27a570d9c826e7d145c186847ee96fbe759a0e044f7090e3047eda658e",
+      "linkedEvidence": { "history": ["c91a06232625d1939858fcdfbdc0c9b3a64a8296 [codex] Runtime control-plane fixes (#6380)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 2 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "This module only centralizes the relative /import route and assembled /api/companies/import path. It prevents string drift across server/UI consumers but is an unversioned transport constant, not an API, capability or portability contract.",
+        "Company OS can apply the single-owner route-name pattern inside its Web/API adapter, while core/application and Connector SDK must depend on typed versioned commands/events rather than HTTP path constants."
+      ],
+      "completionRequirements": ["Read lines 1-2 exactly once and determine whether this is a stable API boundary, compatibility re-export or ownership leak."]
+    },
+    {
       "id": "application:server/__tests__/companies-service",
       "path": "server/src/__tests__/companies-service.test.ts",
       "lineCount": 867,

@@ -3685,18 +3685,23 @@
     },
     {
       "id": "application:server/__tests__/company-portability-import-batching",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL integration and opt-in benchmark coverage for batched company import writes, imported-work counts, inbox suppression and chunk rollback.",
+      "dependencyDirection": "Synthetic portability bundles drive the real companyPortabilityService; a monkey-patched Drizzle db/transaction counts insert calls while issue/work-product services verify downstream projections.",
+      "keyDataModels": "Schema-v6 inline bundle, issues/comments/documents, issue inbox archive, work products, contiguous issue identifiers and per-table insert counts.",
+      "lifecycle": "Build/import a new company bundle, batch entity writes, seed imported issues out of the importing user's inbox, roll back a two-chunk work-product insert on later failure and optionally benchmark 500 issues.",
+      "testAssessment": "The tests are strong on statement-count regression, persisted shape, a focused transaction rollback and post-import inbox UX. The approved isolated run reported the whole file skipped: four tests skipped, including the intentionally opt-in benchmark, because this host's embedded-PostgreSQL support was unavailable; no pass is claimed. Coverage does not prove whole-import atomicity, parser/ZIP limits, memory, cancellation/progress, concurrency, retry/idempotency, crash recovery, lock/deadlock behavior or source-authorship fidelity.",
+      "designRationale": "Replace one-row-per-statement imports with bounded chunks while preventing a migrated workspace from flooding the importing user's active inbox.",
+      "companyOsProblem": "Company OS needs large governed organization/data migrations that are efficient, restartable, attributable and provenance preserving across managed-cloud and self-hosted deployments.",
+      "companyOsFit": "ADAPT the real-database statement-count guard, chunk-boundary rollback fixture, imported-count verification and opt-in scale benchmark. Add whole-job durable checkpoints, canonical content digest/idempotency, cancellation, bounded parsing/resources, concurrent-import exclusion, outbox progress and original-author/source assertions.",
+      "responsibilityConflict": "The fixture confirms imported user-authored comments are intentionally re-attributed to the importing board user. That improves inbox semantics by rewriting authorship, but Company OS must keep source author identity/provenance separate from the accountable human who approved or executed import.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-portability-import-batching.test.ts:1-485",
+        "full source SHA-256 f964b5a772adf2fb368c4f1acd0d6343f6fb4328fc484f0521f14f5dae4e2150",
+        "075951f6bde525de0ff5b0daad216f60c3083ded Fix import completion UX: inbox flood, false-failure message, stale company list (#10538)",
+        "2026-08-18 approved isolated verbose Vitest: 1 file / 4 tests skipped; no passing claim"
+      ]
     },
     {
       "id": "application:server/__tests__/company-portability-routes",
@@ -10146,18 +10151,22 @@
     },
     {
       "id": "application:server/routes/company-import-paths",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Two shared constants for the company-import relative route and assembled HTTP API path.",
+      "dependencyDirection": "A server route-name constant is assembled into a browser-facing /api/companies/import path and imported by transport consumers.",
+      "keyDataModels": "Literal /import relative path and /api/companies/import absolute application path.",
+      "lifecycle": "Compile-time string reuse only; there is no request, schema, versioning, deprecation or compatibility lifecycle.",
+      "testAssessment": "No dedicated test is warranted for the two literal constants, but no contract test verifies server registration/client generation or version compatibility either.",
+      "designRationale": "Avoid duplicated route strings drifting across server and UI.",
+      "companyOsProblem": "Company OS needs one canonical transport specification for independent Web, API clients and deployment profiles without leaking HTTP details into core/application.",
+      "companyOsFit": "REFERENCE_ONLY. Keep route naming in an API adapter or generated OpenAPI client and prove it with compatibility tests; core commands/events and Connector SDK must remain independent of HTTP path constants.",
+      "responsibilityConflict": "None in the constant itself, but it expresses no identity, authority, approval, idempotency, data contract or evidence requirements for the high-risk import operation.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/routes/company-import-paths.ts:1-2",
+        "full source SHA-256 91f11b27a570d9c826e7d145c186847ee96fbe759a0e044f7090e3047eda658e",
+        "c91a06232625d1939858fcdfbdc0c9b3a64a8296 [codex] Runtime control-plane fixes (#6380)"
+      ]
     },
     {
       "id": "application:server/routes/company-skill-policy",
