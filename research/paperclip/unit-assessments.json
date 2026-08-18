@@ -4944,18 +4944,24 @@
     },
     {
       "id": "application:server/__tests__/cursor-local-execute",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Real-process tests for Cursor-local runtime credential/prompt injection, optional mode, Skill synchronization and local/remote executable selection.",
+      "dependencyDirection": "Server Vitest -> @paperclipai/adapter-cursor-local execute -> adapter-utils child process/callback bridge -> temporary filesystem and a local runner standing in for remote sandbox; no database, Secret service, authorization, policy enforcement or evidence store.",
+      "keyDataModels": "Run/Agent/company/runtime, Cursor command/cwd/model/mode/env/prompt, PAPERCLIP runtime credential variables, runtime Skills, execution target/remote cwd and process result/session.",
+      "lifecycle": "Prepare prompt/env and global Skill links -> resolve local or remote executable -> optionally start callback bridge -> spawn Cursor with stdin prompt -> parse successful session/result.",
+      "testAssessment": "Sandboxed Vitest passed 3/5 and the two remote cases failed only because callback bridge listen was denied; approved unsandboxed rerun passed 5/5. Tests prove happy-path process wiring but omit every cancellation/timeout/retry/resume/failure/idempotency/approval/evidence case and do not validate actual sandbox isolation or credential scope.",
+      "designRationale": "Give Cursor Agents authenticated access to Paperclip APIs, reusable company Skills and consistent execution across local and sandbox targets with minimal operator configuration.",
+      "companyOsProblem": "Company OS needs least-privilege Connector execution where each Run gets isolated instruction state, scoped short-lived control-plane capability, trusted executable provenance and durable pause/resume/cancel/evidence/result behavior.",
+      "companyOsFit": "REIMPLEMENT behind the Connector SDK and local execution node. Issue a short-lived Run capability bound to company/Agent/work/contract/action scope; isolate Skills per Run with signed provenance; require allowlisted/attested executables and sandbox policy; implement versioned events, idempotency, pause/resume/cancel/timeout and evidence digests. Retain only the real-process fixture and remote-bridge test pattern.",
+      "responsibilityConflict": "The Agent receives a general Paperclip API credential and instruction that it exists, while no test binds allowed calls to exact work, data/tool grants, approval or accountable human. Shared global Skills can silently alter behavior across responsibility contexts.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/cursor-local-execute.test.ts:1-446 (SHA-256 f4d3e0900b0cf6c811010b95ff8510d742fd6fe8bece25891412ddd6c9844581)",
+        "git history includes 33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe, 778e775c35834aabe09266fb6d415d3dafbd1deb and f9cf1d2f6a28593c977b5151774a747718689b26",
+        "2026-08-19 sandboxed focused Vitest: 3 passed, 2 callback-listen EPERM failures",
+        "2026-08-19 approved unsandboxed focused Vitest: 5/5 passed"
+      ],
+      "securityFindings": "CRITICAL least-privilege gap: PAPERCLIP_API_KEY is injected and advertised to the Agent with no tested audience, endpoint/capability scope, expiry or exact work/approval binding. HIGH cross-context instruction risk: Skills are symlinked into global ~/.cursor/skills without tenant/Run isolation, provenance, immutable digest, collision or cleanup tests. HIGH supply-chain risk: ~/.local/bin is preferred and arbitrary explicit remote commands are accepted without allowlist/owner/hash/signature attestation. Missing tests cover Secret leakage, hostile Skills, concurrent tenants, bridge token scope, direct network egress, cancellation/kill, timeout/output limits, failure classification and durable evidence."
     },
     {
       "id": "application:server/__tests__/cursor-local-skill-injection",

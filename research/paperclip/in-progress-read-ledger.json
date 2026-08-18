@@ -5526,6 +5526,33 @@
       "completionRequirements": [
         "Read lines 1-302 exactly once and assess Cursor environment diagnostics, local/remote execution targets, command/auth/workspace validation, mutation, isolation, attestation and test quality against Company OS Connector execution-node boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/cursor-local-execute",
+      "path": "server/src/__tests__/cursor-local-execute.test.ts",
+      "lineCount": 446,
+      "sha256": "f4d3e0900b0cf6c811010b95ff8510d742fd6fe8bece25891412ddd6c9844581",
+      "linkedEvidence": {
+        "history": [
+          "33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)",
+          "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)",
+          "f9cf1d2f6a28593c977b5151774a747718689b26 Add cursor sandbox support and fix SSH workspace sync (#4803)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 446 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five real-process tests cover runtime env/prompt injection, explicit mode, global Cursor Skill symlinks, remote default executable resolution and arbitrary explicit remote command overrides.",
+        "Every local execution receives PAPERCLIP_API_KEY/API_URL plus Agent/company/Run IDs, and the prompt explicitly tells the model these credentials exist. The suite checks key names but not token audience/capabilities/expiry, redaction, least privilege or whether the Agent may call beyond its exact work contract.",
+        "Company-library Skills are symlinked into the process HOME ~/.cursor/skills location rather than a demonstrated per-company/Agent/Run home. Concurrent tenants or Runs can therefore share mutable instruction/plugin state; no provenance, hash, approval, collision, cleanup or race assertion exists.",
+        "Remote execution prefers ~/.local/bin/cursor-agent and prepends that directory to PATH, or accepts any explicit executable path. Fixtures verify convenience but not executable provenance, owner/hash/signature, allowlist, sandbox isolation or remote credential boundary.",
+        "Runtime session fields are always null and there are no cancellation, timeout, retry, resume, pause/approval, output bounds, idempotency, evidence/result digest or failure tests. Sandboxed Vitest passed 3/5 and failed two bridge cases only from listen EPERM; approved unsandboxed rerun passed 5/5."
+      ],
+      "completionRequirements": [
+        "Read lines 1-446 exactly once and assess Cursor process/remote execution, trust flags, Secrets/env, sessions, prompts, bridge tokens, events, cancellation/timeout/idempotency, evidence and test quality against Company OS Connector execution contracts."
+      ]
     }
   ]
 }
