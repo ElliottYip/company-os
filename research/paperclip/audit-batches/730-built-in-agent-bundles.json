@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/built-in-agents",
+      "auditStatus": "COMPLETE",
+      "function": "Large embedded-Postgres suite for registry-defined built-in Agent bundles, including asset fallback, lazy/automatic provisioning, hire approval, Adapter validation, typed readiness, managed instructions/skills/routines, drift/reset, immutable markers, uniqueness/concurrency repair, default permissions and proposal-confirmation workflows.",
+      "dependencyDirection": "Static first-party definitions/assets flow into BuiltInAgentService and startup reconciliation; the service composes generic Agent, Approval, Instruction, Skill, Routine, Permission and Interaction services plus database uniqueness/managed-resource bindings. Operators may configure/reset while reconciliation maintains identity/default resources without overwriting detected content drift.",
+      "keyDataModels": "Built-in definition/key/features/defaults/allowed Adapters/models, Agent marker/status/config/budget/reportsTo/permissions, hire Approval payload, managed resource kind/key/current/stock hash and drift status, Skill version, Routine/trigger/schedule, config revision, proposal Interaction/target revision, partial unique index and reconciliation counters.",
+      "lifecycle": "Registry validation rejects duplicate/invalid/default-disallowed definitions. Ensure lazily creates one marked Agent, validates Adapter/model and derives not_provisioned/needs_setup/ready/paused states. Policy-gated creation freezes a pending Agent and approval payload; approval restores the snapshot and materializes resources. Startup can auto-provision paused zero-budget bundles, grant suggestion capabilities, repair display metadata and missing bindings, preserve operator-modified content, reconcile duplicates and continue other Companies. Explicit reset restores selected stock resources. Routines remain disabled until a board enables them; accepted coaching proposals are applied only in a later step.",
+      "testAssessment": "Thirty-plus rich tests cover real schema constraints, concurrent provisioning, legacy duplicate repair, pending approval tamper resistance, Adapter/model allowlists, typed errors, resource drift/hash/reset, startup fault containment, default-disabled automation, least-privilege suggestion grants and accept/reject proposal flow. Major gaps: signed package provenance/version/dependencies/migrations/rollback/uninstall, transactionality across Agent/Skill/Routine/grants, crash injection and outbox, explicit responsible human/data grants, package upgrade compatibility, malicious assets, resource ownership conflicts, approval digest for setup/reset/apply, multi-node reconciliation locks and proof that later execution uses the displayed proposal bytes.",
+      "designRationale": "Deliver opinionated product capabilities as idempotent managed bundles while preserving operator customization, existing governance gates and safe disabled defaults; recover automatically from legacy duplicates or partial materialization without making startup brittle.",
+      "companyOsProblem": "Company OS needs a trustworthy FDE/industry-template mechanism that packages organization structure, Agent/Connector roles, instructions, workflows, data policies and Agent Boss views, supports local customization and can upgrade or exit cleanly.",
+      "companyOsFit": "ADAPT uniqueness, idempotent materialization, managed-resource bindings, stock/current hash drift, selective reset, disabled automation, strict Adapter capabilities and approval-aware plans as the primary reference for TemplatePackage. Replace hardcoded vendor models/Agents with capability requirements and Connector bindings; add signed manifest/license/SBOM, semantic versions, dependency/migration/rollback/uninstall, atomic plan/apply receipts, organization/data/responsibility objects and explicit owner consent for grants or reset.",
+      "responsibilityConflict": "First setup can apply previously unknown Adapter config and budget without a new approval merely because an empty Agent row already exists. Startup reconciliation auto-adds permissions and undeletable Agents. Missing asset files silently fall back to embedded text. Most critically, the follow-up apply helper checks only that an Interaction was accepted, then writes caller-supplied nextInstructions without verifying it matches the displayed diff/target revision; approval A can authorize execution B. Duplicate repair also keeps the oldest row and cancels the newer approval without evaluating which revision humans approved.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/built-in-agents.test.ts:1-1617",
+        "8b6a06ee254b06cbadbe334e891285e22084caab [codex] Add built-in agents and Reflection Coach bundle (#9206)",
+        "0f5f4617296308ba75680a58af0c1ed89bb9ab7d Avoid startup crash when Reflection Coach assets are missing (#9351)",
+        "1f1f54523876481ab0011c3fdd0b842753cd511a feat: add built-in summarizer and summary slots (#9713)",
+        "176a9e8230b1222639fb3e1b4d9d80a83adbaf88 fix(built-in-agents): allow first-time setup of a needs_setup built-in under board-approval policy (#10129)",
+        "dc12197cce0d7c0b849c560b4ab1d7dd920b4bfd fix: prevent duplicate built-in agents and self-heal reconciliation (#10223)"
+      ]
+    }
+  ]
+}
