@@ -202,10 +202,39 @@
             "Agent-initiated user OAuth verifies active-run responsibleUserId snapshot matching, separate user/workspace secret sets, and consent-card resolution, but does not prove current membership, a versioned responsibility contract, or requested-scope restriction.",
             "No final test-quality or reuse judgment is valid until the remaining OAuth, lifecycle, concurrency, runtime, and route cases are read."
           ]
+        },
+        {
+          "start": 3001,
+          "end": 4000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "OAuth route tests strongly bind callbacks to the initiating user and exact session, reject anonymous, other-user, other-session, and permission-downgraded callbacks, and retain state after unauthorized attempts.",
+            "End-to-end OAuth tests verify PKCE, secret-backed token storage, absence of raw tokens in connection config, app activation, catalog grouping, and browser redirect behavior.",
+            "DCR tests validate exact registered metadata, strict response rejection, HTTPS-or-loopback constraints, and reuse, but concurrency is exercised only through two calls on one service instance, so the process-local single-flight masks multi-instance duplicate registration.",
+            "Refresh tests across two service instances prove one database-leased upstream refresh and reuse of the new access token under the ordinary success path.",
+            "Refresh tests do not simulate the critical window where secret rotation succeeds and the guarded connection CAS subsequently loses, so latest-version credential mutation outside the lease remains untested.",
+            "invalid_grant, superseded refresh-version, abandoned lease, client-credentials, and missing-refresh-token paths have useful fail-closed coverage.",
+            "No callback test in this range injects failure after state deletion but before token, secret, grant, health, or catalog completion, leaving one-shot retry semantics unverified."
+          ]
+        },
+        {
+          "start": 4001,
+          "end": 5000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Attention-feed tests verify health, quarantine, pending approval, and profile-new-tool projections, but do not test the implementation's full-invocation and full-catalog query growth.",
+            "Listing pending approvals cancels missing or invalid signatures and preserves valid ones, but the test does not require an audit event or reason record for this security-relevant state mutation.",
+            "New-tool review tests cover exact all-item decisions and mixed allow/keep-blocked results, but not concurrent catalog arrival, watermark races, transaction failure, or partial writes.",
+            "Connect rollback tests verify application, connection, and catalog cleanup on health failure and restoration of a revived app/connection, but omit credential secrets, bindings, grants, and runtime-slot residue under failure.",
+            "OAuth metadata redirect testing confirms manual redirect handling prevents a protected-resource redirect to link-local metadata, a strong reusable SSRF regression test.",
+            "Generic pasted-link OAuth verifies discovery, PKCE/token exchange, secret-backed storage, and credential scope metadata; scope escalation and response-size/time limits remain untested.",
+            "Smoke Lab URLs are rejected from the production OAuth pipeline unless the connection is explicitly marked as the fixture, reducing accidental demo/production credential mixing.",
+            "The remaining gallery-finish, lifecycle, audit, runtime, CRUD-race, and cleanup tests must be read before final judgment."
+          ]
         }
       ],
       "sourceReadComplete": false,
-      "nextLine": 3001,
+      "nextLine": 5001,
       "completionRequirements": [
         "Read every test line through 6996 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Map covered and missing cases to the fully read implementation findings.",
