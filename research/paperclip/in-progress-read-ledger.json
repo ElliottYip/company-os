@@ -4,6 +4,96 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:cli/__tests__/update-command",
+      "path": "cli/src/__tests__/update-command.test.ts",
+      "lineCount": 240,
+      "sha256": "44cd6b71a658823904636d5058b7f77a2ae2ce555949377f9bece719af83547d",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 240 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Fourteen tests cover SemVer ordering, install-mode/channel resolution, moving/pinned Git refs, downgrade consent, hostile npm registry isolation, backup policy, side-by-side activation, instant rollback and restart-failure rollback.",
+        "The tests strongly prove current/manifest rollback after service validation failure, including surfacing a second failure when the rolled-back service cannot restart.",
+        "Artifact signatures/digests, malicious package scripts/archive contents, database migration compatibility/restoration, concurrent updates, crash points between current and manifest writes and accountable operator evidence are absent.",
+        "Focused Vitest passed all 14 update-command tests."
+      ],
+      "completionRequirements": ["Read lines 1-240 exactly once and assess update/rollback behavior, source provenance, service restart, failure recovery and test quality."]
+    },
+    {
+      "id": "application:cli/__tests__/update-notice",
+      "path": "cli/src/__tests__/update-notice.test.ts",
+      "lineCount": 20,
+      "sha256": "52079e0424641d641068d96e1f5c00fa6ea6c02d4cec54f335feb688e7623604",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 20 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Two compact tests cover environment/config kill switches and 24-hour registry-result caching.",
+        "Malformed/hostile cache, filesystem links/permissions, request failure/timeout, response validation, version comparison and privacy disclosure are not tested.",
+        "Focused Vitest passed both update-notice tests."
+      ],
+      "completionRequirements": ["Read lines 1-20 exactly once and assess update-notice isolation, version semantics and test quality."]
+    },
+    {
+      "id": "application:cli/commands/install",
+      "path": "cli/src/commands/install.ts",
+      "lineCount": 420,
+      "sha256": "b62b32871e115ad3b57b12455100fd29db243fc6d21046d7cb8e0487867a254a",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 420 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The command pins npm resolution to the public registry or resolves a Git ref to a full GitHub SHA, stages side-by-side payloads, smoke-checks the CLI version, flips current, writes provenance manifest, writes a managed shim and prunes retained payloads under a store lock.",
+        "Git source builds warn and require explicit noninteractive consent, use frozen lockfiles and package the workspace. They still execute arbitrary archive, dependency and repository build scripts; npm release installs also execute lifecycle scripts while explicitly disabling audit, and neither path records/verifies an independent signature, content digest, SBOM or vulnerability policy.",
+        "Ambient GH_TOKEN/GITHUB_TOKEN is interpolated into a curl config header without rejecting quotes/newlines, and custom authorization headers plus --location need redirect-host leakage analysis. Reused payloads are trusted after only a version-report smoke check.",
+        "Current/manifest rollback covers manifest-write failure, but shim/prune failure occurs after activation. More importantly, running install over an existing managed install bypasses update backup, service restart, migration validation and health rollback, so active process, current link and manifest can represent different versions.",
+        "Downloaded/build stderr may be surfaced verbatim, no stable JSON result exists, and install approval is not bound to artifact/dependency digests or an accountable operator evidence record."
+      ],
+      "completionRequirements": ["Read lines 1-420 exactly once and trace source resolution, download/build trust, install-store mutation, service interaction, consent, uninstall and user-data safety."]
+    },
+    {
+      "id": "application:cli/commands/update",
+      "path": "cli/src/commands/update.ts",
+      "lineCount": 268,
+      "sha256": "8d604f3ea2011ab9a7e364d4ca851543b1f99dd976ae1e0a1c0ac513c1891e22",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 268 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Managed updates back up onboarded data, install side-by-side, flip atomically enough to restore current on manifest failure, restart/validate an active service and automatically flip back when validation fails. Git moving refs require consent and resolve to full SHA; check mode uses exit code 10.",
+        "Automatic binary rollback does not restore database migrations before restarting the older payload. A failed new-version start may already have migrated schema, making automatic old-binary restart unsafe; the backup is not cryptographically linked to the update or automatically restored.",
+        "The store lock covers only payload/current/manifest mutation. Version/source resolution, backup and service restart occur outside it, while the manifest captured before locking is reused inside; concurrent updates can lose history and validate/restart a different state.",
+        "Inactive services receive no server/migration health validation. Explicit rollback lacks a compensating flip if the old service fails; global npm updates have no backup, side-by-side rollback or health validation and can corrupt JSON output with a human Running line.",
+        "Version comparison is a partial home-grown SemVer implementation with permissive input and Number precision risk. Outcomes and errors are not stable coded responsibility evidence."
+      ],
+      "completionRequirements": ["Read lines 1-268 exactly once and trace version selection, payload staging/switch, active service restart, health, rollback and status evidence."]
+    },
+    {
+      "id": "application:cli/update-notice.ts",
+      "path": "cli/src/update-notice.ts",
+      "lineCount": 19,
+      "sha256": "34e5f17495885027fd0fa8127971bc9cd3ee4a1aa1ee7000d11b81149cf9c353",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 19 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "A default-enabled registry check selects latest/canary from managed-install channel, caches results for 24 hours and silently degrades on errors; environment/config can disable it.",
+        "Invalid configuration fails open to network access. Cache reading/writing lacks schema/future-time bounds, symlink/ownership/mode checks and atomic replacement; a future checkedAt can suppress checks indefinitely.",
+        "Response size and version syntax are not bounded/validated before comparison, and the default outbound request/privacy behavior is not surfaced as explicit consent."
+      ],
+      "completionRequirements": ["Read lines 1-19 exactly once and assess notice eligibility, install detection and coupling."]
+    },
+    {
       "id": "application:cli/__tests__/service-manager",
       "path": "cli/src/__tests__/service-manager.test.ts",
       "lineCount": 216,
