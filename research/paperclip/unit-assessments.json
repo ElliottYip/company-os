@@ -5668,18 +5668,23 @@
     },
     {
       "id": "application:server/__tests__/error-handler",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure Express error-middleware tests for generic and HttpError 500 responses, a cloud-import disclosure exception and asynchronous responsible-user denial outcome recording.",
+      "dependencyDirection": "Vitest -> error middleware/HttpError -> mocked responsible-user Run-outcome recorder and response diagnostic fields; no real logger, database, tracing/exporter or client is exercised.",
+      "keyDataModels": "HTTP status/error/message/code/details response, actor source and Agent Run identity, original Error diagnostic context and responsible-user denial code.",
+      "lifecycle": "Catch route error -> classify HttpError/generic and special import path -> emit JSON -> attach internal error context for 500 -> optionally record a responsibility denial against the active Run.",
+      "testAssessment": "Focused Vitest passed 4/4. It accurately pins current behavior but intentionally expects raw internal messages in two 500 paths and barely covers the public error schema. Diagnostic logging/redaction and denial-record durability are not tested.",
+      "designRationale": "Hide ordinary unexpected failures, preserve original errors for observability, provide import troubleshooting detail to a trusted cloud caller and project certain responsibility denials onto the active Run.",
+      "companyOsProblem": "Company OS needs a deployment-neutral, localization-safe and security-safe API error contract plus durable responsibility outcomes that never depend on English strings or leak internal details.",
+      "companyOsFit": "REIMPLEMENT with a versioned error envelope: stable code, safe structured params, correlation ID and optional field violations; never expose raw exception text by route/deployment/actor. Send classified causes to access-controlled diagnostics, enforce redaction, and persist responsibility denials synchronously or through a transactional outbox before claiming evidence completeness.",
+      "responsibilityConflict": "Recording one denial code is directionally aligned, but a best-effort asynchronous side call is not a durable responsibility record. Raw error disclosures may reveal company data or infrastructure while providing no accountable disclosure policy.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/error-handler.test.ts:1-124 (SHA-256 b2345b0e0bcb7f1250a24880fb6ecb8ecaf301c25403f175e1950dfad4faaea5)",
+        "git history: ad961227f57a217655c9e05e5987e6d0e5524409, c91a06232625d1939858fcdfbdc0c9b3a64a8296, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "CRITICAL internal error disclosure: cloud import exposes generic Error text and all HttpError 500s expose their message. HIGH unstable/localization-hostile contract: many responses lack code and use English error strings. HIGH diagnostic-redaction gap: attached errors coexist with request body/query context but logging safety is untested. HIGH responsibility durability gap: denial recording is only invocation-tested from synchronous middleware."
     },
     {
       "id": "application:server/__tests__/execution-lock-orphan-cleanup",

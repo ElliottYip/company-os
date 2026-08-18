@@ -6266,6 +6266,34 @@
       "completionRequirements": [
         "Read lines 1-237 exactly once and assess test-harness fixture isolation, lifecycle/cleanup, determinism, failure reporting and whether it can support Company OS Connector runtime conformance without real credentials or production data."
       ]
+    },
+    {
+      "id": "application:server/__tests__/error-handler",
+      "path": "server/src/__tests__/error-handler.test.ts",
+      "lineCount": 124,
+      "sha256": "b2345b0e0bcb7f1250a24880fb6ecb8ecaf301c25403f175e1950dfad4faaea5",
+      "linkedEvidence": {
+        "history": [
+          "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+          "c91a06232625d1939858fcdfbdc0c9b3a64a8296 [codex] Runtime control-plane fixes (#6380)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 124 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Four pure middleware tests cover generic 500 masking/internal attachment, a cloud-tenant import exception, HttpError 500 behavior and recording a responsible-user denial on an active Agent Run.",
+        "Ordinary Error 500 responses return only Internal server error while attaching the original error and message to response-side diagnostic fields. The suite does not show whether downstream logging also serializes request body/query/params, which can contain credentials or production data.",
+        "A board actor sourced from cloud_tenant on POST /api/companies/import receives the raw ordinary Error message in a message field. Trusting the calling product UI is not a safe disclosure boundary because provider/storage/path/SQL/Secret details can reach authenticated tenant users.",
+        "HttpError status 500 always returns its raw message as error, demonstrated with db exploded. This makes safety depend on every throw site knowing whether a message is public and contradicts a stable code/parameter contract suitable for localization.",
+        "A specific 403 responsible-user denial emits both code and details.code and invokes an asynchronous Run-outcome recorder from synchronous middleware. The test proves invocation only, not durability, ordering before response, failure handling, idempotency or whether denial evidence is immutable.",
+        "Focused Vitest passed 4/4. There is no matrix for validation/auth/not-found/conflict/rate/timeout/provider errors, content-type/schema, correlation ID, nested causes, hostile messages, PII/Secret redaction or consistent code naming."
+      ],
+      "completionRequirements": [
+        "Read lines 1-124 exactly once and assess HTTP error shape, stable codes, validation details, redaction/logging, internal error leakage and test quality against Company OS API/localization/security contracts."
+      ]
     }
   ]
 }
