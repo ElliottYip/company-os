@@ -4653,18 +4653,25 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-issue-liveness-escalation",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration specification for detecting stalled Issue dependency/review paths, repairing missed dependency wakes, and creating bounded, deduplicated liveness recovery Issues with ownership, budget, workspace and cooldown policy.",
+      "dependencyDirection": "The Heartbeat reconciler reads Issue/relation/review, run, hold, workspace-operation, Agent hierarchy, budget/cost and settings state; it writes wake requests, recovery Issues, blocker relations, comments and activity projections, while attentionService exposes unresolved review decisions to a user feed.",
+      "keyDataModels": "Liveness finding/reason and lookback, dependency readiness and idempotent wake key, workspace finalize operation, review-path recovery attempt, attention decision verb, harness_liveness_escalation Issue with originId/originFingerprint, Agent reportsTo hierarchy, budget policy/cost events, pause hold, recovery blocker relation and re-escalation cooldown.",
+      "lifecycle": "Detection can remain advisory while a separate dependency-wake backstop still repairs resolved blockers; review-path loss gets one bounded automated retry before surfacing a stalled human decision; resolved dependencies wait for assignee and required workspace finalization, retry stale skipped wakes and avoid active duplicates; stalled leaf blockers inside lookback and outside holds/live paths create or reuse one recovery Issue assigned to a direct Agent or manager fallback, excluding budget-blocked candidates and execution workspace inheritance; closed recoveries detach from blocker relations, completed incidents cool down before re-escalation, while cancellation permits immediate retry.",
+      "testAssessment": "Twenty-three substantial cases cover advisory mode, bounded review recovery and attention surfacing, dependency-wake compensation, assignee timing, stale retry, workspace-finalize gating, multi-blocker dedupe, disabled wake-on-demand classification, lookback/hold/live-path suppression, backlog and review failure classes, recovery reuse, Agent owner selection, budget fallback, workspace isolation, cooldown/cancellation and closed-relation cleanup. Missing are graph cycles and cross-Company corruption, simultaneous reconcilers and transactional/outbox crash points, database lease/fencing, falsified or zombie executionRunId, remote runtime attestation, cost-event trust, human authorization for recovery ownership, incident severity/SLA, notification delivery, recovery failure limits, permission/data-contract inheritance, large-graph query performance, and evidence that an existing recovery is actually progressing. Treating any active executionRunId or open recovery Issue as a live path can mask a stalled runtime.",
+      "designRationale": "Use periodic reconciliation as a backstop for event-loss and state races, separate safe mechanical healing from optional auto-recovery, deduplicate incidents by stable leaf fingerprints, avoid recovery storms through bounded attempts and cooldowns, and keep recovery work isolated from production execution workspaces.",
+      "companyOsProblem": "Company OS needs an Agent Boss exception plane that detects stalled responsibility chains, repairs provably mechanical omissions, escalates ambiguous decisions to the right accountable human, and preserves incident evidence without creating recursive Agent work or hidden spend.",
+      "companyOsFit": "ADAPT the independent reconciliation backstop, explicit advisory/automatic modes, workspace-finalize readiness, stable incident fingerprint, bounded attempt/cooldown, shared-root dedupe, budget-aware candidate filtering, stale relation cleanup and user attention projection. Split MechanicallyRepairableInvariant from ResponsibilityIncident: only deterministic, evidence-backed repairs may run automatically; other findings create an immutable incident assigned to the accountable human with severity, SLA, exact Work/runtime/permission/data evidence and explicit decision capabilities. Runtime liveness requires Connector attestation/lease, not a row ID. Keep incidents out of the business dependency graph or project them through a typed relation, and never choose a cheap model as authority for responsibility decisions.",
+      "responsibilityConflict": "Most escalation fixtures have no responsibleUserId or human membership involved in the decision; recovery ownership is assigned to a direct or manager Agent, and a low-cost model override is treated as the response path. A recovery Issue is inserted as another blocker, so operational incident state mutates business dependency semantics. Lookback can silently leave old findings advisory, open recovery rows or mutable executionRunId can suppress escalation without progress proof, and activity/comments do not constitute an immutable human decision or evidence receipt.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-issue-liveness-escalation.test.ts:1-1417",
+        "1954eb304867fdc3075d53529dd3a8edc5c10a2a Detect issue graph liveness deadlocks (#4209)",
+        "fda296ee4f20768076eabc2f43c50fa6c6c5072c Add configurable liveness auto-recovery controls (#4587)",
+        "7bfaaadcb80a2138cf71c5581e08ce8f8bd5ab1c Add dependency wake reconciliation backstop (#8943)",
+        "11177c266509ce0f529a68f2135266b5e5a34147 Fix resolved blocker wake reconciliation (#9229)",
+        "678728f650bf2a03f325922db32efb038dbb6ac9 feat: maintained in_review review-path contract + stalled-review actions (#10675)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-issue-rewake-throttle",
