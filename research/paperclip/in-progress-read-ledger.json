@@ -6833,6 +6833,34 @@
       "completionRequirements": [
         "Read lines 1-272 exactly once and assess attention/inbox dismissal ownership, resurfacing/version semantics, human versus Agent authority, tenant isolation, immutable audit and test quality against Company OS approval and responsibility queues."
       ]
+    },
+    {
+      "id": "application:server/__tests__/instance-settings-managed-overlay",
+      "path": "server/src/__tests__/instance-settings-managed-overlay.test.ts",
+      "lineCount": 166,
+      "sha256": "52a26944354f28c2756b669f12d11affd5d9c32ae085d6035c8c4a796ef8d28a",
+      "linkedEvidence": {
+        "history": [
+          "216d3d2680d9be66eab5d98e1607bd217a062c1f Managed-instance config: fail-closed PAPERCLIP_MANAGED_CONFIG parsing and read-time settings overlay (#10058)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 166 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Eight fast unit tests exercise managed experimental-feature overlay behavior with a minimal Drizzle stand-in; all 8 passed locally.",
+        "With no managed config, overlay is identity and self-hosted reads/writes omit managedKeys. This cleanly preserves one code path for managed-cloud and self-hosted profiles without persisting cloud-only presentation metadata.",
+        "Managed values override both stored tenant values and schema defaults at read time and expose per-key metadata. The input is not mutated. This establishes explicit precedence but hard-codes managedBy as paperclip-cloud, which must become a Company OS deployment-policy issuer rather than product/vendor identity.",
+        "Malformed PAPERCLIP_MANAGED_CONFIG fails closed during service construction. This is safer than silently ignoring policy, but the unit does not test schema-version/catalog-version/mode mismatch, unknown keys, size limits, signature/authenticity, secret leakage or safe diagnostic redaction.",
+        "Updates persist the tenant's underlying values and never persist overlay-added values or managedKeys; the returned representation is overlaid. Removing management can therefore restore tenant intent without a destructive migration, a strong reversible-policy pattern.",
+        "The stub captures update payloads but does not exercise real SQL, optimistic concurrency, transaction boundaries, simultaneous policy reload, multi-process consistency or rollback. Runtime environment appears construction-time static in this unit.",
+        "The policy is instance-level and only covers experimental feature flags. Company OS needs deployment-, enterprise- and possibly workspace-scoped effective policy with explicit precedence, issuer, policy version, reason, effective interval and immutable change receipt; managed policy must not silently alter responsibility or identity semantics.",
+        "No authentication is expected at this pure service layer, but downstream routes must distinguish who may edit stored tenant intent from who may issue managed policy. Tests do not assert audit/notification when effective behavior changes while stored intent remains unchanged."
+      ],
+      "completionRequirements": [
+        "Read lines 1-166 exactly once and assess managed configuration overlay precedence, fail-closed parsing, secret handling, deployment-profile independence and test quality against Company OS managed-cloud and self-hosted boundaries."
+      ]
     }
   ]
 }

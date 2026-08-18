@@ -7200,18 +7200,23 @@
     },
     {
       "id": "application:server/__tests__/instance-settings-managed-overlay",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for fail-closed managed configuration parsing and a reversible read-time feature-policy overlay shared by managed-cloud and self-hosted instance settings.",
+      "dependencyDirection": "Vitest -> managed-config parser and instance-settings service -> typed settings normalization; a minimal Db stand-in observes persistence without exercising PostgreSQL or HTTP authorization.",
+      "keyDataModels": "Singleton instance settings row, normalized experimental feature flags, versioned managed config envelope and per-key managed metadata.",
+      "lifecycle": "Parse deployment environment at service construction -> read tenant settings -> overlay managed values without mutation -> persist only tenant intent on update -> overlay response -> restore tenant intent when management is removed.",
+      "testAssessment": "All 8 focused tests passed. Coverage is strong for pure precedence, self-hosted parity, non-persistence and malformed JSON, but omits real SQL/concurrency, policy authenticity, version compatibility, hot reload, route authorization and audit.",
+      "designRationale": "Keep managed-cloud enforcement reversible and outside durable tenant configuration so one codebase supports both deployment profiles and later unmanaging does not destroy customer intent.",
+      "companyOsProblem": "Company OS needs a single-codebase policy stack where operator constraints can govern a managed deployment without contaminating self-hosted data or silently rewriting an enterprise's chosen configuration.",
+      "companyOsFit": "ADAPT the read-time effective-policy overlay, fail-closed parsing, explicit managed metadata and preservation of stored tenant intent. Generalize the hard-coded vendor identity into a signed/versioned DeploymentPolicyPort with deployment/enterprise/workspace scope, deterministic precedence, expiry, reason and immutable change receipts.",
+      "responsibilityConflict": "The tested overlay only changes experimental features, but the same unrestricted mechanism could silently override identity, approval or responsibility semantics. Company OS must prohibit such fields or require explicit accountable-human governance and migration workflows.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/instance-settings-managed-overlay.test.ts:1-166 (SHA-256 52a26944354f28c2756b669f12d11affd5d9c32ae085d6035c8c4a796ef8d28a)",
+        "git history: 216d3d2680d9be66eab5d98e1607bd217a062c1f",
+        "2026-08-19 focused Vitest: 8/8 passed"
+      ],
+      "securityFindings": "HIGH policy-authenticity gap: environment JSON signature, issuer trust and tamper evidence are not tested. HIGH semantic-scope risk: no guard prevents future managed keys from changing identity/approval/responsibility behavior. MEDIUM versioning gap: v, mode and catalogVersion compatibility are not exercised. MEDIUM audit gap: effective-policy changes have no asserted receipt or notification. MEDIUM concurrency gap: real database writes and policy reload races are outside the stub. LOW branding coupling: managedBy is hard-coded to paperclip-cloud."
     },
     {
       "id": "application:server/__tests__/instance-settings-routes",
