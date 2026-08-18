@@ -1938,18 +1938,23 @@
     },
     {
       "id": "application:cli/commands/heartbeat-run",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Invokes an Agent heartbeat through wakeup, then polls sequence-cursor events, the complete Agent Run list and byte-offset logs every 200ms until a terminal status or local deadline. It formats output through the Agent's local CLI adapter and prints adapter invocation details, logs, final status, errors and excerpts.",
+      "dependencyDirection": "heartbeat-run command -> client context/common HTTP -> server Agent/Run APIs; Agent adapterType -> local CLI adapter registry/formatter. Server-controlled events/logs/results and database Agent configuration flow directly into terminal presentation. Vendor-specific runtime formatting and default adapter policy live in this operator command.",
+      "keyDataModels": "Agent{companyId,adapterType}; wakeup source/trigger; HeartbeatRun/status/resultJson/error/stdoutExcerpt/stderrExcerpt; HeartbeatRunEvent{seq,eventType,payload,message}; log byte offset/content; adapter.invoke{command,args,cwd,env,prompt,context}; local deadline versus server Run state.",
+      "lifecycle": "Normalize source/trigger/timeout -> resolve credentials/origin -> fetch Agent -> POST wakeup -> capture Run ID -> poll events and update cursor -> fetch Company Agent Run list and locate current Run -> fetch log chunk and update offset -> delay 200ms -> on terminal status render result; on local deadline stop watching without cancelling the remote Run.",
+      "testAssessment": "The completed application:cli/__tests__/run assessment was reused without rereading source: focused Vitest passed 3/3 and CLI no-emit TypeScript passed, covering useful event cursor/log byte parameters and exact watchdog/wakeup fields. It omits pagination boundaries, malformed logs/events, resume/gap recovery, cancel/watchdog authorization, idempotency, concurrent state, evidence integrity, redaction, timeouts and stable errors. No stronger focused proof for this polling/formatting lifecycle was found.",
+      "designRationale": "A one-command invoke-and-follow loop is convenient for local adapter development. Sequence cursors and byte offsets permit incremental observation, adapter-specific stdout formatting improves readability, and explicit terminal statuses/errors help diagnose Runs without the Web UI.",
+      "companyOsProblem": "Company OS needs vendor-neutral Run invocation and durable observation with Connector capability/version, runtime attestation, permission/data grants, approval pause/resume, evidence/result digests, cancellation and reconnectable event cursors. Agent Boss must see truthful remote state even if the observing client times out or disconnects.",
+      "companyOsFit": "Reimplement as separate idempotent StartWork and FollowRun commands over the Connector/Event/Evidence ports. Use a specific Run projection or realtime stream, bounded reconnect/backoff, server cursor/gap detection, redacted structured events and explicit --cancel-on-timeout semantics. Terminal rendering must never receive raw env/prompt/command/Secret fields by default.",
+      "responsibilityConflict": "The wakeup carries no objective, proposer, accountable human, approval contract, data/permission scope or expected evidence. A local observer timeout is reported as timed_out/completed while the real Agent Run continues, breaking responsibility truth. Raw execution context is disclosed without a data owner or export record.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/commands/heartbeat-run.ts (344 lines; SHA-256 3589cbf1b2ef8616408494709fc7017de6a81cfda4d309b55105d7dc1528a59d)",
+        "git history: all current implementation attributed to 73eb23734f25c570d88665e672f80d740797c632",
+        "Completed focused assessment application:cli/__tests__/run: 3/3 passed; ADAPT partial cursor/payload patterns"
+      ],
+      "securityFindings": "Critical: adapter.invoke prints command, arguments, cwd, complete env, context and prompt even outside debug, and final errors/stdout/stderr/results plus log chunks are printed raw; this can expose Secrets/PII/proprietary data and inject terminal control sequences. Polling fetches the entire Company Agent Run list every 200ms with no limit, creating severe load and disappearance risk when server defaults omit the Run. timeout uses parseInt, accepts prefixes/negative values, does not bound API calls and does not cancel the remote Run; it then labels the locally abandoned Run timed_out/completed. Invalid source/trigger silently default. Agent IDs are interpolated without apiPath encoding. A newline-free stdout stream grows an unbounded buffer; malformed log lines are silently dropped; events and log endpoints may duplicate presentation; Ctrl-C/reconnect/gap recovery and idempotent wakeup are absent. Unknown adapters default to claude_local and final errors are labeled Claude, violating runtime neutrality."
     },
     {
       "id": "application:cli/commands/install",
