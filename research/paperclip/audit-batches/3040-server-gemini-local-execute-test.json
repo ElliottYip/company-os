@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/gemini-local-execute",
+      "auditStatus": "COMPLETE",
+      "function": "Fake-process execution tests for Gemini CLI command/prompt/env construction, forced yolo approval, Run credential injection, turn-limit normalization and resumed-session wake deltas.",
+      "dependencyDirection": "Vitest -> Gemini-local execute -> temporary executable/local process and adapter parser; Paperclip APIs/model/network are not called, while ACP and remote execution paths are not exercised.",
+      "keyDataModels": "Run/Agent/company, adapter config/engine/command/cwd/model/env/prompt template, private session, Work wake/comment context, Run JWT, process result/error/stop reason/clearSession and callbacks.",
+      "lifecycle": "Build initial or resume prompt -> inject Run-scoped Paperclip environment -> launch Gemini stream-json CLI in yolo mode -> parse logs/result -> classify structured turn exhaustion -> retain or clear private session.",
+      "testAssessment": "Focused Vitest passed 6/6 with fake executables. Tests strongly reject text-based turn-limit spoofing but intentionally assert a privileged execution shape and omit ACP/remote parity, containment, cancellation, approval, evidence and token-leak controls.",
+      "designRationale": "Let Gemini operate autonomously while Paperclip API/run credentials provide its control surface, resume vendor sessions with small wake deltas and make scheduler retry decisions only from structured vendor signals or a known exit code.",
+      "companyOsProblem": "Company OS needs least-privilege Agent execution where Connector capabilities, Work/Data grants and high-risk approval suspension are enforced independently of a vendor's own permissive mode, with private sessions and credentials confined to the execution node.",
+      "companyOsFit": "REIMPLEMENT the execution envelope. A Gemini Connector may adapt the parser/turn-limit fixtures, but must negotiate capabilities, keep vendor sessions private, resolve short-lived audience-bound credentials locally, avoid prompts in argv, run under an attested sandbox, emit structured progress/tool/evidence events and pause high-risk actions for an exact human Approval before resume.",
+      "responsibilityConflict": "Unconditional yolo delegates vendor tool approval to the Agent while giving it a Run control-plane credential. There is no exact Action digest, accountable-human approval, DataAuthorization, evidence chain or proof that Paperclip API scope alone prevents high-risk filesystem/network/company actions.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/gemini-local-execute.test.ts:1-441 (SHA-256 6ffe862ca361db673a4a38b0a6af6687714df980ba96f0a0807e4c565eb5692a)",
+        "git history: eedc7ddef27e852ab130c8f5c68149ff86bec17f, 15eac43b43f78cfe890823378a00824828e272d9, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 6/6 passed"
+      ],
+      "securityFindings": "CRITICAL privilege combination: every run uses --approval-mode yolo while receiving a Run API credential and workspace/process authority. CRITICAL approval conflict: vendor approval is bypassed with no tested Company OS pause/approve/resume enforcement. HIGH credential exposure: PAPERCLIP_API_KEY is placed in child env and value redaction/exfiltration bounds are untested. HIGH data exposure: prompts/comments are passed in argv and untrusted human content enters resumed sessions. HIGH runtime gap: executable provenance, sandbox attestation, cancellation/process-tree cleanup and network/filesystem limits are absent. HIGH private-state gap: session ownership/tenant isolation is untested."
+    }
+  ]
+}

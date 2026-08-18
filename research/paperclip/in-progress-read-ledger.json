@@ -6621,6 +6621,35 @@
       "completionRequirements": [
         "Read lines 1-191 exactly once and assess Gemini local/remote environment validation, ACP/process selection, installation/probe behavior, command and credential boundaries, deployment portability and test quality against Company OS Connector runtime neutrality."
       ]
+    },
+    {
+      "id": "application:server/__tests__/gemini-local-execute",
+      "path": "server/src/__tests__/gemini-local-execute.test.ts",
+      "lineCount": 441,
+      "sha256": "6ffe862ca361db673a4a38b0a6af6687714df980ba96f0a0807e4c565eb5692a",
+      "linkedEvidence": {
+        "history": [
+          "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+          "15eac43b43f78cfe890823378a00824828e272d9 Retry max-turn exhausted heartbeats (#5096)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 441 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Six real fake-process tests cover CLI command/env/prompt construction, unconditional yolo approval, structured/exit-code turn-limit normalization, adversarial unstructured text and compact resumed-session wake deltas.",
+        "Every CLI execution passes --approval-mode yolo; the test explicitly asserts no alternative policy/read-only flags. The same process receives PAPERCLIP_API_KEY (Run JWT), API URL, Agent/company/Run IDs and configuration env, combining approval bypass with a control-plane credential and local workspace access.",
+        "The initial prompt is passed as an argv value and contains the heartbeat template, runtime/API instructions and run_shell_command guidance. argv can be visible to local process inspection/telemetry and the prompt can contain company data. The test captures only PAPERCLIP env key names, so it does not prove token-value redaction or child-process environment containment.",
+        "Structured turn-limit result fields and vendor exit code 53 normalize to stable max_turns_exhausted, set stopReason and clear the vendor session. Attacker-controlled stdout/stderr/error text mentioning turn limits is deliberately not trusted, which is a strong retry-safety invariant.",
+        "A resumed Run passes the opaque vendor session ID through --resume and replaces the full heartbeat prompt with a compact Paperclip-specific wake delta containing Work identity and a human comment, plus an instruction not to switch Work. This improves context size but passes untrusted comment content into the Agent prompt without an explicit data classification or prompt-injection boundary.",
+        "All cases explicitly configure engine cli despite ACP being the historical default. ACP/CLI equivalence, remote runner, executable provenance, session ownership across Agent/company, cancellation/timeout, streaming/backpressure, process-tree kill, SecretRef lifecycle, tool events, approval pause/resume, evidence/result hashes, idempotency and retry side effects are absent.",
+        "Focused Vitest passed 6/6 with temporary fake executables. No real Gemini credential, network/model call or production data was used."
+      ],
+      "completionRequirements": [
+        "Read lines 1-441 exactly once and assess Gemini execution command construction, prompt/session handling, ACP/CLI engines, environment/Secret flow, streaming/result normalization, retry/cancel/timeout, local/remote containment and test quality against Company OS Connector execution contract."
+      ]
     }
   ]
 }
