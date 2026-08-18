@@ -4712,18 +4712,21 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-list",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Integration and pure tests for Heartbeat Run summary/detail projections, compatibility with an absent processGroupId schema descriptor, and size-bounding legacy result/event payloads.",
+      "dependencyDirection": "heartbeatService reads Run rows and maps them into summary or detail shapes; a storage-bound helper recursively limits adapter event metadata before persistence. Tests use real Postgres for projections and a pure helper for event payloads.",
+      "keyDataModels": "Run liveness summary, context snapshot, usage/result JSON, session/log/external process identifiers, processGroupId compatibility field, oversized-result truncation markers and bounded adapter event metadata.",
+      "lifecycle": "List can return a lightweight row with usage, result, session, log, external-run and process fields nulled while retaining core status/error/context; getRun preserves small arbitrary result JSON but replaces oversized legacy payloads with a bounded summary/stdout and truncation receipt; event payloads retain bounded prompt/context metadata; an undefined linked-schema field maps processGroupId to null.",
+      "testAssessment": "Five cases cover a missing ORM field descriptor, small detail fidelity, summary-field exclusion, oversized legacy result bounding and oversized adapter metadata truncation. Missing are route-level tenant/role authorization, cross-Company ID access, list ordering/pagination and invalid limits, error/context secret redaction, data classification, nested/cyclic/non-JSON values, Unicode/byte limits, compression bombs, attachment references, stable versioned schemas and performance assertions. Deleting the ORM property does not simulate querying an actually old database that lacks a selected column, so deployed-schema compatibility is only weakly demonstrated.",
+      "designRationale": "Keep run lists fast and bounded, retain detail fidelity for normal payloads, prevent legacy rows or adapter events from creating unbounded API/storage amplification, and tolerate staged application/schema rollout.",
+      "companyOsProblem": "Company OS needs separate operational summaries and permission-scoped evidence details across cloud and local deployments without leaking prompts, private sessions, credentials, raw external identifiers or large provider payloads.",
+      "companyOsFit": "ADAPT the summary/detail split, explicit field allowlists, size budgets and truncation receipts. Define versioned RunSummary and EvidenceDetail projections behind Company/role/data-contract authorization; store evidence by content-addressed reference with classification, retention and redaction policy. Apply structural redaction before byte bounding, never persist private reasoning or raw provider session/prompt by default, and expose stable error codes plus safe parameters rather than arbitrary error text. Prove migration compatibility against real prior schemas.",
+      "responsibilityConflict": "The projection has no accountable-human or responsibility-contract fields. getRun accepts only a Run ID at this service boundary and tests do not establish Company/role authorization. Small arbitrary result JSON, error text, context snapshots and truncated prompts may still contain secrets or private reasoning; truncation limits volume but does not create authorized evidence or provenance.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-list.test.ts:1-305",
+        "e68188c438ae14bbd4e3542571ef38b27d55d2b1 fix: upstream deployed document-comment, routine-annotation, workspace & board-polling fixes (#8536)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-local-environment",
