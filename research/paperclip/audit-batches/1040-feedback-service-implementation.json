@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/feedback",
+      "auditStatus": "COMPLETE",
+      "function": "Monolithic Feedback domain/service implementing Vote upsert, Company/global sharing preferences, target validation, local/shared payload snapshots, Issue/Agent/Skill/Instructions context capture, vendor-specific runtime-file reconstruction, trace queries and remote export state transitions.",
+      "dependencyDirection": "The service directly depends on database tables, Agent Instructions, Run Log Store, filesystem/environment paths and Claude/Codex/OpenCode adapter parsers; routes and startup workers call it for both local feedback and external telemetry delivery.",
+      "keyDataModels": "FeedbackVote and FeedbackExport, consent actor/time/terms, local_only/pending/sent/failed, Issue/comment/document target, Company/Agent/Run/cost/skill/instructions snapshots, adapter files, redaction summary, payload/bundle digests and export attempts.",
+      "lifecycle": "Save validates an Agent-authored target, mutates Company and instance sharing state, upserts Vote/Export and builds a DB payload snapshot inside one transaction; flush selects pending/failed rows, reconstructs a fresh bundle from current DB/log/vendor files, uploads sequentially and then marks each row sent or failed.",
+      "testAssessment": "The 1,155-line embedded-Postgres suite gives unusually strong behavior coverage for consent, non-retroactivity, target validity, sanitization examples and delivery states. Implementation-level gaps remain untested: no atomic row claim or multi-replica exclusion; no backoff/next-attempt/max/dead-letter; unscoped getById/getBundle and unbounded list; filesystem work inside the save transaction; unlimited file count and full-file reads before 10M-character truncation; shared global vendor homes; exact session ownership; mutable-source capture between consent and retry; canonical integrity completeness and authorization to change Company/global consent.",
+      "designRationale": "Maximize diagnostic usefulness by automatically reconstructing rich provider-native execution context while keeping non-shared votes local and preserving durable export status.",
+      "companyOsProblem": "Company OS needs a neutral DataEgress/Audit pipeline whose consent applies to an exact immutable byte manifest, not a later vendor-specific filesystem scrape.",
+      "companyOsFit": "REIMPLEMENT as separate Feedback, ConsentPolicy, ExportManifest and DataEgressWorker application modules. Connector drivers may propose bounded artifacts through capability contracts, but Core stores an immutable consent-time manifest/digest, field/data-contract decisions and redaction receipt; worker atomically claims it and sends exactly those bytes with idempotency, retry schedule, dead-letter and delivery evidence.",
+      "responsibilityConflict": "A board vote can change Company and instance-wide sharing state without service-level role authority. Export-time reconstruction reads mutable Run/log/vendor files after consent, so the approved payload and transmitted payload are not the same object. The bundle digest excludes most non-file fields, failure text is stored unsanitized, and shared local-board identity cannot establish an accountable human.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/feedback.ts:1-2117",
+        "server/src/services/feedback.ts:218-263",
+        "server/src/services/feedback.ts:264-741",
+        "server/src/services/feedback.ts:747-1075",
+        "server/src/services/feedback.ts:1077-1450",
+        "server/src/services/feedback.ts:1451-1695",
+        "server/src/services/feedback.ts:1696-1878",
+        "server/src/services/feedback.ts:1879-2117",
+        "server/src/__tests__/feedback-service.test.ts:1-1155",
+        "7f70759e Redact deleted issue comments",
+        "454edfe8 Add recovery handoff system notices (#5289)",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    }
+  ]
+}
