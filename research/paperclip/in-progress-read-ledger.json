@@ -6151,6 +6151,34 @@
       "completionRequirements": [
         "Read lines 1-3036 exactly once and assess runtime driver abstraction, lease acquisition/reuse/release, workspace sync, command/session streaming, cancellation/timeouts, observability, provider/plugin failures, cleanup/recovery, Secret/data boundaries and tests against Company OS execution-node runtime."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-runtime-driver-contract",
+      "path": "server/src/__tests__/environment-runtime-driver-contract.test.ts",
+      "lineCount": 299,
+      "sha256": "5b92218e9eee3601de5c32781e7976ac7602962135189b17b7e64fad05451a85",
+      "linkedEvidence": {
+        "history": [
+          "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)",
+          "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)",
+          "076067865f9922b7e618344e7c52bcacb39b7b59 Migrate SSH environment callback to bridge (#5116)",
+          "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 299 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Three embedded-Postgres contract cases target local, fake sandbox and optional live-fixture SSH; both sandboxed and approved unsandboxed runs skipped the whole file and all three tests.",
+        "The common contract asserts acquired lease tenant/environment/Run linkage, active status, null project workspace context, driver metadata, release to zero active rows and idempotent second release. This is a useful minimal lifecycle invariant but far narrower than a production execution-driver contract.",
+        "Local and fake sandbox are host implementations, not independent third-party compatibility subjects. Plugin/generic drivers are absent, so the test cannot prove that the public extension boundary is substitutable or that future providers comply without privileged repository fixtures.",
+        "SSH configuration converts raw test private keys to Secret refs before persistence, but the contract only inspects lease host/user/path metadata. If SSH fixture support is unavailable inside an otherwise enabled database suite, the test warns and returns, which Vitest can count as a pass rather than a declared skip/infra failure.",
+        "No cases cover resume, realize, execute/stdin/streaming, cancel/timeout, release failure/pending cleanup, destroy, retry/idempotency tokens, concurrent ownership, capability declarations, structured errors, resource/data policy, Secret audience, attestation or evidence."
+      ],
+      "completionRequirements": [
+        "Read lines 1-299 exactly once and assess runtime driver interface substitutability, acquire/release/execute/realize contracts, metadata/Secret boundaries, failure semantics and test quality against the Company OS Connector execution contract."
+      ]
     }
   ]
 }

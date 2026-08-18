@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-runtime-driver-contract",
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed minimal acquire/release contract harness for built-in local, fake sandbox and optional SSH runtime drivers.",
+      "dependencyDirection": "Vitest contract loop -> environment runtime and Secret services -> Drizzle/embedded Postgres plus optional SSH env-lab; no plugin/Connector SDK implementation, hostile provider or actual Agent execution is exercised.",
+      "keyDataModels": "Environment driver/config, company/Agent/Run, active/released lease and provider ID/driver metadata, null execution-workspace context and persisted private-key Secret reference.",
+      "lifecycle": "Seed company/Agent/environment/Run -> optionally materialize SSH Secret -> acquire lease -> assert common fields -> release by Run -> assert no active rows -> release again as an empty idempotent result.",
+      "testAssessment": "Sandboxed and approved unsandboxed focused runs skipped 3/3 because embedded Postgres is unsupported. Even if executable, the contract covers only acquire/release success for built-ins and can false-pass the SSH case by returning when its fixture is unavailable. It is not a complete extension conformance suite.",
+      "designRationale": "Pin a small common host invariant across initially supported environment drivers without duplicating the same lease assertions in each driver-specific test.",
+      "companyOsProblem": "Company OS requires a public, vendor-neutral Connector execution conformance suite proving lifecycle, security, failure and responsibility semantics for Raft, Codex, DeepSeek and enterprise runtimes.",
+      "companyOsFit": "REIMPLEMENT as an SDK-owned black-box conformance kit covering capability/version negotiation, identity binding, acquire/resume/execute/stream/pause/approval/resume/cancel/timeout/release/destroy, idempotency/concurrency, Secret/data policy, evidence/result and signed attestation. Emit explicit PASS/SKIP/INFRA_ERROR and publish provider-neutral fixtures.",
+      "responsibilityConflict": "The minimal lease links a Run and company but has no goal initiator, accountable human, Work/approval/data contract, capability proof or evidence. A provider can satisfy acquire/release while violating every responsibility-critical execution behavior.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/environment-runtime-driver-contract.test.ts:1-299 (SHA-256 5b92218e9eee3601de5c32781e7976ac7602962135189b17b7e64fad05451a85)",
+        "git history: 547463d3a2a0fdf899dc59524eff71a24a6f315c, 778e775c35834aabe09266fb6d415d3dafbd1deb, 076067865f9922b7e618344e7c52bcacb39b7b59, 70679a33216bae9247b1b6bddc5fcaad1c04e829",
+        "2026-08-19 sandboxed focused Vitest: 3/3 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 3/3 skipped"
+      ],
+      "securityFindings": "CRITICAL false conformance risk: no test executed locally and SSH can return as a pass when its fixture is unavailable. CRITICAL coverage gap: execute/cancel/timeout/stream/approval/evidence/attestation and Secret/data policy are absent. HIGH ecosystem gap: no third-party plugin implementation is tested against a public black-box contract. HIGH failure/concurrency gap: only success and empty second release are covered."
+    }
+  ]
+}
