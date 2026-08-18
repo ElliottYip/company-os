@@ -4564,10 +4564,11 @@
         { "path": "cli/src/commands/client/context.ts", "completedRanges": [{ "start": 1, "end": 158 }] },
         { "path": "cli/src/commands/client/cost.ts", "completedRanges": [{ "start": 1, "end": 167 }] },
         { "path": "cli/src/commands/client/dashboard.ts", "completedRanges": [{ "start": 1, "end": 35 }] },
-        { "path": "cli/src/commands/client/feedback.ts", "completedRanges": [{ "start": 1, "end": 676 }] }
+        { "path": "cli/src/commands/client/feedback.ts", "completedRanges": [{ "start": 1, "end": 676 }] },
+        { "path": "cli/src/commands/client/goal.ts", "completedRanges": [{ "start": 1, "end": 177 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/goal.ts",
+      "nextFile": "cli/src/commands/client/issue.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4644,7 +4645,11 @@
         "When no Company is explicit or in context, resolveFeedbackCompanyId silently selects the first board-visible Company. fetchCompanyFeedbackTraces always requests includePayload=true; JSON report returns complete traces regardless of the terminal-only --payloads flag. This creates wrong-tenant and least-data failures for potentially sensitive human feedback, Agent output and prompt snapshots.",
         "Bundle file.path is joined directly beneath the chosen bundle directory with no absolute/traversal/no-follow containment check. A compromised or malformed server response can write outside the export root. The output directory check follows symlinks and has a stat/create TOCTOU; the sibling ZIP is overwritten without its own emptiness/overwrite guard, and files use ambient permissions rather than a confidential export mode.",
         "Eight-character trace/vote ID prefixes and sanitized issue references can collide and silently overwrite records. Export loads all traces and payloads, fetches every full bundle sequentially, rereads every JSON file, then materializes the entire uncompressed ZIP in memory. The ZIP uses 16-bit entry counts and 32-bit sizes without Zip64 or bounds, while filenames/content/report fields lack terminal-control, size and classification controls.",
-        "The manifest includes server origin, Company ID and issue references but no content digest, schema/tool version, exporter human, legal/data purpose, consent scope, redaction policy, authorization decision or chain-of-custody signature. Decision: REJECT copying this exporter; retain only the high-level idea of evidence bundles and rebuild it through Company OS Data/Evidence ports with safe-path, bounded streaming and accountable-human export approval. Next file is goal.ts."
+        "The manifest includes server origin, Company ID and issue references but no content digest, schema/tool version, exporter human, legal/data purpose, consent scope, redaction policy, authorization decision or chain-of-custody signature. Decision: REJECT copying this exporter; retain only the high-level idea of evidence bundles and rebuild it through Company OS Data/Evidence ports with safe-path, bounded streaming and accountable-human export approval.",
+        "goal.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. Shared create/update schemas provide useful early validation, and the API offers Company list/create plus ID-addressed get/update/delete.",
+        "The CLI Goal model exposes only ownerAgentId, not an accountable human, responsible role, responsibility contract, evidence/result lineage or mixed human/Agent ownership. Generic status update has no visible transition rules, reason, approval or completion evidence, so a Goal can be presented as organizational truth without the Company OS responsibility chain.",
+        "Create exposes no idempotency key; update/delete expose no revision precondition; delete requires only --yes and no exact target/impact digest. List fetches the full Company Goal collection without pagination. ID-addressed update/delete omit explicit tenant context and rely entirely on server authorization.",
+        "parseNullableString recognizes trimmed case-insensitive null but returns all other input untrimmed, allowing whitespace-bearing identity/title-adjacent values to reach schema/service behavior. Decision: REFERENCE ONLY for hierarchy/API ergonomics pending domain/schema/service audit; Company OS must own human-accountable Goal semantics. Next file is issue.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
