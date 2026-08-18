@@ -676,18 +676,30 @@
     },
     {
       "id": "application:cli/__tests__/open-url",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Focused CLI test for browser-launch behavior used by board authentication, including successful spawn, asynchronous missing-opener failure and synchronous spawn failure.",
+      "dependencyDirection": "The Vitest suite mocks node:child_process.spawn before importing the board-auth client and supplies a minimal EventEmitter child process; it tests only the exported openUrl behavior.",
+      "keyDataModels": "A URL string and a boolean launch outcome; child-process spawn and error events are treated as the platform boundary.",
+      "lifecycle": "Request URL open; receive a child spawn event and resolve true, or catch synchronous/asynchronous process-launch failure and resolve false without terminating a headless CLI.",
+      "testAssessment": "Focused Vitest passed 3/3 tests on 2026-08-19 and CLI no-emit TypeScript passed. The regression meaningfully covers Node's asynchronous child-process error behavior, but omits platform command selection, close-before-spawn, duplicate events, timeout, URL validation/schemes and authentication-state handling after launch failure.",
+      "designRationale": "Interactive authentication should degrade gracefully in containers or SSH sessions where no graphical browser opener exists, allowing a fallback URL flow rather than crashing on an unhandled child-process error.",
+      "companyOsProblem": "Managed-cloud and self-hosted Company OS authentication/bootstrap flows must work both with desktop browsers and headless enterprise nodes without changing identity responsibility or leaking one-time authentication URLs.",
+      "companyOsFit": "ADAPT the graceful headless-failure regression pattern in the deployment/Identity adapter layer. Keep URL construction and allowed schemes/hosts server- or adapter-owned, provide an explicit manual fallback and avoid placing browser-launch concerns in Company OS core/application.",
+      "responsibilityConflict": "None in the boolean helper itself, but authentication launch success is not identity proof. Company OS must not equate opening a URL with completing human authentication, consent, audience binding or an accountable session.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/open-url.test.ts:1-57",
+        "SHA-256 fd1af9f6d46cbd13aa26bdc54ba304da05c6eb26bc3595305bee537647f54c5e",
+        "9cd62cf3bb7b9e86f0b08894a1c48bbdb79a9488 fix(cli): handle headless browser-open failure in board auth (#8328)",
+        "2026-08-19 focused Vitest: 1 file and 3 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "The test passes only a fixed HTTPS URL and does not prove rejection of file, javascript, data or custom schemes, malformed URLs, control characters or attacker-controlled opener arguments.",
+        "No allowlisted host, callback binding, state/nonce/PKCE or token-audience behavior is covered; those belong to the owning board-auth/Identity unit.",
+        "The fake child does not model close/exit before spawn, repeated spawn/error events or a process that never emits, leaving potential unresolved-promise and race behavior untested.",
+        "One-time authentication URLs can be sensitive; the suite does not assess logging, terminal history, clipboard or manual-fallback disclosure."
+      ]
     },
     {
       "id": "application:cli/__tests__/operations-parity",
