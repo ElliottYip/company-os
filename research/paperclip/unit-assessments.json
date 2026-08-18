@@ -7736,18 +7736,24 @@
     },
     {
       "id": "application:server/__tests__/issue-comment-attribution-audit-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres route tests for Agent/human comment and PATCH attribution, persisted activity receipts, activity retrieval and audited rejection of delegated-human spoofing.",
+      "dependencyDirection": "Supertest -> Issue/activity routes -> real authz, Issue and activity services -> PostgreSQL principals, memberships, Runs, comments, Issues and activity log.",
+      "keyDataModels": "Agent/human actor, on-behalf membership, responsibleUserId on Run, Issue comment creator/Run metadata, PATCH before/after changes, authorization reason and spoof-rejection activity.",
+      "lifecycle": "Authenticate actor/delegation -> authorize visible cross-Issue write -> derive Agent/Run/human attribution -> persist comment or PATCH -> persist/query activity receipt; reject and audit client-supplied attribution override.",
+      "testAssessment": "Both tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Source validates a strong receipt shape, but atomic rollback, terminal-Work policy, delegation mismatch/revocation, idempotency and audit immutability are not established.",
+      "designRationale": "Make cross-Issue Agent collaboration explainable by preserving the executing Agent, runtime, accountable human and authorization reason, while preventing payload fields from overriding authenticated attribution.",
+      "companyOsProblem": "Every executable or consequential Work mutation must answer which Agent acted, under which Run and capability, for which accountable human, with what exact change and evidence, including denied attempts.",
+      "companyOsFit": "ADAPT the server-derived Agent/Run/human tuple, structured authorization reason, field-diff receipts, queryable activity and audited spoof denial. Add immutable ordered receipts, action/work/contract/evidence digests, transactional outbox/rollback, delegation version/expiry, terminal-Work policy, target-human notice/approval, idempotency and safe redaction of attacker-controlled values.",
+      "responsibilityConflict": "A visible-write grant permits an Agent to mutate another Agent's done Work without asserted responsible-human approval, and persisted activity is not proven immutable or atomic. Raw spoof values may leak attacker-supplied sensitive data into audit storage.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-comment-attribution-audit-routes.test.ts:1-280 (SHA-256 b643d45cd61f15134e1e5ca10250388a0ab6976a8ca3e9aff9e2e1bbf7880563)",
+        "git history: e8ae5286eb92a86ddd7421d1ca22398982a3381d, f91a6e27c0feb7f92dcde981c9a741b869484e83",
+        "2026-08-19 sandboxed focused Vitest: 2/2 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 2/2 skipped"
+      ],
+      "securityFindings": "HIGH terminal/cross-owner mutation gap: done foreign Work is mutable under visible-write. HIGH atomicity/immutability gap: audit failure rollback and tamper evidence are absent. HIGH untrusted-audit-data gap: spoof requestedValue is stored raw. HIGH verification gap: both database tests skipped. MEDIUM delegation gap: Run/human/membership mismatch, expiry and revocation are untested. MEDIUM replay gap: duplicate comments/PATCH and concurrent writes lack idempotency/version checks."
     },
     {
       "id": "application:server/__tests__/issue-comment-cancel-routes",

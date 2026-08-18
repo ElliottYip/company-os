@@ -7292,6 +7292,34 @@
       "completionRequirements": [
         "Read lines 1-260 exactly once and assess closed-Work workspace visibility, file access, execution cleanup, retention/evidence preservation, authorization and test quality against Company OS data lifecycle."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-comment-attribution-audit-routes",
+      "path": "server/src/__tests__/issue-comment-attribution-audit-routes.test.ts",
+      "lineCount": 280,
+      "sha256": "b643d45cd61f15134e1e5ca10250388a0ab6976a8ca3e9aff9e2e1bbf7880563",
+      "linkedEvidence": { "history": [
+        "e8ae5286eb92a86ddd7421d1ca22398982a3381d explain cross-task Agent writes with attribution/audit/actionable denials (#10843)",
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 contain cross-Issue Agent side effects (#10837)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 280 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Two embedded-Postgres end-to-end route tests cover same-company cross-Issue Agent comments/PATCH, human PATCH, activity retrieval and rejected onBehalfOfUserId spoofing.",
+        "Agent comment attribution binds authorAgentId, onBehalfOfUserId, createdByRunId and authorizationReason. Agent PATCH activity binds actor type/ID, Agent, Run, responsible human, reason and before/after field changes; human PATCH binds the human as actor/responsible principal with null Agent/Run.",
+        "The activity endpoint returns persisted responsibility fields, making them queryable rather than transient logs. This is close to Company OS's required responsibility receipt shape, but no immutable sequence/hash/signature/retention or evidence reference is asserted.",
+        "The target is another Agent's done Issue, yet visible-Issue write allows Agent comment and priority mutation. Terminal Work mutability, target responsible-human notice/approval, checkout ownership and action risk are not constrained in this unit.",
+        "Client-supplied onBehalfOfUserId is rejected with 422, stable code, sanctioned path and actionable explanation before comment creation. The rejected attempt is itself audited with Agent, Run, derived responsible human, surface and field.",
+        "Spoof audit stores requestedValue verbatim. Attacker-controlled attribution values may contain personal data or secrets; Company OS should record classification, length-limited digest and safe preview rather than raw untrusted input.",
+        "The authenticated actor contains on-behalf membership and the Run row contains responsibleUserId, but mismatch, expired/terminal Run, inactive membership, token audience, delegation expiry and revocation races are absent.",
+        "Real PostgreSQL establishes persistence shape but not atomicity: no forced audit failure proves PATCH/comment rollback, and duplicate requests/concurrent field updates are untested.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 2 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-280 exactly once and assess comment actor attribution, Agent/Run binding, spoof prevention, cross-Work authority, audit receipt integrity, content privacy and test quality against Company OS responsibility evidence."
+      ]
     }
   ]
 }
