@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/plugin-init",
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for Plugin project scaffolding, local-versus-registry install request resolution and target-server health diagnostics.",
+      "dependencyDirection": "The Vitest suite mocks the first-party create-paperclip-plugin scaffolder, registers the Plugin Commander module, creates temporary local directories and injects a health GET function; it tests option mapping and diagnostic formatting without installing or executing a Plugin.",
+      "keyDataModels": "Plugin package name, output directory, template/category/display metadata, SDK path, registry version/local-path flag and target health fields including version, deploymentMode and deploymentExposure.",
+      "lifecycle": "Map CLI flags into scaffold options; print next development/install commands; resolve an existing path as a local Plugin or retain an npm package/version; probe /api/health and report reachable target identity/mode or remediation text.",
+      "testAssessment": "Focused Vitest passed 10/10 tests on 2026-08-19 and CLI no-emit TypeScript passed. It covers scoped package naming, paths with spaces, wrapper delegation, local/registry resolution and health success/failure formatting. It omits invalid names/paths, existing-output collision, package integrity/signature, dependency install, Plugin manifest/capability validation, compatibility, sandboxing and actual target install behavior.",
+      "designRationale": "Offer a low-friction official Plugin development path while reducing accidental installation to the wrong local/remote server by showing target health, version and deployment mode.",
+      "companyOsProblem": "Company OS needs a governed Connector/Plugin developer experience that works across managed-cloud and self-hosted targets, makes the destination and compatibility explicit, and prevents third-party code from escaping capability, secret, data and responsibility boundaries.",
+      "companyOsFit": "ADAPT the target-diagnostics and thin official-scaffolder delegation patterns. Company OS should own its Connector SDK/schema, distinguish declarative Connector packages from executable Plugins, pin integrity/provenance, validate capabilities and compatibility, and require explicit trust/install policy. Do not copy Paperclip branding, package names, generated templates or internal SDK paths.",
+      "responsibilityConflict": "Scaffolding metadata and target reachability do not establish who may install executable code, what data/tools it can access, which accountable human accepts its risk or how its actions enter the responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/plugin-init.test.ts:1-227",
+        "SHA-256 444fb652dc633cf7f26935362a0a051a57944cb31216b9ff071187996a949a44",
+        "1951c8023713bfb72b141de2491045de0de2ec70 feat(cli): surface plugin install target host + add `plugin target` (#8575)",
+        "b947a7d76c331b3ce4069d3be0ade25cc89b1b90 [codex] Improve local plugin development workflow (#5821)",
+        "2026-08-19 focused Vitest: 1 file and 10 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Local-path detection and registry fallback are tested, but symlinks, ownership, world-writable paths, path canonicalization and ambiguous missing relative paths are not.",
+        "Registry installs have no tested lockfile, exact-version requirement, checksum/signature, publisher provenance, allowlist or dependency-vulnerability gate.",
+        "Generated next commands interpolate a single-quoted path; apostrophes, newlines and shell metacharacters are untested, so displayed copy/paste commands require robust shell escaping.",
+        "Health diagnostics trust and display server-provided version/mode and raw reachability errors without testing transport security, server identity, certificate validation or secret redaction.",
+        "Scaffolder tests do not cover overwrite refusal, template path traversal, generated dependency pinning, license notices or executable postinstall scripts.",
+        "No Plugin capability, secret, network/filesystem, data-export or tenant-isolation policy is exercised before installation."
+      ]
+    }
+  ]
+}
