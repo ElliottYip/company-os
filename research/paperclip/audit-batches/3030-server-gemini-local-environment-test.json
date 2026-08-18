@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/gemini-local-adapter-environment",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem/process tests for Gemini-local environment diagnostics: cwd creation, CLI hello-probe flags/env, quota classification and remote sandbox trust propagation.",
+      "dependencyDirection": "Vitest -> Gemini-local testEnvironment -> real temporary local command or fake remote runner; no Company OS-style SecretPort, runtime attestation, real Gemini network/API or database is involved.",
+      "keyDataModels": "Adapter type/config engine/command/cwd/model/yolo/env, local or remote sandbox execution target, environment name and structured diagnostic status/check code.",
+      "lifecycle": "Validate/create cwd -> resolve and launch CLI probe with config/env -> parse result or quota stderr -> report checks; remote target delegates execution and marks workspace trusted.",
+      "testAssessment": "Focused Vitest passed 4/4 with fake commands/runner and no real credentials. The cases verify current side effects and propagation, not containment, credential safety, command provenance, ACP default behavior or trustworthy remote execution.",
+      "designRationale": "Make setup diagnostics actionable by repairing a missing cwd, exercising the actual model/approval flags, distinguishing quota from generic failure and bypassing an interactive trust prompt inside a provisioned remote sandbox.",
+      "companyOsProblem": "Company OS needs Connector health and capability evidence that is safe, secret-minimized, deployment-neutral and does not itself perform privileged Agent/model work or mutate arbitrary customer paths.",
+      "companyOsFit": "REIMPLEMENT as layered Connector diagnostics executed at the customer execution node: static config/schema, signed binary/version, credential-presence without disclosure, sandbox capability and an explicitly consented optional provider probe. Diagnostics must be non-mutating by default, command/image allowlisted, time/egress/tool bounded and return short-lived secret-free attestation codes.",
+      "responsibilityConflict": "A diagnostic can create directories and launch a yolo model process without an approved Work/Action/Data contract or accountable human. Trusting a remote workspace through an env flag is not evidence that organizational responsibility or sandbox guarantees have been satisfied.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/gemini-local-adapter-environment.test.ts:1-191 (SHA-256 03f991393721e783f8a94e93eaba70aead56c1a1c1dd1ffe3fadff6af539addb)",
+        "git history: eedc7ddef27e852ab130c8f5c68149ff86bec17f, b24c6909e89fac62b5954f2416f857a378fd97ce, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "CRITICAL diagnostic privilege: the probe can execute an arbitrary PATH-resolved command with --approval-mode yolo and inherited credentials. HIGH host-filesystem mutation: a configured absolute cwd is created without tested containment. HIGH Secret boundary gap: API key lives in config.env and subprocess/log/persistence safety is unproven. HIGH remote-trust gap: GEMINI_CLI_TRUST_WORKSPACE bypass is asserted without runtime attestation. HIGH supply-chain gap: binary identity/version/signature is untested. MEDIUM error brittleness: quota classification depends on vendor stderr."
+    }
+  ]
+}

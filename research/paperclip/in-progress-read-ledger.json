@@ -6591,6 +6591,36 @@
       "completionRequirements": [
         "Read lines 1-203 exactly once and assess Gemini-local configuration validation, session/retry classification, parser compatibility, command/credential boundaries, vendor leakage and test quality against Company OS equal Connector and secret-free control-plane contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/gemini-local-adapter-environment",
+      "path": "server/src/__tests__/gemini-local-adapter-environment.test.ts",
+      "lineCount": 191,
+      "sha256": "03f991393721e783f8a94e93eaba70aead56c1a1c1dd1ffe3fadff6af539addb",
+      "linkedEvidence": {
+        "history": [
+          "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+          "b24c6909e89fac62b5954f2416f857a378fd97ce Harden remote sandbox runtime probes, timeouts, and installs (#5685)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 191 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Four filesystem/process tests cover creating a missing absolute cwd, forwarding model/yolo flags and env to a hello probe, classifying quota stderr and marking a remote sandbox workspace trusted.",
+        "testEnvironment is mutating rather than diagnostic-only: it creates a caller-configured missing absolute directory. The test does not constrain the path to a Company/Work workspace, require ownership, prevent broad host locations or clean it up within production code.",
+        "The hello probe resolves an arbitrary configured command through PATH and passes model plus --approval-mode yolo when configured. Even with a nominal hello prompt, a live model/CLI launched in approval-bypass mode is an unnecessarily privileged health check; command provenance/signature and tool/network/filesystem denial are not shown.",
+        "A fake GEMINI_API_KEY is embedded in config.env and inherited by the subprocess. The test does not prove SecretRef resolution at the execution node, environment allowlisting, child/log redaction, credential lifetime or prevention of config persistence in the control plane.",
+        "Quota exhaustion is classified as a stable gemini_hello_probe_quota_exhausted warning from English stderr containing 429 RESOURCE_EXHAUSTED and billing wording. Useful UX notwithstanding, provider text/version/localization changes can break this classification.",
+        "For a remote sandbox target the adapter sends GEMINI_CLI_TRUST_WORKSPACE=true to bypass the CLI trust prompt and relies on an injected runner. The test proves propagation only, not that the provider sandbox, remote cwd, image, egress, mount, credentials or runtime attestation are trustworthy.",
+        "Despite history making ACP the default engine, all tests explicitly use engine cli; ACP selection/fallback, local-versus-remote parity, install/version probe, timeout/cancel, malicious command output, no-network mode and cleanup after failure are absent.",
+        "Focused Vitest passed 4/4 using fake local scripts and a fake remote runner; no real Gemini credential, API or production data was used."
+      ],
+      "completionRequirements": [
+        "Read lines 1-191 exactly once and assess Gemini local/remote environment validation, ACP/process selection, installation/probe behavior, command and credential boundaries, deployment portability and test quality against Company OS Connector runtime neutrality."
+      ]
     }
   ]
 }
