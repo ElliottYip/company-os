@@ -8050,18 +8050,24 @@
     },
     {
       "id": "application:server/__tests__/issue-monitor-scheduler",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL scheduler tests for due/manual one-shot Issue monitors, provider-quota reviewer recovery, bounded exhaustion/timeout policies, recovery wakes/Issues and external-reference minimization.",
+      "dependencyDirection": "Vitest -> real heartbeat timer/monitor services -> Drizzle/PostgreSQL Issues, Agents, Runs, wake requests, events, documents, activity, leases and runtime services; process adapter side effects are stabilized before cleanup.",
+      "keyDataModels": "Execution policy/state monitor schedule, attempts/timeout/recovery policy/service/external reference; Company default responsible user; Issue Agent/review participant; wake request/payload; Run/event/activity; recovery Issue origin/priority/model override.",
+      "lifecycle": "Claim due or manually requested monitor -> clear one-shot schedule and increment attempt -> queue assignee/reviewer wake and activity; if dispatch is impossible or bounds are exhausted, clear with reason and optionally wake owner Agent or create a recovery Issue; omit externalRef from operational payloads.",
+      "testAssessment": "All 7 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. The intended tests span real persistence and side-effect cleanup, but no execution evidence exists here. Missing are concurrent/multi-instance claims, transaction/outbox crash recovery, clock skew, quota reset timing, secret-owner resolution, Connector acknowledgements, human escalation, recovery deduplication and failed wake/Issue creation after schedule clearing.",
+      "designRationale": "Turn external waiting into bounded persisted control-plane work, wake the correct active reviewer for provider quotas, and prevent monitors from retrying forever or leaking credential-bearing external references.",
+      "companyOsProblem": "Company OS needs durable timers for approvals, data/Connector waits and external SLAs across managed and self-hosted deployments, with exactly-once logical firing, responsible-human escalation and no credential leakage or autonomous authority expansion.",
+      "companyOsFit": "ADAPT persisted one-shot state, attempt/timeout bounds, active participant targeting, actor/source receipts and externalRef omission. Implement leased/idempotent TimerClaim plus transactional outbox, clock/fencing tokens and recovery receipts; bind timer purpose to Work/contract/policy version; route exhaustion to responsible human before any recovery Agent, and require explicit capability/approval for cheap-model recovery or new Work creation.",
+      "responsibilityConflict": "The seeded responsible human is unused while exhausted monitors may wake an Agent or create active recovery work automatically. Clearing the schedule before downstream delivery is not proven crash-safe, so work can appear resolved while no accountable human or Agent actually received it.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-monitor-scheduler.test.ts:1-519 (SHA-256 0734bbefe62b8a9b63dd1b193997d692c5054689996264f02ea9a3aeec9c1372)",
+        "git history: 4 commits from c65ab09d9faf8c4675bc16957ccfd8a8b0bcfdf5 through 57229d0f24961061927078a8a3b2fad2b8990778 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 7/7 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 7/7 skipped"
+      ],
+      "securityFindings": "CRITICAL durability gap: no evidence that schedule clearing and wake/recovery creation are atomic or crash-recoverable. HIGH human-responsibility gap: defaultResponsibleUserId is not exercised and recovery is Agent-centric. HIGH verification gap: all real-database tests skipped. HIGH concurrency gap: no multi-worker claim/fencing/idempotency test. MEDIUM authority gap: cheap-model recovery and recovery-Issue creation lack approval/capability tests. MEDIUM secret gap: externalRef omission is positive, but user-specific secret ownership/resolution is untested. POSITIVE: bounded attempts/timeouts, reasoned receipts and payload minimization are strong primitives."
     },
     {
       "id": "application:server/__tests__/issue-recovery-actions",

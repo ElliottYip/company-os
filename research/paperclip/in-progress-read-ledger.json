@@ -7749,6 +7749,34 @@
       "completionRequirements": [
         "Read lines 1-630 exactly once and assess liveness classifications, stale/queued Run cancellation, graph deadlocks, review/approval stalls, recovery ownership, false-positive suppression and Company OS accountable escalation/SLO requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-monitor-scheduler",
+      "path": "server/src/__tests__/issue-monitor-scheduler.test.ts",
+      "lineCount": 519,
+      "sha256": "0734bbefe62b8a9b63dd1b193997d692c5054689996264f02ea9a3aeec9c1372",
+      "linkedEvidence": { "history": [
+        "c65ab09d9faf8c4675bc16957ccfd8a8b0bcfdf5 wait for provider quota resets (#9635)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 user-specific runtime secrets (#8825)",
+        "454edfe81ee8f255577132c79b6b77e2ff58a16a recovery handoff system notices (#5289)",
+        "57229d0f24961061927078a8a3b2fad2b8990778 Issue monitor liveness controls (#4988)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-519"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-180 establish real-PostgreSQL scheduler fixtures and unusually careful asynchronous cleanup stabilization across Runs, events, activity, leases and runtime services; the Company fixture has a defaultResponsibleUserId, but tested recovery routing remains Agent-centric.",
+        "Lines 181-360 prove one-shot due monitors clear their schedule, increment attempts, append activity and queue a wake; provider-quota recovery targets the active cross-Agent review participant; manual board triggers carry actor/source receipts.",
+        "Lines 361-519 clear undispatchable, exhausted or timed-out monitors; exhaustion can wake the owner Agent with a cheap model or create a visible high-priority recovery Issue, and externalRef is omitted from wake/activity payloads.",
+        "Strong patterns are persisted one-shot state, bounded attempts/timeouts, actor-attributed manual triggers, reason-specific recovery and secret-bearing reference omission. Gaps include concurrent scheduler claim/exactly-once tests, transaction/outbox/crash windows, multi-instance leadership, clock skew, quota-reset rescheduling, user-specific secret selection, Connector delivery receipts, human approval/defaultResponsibleUserId escalation, recovery-loop deduplication and proof that clearing the schedule cannot lose work.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 7 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-519 exactly once and assess scheduler claiming/concurrency, retries/backoff/quota reset, secret ownership, wake authority, terminal cleanup, audit receipts, clock behavior and Company OS managed/self-hosted durability."
+      ]
     }
   ]
 }
