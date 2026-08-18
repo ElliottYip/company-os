@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/pages/CompanyImport",
+      "auditStatus": "COMPLETE",
+      "function": "Paperclip's customer-facing company import page: accepts GitHub or ZIP packages, previews files and collisions, configures Agent adapters, submits an asynchronous import job, resumes browser-side watching and optionally activates imported Agents and routines.",
+      "dependencyDirection": "A 1,935-line React page directly coordinates shared portability types, auth/company contexts, five API domains, adapter-specific configuration, ZIP parsing, file rendering, conflict policy, browser persistence, job polling and post-import activation. Domain policy, transport, lifecycle and presentation are tightly coupled.",
+      "keyDataModels": "Portability source/preview/result/file maps, mutable target/collision/file-selection/name-override state, Agent adapter overrides/config values, in-memory import job outcomes, sessionStorage watch handles and client-only activation selections/failures.",
+      "lifecycle": "Select GitHub/ZIP source and target; request preview; derive conflicts/default adapter and file choices; rebuild apply metadata from mutable client state; submit or adopt an in-memory server job; poll indefinitely; refresh company/session/sidebar state; optionally resume each imported Agent/routine through separate client API calls.",
+      "testAssessment": "Focused jsdom Vitest passed 15/15 tests on 2026-08-19. Tests cover default pause, async submit/poll, 409 adoption, transient/permanent poll errors, sessionStorage recovery, partial activation failure, multipart ZIP transport, progress/error panels and compact-result success. ZIP parsing/rendering and Markdown are mocked; tests do not prove archive traversal/decompression limits, auth/tenant authorization, preview/apply digest equality, idempotent durable recovery, cancellation, stable error codes, secrets/Connector rebinding, approval/evidence semantics, accessibility or real mobile behavior.",
+      "designRationale": "Make large company imports survivable across browser reloads and proxy failures, default imported automation to paused, expose package contents/conflicts before applying and let operators choose runtime adapters during import.",
+      "companyOsProblem": "Company OS needs governed, tenant-safe migration where one accountable human reviews and approves an immutable plan, secrets and external identities are rebound explicitly, imports are durable/idempotent and any activation becomes a separate responsibility-bound action with evidence.",
+      "companyOsFit": "REIMPLEMENT as a server-owned import-plan/job workflow behind Company OS ports and its independent Web. Preserve the default-paused quarantine, source-package browser, explicit conflict review, multipart upload and reload-watch concepts. Require canonical package digest, immutable plan revision, stable codes, persisted job/outbox, bounded retry/cancel/resume, policy and approval gates, secret-free Connector rebinding and a separate activation command with responsibility evidence.",
+      "responsibilityConflict": "The page has no accountable human, purpose, responsibility contract, permission/data scope, risk classification, approval digest or durable evidence. Replace is an ordinary select; imports may partially write; unpause is a checkbox; activation is a sequential browser loop with partial failures and no transactional or audit record.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/pages/CompanyImport.test.tsx:1-778",
+        "test SHA-256 6897fa2e811c6a90834f6fda938f7b2566ef106768800f244a6d403097624ea2",
+        "ui/src/pages/CompanyImport.tsx:1-1935",
+        "implementation SHA-256 effd40cf296571b3761d1d63d1535688d30f32631125557eae8106e2c070f8ea",
+        "5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)",
+        "2026-08-19 focused jsdom Vitest: 1 file / 15 tests passed"
+      ],
+      "securityFindings": [
+        "Preview and apply are separate requests with no package digest, source revision, immutable plan token or approval binding; apply reconstructs metadata from mutable client state.",
+        "An explicit empty file selection becomes undefined, which may collapse to a server default rather than preserving select-none semantics.",
+        "Import jobs are retained only in server memory; browser reload can resume watching, but server restart loses the job record and cannot prove or resume partial execution.",
+        "Polling has no cancellation, deadline or retry budget; 429, 5xx and network failures can loop forever, while behavior depends on HTTP statuses and English-shaped error bodies.",
+        "Replace-existing and unpaused import choices have no authorization explanation, second confirmation, risk policy, accountable-human approval or action digest.",
+        "Post-import activation is a sequential client loop over Agent/routine APIs with no transaction, idempotency key, rollback, cancellation, batch record or approval/evidence chain.",
+        "All imported Agents default to the current CEO adapter or hard-coded claude_local, coupling portability to role/vendor assumptions and potentially carrying adapter configuration without an explicit secret-rebinding contract.",
+        "ZIP extension/non-empty checks and client-side archive expansion do not by themselves prove archive traversal, decompression-bomb, MIME, content or upload-integrity controls; the focused suite mocks archive parsing.",
+        "Raw warning/error strings are used as identity and UI contract, hindering stable localization, deduplication, policy handling and audit correlation.",
+        "Conflict, adapter and activation state is keyed by slugs/client keys rather than server-issued typed conflict/action identities; cross-kind collisions and stale plan semantics are possible.",
+        "Recovery storage is browser/session scoped by selected company and package-derived text, not by authenticated principal plus package digest; multiple imports and cross-device/operator recovery are not durable.",
+        "Success can retain only companyId after detailed results expire, losing the entity-level import outcome needed for provenance and responsibility evidence.",
+        "The UI repeatedly states reconnecting will not lose an import although the implementation explicitly cannot survive server restart, overstating durability."
+      ]
+    }
+  ]
+}
