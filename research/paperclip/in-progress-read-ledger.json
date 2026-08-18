@@ -6427,6 +6427,36 @@
       "completionRequirements": [
         "Read lines 1-3424 exactly once and assess workspace persistence/lifecycle, Git and path containment, runtime services/readiness, reconciliation/rescue, cleanup/reaping, concurrency/idempotency, tenant ownership, audit/evidence and database test quality against Company OS execution and data-governance semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/external-object-routes",
+      "path": "server/src/__tests__/external-object-routes.test.ts",
+      "lineCount": 294,
+      "sha256": "db0d896d5bd3f278e10ebb1f50de264e62351c708c5d45ef77b7d51d73b51dd0",
+      "linkedEvidence": {
+        "history": [
+          "e8ae5286eb92a86ddd7421d1ca22398982a3381d feat(issues): explain cross-task agent writes with attribution, audit receipts, and actionable denials (#10843)",
+          "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+          "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)",
+          "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f External object references across issue surfaces (#8512)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 294 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Eight mocked HTTP tests cover tenant-obscuring single-Work reads, board summary access, issue read authorization, bulk company summaries with per-Work filtering, cross-company bulk denial and Agent manual-refresh checkout ownership.",
+        "A single external-object read for an Agent from another company returns uniform 404 Issue not found and never invokes the object service, closing an ID existence oracle. Same-company permission denial returns 403. The tests do not cover board membership mismatch, missing actor, instance admin or object IDs that themselves belong to another tenant.",
+        "Bulk summaries first enforce access to the company path, then silently remove Work IDs lacking issue:read permission and call the service with only allowed IDs. This preserves per-item privacy while returning 200 and an empty map, but input cardinality, duplicate/invalid IDs, mixed-company rows, ordering and timing side channels are not exercised.",
+        "Agent refresh requires issue:mutate plus active checkout ownership bound to Agent and Run; a peer receives 409 with stable details.code issue_write_assignee_run_lock, while the owner passes company and actor attribution to the refresh service. Board refresh, adopted Run ownership, stale/replayed Run, cross-Work delegated write, denial receipt and refresh idempotency are absent.",
+        "The commit history advertises cross-task write attribution and audit receipts, but this unit mocks task-watchdog scope to none and logActivity to a no-op, so it does not verify any positive cross-task path, receipt contents or durable audit evidence.",
+        "The experimental feature flag is always enabled. Disabled behavior, resolver capability/allowlist, URL/identifier validation, SSRF, credential isolation, refresh timeout/cancel, external data classification, freshness, provenance and failure redaction are not tested at the route boundary.",
+        "Sandboxed focused Vitest failed 8/8 solely because Supertest could not bind 0.0.0.0; approved unsandboxed focused Vitest passed 8/8."
+      ],
+      "completionRequirements": [
+        "Read lines 1-294 exactly once and assess external-object tenancy, existence-oracle resistance, read/write authority, Agent cross-Work attribution, validation, audit receipts and test quality against Company OS DataConnector and responsibility semantics."
+      ]
     }
   ]
 }

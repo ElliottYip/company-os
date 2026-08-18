@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/external-object-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked issue-route tests for tenant-safe external-object summaries, permission-filtered bulk projection and Run-owned Agent refresh.",
+      "dependencyDirection": "Supertest/Express issue routes -> mocked issue/access/Agent/external-object/feature services; external resolver, persistence, audit activity, task-watchdog attribution and network access are not exercised.",
+      "keyDataModels": "Board/Agent actor with company/Run, Work/issue assignee and checkout, external-object summary/list/refresh result, company bulk map, permission decision and stable Run-lock denial code.",
+      "lifecycle": "Resolve Work/company -> obscure cross-tenant single reads -> authorize issue read -> filter bulk IDs -> require issue mutation plus active Agent/Run checkout -> request external-object refresh with company and actor context.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 8/8; sandboxed execution failed 8/8 because local port binding was forbidden. The suite proves selected route orchestration and privacy behavior but mocks every resolver/data/audit concern and does not exercise the advertised cross-Work attribution path.",
+      "designRationale": "Prevent cross-tenant ID probing, authorize external context through the owning Work rather than a global object endpoint, filter bulk projections per Work and restrict Agent-triggered refresh to the active checkout Run.",
+      "companyOsProblem": "Company OS must connect enterprise data objects to Work under explicit DataAuthorization, expose only authorized projections and attribute refresh/read/export to the exact human, Agent, Run and responsibility contract.",
+      "companyOsFit": "ADAPT the uniform-404 single-resource rule, per-Work bulk filtering and Agent+Run ownership gate. Rebuild external objects as DataReference/ConnectorSnapshot records bound to DataContract, Connector capability/version, classification, freshness, provenance and egress policy; require idempotent refresh and append an immutable access/refresh receipt.",
+      "responsibilityConflict": "Checkout ownership is operational authority, not sufficient organizational responsibility. The allowed path shows no accountable human, ResponsibilityContract, DataAuthorization, approval, purpose, result digest or durable audit receipt, and cross-task attribution is explicitly bypassed by mocks.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/external-object-routes.test.ts:1-294 (SHA-256 db0d896d5bd3f278e10ebb1f50de264e62351c708c5d45ef77b7d51d73b51dd0)",
+        "git history: e8ae5286eb92a86ddd7421d1ca22398982a3381d, 7f2ed0ad90d7186d108f65400e322bda08dcbfe2, b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81, 2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f",
+        "2026-08-19 sandboxed focused Vitest: 8/8 failed because local port binding was forbidden",
+        "2026-08-19 approved unsandboxed focused Vitest: 8/8 passed"
+      ],
+      "securityFindings": "HIGH data-governance gap: no DataAuthorization, purpose, classification, export control or immutable receipt is asserted. HIGH resolver boundary gap: SSRF, redirect/DNS handling, allowlists, credentials, timeout and response-size limits are outside the suite. HIGH attribution gap: task-watchdog/cross-Work write scope and activity logging are mocked away. MEDIUM bulk-abuse gap: cardinality, duplicate/invalid IDs and timing behavior are untested. MEDIUM API-contract gap: only the Run-lock conflict asserts a stable code; other denial/error envelopes rely on status/English text."
+    }
+  ]
+}
