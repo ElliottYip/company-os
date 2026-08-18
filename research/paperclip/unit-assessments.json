@@ -1475,18 +1475,24 @@
     },
     {
       "id": "application:cli/checks/deployment-auth-check",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Checks a small set of deployment/auth configuration invariants: local_trusted must infer a loopback bind; other modes require either a Better Auth Secret or Agent JWT Secret; explicit URL mode requires a URL; public exposure requires an explicit URL and warns when its scheme is not HTTPS.",
+      "dependencyDirection": "CLI doctor leaf -> CLI PaperclipConfig and @paperclipai/shared bind inference, plus direct process.env reads and the platform URL parser. It does not contact the auth service, verify a token/session, inspect proxy headers or consult persisted identities/tenants.",
+      "keyDataModels": "server.deploymentMode, exposure, bind/host; auth.baseUrlMode and publicBaseUrl; BETTER_AUTH_SECRET and PAPERCLIP_AGENT_JWT_SECRET environment values; free-form CheckResult. Authentication and Agent-token trust domains are represented as interchangeable Secret presence rather than distinct key purposes with issuer/audience/tenant semantics.",
+      "lifecycle": "Infer bind -> for local_trusted, fail non-loopback and otherwise pass -> for every other mode, select the first non-empty auth or Agent-JWT Secret -> validate explicit/public base-URL presence -> parse public URL -> warn rather than fail for non-HTTPS -> report pass. It performs no network/auth handshake, key-strength or cookie/origin validation.",
+      "testAssessment": "No focused deploymentAuthCheck test was found. CLI TypeScript checking passes, but branches for inferred bind, unknown modes, whitespace Secrets, precedence, malformed/credential-bearing/local public URLs, HTTP warning, proxy exposure and message stability are unproved. The completed agent-jwt-env suite (6/6) validates Secret discovery/generation elsewhere, not this unit's unsafe trust-domain fallback.",
+      "designRationale": "Encoding obvious deployment invariants in a preflight is valuable, and requiring explicit public URLs reduces accidental origin inference. The implementation optimizes for easy local startup and backward compatibility, but Secret-presence checks and an HTTP warning are weaker than a production security gate.",
+      "companyOsProblem": "Company OS must prove that managed-cloud and self-hosted deployments bind safely and that human SSO/session credentials, Connector/runtime attestations and service tokens have separate issuers, audiences, lifetimes and key ownership. Reverse proxy, public origin, cookie and tenant configuration also need coherent validation.",
+      "companyOsFit": "Keep the idea of profile-specific declarative invariants, not this contract. Company OS should use stable diagnostic codes and a policy engine over effective listener/proxy exposure, canonical external origins, HTTPS termination, trusted proxies, cookie settings and separate human/service/Connector key rings; live end-to-end probes should be distinct from static checks.",
+      "responsibilityConflict": "Falling back from the human/session Secret to PAPERCLIP_AGENT_JWT_SECRET collapses identity and execution trust domains. Company OS explicitly requires equal Connectors and accountable humans with independent audiences and audit authority; one shared signing Secret could let runtime compromise forge human/session trust or clone authority across deployments.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/checks/deployment-auth-check.ts (88 lines; SHA-256 7ef7aa8869163ab07d24a198fd405caa115dd7443c8001d2acc09ed5a9e0ebca)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Repository-wide test/spec search found no deploymentAuthCheck-focused coverage",
+        "research/paperclip/audit-batches/2190-cli-agent-jwt-secret-check.json reused without source reread: focused Secret-env suite passed 6/6 and documented missing strength/rotation/issuer/audience guarantees"
+      ],
+      "securityFindings": "Critical architectural mismatch: BETTER_AUTH_SECRET and PAPERCLIP_AGENT_JWT_SECRET are treated as substitutes, coupling human/session and Agent-token signing authority. Any non-empty Secret passes; there are no length, entropy, default-value, key-version, age or rotation checks. local_trusted trusts inferred loopback binding without testing effective reverse-proxy/tunnel exposure. Public HTTP produces only a warning, and URL validation does not reject embedded credentials, unsafe hosts, unexpected paths or origin mismatches. The check never verifies secure-cookie, CORS/CSRF, trusted-proxy, issuer, audience, tenant isolation or actual auth-service health."
     },
     {
       "id": "application:cli/checks/index",
