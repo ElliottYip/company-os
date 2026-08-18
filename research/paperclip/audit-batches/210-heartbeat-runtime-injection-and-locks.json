@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-runtime-mcp-servers",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL tests for resolving installed, policy-permitted remote MCP connections into per-Run gateway endpoints with short-lived bearer tokens.",
+      "dependencyDirection": "A Heartbeat runtime builder reads tool applications, connections, installs, profiles/bindings/entries and writes managed gateways, hashed token records, activity and access-audit events.",
+      "keyDataModels": "ToolApplication/Connection/Install; default-deny ToolProfile and Agent binding; managed MCP Gateway; run-subject GatewayToken with expiry; runtime server descriptor.",
+      "lifecycle": "Intersect permission with explicit install, reuse one managed gateway per connection, mint a distinct one-hour token for each Run, return only installed servers, retain no plaintext token in the database, and audit permitted-but-not-installed empty delivery.",
+      "testAssessment": "Two strong integration cases cover install-versus-permission separation, gateway reuse, per-Run token issuance, expiry bounds, plaintext non-persistence and empty-delivery diagnostics. Missing are token revocation/use-after-run, audience/scope proof, cross-company isolation, disabled/rotated connection races, gateway authorization, SSRF URL policy, concurrent minting and audit-publication atomicity.",
+      "designRationale": "A control-plane gateway mediates external tools so an Agent receives a Run-scoped capability rather than the upstream connection credential.",
+      "companyOsProblem": "Company OS needs vendor-neutral DataConnector/Tool capabilities that enforce installation, authorization, data-egress policy and Run binding without putting enterprise credentials into Connector payloads.",
+      "companyOsFit": "ADAPT the permission-plus-install intersection, opaque gateway, plaintext non-persistence and Run-subject token. Use very short, revocable, audience/scopes/data-contract-bound capabilities with proof-of-possession where practical; publish issuance/use/revocation through an atomic audit outbox and keep gateway URLs behind DataConnectorPort.",
+      "responsibilityConflict": "The token is bound to a Run but not visibly to accountable human, approved action, data authorization/export policy or evidence contract. A one-hour bearer can outlive short work and the tests do not prove revocation when the Run terminates.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-runtime-mcp-servers.test.ts:1-243",
+        "931eec3fbf83dc425b5381ba5823125162cd13e7 feat(mcp): wire gateway runtime and Smoke Lab (#9559)",
+        "7e00f6713800ae1829a2f5128a04767eae8a5e3d feat(connections): add v3 schema core (#9958)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-runtime-skills",
+      "auditStatus": "COMPLETE",
+      "function": "Integration tests for materializing Agent-specific pinned Skill versions and delivering installed MCP connections to an adapter without serializing gateway bearers into adapter config or persisted logs.",
+      "dependencyDirection": "Heartbeat execution joins Company Skill/version services, instance feature settings, Agent adapterConfig, local filesystem materialization, tool connection/profile/install data and the server-adapter runtime contract.",
+      "keyDataModels": "CompanySkill and immutable version; Agent desired Skill key/version pin; materialized PaperclipSkillEntry with selected/current version; runtimeMcp server capability kept outside adapter config.",
+      "lifecycle": "Create Skill versions from source, pin different versions per Agent, materialize and reuse immutable version directories, temporarily fall back to current when beta pins are disabled without losing preference, and pass runtime MCP capability through a non-serialized side channel.",
+      "testAssessment": "Two end-to-end cases validate different version pins, cache reuse via unchanged mtime, feature-flag fallback/restoration, installed-only MCP delivery and bearer absence from config/logs. They do not verify content hashes/signatures, source mutation after versioning, path traversal/symlink safety, executable assets, trust escalation, malicious Skill instructions, token absence from crash dumps, or concurrent materialization.",
+      "designRationale": "Runtime behavior must be reproducible per Agent version while volatile credentials are injected out-of-band and never become durable adapter configuration.",
+      "companyOsProblem": "Company OS needs versioned FDE templates/skills and deployment-consistent capability injection without allowing mutable local content or secrets to undermine responsibility evidence.",
+      "companyOsFit": "ADAPT version pinning and the non-serialized capability channel. Company OS must pin a content digest and provenance/license/trust policy, materialize into an isolated immutable store, bind the exact Skill/template digest to each execution receipt, and keep vendor-specific desired configuration in Connector-owned settings rather than core Agent identity.",
+      "responsibilityConflict": "A human creates versions, but execution does not visibly bind approval, accountable owner or allowed data/action scope to the selected Skill. Local-path markdown trust is weaker than a signed immutable artifact contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-runtime-skills.test.ts:1-430",
+        "1413729a06ced8f8b38e044ada644c605a0cf25e Build the Skills Store (#7990)",
+        "c3bd0c5d50a45cda3c9fddbb0f80a85f44a84242 Add beta releases for the core Paperclip skill (#10228)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-runtime-state",
+      "auditStatus": "COMPLETE",
+      "function": "Database and live-event tests for deduplicated Agent runtime state plus ephemeral Run progress that is intentionally not stored as durable Run events.",
+      "dependencyDirection": "Heartbeat service writes AgentRuntimeState, consults persisted Run status, updates an in-memory runtime-status registry and publishes Company-scoped live events.",
+      "keyDataModels": "Unique AgentRuntimeState; ephemeral RunRuntimeStatus phase/message/tool/snippet/time; persisted HeartbeatRun terminal status; Company live event.",
+      "lifecycle": "Concurrently create one runtime-state row, accept progress only while the persisted Run is active, decorate active projections and broadcast live state without durable event rows, then clear state on cancel/terminalization and reject late progress.",
+      "testAssessment": "Three focused integration cases cover concurrent creation, ephemeral publication/no-persistence and late-event rejection. Missing are multi-instance distribution, reconnect/resync, ordering/sequence, authorization, bounded payloads, sensitive snippet redaction, node crash, clock skew and backpressure.",
+      "designRationale": "Separate high-frequency, replaceable presence/progress from durable audit history while using persisted Run terminal state as the acceptance fence.",
+      "companyOsProblem": "Company OS virtual office and Agent Boss need lively presence without promoting provisional tool text or private reasoning into the responsibility ledger.",
+      "companyOsFit": "ADAPT the ephemeral-versus-durable split and terminal fence. Define a versioned PresenceEvent contract with monotonic sequence, TTL, bounded stable codes and redacted structured parameters; use a replaceable EventPort for multi-node delivery, while only explicit evidence/result/state-transition receipts enter durable Audit/Evidence storage.",
+      "responsibilityConflict": "Free-form currentToolName, message and lastAssistantSnippet can expose private reasoning or enterprise data, and the in-memory registry cannot provide consistent multi-instance state or proof of who was authorized to observe it.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-runtime-state.test.ts:1-281",
+        "4cf612a92dc77156fa770f4f84ab58252b9540ed Fix runtime state race and orphaned leases (#4804)",
+        "a27e5ad0028bf95f8be670d8d01306b0fcd950b6 Add ephemeral sandbox runtime status plumbing (#8593)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-scheduling-suppression",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for suppressing Heartbeat scheduling during database restore or ordinary worktree instances and for mapping failed Heartbeat outcomes into Skill-test completion.",
+      "dependencyDirection": "Pure service helpers driven by environment flags and terminal outcome strings.",
+      "keyDataModels": "Scheduling suppression reason code and Skill test terminal outcome/error text.",
+      "lifecycle": "Database restore always suppresses execution; worktree mode suppresses unless explicitly allowed; unsuccessful harness outcomes close a Skill test.",
+      "testAssessment": "Six small deterministic cases cover precedence and core outcome mapping. They do not verify flag parsing variants, deployment-profile authority, propagation to every scheduler, distributed restore coordination, structured error localization or restart behavior.",
+      "designRationale": "Prevent accidental Agent execution in development worktrees and while database state is being restored.",
+      "companyOsProblem": "Managed and self-hosted profiles require an explicit global execution gate during restore, migration, incident containment and maintenance.",
+      "companyOsFit": "REFERENCE the fail-closed maintenance-gate concept, but model it through DeploymentControlPort with persisted epoch/reason/actor/expiry and stable codes rather than ambient environment flags. Keep Skill-test presentation strings outside domain logic.",
+      "responsibilityConflict": "An environment flag has no accountable actor, authorization, audit receipt or distributed consistency, so it is not sufficient as a production execution-control contract.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-scheduling-suppression.test.ts:1-78",
+        "390627b46eb333309d357004384b220ecf8a65af Suppress worktree heartbeat scheduling (#9163)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-start-lock",
+      "auditStatus": "COMPLETE",
+      "function": "A fake-timer unit test proving an in-process per-Agent start lock eventually abandons a hung predecessor after 30 seconds.",
+      "dependencyDirection": "Pure test of the in-memory agent-start-lock helper.",
+      "keyDataModels": "Agent ID keyed promise lock and fixed stale-lock timeout.",
+      "lifecycle": "Serialize starts per Agent, then permit the next start after a fixed timeout even when the first promise never settles.",
+      "testAssessment": "One focused regression case catches permanent queue freeze. It does not cover cancellation, cleanup, timer races, process restart, multiple service instances or the possibility that the first start becomes live after the second is admitted.",
+      "designRationale": "Bound the damage from a hung start path so later queued work is not frozen forever.",
+      "companyOsProblem": "Company OS must fence concurrent Connector execution attempts without allowing a stale local lock to deadlock the Agent.",
+      "companyOsFit": "REFERENCE the bounded-wait lesson only. Use durable execution leases with fencing tokens/idempotency keys and Connector cancellation/attestation; a timeout may release a waiter but must not grant overlapping authority while the previous attempt can still act.",
+      "responsibilityConflict": "The in-memory timeout provides neither distributed exclusivity nor proof that the old execution lost its permissions; two attempts can potentially operate under the same human/data/approval authority.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-start-lock.test.ts:1-30",
+        "5a0c1979cf439d434c527de4935687a178be4b8e Add runtime lifecycle recovery and live issue visibility (#4419)"
+      ]
+    }
+  ]
+}
