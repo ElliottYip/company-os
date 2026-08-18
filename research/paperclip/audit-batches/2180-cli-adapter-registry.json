@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/adapters/registry",
+      "auditStatus": "COMPLETE",
+      "function": "Static CLI formatter registry for eleven named vendor/local/gateway adapter types plus generic process/http adapters, with unknown types silently falling back to the process formatter.",
+      "dependencyDirection": "The central registry imports every first-party adapter's CLI formatter directly, constructs local CLIAdapterModule wrappers and stores them in a string-keyed Map. CLI consumers call getCLIAdapter through the facade.",
+      "keyDataModels": "Unversioned adapter type strings and CLIAdapterModule containing formatStdoutEvent.",
+      "lifecycle": "Load every formatter at CLI startup/module import; build type map; resolve requested string; return matching formatter or generic process fallback.",
+      "testAssessment": "No focused registry tests were found. CLI no-emit TypeScript passed on 2026-08-19. Static source proves the registered set and fallback, but duplicate types, unknown-type behavior, optional-package failure, tree-shaking/startup cost, parser errors and capability/version compatibility are unverified.",
+      "designRationale": "Give the monolithic CLI one simple lookup over built-in provider-specific stream presentation while retaining a permissive fallback for external/unknown runtime output.",
+      "companyOsProblem": "Company OS must allow Raft Agent, Codex, DeepSeek and enterprise Agents to connect through equal independently versioned Connector packages without central vendor imports or silent semantic degradation.",
+      "companyOsFit": "REIMPLEMENT as a Connector package discovery/registration boundary separate from CLI presentation. Use signed package manifests, stable protocol/version negotiation, capability declarations, deployment compatibility and explicit unsupported errors. Dynamically load only installed/allowed adapters; normalized server events feed Company OS Web/CLI renderers. Never let vendor formatter types enter core/application.",
+      "responsibilityConflict": "Formatter lookup has no responsibility semantics, but silently mapping an unknown runtime to process output can erase vendor/protocol identity and make unparsed stdout appear valid evidence from the wrong Connector.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/adapters/registry.ts:1-91",
+        "SHA-256 923dc14f956a2436b72e2ea48014da558d7117439a6c6be2ed3aff944ab9b2ae",
+        "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+        "fd2f82ac5bba6ce2db0c5d17c573733af5f2bbb8 [codex] Add built-in Hermes adapters (#8543)",
+        "534aee66aee9723f7e56cd9379e1e0efde5e899b Add cursor_cloud adapter for Cursor SDK + Cloud Agents API v1 (#5664)",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed",
+        "2026-08-19 no focused registry tests found"
+      ],
+      "securityFindings": [
+        "Unknown adapter types silently fall back to raw process formatting instead of failing closed, concealing protocol/configuration errors and bypassing expected parsing/redaction.",
+        "Every vendor formatter package is statically imported, expanding the CLI dependency/supply-chain and startup surface even when a Connector is unused.",
+        "Type keys are unversioned strings with no protocol/capability/schema/compatibility negotiation or duplicate-registration guard.",
+        "No package signature, provenance, license, allowlist, sandbox or deployment-profile policy appears at registry lookup.",
+        "Formatter exceptions, malicious output, parser version drift and safe fallback/degraded-state signaling are untested.",
+        "Registry centralization makes every new vendor a core CLI code change, conflicting with equal third-party/enterprise Connector ownership and independent upgrades."
+      ]
+    }
+  ]
+}
