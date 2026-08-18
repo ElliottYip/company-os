@@ -7389,18 +7389,22 @@
     },
     {
       "id": "application:server/__tests__/plugin-access-authorization-host-services",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-database tests for plugin-driven grant targeting, invite redaction, authorization audit search, protected-Agent policy decisions and policy sanitization/activity attribution.",
+      "dependencyDirection": "Calls buildHostServices directly with plugin identity and database/event stubs, bypassing worker dispatcher capability and invocation-scope layers.",
+      "keyDataModels": "Company membership, Agent, invite token/defaults, permission grants, authorization policy/decision and activity log.",
+      "lifecycle": "Seeds companies/principals, invokes administrative HostServices methods, verifies cross-company rejection/redaction/policy behavior and inspects persistence/activity.",
+      "testAssessment": "All five cases skipped due unavailable embedded PostgreSQL. Assertions are useful lower-layer regressions but cannot prove an installed plugin was granted the operation, the actor was authenticated, or a human approved the exact change.",
+      "designRationale": "Harden new plugin administration surfaces against obvious tenant mismatch, secret leakage and policy bypass.",
+      "companyOsProblem": "Company OS needs end-to-end responsibility tests from authenticated human intent or governed Agent action through a non-forgeable invocation grant and exact durable evidence.",
+      "companyOsFit": "ADAPT the two-company fixtures, secret-redaction negatives, policy-deny invariants and plugin-source audit assertions; add capability denial, forged human/board actor, exact approval digest, grant expiry, concurrency, legal retention and failure/outbox cases.",
+      "responsibilityConflict": "The test itself supplies human actor IDs to plugin methods and treats active membership as sufficient attribution; createInvite, grants and policy writes require no accountable approval or package/grant binding.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-access-authorization-host-services.test.ts:1-324",
+        "server/src/services/plugin-host-services.ts:851-3398",
+        "2026-08-18 focused Vitest: 0 passed, 5 skipped"
+      ]
     },
     {
       "id": "application:server/__tests__/plugin-agent-sessions",
@@ -12721,18 +12725,22 @@
     },
     {
       "id": "application:server/services/plugin-host-services",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "A 3398-line worker-to-host implementation exposing configuration, filesystem, state, SQL, entities, events, HTTP, Secrets, telemetry, organization/task data, approvals, Agents, Goals, access administration, authorization policy and Agent sessions.",
+      "dependencyDirection": "Directly composes most server domain services, database tables, storage, networking, telemetry, worker/event infrastructure and plugin SDK types; capability enforcement lives outside this object in a separate dispatcher.",
+      "keyDataModels": "Company/Agent/Project/Issue/Goal/Approval, human/agent actor IDs, plugin/company state, SQL, Secret refs, invite/grant/policy, attachment bytes, Agent session/live events and operational telemetry.",
+      "lifecycle": "Builds one instance-wide plugin facade, accepts company/resource/actor parameters from worker calls, performs reads and high-impact mutations, records plugin activity, forwards events, buffers logs and disposes subscriptions best-effort.",
+      "testAssessment": "The five focused access/authorization cases all skipped locally. Other separate tests cover spans and scoped routing, but this unit lacks a complete operation-by-operation capability/tenant/actor/data matrix and adversarial SSRF, resource-limit, impersonation, session-isolation and failure-recovery proof.",
+      "designRationale": "Give plugin authors a rich typed SDK while reusing core services, preserving company equality checks and adding targeted safety helpers such as DNS pinning, redaction and provider-span clamping.",
+      "companyOsProblem": "Company OS needs narrow ports whose authority is host-minted per invocation from authenticated principal, approved Connector grant, Responsibility contract and DataAuthorization, with every mutation/effect producing durable evidence.",
+      "companyOsFit": "REJECT the monolithic facade and caller-supplied authority model. Selectively reference provider-span clamping, DNS pinning, non-oracle tenant responses and active-membership checks as defense-in-depth; split Company OS interfaces by capability and require a non-forgeable InvocationAuthority object that services cannot bypass.",
+      "responsibilityConflict": "A plugin can name an eligible human and have approvals/comments/interactions attributed to them without proof of intent; plugins are instance-wide with no company grant; high-risk access/policy/Agent actions lack exact human approval; entity/SQL/state/session paths have cross-tenant or wildcard hazards and data egress is not purpose-bound.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/services/plugin-host-services.ts:1-3398",
+        "server/src/__tests__/plugin-access-authorization-host-services.test.ts:1-324",
+        "9ace548f feat(observability): rename sandbox provider spans and add run-time wrapper spans (#10999)"
+      ]
     },
     {
       "id": "application:server/services/plugin-install-guard",

@@ -1705,6 +1705,63 @@
         "Forbidden responses and logs use English strings without stable denial code/parameters or durable evidence; method implementations rely on this binding and can fail if detached from the returned object."
       ],
       "completionRequirements": ["Read lines 1-525 exactly once and trace the capability vocabulary, manifest feature requirements, runtime RPC gates, wildcard/implication semantics, unknown capabilities, upgrade comparison and governance/evidence ownership against direct tests and the already-complete shared-package audit."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-access-authorization-host-services",
+      "path": "server/src/__tests__/plugin-access-authorization-host-services.test.ts",
+      "lineCount": 324,
+      "sha256": "5dac15e7cae45ff1a4e4843c33993a0eed5c10815dc8931615b33eed877e3d3a",
+      "linkedEvidence": { "history": ["6ffe9df8 fix(auth): clarify protected-agent assignment blocks (#10893)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 324 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The embedded-database suite covers cross-company grant target rejection, invite/token/default redaction, allow/deny audit filtering, persisted protected-agent policy, injected board actor non-bypass, policy sanitization and plugin-attributed activity.",
+        "Every test constructs buildHostServices directly with plugin ID/key but no manifest capability set, authenticated invocation scope, approved grant or accountable human; it therefore tests service behavior beneath the principal authorization boundary, not end-to-end authorization.",
+        "createInvite returns a bearer token to the plugin and updatePolicy/setGrants perform security-sensitive administration; tests do not require high-risk approval, exact action digest, expiry/purpose, plugin installation grant or destination/evidence binding.",
+        "Actor objects in preview inputs are caller-supplied data. One injected-board case proves policy still blocks assignment, but does not prove actor identity cannot alter other authorization decisions.",
+        "Redaction is key/value heuristic evidence, not proof that nested arrays, alternate key names, encoded secrets, logs or downstream errors cannot leak. All five cases depend on embedded PostgreSQL and may skip together."
+      ],
+      "completionRequirements": ["Read lines 1-324 exactly once, run focused tests and map principal/company scope, allow/deny, access contract, audit evidence and failure coverage to plugin-host-services."]
+    },
+    {
+      "id": "application:server/services/plugin-host-services",
+      "path": "server/src/services/plugin-host-services.ts",
+      "lineCount": 3398,
+      "sha256": "31ae28fa4b7a48e265a09d16aa449559e5e258486fc4589ad5df6382cd4d0025",
+      "linkedEvidence": { "history": ["9ace548f feat(observability): rename sandbox provider spans and add run-time wrapper spans (#10999)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 3398 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-850 establish a very broad host bridge that directly composes Company, Agent, Project, Issue, Goal, Approval, Budget, Access/Authorization, Secret, HTTP, filesystem, database, managed-resource, telemetry and runtime services.",
+        "ensurePluginAvailableForCompany is explicitly a no-op because plugins are instance-wide; companyId is required syntactically but no per-company installation/grant is enforced at this layer, so later invocation-context checks are critical.",
+        "SSRF protection pins a DNS result and blocks common private ranges, but the denylist is incomplete for reserved/CGNAT/benchmark/multicast IPv4 and IPv6 ranges, permits URL userinfo, buffers up to 200 MB per response and has no global concurrency/egress destination contract.",
+        "The DNS timeout timer is not cleared after a successful lookup. HTTP bodies and responses are materialized in memory and raw headers/body can carry credentials or sensitive enterprise data without DataAuthorization/egress evidence in the boundary seen so far.",
+        "Plugin logs use a process-global buffer and swallow persistence failures, so they are lossy operational telemetry rather than durable audit evidence. Meta/message size clamps and reserved-key stripping are useful, while a 100-entry/5-second buffer has no global backpressure bound.",
+        "applyWindow slices already-loaded arrays and treats absent limit as unbounded, which can preserve expensive full-table reads. Provider-span name/attribute/time/traceparent clamping is a strong trust-boundary pattern.",
+        "Lines 851-1700 verify actorUserId only denotes an active non-viewer member; the plugin still chooses that user ID and can attribute comments, interactions or approval decisions to a human without proving their authenticated session, intent or exact approval.",
+        "pluginAssignmentActor converts caller-supplied board userId/companyIds or agentId/companyId into an AuthorizationActor. A policy may still deny, but identity authenticity is not established by this conversion.",
+        "Local-folder configuration/read/write, state scope, database SQL, entity upsert/list, events, HTTP, Secret resolution, activity, metrics/logs and telemetry are exposed on one HostServices object; capability checks occur in a different handler layer and are not structurally encoded in these methods.",
+        "Entity listing directly calls the previously identified registry method with no company predicate. State/database calls also contain no tenant scope. Company IDs on events, metrics and logs are caller-supplied, and availability checking is a no-op.",
+        "Activity action names and telemetry dimensions are plugin-controlled; log/meta clamps help operational safety but do not provide durable, authenticated responsibility evidence.",
+        "Lines 1701-2550 mostly enforce record.companyId equality for projects/issues, but plugins remain globally available and choose the companyId, so tenant checks prevent accidental ID mismatch rather than proving the plugin was granted access to that company.",
+        "issues.create passes plugin-supplied actorUserId as createdByUserId and actorResponsibleUserId with trustExplicitResponsibleUserId=true without calling requireActiveHumanMember; issues.update likewise extracts actorUserId/actorAgentId from the patch without identity validation.",
+        "Even paths that call requireActiveHumanMember only prove the named user could act, not that the user initiated or approved this exact comment, interaction or wake. This permits false human attribution by an authorized plugin.",
+        "Bulk wakeups are sequential and non-transactional: earlier agents can be queued before a later issue fails. Wake requests are executed as system/plugin while plugin-supplied human/agent IDs appear only in activity metadata.",
+        "Subtree/orchestration projections perform breadth traversal plus multiple per-issue relation/document/approval and per-agent budget queries, with a 100-run cap but no subtree/page bound; this creates N+1 and resource-exhaustion risk.",
+        "Human interaction replay checks pending state before mutation but no local transaction/fence is visible; exact idempotency and approval binding depend on lower services.",
+        "Lines 2551-3398 repeat the human-attribution flaw for approval decisions: any active non-viewer member ID supplied by the plugin can approve/reject and wake the requester without session proof or exact action consent.",
+        "Attachment content has an optional caller-chosen maxBytes; absent a cap it streams the entire object, buffers it, then creates a larger base64 copy. No data-purpose/destination or content-class policy is checked.",
+        "Agent pause/resume/invoke, Goal mutation, membership update, invite creation/revocation, permission grant replacement and authorization-policy writes are available as high-impact primitives with company record checks but no accountable approval at this layer.",
+        "setGrants accepts plugin-supplied grantedByUserId without validating that human; policy sanitization redacts suspected secret values into stored policy instead of rejecting an invalid security document.",
+        "Agent session ownership uses SQL LIKE on a taskKey containing pluginKey. Underscore and percent metacharacters are not escaped, so valid plugin keys containing wildcard characters can overlap another plugin's session namespace; no pluginId column predicate is used.",
+        "Session event forwarding passes full live-event payloads to the plugin, close deletes a session but does not cancel its run/subscription, and dispose is not awaitable: buffered audit-like logs can still be lost. Only sendMessage checks disposed.",
+        "The 3398-line facade centralizes dozens of unrelated authorities and depends on separate string capability dispatch for safety; it is too broad to make privilege, tenancy, data egress and responsibility invariants locally reviewable."
+      ],
+      "completionRequirements": ["Read lines 1-3398 exactly once and trace every worker-to-host operation from capability check through authenticated invocation/company scope, database query, Secret/HTTP/data access, mutations, approval, audit, telemetry, errors, cleanup and resource limits against focused tests."]
     }
   ]
 }
