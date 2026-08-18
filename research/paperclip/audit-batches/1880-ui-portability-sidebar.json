@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/lib/company-portability-sidebar",
+      "auditStatus": "COMPLETE",
+      "function": "Builds portable unique Agent/project slugs and projects the current sidebar order from local entity IDs into those slugs.",
+      "dependencyDirection": "UI helper depends on complete shared Agent/Project DTOs plus shared URL-key functions. It emits a shared portability presentation type and should remain outside domain responsibility logic.",
+      "keyDataModels": "Map<local opaque ID, portable slug> and CompanyPortabilitySidebarOrder containing ordered slug arrays.",
+      "lifecycle": "Sort entities by display name; derive base slugs; allocate numeric collision suffixes; map ordered entity lists; silently drop unresolved IDs; omit an empty sidebar.",
+      "testAssessment": "Focused Vitest passed 1/1 test on 2026-08-19. It verifies duplicate names, numeric suffix allocation and requested ordering, but not equal-name tie stability, locale differences, stale/foreign entries, duplicate ordered entries, Unicode/case normalization or permutation invariance.",
+      "designRationale": "Preserve user navigation order in a human-readable bundle without exporting database IDs.",
+      "companyOsProblem": "Company OS also needs portable presentation preferences, but organizational/reporting/responsibility order must remain a separate authoritative projection keyed by stable opaque identities.",
+      "companyOsFit": "ADAPT the ID-to-portable-key projection in the independent Web adapter. Add deterministic locale-independent tie-breakers, explicit stale/duplicate diagnostics and a versioned presentation-preferences namespace; never use sidebar order as an org-chart or responsibility contract.",
+      "responsibilityConflict": "Display order contains no accountable-human meaning and silently drops unresolved entities. Treating it as hierarchy would erase reporting and responsibility semantics.",
+      "decision": "ADAPT",
+      "evidence": [
+        "ui/src/lib/company-portability-sidebar.test.ts:1-103",
+        "test SHA-256 2ddf94bb8802e563a18e47151a5fd8f32549ccfda34dadaa92780a900255ddfb",
+        "ui/src/lib/company-portability-sidebar.ts:1-61",
+        "implementation SHA-256 768c64432fc8287440c6238bb28b509c416b9e2c17690d7199e8f4a9170df7e1",
+        "2026-08-19 focused Vitest: 1 file / 1 test passed"
+      ],
+      "securityFindings": [
+        "Equal display names compare as zero; stable sort then assigns suffixes by incoming array order, so portable slugs are not invariant under source ordering.",
+        "localeCompare can vary by runtime locale and is unsuitable as the sole canonical ordering rule.",
+        "Unknown ordered IDs and duplicates are silently dropped/preserved without diagnostics, weakening reviewed-package fidelity.",
+        "The helper accepts full Agent/Project objects although it only needs ID/name, increasing UI coupling and accidental data exposure."
+      ]
+    }
+  ]
+}

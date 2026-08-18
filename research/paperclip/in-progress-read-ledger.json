@@ -112,7 +112,7 @@
       "lineCount": 1236,
       "sha256": "8ebe51a11acdb3698d57d37c75f7fd55d9294784561b445b82f42d2060135f92",
       "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 1236 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -4154,6 +4154,23 @@
         "Lines 1-41 expose text entries, trust declared MIME before a six-extension image map, interpolate binary base64 into data URLs and classify any image/* as previewable. No direct tests exist. Actual bytes/digest/decoded size are never checked, SVG and arbitrary declared image MIME are admitted, and data URLs duplicate potentially large payloads. Formal decision: REIMPLEMENT as bounded, verified raster preview/download logic in Company OS Web."
       ],
       "completionRequirements": ["Read lines 1-41 exactly once and assess browser download naming, MIME/object-URL lifecycle, binary handling and whether file export belongs in the independent Web adapter only."]
+    },
+    {
+      "id": "application:ui/lib/company-portability-sidebar",
+      "paths": [
+        { "path": "ui/src/lib/company-portability-sidebar.test.ts", "lineCount": 103, "sha256": "2ddf94bb8802e563a18e47151a5fd8f32549ccfda34dadaa92780a900255ddfb" },
+        { "path": "ui/src/lib/company-portability-sidebar.ts", "lineCount": 61, "sha256": "768c64432fc8287440c6238bb28b509c416b9e2c17690d7199e8f4a9170df7e1" }
+      ],
+      "linkedEvidence": { "history": ["eaef47f4c710a848b25b5f35596fa309fb23439b Information Architecture + project/agent visual refresh (experimental) (#7543)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/lib/company-portability-sidebar.test.ts", "completedRanges": [{ "start": 1, "end": 103 }] }],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "Test lines 1-103 construct full shared Agent/Project DTOs and verify duplicate human names receive numeric slugs shared with export, while caller-provided order is projected into those slugs. This is useful presentation portability. Fixtures use process Agents and absolute managed folders but the unit ignores them. Edge coverage omits stale/foreign IDs, duplicate ordered entries, empty names, Unicode/case collisions and permutation invariance.",
+        "Implementation lines 1-61 sort by locale-sensitive name only, allocate numeric collision suffixes, map requested order and silently drop unresolved IDs. Equal names rely on incoming stable-sort order, so slug identity can change when source order changes. Focused Vitest passed 1/1 on 2026-08-19. Formal decision: ADAPT only as versioned Web presentation preferences with deterministic ID tie-breakers and diagnostics; never as organization or responsibility truth."
+      ],
+      "completionRequirements": ["Read both files exactly once, run focused tests and assess deterministic ordering, identity mapping, stale entries and whether presentation ordering leaks into domain responsibility semantics."]
     }
   ]
 }
