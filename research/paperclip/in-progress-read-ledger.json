@@ -38,9 +38,26 @@
             "The RFC 8693 branch labels a base64url-encoded JSON actor_token as a JWT without signing it, and the response path shown here does not re-check returned scope or cap an explicit upstream expiresAt to the requested TTL.",
             "These are preliminary findings from this range only; final severity and reuse judgment remain invalid until invocation paths, mutations, tests, migrations, and the rest of the file are reviewed."
           ]
+        },
+        {
+          "start": 2001,
+          "end": 3000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Runtime health loads every company slot and connection plus an hour of audit and call events, then aggregates in memory on each request; no query limit, pagination, pre-aggregation, or retention bound is visible in this range.",
+            "Operator stop/restart completes before the activity log write, so a logging failure can return an error after the runtime mutation already succeeded and make retries ambiguous.",
+            "Google Sheets ownership enforcement scans every non-archived connection across all companies and returns conflicting spreadsheet ids, coupling a provider-specific global uniqueness rule and cross-tenant scan to the generic service.",
+            "Default app-profile creation, default workspace-grant creation, and runtime-slot creation use select-then-insert flows without a transaction or conflict recovery in this range; concurrent callers depend on unseen database constraints and may surface errors.",
+            "Profile detail and new-tool review projections load full company catalogs and related entity sets, confirming the earlier scalability concern for large tenants.",
+            "New-tool review lists pending state, inserts allow entries, marks catalog rows reviewed, and advances the profile watermark through separate writes without a transaction or compare-and-set; partial failure and tools first seen during the review window can produce inconsistent or skipped review state.",
+            "Profile entry replacement deletes all entries before re-insertion, and secret-binding synchronization deletes all bindings before re-insertion, without a transaction in the shown code; validation reduces input errors but not database or process-failure gaps.",
+            "Remote MCP discovery validates only the initial endpoint and then uses fetch with default redirect following instead of the manual redirect-validation helper; redirect targets, request timeout, response-size limits, and parsing-depth limits are not enforced in this range.",
+            "Health status is persisted before its audit event, so audit failure can leave a successful state mutation paired with a failed request and incomplete traceability.",
+            "These remain range-local findings; database uniqueness constraints, route authorization, tests, and later transactional wrappers must be checked before assigning final severity or reuse status."
+          ]
         }
       ],
-      "nextLine": 2001,
+      "nextLine": 3001,
       "completionRequirements": [
         "Read every source line through 7771 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Review the corresponding first-party tests and relevant file history.",
