@@ -89,9 +89,26 @@
             "Gallery connection setup creates secrets and then mutates application, connection, bindings, and runtime state through a manual compensation path that continues beyond this range and must be reviewed before judging atomicity.",
             "Final findings require the remaining setup rollback, callback lifecycle, secret service semantics, schema constraints, and concurrency tests."
           ]
+        },
+        {
+          "start": 5001,
+          "end": 6000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Gallery-connect failure uses best-effort manual compensation for connection, application, and newly created secrets; runtime slots and bindings depend on cascade or separate behavior not shown, and rollback failures are swallowed.",
+            "Finishing a gallery connection correctly groups profile replacement, bindings, catalog review state, ask-first policies, connection activation, and application activation in one database transaction, a materially stronger reusable pattern than earlier flows.",
+            "Reconnect rotates existing secrets or creates new ones before connection update and health verification, with no rollback in this function; an invalid replacement can immediately supersede the last working latest-version credential and new secrets can survive later failure.",
+            "OAuth start accepts requested scopes without checking they are a subset of advertised or configured scopes in this range.",
+            "When an agent requests user-specific OAuth, this service does not verify that subjectUserId is the accountable human for the issue or that the agent is authorized to request consent from that person; route-level checks must be traced.",
+            "The OAuth interaction stores actor sessionId as sourceRunId, conflating session identity and run identity unless the caller guarantees they are identical.",
+            "Callback state is deleted before token exchange, secret persistence, grant/application updates, health check, and catalog refresh; transient downstream failure consumes the one-time state and forces a complete restart.",
+            "User-specific callback completion rotates or creates secrets, upserts the user grant, and resolves the issue interaction through separate writes without a transaction, allowing partial success and responsibility-record disagreement.",
+            "No dedicated OAuth start or completion audit event is visible in this range, despite credentials, user consent, and delegated authority changing materially.",
+            "Admin-defined local stdio templates accept arbitrary command, args, env keys, and tool descriptors; final safety depends on route authority, deployment restrictions, supervisor sandboxing, and schema constraints outside this range."
+          ]
         }
       ],
-      "nextLine": 5001,
+      "nextLine": 6001,
       "completionRequirements": [
         "Read every source line through 7771 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Review the corresponding first-party tests and relevant file history.",
