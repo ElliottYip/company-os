@@ -4073,18 +4073,24 @@
     },
     {
       "id": "application:server/__tests__/cli-auth-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Ten mocked route tests for CLI authorization challenges, invite-scoped Skill retrieval, challenge approval, board API key creation/list/revocation and activity fan-out.",
+      "dependencyDirection": "Supertest/Express -> real access route/authz/error composition -> fully mocked Access, Agent, BoardAuth and activity services; no real database, session middleware, token hashing or key persistence.",
+      "keyDataModels": "CLI auth challenge/secret, pending board token, requested access/company, signed-in board actor, named board API key, expiry and per-company activity records.",
+      "lifecycle": "Anonymous client creates challenge and receives polling/approval material -> user signs in and approves -> client uses pending board key -> users create/list/revoke long-lived named keys -> activity is projected to resolved companies.",
+      "testAssessment": "Sandboxed focused Vitest failed 10/10 solely because Supertest listen was denied with EPERM. The approved unsandboxed rerun passed all 10/10. This proves route response/service-call composition under mocks, not authorization, storage, cryptography, expiry/replay or real audit durability.",
+      "designRationale": "A browser-mediated authorization challenge avoids asking users to paste session cookies into CLI tools and provides an approval ceremony for operator credentials.",
+      "companyOsProblem": "Company OS needs standards-based CLI/device authorization with product-specific audience, tenant/capability scope, short expiry, one-time exchange, revocation and accountable approval evidence.",
+      "companyOsFit": "REIMPLEMENT through IdentityPort using OAuth/OIDC Device Authorization or an equivalent standards-shaped flow. Return a short user code/verification URI, keep the eventual credential server-side until one-time exchange, bind requested audience/company/capabilities and command digest, and issue short-lived tokens plus rotatable refresh authority. Adapt only the explicit approval/status UX and activity intent.",
+      "responsibilityConflict": "Credential approval is logged but not bound in these tests to an exact operator action, role separation or responsibility contract. A board credential represents broad user authority rather than a scoped approval for high-risk work.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/cli-auth-routes.test.ts:1-425 (SHA-256 10c296308adf537a2aa173b54135a548157fb2b2e0853da10a73da0cefdac7e0)",
+        "git history: 70b1a9109d756818fb448beafa67af27babb52de, 9a8d2199492654930ba0864dd5c0757163998649, e4995bbb1cc36454fc0fa3142ad9c7030c397ff0, a95739442027bdec8d291030a91e351dc434f635 and 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 sandboxed Vitest: 10/10 failed from listen EPERM",
+        "2026-08-19 approved unsandboxed Vitest: 10/10 passed"
+      ],
+      "securityFindings": "CRITICAL design concern: anonymous challenge creation returns both the challenge secret in URL/query material and pendingBoardToken in the initial response, exposing the future bearer credential before human approval; tests do not prove it is unusable before approval, one-time, bound to the initiating client or erased after exchange. Query secrets can leak through history, logs, analytics and referrers. HIGH: requestedCompanyId is passed when creating the route request and resolving audit companies, but createNamedBoardApiKey is called only with userId/name/expiresAt, so the credential itself is not proven company-scoped. Named keys may have expiresAt=null and plaintext bearer token is returned; no one-time-display assertion exists. Missing negative cases include unauthorized/other-company approval, stale/expired/cancelled/replayed/wrong secrets, concurrent approvals, challenge enumeration/rate limit, CSRF/session freshness/MFA, token hashing, scope escalation, revoked-key use, audit failure transactionality and stable error codes. Anonymous invite Skill testing uses a fully mocked DB and does not prove token hashing/revocation or tenant filtering."
     },
     {
       "id": "application:server/__tests__/cloud-image-bundled-plugins",

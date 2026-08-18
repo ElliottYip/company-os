@@ -4746,6 +4746,20 @@
       ]
     },
     {
+      "id": "application:server/__tests__/cli-auth-routes",
+      "path": "server/src/__tests__/cli-auth-routes.test.ts",
+      "lineCount": 425,
+      "sha256": "10c296308adf537a2aa173b54135a548157fb2b2e0853da10a73da0cefdac7e0",
+      "linkedEvidence": { "history": ["70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)", "9a8d2199492654930ba0864dd5c0757163998649 Stabilize tests and local maintenance assets (#4423)", "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)", "a95739442027bdec8d291030a91e351dc434f635 Add structured issue-thread interactions (#4244)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 425 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": [
+        "Full source read once. Ten tests cover challenge/status/approval, invite-scoped Skill, named key lifecycle and activity composition through mocked services.",
+        "The initial anonymous response includes both query-carried challenge Secret and pending board bearer token; requestedCompanyId affects audit resolution but is absent from named-key creation scope.",
+        "Sandboxed run failed 10/10 on listen EPERM; approved unsandboxed rerun passed 10/10. Decision: REIMPLEMENT using standards-shaped device authorization and scoped credentials."
+      ],
+      "completionRequirements": ["Read lines 1-425 exactly once; assess board/Agent keys, token issuance/revocation/expiry/scope, tenant authorization, plaintext exposure, stable errors, audit evidence and runtime verification."]
+    },
+    {
       "id": "application:server/__tests__/cleanup-removal-service",
       "path": "server/src/__tests__/cleanup-removal-service.test.ts",
       "lineCount": 282,
