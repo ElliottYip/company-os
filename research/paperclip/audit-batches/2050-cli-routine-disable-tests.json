@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/routines",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL integration specification for a local CLI operation that pauses every non-archived Routine belonging to one selected company by reading deployment configuration and mutating the database directly.",
+      "dependencyDirection": "The test imports first-party database tables/createDb, the reusable embedded-PostgreSQL harness and disableAllRoutinesInConfig from the CLI. It writes a full local deployment config containing database, storage, logging, auth and secret-provider paths, then queries database state directly.",
+      "keyDataModels": "Company, Agent, Project and Routine with active/paused/archived status; local deployment configuration with PostgreSQL connection string, embedded data/backup/log/storage/master-key paths and deployment exposure.",
+      "lifecycle": "Start isolated PostgreSQL when supported; seed two companies and their Agent/Project/Routine graphs; invoke company-scoped disable-all; count active/paused/archived records; verify the selected company's active Routine pauses while archived and other-company state remain unchanged; teardown data/config/database.",
+      "testAssessment": "On 2026-08-19 the focused Vitest file and its sole test were explicitly skipped because embedded PostgreSQL support was unavailable on this host; CLI no-emit TypeScript passed. The source test strongly specifies company isolation and status preservation, but provides no executed behavioral proof here and omits transaction failure, concurrent Runs/updates, triggers, audit events, authorization, config tampering and recovery/resume behavior.",
+      "designRationale": "Provide an offline/local-trusted administrative safety operation that can halt scheduled automation even when the normal API/control plane is unsuitable, while preserving archived records and reporting exactly what changed.",
+      "companyOsProblem": "Self-hosted Company OS needs break-glass automation shutdown and disaster-recovery operations that remain tenant-safe, reversible and evidentiary even when the primary service is impaired.",
+      "companyOsFit": "REFERENCE ONLY. Preserve the requirement for a tested break-glass pause-all capability and explicit changed/already-paused/archived counts, but route normal operations through application ports/events. Any offline database repair tool must be separately packaged, authenticated by local operator policy, transactionally fenced, append a tamper-evident recovery receipt when service resumes and never define the canonical domain API.",
+      "responsibilityConflict": "Direct database mutation bypasses the normal human identity, authorization, approval publication, event and audit/evidence paths. Even a safety pause must record which accountable operator invoked it, why, what exact tenant/revision set changed and how scheduled/in-flight work was reconciled.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "cli/src/__tests__/routines.test.ts:1-249",
+        "SHA-256 68287f1051a1907bb83dd1fe3c7ca221eb97fdb7702a5653fd7e57b39789c1a6",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "2026-08-19 focused Vitest: 1 file and 1 test skipped because embedded PostgreSQL is unsupported on this host",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "The operation reads a plaintext database connection string and master-key path from a local config; config permissions, symlinks, path ownership, error redaction and credential lifetime are untested.",
+        "Direct database access bypasses service authorization, policy, optimistic concurrency and normal audit/event publication.",
+        "No transaction/fencing behavior is tested against concurrent Routine creation/status change or currently executing Runs and triggers.",
+        "The fixture uses local_trusted/private configuration, but the function's enforcement of deployment mode/exposure and selected-company operator authority is not proven here.",
+        "Only Routine rows are verified; queued schedules, trigger leases, downstream Work and runtime sessions may remain active or inconsistent after a database-only pause.",
+        "Because the test was skipped on this host, runtime compatibility, cleanup and isolation remain unverified in the present audit environment."
+      ]
+    }
+  ]
+}
