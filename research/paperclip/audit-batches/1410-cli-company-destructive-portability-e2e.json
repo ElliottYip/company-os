@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/company-delete",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for resolving a company deletion target by UUID or issue prefix and requiring --yes plus an exact target confirmation.",
+      "dependencyDirection": "Imports company CLI pure helpers and shared Company type; it does not execute deletion, server authorization or persistence cascades.",
+      "keyDataModels": "Company UUID, issue prefix, selector mode, --yes and confirm string; fixture also exposes defaultResponsibleUserId and interactionResolverGovernance.",
+      "lifecycle": "Resolves the intended company and rejects deletion unless an explicit force flag and matching UUID/prefix are both present.",
+      "testAssessment": "Focused Vitest passed 9/9. Ambiguous selector modes and confirmation mismatch are covered; authority, fresh target state, cascade, retention/recovery, idempotency, concurrence and audit evidence are not.",
+      "designRationale": "Reduce accidental whole-company deletion from operator scripts by requiring target resolution and typed confirmation.",
+      "companyOsProblem": "Company OS needs high-assurance organization offboarding and data-lifecycle controls for managed and self-hosted deployments.",
+      "companyOsFit": "ADAPT the double confirmation as a last-mile CLI guard, but require instance authority, accountable-human approval, effect/dataset digest, fresh precondition version, retention/legal-hold policy, recoverable tombstone and deletion evidence before physical purge.",
+      "responsibilityConflict": "The Company model exposes a default responsible user, yet deletion confirmation neither requires that person nor records approver authority or the exact cascade being authorized.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/company-delete.test.ts:1-98", "full source SHA-256 ff094b9fb05aab63ffe2883cb54ea7425cd8440c03d1613fe71ea19cacb1c96a", "2026-08-18 focused Vitest: 9 passed in combined 14-test run"]
+    },
+    {
+      "id": "application:cli/__tests__/company-export-force",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests for non-interactive export-directory existence, emptiness, type and --force overwrite admission.",
+      "dependencyDirection": "Calls one production CLI confirmation helper against cleaned temporary directories; it does not write an export package.",
+      "keyDataModels": "Output path, directory entries and force boolean.",
+      "lifecycle": "Allows missing/empty directories, rejects non-empty without force, permits non-empty with force and rejects a regular-file target.",
+      "testAssessment": "Focused Vitest passed 5/5. Basic automation guard is covered, but force also permits a directory containing .git; symlink, atomic staging, manifest-scoped replacement, backup/stale files, confidentiality, integrity and failure cleanup are absent.",
+      "designRationale": "Allow scheduled backups to run non-interactively while preventing accidental overwrite by default.",
+      "companyOsProblem": "Company OS FDE and self-hosted operators need unattended portable exports without corrupting repositories or leaking enterprise data.",
+      "companyOsFit": "ADAPT the fail-closed non-interactive default, but export to a newly staged directory/artifact and atomically publish it. Refuse repository/mixed-content roots, separate replace from purge, enforce permissions/encryption and generate signed checksums and cleanup evidence.",
+      "responsibilityConflict": "A generic --force flag is not an accountable approval for overwriting an unknown directory; the exact artifact target and data classification must be bound to the operation.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/company-export-force.test.ts:1-51", "full source SHA-256 2993845ee94d9ce94dd36356230522314d7e91b8b829d8b5f15cc8d01645c29a", "2026-08-18 focused Vitest: 5 passed in combined 14-test run"]
+    },
+    {
+      "id": "application:cli/__tests__/company-import-export-e2e",
+      "auditStatus": "COMPLETE",
+      "function": "Real-process embedded-Postgres test exporting a company graph to a directory, importing into new/existing companies, previewing rename collisions and importing a ZIP.",
+      "dependencyDirection": "Spawns the actual CLI/server with isolated config/storage/database and calls real APIs; uses helper-provided embedded Postgres and ZIP builder while running in local_trusted mode.",
+      "keyDataModels": "Company/Agent/project/task graph, portability directory and schema marker, preview plan, collision rename actions, ZIP package, context/auth/config paths.",
+      "lifecycle": "Starts a migrated server, creates source data including a large task, exports, imports new, previews and applies existing-company rename, verifies duplicates, imports ZIP and cleans temporary state.",
+      "testAssessment": "Source is materially strong E2E coverage, but runtime verification is unavailable here: sandbox skipped on listen EPERM and escalated rerun skipped after embedded Postgres init failed five times. The suite also omits auth, malicious archives, signatures, Secret absence, preview digest, rollback and responsibility/data-governance fidelity.",
+      "designRationale": "Catch cross-layer portability drift that pure manifest/route tests cannot detect.",
+      "companyOsProblem": "Company OS needs verified organization/FDE template round trips across deployment profiles without carrying live credentials, identities or unreviewed authority.",
+      "companyOsFit": "ADAPT the isolated real-process harness and large-payload graph assertions. Extend with authenticated human/tenant cases, identity/Connector/data/responsibility rebinding, deterministic signed artifacts, malicious archives, preview-to-apply digest, transaction rollback and idempotent import modes.",
+      "responsibilityConflict": "local_trusted mode bypasses the human boundary, repeated rename import deliberately duplicates operational entities, and no responsibility/evidence objects survive or require rebinding; it cannot validate Company OS accountability portability.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/company-import-export-e2e.test.ts:1-623", "full source SHA-256 55cb4ba4c7900341a1f45face08c1b2641270f99a85253edb181b498c5e7e4ad", "2026-08-18 sandbox Vitest: skipped on listen EPERM", "2026-08-18 escalated Vitest: skipped after five embedded Postgres init failures (exit code null)"]
+    }
+  ]
+}

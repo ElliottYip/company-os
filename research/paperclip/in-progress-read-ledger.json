@@ -2055,6 +2055,67 @@
         "Focused Vitest passed 18/18 through the existing local binary."
       ],
       "completionRequirements": ["Read lines 1-899 exactly once and assess company create/import/export lifecycle, archive/delete safety, portable data coverage, identity/Secret handling, path/archive/network trust, preview/apply parity, rollback/idempotency and test quality."]
+    },
+    {
+      "id": "application:cli/__tests__/company-delete",
+      "path": "cli/src/__tests__/company-delete.test.ts",
+      "lineCount": 98,
+      "sha256": "ff094b9fb05aab63ffe2883cb54ea7425cd8440c03d1613fe71ea19cacb1c96a",
+      "linkedEvidence": { "history": ["ded813ad feat(interactions): add governed agent addressees (#10252)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 98 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Five selector tests distinguish UUID versus case-insensitive issue prefix and explicit selection modes; four confirmation tests require both --yes and a matching target UUID or prefix.",
+        "The two-factor CLI confirmation is a useful last-mile guard, but the suite does not execute deletion or prove instance-admin/company authority, latest target re-fetch, concurrent rename/prefix change, idempotency, dependency cascade, retention/recovery or immutable audit evidence.",
+        "Fixtures expose defaultResponsibleUserId and interactionResolverGovernance fields in the Company model, relevant signals for later implementation audit, but deletion confirmation does not require or notify that responsible human.",
+        "Focused Vitest passed 9/9 in this file as part of a 14/14 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-98 exactly once and assess destructive company-delete confirmation, identity/tenant authority, dependency cascade, retention/recovery, idempotency and audit evidence coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/company-export-force",
+      "path": "cli/src/__tests__/company-export-force.test.ts",
+      "lineCount": 51,
+      "sha256": "2993845ee94d9ce94dd36356230522314d7e91b8b829d8b5f15cc8d01645c29a",
+      "linkedEvidence": { "history": ["1b8738da feat(cli): add --force to company export for non-interactive runs (#10054)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 51 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The suite distinguishes missing, empty, non-empty and file output paths; non-interactive overwrite of a non-empty directory requires --force and temporary fixtures are cleaned up.",
+        "With --force, a directory containing both a user file and .git is accepted, so this check alone authorizes writing into a repository or mixed-content directory without manifest-scoped overwrite, backup or stale-file policy.",
+        "Symlinks, permission errors, concurrent writers, atomic staging/rename, disk exhaustion, artifact confidentiality, checksums/signatures and partial-export cleanup are not tested.",
+        "Focused Vitest passed 5/5 in this file as part of a 14/14 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-51 exactly once and assess export overwrite/force semantics, non-interactive behavior, path/symlink safety, confidentiality and artifact integrity coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/company-import-export-e2e",
+      "path": "cli/src/__tests__/company-import-export-e2e.test.ts",
+      "lineCount": 623,
+      "sha256": "55cb4ba4c7900341a1f45face08c1b2641270f99a85253edb181b498c5e7e4ad",
+      "linkedEvidence": { "history": ["9c1f8e78 feat(decisions): add first-class propose mode (#10010)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 623 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 build a real-process test harness with embedded Postgres, actual server/CLI subprocesses, migration auto-apply, isolated PAPERCLIP paths and cleanup helpers—substantially stronger than mocked route parity.",
+        "The server runs local_trusted with signup enabled and no UI, so this E2E deliberately bypasses human authentication/tenant authorization; it can prove data-path fidelity but not identity, responsibility or production access control.",
+        "A fixed decision-signing Secret is test-only and isolated. The harness scrubs PAPERCLIP_* variables but retains unrelated environment variables, uses an allocate-then-release port with a race window, and CLI JSON parsing searches for the first bracket in mixed output.",
+        "The text-file collector recursively trusts the exported directory and decodes every regular file as UTF-8; symlinks are skipped via Dirent type, while artifact size/binary/hash/signature behavior remains to be assessed in test cases.",
+        "Lines 251-500 start the actual application, verify PAPERCLIP_HOME context isolation, create a company/Agent/project/large task through real APIs, export selected entities to disk, and import them into a new company through the real CLI.",
+        "This is genuine end-to-end data-path coverage rather than a mocked fixture, and the large task description exercises non-trivial payload fidelity. However, it uses claude_local and local_trusted mode, does not create a human principal or responsibility/data-governance records, and exports only company/agents/projects/issues.",
+        "The export asserts presence/schema marker but not a manifest digest, signature, deterministic bytes, file permissions or absence of Secrets. New-company import uses --yes without a separate reviewed-plan digest, so preview/apply time-of-check binding remains unproven.",
+        "Lines 501-623 dry-run an existing-company rename import, then independently apply it and prove repeated import creates renamed duplicate Agents, projects and tasks with unique identifiers; this validates collision semantics but explicitly shows the operation is not idempotent.",
+        "The preview result is not passed back as an immutable plan/digest or concurrency token, so source archive and target state can change before apply. No failure injection proves transaction rollback after a partially created graph.",
+        "A generated stored ZIP imports successfully, but malicious traversal/absolute/case-conflicting/duplicate/symlink entries, compression bombs, oversized files, invalid encodings, signature failure and remote-source trust are not exercised.",
+        "Focused E2E could not execute on this host: sandbox run skipped on loopback listen EPERM; escalated rerun reached embedded Postgres setup but skipped after five init failures with exit code null. This is missing runtime evidence, not a passing or failing product assertion."
+      ],
+      "completionRequirements": ["Read lines 1-623 exactly once and assess end-to-end export/import fidelity, archive/network trust, preview/apply binding, identities/Secrets/permissions/responsibility, failures/rollback/idempotency, artifact integrity and actual process coverage."]
     }
   ]
 }
