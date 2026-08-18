@@ -53,6 +53,23 @@ test("received organization core keeps opaque portable IDs and accountable human
   );
 });
 
+test("every received agent must reference an existing human and department", () => {
+  assert.throws(
+    () => validateOrganizationDraft({
+      ...organization,
+      agents: [{ ...organization.agents[0]!, accountableHumanId: "missing" }],
+    }),
+    /指向不存在的真人负责人/,
+  );
+  assert.throws(
+    () => validateOrganizationDraft({
+      ...organization,
+      agents: [{ ...organization.agents[0]!, departmentId: "missing" }],
+    }),
+    /指向不存在的部门/,
+  );
+});
+
 test("received responsibility core requires human approval for critical actions", () => {
   const value = validateResponsibilityContracts([contract], organization);
   assert.equal(value[0]?.approvalRequiredActions[0], "publish-content");
@@ -63,6 +80,37 @@ test("received responsibility core requires human approval for critical actions"
       approvalRequiredActions: [],
     }], organization),
     /对外发布必须由真人审批/,
+  );
+});
+
+test("every agent receives exactly one responsibility contract", () => {
+  assert.throws(
+    () => validateResponsibilityContracts([], organization),
+    /每个 Agent 恰好需要一份责任合同/,
+  );
+});
+
+test("escalation requires a distinct valid backup human", () => {
+  const withBackup = {
+    ...organization,
+    humans: [
+      ...organization.humans,
+      {
+        id: "backup",
+        name: "李航",
+        title: "备用负责人",
+        departmentId: "growth",
+        avatarId: "clay-ocean",
+      },
+    ],
+  };
+  assert.throws(
+    () => validateResponsibilityContracts([{
+      ...contract,
+      backupHumanId: "owner",
+      escalationTimeoutSeconds: 300,
+    }], withBackup),
+    /备用负责人必须不同于主要负责人/,
   );
 });
 
@@ -87,3 +135,57 @@ test("staged work candidate resolves responsibility without vendor session data"
   assert.equal("session" in work, false);
 });
 
+test("received work rejects actions outside its responsibility contract", () => {
+  assert.throws(
+    () => validateWorkDraft({
+      id: "work-publish",
+      companyId: "tide-studio",
+      title: "发布",
+      goal: "发布一份不被合同允许的内容",
+      scope: "agent",
+      departmentId: "growth",
+      projectId: null,
+      agentId: "researcher",
+      requestedBy: "owner",
+      actionIds: ["spend-money"],
+      parentWorkId: null,
+    }, organization, [contract], []),
+    /责任合同不允许动作 spend-money/,
+  );
+});
+
+test("received work rejects outsider initiators and cyclic delegation", () => {
+  const base = validateWorkDraft({
+    id: "work-parent",
+    companyId: "tide-studio",
+    title: "市场简报",
+    goal: "形成带证据的市场简报",
+    scope: "agent",
+    departmentId: "growth",
+    projectId: null,
+    agentId: "researcher",
+    requestedBy: "owner",
+    actionIds: ["read-knowledge"],
+    parentWorkId: null,
+  }, organization, [contract], []);
+
+  assert.throws(
+    () => validateWorkDraft({
+      ...base,
+      id: "work-outsider",
+      requestedBy: "outsider",
+      status: undefined,
+    }, organization, [contract], []),
+    /工作发起人不是当前公司的真人/,
+  );
+
+  assert.throws(
+    () => validateWorkDraft({
+      ...base,
+      id: "work-child",
+      parentWorkId: "work-parent",
+      status: undefined,
+    }, organization, [contract], [{ ...base, parentWorkId: "work-child" }]),
+    /工作不能形成循环委派/,
+  );
+});

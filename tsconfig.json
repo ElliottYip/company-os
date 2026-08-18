@@ -16,6 +16,7 @@
     "types": []
   },
   "include": [
+    "index.ts",
     "core/**/*.ts",
     "ports/**/*.ts",
     "application/**/*.ts",
