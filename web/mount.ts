@@ -1,7 +1,9 @@
-import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
-import { DEMO_COMPANY } from "../adapters/demo/demo-company.ts";
 import type { CompanyWorkState } from "../application/company-operations.ts";
 import { compileOfficeScene } from "../core/office.ts";
+import {
+  createDemoApplicationClient,
+  type CompanyOSApplicationClient,
+} from "./application-client.ts";
 import { createButton } from "./components/button.ts";
 import { t } from "./i18n/zh-CN.ts";
 import { OfficeDomRenderer } from "./office-dom-renderer.ts";
@@ -104,8 +106,10 @@ function connectorsView(): string {
   </section>`;
 }
 
-export function mountCompanyOS(host: CompanyOSHostContract): MountedCompanyOS {
-  const { runtime } = createDemoComposition();
+export function mountCompanyOS(
+  host: CompanyOSHostContract,
+  application: CompanyOSApplicationClient = createDemoApplicationClient(),
+): MountedCompanyOS {
   let section: CompanyOSSection = host.initialSection ?? "office";
   let disposed = false;
   const root = document.createElement("main");
@@ -114,7 +118,10 @@ export function mountCompanyOS(host: CompanyOSHostContract): MountedCompanyOS {
 
   async function render(): Promise<void> {
     if (disposed) return;
-    const state = await runtime.snapshot();
+    const [state, organization] = await Promise.all([
+      application.snapshot(),
+      application.organization(),
+    ]);
     const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state) : connectorsView();
     root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${t("demo.badge")}</span></header>
       <div class="workspace"><aside class="company-rail" aria-label="${t("demo.companyAria")}">
@@ -131,15 +138,15 @@ export function mountCompanyOS(host: CompanyOSHostContract): MountedCompanyOS {
     }));
 
     const canvas = root.querySelector<HTMLElement>("[data-office-canvas]");
-    if (canvas) await new OfficeDomRenderer(canvas).render(compileOfficeScene(DEMO_COMPANY, { entityStates: {
+    if (canvas) await new OfficeDomRenderer(canvas).render(compileOfficeScene(organization, { entityStates: {
       "demo-researcher": state.phase === "AWAITING_APPROVAL" ? "BLOCKED" : state.phase === "COMPLETED" ? "COMPLETED" : state.phase === "READY" ? "WAITING" : "WORKING",
     } }));
     const actions = root.querySelector<HTMLElement>("[data-task-actions]");
     if (actions) {
-      if (state.phase === "READY") actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void runtime.assignTask().then(render) }));
-      else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void runtime.advance().then(render) }));
-      else if (state.phase === "AWAITING_APPROVAL") actions.append(createButton({ label: t("action.approve"), tone: "primary", onClick: () => void runtime.decide("APPROVED").then(render) }), createButton({ label: t("action.reject"), tone: "danger", onClick: () => void runtime.decide("REJECTED").then(render) }));
-      actions.append(createButton({ label: t("action.reset"), tone: "quiet", onClick: () => void runtime.reset().then(render) }));
+      if (state.phase === "READY") actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void application.assignWork().then(render) }));
+      else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void application.advanceWork().then(render) }));
+      else if (state.phase === "AWAITING_APPROVAL") actions.append(createButton({ label: t("action.approve"), tone: "primary", onClick: () => void application.decideApproval("APPROVED").then(render) }), createButton({ label: t("action.reject"), tone: "danger", onClick: () => void application.decideApproval("REJECTED").then(render) }));
+      if (application.mode === "DEMO_FIXTURE") actions.append(createButton({ label: t("action.reset"), tone: "quiet", onClick: () => void application.resetFixture().then(render) }));
     }
   }
 

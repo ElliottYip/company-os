@@ -60,7 +60,8 @@ ends with a clean commit and the relevant focused tests.
   the result.
 
 Current re-baseline note (2026-08-18): the standalone Company OS verification
-passes 57 tests plus boundary, upstream-governance, type, and Vite build checks
+passes 68 tests plus boundary, upstream-governance, secret scan, production
+dependency audit, type, and Vite build checks
 when the runner permits loopback binding. The HTTP integration tests fail with
 `listen EPERM` only in restricted sandboxes that prohibit all sockets; CI and
 admission runners must allow an isolated loopback ephemeral port.
