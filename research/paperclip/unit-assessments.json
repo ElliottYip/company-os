@@ -7534,18 +7534,22 @@
     },
     {
       "id": "application:server/__tests__/plugin-install-autobuild",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure and route-level regression fixtures for repository-bundled plugin auto-build, standalone dependency bootstrap, disable switches and manual recovery guidance.",
+      "dependencyDirection": "Exercises ensureLocalPluginBuilt directly and POST /plugins/install through Express with mocked lifecycle/activity/live events plus optional embedded PostgreSQL.",
+      "keyDataModels": "Temporary package.json, paperclipPlugin entrypoints, generated manifest/worker/UI artifacts, admin actor and plugin registry row.",
+      "lifecycle": "Creates fixture packages, optionally runs pnpm install/build, installs via the route, asserts artifacts and lifecycle calls, then removes temporary repository fixtures.",
+      "testAssessment": "Four pure cases passed and five database-backed route cases skipped on this host. Coverage is useful for deterministic command selection but omits hostile scripts, symlink/path races, integrity, network isolation, timeout child cleanup, output limits, concurrent builds and partial rollback.",
+      "designRationale": "Keep first-party source plugins runnable when dist or standalone runtime dependencies are absent while allowing operators to disable auto-build.",
+      "companyOsProblem": "Company OS development mode may need a trusted-source build convenience, but production installation must never turn an administrative package request into unbounded host code execution.",
+      "companyOsFit": "ADAPT only as a development-profile test pattern with explicit trusted roots, immutable fixtures and no production package-manager execution. Add adversarial provenance, containment, timeout, concurrency and cleanup tests.",
+      "responsibilityConflict": "The fixture admin triggers build and postinstall code without digest-bound approval, sandbox proof, accountable evidence or egress policy; the successful route cases were not executable locally.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-install-autobuild.test.ts:1-402",
+        "server/src/services/plugin-loader.ts:651-1300",
+        "2026-08-18 focused Vitest: 4 passed, 5 skipped"
+      ]
     },
     {
       "id": "application:server/__tests__/plugin-install-guard",
@@ -12783,18 +12787,22 @@
     },
     {
       "id": "application:server/services/plugin-loader",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Monolithic plugin I/O orchestrator for filesystem/npm discovery, local builds, manifest loading, install and upgrade persistence, database migrations, worker activation, config replay, jobs, events, webhooks, tools and shutdown.",
+      "dependencyDirection": "Directly couples server, database, shared manifest/record types, SDK error codes, npm/pnpm/filesystem/process execution and every plugin runtime subsystem; callers depend on a broad service interface with optional runtime mode.",
+      "keyDataModels": "DiscoveredPlugin, PluginInstallOptions, PluginRecord/manifest, runtime service bundle, worker environment/options, company config rows, database namespace, lifecycle and registration counts.",
+      "lifecycle": "Discovers and executes manifest modules, installs packages into a shared directory, validates and persists them, applies migrations, refreshes mutable local manifests, starts workers, replays company config, registers jobs/events/tools and performs best-effort teardown.",
+      "testAssessment": "The focused auto-build suite ran 4 pure tests and skipped 5 embedded-PostgreSQL route tests. Other direct Loader coverage is distributed across still-separate inventory units; this source has no evidence for safe manifest evaluation, provenance, concurrent operations, refresh-policy equivalence, capability approval integrity or crash-consistent activation.",
+      "designRationale": "Offer one operational entry point for local development and deployed plugins, keep install plus schema migration transactional, and make activation failure non-fatal to other plugins.",
+      "companyOsProblem": "Company OS needs independently replaceable PackageSource, ManifestCodec, TrustPolicy, InstallationStore, MigrationRunner and RuntimeReconciler boundaries, with digest-bound approvals, short-lived credential projection and durable desired/observed state.",
+      "companyOsFit": "REFERENCE the install-row-plus-migration transaction, explicit activation result, runtime-service seam and full restart intent. Do not copy the loader wholesale; split authorities and use a declarative data manifest, staged content-addressed packages, sandboxed verification, realpath containment, per-installation locking, durable reconciliation and egress-aware credential leases.",
+      "responsibilityConflict": "Discovery dynamically imports publisher-controlled JavaScript before validation; local refresh can bypass installation policy; raw multi-vendor API keys are forwarded under one coarse capability; proactive company scope follows config presence; upgrade and activation lack exact accountable approval/evidence and crash-safe state convergence.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/services/plugin-loader.ts:1-2540",
+        "server/src/__tests__/plugin-install-autobuild.test.ts:1-402",
+        "78f8c6c3 Recover managed bundled plugin workers on demand (#10429)"
+      ]
     },
     {
       "id": "application:server/services/plugin-local-folders",

@@ -1481,6 +1481,54 @@
         "There is no dedicated focused validator test in the repository path set; indirect coverage cannot demonstrate unknown-field policy, all invalid capability/version cases, hostile input limits or backward-compatibility fixtures."
       ],
       "completionRequirements": ["Read lines 1-163 exactly once and assess schema authority, semantic validation, compatibility/versioning, path/package safety, capability governance, diagnostics and test ownership."]
+    },
+    {
+      "id": "application:server/services/plugin-loader",
+      "path": "server/src/services/plugin-loader.ts",
+      "lineCount": 2540,
+      "sha256": "c260774c8f32520f52ce2eeb25e867db70c39c27adb5209de1d367e7c6e4c977",
+      "linkedEvidence": { "history": ["78f8c6c3 Recover managed bundled plugin workers on demand (#10429)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 2540 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-650 establish that PluginLoader combines discovery, package installation/build, manifest/version/capability checks, migration, runtime activation and shutdown in one large I/O service.",
+        "buildPluginWorkerEnv forwards raw model-provider API keys and Kubernetes discovery variables to every plugin declaring environment.drivers.register; a single coarse capability becomes authority to receive multiple vendors' durable host credentials.",
+        "The service separates optional runtime services from discovery/install mode and exposes explicit load/unload results, but uses Paperclip records/manifests throughout and leaves lifecycle persistence coordination to callers.",
+        "Installation comments promise compatibility and capability validation, while provenance, signatures, reproducible package resolution and accountable approval are not represented in the public types seen so far.",
+        "Lines 651-1950 show declared manifest/worker/UI paths are path.resolve results without package-root containment; an entrypoint may escape the package directory if later consumers do not recheck.",
+        "npm installs disable lifecycle scripts, but the loader dynamically imports the unvalidated manifest module, which executes publisher-controlled JavaScript in the host process before Zod validation; discovery alone can trigger that code.",
+        "npm resolution mutates a shared install directory and package.json/lock state with no digest pin, staging directory or per-package lock. Failed validation leaves installed artifacts and concurrent installs/upgrades can interfere.",
+        "Install plus database migration is transactionally grouped, a strong pattern, but package download/import/build occurs outside it and filesystem artifacts have no compensation.",
+        "Upgrade fetches or overwrites package files before capability escalation is rejected, then throws instead of persisting a digest-bound approval request; code on disk can therefore diverge from the old database manifest/runtime.",
+        "Discovery walks configured directories and imports matching manifests; names and package.json metadata are only conventions, not trust or provenance controls.",
+        "Lines 1951-2540 show activation refreshes a changed on-disk manifest and persists it after schema parsing only, bypassing fetchAndValidate's API-version, capability-consistency, route-conflict, minimum-host-version and capability-escalation checks.",
+        "Worker entrypoint containment uses string startsWith rather than path.relative/realpath and later permits any absolute manifest path that exists, so a schema-valid manifest can select code outside its package; symlink containment is not addressed.",
+        "Proactive company authority is inferred from the presence of stored plugin configs. A stale or broadly provisioned config row grants background host-call scope without an explicit active authorization contract or expiry.",
+        "Activation is a sequential saga with best-effort teardown rather than durable desired/observed reconciliation. Scheduler and worker cleanup failures are swallowed, process-local registrations are not transactional, and no fence prevents concurrent activation.",
+        "loadAll activates all ready plugins concurrently; loadSingle's installed path recursively delegates through lifecycle and returns synthetic registration counts rather than the actual activation result.",
+        "Raw operational errors and config-delivery failures are logged without stable external codes or Responsibility evidence; lifecycle error marking can itself fail after partial runtime side effects."
+      ],
+      "completionRequirements": ["Read lines 1-2540 exactly once and trace discovery, installation, source trust, manifest/build/migration/config/runtime activation, upgrade, cleanup, failure recovery, concurrency and deployment ownership against direct tests."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-install-autobuild",
+      "path": "server/src/__tests__/plugin-install-autobuild.test.ts",
+      "lineCount": 402,
+      "sha256": "a210896d8e5268eeef9d85030912389cde7f91e9cf4bfe429a9cae6006f09507",
+      "linkedEvidence": { "history": ["3ae2c30f feat(skills): import skills from projects (#9620)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 402 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The pure cases establish that auto-build is restricted to repository-bundled paths, can be disabled, and invokes pnpm install/build with fixed arguments and 120-second timeouts for standalone bundled plugins.",
+        "The route cases cover successful artifact creation and manual-command errors, but depend on embedded PostgreSQL and execute fixture-controlled package scripts on the audit host.",
+        "The suite does not test hostile package.json scripts, symlink/path races, package-manager lockfile/reproducibility, integrity/signature/provenance, network isolation, output limits, timeout cleanup or partial build/install rollback.",
+        "Admin actor setup is route scaffolding only; no accountable approval or digest-bound authorization is asserted before executing build/postinstall code."
+      ],
+      "completionRequirements": ["Read lines 1-402 exactly once, run focused tests and map build/install source trust, package-manager execution, artifact validation and failure cleanup coverage to plugin-loader."]
     }
   ]
 }
