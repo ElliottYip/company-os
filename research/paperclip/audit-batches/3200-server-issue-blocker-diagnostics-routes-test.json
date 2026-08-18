@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-blocker-diagnostics-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Embedded-Postgres HTTP tests for read-only direct-blocker diagnostics with anomaly flags, dependency readiness, low-trust filtering, cross-tenant privacy and bounded output.",
+    "dependencyDirection": "Supertest -> Issue diagnostics route/auth -> real Issue/access services -> PostgreSQL Issues, relations, Agents, projects and Runs.",
+    "keyDataModels": "Issue blocker relation, structured readiness counts, blocker flags, prose diagnosis, authorization trust boundary, omitted-node count and truncation cap.",
+    "lifecycle": "Authorize source Issue -> fetch up to 100 blocker nodes -> filter each by visibility -> compute readiness only for complete visible result -> return flags/caps/prose diagnosis; no mutation occurs.",
+    "testAssessment": "All 5 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Source specifies valuable incompleteness semantics, but recursive graph, consistency, non-admin identities, scale and access auditing remain unverified.",
+    "designRationale": "Give operators an actionable explanation for stale blocker holds without leaking hidden blocker payloads or claiming readiness from incomplete or truncated information.",
+    "companyOsProblem": "Company OS needs safe graph diagnostics for Agent Boss and support staff that distinguish fact, inference and unknown while respecting tenant, project, responsibility and data-classification boundaries.",
+    "companyOsFit": "ADAPT structured readiness/flags, uniform cross-tenant 404, visible-data-only diagnosis and readiness=null whenever authorization/truncation makes evidence incomplete. Replace English prose contract with codes/parameters, policy-control hidden cardinality, add snapshot version/cursor, recursive cycle-safe diagnostics, read receipts, rate limits and separate customer versus privileged support views.",
+    "responsibilityConflict": "A diagnostic is an inference, not authoritative responsibility evidence. Hidden-node counts may reveal protected organizational structure, and no accountable reader/access receipt is asserted.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-blocker-diagnostics-routes.test.ts:1-391 (SHA-256 36c1e7d6f32b88c27a968be42d889ce66686ad7284f2dd409479d57439c5e399)",
+      "git history: 7f2ed0ad90d7186d108f65400e322bda08dcbfe2, 295294d7ce1639da1d3b979e806a141317e0d990",
+      "2026-08-19 sandboxed focused Vitest: 5/5 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 5/5 skipped"
+    ],
+    "securityFindings": "HIGH verification gap: all database/HTTP tests skipped. MEDIUM hidden-cardinality leak: omittedUnauthorizedBlockerCount reveals protected graph size. MEDIUM identity-coverage gap: non-admin/inactive/scoped-key cases are absent. MEDIUM access-audit gap: sensitive diagnostics reads have no asserted receipt. MEDIUM consistency gap: no graph snapshot/version under concurrent changes. MEDIUM abuse gap: recursion, ordering, pagination and query-rate limits are absent."
+  }]
+}

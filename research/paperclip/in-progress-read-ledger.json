@@ -7230,6 +7230,34 @@
       "completionRequirements": [
         "Read lines 1-949 exactly once and assess blocker attention classification, continuation/recovery suppression, human/Agent ownership, stale alarm handling, projection consistency and test quality against Company OS Agent Boss responsibility queues."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-blocker-diagnostics-routes",
+      "path": "server/src/__tests__/issue-blocker-diagnostics-routes.test.ts",
+      "lineCount": 391,
+      "sha256": "36c1e7d6f32b88c27a968be42d889ce66686ad7284f2dd409479d57439c5e399",
+      "linkedEvidence": { "history": [
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 close cross-tenant existence oracle (#3967)",
+        "295294d7ce1639da1d3b979e806a141317e0d990 add read-only Issue blocker diagnostics endpoint (#9114)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 391 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five embedded-Postgres HTTP tests cover stale done blockers, no-blocker readiness, low-trust omission, cross-company 404 and a 100-node response cap.",
+        "A done-but-still-blocking relation returns structured readiness plus done_but_blocking flag and a human diagnosis. An unblocked Issue with no relations is dependency-ready with null diagnosis.",
+        "Low-trust Agent diagnostics omit unauthorized blocker IDs/titles/status and sensitive detail/error fields, derive diagnosis only from visible data and withhold readiness. This prevents false completeness and direct data disclosure.",
+        "The response still returns omittedUnauthorizedBlockerCount, exposing hidden graph cardinality to a low-trust actor. Company OS should make this disclosure policy-controlled or coarse when relationship existence itself is sensitive.",
+        "Cross-company reads return uniform 404. The test does not cover a human without membership, inactive membership, scoped API key, Run mismatch/expiry, instance-admin cross-company semantics or access audit receipts.",
+        "At 101 blockers the route returns only 100, marks truncated, withholds readiness and unauthorized count and explains the cap. No pagination/cursor is offered, so large-graph diagnosis cannot become complete through this endpoint.",
+        "Structured flags/readiness are useful, but diagnosis is English prose and error body asserts English text. Company OS needs stable reason codes plus structured parameters, with localization outside the domain contract.",
+        "Only direct blocker output is asserted; recursive paths, graph cycles, concurrent relation changes, snapshot/version consistency, query cost/rate limiting and deterministic ordering are absent.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 5 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-391 exactly once and assess blocker diagnostics authorization, tenant/existence privacy, graph/runtime detail exposure, read-only guarantees, stable contracts and test quality against Company OS operational diagnostics boundaries."
+      ]
     }
   ]
 }
