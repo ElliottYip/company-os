@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,6 +8,7 @@ const sourceRoot = join(projectRoot, "work/upstream-audit/paperclip");
 const manifestPath = join(projectRoot, "research/paperclip/audit-manifest.json");
 const outputPath = join(projectRoot, "research/paperclip/repository-inventory.json");
 const assessmentPath = join(projectRoot, "research/paperclip/unit-assessments.json");
+const batchesPath = join(projectRoot, "research/paperclip/audit-batches");
 const auditManifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 
 function git(...args) {
@@ -163,11 +164,22 @@ if (inventory.paths.length !== paths.length || inventory.paths.some((entry) => !
 }
 
 const rendered = `${JSON.stringify(inventory, null, 2)}\n`;
-const existingAssessments = (() => {
-  try { return JSON.parse(readFileSync(assessmentPath, "utf8")); }
-  catch { return { schemaVersion: 1, sourceCommit: auditManifest.commit, units: [] }; }
-})();
-const assessmentById = new Map((existingAssessments.units ?? []).map((unit) => [unit.id, unit]));
+const batchFiles = readdirSync(batchesPath).filter((name) => name.endsWith(".json")).sort();
+const batchUnits = batchFiles.flatMap((name) => {
+  const batch = JSON.parse(readFileSync(join(batchesPath, name), "utf8"));
+  if (batch.sourceCommit !== auditManifest.commit) throw new Error(`${name} source commit does not match audit pin`);
+  return batch.units ?? [];
+});
+const assessmentById = new Map();
+for (const unit of batchUnits) {
+  if (assessmentById.has(unit.id)) throw new Error(`duplicate assessment unit: ${unit.id}`);
+  assessmentById.set(unit.id, unit);
+}
+const inventoryUnitIds = new Set(inventory.units.map((unit) => unit.id));
+const unknownAssessmentIds = [...assessmentById.keys()].filter((id) => !inventoryUnitIds.has(id));
+if (unknownAssessmentIds.length) {
+  throw new Error(`unknown assessment units: ${unknownAssessmentIds.join(", ")}`);
+}
 const assessments = {
   schemaVersion: 1,
   sourceCommit: auditManifest.commit,
@@ -191,7 +203,11 @@ const renderedAssessments = `${JSON.stringify(assessments, null, 2)}\n`;
 if (process.argv.includes("--check")) {
   const current = readFileSync(outputPath, "utf8");
   if (current !== rendered) throw new Error(`${relative(projectRoot, outputPath)} is stale; run with --write`);
-  const assessmentIds = new Set((existingAssessments.units ?? []).map((unit) => unit.id));
+  const currentAssessments = readFileSync(assessmentPath, "utf8");
+  if (currentAssessments !== renderedAssessments) {
+    throw new Error(`${relative(projectRoot, assessmentPath)} is stale; run with --write`);
+  }
+  const assessmentIds = new Set(assessments.units.map((unit) => unit.id));
   const missing = inventory.units.filter((unit) => !assessmentIds.delete(unit.id));
   if (missing.length || assessmentIds.size) {
     throw new Error(`assessment coverage drift: ${missing.length} missing, ${assessmentIds.size} unexpected`);

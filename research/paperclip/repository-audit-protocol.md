@@ -48,6 +48,10 @@ dependency direction, data models,
 lifecycle, test assessment, design rationale, Company OS problem/fit,
 responsibility conflict, evidence and decision.
 
+Reviewed units are authored as small, reviewable files below `audit-batches/`;
+the generator rejects duplicate unit IDs and produces the complete ledger by
+merging those batches with explicit `PENDING` records for all remaining units.
+
 ## Audit order
 
 1. Repository governance, build graph, workspace/package graph and generated or
