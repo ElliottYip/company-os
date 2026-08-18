@@ -3979,10 +3979,12 @@
       "sha256": "621734dbcb5c74e00c4c17a6a9f71ef40baf643a3afa84981e919a209907b8be",
       "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
       "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
+      "completedRanges": [{ "start": 1, "end": 100 }],
       "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "nextLine": 101,
+      "notes": [
+        "Lines 1-100 establish a very broad mocked portability integration surface spanning Company, Agents, membership/grants, projects/workspaces, Issues/comments/labels/attachments/import helpers, documents, work products, routines, Skills, assets, secrets and Agent instructions. This confirms the test exercises a monolithic migration orchestrator rather than narrow ports. Secret mocks return persistence/runtime configs largely unchanged and a fixed secret ID, so secret isolation/redaction and per-binding lifecycle require explicit adversarial cases later."
+      ],
       "completionRequirements": ["Read lines 1-5421 exactly once, run the focused suite in an isolated Paperclip home, and map coverage for export/import schemas, compatibility versions, selection/data minimization, path/parser/archive safety, secrets and consent, every entity lifecycle, collision/merge/idempotency, transactions/crash recovery/concurrency, external fetch/resource limits, responsibility evidence, performance and the completed service findings. Before reading, confirm no formal audit batch or prior completed ledger exists for this exact unit."]
     }
   ]
