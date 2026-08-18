@@ -7241,18 +7241,23 @@
     },
     {
       "id": "application:server/__tests__/instance-settings-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure regression tests for experimental-setting normalization/patching and fail-closed worktree execution activation derived from server-owned time and instance metadata.",
+      "dependencyDirection": "Vitest -> instance-settings pure helpers and shared settings type; database singleton CRUD, HTTP authorization and managed overlay are not invoked.",
+      "keyDataModels": "Flat experimental-settings object, retired/current feature keys, worktree execution enable flag, activation cutoff, activation instance ID and typed activation reason.",
+      "lifecycle": "Normalize stored legacy object -> merge validated patch -> stamp or clear server-owned activation fields on toggle -> resolve runtime arming from environment plus persisted activation -> fail closed on missing/mismatched/unreadable state.",
+      "testAssessment": "All 22 focused tests passed. Pure compatibility and fail-closed cases are strong, but the named service's persistence, singleton creation, concurrency, migrations, forward-version behavior and managed-overlay interaction are entirely outside this unit.",
+      "designRationale": "Avoid a database migration for every feature flag while making dangerous worktree execution opt-in, instance-bound, time-bounded from activation onward and unavailable when configuration cannot be trusted.",
+      "companyOsProblem": "Company OS needs backward-compatible configuration evolution without letting upgrades silently enable execution/data mutations, and runtime capabilities must be bound to verifiable deployment identity rather than copied configuration alone.",
+      "companyOsFit": "ADAPT the known-key normalization, retired-field removal, server-owned activation fields and stable fail-closed reason codes. Split configuration by policy domain and scope, version its envelope, surface invalid/unknown values, default mutating capabilities off, require optimistic concurrency and replace ambient instance claims with short-lived secret-free runtime attestation.",
+      "responsibilityConflict": "A broad experimental blob can enable Agents, tools, recovery and execution without expressing responsible human, policy issuer or change receipt. Default-on repair behavior may mutate workspaces after an upgrade without newly recorded consent.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/instance-settings-service.test.ts:1-377 (SHA-256 84ce13a57d8bbaa1f61a0c6b5a019f7f82219da83be7b578883922ef6f333705)",
+        "git history: 5b62a3883fcb911f795f1394fc7f7b0fa1ff660b through e43b392a7931730c75f15b2c5deab212802d99c4 (28 commits recorded in read ledger)",
+        "2026-08-19 focused Vitest: 22/22 passed"
+      ],
+      "securityFindings": "HIGH attestation weakness: worktree status and instance ID are ambient environment claims, not cryptographic runtime proof. HIGH upgrade-consent risk: workspace repair flags default on for legacy rows. HIGH persistence-coverage gap: no real database/concurrency/migration tests. MEDIUM configuration coarseness: unrelated UI, Agent, tool, recovery and execution switches share one object. MEDIUM silent-normalization risk: invalid/unknown values are discarded without structured diagnostics. MEDIUM replay/clock gaps: stale, future or copied activation metadata is not tested."
     },
     {
       "id": "application:server/__tests__/instrumentation",

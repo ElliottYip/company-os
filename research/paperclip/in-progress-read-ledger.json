@@ -6913,6 +6913,62 @@
       "completionRequirements": [
         "Read lines 1-724 exactly once and assess instance-settings HTTP authorization, sensitive-field exposure, stable error contracts, managed/self-hosted behavior, configuration lifecycle and test quality against Company OS deployment and responsibility boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/instance-settings-service",
+      "path": "server/src/__tests__/instance-settings-service.test.ts",
+      "lineCount": 377,
+      "sha256": "84ce13a57d8bbaa1f61a0c6b5a019f7f82219da83be7b578883922ef6f333705",
+      "linkedEvidence": {
+        "history": [
+          "5b62a3883fcb911f795f1394fc7f7b0fa1ff660b feat(settings): add experimental Simplified English Interactions flag (#10934)",
+          "c185e64b772a22e603dddee55e22bb0c1ecd8be7 feat(ui): chat-style task view behind an experimental flag (#10606)",
+          "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+          "c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)",
+          "c3bd0c5d50a45cda3c9fddbb0f80a85f44a84242 feat(skills): add beta releases for the core Paperclip skill (#10228)",
+          "7e40ed8c439c23a53db9135f7e9bae30b56f3d97 feat(status-cards): add experimental status card update view (#10101)",
+          "1f1f54523876481ab0011c3fdd0b842753cd511a feat: add built-in summarizer and summary slots (#9713)",
+          "cfa5e0704e6b04d4088edd9f3dc83987069282ef feat(mcp): add tool access policy core (#9558)",
+          "c6d4ee10f7f009f8bfb93a4dee87fb076760f275 test: align current-master regression expectations (#9577)",
+          "36ec79c196fcb149c331657a0eb5fa710ae074a9 feat: add attention queue and Decisions surface (#9380)",
+          "70ce005bef50a59f4dec45386dcd884a6fac0ea7 Ensure worktree execution starts only after activation (#9374)",
+          "5c85ae64a0dd5af79996cf32e397dbee588522fb Cases: experimental first-class case object (#9198)",
+          "f3ca4d24bc4b931882109f9617b488d9fd74bf6b fix: repair dirty/foreign-branch execution worktrees (#9297)",
+          "8b6a06ee254b06cbadbe334e891285e22084caab Add built-in agents and Reflection Coach bundle (#9206)",
+          "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)",
+          "83f5f5984230a0cc86c024a4173b22b4d88813ed Hide goals sidebar link behind experiment (#9189)",
+          "5163208c3caeda7690cb89175efcb5778c0fc269 Add workspace branch ancestry diagnostics (#9117)",
+          "765a75207ab162a679ccab0d9157e21bfde21896 Add experimental server info debug view (#8676)",
+          "43b005b704f80aea3ce37cab8136920749c73ee6 Add pipeline workflow primitives and operator UI (#7903)",
+          "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f External object references across issue surfaces (#8512)",
+          "0b945f449b4843d988778e918e6b13a99df4004b Make streamlined sidebar default to on (#8496)",
+          "547463d3a2a0fdf899dc59524eff71a24a6f315c make execution environments instance-scoped (#8375)",
+          "a71c4b678292a73ea9ddebbb96a861ce5c1687f7 add task watchdog control plane (#8339)",
+          "6f9801a46baf7c45a0091776e4a9b60c92938db5 NUX rework behind conference-room chat flag (#8000)",
+          "468edd8b221fe9991e40735b5bbba621e44eb1ad Add workspace file viewer and artifact links (#7681)",
+          "eaef47f4c710a848b25b5f35596fa309fb23439b Information Architecture and project/agent visual refresh (#7543)",
+          "d9f91576a020812da44833d869426cbe17ae8555 Add accepted-plan decomposition exact-once guards (#6831)",
+          "e43b392a7931730c75f15b2c5deab212802d99c4 Add local Cloud Upstream sync (#6548)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 377 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Twenty-two pure tests cover legacy/invalid experimental-settings normalization, retired-field removal, patch round-trips and worktree execution activation state; all 22 passed locally.",
+        "Normalization produces a complete known-key object, ignores a retired newest-first field and defaults most newly introduced capabilities off for legacy rows. This reduces schema migration pressure but silently discards unknown/invalid values and provides no diagnostic or forward-version envelope.",
+        "Two workspace repair flags default on even for empty/legacy settings. Default-on operational behavior can change after upgrade without explicit administrator consent; Company OS must classify safe UI defaults separately from execution/data mutation defaults and require migration receipts for the latter.",
+        "All experimental product, UI, runtime, recovery, Agent, tool-access and language-interaction switches share one broad JSON-shaped settings model. This is convenient but couples unrelated lifecycles and makes ownership, rollout scope, permissions and deprecation hard to reason about.",
+        "False-to-true worktree execution toggles stamp server time and current instance ID; true-to-false clears both; re-toggle refreshes cutoff; client-supplied activation fields are stripped. This is a useful server-owned activation-state pattern.",
+        "Resolution arms only in a worktree runtime when stored activation instance matches the current environment and a cutoff exists. Missing cutoff, instance mismatch and settings-read failure return stable reason codes and fail closed; non-worktree runtimes avoid the read.",
+        "Instance ID and PAPERCLIP_IN_WORKTREE remain ambient environment claims rather than signed, short-lived runtime attestation. Tests omit missing/empty instance ID, malformed/future cutoff, clock rollback, copied database plus copied environment, stale activation, replay and authorization for toggling.",
+        "Despite the service filename, this unit does not exercise singleton-row creation, get/update SQL, transactions, optimistic concurrency, persistence failure, migrations, unknown future keys or managed-overlay interaction. It therefore cannot establish database lifecycle integrity.",
+        "The Simplified English flag is correctly treated as optional presentation behavior, not stored user/Agent content transformation in this unit. Company OS language boundaries should remain outside core domain semantics and preserve original evidence/log text."
+      ],
+      "completionRequirements": [
+        "Read lines 1-377 exactly once and assess settings normalization, singleton creation/update lifecycle, persistence integrity, forward/backward compatibility, deployment-profile separation and test quality against Company OS configuration ownership."
+      ]
     }
   ]
 }
