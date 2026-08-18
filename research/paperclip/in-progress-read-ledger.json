@@ -6089,6 +6089,36 @@
       "completionRequirements": [
         "Read lines 1-2724 exactly once and assess the full environment HTTP surface: authority/tenant scope, Secret config and bindings, create/update/delete/probe/leases, plugin schema, custom images, workspace invalidation, audit, errors, concurrency and tests against Company OS deployment/profile governance."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-run-orchestrator",
+      "path": "server/src/__tests__/environment-run-orchestrator.test.ts",
+      "lineCount": 601,
+      "sha256": "b6fdb78dd14090a285b39d750c90e6faa602681878a601106347a8c9cf5d62c8",
+      "linkedEvidence": {
+        "history": [
+          "4e00818574ef7d45977593b4e63a21dc42c87094 fix(runtime): support in-place workspace realization (#10230)",
+          "90631b09b36fa028ad24ca5375bfa50e3602799c Let adapters declare runtime command spec for remote provisioning (#5141)",
+          "a4ac6ff133fbe8bdb82f4046fda85f7cb372b6a9 Add sandbox callback bridge for remote environment API access (#4801)",
+          "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 601 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Nine pure tests cover successful/local and in-place realization, workspace/target errors, plugin bypass, lease/workspace metadata persistence and sandbox/SSH provisioning command execution/failure.",
+        "Despite its name, this unit begins with an already acquired lease and realized source workspace. It coordinates workspace transfer/realization, optional remote provisioning and target conversion; it does not own selection, acquisition, cancellation, release or the Agent execution itself.",
+        "Workspace realization returns an authoritative root and mode that overwrite target remoteCwd and are attached to the execution target. Tests do not validate root/path alias/outbound restore containment, source/repository confidentiality, content digest, symlink behavior or whether returned metadata matches the actual remote filesystem.",
+        "Lease metadata and persisted execution-workspace metadata are updated after realization through separate calls. No test covers either write failing, ordering/transactionality, revision conflicts, replay after crash or reconciliation when remote side effects succeeded but metadata is partial.",
+        "Adapter/project provisioning is an arbitrary string executed as bash -lc with SHELL set. Tests exercise vendor CLI installation and a not-found failure, but no command allowlist, package/version/digest/signature, network/egress policy, privilege boundary, timeout/cancel/idempotency or approval is bound to the step.",
+        "Provision failure is mapped to workspace_realization_failed and includes raw stderr text; target-resolution failures are transport_resolution_failed. This conflates provisioning with realization and can disclose remote details or credentials through messages; Company OS needs stage-specific structured codes and separately protected evidence.",
+        "Focused Vitest passed 9/9. Activity logging is mocked but never asserted. Cleanup/release after realization/provision/metadata/target failure, concurrent attempts, duplicate provisioning, in-place contamination and runtime attestation are absent."
+      ],
+      "completionRequirements": [
+        "Read lines 1-601 exactly once and assess run orchestration, environment selection, lease/workspace acquisition, remote command provisioning, in-place realization, cleanup/failure compensation, idempotency/concurrency and test quality against Company OS Connector work execution."
+      ]
     }
   ]
 }

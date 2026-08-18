@@ -5545,18 +5545,23 @@
     },
     {
       "id": "application:server/__tests__/environment-run-orchestrator",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure orchestration tests for realizing an already-leased workspace, persisting realization metadata, executing optional remote provisioning and resolving/converting the final adapter execution target.",
+      "dependencyDirection": "Vitest -> run orchestrator -> mocked workspace request builder, environment runtime, target resolver/converter and metadata/activity services; no database, filesystem, network, provider, Secret store or lease lifecycle is exercised.",
+      "keyDataModels": "Environment and active lease, source and persisted execution workspace, versioned realization request/result, authoritative root/mode/path mappings, runtime provisioning command, execution target/remote spec and staged EnvironmentRunError.",
+      "lifecycle": "Receive selected environment/lease/workspace -> build realization request -> realize or reuse remote/in-place workspace -> persist lease and workspace metadata -> run optional shell provisioning -> resolve target transport -> attach realization contract and return execution inputs.",
+      "testAssessment": "Focused Vitest passed 9/9. It clearly pins stage ordering, in-place cwd and basic error codes. It does not cover path/content integrity, partial metadata persistence, retries/concurrency/crash recovery, provisioning policy or idempotency, cleanup/release, cancellation/timeouts, audit/evidence, data egress and attestation.",
+      "designRationale": "Give adapters a uniform workspace and remote target while allowing runtime-specific copy versus in-place realization and optional installation of their command-line runtime before Agent startup.",
+      "companyOsProblem": "Company OS needs deterministic, recoverable preparation of Connector execution workspaces and binaries, with the exact prepared state bound to a Work contract and safe across managed/local nodes.",
+      "companyOsFit": "ADAPT the versioned realization contract, authoritative-root projection and stage-specific orchestration. Replace arbitrary shell provisioning with signed declarative packages/steps and capability policy; add content/binary/image digests, path containment, idempotency keys, durable stage state, saga cleanup/reconciliation, structured redacted errors and signed responsibility evidence.",
+      "responsibilityConflict": "Provisioning changes an execution node and can download/execute code, yet no accountable human, approval, package identity, data/tool policy or evidence digest is bound. Activity is not asserted, and partial success could leave an untracked modified workspace used by later Runs.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-run-orchestrator.test.ts:1-601 (SHA-256 b6fdb78dd14090a285b39d750c90e6faa602681878a601106347a8c9cf5d62c8)",
+        "git history: 4e00818574ef7d45977593b4e63a21dc42c87094, 90631b09b36fa028ad24ca5375bfa50e3602799c, a4ac6ff133fbe8bdb82f4046fda85f7cb372b6a9, 70679a33216bae9247b1b6bddc5fcaad1c04e829",
+        "2026-08-19 focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "CRITICAL arbitrary provisioning surface: unversioned strings execute through bash -lc without tested allowlisting, signature, privilege, egress or approval controls. HIGH partial-side-effect gap: remote realization/provisioning and separate metadata writes lack tested idempotency, compensation and recovery. HIGH path/content-attestation gap: authoritative roots and mappings are accepted without integrity/containment proof. HIGH error disclosure gap: raw remote stderr is included in a conflated realization error. HIGH responsibility gap: no approved human/package/Work/evidence binding."
     },
     {
       "id": "application:server/__tests__/environment-runtime",
