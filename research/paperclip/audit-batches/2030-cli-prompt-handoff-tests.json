@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/prompt",
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for handing a human/board or Agent prompt into Paperclip by creating assigned Issue Work or adding a comment, then optionally waking the target Agent.",
+      "dependencyDirection": "The Vitest suite writes isolated CLI persona context, invokes prompt command functions directly, stubs fetch and validates identity/persona checks plus selected Issue/comment/wakeup requests.",
+      "keyDataModels": "Versioned CLI profile with board or Agent persona, API key, company/Agent identity, prompt text, optional existing Issue and wake flag; resulting Issue/comment and queued Run.",
+      "lifecycle": "Reject persona/command mismatch; authenticate an Agent key and verify target identity, or resolve target under board scope; create assigned Work or a comment; optionally call Agent wakeup; return actor/mode/Agent/wakeup summary.",
+      "testAssessment": "Focused Vitest passed 6/6 tests on 2026-08-19 and CLI no-emit TypeScript passed. It covers persona separation, Agent-key target mismatch, board/Agent Work creation and optional comment wake suppression. It omits key audience/expiry, real human identity, duplicate requests, partial create/wakeup failure, retry, risk/approval, data/tool scope, prompt size/content, audit/evidence and concurrent Work state.",
+      "designRationale": "Treat a prompt as durable Issue Work rather than an ephemeral chat invocation, while preventing board and Agent credential profiles from being accidentally interchanged and verifying self-targeting for Agent credentials.",
+      "companyOsProblem": "Company OS needs a governed handoff from a real human or upstream Agent into durable Work, with an accountable owner, explicit executor, policy/data scope, idempotent dispatch, approval suspension and complete result/evidence lineage.",
+      "companyOsFit": "ADAPT persona separation, authenticated Agent self-binding and durable Work-before-dispatch. Replace the generic board actor with IdentityPort human principal plus delegation/organization authority, make creation-and-dispatch an idempotent application workflow with recoverable states, and bind it to responsibility and data/tool contracts. Do not copy Paperclip prompt command or wakeup endpoint as the canonical API.",
+      "responsibilityConflict": "`actor: board` is not a named accountable human, and assigneeAgentId plus wakeup does not bind requester, responsible owner, permissions/data, risk approval, runtime proof, evidence or result. Agent-authored Work may also require a distinct human sponsor and escalation path.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/prompt.test.ts:1-197",
+        "SHA-256 5881059e4593fb5749a30bace1de93a6b21cbedbff0bece24ba3578d5dd65a81",
+        "99a1b5c83b02957d4132c78e2d08ea2ae78f6aea test(cli): cover board prompt handoff (#9137)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 6 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Persona mismatch and Agent self-target mismatch are covered, but bearer audience, expiry, revocation, company membership and real human authorization are not.",
+        "Creating Issue then waking Agent is a non-transactional two-request workflow; partial failure, duplicate retry and idempotency behavior are untested.",
+        "Prompt text becomes title/description or comment without tested length, content classification, injection handling, data-loss prevention or evidence provenance.",
+        "Agent wakeup has no tested expected Work revision, execution capability/version, secret/data binding, risk gate or approval token.",
+        "The board persona is a broad authority abstraction and can obscure which human initiated and is accountable for the request.",
+        "CLI context persistence is used for persona/company routing, but file permissions, tampering, stale identity and secret separation are outside this unit."
+      ]
+    }
+  ]
+}
