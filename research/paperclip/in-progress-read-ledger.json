@@ -1860,6 +1860,25 @@
         "Overall route verdict: REJECT as a reusable module because of its multi-responsibility surface and inconsistent authority, tenant, evidence and error contracts; ADAPT only narrow primitives such as path canonicalization, scoped company binding, request/response header allowlists, body limits and categorical RPC errors."
       ],
       "completionRequirements": ["Read lines 1-3140 exactly once and trace every plugin management/config/UI/webhook/scoped-API route through request validation, actor/company authorization, capability/lifecycle/worker checks, package trust, Secret handling, side effects, redaction, audit/events, errors, pagination and concurrency against focused tests."]
+    },
+    {
+      "id": "application:cli/__tests__/access-parity",
+      "path": "cli/src/__tests__/access-parity.test.ts",
+      "lineCount": 140,
+      "sha256": "547f94db7594fe5a6c9c47a09f7a017fd7dd75df51e0bc92e49e1feb2b8c4311",
+      "linkedEvidence": { "history": ["70b1a910 Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 140 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The two tests are endpoint-shape parity checks: they assert 42 CLI commands map to expected HTTP methods and URLs using a globally mocked fetch and a fixed board token.",
+        "The suite does not inspect Authorization headers, payload bodies, response/error mapping, exit codes, token redaction, role enforcement, tenant denial or real server behavior, so its access-parity name overstates what it proves.",
+        "High-risk operations such as instance-admin promotion, company-access mutation, database backup, invite acceptance and join claim are treated identically to reads; no confirmation, accountable-human evidence, idempotency or stable error-code behavior is tested.",
+        "Useful only as a lightweight CLI/API route-contract smoke test; Company OS should generate or validate operator commands from its canonical API contract and add security/effect assertions instead of copying this suite.",
+        "Focused Vitest passed 2/2 when invoked through the existing local binary; pnpm exec first attempted dependency reconciliation and aborted non-interactively before running tests, without modifying the read-only upstream worktree."
+      ],
+      "completionRequirements": ["Read lines 1-140 exactly once and assess CLI/API access-control parity, actor and tenant binding, negative coverage, stable error contracts and relevance to Company OS operator tooling."]
     }
   ]
 }

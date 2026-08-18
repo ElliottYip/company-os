@@ -4,18 +4,22 @@
   "units": [
     {
       "id": "application:cli/__tests__/access-parity",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI smoke tests asserting that access, profile, invitation, membership, instance, preference, skill and LLM commands call expected HTTP methods and paths.",
+      "dependencyDirection": "Imports only CLI command registration, mocks global fetch and never invokes the server authorization, database or audit layers.",
+      "keyDataModels": "Fixed company, user, invite, join and member UUIDs plus HTTP method/URL pairs.",
+      "lifecycle": "Builds a fresh Commander program for each invocation, supplies a static board token, executes 42 commands and compares captured fetch calls.",
+      "testAssessment": "Focused Vitest passed 2/2. The suite proves route spelling and method parity only; it omits headers, request bodies, response/error semantics, role/tenant denial, redaction, confirmation, idempotency and real server integration.",
+      "designRationale": "Detect drift between a broad operator CLI surface and server route naming with inexpensive tests.",
+      "companyOsProblem": "Company OS needs safe operator automation and CLI/API contract parity without creating a second manually maintained authority model.",
+      "companyOsFit": "REFERENCE ONLY. Generate or validate Company OS CLI commands from the canonical OpenAPI/command schema, then add effect classification, human confirmation, stable error codes and real authorization contract tests.",
+      "responsibilityConflict": "Instance-admin promotion, company-access changes, database backups and join/invite mutations receive no stronger assertion than reads; the test cannot prove the actor, authorization, accountable decision or resulting evidence.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "cli/src/__tests__/access-parity.test.ts:1-140",
+        "full source SHA-256 547f94db7594fe5a6c9c47a09f7a017fd7dd75df51e0bc92e49e1feb2b8c4311",
+        "2026-08-18 focused Vitest: 2 passed via existing local binary"
+      ]
     },
     {
       "id": "application:cli/__tests__/activity-parity",
