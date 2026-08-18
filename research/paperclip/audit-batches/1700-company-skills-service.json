@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/company-skills",
+      "auditStatus": "COMPLETE",
+      "function": "Monolithic Company Skill library and runtime orchestration service covering source discovery/import, catalog provenance, filesystem materialization, CRUD, versions, forks, comments/stars, policy-adjacent audit/update/reset, Agent desired-state projection and Issue-backed test runs.",
+      "dependencyDirection": "HTTP routes call this service, which directly owns Drizzle tables, filesystem trees, GitHub transport, catalog packages, Project/Folder/Agent services, adapter configuration, Issue/Document/Asset/Work Product projections and test-run callbacks. Domain, persistence, supply-chain, runtime and presentation concerns flow into one 6,956-line module.",
+      "keyDataModels": "CompanySkill and metadata provenance, path/kind inventories, content-bearing CompanySkillVersion, source/trust/compatibility/sharing, catalog origin hash/snapshot/update hold, Agent desired Skill/version, fork/reassignment, comment/star, test input/template/run, Issue-backed artifacts/cost and process-local refresh promise.",
+      "lifecycle": "Discover or import a local/remote/catalog package; derive key/trust/inventory; upsert and materialize files; reconcile missing/bundled sources on reads; edit/version/fork/rename/update/reset/delete; project desired entries into Agent runtime directories; create an Issue-backed test run, wake/cancel it, collect artifacts/output/cost and retain or prune the harness.",
+      "testAssessment": "Companion audits prove useful boundary intent but not the whole service: company-skills filesystem/parser tests passed 17/19 with two macOS realpath expectation failures; company-skills-detail ran 0/2 because embedded PostgreSQL could not start; company-skill-import-boundary strongly exercises canonical workspace containment. Major uncovered or weakly covered risks include multi-process races, crash recovery across filesystem/database sagas, aggregate resource limits, remote content integrity/SSRF, secret redaction, terminal-run races, approval/responsibility binding and destructive reconciliation.",
+      "designRationale": "Provide a complete Skills Studio and portable Agent-capability experience in one server service while incrementally hardening imports through pinned Git refs, path containment, catalog hashes, audits, version snapshots and conservative desired-state projection.",
+      "companyOsProblem": "Company OS needs a vendor-neutral, secret-free capability supply chain that can ingest FDE/customer packages, bind immutable digests and data/tool grants to approved Work, distribute leased capabilities to heterogeneous Connector nodes, attest actual activation and preserve evidence through update, rollback and revocation.",
+      "companyOsFit": "REIMPLEMENT behind separate SkillRegistry, PackageQuarantine, CapabilityPolicy, RuntimeMaterializer and TestExecution ports. ADAPT the canonical-root/symlink checks, pinned Git commit rule, reserved-key defense, explicit conflict modes, deterministic content hashing, atomic same-parent directory replacement, row-locked version allocation, stale desired-reference visibility, origin snapshot verification and rich artifact projection. Do not copy the god-service or its Paperclip adapter/schema coupling.",
+      "responsibilityConflict": "Mutating/force actions are not bound to an accountable human, approval, exact package/action digest, data/tool grant or immutable evidence. Test safety relies on prompt instructions, Agent configuration snapshots may retain secrets, runtime materialization can silently omit files, and read-time reconciliation can hard-delete unused missing-source records.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-skills.ts:1-6956",
+        "full source SHA-256 98b1a08f7ac661c47bd0b24d409be8f21f0be0557286158cb19097bb06216a89",
+        "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+        "server/src/__tests__/company-skills.test.ts:1-433; focused run 17/19 passed with two /var vs /private/var failures",
+        "server/src/__tests__/company-skills-detail.test.ts:1-232; 0/2 executed because embedded PostgreSQL failed to start",
+        "server/src/__tests__/company-skill-import-boundary.test.ts:1-86"
+      ],
+      "securityFindings": [
+        "Critical: test-run snapshots persist full adapterConfig and runtimeConfig without a visible redaction or allowlist, risking credential, private-session and sensitive-endpoint retention.",
+        "External GitHub/skills.sh imports require a pinned 40-hex commit and reject classified executable scripts, but generic HTTPS sources are unpinned and remote inventories do not fetch/hash every claimed file.",
+        "Local workspace imports use realpath containment and reject symlinks, yet recursive collection is unbounded and path validation/read remain vulnerable to substitution races and hard-link or mount edge cases.",
+        "Multiple create/fork/edit/delete/update/reset/runtime flows cross filesystem and database without a durable saga/outbox; failures can leave overwritten bytes, partial rows, stale counters or missing versions.",
+        "Managed create/fork force-delete target directories after race-prone in-memory conflict checks; concurrent requests can overwrite another operation before database uniqueness is authoritative.",
+        "Runtime materialization may silently skip unreadable files and only requires SKILL.md, so actual capabilities can differ from the approved inventory without a structured activation failure.",
+        "Ordinary inventory refresh hard-deletes missing, unused local Skill rows and runtime materializations without grace period, tombstone, approval or immutable activity evidence.",
+        "Test harness safety is expressed as natural-language instructions rather than sandbox/capability/data-egress enforcement, and run completion has select-then-update races between terminal outcomes."
+      ]
+    }
+  ]
+}
