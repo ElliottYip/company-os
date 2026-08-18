@@ -1529,6 +1529,88 @@
         "Admin actor setup is route scaffolding only; no accountable approval or digest-bound authorization is asserted before executing build/postinstall code."
       ],
       "completionRequirements": ["Read lines 1-402 exactly once, run focused tests and map build/install source trust, package-manager execution, artifact validation and failure cleanup coverage to plugin-loader."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-tenant-isolation",
+      "path": "server/src/__tests__/plugin-tenant-isolation.test.ts",
+      "lineCount": 528,
+      "sha256": "239c741b5d5ec825a56bf59a493344e20a83f74f9fb24b97dc7bfc30fa0b2295",
+      "linkedEvidence": { "history": ["05bcd3ce feat(security): plugin tables get company_id FK for tenant isolation (#5865)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 528 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The suite strongly checks company foreign keys, cascade deletion, company-scoped external-ID uniqueness including NULLS NOT DISTINCT, and registry methods carrying companyId into entities, job runs and webhook deliveries.",
+        "All cases require embedded PostgreSQL; when unavailable the entire suite skips, so no tenant-isolation assertion executes locally.",
+        "The tests establish storage partition keys, not authorization: service calls take caller-supplied companyId directly and no authenticated actor, company membership, accountable human, data authorization or database RLS policy is exercised.",
+        "NULL companyId deliberately creates instance-wide rows for logs, entities, runs and deliveries; the suite verifies persistence and deletion behavior but not who may create, read or export that broader scope.",
+        "Deletion assertions favor hard cascade and do not cover legal hold, evidence retention, export, tombstones or cross-company shared-responsibility records."
+      ],
+      "completionRequirements": ["Read lines 1-528 exactly once, run focused tests and map tenant ownership, cross-company denial, uniqueness, deletion and actor-context coverage to plugin-registry."]
+    },
+    {
+      "id": "application:server/services/plugin-registry",
+      "path": "server/src/services/plugin-registry.ts",
+      "lineCount": 808,
+      "sha256": "967069cd1da4041fcde205a5e2d24d1799727dd837ae7e96b8a421fa50ffbae0",
+      "linkedEvidence": { "history": ["a7186dce fix(plugin-sdk): thread companyId through configChanged + fail-closed cross-tenant guard (LOOA-687) (#10096)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 808 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The registry is a deliberately low-level persistence facade; it consistently carries companyId for config/entity lookup/create paths highlighted by the tenant regression suite, but it has no authenticated actor or authorization policy itself.",
+        "listEntities filters only by pluginId/type/externalId and cannot scope by companyId; deleteEntity, updateJobRun and updateWebhookDelivery accept only opaque row IDs, creating unsafe cross-tenant primitives if any caller exposes attacker-controlled IDs.",
+        "Soft-uninstalled rows are reactivated by manifest.id while preserving plugin-scoped data and allowing packageName/packagePath replacement, with no publisher/digest continuity proof; a different package claiming the key can inherit retained state.",
+        "Install order, config/settings/entity/job upserts use read-then-write without transaction, conflict retry, CAS or row lock. Concurrent install order duplicates, insert conflicts and shallow patch lost updates are possible.",
+        "upsertEntity searches externalId null as an empty string but inserts the original null; repeated nullable-ID upserts can miss the existing row and collide with NULLS NOT DISTINCT uniqueness.",
+        "Job runs do not verify jobId belongs to pluginId/companyId, and webhook payloads/headers, config JSON, job logs and errors have no size, secret or retention controls at this layer.",
+        "List operations are partly unbounded and offset pagination is unstable under writes; lifecycle, config and operational record mutations emit no durable audit/outbox evidence."
+      ],
+      "completionRequirements": ["Read lines 1-808 exactly once and trace installation identity, status/config persistence, tenant scoping, uniqueness, soft/hard deletion, ordering, concurrency, audit and callers against tenant-isolation tests."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-database",
+      "path": "server/src/__tests__/plugin-database.test.ts",
+      "lineCount": 662,
+      "sha256": "b022c28c5d438a2ebb60ab9a01033422541e1fe0070f42511677aa5980aa5aad",
+      "linkedEvidence": { "history": ["4ad94d0b feat(server): kubernetes execution integration for sandbox-provider plugins (stage 2/3) (#7938)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 662 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The pure validator cases cover representative allowed namespace DDL/backfills/core reads and rejected public writes/anonymous DO blocks; environment tests explicitly confirm coarse capability-based raw provider-key passthrough.",
+        "Embedded cases cover multi-file order, idempotent reapply, plugin-install transaction rollback, namespace escape rejection, applied-checksum tamper detection and a real bundled migration set.",
+        "The refresh test positively requires a mutable disk manifest to add agent.tools.register, tools and different coreReadTables during activation without upgrade approval, confirming rather than mitigating Loader policy bypass.",
+        "The SQL validator suite is example-based rather than grammar/adversarial: it lacks comments, dollar quoting variants, Unicode/encoding, nested CTE, search_path, function/operator, COPY, extension, lock, resource exhaustion and transaction-control bypass corpora.",
+        "Database tests exercise a shared privileged connection and namespace naming, not distinct database roles, row-level tenant policies, per-company data boundaries, statement timeout/row limits or accountable audit evidence.",
+        "All end-to-end migration cases depend on embedded PostgreSQL and may skip as a block on unsupported hosts."
+      ],
+      "completionRequirements": ["Read lines 1-662 exactly once, run focused tests and map namespace, migration validation, transactional behavior, idempotency, tamper, failure and tenant isolation coverage to plugin-database."]
+    },
+    {
+      "id": "application:server/services/plugin-database",
+      "path": "server/src/services/plugin-database.ts",
+      "lineCount": 572,
+      "sha256": "6ab593f7b75e8844d1113504a7db039567a7626bc7a2718314441b3ded7e313b",
+      "linkedEvidence": { "history": ["eb38b226 Fix LLM Wiki package and migration validation (#6010)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 572 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Namespace derivation, identifier quoting, checksum ledger, advisory transaction lock and install-transaction integration are valuable patterns, but isolation ultimately relies on application regexes while queries execute through the shared database client.",
+        "Runtime SELECT validation only extracts qualified schema.table references; unqualified FROM/JOIN names are invisible and can resolve through search_path to public tables outside the coreReadTables allowlist.",
+        "SELECT permits arbitrary PostgreSQL functions and has no AST-level volatility/side-effect policy, database role restriction, statement timeout, row/byte cap or cancellation; functions such as pg_sleep and any privileges held by the server role remain reachable.",
+        "Whitelisted public core-table reads do not inject or require companyId predicates, so a plugin with table permission can read every company's rows from that table. Namespace tables are likewise shared across companies with no RLS requirement.",
+        "Migration regex extraction covers a limited grammar; unqualified source relations in backfills can evade reference checks once a qualified target is present, and dollar-quoted strings/search_path/functions/operators are not robustly modeled.",
+        "Migration directory containment is lexical and does not realpath a symlinked directory. Files are locale-sorted without a monotonic/version rule, so a newly added earlier filename can be applied after later migrations.",
+        "Queries materialize all rows and mutations have no resource budget. There is no down/rollback migration, export, schema retention/deletion or per-company lifecycle contract.",
+        "Applied checksum mismatch and transaction locking are sound defensive choices, but mutable manifest coreReadTables can broaden read access during activation without approval, as the focused test explicitly demonstrates."
+      ],
+      "completionRequirements": ["Read lines 1-572 exactly once and trace namespace allocation, SQL validation/execution, migration ledger/checksums, transactions, concurrency, rollback, privilege isolation, upgrade and cleanup against focused tests."]
     }
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/plugin-registry",
+      "auditStatus": "COMPLETE",
+      "function": "Low-level Drizzle persistence facade for instance-wide plugin installation/lifecycle state, company config/settings, external entity mappings, jobs/runs and webhook deliveries.",
+      "dependencyDirection": "Depends directly on Paperclip database tables, shared records and HTTP error factories; higher services consume raw row-shaped methods and must supply all actor, company and policy context.",
+      "keyDataModels": "Plugin row/key/status/installOrder, company-scoped config/settings, PluginEntity, PluginJob/Run and PluginWebhookDelivery including nullable instance scope.",
+      "lifecycle": "Installs or reactivates rows, mutates manifests/status, soft/hard uninstalls, stores company configuration, upserts mappings/jobs and records execution/delivery states.",
+      "testAssessment": "The tenant suite covers company foreign keys, uniqueness and cascades but skipped all eight cases locally. Registry concurrency, retained-data ownership, unscoped list/delete/update primitives, nullable external IDs and audit behavior have no focused executable coverage here.",
+      "designRationale": "Keep database CRUD separate from lifecycle and capability policy while making companyId explicit in recently hardened tenant-sensitive methods.",
+      "companyOsProblem": "Company OS needs every Connector-owned row and mutation bound to Organization/Principal, Responsibility/DataAuthorization scope, retention policy and an authenticated command context, with safe repository methods that cannot omit tenant predicates.",
+      "companyOsFit": "REFERENCE explicit company foreign keys, NULLS NOT DISTINCT uniqueness and deterministic config replay ordering. Replace the broad facade with tenant-typed repositories, database-enforced policies, atomic upserts/CAS, stable pagination, actor/evidence commands and explicit retention/export ownership.",
+      "responsibilityConflict": "listEntities is cross-company by construction and several mutations accept only row IDs; reinstallation can transfer retained state to a different package claiming the same key; instance-null scope, config/job/webhook data and lifecycle changes have no accountable actor or durable audit evidence.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["server/src/services/plugin-registry.ts:1-808", "server/src/__tests__/plugin-tenant-isolation.test.ts:1-528", "a7186dce fix(plugin-sdk): thread companyId through configChanged + fail-closed cross-tenant guard (LOOA-687) (#10096)"]
+    },
+    {
+      "id": "application:server/__tests__/plugin-tenant-isolation",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL regression suite for company foreign keys, cascades and tenant-scoped uniqueness across plugin operational tables and selected registry/host-service calls.",
+      "dependencyDirection": "Exercises real database schema plus pluginRegistryService and buffered plugin logging with minimal event-bus stubs.",
+      "keyDataModels": "Company, plugin, plugin logs/entities/jobs/runs/webhook deliveries and nullable instance scope.",
+      "lifecycle": "Seeds two companies and shared external identifiers, writes scoped and instance records, deletes one company and verifies only its dependent rows disappear.",
+      "testAssessment": "All eight cases skipped locally because embedded PostgreSQL support was unavailable. The assertions are well targeted at storage isolation but do not test authenticated authorization, RLS, unscoped registry methods, legal retention or adversarial cross-tenant host calls.",
+      "designRationale": "Prevent the earlier class of tenant collision and orphaned plugin records by making company ownership explicit in schema and service calls.",
+      "companyOsProblem": "Company OS needs compatibility tests spanning API actor authorization through storage, execution and evidence—not only foreign-key shape.",
+      "companyOsFit": "ADAPT the two-tenant fixtures, duplicate external IDs, NULL semantics and deletion matrix; add authenticated principal mismatch, RLS, instance-scope grants, shared-project responsibility, retention hold and unscoped-method rejection cases.",
+      "responsibilityConflict": "Caller-provided companyId is treated as truth, instance scope survives deletion without an owner contract, and hard cascade is asserted without evidence/legal-retention policy.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/plugin-tenant-isolation.test.ts:1-528", "server/src/services/plugin-registry.ts:421-808", "2026-08-18 focused Vitest: 0 passed, 8 skipped"]
+    }
+  ]
+}

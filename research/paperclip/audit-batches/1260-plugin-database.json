@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/plugin-database",
+      "auditStatus": "COMPLETE",
+      "function": "Plugin database namespace and migration service with regex-based SQL policy, checksum ledger, advisory locking and restricted runtime query/execute facades over the shared database client.",
+      "dependencyDirection": "Depends directly on filesystem SQL, Drizzle raw SQL, central plugin/migration tables and the plugin manifest's database declaration; worker host services call the runtime methods.",
+      "keyDataModels": "Derived schema namespace, coreReadTables allowlist, migration key/checksum/version/status/error and parameterized runtime SQL/result rows.",
+      "lifecycle": "Creates a schema, records its namespace, locks by plugin, validates and applies sorted SQL files transactionally, rejects checksum mutation, then validates and executes worker SQL through the server database role.",
+      "testAssessment": "Nine pure SQL/environment cases passed and eight embedded-database cases skipped. Positive transaction/checksum tests are valuable, but the suite lacks an adversarial SQL corpus, database-role/RLS proof, tenant predicate enforcement, resource limits, symlink and migration-order attacks.",
+      "designRationale": "Give plugins useful relational storage and controlled core joins without granting unrestricted public-schema writes, while keeping migrations idempotent and serialized.",
+      "companyOsProblem": "Company OS needs Connector data storage isolated by installation and company, with database-enforced least privilege, governed data-source contracts, bounded query execution and reversible/exportable lifecycle.",
+      "companyOsFit": "REFERENCE deterministic namespace derivation, checksums, advisory locking and install-transaction rollback. Replace regex-only policy with parsed restricted queries or a typed data API plus separate least-privilege roles/RLS, mandatory company scope, budgets/cancellation and explicit migration/retention contracts.",
+      "responsibilityConflict": "Unqualified relations and side-effectful SELECT functions can escape lexical checks; whitelisted public tables expose all companies without predicate enforcement; mutable manifests can broaden access; all SQL uses the shared server role and produces no per-query Responsibility/DataAuthorization evidence.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["server/src/services/plugin-database.ts:1-572", "server/src/__tests__/plugin-database.test.ts:1-662", "eb38b226 Fix LLM Wiki package and migration validation (#6010)"]
+    },
+    {
+      "id": "application:server/__tests__/plugin-database",
+      "auditStatus": "COMPLETE",
+      "function": "Pure SQL-policy/environment tests plus embedded-PostgreSQL namespace, migration, transaction, checksum and mutable-manifest activation scenarios.",
+      "dependencyDirection": "Exercises production database service and loader against temporary packages and optionally real PostgreSQL, including bundled LLM Wiki migrations.",
+      "keyDataModels": "Manifest database declaration, namespace and migration ledger, companies/issues, runtime rows and environment-driver worker env.",
+      "lifecycle": "Validates statements, applies/reapplies/tampers migrations, installs with rollback, refreshes a disk manifest and queries or mutates namespace data.",
+      "testAssessment": "Nine pure cases passed; eight database cases skipped. The test that refreshes a manifest intentionally adds capabilities, tools and broader coreReadTables without approval, providing direct evidence of a policy gap rather than a safety guarantee.",
+      "designRationale": "Protect common namespace escapes and regress real migration packages while proving install rollback and checksum immutability.",
+      "companyOsProblem": "Company OS requires adversarial compatibility tests that prove both syntactic SQL restrictions and effective database privileges/data authorization under real tenant identities.",
+      "companyOsFit": "ADAPT checksum, idempotency, rollback and real-package fixtures; invert the mutable-refresh expectation and add parser fuzzing, RLS/role, company predicates, resource caps, cancellation, symlinks, ordering and retained-data tests.",
+      "responsibilityConflict": "The suite explicitly codifies raw provider-key passthrough and unapproved capability/core-table expansion, while no accountable human, purpose, evidence or data-egress contract appears.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/plugin-database.test.ts:1-662", "server/src/services/plugin-database.ts:1-572", "2026-08-18 focused Vitest: 9 passed, 8 skipped"]
+    }
+  ]
+}
