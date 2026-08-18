@@ -3877,18 +3877,30 @@
     },
     {
       "id": "application:server/__tests__/company-skill-test-runs-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration suite for Company Skill test inputs/templates/runs, Issue-backed harness cleanup, version and configuration snapshots, supersession, retention, cancellation/deletion and rich artifact hydration.",
+      "dependencyDirection": "The suite calls companySkillService directly, supplies Issue lifecycle callbacks, persists real Company/Agent/Skill/Issue/Document/Asset/Work Product rows and uses a temporary local Skill directory; route authorization, the real Agent adapter and execution sandbox are outside scope.",
+      "keyDataModels": "Company, local Skill, Codex Agent config, test input/template/snapshot/version/run, superseded and terminal states, harness Issue retention, output Document, SHA-bearing Attachment, Work Product and compatibility artifact projections.",
+      "lifecycle": "Seed tenant/Skill/Agent; create or snapshot a template and version; create the harness Issue; persist and wake a queued run; supersede/start/complete/cancel/delete it; snapshot output/cost/config; hydrate Issue artifacts; hide expired harness content while retaining run history.",
+      "testAssessment": "The 12 tests are readable and behavior-oriented, with strong tenant binding, reproducible snapshots, stale-event rejection, terminal-only deletion, pre-commit cleanup, retention and rich Issue-scoped artifact assertions. Focused Vitest was attempted in the sandbox and twice outside it with fresh isolated homes; all 12 were skipped because embedded PostgreSQL could not start, so 0 runtime tests passed on this host. Missing coverage includes actual sandbox/capability isolation, secret redaction, wake/cancel compensation, terminal races, client snapshot authenticity, permission roles, pagination and accountable approval/evidence.",
+      "designRationale": "Treat a Skill test as a reproducible Issue-backed task whose inputs, selected Skill version, Agent configuration, template and outputs remain inspectable after transient task artifacts are pruned.",
+      "companyOsProblem": "Company OS needs deterministic evaluation runs that prove the exact package, sanitized runtime configuration, Agent/Connector attestation, permissions/data used, approvals, evidence and result without invoking production side effects or retaining secrets.",
+      "companyOsFit": "ADAPT the tenant-isolation, pinned-version, snapshot, superseded-event, retention and artifact-projection test cases into Company OS compatibility tests. Replace prompt-only sandbox assumptions with enforced execution profiles and add secret-canary, signed provenance, approval/data-egress, idempotency, failure-compensation and concurrency cases.",
+      "responsibilityConflict": "The suite calls the harness 'sandboxed' but never invokes or constrains a real runtime. It accepts caller-provided template snapshots, expects configuration snapshots without asserting redaction and does not bind the run to an accountable human, approved action digest, permissions/data contract or runtime proof.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skill-test-runs-service.test.ts:1-753",
+        "full source SHA-256 b754a3044919475440a766e2dfadbf53e9b19650dbea9baf60dc5ceb3f1b922e",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)",
+        "focused Vitest: 1 file and 12 tests skipped; embedded PostgreSQL failed after five attempts in two escalated fresh-home runs; 0 passed"
+      ],
+      "securityFindings": [
+        "No test seeds credential canaries in adapterConfig/runtimeConfig or asserts a secret-free persisted snapshot; objectContaining allows arbitrary extra sensitive fields.",
+        "No test proves network, shell, filesystem, enterprise-system or durable side effects are denied; safety text in the harness prompt is not execution isolation.",
+        "Caller-supplied templateSnapshot is treated as historical truth without a test binding it to a prior run or immutable digest.",
+        "Post-commit wake failure, external cancel failure, concurrent terminal transitions and cleanup retries are untested.",
+        "Rich artifacts are tenant/Issue scoped, but tests do not cover authorization/redaction, untrusted content, evidence signatures or accountable-human approval."
+      ]
     },
     {
       "id": "application:server/__tests__/company-skills",

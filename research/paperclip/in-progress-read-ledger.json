@@ -3729,11 +3729,21 @@
       "lineCount": 753,
       "sha256": "b754a3044919475440a766e2dfadbf53e9b19650dbea9baf60dc5ceb3f1b922e",
       "linkedEvidence": { "history": ["b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 753 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 set up an embedded-Postgres integration suite with real temporary Skill files and direct service calls. It conditionally skips the entire suite when the embedded database is unsupported, thoroughly deletes database fixtures between tests and seeds a company, idle Codex Agent and markdown-only local Skill.",
+        "Lines 101-200 verify cleanup when DB run persistence fails, built-in template rendering and explicit no-template behavior. The failure is induced with NaN retention and proves pre-commit Issue cleanup plus no wake call. It does not cover a wake failure after the run transaction commits. Template assertions validate prompt composition, not sandbox or capability enforcement.",
+        "Lines 201-300 cover custom template CRUD, allowed placeholders, read-only built-in behavior and reject unknown/cross-company persisted template IDs. Tenant binding is well tested. Service-level authorization roles, template content/size abuse and the caller-supplied templateSnapshot bypass are not tested in this segment.",
+        "Lines 301-400 deliberately prove re-runs can supply the prior templateSnapshot after the persisted template changes, plus terminal-only soft deletion and explicit Skill-version pinning. Reproducibility is strong, but the test normalizes caller-provided snapshot authority without proving it came from the viewed run; arbitrary template IDs/names/bodies can therefore masquerade as historical provenance unless the route binds them.",
+        "Lines 401-500 prove superseded runs reject later start/complete/cancel transitions, remain viewable until soft deletion and preserve an explicit cancellation reason. This is a useful stale-event guard. It also confirms every later ad-hoc run with null inputId supersedes the prior one even when the content differs, rather than grouping by an input/content fingerprint.",
+        "Lines 501-600 verify input/version/config/output snapshots survive zero-day harness retention while ephemeral Issue content becomes unavailable with an explicit expired reason. This is a strong retention projection. The config assertion positively expects adapter/instructions metadata but never seeds a secret or asserts redaction; because it uses objectContaining, full adapter/runtime configs can leak while the test remains green.",
+        "Lines 601-700 seed documents, SHA-bearing attachments and work products for two harness Issues, then assert rich detail contains only the requested run's Issue content. The fixture meaningfully tests Issue scoping and metadata shape. It does not yet challenge cross-company foreign IDs, authorization/redaction, malicious metadata/content or signed evidence provenance.",
+        "Lines 701-753 finish compatibility artifact assertions, prove cross-company run detail isolation and distinguish externally deleted harness content from retained run snapshots. The suite has no test for real execution isolation, data/tool/egress denial, high-risk approval, accountable human, secret-free attestation, wake/cancel failure compensation, concurrent completion, pagination or cleanup idempotency under races.",
+        "Focused Vitest was attempted in the sandbox, then twice outside it with fresh isolated PAPERCLIP_HOME directories. The sandbox run skipped because listen on 127.0.0.1 was EPERM; both escalated runs skipped all 12 tests after embedded PostgreSQL failed to start following five attempts. 0 tests executed and no runtime pass is claimed."
+      ],
       "completionRequirements": ["Read lines 1-753 exactly once, run the focused suite in an isolated Paperclip home, and assess version/input/template/config snapshotting, Issue creation/wake/cancel/cleanup, status concurrency, retention, evidence projection, secret handling and whether sandbox claims are enforced or prompt-only."]
     }
   ]
