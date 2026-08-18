@@ -6202,18 +6202,23 @@
     },
     {
       "id": "application:server/__tests__/issue-assignee-invokability-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mocked Express route tests for actor-sensitive Issue assignment: Agent actors cannot assign or delegate child Work to paused Agents or create a delegation loop back to an open ancestor's creator, while board actors may deliberately assign paused Agents and bypass the Agent-cycle guard.",
+      "dependencyDirection": "The suite mounts the full Issue router but replaces almost every service and uses a chainable empty DB stub. It therefore verifies route branching and service-call suppression, not AccessService, Agent graph eligibility, database transactions or runtime behavior.",
+      "keyDataModels": "Board versus Agent request actor, actor Run ID, Issue parent/creator/assignee/status, target Agent lifecycle status, open ancestor createdByAgentId and structured delegation_cycle details.",
+      "lifecycle": "On Issue patch or child creation, an Agent actor targeting a paused Agent receives 409 before mutation. Child delegation additionally searches open ancestors for one created by the proposed assignee and rejects the loop. A board actor can override paused-target admission and does not invoke the delegation-cycle query.",
+      "testAssessment": "ADAPT the explicit human-versus-Agent authority cases and assertions that mutation services are not called after rejection. Coverage is narrow and highly mocked: authorization always allows, local-board is not a verified human, the DB is empty, target resolution always returns a healthy chain, and no real transaction/run is exercised. Paused denial asserts an English substring instead of a stable code. Missing are top-level create, bulk/import/routine/pipeline entry points, terminated/pending/invalid-chain/cross-Company targets, Agent self-assignment, longer/mixed delegation loops, closed ancestors, races, human override authorization/approval/evidence and confirmation that a paused assignment remains queued rather than invoked.",
+      "designRationale": "Constrain autonomous delegation more tightly than deliberate human planning: humans may queue Work for a paused Agent, but an Agent may not bounce Work to a currently non-executable peer or recursively return a subtask to an ancestor creator.",
+      "companyOsProblem": "Company OS needs actor-sensitive delegation policy where autonomous Agents have narrower authority, accountable humans may make explicit exceptions, and every override is policy-checked and evidenced without confusing assignment with execution admission.",
+      "companyOsFit": "ADAPT the asymmetric actor policy and delegation-loop scenario into API integration tests backed by real identity/authorization and storage. Require an authenticated HumanPrincipal with responsibility scope for paused-target override, capture rationale and decision evidence, keep Work queued, and still require fresh ExecutionAdmission before resume. Use stable denial/override codes and a canonical assignment command so every entry point shares the policy.",
+      "responsibilityConflict": "The board override is represented by local-board and succeeds without accountable-human identity, role, approval threshold, rationale or audit receipt. Agent delegation safety is inferred only from open ancestor creator IDs rather than ResponsibilityContracts, and board actors bypass that loop check entirely, allowing a human route to create structurally circular responsibility without an explicit exception record.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-assignee-invokability-routes.test.ts:1-351",
+        "f91a6e27 feat(issues): contain cross-issue agent side effects (#10837)",
+        "ddbcf53e fix(server): refuse agent delegation cycles back to an open ancestor's creator (#10658)",
+        "ada47be7 fix(server): refuse agent-initiated issue assignment to paused agents (#10648)"
+      ]
     },
     {
       "id": "application:server/__tests__/issue-attachment-routes",
