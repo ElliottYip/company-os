@@ -2311,18 +2311,26 @@
     },
     {
       "id": "application:server/__tests__/agent-permissions-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Large route-level authorization suite spanning Agent read/config redaction, updates, host commands and instruction paths, Agent creation/hiring/approval/termination, runtime defaults, environment compatibility, task-assignment grants, peer configuration, Agent inbox and heartbeat cancellation.",
+      "dependencyDirection": "Agent routes combine authenticated actor and AccessService decisions with Agent/Approval/Heartbeat/Environment/Secret/Instruction/Skill/Budget services, normalize configuration, persist Agent/membership/grant state and emit ActivityLog/telemetry. Tests mock nearly every service but exercise the real Express route branching.",
+      "keyDataModels": "Board/Agent actor and Company scope, Agent adapter/runtime/permissions/trust/status, SecretRef env, host workspace command, InstructionBundle path, Agent membership/grants, hire Approval, heartbeat/model-profile defaults, instance Environment/driver, task-assignment source, peer configuration and user inbox filter.",
+      "lifecycle": "Read-only members receive empty adapter/runtime config while privileged Board views retain full config. Unauthorized members cannot update, create keys or wake Agents. Agent self-service cannot set host commands or instruction roots, including nested cheap profiles and hires; Board administrators can. Direct creation requires agents:create and is disabled when Company hire approval is required, creates membership plus tasks:assign, disables timer/cheap profiles by default and tolerates optional model-profile discovery failure. Pending Agents can be approved directly or through a linked approval; termination resolves linked approval and cancels invocations. Environment drivers are checked against Adapter capability, including instance-scoped cross-Company environments. Permission updates preserve omitted Skill denial but couple Agent creation to task assignment. Peer config reads require suggest/configure grants; cross-tenant Agent/run operations return 404.",
+      "testAssessment": "Forty-plus route cases provide unusually broad regression coverage for sensitive branches, nested command denial, Secret normalization, approval double-apply avoidance, environment/Adapter compatibility, cross-tenant hiding and patch preservation. Missing are production AccessService/database/transaction integration, denial side-effect assertions on every branch, immutable decision receipts, optimistic concurrency, requester-versus-approver separation, Secret redaction even for admins, command allowlisting/sandboxing, revoke/session propagation, risk/data policy, user inbox delegation binding, scoped peer resource checks, environment trust and rollback across Agent/grant/instruction/approval writes. The suite explicitly demonstrates raw API-key return to a privileged Board actor and arbitrary userId in Agent inbox lookup.",
+      "designRationale": "Centralize a complex compatibility surface while preventing Agent self-escalation into host code/filesystem control, supporting simple-mode usability, optional enterprise approval and multiple local/remote runtimes without breaking older configurations.",
+      "companyOsProblem": "Company OS needs action-specific, tenant- and resource-scoped authorization that separates human viewing, proposing, approving and executing; no convenience mode may bypass Secret custody, accountable delegation or data-purpose boundaries.",
+      "companyOsFit": "ADAPT nested dangerous-config detection, read-versus-admin projections, explicit create permission, approval-linked idempotent activation/termination, timer-off defaults, environment capability checks, tri-state patches and cross-tenant 404. REJECT raw Secret values in any config response, arbitrary Board-authored host commands without code-package trust/approval, direct self-approval, simple-mode task assignment and canCreateAgents=>tasks:assign coupling. Bind inbox access to signed delegated-human scope, not a query userId. Split the monolithic route into commands with PolicyPort decisions and immutable receipts.",
+      "responsibilityConflict": "A privileged Board response can contain PAPERCLIP_API_KEY plaintext. A Board actor can configure host-executed commands and directly approve a pending Agent without demonstrated separation of duties. Newly created/active Agents receive task assignment broadly, expanding delegation without a ResponsibilityContract. An Agent can request another user's inbox view by userId without a signed on-behalf-of binding. Peer suggest access is decided at Company resource scope rather than the exact target Agent/config fields.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-permissions-routes.test.ts:1-1883",
+        "1426494ab86efdb44f891f5633a0f294e8cfc5bc fix(agents): disable cheap model profiles by default (#10019)",
+        "93fdb9c2186318b958f3fa3bdc7bd26bd3339689 [codex] Harden same-company CEO authorization (#8276)",
+        "6a3f5b685d05a99b6fb45fe402cbf67461482373 fix(agents): clear inbox hire approval when approving/terminating from detail page (#8340)",
+        "3701be76fafd9c973f180c2949f870e8c409b987 fix: read-only agent config/skill endpoints should not require agents:create (#3725)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 [codex] Add agent permissions and controls plan (#6386)"
+      ]
     },
     {
       "id": "application:server/__tests__/agent-permissions-service",
