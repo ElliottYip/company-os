@@ -4746,6 +4746,76 @@
       ]
     },
     {
+      "id": "application:cli/esbuild.config.mjs",
+      "path": "cli/esbuild.config.mjs",
+      "lineCount": 80,
+      "sha256": "e244281f3f4c9c9168ada22349c2da444eab2028b742745496e3d154e3e9f7c9",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)", "d31a28828b82c292adc61d728f00e89c4b494da3 fix(acpx): support Windows agent spawning (#9980)", "fd2f82ac5bba6ce2db0c5d17c573733af5f2bbb8 Add built-in Hermes adapters (#8543)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 80 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-80 exactly once; assess bundling, externals, runtime assets, portability and supply-chain behavior."]
+    },
+    {
+      "id": "application:cli/index.ts",
+      "path": "cli/src/index.ts",
+      "lineCount": 259,
+      "sha256": "bb1043eacaa0c538bf083725715182f00a680f841b59862dbfc506d1fe8874b6",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)", "916c13501f80c1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)", "43b005b704f80aea3ce37cab8136920749c73ee6 Add pipeline workflow primitives and operator UI (#7903)", "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 259 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading; one historical subject line is retained as metadata only and the pinned source is authoritative."],
+      "completionRequirements": ["Read lines 1-259 exactly once; assess command composition, global flags, target context, errors, telemetry, secrets and tests."]
+    },
+    {
+      "id": "application:cli/package.json",
+      "path": "cli/package.json",
+      "lineCount": 65,
+      "sha256": "de0a4ba04696fcf44421bfeaa3d79baaeb47e8938b11261044457bbd07d9e92c",
+      "linkedEvidence": { "history": ["f9034ab3ca8b9b3be011de94b9c82f1e6322dae9 build(deps-dev): bump @types/node", "db61cc97d3a369db6a3f54d9e6e97040fd6b4b90 build(deps-dev): bump tsx", "753544d704699c2d1db19a55798a6795fe3767a1 build(deps): bump @clack/prompts", "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 65 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-65 exactly once; assess package surface, dependency ownership, scripts, licensing and runtime coupling."]
+    },
+    {
+      "id": "application:cli/telemetry.ts",
+      "path": "cli/src/telemetry.ts",
+      "lineCount": 49,
+      "sha256": "cdceb677a7d067f3bf64d5ab814ac85bef5f40a7ca54ac866b65989a760217ca",
+      "linkedEvidence": { "history": ["b947a7d76c331b3ce4069d3be0ade25cc89b1b90 Improve local plugin development workflow (#5821)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 49 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-49 exactly once; assess consent, identifiers, payload, network failure, privacy and tests."]
+    },
+    {
+      "id": "application:cli/tsconfig.json",
+      "path": "cli/tsconfig.json",
+      "lineCount": 8,
+      "sha256": "677f3cd1cd86f787c821865e0b72acae86d381dac510a51dff8e42fe5b0dd99b",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 8 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-8 exactly once; assess compiler boundary and exclusions."]
+    },
+    {
+      "id": "application:cli/version.ts",
+      "path": "cli/src/version.ts",
+      "lineCount": 32,
+      "sha256": "0d654e44916b37208422bcaba4ae069965557f11606a80436a312ebe05f58132",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 32 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-32 exactly once; assess provenance/version resolution and tests."]
+    },
+    {
+      "id": "application:cli/vitest.config.ts",
+      "path": "cli/vitest.config.ts",
+      "lineCount": 7,
+      "sha256": "2d4ac4b984c9b3891a9eabb63b9b5c9e6164b291453e8071055a56d68d67bfda",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 7 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-7 exactly once; assess test inclusion, isolation and omissions."]
+    },
+    {
       "id": "application:cli/config/data-dir",
       "path": "cli/src/config/data-dir.ts",
       "lineCount": 48,
