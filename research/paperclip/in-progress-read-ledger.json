@@ -6354,6 +6354,39 @@
       "completionRequirements": [
         "Read lines 1-441 exactly once and assess workspace isolation/shared policy, trust and review containment, concurrency, source control assumptions, egress grants, lifecycle/finalization and test quality against Company OS runtime and DataAuthorization boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/execution-workspaces-routes",
+      "path": "server/src/__tests__/execution-workspaces-routes.test.ts",
+      "lineCount": 392,
+      "sha256": "afe6e5bafa614c1d37e626c13a3aa39e53c823212354f147b9736b16b74042bb",
+      "linkedEvidence": {
+        "history": [
+          "f3ca4d24bc4b931882109f9617b488d9fd74bf6b fix: repair dirty/foreign-branch execution worktrees (#9297)",
+          "f17202b571ec605d4009e21a0e1316d74a1d55b9 Add execution workspace branch reconciliation route (#9170)",
+          "569b7affc43cea0854d213b348bc046c2c28049c [codex] Add bounded workspace overview (#8627)",
+          "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+          "5071c4c7768b2594e8414a1ee3f9f91931c921e3 Add workspace diff viewer plugin (#6071)",
+          "9a8d2199492654930ba0864dd5c0757163998649 Stabilize tests and local maintenance assets (#4423)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 392 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Nine mocked HTTP tests cover summary and bounded-overview queries, invalid pagination, blanket Agent rejection for three branch-reconciliation modes, successful audit logging, quarantine rescue metadata and waking a restored todo/in_review assignee.",
+        "Read endpoints delegate companyId from the URL to service methods; the access decision is globally mocked to allow and the tests do not assert action/resource inputs, denial, actor company mismatch, missing actor or instance-admin behavior. Thus these tests do not prove tenant authorization despite realistic board/Agent fixture shapes.",
+        "All branch reconciliation modes (forward, override and quarantine_restore) reject Agent JWT actors before service mutation or activity logging. This is a useful human-only safety floor, but the accepted board path proves only a user actor ID, not accountable-human role, separation of duties, approval, reason requirement or step-up authentication; forward even records null reason.",
+        "Successful reconciliation produces rich operational audit details: mode, source/target branch and SHA, ancestry, deterministic incoherence fingerprint, source issue, recovery action and audit comment. Quarantine adds rescue branch/commit metadata and source issue status, then wakes the restored assignee with structured recovery context.",
+        "The route-level activity write occurs after the service operation. The suite proves the call only and does not test log failure, durability, idempotency, atomic outbox ordering or whether the service's audit comment is authoritative. Likewise wakeup is post-mutation and failure/retry/deduplication are untested.",
+        "The file imports mocks for list/get/readiness/update/workspace operations but this unit exercises only summary/overview and reconciliation. It does not cover workspace detail, mutations, operation history, close readiness, diff/file bounds, low-trust access, path traversal, response redaction or stable error codes.",
+        "Sandboxed focused Vitest failed 9/9 solely because Supertest could not bind 0.0.0.0 under sandbox policy; approved unsandboxed focused Vitest passed 9/9."
+      ],
+      "completionRequirements": [
+        "Read lines 1-392 exactly once and assess workspace route authentication/authorization, bounded file/diff exposure, branch reconciliation and repair, low-trust containment, destructive controls, tenant/path isolation, error contracts and test quality against Company OS runtime and evidence boundaries."
+      ]
     }
   ]
 }

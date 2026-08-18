@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/execution-workspaces-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked Express route tests for lightweight/bounded workspace queries and human-only branch reconciliation, operational audit projection, quarantine rescue and Agent wakeup.",
+      "dependencyDirection": "Supertest/Express -> execution-workspace routes -> mocked access, workspace, operation, heartbeat and activity services; no database, Git process, filesystem, durable event store or real authorization policy is exercised.",
+      "keyDataModels": "Board/Agent actors, company-scoped workspace summary/overview, reconciliation mode/reason/actor, branch/SHA/ancestry/cleanliness fingerprint, recovery action, audit comment, rescue ref and restored issue wakeup context.",
+      "lifecycle": "Authorize/query workspace projections, or load workspace -> reject Agent reconciliation -> mutate branch state through service -> append activity details -> optionally wake restored issue assignee after quarantine recovery.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 9/9; sandboxed execution failed 9/9 because Supertest could not bind a local port. Tests are crisp for selected route orchestration but mock authorization as universally allowed and leave most imported workspace route surfaces, failure ordering and evidence durability untested.",
+      "designRationale": "Keep overview responses bounded, use a dedicated high-risk branch repair endpoint, deny autonomous Agents from repair modes, preserve dirty/diverged work in a rescue ref and reconnect restored work to the assigned Agent with structured recovery context.",
+      "companyOsProblem": "Company OS needs human-accountable recovery of corrupted execution state, with bounded inspection, non-destructive rescue, exact before/after evidence and safe resumption while keeping runtime artifacts and tenant data isolated.",
+      "companyOsFit": "ADAPT the bounded overview, deterministic incoherence fingerprint, non-destructive quarantine/rescue flow, human-only floor and structured recovery wakeup. Recast reconciliation as a high-risk ActionProposal bound to Work/Attempt/ResponsibilityContract, require eligible accountable-human approval plus reason and step-up policy, and commit mutation/evidence/outbox wakeup atomically or idempotently.",
+      "responsibilityConflict": "A generic board user may execute repair with no demonstrated accountable role or approval, while activity logging and wakeup happen after mutation without tested durability. The recorded actor omits a responsibility contract and authorization grant, so the rich operational record is not yet a complete responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/execution-workspaces-routes.test.ts:1-392 (SHA-256 afe6e5bafa614c1d37e626c13a3aa39e53c823212354f147b9736b16b74042bb)",
+        "git history: f3ca4d24bc4b931882109f9617b488d9fd74bf6b, f17202b571ec605d4009e21a0e1316d74a1d55b9, 569b7affc43cea0854d213b348bc046c2c28049c, dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2, 5071c4c7768b2594e8414a1ee3f9f91931c921e3, 9a8d2199492654930ba0864dd5c0757163998649, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 sandboxed focused Vitest: 9/9 failed because local port binding was forbidden",
+        "2026-08-19 approved unsandboxed focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "HIGH authorization-evidence gap: accessService is always mocked allow and no company mismatch or denial case is asserted. HIGH high-risk-action gap: a board user can reconcile without tested accountable role, approval, reason or step-up authentication. HIGH audit durability gap: mutation precedes route activity logging and wakeup with no failure/outbox/idempotency tests. HIGH untested exposure surface: file/diff/readiness/update/operation paths and low-trust containment are absent from this route suite. MEDIUM error-contract gap: stable codes and safe structured failure responses are not asserted."
+    }
+  ]
+}
