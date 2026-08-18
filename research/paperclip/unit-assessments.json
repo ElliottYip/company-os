@@ -4247,18 +4247,22 @@
     },
     {
       "id": "application:server/__tests__/dev-server-status",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for persisted dev supervisor status parsing/projection and sibling restart-request writing.",
+      "dependencyDirection": "Real temporary JSON files feed pure/status helper functions; no supervisor process runs.",
+      "keyDataModels": "Dirty/changed path/migration/restart timestamps, auto-restart and active-run state, restart request reason/time.",
+      "lifecycle": "Read/normalize bounded status, project restart/waiting state and write a manual request file.",
+      "testAssessment": "Focused Vitest passed 4/4. File-size bounding and cleanup are useful; schema/type/range/time, ownership/mode/link, atomicity/concurrency, expiry/ack/result and active-work continuity are absent.",
+      "designRationale": "Let a local dev supervisor communicate hot-reload state through dependency-free files.",
+      "companyOsProblem": "Company OS development tooling may need fast local restart feedback, but production control/execution planes require authenticated durable commands.",
+      "companyOsFit": "ADAPT only for a separately packaged dev profile. Add adversarial filesystem and request lifecycle tests, and prove the endpoint/protocol is absent or disabled in production builds/profiles.",
+      "responsibilityConflict": "The test protocol has no human actor, approval, exact state/action digest or evidence that active Agent work was preserved.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/dev-server-status.test.ts:1-103",
+        "full source SHA-256 73955b7b1403a81ef65558f79c53638ad29d12024dab1738529b0db2f3a33696",
+        "2026-08-18 focused Vitest: 4/4 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/dev-watch-ignore",
@@ -5035,18 +5039,22 @@
     },
     {
       "id": "application:server/__tests__/health-dev-server-token",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for token-gated dev diagnostics and local/authenticated restart access.",
+      "dependencyDirection": "Environment token/status files and fake actors/DB feed the real health router over Supertest.",
+      "keyDataModels": "Dev status token, anonymous actor, deployment mode, devServer health projection and restart request response/file.",
+      "lifecycle": "Present a supervisor token to read details; request restart anonymously in local_trusted; deny anonymous restart in authenticated mode.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 3/3 with isolated PAPERCLIP_HOME. It omits incorrect/rotated/replayed token cases, Agent/ordinary-board authority, CSRF, production gating, idempotency and file/evidence safety.",
+      "designRationale": "Allow an external dev runner to inspect authenticated-mode status while preserving a basic anonymous production boundary.",
+      "companyOsProblem": "Company OS needs strict separation between developer convenience credentials and customer-facing identity/authorization.",
+      "companyOsFit": "REFERENCE_ONLY. Build explicit tests that dev tokens cannot authorize control actions, ordinary humans/Agents cannot restart, and all dev endpoints are profile/build gated away from production.",
+      "responsibilityConflict": "Authenticated mode checks only board-vs-none, not accountable authority; local trusted mode permits anonymous process mutation with no evidence.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/health-dev-server-token.test.ts:1-213",
+        "full source SHA-256 c0649844c8fca7124b4fbb73bff2009b651f33797fc458b8b22caecad0eb2cc4",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 3/3 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-accepted-plan-workspace-refresh",
@@ -9582,18 +9590,22 @@
     },
     {
       "id": "application:server/dev-server-status.ts",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unversioned filesystem protocol for dev supervisor status and restart request plus a health projection.",
+      "dependencyDirection": "An environment-selected status path is synchronously read; a fixed sibling path is created/overwritten for control; parsed state feeds health API.",
+      "keyDataModels": "PersistedDevServerStatus, DevServerHealthStatus and DevServerRestartRequest.",
+      "lifecycle": "Read/normalize supervisor state, derive restart reason/waiting state and overwrite a restart request for external consumption.",
+      "testAssessment": "Helper tests pass but do not cover the production-critical filesystem and request lifecycle gaps visible in source.",
+      "designRationale": "Use a simple language/runtime-neutral bridge between the server and a local dev process supervisor.",
+      "companyOsProblem": "Company OS needs local development ergonomics without allowing informal file protocols to become production execution authority.",
+      "companyOsFit": "REFERENCE_ONLY as dev tooling. A production restart must use a versioned authenticated command/operation with idempotency, actor/approval, exact runtime/config digest, expiry, drain/adoption proof, result and immutable audit evidence.",
+      "responsibilityConflict": "The request records only time and a constant reason; there is no accountable human, action target, approved state, work impact or completion evidence.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/dev-server-status.ts:1-134",
+        "full source SHA-256 a614c80e82f1c4cdad3471d76556d8281507b02ef86ee0f4c267b124bef42209",
+        "f25753053749d42fa808a9d92132467d2d75dcd0 [codex] UI and dev ops quality-of-life (#6384)"
+      ]
     },
     {
       "id": "application:server/dev-watch-ignore.ts",

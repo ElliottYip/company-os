@@ -4,6 +4,58 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/__tests__/dev-server-status",
+      "path": "server/src/__tests__/dev-server-status.test.ts",
+      "lineCount": 103,
+      "sha256": "73955b7b1403a81ef65558f79c53638ad29d12024dab1738529b0db2f3a33696",
+      "linkedEvidence": { "history": ["f25753053749d42fa808a9d92132467d2d75dcd0 [codex] UI and dev ops quality-of-life (#6384)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 103 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four helper tests cover normal status normalization, waiting-for-idle projection, 64KiB file cap and restart request placement/content.",
+        "Malformed types/ranges/dates, path traversal, file ownership/mode/links, atomic partial writes, concurrent requests, stale status/request and cleanup/acknowledgement are absent.",
+        "Focused Vitest passed all 4 helper tests in the combined 7-test run."
+      ],
+      "completionRequirements": ["Read lines 1-103 exactly once and assess persisted status/restart request parsing, file trust, projection semantics and test quality."]
+    },
+    {
+      "id": "application:server/__tests__/health-dev-server-token",
+      "path": "server/src/__tests__/health-dev-server-token.test.ts",
+      "lineCount": 213,
+      "sha256": "c0649844c8fca7124b4fbb73bff2009b651f33797fc458b8b22caecad0eb2cc4",
+      "linkedEvidence": { "history": ["51bb41c7e334440566ecf63cfc96fc36da05d7d2 Expose the running build commit on the unauthenticated health response (#10563)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 213 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Three route tests cover correct diagnostic token disclosure, unauthenticated local_trusted restart request and unauthenticated authenticated-mode denial.",
+        "Wrong/empty/different-length tokens, token rotation/replay, Agent and ordinary board callers, CSRF, production mode, restart idempotency/concurrency, file trust and audit evidence are absent.",
+        "Approved unsandboxed focused Vitest with PAPERCLIP_HOME isolated under /private/tmp passed all 3 route tests in the combined 7-test run."
+      ],
+      "completionRequirements": ["Read lines 1-213 exactly once and assess diagnostic-token disclosure, board/anonymous restart authorization, error codes and test quality."]
+    },
+    {
+      "id": "application:server/dev-server-status.ts",
+      "path": "server/src/dev-server-status.ts",
+      "lineCount": 134,
+      "sha256": "a614c80e82f1c4cdad3471d76556d8281507b02ef86ee0f4c267b124bef42209",
+      "linkedEvidence": { "history": ["f25753053749d42fa808a9d92132467d2d75dcd0 [codex] UI and dev ops quality-of-life (#6384)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 134 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "A file-based, unversioned protocol reads supervisor change/migration state and writes a fixed sibling restart request; a pure projection derives restart reason and waiting-for-idle from active run count.",
+        "Status size is checked before synchronous read, but stat/read follows symlinks and has a TOCTOU growth window. File ownership/mode/type are not validated; timestamps are arbitrary strings and changedPathCount/activeRunCount have weak or no bounds.",
+        "Restart request writing creates directories and truncates/follows an existing file with default permissions, no atomic rename/fsync/link defense or ownership check. It contains no request ID, actor, expected status/config digest, expiry, acknowledgement or result.",
+        "The protocol is useful for local development but is not a safe production control contract and cannot prove active work drain/adoption or responsibility continuity."
+      ],
+      "completionRequirements": ["Read lines 1-134 exactly once and trace status/restart file paths, schema validation, atomicity, permission/link safety and control-plane coupling."]
+    },
+    {
       "id": "application:server/__tests__/health",
       "path": "server/src/__tests__/health.test.ts",
       "lineCount": 547,
