@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-workspace-session",
+      "auditStatus": "COMPLETE",
+      "function": "A 2,913-line mixed unit/real-Git suite covering local workspace identity guards, Git-worktree base readiness, credential scrubbing, push preflight, low-trust sandbox isolation, workspace reuse/config freshness, task-session reset/fingerprints, comment wake batching, explicit provider session resume, session-state poisoning defenses, warnings, candidate ordering, compaction and sync-conflict classification.",
+      "dependencyDirection": "Tests many helpers exported from the monolithic Heartbeat service plus Codex codec, filesystem/Git, Agent/workspace/trust shapes. The application layer directly knows local paths, adapter names, Git, provider session formats, Skill keys and internal metadata keys.",
+      "keyDataModels": "Resolved and persisted ExecutionWorkspace; ProjectWorkspace and Git strategy; low-trust boundary/root Issue; versioned workspace/session config fingerprints and safe change categories; TaskSession params/display/lastRun; wake context/comment IDs; provider codec; session compaction policy.",
+      "lifecycle": "Fail local Git-sensitive execution on workspace/project/path/providerRef/branch/metadata mismatch; reject invalid worktree bases and surface materialization cause; redact Git URL credentials; require an explicit PR-workflow Skill and push remote; fail low-trust non-sandbox work before workspace side effects; migrate only matching fallback sessions; fingerprint effective workspace/session configuration, reuse/refresh/replace deterministically and fail explicit restore loudly; reset or defer sessions by wake/config changes; strip control-plane metadata before adapter invocation; validate provider resume state and discard poisoned Hermes identifiers.",
+      "testAssessment": "More than one hundred focused cases encode unusually rich operational lessons: fail-before-side-effect low-trust checks, explicit Skill capability rather than issue-text inference, fallback-cause fidelity, safe config category receipts, instruction content drift without content retention, no raw secret/env values in fingerprints, immutable explicit reuse, provider codec validation and poison fallback. The suite is nevertheless a 2,913-line architectural catch-all with extensive vendor and filesystem assumptions. Missing or weak areas include remote Connector attestation, cross-platform paths/Git, symlink/path traversal, push authorization rather than mere remote presence, config fingerprint canonicalization compatibility, collision/version migration, general session validation for non-Hermes adapters, data-retention/privacy policy, concurrent reuse, and end-to-end enforcement of all pure helpers.",
+      "designRationale": "A Run may reuse mutable workspace and provider session state only when their effective configuration and identity still match. Low-trust work must be sandboxed before any host mutation, and persisted metadata should detect relevant drift without storing secret values or instruction contents.",
+      "companyOsProblem": "Company OS needs vendor-neutral execution-context freshness and containment across managed/local Connectors: exact workspace/data snapshot, trust boundary, secret/version changes, model/Skill configuration and opaque provider sessions must not silently cross responsibility contracts.",
+      "companyOsFit": "ADAPT the invariant catalogue, safe category fingerprints, fail-before-side-effect low-trust gate, explicit capability preflight, immutable explicit reuse and codec-based session validation. Split ownership into WorkspacePort, TrustPolicyPort, SessionPort and Connector compatibility tests. Bind fingerprints to Work/accountable human/authority/data/approval/Skill/Connector versions; use opaque resource IDs instead of host paths; require remote attestation for non-local execution; keep vendor session parsing entirely in adapters and never persist private reasoning.",
+      "responsibilityConflict": "Non-local execution bypasses the local Git guard without a tested remote attestation contract; a configured push remote is treated as capability without proving credential scope or human approval; low-trust policy is rooted in Issue ancestry but not a data-authorization/export contract. Non-Hermes arbitrary session IDs are accepted unchanged, and core Heartbeat logic contains vendor-specific session/compaction policy. Several warnings and decisions are English strings rather than stable codes, while automatic workspace/session migration is not tied to explicit accountable-human acceptance.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-workspace-session.test.ts:1-2913",
+        "7428fb956f5e2da0c6cc4bb74a669859ed06d864 Guard git-sensitive adapter workspaces (#7644)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+        "fb28cf38b4aae6de91f846940c45e917925f74b0 Guard Hermes resume session state (#7516)",
+        "a8f0ebaa8015b15b594e3adc24a2f4e0733d679 Refresh run config before reusing workspaces (#8797)",
+        "bc5c392331cd43d530314ecceff910901d785806 Stop inferring PR credential preflight from Issue text (#10755)",
+        "42c73562c5c18cb4e01d60f3d89295ff13992a36 Backfill projectWorkspaceId when restoring a reused workspace (#10171)"
+      ]
+    }
+  ]
+}
