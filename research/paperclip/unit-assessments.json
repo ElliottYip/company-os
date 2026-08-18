@@ -1434,18 +1434,23 @@
     },
     {
       "id": "application:cli/checks/config-check",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Performs the CLI doctor's narrow configuration-file preflight: resolve the selected path, report absence, otherwise delegate parsing and validation to the configuration store and convert thrown failures into a user-facing result.",
+      "dependencyDirection": "CLI health-check leaf -> CLI config store (readConfig, configExists, resolveConfigPath) and -> shared CheckResult type. It does not reach the database, runtime or HTTP service directly; the actual schema and parsing guarantees remain owned by the config-store dependency and must be assessed with that unit.",
+      "keyDataModels": "CheckResult with name/status/message plus optional canRepair and repairHint; an optional caller-supplied config path; no persisted domain entity. Failure identity is carried only by English display text rather than a stable machine code and structured parameters.",
+      "lifecycle": "Resolve path -> test existence -> fail with onboarding hint when absent -> synchronously read/validate via readConfig -> pass when no exception -> catch any thrown value and interpolate it into a failure message. The check performs no repair and has no retry, timeout or side effect of its own.",
+      "testAssessment": "No focused config-check test was found under cli/src. Static TypeScript coverage can catch interface drift, but there is no behavioral regression proof for absent files, custom paths, malformed configuration, non-Error throws, permission failures or information disclosure in propagated errors. Validation depth is delegated to the not-yet-covered config-store unit rather than demonstrated here.",
+      "designRationale": "A small synchronous wrapper keeps doctor orchestration separate from config storage and gives operators an actionable onboarding/configure hint. Catching unknown thrown values prevents the diagnostic command from crashing, but collapsing every failure into one display-string result loses stable failure semantics.",
+      "companyOsProblem": "Company OS also needs local/self-hosted deployment diagnostics that distinguish missing, malformed, unreadable and unsafe configuration without starting production services or requiring real credentials.",
+      "companyOsFit": "The narrow leaf-check shape fits a composable doctor command, but Company OS needs a vendor-neutral diagnostic result with stable code, structured parameters, severity, evidence-safe detail and deployment-profile context. Existence/readability is only one check; secret references, file ownership/mode, symlink policy and configuration/profile consistency must have separate canonical checks.",
+      "responsibilityConflict": "No direct human/Agent responsibility conflict. However, free-form propagated exception text is unsuitable as an audit or API contract, and an operator-facing pass must not be interpreted as authorization, identity validity, secret safety or production readiness.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/checks/config-check.ts (33 lines; SHA-256 a8dbf85284bb2a5da70989dacc90db7a6b7720b6b3b731f2bc4d92a7b8061e3a)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103)); all current lines attribute to this commit",
+        "Repository search found no configCheck/Config file focused test under cli/src test/spec files"
+      ],
+      "securityFindings": "The check reveals the resolved config path and directly embeds the caught error text; depending on store/parser and OS errors, this can disclose filesystem layout or sensitive configuration fragments. It does not inspect permissions, ownership, symlink traversal, secret material, environment overrides or deployment-mode invariants. Reuse only the orchestration idea: sanitize detail, return stable codes, keep secrets out of evidence/logs, and split parse validity from security posture and readiness checks."
     },
     {
       "id": "application:cli/checks/database-check",
