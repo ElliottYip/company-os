@@ -4750,18 +4750,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-lock-release-on-reassignment",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres regression tests for cross-Agent reassignment while another Agent owns an Issue execution lock, including deferral behind a running holder and optimistic cancellation protection when a queued holder is concurrently claimed.",
+      "dependencyDirection": "heartbeatService reads mutable Issue execution ownership and Run status to defer the new assignee; the race regression directly exercises the conditional database UPDATE shape used to cancel a stale queued holder.",
+      "keyDataModels": "Issue assigneeAgentId versus executionRunId/executionAgentNameKey/executionLockedAt, holder HeartbeatRun queued/running/cancelled state and error code, original/new AgentWakeupRequest status, and requested actor metadata.",
+      "lifecycle": "If Work is already running under the previous Agent after reassignment, the new Agent wake is persisted as deferred and the current Run/lock is left untouched; for a holder observed queued, cancellation is conditional on that exact status, so a concurrent queued-to-running claim prevents cancellation and retains the holder and Issue lock.",
+      "testAssessment": "Two focused database tests cover running-holder deferral and a compare-on-status race guard. They do not cover the actual queued-holder cancellation through heartbeatService, promotion of the deferred new assignee, terminal handoff, process/Connector cancellation acknowledgment, session/tool/token revocation, workspace ownership, evidence preservation, reassignment authorization, repeated/ABA state transitions, distributed fencing, transaction/outbox crash points, timeout or old Agent completion after reassignment. The race is simulated by issuing the production-shaped UPDATE manually rather than interleaving service transactions.",
+      "designRationale": "Avoid concurrent Agents executing the same Issue and prevent a reassignment cleanup path from clobbering a Run that another worker has just claimed.",
+      "companyOsProblem": "Company OS must transfer responsibility and execution authority between Agents or humans without double execution, stale credentials, lost evidence or ambiguity over whether the previous attempt may finish.",
+      "companyOsFit": "ADAPT the compare-and-set guard and deferred successor queue, but model reassignment as a versioned HandoffDecision. Use a fenced ExecutionLease generation bound to Work, responsibility contract, Agent, permissions/data contract and runtime attestation; select an explicit policy to let-finish, cancel-and-wait or force-revoke, require Connector acknowledgment/timeout, revoke runtime capabilities, freeze evidence, and only then activate the successor. Persist immutable requested/approved/effective handoff receipts through a transaction/outbox.",
+      "responsibilityConflict": "The Issue assignee already points to Reviewer while Coder continues executing, with no accountable-human handoff decision or indication whether old authority remains valid. The requestedBy user is not authorization-tested, the running holder's capabilities are not revoked, and mutable row/status predicates provide concurrency safety but not responsibility-chain continuity or external-runtime fencing.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-lock-release-on-reassignment.test.ts:1-273",
+        "deef1f479db4219a5aef596402c4e1d3a3739a03 fix(heartbeat): release execution lock on cross-agent reassignment (#5110)",
+        "3b7c42be867cc711c32e114d88e015a692ed6765 fix(openclaw-gateway): complete and stabilize OpenClaw Gateway integration (#2322)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-managed-clone-credentials",
