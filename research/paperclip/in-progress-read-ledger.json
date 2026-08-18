@@ -4,6 +4,30 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/__tests__/company-portability-routes",
+      "path": "server/src/__tests__/company-portability-routes.test.ts",
+      "lineCount": 1236,
+      "sha256": "8ebe51a11acdb3698d57d37c75f7fd55d9294784561b445b82f42d2060135f92",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1236 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-300 build mocked Express/Supertest apps with dynamic module imports to isolate each route-local in-memory job map, plus a shared app for per-user job isolation. Service side effects are mock-observable, but no real persistence, transaction or schema behavior is exercised.",
+        "Primary board/cloud fixtures are owner plus instance admin, so positive cases cannot distinguish membership, ownership, platform authority or accountable-human approval. Polling uses twenty 10ms retries, creating timing sensitivity while proving only same-process completion.",
+        "The suite prepares JSON and hand-built STORE ZIP inputs and explicit cloud stack/company headers, useful for transport-path coverage but not yet adversarial compression/resource/provenance testing.",
+        "Lines 301-600 deliberately permit a same-company free-form ceo Agent to preview and export full bundles through both legacy and safe routes, and permit a board actor whose fixture has only companyIds (no explicit membership role) to export. They correctly deny non-CEO/cross-company calls before validation/service side effects.",
+        "Agent-safe import blocks replace and mismatched route/target companies, while the global preview remains board-only. These are valuable negative boundaries, but no human approval, data classification/export authority, purpose contract, evidence digest or step-up authentication is required for the positive high-risk paths.",
+        "Lines 601-900 require instance admin only for new-company global imports, then codify Cloud async behavior: return 202 before full payload validation, store raw service error messages, keep terminal jobs one hour and drop them to 404, while synchronous execution remains the default absent an opt-in header.",
+        "Successful job state and company.imported activity are checked, but the activity follows import completion and failure activity is absent. The test intentionally accepts invalid requests as running jobs and exposes internal exception text to the tenant, confirming unstable error semantics and ambiguous responsibility rather than guarding against them.",
+        "Lines 901-1236 cover board full-result jobs, cross-user 404 isolation, same-user same-request adoption, different-request rejection, retry after terminal failure, board-only status, pauseAutomations, JSON/multipart ZIP sync and async signals, and truncated-ZIP rejection.",
+        "Duplicate control is per user, so two board users may concurrently import the same target; tests explicitly allow this and do not cover target-level serialization. Board jobs retain and return the entire import result in memory. Only a truncated ZIP is adversarially tested—no traversal, duplicate names, symlink, encryption, compression ratio, entry count, Unicode collision or oversized meta cases.",
+        "CEO Agent apply is expected to call importBundle with a null boardUserId. This proves the high-risk mutation has no accountable human in the service call; Agent ID/run context appears only in a later best-effort activity log and is not bound to an approval, request digest or durable job."
+      ],
+      "completionRequirements": ["Read lines 1-1236 exactly once and assess every portability route actor/profile, preview/export/import contract, async job lifecycle, idempotency, errors, side effects and test quality."]
+    },
+    {
       "id": "application:server/__tests__/company-portability-import-batching",
       "path": "server/src/__tests__/company-portability-import-batching.test.ts",
       "lineCount": 485,

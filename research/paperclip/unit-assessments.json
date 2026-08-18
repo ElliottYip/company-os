@@ -3705,18 +3705,30 @@
     },
     {
       "id": "application:server/__tests__/company-portability-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Express/Supertest contract suite for company portability preview/export/import across board, CEO Agent and Cloud tenant actors, synchronous/async JSON/ZIP transports and process-memory job status.",
+      "dependencyDirection": "Fake request actors and mocked application services exercise the real monolithic companies router; dynamically imported router instances isolate or share route-local job Maps for job identity/concurrency tests.",
+      "keyDataModels": "Company/actor IDs, free-form CEO role, portability include/target/collision strategy, Cloud stack headers, inline/ZIP source, ImportJob status/full result and company.imported activity.",
+      "lifecycle": "Authorize actor, preview/export or accept sync/async import; validate/decompress transport; start in-memory job; poll by actor-bound ID; adopt duplicate or reject different request; retain terminal result one hour then return 404.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed all 38 tests. The suite is broad and behavior-focused for route authorization ordering, cross-company denial, board-job isolation, duplicate UX, sync/async signals, multipart conversion, terminal retry and truncated ZIP rejection. Services are mocked, so persistence/transaction/resource safety is unproved. Missing cases include target-level concurrency across users, durable restart recovery, stable error codes, approval/data authority, cancellation/timeout/progress, idempotency across processes and adversarial ZIP traversal/symlink/encryption/ratio/count/Unicode/oversize inputs.",
+      "designRationale": "Support portable Cloud/self-hosted company transfer and a UI-friendly long import path while preventing cross-company Agent access, destructive replace in Agent-safe mode and cross-user job disclosure.",
+      "companyOsProblem": "Company OS needs governed, durable, provenance-preserving organization import/export with consistent managed/self-hosted behavior and exact human/Agent responsibility binding.",
+      "companyOsFit": "REIMPLEMENT the contract around durable MigrationJob commands and projections. Preserve deny-before-parse tests, cross-company/actor isolation, safe collision restrictions, JSON/ZIP equivalence and duplicate-vs-different request UX. Replace per-process/per-user Maps with target-scoped durable leases and canonical request digests; require verified human authority, data contract, risk approval, Agent/run identity, stable errors and evidence/outbox records.",
+      "responsibilityConflict": "The suite intentionally permits same-company CEO Agents to export and import. CEO Agent apply passes null as boardUserId; no human is bound to the service mutation. Any board company member may take the same actions, failures emit no activity, and successful activity is a later side effect rather than an atomic responsibility record.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/company-portability-routes.test.ts:1-1236",
+        "full source SHA-256 8ebe51a11acdb3698d57d37c75f7fd55d9294784561b445b82f42d2060135f92",
+        "5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 38/38 passed"
+      ],
+      "securityFindings": [
+        "Job duplicate control is scoped to actorKey, so separate authorized users may concurrently mutate the same target company; the suite explicitly verifies other users are not blocked.",
+        "Async requests receive 202 before full payload validation and later expose raw exception messages in multiple response fields; invalid or unauthorized-at-target work can look accepted and error strings become an unstable information-bearing contract.",
+        "Board jobs retain and return the complete import result in process memory for one hour, without durable encryption, data minimization, bounded result size or restart semantics.",
+        "The sole malformed-ZIP case is truncation; archive path traversal, duplicate/case/Unicode paths, link types, encryption, entry/count/ratio/size limits and parser differential attacks remain uncovered.",
+        "A query parameter or trusted Cloud header selects async execution, but there is no idempotency key, target lease, cancellation, timeout or durable operation proof."
+      ]
     },
     {
       "id": "application:server/__tests__/company-search-extract-routes",
