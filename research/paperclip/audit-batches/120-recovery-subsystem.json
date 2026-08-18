@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/recovery",
+      "auditStatus": "COMPLETE",
+      "function": "Seventeen-file recovery subsystem that classifies stranded work and issue-graph liveness, retries or escalates assignment/continuation/review failures, watches silent active runs, creates source-scoped recovery actions, schedules provider-quota waits, repairs dependency wakes, and terminalizes orphaned runs/stale issue locks.",
+      "dependencyDirection": "Pure policy helpers import shared types, but the 5,813-line service directly imports Drizzle schema, budgets, issues, execution policy, activity log, process supervisor, run-log storage, settings, redaction and Heartbeat enqueueWakeup. Recovery is therefore an orchestration monolith coupled to Paperclip issue/run/Agent storage and local process semantics rather than a portable domain boundary.",
+      "keyDataModels": "HeartbeatRun, AgentWakeupRequest, Issue, IssueRelation, IssueRecoveryAction, WatchdogDecision, RunEvent, IssueComment metadata, execution policy/state, liveness finding, recovery origin/fingerprint, retry classification, model-profile hint, pause hold and successful-run disposition evidence.",
+      "lifecycle": "Scan persisted work and runs; suppress on active paths/interactions/pause holds/operator cancellation; classify terminal failures; perform bounded retries or provider-quota monitors; upsert source-scoped recovery action; block/escalate with structured comment metadata; wake an Agent owner; separately scan issue-graph dead ends, silent runs and stale locks; retire obsolete recovery issues and clear terminal references. Several updates are transactional or guarded by unique indexes/advisory locks, while many cross-table issue/comment/activity/wake effects remain sequential and only partially idempotent.",
+      "testAssessment": "Six colocated focused tests cover model-profile hint scrubbing, provider error text classification, one-shot review-path recovery with one DB uniqueness matcher, pause retry classification, structured stranded notices, and successful-run missing-disposition handoff including untrusted-text fencing. Major service paths are not covered inside this unit; external recovery/watchdog/stale-lock tests remain separate pending units. Gaps include multilingual/provider-structured failures, crash points across sequential side effects, distributed scheduler races, general wake-key uniqueness, accountable-human owner routing, Connector pause/cancel receipts, permission/data-contract digests and property-based graph recovery.",
+      "designRationale": "Prevent assigned work from silently losing its execution or review path, keep automatic repair bounded, preserve human operator cancellation and pause holds, surface ambiguous success as a missing-disposition incident, and make failure recovery visible rather than leaving live-looking stale rows.",
+      "companyOsProblem": "Company OS needs a canonical Recovery application capability for bounded retry, durable wait, responsibility-aware escalation, crash recovery, stale execution leases, graph dead ends, provider quota and explicit successful-run disposition. It also needs typed recovery causes and receipts across managed-cloud and self-hosted execution nodes.",
+      "companyOsFit": "ADAPT the source-scoped recovery action, bounded retry, operator-cancel exemption, pause hold, successful-run disposition, untrusted-evidence fencing, stale-lease compare-and-set, recovery fingerprint/cooldown and explicit observability patterns. Re-express them behind Company OS ports with a durable command/outbox, typed Connector terminal events, exact work/responsibility/data/approval digests, human-first escalation policy and separate RecoveryPolicy, RecoveryProjection and ExecutionLease owners.",
+      "responsibilityConflict": "Recovery owner selection is predominantly Agent reporting chains, creator Agents and hard-coded CTO/CEO roles; board is a fallback value rather than an accountable human principal with authority. Several recoveries reassign and wake Agents without binding the original responsible human or immutable permission/data contract. English error/output classification can change routing meaning, and best-effort/sequential wake/comment/audit writes can leave authority and execution state divergent.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/recovery/service.ts:765-5813",
+        "server/src/services/recovery/issue-graph-liveness.ts",
+        "server/src/services/recovery/run-liveness-continuations.ts",
+        "server/src/services/recovery/successful-run-handoff.ts",
+        "server/src/services/recovery/review-path-recovery.ts",
+        "server/src/services/recovery/model-profile-hint.ts",
+        "server/src/services/recovery/stranded-notice.ts",
+        "server/src/services/recovery/provider-failure-classification.test.ts",
+        "server/src/services/recovery/review-path-recovery.test.ts",
+        "server/src/services/recovery/successful-run-handoff.test.ts",
+        "server/src/services/recovery/stranded-notice.test.ts",
+        "server/src/services/recovery/service.pause-durability.test.ts",
+        "packages/db/src/schema/agent_wakeup_requests.ts",
+        "packages/db/src/schema/heartbeat_runs.ts"
+      ]
+    }
+  ]
+}
