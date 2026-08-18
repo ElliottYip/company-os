@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-custom-image-routes",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route tests for administering reusable sandbox custom-image setup sessions, issuing browser-terminal tokens, promoting/cancelling sessions and rolling back or disabling templates.",
+      "dependencyDirection": "Supertest/Vitest -> Express environment routes -> mocked environment, custom-image, Secret, workspace and activity services plus the real in-memory terminal-session/connection registries; provider runtime and database are not exercised.",
+      "keyDataModels": "Company-scoped environment, active custom-image template, setup session and state/expiry, live SSH connection payload, redacted connection summary, short-lived terminal session/token, provider lease/template references and activity record.",
+      "lifecycle": "Authorize board operator/company -> start or refresh an expiring provider setup lease -> optionally mint a redacted terminal token -> user configures image -> finish and promote captured template or cancel -> later roll back/disable/delete provider template -> redact activity and invalidate terminal access.",
+      "testAssessment": "The approved unsandboxed focused run passed 15/15; the sandbox run failed 15/15 only because Supertest was forbidden to bind 0.0.0.0. Tests strongly cover pre-read authorization, state/expiry gates, restricted SSH payloads, terminal-token URL hygiene, known-value log redaction and terminal invalidation on finish. Service mocks leave tenancy integrity, persistence transactions, idempotency/concurrency, provider failures and immutable audit behavior unproved.",
+      "designRationale": "Let an authorized human interactively prepare a reusable remote execution image while minimizing how long live provider credentials are exposed and keeping secrets out of routine activity logs.",
+      "companyOsProblem": "Company OS needs governed, reusable execution-node images for managed and local Connector runtimes, including temporary human setup access, safe promotion/rollback and evidence of who changed the executable environment.",
+      "companyOsFit": "ADAPT the explicit setup-session state machine, short-lived opaque terminal token, token-free WebSocket URL, pre-read authorization and close-on-finish behavior. Replace broad admin authority with environment-scoped roles and approval policy; bind image digest, source, SBOM/signature, actor, accountable human, reason, Work/data policy and runtime attestation; make responses and metadata classification-driven.",
+      "responsibilityConflict": "Template promotion, rollback and provider deletion materially change future Agent execution but are not bound here to a responsibility contract or approval digest. Instance-admin status alone cannot establish who requested, reviewed and accepted the supply-chain and data-access consequences.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-custom-image-routes.test.ts:1-641 (SHA-256 35f9e65c9bc81ef93d35bf201b52d71de74cc7ccb3ceaa9421434ff67b177f55)",
+        "git history: bcac517f3b9255f7daaec7ca46f703906de2284b, b4815bf964a7cfd18bc5bd8f380323831205557d, 8d9f9fd24086a3ae8ee7edc83f8368084be81277",
+        "2026-08-19 sandboxed focused Vitest: 0/15 passed because local listen was denied (EPERM)",
+        "2026-08-19 approved unsandboxed focused Vitest: 15/15 passed"
+      ],
+      "securityFindings": "HIGH responsibility/approval gap for image promotion, rollback and provider deletion. HIGH live-credential exposure boundary: authorized instance admins receive a complete SSH command; tests do not prove audience/device/origin binding, single use or replay resistance. MEDIUM data-classification gap: template/provider identifiers and arbitrary metadata can be returned while redaction tests only assert selected fixture strings. MEDIUM integration gap: mocked services do not prove cross-company integrity, transactionality, concurrency or audit-write failure handling."
+    }
+  ]
+}

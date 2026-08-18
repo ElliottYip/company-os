@@ -5859,6 +5859,34 @@
       "completionRequirements": [
         "Read lines 1-251 exactly once and assess environment config normalization, provider/transport fields, Secrets, unknown keys, validation, deployment portability and test quality against Company OS execution-node profiles."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-custom-image-routes",
+      "path": "server/src/__tests__/environment-custom-image-routes.test.ts",
+      "lineCount": 641,
+      "sha256": "35f9e65c9bc81ef93d35bf201b52d71de74cc7ccb3ceaa9421434ff67b177f55",
+      "linkedEvidence": {
+        "history": [
+          "bcac517f3b9255f7daaec7ca46f703906de2284b Add browser SSH terminal for custom image setup (#8911)",
+          "b4815bf964a7cfd18bc5bd8f380323831205557d Scope environment custom images to instance environments (#8850)",
+          "8d9f9fd24086a3ae8ee7edc83f8368084be81277 Add reusable sandbox custom images (#8794)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 641 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Fifteen HTTP tests cover setup start/status, short-lived browser-terminal token minting, state/expiry/payload rejection, actor and company gates, finish/promotion, cancel, rollback/disable and activity-log redaction.",
+        "The route denies Agent API-key actors and non-admin board users before reading setup state or refreshing live connection payloads. This avoids authorization-side-channel disclosure, but the positive authority is broad instance-admin status rather than an environment-scoped operator role or accountable-human responsibility assignment.",
+        "Terminal issuance returns an opaque token separately from a token-free WebSocket path, bounds it by setup/payload expiry, permits only a restricted SSH command shape and redacts SSH user/host/command from response and activity. In-memory token/connection behavior, replay/single use, origin binding and WebSocket enforcement are delegated to other units.",
+        "Start/status intentionally return a live SSH command to authorized admins; finish returns templateRef and fixtures include provider lease/template/sandbox identifiers labelled secret. Activity assertions protect known fixture values, but response classification, metadata allowlisting, generic nested redaction and downstream telemetry are not proved.",
+        "Finish invalidates terminal sessions and closes active connections; cancel, rollback and provider-template deletion are supported. No test binds these high-risk mutations to an approval, reason/digest, Work, policy, accountable human or immutable evidence record, and service mocks leave transactionality/idempotency/races unresolved.",
+        "Sandboxed Vitest failed 15/15 solely because Supertest could not listen on 0.0.0.0 (EPERM); the approved unsandboxed run passed 15/15. Missing cases include cross-company service-return mismatch, environment disappearance, token replay/race, TTL bounds, rate limits/CSRF/origin, structured error codes, concurrent finish/cancel/rollback and audit-write failure."
+      ],
+      "completionRequirements": [
+        "Read lines 1-641 exactly once and assess custom image route authorization, environment/instance tenancy, setup credentials, build lifecycle, terminal exposure, validation, error contracts and test quality against Company OS execution-node images."
+      ]
     }
   ]
 }
