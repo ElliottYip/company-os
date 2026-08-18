@@ -7497,6 +7497,39 @@
       "completionRequirements": [
         "Read lines 1-325 exactly once and assess duplicate-create identity, idempotency scope, race behavior, authorization, recovery-loop containment, auditability and Company OS retry/offline Connector requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-dependency-wakeups-routes",
+      "path": "server/src/__tests__/issue-dependency-wakeups-routes.test.ts",
+      "lineCount": 390,
+      "sha256": "fe1ddd296210dfa643258908ea56d5c93a82b1291d98d64ec6c72060a1061fe5",
+      "linkedEvidence": { "history": [
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "148a5b11f5ffd101d9586d3222f553f99e3ad85f explicit unblock owners (#10112)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "11177c266509ce0f529a68f2135266b5e5a34147 resolved blocker wake reconciliation (#9229)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 branch rollup (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests/maintenance (#4423)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-390"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-390 cover three route-triggered wake paths: final blocker completion wakes an assigned dependent, applying an already-complete blocker to blocked Work wakes its assignee with an explicit mutation/source, and the last terminal child wakes the parent assignee with bounded child summaries.",
+        "The tests mock dependency readiness and wake persistence, so they do not prove graph consistency, duplicate suppression, transactional state/event coupling, fan-out limits, cycles, concurrent completions, human assignee notification, approval/pause gates or delivery recovery. Child summaries are propagated as context without redaction/provenance assertions.",
+        "Sandboxed focused Vitest failed 3/3 only because Supertest could not listen on 0.0.0.0 (EPERM). Approved unsandboxed focused Vitest passed 3/3 but emitted a swallowed warning when successful-run handoff resolution logging failed against the deliberately incomplete route DB mock; the asserted wake behavior still passed, demonstrating that this audit/log side effect is best-effort in the exercised route."
+      ],
+      "completionRequirements": [
+        "Read lines 1-390 exactly once and assess dependency-resolution wake targeting, human/Agent ownership, fan-out, duplicate delivery, transaction ordering, blocked-state semantics and Company OS evidence/approval propagation."
+      ]
     }
   ]
 }

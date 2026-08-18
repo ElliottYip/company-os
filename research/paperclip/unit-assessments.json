@@ -7861,18 +7861,24 @@
     },
     {
       "id": "application:server/__tests__/issue-dependency-wakeups-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route-level tests for waking Agent assignees when blockers resolve, an already-resolved dependency is restored, or all direct children become terminal.",
+      "dependencyDirection": "Vitest/Supertest -> Issue PATCH route -> mocked Issue/dependency services and real wakeup orchestration -> mocked heartbeat wake transport; database query surface is a minimal route stub.",
+      "keyDataModels": "Issue parent/status/Agent assignee; blocker IDs and readiness counts; unblock owner/action descriptor; wake reason/payload/context source; child Issue summaries and truncation flag.",
+      "lifecycle": "Issue mutation reaches dependency-ready or children-terminal condition -> resolve wake target -> construct reason-specific context -> asynchronously invoke Agent heartbeat wake; a separate successful-run handoff logging side effect may fail without failing the mutation/wake test.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 3/3; sandboxed 0/3 due solely to prohibited TCP listen. Coverage confirms three happy-path wake shapes but mocks the graph and delivery store. It omits duplicate suppression despite exposing an existing-wake mock, concurrent blocker completion, transaction/outbox recovery, cycles, fan-out, human owners, pause/approval gates, failed wake delivery and context redaction. The passing run emitted a swallowed handoff-resolution logging warning.",
+      "designRationale": "Automatically resume assigned work when its dependency graph becomes runnable and give a parent Agent bounded child outcome context when delegated work finishes.",
+      "companyOsProblem": "Company OS must propagate dependency state changes to the correct accountable human and executing Agent exactly once, without bypassing approval/pause gates, losing evidence, or creating wake storms across large organizational graphs.",
+      "companyOsFit": "ADAPT explicit reason codes, dependency snapshots, bounded child summaries and separate restored-dependency semantics. Emit a typed DependencyBecameRunnable domain event transactionally through an outbox, include graph/version and evidence references, route first to the responsible human/policy when required, enforce pause/approval/data-authority gates, deduplicate by transition version and make Connector delivery retryable with receipts.",
+      "responsibilityConflict": "The tested paths wake only Agent assignees and can treat dependency readiness as sufficient authority to resume. They do not establish which human remains accountable, whether approval still applies, or whether the delivered summary is trustworthy; a related logging failure is explicitly non-fatal, weakening the responsibility record.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-dependency-wakeups-routes.test.ts:1-390 (SHA-256 fe1ddd296210dfa643258908ea56d5c93a82b1291d98d64ec6c72060a1061fe5)",
+        "git history: 11 commits from ded813ad6fae2c0b2c9009e04f59b117ecae0151 through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/3 passed; all failed because TCP listen was prohibited (EPERM)",
+        "2026-08-19 approved unsandboxed focused Vitest: 3/3 passed with one swallowed handoff-resolution logging warning"
+      ],
+      "securityFindings": "HIGH responsibility gap: no accountable-human or approval gate is asserted before Agent resume. HIGH durability gap: mocked direct wake call does not prove outbox, retry or deduplication. MEDIUM audit gap: an exercised handoff-resolution logging failure is swallowed while tests pass. MEDIUM graph gap: cycles, stale readiness and concurrent transitions are untested. MEDIUM data-leak risk: child summaries enter Agent context without redaction/authorization tests. MEDIUM fan-out risk: no bounded wake-storm test. POSITIVE: reason/source fields and bounded summary metadata create a basis for typed receipts."
     },
     {
       "id": "application:server/__tests__/issue-document-restore-routes",
