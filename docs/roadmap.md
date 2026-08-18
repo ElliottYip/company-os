@@ -4,6 +4,13 @@ Dates and the 3–10 management ratio remain pilot hypotheses, not commitments.
 
 ## Current delivery order
 
+### 0. Upstream admission and Paperclip bridge
+
+Paperclip is the single generic work-substrate upstream under ADR 0007. Freeze
+duplicate Task/Goal/Run/Budget/Artifact/Heartbeat development. Clear dependency,
+migration, isolated-test and compatibility gates before production admission;
+then integrate through published Plugin/API contracts and `GenericWorkPort`.
+
 ### A. Constitution and boundaries
 
 Product charter, ADRs, dependency rules, migration-manifest format, independent
@@ -31,6 +38,8 @@ from production identity, models, tools, data, and secrets.
 Organizations, principals, roles, human accountability, reporting lines, tasks,
 risk/autonomy, approvals, evidence, and responsibility projections. Validate
 rather than promise a 3–10 agent management span.
+Generic work records come from the admitted Paperclip adapter; responsibility
+and accountable-human records remain authoritative Company OS data.
 
 ### F. Model and data boundary
 
@@ -67,4 +76,3 @@ only after Pre-3D contracts and the product loop are validated.
 Focused unit/integration tests; E2E for complete flows; strict type checks;
 production build; dependency guard; secret/production-data checks; demo labels;
 production-mode isolation; and migration/provenance audit when applicable.
-

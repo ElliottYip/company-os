@@ -1,5 +1,15 @@
 # Phase-one implementation plan
 
+## Architecture gate — upstream core selection
+
+- ADR 0007 selects pinned Paperclip as the only generic work substrate.
+- Do not add production Task/Goal/Run/Budget/Artifact/Heartbeat implementations
+  to the current scaffold.
+- First clear dependency, isolated upstream test, migration/rollback and Company
+  OS bridge contract gates in `docs/upstream-adoption-plan.md`.
+- Existing neutral core, responsibility, data, Connector, Demo and Office work
+  remains valid and must not be rewritten around Paperclip internals.
+
 ## Slice 0 — provenance and specification
 
 - Record assumptions, success criteria, commands, structure, and boundaries.
@@ -54,4 +64,3 @@
 - **Demo mistaken for live:** fixture identifiers and visible labels are required
   by both tests and UI copy.
 - **Premature 3D scope:** exclude all scene and 3D directories and dependencies.
-

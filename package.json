@@ -11,8 +11,9 @@
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
     "check:boundaries": "node scripts/check-boundaries.mjs",
+    "check:upstreams": "node scripts/check-upstream-governance.mjs",
     "build": "vite build --config web/vite.config.mjs",
-    "verify": "npm test && npm run check:boundaries && npm run typecheck && npm run build"
+    "verify": "npm test && npm run check:boundaries && npm run check:upstreams && npm run typecheck && npm run build"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
