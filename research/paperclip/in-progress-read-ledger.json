@@ -6209,6 +6209,37 @@
       "completionRequirements": [
         "Read lines 1-399 exactly once and assess environment-selection authorization across Agent/project/issue/workspace routes, actor and tenant scope, existence/status validation, privilege escalation, error consistency and test quality against Company OS execution-profile grants."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-service",
+      "path": "server/src/__tests__/environment-service.test.ts",
+      "lineCount": 1324,
+      "sha256": "dc286442c0acea01540ab5ab62f7b1a8c78f9e266899afcafaa940e917285704",
+      "linkedEvidence": {
+        "history": [
+          "f6c6452b25bdd61f0f8d98a19f4b2b907ea4f7ac fix(server): preserve managed environment drift on boot (#10979)",
+          "c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)",
+          "273315a4d01a002cc4ecc5e9e7192ad7a32e91b6 feat(server): provision managed sandbox environments from the managed config (#10324)",
+          "719da5f9b5b5bb74c249b6d9602e1c44f651cd3d Harden environment deletion and expose delete blast radius (#9250)",
+          "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1324 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in four non-overlapping ranges. Twenty-six embedded-Postgres tests cover basic leases, delete blast radius/guards, local and managed sandbox ensure/deduplication, provider/stock drift reconciliation, archive/reactivation, name conflicts and managed-marker identity; sandboxed and approved unsandboxed runs skipped all 26.",
+        "Environment rows are instance-scoped and fixtures insert no companyId; companyId passed to ensure/create is used around company/activity/managed-resource/Secret context. The managed sandbox partial unique index therefore enforces an installation-wide marked slot despite comments referring to a company, which is incompatible with a managed-cloud multi-tenant ownership model unless each tenant is a physically isolated instance.",
+        "Delete blast radius usefully counts defaults, Agent selections, execution workspaces, issues, projects, Secret bindings across companies, active leases and active custom-image setup sessions. However canDelete and atomic removeIfDeletable block only managed-local and instance-default rows; active use and all other references do not block the row deletion itself, leaving route-level cross-service cleanup vulnerable to races and partial failure.",
+        "Local environment creation has concurrent deduplication and a single instance-wide row. ensureLocal preserves an archived/operator-managed row unchanged, while cloud-managed mode can adopt an existing tenant local row by stamping managedByPaperclip without a tested explicit ownership transfer or affected-tenant acceptance.",
+        "Managed sandbox reconciliation is sophisticated: stock hashes/default snapshots distinguish current stock, stock update and operator drift; current stock is a true no-op, drift preserves user fields and advertises an update, provider availability archive/reactivation respects later operator archive decisions, and provider switches reuse one managed slot while clearing stale markers.",
+        "Managed-marker identity prevents an unmarked tenant Kubernetes provider row from being selected as the hardened managed runtime, which protects runtimeClass/egress defaults. Yet the service-level create tests accept SSH configs missing route-required fields, showing domain invariants depend on callers rather than the persistence service.",
+        "Lease tests cover simple acquire/release and release-by-Run isolation only. They omit concurrent acquisition/release, status transition compare-and-set, expired/pending cleanup, tenant/environment/Run foreign-key mismatch, active-run ownership and retention. All database behavior is unverified locally due skipped tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1324 exactly once and assess environment persistence, managed provisioning/drift, default/local uniqueness, lease state/concurrency, delete blast radius and deletion safety, tenant scope, metadata/Secret handling and test quality against Company OS deployment/profile storage."
+      ]
     }
   ]
 }

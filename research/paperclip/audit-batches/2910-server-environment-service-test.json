@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-service",
+      "auditStatus": "COMPLETE",
+      "function": "Database service tests for instance-wide environment persistence, lease basics, deletion impact/guards, local/managed runtime provisioning, concurrency deduplication, managed stock drift and provider archive/reactivation.",
+      "dependencyDirection": "Vitest -> environment service -> Drizzle/embedded Postgres across environment, lease, company, Agent, workspace, issue/project, Secret binding, custom-image, managed-resource and activity tables; provider runtime and route authorization are not exercised.",
+      "keyDataModels": "Instance environment and metadata markers, environment lease, instance default, cross-company selection/reference counts, built-in managed-resource stock hash/version/defaults, operator drift status and activity events.",
+      "lifecycle": "Create/ensure one local or managed sandbox slot -> reconcile stock/provider availability while preserving operator drift -> acquire/release leases -> compute deletion blast radius -> atomically refuse local/default deletion or remove another row -> route layer later clears references.",
+      "testAssessment": "Sandboxed and approved unsandboxed focused runs skipped 26/26 because embedded Postgres is unsupported. The source specifies valuable concurrency and reconciliation cases, but no database behavior is locally verified. Delete safety, lease races, tenant ownership and service-level invariant enforcement remain incomplete by design or coverage.",
+      "designRationale": "Keep installation-managed execution infrastructure stable across concurrent boot, provider changes and stock upgrades while respecting operator modifications and exposing the impact of destructive removal.",
+      "companyOsProblem": "Company OS needs independent deployment-node and tenant-profile persistence, upgrade-safe managed defaults, explicit operator overrides, governed leases and deletion workflows across cloud and self-hosted profiles.",
+      "companyOsFit": "REIMPLEMENT the ownership/data model while adopting stock-hash/default snapshots, operator-drift classification, marker-backed hardened runtime selection and database uniqueness. Separate global deployment nodes from tenant grants/profiles; enforce all config invariants in the domain; make deletion a drain/approval/saga state machine that blocks on active use and references; use compare-and-set lease transitions and transactional outbox evidence.",
+      "responsibilityConflict": "Company context does not own the environment row, managed adoption can reclassify operator resources, and destructive removal is not bound to affected tenants or accountable humans. Blast-radius information is advisory rather than an enforced responsibility/approval contract.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/environment-service.test.ts:1-1324 (SHA-256 dc286442c0acea01540ab5ab62f7b1a8c78f9e266899afcafaa940e917285704)",
+        "git history: f6c6452b25bdd61f0f8d98a19f4b2b907ea4f7ac, c274f10abc0e3c60a47e6ac3f786443b0e197543, 273315a4d01a002cc4ecc5e9e7192ad7a32e91b6, 719da5f9b5b5bb74c249b6d9602e1c44f651cd3d, 547463d3a2a0fdf899dc59524eff71a24a6f315c",
+        "2026-08-19 sandboxed focused Vitest: 26/26 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 26/26 skipped"
+      ],
+      "securityFindings": "CRITICAL tenant ownership gap: environment rows and managed slot uniqueness are instance-wide while company context lives in surrounding records. CRITICAL destructive-race gap: active leases/image setup and most references do not block atomic deletion. HIGH unverified database gap: all 26 tests skip locally. HIGH ownership-transfer gap: cloud boot can stamp an existing operator local row as platform managed. HIGH invariant gap: service create can persist configs that routes reject. HIGH lease concurrency/state-transition coverage gap."
+    }
+  ]
+}
