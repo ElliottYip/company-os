@@ -191,7 +191,7 @@
       "lineCount": 508,
       "sha256": "923b1c5ece751346722724651660f1771ff7d0cfffa3d8084f8dadc8cd9d2f55",
       "linkedEvidence": { "history": ["ded813ad6fae2c0b2c9009e04f59b117ecae0151 feat(interactions): add governed agent addressees (#10252)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 508 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -3523,7 +3523,7 @@
       "lineCount": 201,
       "sha256": "7f3496354ec7b42f42986506f0a8578a01bd6934734242c6ec974ea57fafa514",
       "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "COMPLETE",
+      "auditStatus": "IN_PROGRESS",
       "completedRanges": [{ "start": 1, "end": 201 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -7389,6 +7389,65 @@
       ],
       "completionRequirements": [
         "Read lines 1-281 exactly once and assess deleted-comment redaction across reads, identity/date preservation, secret handling, tenant roles and test quality against Company OS privacy/evidence lifecycle."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/issue-comment-reopen-routes",
+      "path": "server/src/__tests__/issue-comment-reopen-routes.test.ts",
+      "lineCount": 3399,
+      "sha256": "d8da1b997e6543a80b313ec0f88ac4389fbd8db31a8258d7433db27fb06419b1",
+      "linkedEvidence": { "history": [
+        "814cb336766cabd7c5a08fb82849d93e35a7ddaf Agent review confirmation resolution (#10939)",
+        "e8ae5286eb92a86ddd7421d1ca22398982a3381d cross-task attribution/audit/denials (#10843)",
+        "678728f650bf2a03f325922db32efb038dbb6ac9 maintained in_review contract (#10675)",
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 contain cross-Issue Agent side effects (#10837)",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "dfcda67650d4fc60b1cca537efca7fc9d52c718c default-open visible writes (#10804)",
+        "95d33e1788361b59fe08491b6a81e1890f7f5a0d archive human-completed tasks (#10668)",
+        "b4a7a129850a3fe5f308af13c930aa89ac0ed8f4 quieter recovery updates (#10542)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f external objects (#8512)",
+        "fb0e3fb02a61a4ea872847103b0c0d4042b15755 closed Issue comments with resume intent (#8350)",
+        "d9ea1bf9e104fc95aaa1abb28ec854a4a24342ef same-Run self-comments guard (#4973)",
+        "7945c703966d59842efb0e2c7f8090704a273386 terminal assignee self-comment guard (#4346)",
+        "7058d7b6c369862affb7064bde06413647883021 auto-complete approved review comments (#5839)",
+        "67b22d872f9589c169ab8129a05a84b6cef05c3c interrupt handoffs/scoped wake (#7855)",
+        "7fb40264f8df21e18a036bcf104b2c4c565268c8 revert comment wake handoffs (#7765)",
+        "4da79a88c67e54084d40bd18cada5ee5c8be23da comment wake handoffs (#7678)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions/controls (#6386)",
+        "c91a06232625d1939858fcdfbdc0c9b3a64a8296 runtime control-plane fixes (#6380)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery (#5599)",
+        "68f69975a41d615a0162c149fdceb23068d18292 control-plane safety/identifiers (#5292)",
+        "454edfe81ee8f255577132c79b6b77e2ff58a16a recovery handoff notices (#5289)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "6916e30f8ed440a0948255c96dc11251a098fb8d cancel stale retries on ownership change (#4445)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e runtime recovery/live visibility (#4419)",
+        "7ad225a19830db2bc515e2049aa9ba38f2cdf87a Issue thread review flow (#4381)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)",
+        "09d0678840336094e70734ba429bc16bb1fd0940 heartbeat/runtime safety (#4223)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-3399"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "An initial attempt to print lines 1-450 exceeded the tool/model output budget and was truncated before analysis; no part of that attempted range was counted as read.",
+        "Lines 1-480 establish a heavily mocked route-level harness with structured authorization reasons and cross-Issue influence codes. Early cases show that reopen=true is ignored for open Work, while a human PATCH that combines a comment with reassignment implicitly changes done to todo and records reopened metadata; this couples discussion/reassignment to terminal-state mutation without a distinct reopen command.",
+        "Lines 481-1120 distinguish append-only mention grants from lifecycle mutation authority and suppress terminal self-comment reopen signals, but allow a differently assigned privileged Agent to take over and reopen. Ordinary human comments implicitly reopen assigned done/blocked Work; a human comment also cancels a scheduled retry before moving in_progress to todo, failing closed if cancellation throws. These are useful containment tests, yet comment semantics still carry execution-control side effects. Structured presentation metadata is board-only and Agent-authored presentation is rejected; recovery-run presentation is derived server-side.",
+        "Lines 1121-2080 preserve dependency blocks and suppress reopens from the same owning Run, while comments from a different Run or explicit resume can reopen and wake an assignee. Peer Agents with broad visible-write mutation authority may explicitly resume another Agent's Work; self replies do not wake themselves, reducing loops. Cross-Issue comment/update influence is separately counted per Run, capped before mutation, and rejects absent/invalid Run context with stable codes. The suite asserts fail-closed ordering but remains mock-based rather than proving transactional concurrency.",
+        "Lines 2081-3399 add pause-hold rejection, cancelled-Work explicit resume, operator interruption receipts, status-cancel Run cancellation, transactional decision insertion, reviewer-only auto-approval, dependent wakeups, actor-kind separation, negation parsing, rollback paths and workflow-controlled review/change-request handoffs. The strongest reusable patterns are typed participant identity, transactionally coupled decision/comment/state changes, stable wake reasons and stage-scoped allowed actions. Company OS should not copy approval-by-free-text marker or comment-triggered terminal mutation: approvals must bind an exact action digest, responsible human, evidence and explicit command. Cancelled Work being resumable also needs a distinct superseding decision rather than silent status reversal.",
+        "Focused Vitest through pnpm exec could not start because the bundled pnpm attempted an interactive modules purge; this is an environment/tooling failure, not a test result.",
+        "Direct sandboxed focused Vitest discovered all 91 tests but all failed only because Supertest could not listen on 0.0.0.0 (EPERM).",
+        "Approved unsandboxed direct focused Vitest passed all 91 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-3399 exactly once and assess comment-driven reopen/resume/wakeup semantics, terminal Work authority, self/peer Agent behavior, review confirmation, Run/retry cancellation, human responsibility, idempotency/concurrency and audit quality against Company OS explicit execution commands."
       ]
     }
   ]

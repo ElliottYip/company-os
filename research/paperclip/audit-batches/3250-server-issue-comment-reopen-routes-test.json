@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-comment-reopen-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Route-level regression suite for comment/update-driven Issue reopen, resume, retry cancellation, Run interruption, cross-Issue influence containment, review decisions and downstream Agent wakeups.",
+    "dependencyDirection": "Vitest/Supertest -> Issue HTTP routes -> access, Issue, heartbeat, execution-policy, interaction, tree-control, external-object and activity services; most service/DB behavior is mocked, with decision insertion represented by a transaction mock.",
+    "keyDataModels": "Issue terminal/open status, assignee and owning Run IDs; explicit reopen/resume/interrupt intent; scheduled retry; wake reason/context snapshot; execution policy/state/stage participant; decision ID/outcome; cross-Issue influence count; comment author/presentation/metadata.",
+    "lifecycle": "Authorize comment and any lifecycle mutation separately -> contain cross-Issue effects by Run -> optionally cancel retry/Run -> mutate Issue/comment -> record decision/audit receipt -> emit scoped wakeups; review-marker comments may atomically advance execution policy and release dependents.",
+    "testAssessment": "Approved unsandboxed focused Vitest passed 91/91. The sandboxed run discovered the same 91 tests but TCP listen was prohibited, and an initial pnpm wrapper attempt failed before tests because it requested an interactive modules purge. Coverage is broad and adversarial for roles, Run ownership, wake loops, parsing and rollback ordering, but heavy mocks do not prove database locking, concurrent idempotency or durable outbox delivery.",
+    "designRationale": "Make comments a convenient recovery/control signal while preventing same-Run log lines, low-authority mentions, dependency blocks, invalid Run contexts and non-participants from causing unbounded or unauthorized execution side effects.",
+    "companyOsProblem": "Company OS needs explicit, attributable commands for reopening/cancelling/resuming accountable work, strict separation between conversation and execution authority, exact approval binding, and reliable wake/event delivery across human and Agent actors.",
+    "companyOsFit": "ADAPT typed actor/participant identity, separate append versus lifecycle authorization, pause holds, Run-scoped influence budgets, cancellation-before-state-change, transactional decision/state writes, stable wake reasons and workflow-scoped allowed actions. Replace implicit comment reopen and free-text approval recognition with explicit idempotent command resources carrying action digest, responsible human, evidence references and supersession lineage; publish wakes through a durable outbox.",
+    "responsibilityConflict": "Ordinary comments can implicitly reopen terminal/blocked Work or supersede retries, broad visible-write authority can let a peer Agent resume another Agent's Work, and approval prose can complete a review. Those shortcuts blur who intentionally changed execution state and what exact action was approved, conflicting with Company OS accountable-human and evidence-chain requirements.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-comment-reopen-routes.test.ts:1-3399 (SHA-256 d8da1b997e6543a80b313ec0f88ac4389fbd8db31a8258d7433db27fb06419b1)",
+      "git history: 32 commits from 814cb336766cabd7c5a08fb82849d93e35a7ddaf through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+      "2026-08-19 direct sandboxed focused Vitest: 0/91 passed; all failed because TCP listen was prohibited (EPERM)",
+      "2026-08-19 approved unsandboxed direct focused Vitest: 91/91 passed"
+    ],
+    "securityFindings": "HIGH authority ambiguity: discussion may mutate terminal execution state. HIGH approval-binding gap: free-text markers are not an exact action digest or human approval contract. MEDIUM peer-control risk: broad visible-write grants can resume another Agent's Work. MEDIUM delivery gap: tests assert wake calls but not durable outbox/exactly-once behavior. MEDIUM concurrency gap: mocks do not prove CAS/locking for reopen, retry cancellation or review transition. POSITIVE controls include actor-kind matching, participant checks, pause holds, Run validation, influence caps, rollback paths and stable error/wake codes."
+  }]
+}
