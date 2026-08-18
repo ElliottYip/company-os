@@ -4755,11 +4755,20 @@
           "43b005b704f80aea3ce37cab8136920749c73ee6 Add pipeline workflow primitives and operator UI (#7903)"
         ]
       },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 846 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-600 define Pipeline/Stage/Case projections and commands for transition graphs, guidance, on-enter Routine automation, single/batch ingest, list/search, review inbox/bulk and most Case lifecycle operations. Types mirror server shapes locally rather than consuming a versioned schema/client contract.",
+        "The model addresses important Company OS problems: idempotency keys for ingest, optimistic expectedVersion on transition/review, leases, transition suggestions separated from mutation, approve/reject/request-changes, parent/child rollups, blockers, event history and review queues. It is the current best-reference candidate for structured human-review workflow mechanics pending service/schema/database audit.",
+        "Pipeline create has no idempotency key; transition-set, guidance and stage automation have no revision precondition. set-automation performs a client read-modify-write of the whole stage config and can overwrite concurrent changes while attaching executable Routine behavior without approval, capability/data scope or evidence binding.",
+        "JSON/file inputs are buffered without size limits; fields/workspace/edits/lease tokens can appear in argv; batch ingest/review accept raw payloads without client schema, preview, digest or rollback. Pipeline/case/review/event lists expose no pagination.",
+        "Lines 601-846 complete blockers, conversations, parsing/rendering and error handling. Review requires expectedVersion and exactly one decision, a strong concurrency/intent guard; edit and suggestion resolution make expectedVersion optional, blockers replace without version, force release has no confirmation, and decision reasons are optional.",
+        "Suggestion confidence uses Number without finite or 0..1 validation. Pipeline-key resolution loads the complete Company list. Structured server error codes/current version/stage and 409 recovery guidance are positive, but raw error/details and case content remain terminal-injection/data-leak risks and process.exit prevents composable error handling.",
+        "Completed test assessment reused without reread: pipelines tests passed 3/3 and assert request_changes, expectedVersion and dependency bodies, while approve/reject, malformed inputs, graph integrity, partial bulk failure, auth, idempotency, review evidence and concurrent rejection remain uncovered.",
+        "Decision: NARROW/ADAPT-AS-DESIGN. Independently implement the case/version/lease/suggestion/review concepts inside Company OS responsibility contracts; do not copy the command layer or treat review as equivalent to exact high-risk action approval."
+      ],
       "completionRequirements": [
         "Read lines 1-846 exactly once and trace pipeline definitions, Runs, steps, approvals, variables/Secrets, retries, cancellation, idempotency, concurrency, evidence, tenant/actor binding, output safety and tests against Company OS responsibility semantics."
       ]

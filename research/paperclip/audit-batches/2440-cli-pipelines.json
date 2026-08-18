@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/commands/pipelines",
+      "auditStatus": "COMPLETE",
+      "function": "Provides Pipeline/Stage/Case workflow operations: create/list/get, transition graphs, guidance documents, on-enter Routine automation, single/batch ingest, Case search/events/rollup/edit, leases, transitions and suggestions, human-style review decisions/bulk inbox, blockers and conversation linkage.",
+      "dependencyDirection": "Commander CLI -> local mirrored Pipeline types and generic JSON/file parsers -> common client/context -> Paperclip Pipeline/Case REST APIs. The command owns input composition, client read-modify-write automation config, terminal projection and partial error semantics; service/schema/database units own workflow invariants and authorization.",
+      "keyDataModels": "Pipeline{key,stages,transition edges,enforceTransitions,guidance}; Stage{kind,position,config,onEnter Routine}; Case{caseKey,stage,version,terminalKind,parent/children,pendingSuggestion,fields,workspaceRef}; leases/tokens; blockers/links/events; suggestion{target,rationale,confidence}; review{approve,reject,request_changes,reason,edits,expectedVersion}; structured conflict code/current stage/version.",
+      "lifecycle": "Resolve Company and Pipeline ID/key -> create/configure workflow -> ingest idempotency-keyed or batch Cases -> optionally claim lease -> edit/suggest/transition/review with mixed version requirements -> update blockers/conversation -> list/roll up/review in bulk. Automation attaches a Routine through client-side stage-config merge; batch operations return service-defined results without client rollback.",
+      "testAssessment": "The completed application:cli/__tests__/pipelines assessment was reused without rereading source: focused Vitest passed 3/3 and CLI no-emit TypeScript passed. It asserts complete request_changes, expectedVersion and dependency-edge bodies, but omits approve/reject alternatives, malformed files, duplicate/cyclic/missing dependencies, partial bulk failure, authorization, idempotency, review evidence and concurrent-version rejection.",
+      "designRationale": "The workflow model separates stable stage graphs from individual Cases, supports idempotent external ingestion, optimistic concurrency, temporary claims, non-mutating transition suggestions, explicit review queues and hierarchical/blocker rollups. Structured conflict codes with current version/stage and recovery guidance are strong operator patterns.",
+      "companyOsProblem": "Company OS needs configurable FDE/industry workflows for sales, service, finance and engineering, where human and Agent participants collaborate through versioned Cases, leases, suggestions, reviews, evidence and escalation without confusing domain review with high-risk execution approval.",
+      "companyOsFit": "Use Paperclip as the current best-reference candidate for Case workflow mechanics, pending service/schema/database evidence. Independently model PipelineCase as an application projection bound to responsible human/role, executing Agent, data/permission contract and evidence. Require revision on every material mutation, typed graph validation, idempotent batches, digest-bound bulk plans and a separate ApprovalPort for executable high-risk actions.",
+      "responsibilityConflict": "Review decisions carry no explicit verified human principal or responsibility contract in the CLI and reasons are optional. Agent/board persona authority is implicit. onEnter Routine automation can turn a stage transition into execution without displaying exact permissions/data/actions or obtaining matching accountable-human approval.",
+      "decision": "NARROW",
+      "evidence": [
+        "cli/src/commands/pipelines.ts (846 lines; SHA-256 f969ff9999c0f273c5b007bf52d14f77d0335109f37d895955f856c5e9f78623)",
+        "git history: 43b005b704f80aea3ce37cab8136920749c73ee6 (Add pipeline workflow primitives and operator UI, 2026-06-26)",
+        "research/paperclip/in-progress-read-ledger.json application:cli/commands/pipelines exact ranges 1-846",
+        "Completed focused assessment application:cli/__tests__/pipelines: 3/3 passed; ADAPT"
+      ],
+      "securityFindings": "Pipeline/stage creation and transition/guidance/automation replacement lack idempotency or revision preconditions. set-automation performs stale client read-modify-write and attaches executable Routine behavior without approval/data/capability evidence. JSON/file inputs are fully buffered; sensitive fields, workspace refs, edits and lease tokens can enter argv. Lists/events have no pagination. Batch ingest/review lack client preview/digest/rollback. Edit and suggestion resolution allow omitted expectedVersion; blocker replacement is unversioned; force release is unconfirmed. Confidence accepts NaN/infinity/out-of-range values. Raw content/server details reach terminal output, and process.exit-based errors impede composition. The positive expectedVersion/lease/caseKey/error-code patterns do not by themselves establish actor authorization or immutable responsibility evidence."
+    }
+  ]
+}
