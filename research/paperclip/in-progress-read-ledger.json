@@ -3820,10 +3820,14 @@
       "sha256": "c6dec8f2d6c7fa11da9c8a45d89c63083a631faad932667dd1540de6ebea8a63",
       "linkedEvidence": { "history": ["fcf66f3a91e6d1e5b81200f5ebf945b0d6ecad9d feat(skills): add managed skill rename API (#9688)"] },
       "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
+      "completedRanges": [{ "start": 1, "end": 300 }],
       "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "nextLine": 301,
+      "notes": [
+        "Lines 1-100 establish a heavily mocked Express route suite covering broad Skill CRUD/version/social/import/catalog/project/test-run surfaces plus Agent lookup, access decisions, Skill policy, Issue/heartbeat orchestration, activity/telemetry and a separate reflection-consent gate. The allow fixture models a permission grant and reason, but returns English explanation text and no accountable-human identity, approval/action digest, data scope, evidence or responsibility-contract binding.",
+        "Lines 101-200 define denial contracts with reason/policy revision/rule/remediation and wire actual route/authz/error modules around mocked services. Stable reason and policy identifiers are useful, but remediation/explanation remain presentation strings and mocked services prevent this route suite from proving database tenant isolation, transactionality or real activity-log durability. The separate change-consent gate suggests mutation policy is split across access, Skill policy and consent services, a composition risk to trace in endpoint behavior.",
+        "Lines 201-300 build an Express app with an arbitrary injected actor and reset extensive mocked defaults before every test. Version fixtures preserve separate Agent/User author IDs—a useful attribution primitive—but sourceLocator exposes an absolute local path and fork metadata begins to carry cross-company lineage/public-sharing fields. Because the actor and service results are synthetic, endpoint assertions must be checked for explicit company binding rather than assuming downstream services enforce it."
+      ],
       "completionRequirements": ["Read lines 1-2319 exactly once, run the focused route suite in an isolated Paperclip home, and assess authentication/authorization and tenant scoping for every endpoint; stable API/error contracts; input/file/path/size validation; import, version, fork, update, reset, rename and deletion lifecycle; approval/responsibility evidence; concurrency/idempotency; secret and local-path exposure; and suitability as a reference for Company OS API boundaries."]
     }
   ]
