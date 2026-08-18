@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/http-log-redaction",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP integration test requiring fixed authentication, cookie, CSRF and API-key header paths to be redacted by Pino and proving request/response cookie and authorization values do not appear in serialized output.",
+      "dependencyDirection": "Node HTTP request/response headers enter pino-http; a shared list of Pino redact paths is applied before the serialized log reaches a writable sink.",
+      "keyDataModels": "Request/response headers, authorization/cookie/set-cookie/proxy-authorization/CSRF/XSRF/API-key names, Pino redaction paths and [Redacted] marker.",
+      "lifecycle": "A real ephemeral HTTP server receives credential-bearing headers and emits one JSON log; the test verifies selected request/response values are absent and four header locations contain the redaction marker.",
+      "testAssessment": "The real logger/server path is stronger than testing a constant alone and covers request plus response secrets. Only authorization, cookie and set-cookie are exercised end to end; proxy authorization, CSRF/XSRF and API key are list-membership assertions. Missing are query/path/body secrets, alternate serializers, arrays/multiple headers, custom/vendor credential headers, error logs, child loggers, raw headers and property-based leak tests.",
+      "designRationale": "Prevent common browser and API credentials from leaking through automatic HTTP request/response serialization.",
+      "companyOsProblem": "Managed-cloud and self-hosted operators need useful request telemetry without exposing Identity, Connector, approval or enterprise-data credentials.",
+      "companyOsFit": "ADAPT as a last-line regression suite. Company OS should log an allowlisted request envelope rather than full headers/body by default, attach typed sensitivity at ingestion, use deployment-configurable secret-header registration and run leak-canary tests across every log/export sink.",
+      "responsibilityConflict": "A fixed path list cannot prove that evidence/log exports are safe; new Connector headers or credentials in URLs and bodies bypass it. Redacted operational logs also cannot replace immutable source evidence and transform records.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/http-log-redaction.test.ts:1-86",
+        "15683000 fix: redact HTTP cookies from server logs (#7977)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/trust-proxy",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests parsing an environment-configured Express trust-proxy policy into unset, trust-all, hop-count, named subnet or CIDR-list forms while rejecting malformed tokens.",
+      "dependencyDirection": "An ambient deployment environment string enters a strict parser and is assigned directly to Express's trust proxy setting, which controls client IP/protocol/host interpretation downstream.",
+      "keyDataModels": "Undefined/false/0, boolean true, positive hop count, loopback/uniquelocal named ranges, IPv4/IPv6 CIDRs and invalid token errors.",
+      "lifecycle": "Startup leaves Express's safe default unchanged for unset-like values, accepts explicit trusted forms with trimming, and throws on leading-zero integers, internal whitespace or unknown/partially invalid tokens.",
+      "testAssessment": "The parser matrix is detailed and fail-closed for malformed input. Missing are negative/zero/overflow hop values, duplicate/overlapping ranges, IPv4-mapped IPv6, link-local/private named sets, actual spoofed X-Forwarded-* integration behavior, variable proxy-chain lengths, deployment-profile defaults and stable startup diagnostic codes.",
+      "designRationale": "Support reverse-proxy deployments without silently accepting malformed trust configuration or enabling proxy trust by default.",
+      "companyOsProblem": "Identity, tenant routing, rate limiting and audit attribution depend on trustworthy network origin across managed cloud, on-prem ingress and hybrid Connector nodes.",
+      "companyOsFit": "ADAPT the explicit parser and safe unset default, but reject trust-all in production profiles and avoid hop counts where route length can vary. Require profile-owned CIDR/named-network policy, startup validation and integration tests proving spoofed forwarded headers remain untrusted outside the declared ingress path.",
+      "responsibilityConflict": "A misconfigured trust-all or hop-count policy lets an external caller forge origin metadata used by security and audit decisions. Network origin is context only and must never establish accountable-human identity or approval authority.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/trust-proxy.test.ts:1-99",
+        "937fe62d feat(server): TRUST_PROXY supports CIDR list + named subnets (supersedes #3729) (#5872)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/logger-tz",
+      "auditStatus": "COMPLETE",
+      "function": "Logger configuration regression test requiring pino-pretty targets to render human-readable timestamps in the process-local timezone using SYS:HH:MM:ss.",
+      "dependencyDirection": "Logger module initialization builds mocked Pino transports; console/file pretty-printer options consume process timezone only at presentation time.",
+      "keyDataModels": "Pino transport target options, translateTime format string, epoch milliseconds and UTC versus Asia/Singapore display values.",
+      "lifecycle": "Importing the logger must configure each pretty target with SYS:HH:MM:ss; a separate Intl check shows one epoch renders differently in UTC and UTC+8.",
+      "testAssessment": "The first test locks the actual logger option. The second does not exercise pino-pretty or mutate process TZ despite its comment; it only proves Intl timezone formatting, so it is indirect evidence for the library contract. Missing are structured UTC timestamps, DST/invalid TZ behavior, multiple transports, production JSON logs, locale independence and correlation with database/event times.",
+      "designRationale": "Make local operator console timestamps match the machine's expected wall clock instead of always appearing as UTC.",
+      "companyOsProblem": "Operators in China and global deployments need localized display, while responsibility evidence requires one canonical, comparable temporal ordering.",
+      "companyOsFit": "REFERENCE_ONLY for console presentation. Company OS events and evidence must store UTC instants plus source clock/offset and ordering metadata; Web/CLI localize at the edge. Add a real formatter integration test if this display behavior is retained.",
+      "responsibilityConflict": "A timezone-only HH:MM:ss string is ambiguous across dates, DST and nodes and cannot support responsibility ordering or nonrepudiation. It must never be the canonical audit timestamp.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/logger-tz.test.ts:1-97",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    }
+  ]
+}
