@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/client/http",
+      "auditStatus": "COMPLETE",
+      "function": "Generic JSON HTTP client for Paperclip CLI with GET/POST/PATCH/PUT/DELETE helpers, bearer and run-ID headers, optional ignored 404, response/error parsing, connection troubleshooting text, mutable credential replacement and one automatic request replay after an auth-recovery callback.",
+      "dependencyDirection": "CLI commands/common client -> PaperclipApiClient -> global fetch -> configured API origin. It owns transport/error behavior but consumes unvalidated apiBase/apiKey/runId from callers and has no generated OpenAPI types, endpoint capability metadata, egress policy, IdentityPort or idempotency application boundary.",
+      "keyDataModels": "ApiClientOptions{apiBase,apiKey,runId,recoverAuth}; ApiRequestError{status,message,details,body}; ApiConnectionError{url,method,causeMessage}; generic unvalidated T responses. Errors have HTTP status but no stable application code/parameters; credentials have no issuer/audience/scope/expiry/company binding.",
+      "lifecycle": "Build URL -> attach JSON, Bearer and run headers -> fetch without timeout -> optionally map 404 to null -> parse any error body and, for every non-OK status, call recoverAuth once -> if a token is returned mutate client state and replay the original request -> map 204/empty to null -> parse JSON or return raw text cast as T. Connection failures embed request URL/cause in a troubleshooting error.",
+      "testAssessment": "The previously completed application:cli/__tests__/http assessment was reused without rereading: focused Vitest passed 5/5 in a combined 11-test run, proving bearer/run headers, ignored 404, error envelopes and one recovery replay. It explicitly codifies generic 403 recovery and non-idempotent POST replay. Missing coverage includes status-code gating, idempotency, timeout/cancel, redirects/TLS/origin, response size/content type/schema, query construction, credential redaction, concurrent token recovery and context-origin poisoning.",
+      "designRationale": "Centralizing headers, JSON handling and operator-friendly connection guidance reduces command duplication; one recovery retry can make expired interactive sessions smoother. The implementation assumes a trusted endpoint and conflates all HTTP failures with possible authentication failure, which is unsafe for mutations and multi-origin contexts.",
+      "companyOsProblem": "Company OS needs a stable, typed and policy-aware client shared by Web/CLI/Connector tooling, with tenant/principal context, stable errors, bounded transport, idempotency and credential audience/origin enforcement across managed and self-hosted deployments.",
+      "companyOsFit": "Reject this client as a base. Generate or hand-maintain a narrow versioned API contract with runtime response validation, stable error codes, request IDs, abort/deadline, bounded bodies and strict canonical origins. Credentials must be selected by issuer/audience/company and may only be sent to their pinned origin. Authentication recovery should trigger only on defined codes and may automatically replay only proven idempotent requests or mutations carrying an idempotency key and replay policy.",
+      "responsibilityConflict": "Automatic mutation replay is not tied to a new human approval, exact action digest or idempotency record and can duplicate accountable actions. A mutable client-wide bearer token and optional run ID do not prove which human/Agent/company authorized a request. Raw server error text/body is not responsibility evidence and may expose sensitive data.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/client/http.ts (262 lines; SHA-256 c65de5e76b8876906df5870e016abdcaaebfffdaf8d7bc1583fec07d3151060d)",
+        "git history/blame: 255 current lines from 73eb23734f25c570d88665e672f80d740797c632; 7 from 70b1a9109d756818fb448beafa67af27babb52de improving CLI API parity",
+        "Existing application:cli/__tests__/http reused without source reread: SHA-256 6e41422aeedee95d1c5db6c14c3e2463b8e32817b391645e14708d93e1b0b201; focused Vitest 5/5 passed; test assessment already rejects generic recovery/non-idempotent replay",
+        "Cross-unit source trace without completing the pending common unit: client/context auto-discovers apiBase and apiKeyEnvVarName; cli/src/commands/client/common.ts:284-285 reads process.env[profile.apiKeyEnvVarName]; this client sends supplied apiKey as Authorization Bearer to supplied apiBase"
+      ],
+      "securityFindings": "Critical credential-exfiltration chain: an untrusted ancestor .paperclip/context.json can choose both API origin and arbitrary environment-variable name; downstream common reads that variable and this client sends it as Bearer to that origin. apiBase has no HTTPS/origin/userinfo allowlist and fetch has no timeout, AbortSignal or explicit redirect policy. recoverAuth runs after every HTTP error, not only a stable authentication code, and replays POST/PATCH/PUT/DELETE once without idempotency protection, risking duplicate side effects. Success bodies are read unbounded and cast to T even when non-JSON; error bodies/details are retained unbounded and English messages become contracts. Connection errors include full URLs/query and raw causes, which can leak tokens or sensitive identifiers."
+    }
+  ]
+}
