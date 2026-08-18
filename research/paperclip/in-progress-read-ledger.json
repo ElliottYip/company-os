@@ -5692,6 +5692,32 @@
       "completionRequirements": [
         "Read lines 1-123 exactly once and assess worktree environment injection, path/instance isolation, deferred setup, command safety, cleanup and relevance to Company OS local execution-node profiles."
       ]
+    },
+    {
+      "id": "application:server/__tests__/docker-entrypoint",
+      "path": "server/src/__tests__/docker-entrypoint.test.ts",
+      "lineCount": 171,
+      "sha256": "18dac7aba9f4bcdbfb1d11156c1924a6a04b34c866b0c621ce57d2fd456bd2dd",
+      "linkedEvidence": {
+        "history": [
+          "dd1a7f5290dea66582ef385811c24666ee6bc0e3 Ensure app-home ownership before the privilege drop, not only on remap (#10530)",
+          "c21f70ef1cc31eeb59c5985b7db7f46ff2f18cd3 fix: skip gosu when already running as target user (#2908)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 171 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Nine behavioral shell tests stub id/usermod/groupmod/chown/find/gosu and cover root Compose remap, fresh/stale ownership repair, chown avoidance, custom home, restricted same-user execution and arbitrary OpenShift UID/GID warnings.",
+        "The same-image root/non-root compatibility and command exec forwarding are practical self-hosted patterns. Checking for any mismatched descendant avoids unconditional recursive chown and handles mounted volumes plus GID-only changes.",
+        "PAPERCLIP_HOME is treated as the recursive chown target under root, but tests do not reject empty/root/symlink/broad paths or validate directory ownership/provenance. USER_UID/GID invalid, zero, negative, overflow, existing-ID collision and usermod/groupmod failure cases are absent.",
+        "A recursive find/chown can be expensive on large volumes and no timeout/progress/partial-failure/restart test exists. Non-root mismatch only warns and executes; writability/readiness is not proven before starting the server.",
+        "Focused Vitest passed 9/9. Commands are stubbed through PATH, so this validates shell branching and argument intent rather than actual Linux user/group/container filesystem behavior."
+      ],
+      "completionRequirements": [
+        "Read lines 1-171 exactly once and assess container privilege drop, UID/GID remap, ownership mutation, command forwarding, root/non-root behavior, data safety, portability and test quality against Company OS self-hosted deployment boundaries."
+      ]
     }
   ]
 }

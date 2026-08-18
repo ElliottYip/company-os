@@ -5243,18 +5243,23 @@
     },
     {
       "id": "application:server/__tests__/docker-entrypoint",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Behavioral shell tests for Docker entrypoint UID/GID remapping, application-home ownership repair, privilege drop and arbitrary non-root execution.",
+      "dependencyDirection": "Vitest -> sh scripts/docker-entrypoint.sh -> PATH-stubbed Linux commands and a temporary filesystem; no real container runtime, user namespace, volume driver, Kubernetes policy or server readiness.",
+      "keyDataModels": "Current/requested UID/GID, node user/group, PAPERCLIP_HOME ownership mismatch, root versus arbitrary non-root process and forwarded command argv.",
+      "lifecycle": "Container starts -> root may remap node identity and repair home ownership -> gosu drops privileges and execs command; non-root process skips mutation, warns on mismatch and execs directly.",
+      "testAssessment": "Focused Vitest passed 9/9. The branching tests cover important Compose/OpenShift/Kubernetes shapes and ownership regressions, but all system commands are stubs. Target validation, invalid IDs, real filesystem semantics, failures, scale and readiness are untested.",
+      "designRationale": "Ship one image that works with host-mapped Compose volumes and restricted arbitrary-UID platforms while avoiding costly chown on already-correct trees.",
+      "companyOsProblem": "Company OS self-hosted/local enterprise profile needs rootless-first deployment, predictable volume ownership and safe migration across Docker, Kubernetes and OpenShift without risking customer data paths.",
+      "companyOsFit": "ADAPT the dual root/rootless test matrix, privilege drop, explicit command exec and conditional ownership repair. Make rootless the preferred profile; resolve and validate an allowlisted dedicated data root, reject broad/symlink targets, validate UID/GID and collisions, verify writability/readiness, bound or document recursive repair and test actual container images in CI.",
+      "responsibilityConflict": "This is deployment mechanics rather than work responsibility, but root-time ownership mutation is a high-impact administrative action with no dry-run, target digest, operator evidence or rollback record.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/docker-entrypoint.test.ts:1-171 (SHA-256 18dac7aba9f4bcdbfb1d11156c1924a6a04b34c866b0c621ce57d2fd456bd2dd)",
+        "git history: dd1a7f5290dea66582ef385811c24666ee6bc0e3 and c21f70ef1cc31eeb59c5985b7db7f46ff2f18cd3",
+        "2026-08-19 focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "CRITICAL destructive-target gap: PAPERCLIP_HOME becomes a recursive root chown target with no tested rejection of /, empty, symlinked or unexpectedly broad paths. HIGH identity-remap gap: invalid/zero/negative/overflow UID/GID, existing-account collisions and usermod/groupmod/chown failures are untested. MEDIUM availability risk: recursive find/chown has no bound/progress/partial recovery and can delay large enterprise volumes. MEDIUM readiness gap: arbitrary non-root mismatch only warns and starts without proving data/config/log directories are writable."
     },
     {
       "id": "application:server/__tests__/document-annotation-routes",
