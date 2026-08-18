@@ -55,9 +55,26 @@
             "Health status is persisted before its audit event, so audit failure can leave a successful state mutation paired with a failed request and incomplete traceability.",
             "These remain range-local findings; database uniqueness constraints, route authorization, tests, and later transactional wrappers must be checked before assigning final severity or reuse status."
           ]
+        },
+        {
+          "start": 3001,
+          "end": 4000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Catalog refresh performs one update or insert per discovered descriptor and then separate connection, runtime-slot, and audit writes without a surrounding transaction; large catalogs incur sequential N+1 writes and partial refresh states are possible.",
+            "New or changed tools are quarantined only when connection configuration enables it, and safeDefault exempts entries classified as read; combined with the earlier fail-open heuristic, an unknown mutation can become active without review.",
+            "No removal or disablement of catalog entries missing from the latest discovery response is visible in this range, so stale upstream capabilities may remain represented unless later code handles them.",
+            "The apps-needing-attention projection loads every company invocation solely to map pending action requests back to connections, plus complete profiles, entries, and active catalog sets, creating an avoidable tenant-growth cost.",
+            "The health sweep loads every active enabled connection across all companies before filtering staleness and slicing the requested limit in memory; it lacks a database limit, lease, or visible multi-worker claim in this range.",
+            "Example installation mutates application, connection, credential bindings, runtime slot, profile, entries, and company binding through separate upserts and delete-then-insert operations without an encompassing transaction.",
+            "The example smoke actor selects the first real company agent when one exists and writes policy-decision audit events under that agent identity, which conflicts with Company OS responsibility integrity because a fixture check can be attributed to a human-managed production principal that did not act.",
+            "Credential-scope type and id may be taken directly from connection OAuth configuration without validation in this range; later secret-access enforcement must be checked to determine whether this is merely metadata or an authority boundary.",
+            "OAuth metadata retrieval validates each followed URL through the guarded fetch helper, including advertised authorization-server metadata, which is a reusable defense pattern; actual authorization and token POST paths still require separate verification.",
+            "All observations remain provisional until the rest of the OAuth lifecycle, route authorization, schema constraints, and tests are fully reviewed."
+          ]
         }
       ],
-      "nextLine": 3001,
+      "nextLine": 4001,
       "completionRequirements": [
         "Read every source line through 7771 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Review the corresponding first-party tests and relevant file history.",
