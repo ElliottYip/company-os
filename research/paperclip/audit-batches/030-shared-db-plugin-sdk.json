@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "package:shared",
+      "auditStatus": "COMPLETE",
+      "function": "Cross-runtime public vocabulary for server, UI, CLI, adapters and plugins: constants, DTO types, Zod input validators, API paths, portability, feature/app definitions and presentation helpers.",
+      "dependencyDirection": "Nearly every workspace depends inward on this package; it depends mainly on Zod. A 2,300+ line barrel and 1,400+ line constants file make it both contract layer and product-wide coupling hub.",
+      "keyDataModels": "Company, Agent, issue, goal, run, approval, budget, secret, tool, plugin, environment, decision, document, artifact, project, membership and live-event DTOs plus their enums/validators.",
+      "lifecycle": "Request input is parsed into shared DTOs, persisted through separate DB schema, returned to UI/plugins and sometimes serialized for company portability. Generated app and telemetry files are regenerated from source catalogs.",
+      "testAssessment": "51 tests cover 15 validator groups and many focused helpers. Many pure type files and the enormous enum/barrel surface have indirect compile-time coverage only; server and UI can therefore become lockstep coupled.",
+      "designRationale": "Prevent duplicated request/response shapes across a TypeScript monorepo and make provider adapters share product terminology.",
+      "companyOsProblem": "Company OS also needs stable wire contracts, validators, portable IDs and machine error codes across Web, API, Connector and deployments.",
+      "companyOsFit": "The schema-first approach fits, but Company OS must separate domain value objects, public API DTOs, Connector wire types and UI copy instead of one universal shared package.",
+      "responsibilityConflict": "Several enums expose `require_approval`, risk and principal concepts without enforcing exact action/contract/human/evidence bindings; shared labels and English denial messages must not become authority contracts.",
+      "decision": "ADAPT",
+      "evidence": ["packages/shared/src/constants.ts:1-1448", "packages/shared/src/index.ts", "packages/shared/src/types", "packages/shared/src/validators", "packages/shared/src/portability-hash.ts", "packages/shared/src/portability-zip.ts"]
+    },
+    {
+      "id": "package:db",
+      "auditStatus": "COMPLETE",
+      "function": "Postgres persistence package with 110+ table definitions, 210 tracked SQL migration files at the pin, external/embedded runtime selection, migration inspection/reconciliation, seed, backup and restore.",
+      "dependencyDirection": "Depends on shared DTO vocabulary, Drizzle, postgres.js and patched embedded Postgres. Server and CLI import concrete tables and `Db`, so schema types penetrate service code.",
+      "keyDataModels": "Companies, memberships, Agents, issues/goals/runs, workspaces, approvals, budgets/costs, documents/decisions, Secrets, tools, plugins, environments, routines, pipelines and audit/activity tables. Tool access alone defines over twenty related tables.",
+      "lifecycle": "Resolve database target → bootstrap external or embedded Postgres → inspect/reconcile migration journal → apply ordered SQL → serve transactional tables → backup via pg_dump or JS stream → retain/restore with sanitization.",
+      "testAssessment": "24 tests cover client options, embedded startup, backup, migration safety and selected high-risk schema migrations. The migration corpus and many schemas have only targeted or integration-level coverage; restore compatibility across every historical release is not exhaustively proven.",
+      "designRationale": "Support a low-friction local install and a serious Postgres deployment while accumulating product features through explicit migrations.",
+      "companyOsProblem": "Company OS needs independent schemas, migration safety, tenant isolation, backup/restore, offline/self-hosted bootstrap, audit retention and extension storage.",
+      "companyOsFit": "Operational patterns are valuable, but the schema is Paperclip's product and cannot be copied. Company OS should use bounded schemas/modules and an outbox rather than direct table imports across all services.",
+      "responsibilityConflict": "Generic approval payload and Agent-to-Agent hierarchy cannot enforce Company OS responsibility. Activity logging is separate from immutable responsibility/evidence state, and local-trusted bootstrap must not weaken production identity.",
+      "decision": "ADAPT",
+      "evidence": ["packages/db/src/schema", "packages/db/src/migrations", "packages/db/src/client.ts:37-864", "packages/db/src/check-migration-safety.ts", "packages/db/src/backup-lib.ts:10-1030", "packages/db/src/schema/approvals.ts:5-27", "packages/db/src/schema/agents.ts:14-45"]
+    },
+    {
+      "id": "package:plugin/sdk",
+      "auditStatus": "COMPLETE",
+      "function": "Official worker/UI/testing/build SDK with versioned JSON-RPC, manifest and lifecycle types, capability-gated host clients, events, jobs, tools, state/entities, local folders, Secrets, Agent sessions and same-origin React slots.",
+      "dependencyDirection": "Depends on shared and Zod with React as peer. Plugins compile against it; the server implements the host side and the UI loads SDK-compatible bundles.",
+      "keyDataModels": "Plugin manifest v1, JSON-RPC request/result/error, invocation metadata, domain event, job, tool, state scope, entity, UI slot/host context, environment driver and Agent session.",
+      "lifecycle": "Validate manifest/version → install package → start worker process → setup registrations → capability-check worker↔host RPC → deliver events/jobs/API/tool calls → health/config changes → bounded shutdown. UI bundles load separately in the browser.",
+      "testAssessment": "Six SDK tests cover host client, worker host, protocol/UI/testing paths, plus extensive server tests. The README explicitly calls deployment early: workers and UI are trusted, dynamic install assumes single-node writable filesystem/npm/network, and multi-instance artifact distribution is unresolved.",
+      "designRationale": "Provide one discoverable extension API while keeping persistence, auth and core mutations behind host services.",
+      "companyOsProblem": "Company OS needs version negotiation, capability declarations, extension isolation, durable event delivery, package provenance, multi-node distribution and separate Connector versus UI-extension trust models.",
+      "companyOsFit": "Fail-closed operations, manifest validation and host-mediated resources fit. The API is Paperclip-domain-wide, same-origin UI is not isolated, and resolved secrets can cross into a trusted worker; Company OS needs a narrower capability/lease protocol.",
+      "responsibilityConflict": "Plugins can create/update work, invoke Agents and respond to approvals through broad capabilities. Company OS must require accountable-human sponsorship and exact action authorization, not merely a manifest capability.",
+      "decision": "ADAPT",
+      "evidence": ["packages/plugins/sdk/README.md", "packages/plugins/sdk/src/protocol.ts", "packages/plugins/sdk/src/types.ts", "packages/plugins/sdk/src/worker-rpc-host.ts", "server/src/services/plugin-capability-validator.ts:389-429", "server/src/services/plugin-runtime-sandbox.ts"]
+    },
+    {
+      "id": "package:plugin/create-paperclip-plugin",
+      "auditStatus": "COMPLETE",
+      "function": "CLI scaffolder for a Paperclip plugin package and its worker/manifest/UI entrypoints.",
+      "dependencyDirection": "Depends on the Plugin SDK and emits packages coupled to its v1 manifest/build layout.",
+      "keyDataModels": "Template package metadata and entrypoint paths, not business data.",
+      "lifecycle": "Prompt/arguments → create files → install/build against SDK → plugin is later installed by the host.",
+      "testAssessment": "One entrypoint test checks generated structure; it does not validate production distribution, signing or sandboxing.",
+      "designRationale": "Reduce authoring errors and make the preferred extension shape easy to start.",
+      "companyOsProblem": "Company OS will need a Connector/extension starter with conformance and provenance defaults.",
+      "companyOsFit": "The scaffolding idea fits, but emitted Paperclip manifest/types and branding do not.",
+      "responsibilityConflict": "Generated templates should default to no capabilities and require explicit human-reviewed grants.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["packages/plugins/create-paperclip-plugin/src/index.ts", "packages/plugins/create-paperclip-plugin/src/entrypoints.test.ts", "packages/plugins/create-paperclip-plugin/README.md"]
+    },
+    {
+      "id": "package:plugin/paperclip-plugin-fake-sandbox",
+      "auditStatus": "COMPLETE",
+      "function": "Deterministic local fake sandbox provider that exercises environment-driver leases, setup sessions, templates and command execution without external infrastructure.",
+      "dependencyDirection": "Implements Plugin SDK environment-driver contracts and writes only to temporary local directories.",
+      "keyDataModels": "Fake lease ID, environment/session ID, template reference, redacted connection metadata and deterministic driver config.",
+      "lifecycle": "Validate/probe → allocate temp lease → execute/sync → release or retain → capture template/setup → clean up.",
+      "testAssessment": "One focused test covers the integrated provider lifecycle. It is intentionally not a security sandbox and should not be used as production proof.",
+      "designRationale": "Make provider-plugin integration deterministic and credential-free in CI.",
+      "companyOsProblem": "Company OS needs a deterministic Connector/execution-node conformance fixture that is never represented as a real Agent or sandbox.",
+      "companyOsFit": "Strong testing pattern; Company OS should build its own neutral fixture against its Connector SDK.",
+      "responsibilityConflict": "Fixture actions must remain Demo/test-only and must not mint formal identity, credentials or responsibility records.",
+      "decision": "ADAPT",
+      "evidence": ["packages/plugins/paperclip-plugin-fake-sandbox/src/manifest.ts", "packages/plugins/paperclip-plugin-fake-sandbox/src/plugin.ts", "packages/plugins/paperclip-plugin-fake-sandbox/src/plugin.test.ts"]
+    }
+  ]
+}
