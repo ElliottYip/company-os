@@ -6650,6 +6650,36 @@
       "completionRequirements": [
         "Read lines 1-441 exactly once and assess Gemini execution command construction, prompt/session handling, ACP/CLI engines, environment/Secret flow, streaming/result normalization, retry/cancel/timeout, local/remote containment and test quality against Company OS Connector execution contract."
       ]
+    },
+    {
+      "id": "application:server/__tests__/git-credentials",
+      "path": "server/src/__tests__/git-credentials.test.ts",
+      "lineCount": 294,
+      "sha256": "0974f4d08da4bd500f911b317669857354d83214c6af222407599bb1f6e6cdb1",
+      "linkedEvidence": {
+        "history": [
+          "2c90cf0f2c60d3851880eca3c643c01313af9ffd fix(server): serialize managed-checkout materialization and stop misattributing clone failures (#10723)",
+          "e0c2448267721f672bc2cb6cd16f6da99fdcf89e feat(server): authenticate server-side git clone and fetch with a company-secret GitHub token (#10720)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 294 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Twenty-three pure/real-local-Git tests cover GitHub URL eligibility, ordered company Secret/server-env fallback, memoization/audit context, URL-scoped credential-helper execution, error scrubbing/attribution and stable Secret-name order.",
+        "Eligibility accepts only HTTPS github.com/www.github.com without userinfo and rejects HTTP, SSH/scp, GitHub Enterprise, GitLab, local paths and invalid URLs. This reduces ambiguity but is too narrow for Chinese/self-hosted enterprise Git providers and is not a general Connector contract.",
+        "Company Secrets are probed GITHUB_TOKEN -> GH_TOKEN -> PAPERCLIP_GITHUB_TOKEN, then the server's global GITHUB_TOKEN -> GH_TOKEN. A failed tenant Secret resolution silently continues to later names/global env. On managed cloud, a platform credential can therefore become an implicit cross-tenant fallback unless deployment policy disables it.",
+        "Resolution passes a system access context with company, issue and heartbeat Run, which supports audit attribution. It lacks responsible human, ResponsibilityContract, repository/data purpose, Approval and requested token scopes; consumerId is a fixed workspace-git-credential string.",
+        "The first lookup result is memoized across repositories and calls. This reduces Secret traffic but retains plaintext token in process memory and delays Secret rotation/revocation or recovery from an initial absence/failure until the provider is recreated; cache lifetime/invalidation/concurrent resolution are untested.",
+        "buildGitAuthInvocation keeps the token out of argv, carries it in a dedicated env var, clears the generic helper, configures helpers only for HTTPS github.com/www.github.com and disables terminal prompts. Real local git credential fill returns the token only for HTTPS github.com and refuses evil.example or HTTP even after a possible URL rewrite.",
+        "The child process and any descendants can still read the token environment, and the credential is a long-lived bearer rather than a repository/audience/TTL-bound lease. Process listing, core dumps, hooks, Git config/includes, malicious Git executable and environment cleanup are not tested.",
+        "Scrubbing masks URL userinfo and entire query strings across schemes, but not bearer tokens in arbitrary prose/headers, path segments, credential-helper stdout or exact known token values. Failure attribution avoids blaming credentials for non-auth errors but uses English substring classification and exposes the Secret name/source category.",
+        "Focused Vitest passed 23/23, including three real local Git credential-helper executions; no network or real credential was used."
+      ],
+      "completionRequirements": [
+        "Read lines 1-294 exactly once and assess Git credential discovery/resolution, Secret scope, URL/host binding, subprocess injection/redaction, clone/fetch concurrency/failure attribution, tenant isolation and test quality against Company OS SecretPort, DataConnector and customer-local execution boundaries."
+      ]
     }
   ]
 }

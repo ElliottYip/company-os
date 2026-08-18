@@ -6114,18 +6114,23 @@
     },
     {
       "id": "application:server/__tests__/git-credentials",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Credential-provider and real local Git-helper tests for resolving company/global GitHub tokens, scoping them to HTTPS GitHub hosts, redacting errors and attributing authentication failures.",
+      "dependencyDirection": "Vitest -> git-credentials service -> fake Secret service and real local git credential fill; no network, repository clone/fetch, database or real token is used.",
+      "keyDataModels": "Company/Work/Run Secret access context, ordered Secret names, token source/name, Git remote URL, helper config/env invocation and scrubbed/auth-attributed failure.",
+      "lifecycle": "Validate remote host/protocol -> resolve and memoize tenant Secret or global env fallback -> inject bearer through host-scoped Git helper env -> disable prompts -> scrub/classify failures.",
+      "testAssessment": "Focused Vitest passed 23/23, including three real local Git helper processes. Coverage strongly proves host/protocol helper scoping but omits credential rotation, managed-cloud fallback policy, child/hook exposure, clone/fetch races and provider-neutral enterprise Git.",
+      "designRationale": "Authenticate server-managed Git without putting tokens in remote URLs or argv, make repository rewrites unable to redirect credentials to another host and offer actionable failure messages while avoiding false credential blame.",
+      "companyOsProblem": "Company OS needs customer-local, provider-neutral source-data credentials with explicit tenant/repository/purpose scope, short lifetime, auditable use and immediate revocation across managed-cloud and self-hosted profiles.",
+      "companyOsFit": "ADAPT the empty-default helper, exact host/protocol scoping, no-argv token rule, prompt disabling, real helper regression and safe failure attribution inside a Git DataConnector. Replace ordered ambient names/global fallback with SecretPort-issued repository/audience/TTL-bound grants, deployment-profile policy, explicit tenant consent and rotation-aware non-plaintext caching.",
+      "responsibilityConflict": "A fixed system consumer may resolve a company token with Work/Run context but no accountable human, ResponsibilityContract, DataAuthorization or approval. Global server fallback can silently change which legal party's credential performs a tenant action.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/git-credentials.test.ts:1-294 (SHA-256 0974f4d08da4bd500f911b317669857354d83214c6af222407599bb1f6e6cdb1)",
+        "git history: 2c90cf0f2c60d3851880eca3c643c01313af9ffd, e0c2448267721f672bc2cb6cd16f6da99fdcf89e",
+        "2026-08-19 focused Vitest: 23/23 passed"
+      ],
+      "securityFindings": "CRITICAL managed-cloud risk: tenant Secret failure/absence can fall back to a platform-global bearer credential without demonstrated tenant consent. HIGH revocation gap: plaintext resolution is memoized with no TTL/invalidation. HIGH bearer exposure: token remains in child environment and can reach Git hooks/descendants/core dumps. HIGH scope gap: credential is host-wide rather than repository/action/audience-bound. HIGH provider gap: enterprise/GitLab/Gitee/local Connector cases are unsupported. MEDIUM redaction gap: arbitrary prose/path/header tokens are not covered."
     },
     {
       "id": "application:server/__tests__/google-sheets-gallery",
