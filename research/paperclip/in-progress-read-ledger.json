@@ -1371,6 +1371,58 @@
       "sourceReadComplete": true,
       "nextLine": null,
       "completionRequirements": ["Read lines 1-1056 plus all four listed fixtures exactly once and map claimed versus actual worker security/lifecycle coverage."]
+    },
+    {
+      "id": "application:server/services/plugin-secrets-handler",
+      "path": "server/src/services/plugin-secrets-handler.ts",
+      "lineCount": 285,
+      "sha256": "aaa839fd100515198cd9365fc027ca12e327f4c183bf8787ac6d43f7be4d156e",
+      "linkedEvidence": { "history": ["1de0a3bb feat(mcp) [split 2/8]: add governed access contracts (#9557)", "778e775c Add secrets provider vaults and remote import (#5429)", "5bd0f578 Generalize sandbox provider core for plugin-only providers (#4449)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 285,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The handler correctly requires a structured secret_ref, explicit company id, exact company/plugin/Secret/version binding and an unambiguous config path before delegating plaintext resolution to the central Secret service.",
+          "It does not verify plugin status, installation/company assignment, manifest capability or that the current plugin config still contains this exact reference. A plugin that knows any uniquely bound Secret id can resolve it without configPath even if the calling operation did not originate from that field.",
+          "Actor type/id, issueId and heartbeatRunId are accepted from resolve params and forwarded into access evidence without independent validation here. If the Host API does not overwrite them, a plugin can forge human/Agent/run attribution for Secret access.",
+          "The in-memory rate limiter is per handler/process, not distributed or durable, and retains an unbounded map of company/plugin keys. Failed attempts consume the same quota, enabling one plugin loop to block its own legitimate resolutions while leaving no denial/rate audit.",
+          "Binding lookup fetches every matching row then filters version in memory and checks ambiguity; a database-side exact predicate/limit would be safer and cheaper.",
+          "Secret-ref extraction recursively walks arbitrary config without cycle, depth, node-count or path-length bounds. Cyclic/programmatic objects can overflow/fail, and large configs can consume unbounded CPU/memory.",
+          "Structured secret_ref objects are accepted anywhere in config even when schema does not declare a Secret field. Schema limits only legacy UUID detection, so the schema is not an allowlist for Secret-bearing paths.",
+          "Dot-path construction is ambiguous for object keys containing dots and array-like segments, risking mismatch between extracted binding paths and later config reads unless upstream schemas forbid such keys.",
+          "invalidSecretRef serializes the complete rejected object into an error message. Malformed inputs containing plaintext credentials can be propagated into worker/host logs through the already-audited raw error paths.",
+          "Successful resolution returns plaintext directly to a long-lived shared plugin worker with no purpose, destination, TTL, one-time capability, data-egress rule or zeroization. Company OS needs a narrower credential projection/execution-node contract."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-285 exactly once and trace company scope, plugin binding, provider resolution, plaintext lifetime, audit, cache, errors and authorization assumptions."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-secrets-handler",
+      "path": "server/src/__tests__/plugin-secrets-handler.test.ts",
+      "lineCount": 213,
+      "sha256": "c086b85135701f7db326af1864ec7ba9d5bb2a0739f3cf2bd701fa33ae66b849",
+      "linkedEvidence": { "history": ["1de0a3bb feat(mcp) [split 2/8]: add governed access contracts (#9557)", "778e775c Add secrets provider vaults and remote import (#5429)"], "focusedTest": "2026-08-18: direct Vitest run passed 4 pure tests and skipped 2 embedded-PostgreSQL integration tests; no shared-vault runtime pass is claimed." },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 213,
+        "readAt": "2026-08-18",
+        "notes": [
+          "Two pure guards verify companyId and structured secret_ref are required before database access, and schema extraction ignores ordinary UUID fields while rejecting legacy UUID strings in secret-ref fields.",
+          "Two embedded-PostgreSQL cases verify a company/plugin binding resolves through the shared vault with a success access event, and a cross-company Secret is rejected before provider access.",
+          "The successful plugin manifest declares no capabilities, yet direct handler resolution succeeds. The suite therefore proves binding enforcement but not that secrets.read-ref or another capability is required at this boundary; it assumes an upstream SDK gate.",
+          "Cross-company denial intentionally leaves zero Secret access events, making unauthorized attempts invisible to this audit stream.",
+          "Missing cases include disabled/uninstalled plugin, stale/deleted binding, configPath mismatch, fixed versus latest version, rotation/revocation races, provider failure, audit failure after plaintext release, concurrent resolution, remote vaults, response/log leakage and plaintext lifetime.",
+          "No test binds Secret use to a run, task, accountable human, approval, purpose/data contract or external destination."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-213 exactly once, run focused tests and map positive/negative Secret scope and leakage coverage."]
     }
   ]
 }
