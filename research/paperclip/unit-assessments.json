@@ -1918,18 +1918,23 @@
     },
     {
       "id": "application:cli/commands/env-lab",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Exposes deterministic local SSH environment-fixture lifecycle commands: up, status, down and doctor. It resolves an instance-scoped state path, delegates SSH prerequisite/process/state/config work to adapter-utils, and prints human or JSON projections including host, port, user, workspace, logs, state and key/known-host paths.",
+      "dependencyDirection": "env-lab CLI -> instance home/path helpers and @paperclipai/adapter-utils/ssh -> local filesystem, sshd/process/network fixture. The command is a thin presentation/orchestration layer; SSH trust, key generation, process isolation, cleanup and environment configuration ownership remain in the separately audited adapter-utils unit.",
+      "keyDataModels": "instance ID/root; ssh-fixture/state.json; SSH support{supported,reason}; fixture status{running,state}; state host/port/username/workspaceDir/sshdLogPath/clientPrivateKeyPath/knownHostsPath; generated Environment config.",
+      "lifecycle": "Resolve instance-scoped state -> up starts an SSH fixture and builds Environment config; status reads state and probes running state; doctor checks prerequisites plus state and reports key paths; down stops the recorded fixture. JSON mode serializes complete state/environment projections.",
+      "testAssessment": "The already completed application:cli/__tests__/env-lab assessment was reused without rereading source: focused Vitest passed 2/2 and proves path shape plus absent-state projection only. SSH trust, credential permissions, process/network isolation, commands/files, cleanup/recovery and adversarial instance IDs are absent. CLI TypeScript checking passes.",
+      "designRationale": "A deterministic disposable environment makes remote-execution adapters testable without production hosts or paid services. Instance-scoped state supports parallel local installations, and explicit status/doctor/down commands improve recovery from orphaned processes.",
+      "companyOsProblem": "Company OS needs vendor-neutral Connector and local-execution conformance labs that simulate capability declaration, task input, progress/events, approval pause/resume, evidence/result, cancellation, timeout, idempotency and runtime attestation without touching real enterprise systems or credentials.",
+      "companyOsFit": "Use the fixture-lifecycle idea, then generalize it behind a ConnectorConformanceLab with deterministic scenarios and isolated ephemeral credentials. Fixture state must be clearly labeled non-production, resource-bounded, automatically cleaned and incapable of being confused with a real Agent or enterprise node.",
+      "responsibilityConflict": "The SSH fixture is infrastructure test state rather than business work and carries no human/Agent responsibility record. That is acceptable only if it remains isolated from production projections and cannot generate evidence represented as real execution.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "cli/src/commands/env-lab.ts (174 lines; SHA-256 f571afc992e9a11ba24b2de7424ca312eca0a3146ecc93ac95ba195d5aa8c7bd)",
+        "git history: e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 (Add SSH environment support, 2026-04-23)",
+        "Completed focused assessment application:cli/__tests__/env-lab: 2/2 passed; REFERENCE ONLY"
+      ],
+      "securityFindings": "JSON/human output exposes local host/user/workspace/log/state/private-key-path/known-hosts topology and may expose additional Environment config fields; downstream logs must classify and redact it. Instance-ID containment, state-file permissions, private-key mode, port binding, host-key pinning, child-process ownership, PID reuse, symlink safety and cleanup after crashes are delegated and unproven here. down has no confirmation but targets a local test fixture. Command handlers do not add timeouts or error recovery; start/stop idempotency and orphan cleanup depend entirely on adapter-utils."
     },
     {
       "id": "application:cli/commands/heartbeat-run",
