@@ -5425,6 +5425,56 @@
       "completionRequirements": [
         "Read lines 1-939 exactly once and assess cost ingestion, pricing/source attribution, tenant/work/Agent allocation, aggregation, budgets, idempotency, concurrency, precision, lifecycle and test quality against Company OS model/provider/data governance and FDE cost requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/cross-issue-influence-limit",
+      "path": "server/src/__tests__/cross-issue-influence-limit.test.ts",
+      "lineCount": 193,
+      "sha256": "980bbba5c36893286d3ac3cc1664ddb6ce86e63edda44319c858b52031161a06",
+      "linkedEvidence": {
+        "history": [
+          "e8ae5286eb92a86ddd7421d1ca22398982a3381d feat(issues): explain cross-task agent writes with attribution, audit receipts, and actionable denials (#10843)",
+          "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 193 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Nine unit tests cover log-only rollout, an exact 20-write cap, actionable structured denial, a shared comment/update counter, same-issue exemption and fail-closed malformed/missing/wrong-Agent/wrong-company/no-source Run context.",
+        "The persisted Run is the binding anchor and the service appears to serialize through a transaction/row lock. This is a strong containment direction, but the test does not reject terminal Runs, validate an active responsible human or bind a specific responsibility/approval/capability contract.",
+        "A fixed count treats comments and arbitrary PATCH updates as equivalent and allows twenty cross-work effects regardless of risk, target, data/tool scope or approval. Same-issue writes are unlimited. Company OS needs effect/risk-class capability budgets, not one universal behavioral cap.",
+        "Activity log is both counter and evidence, so retention/deletion, duplicate retries and direct writers can change enforcement. Tests omit idempotency keys, target-company existence/authorization, distinct target counting, rollback when business mutation fails, cap reset/session rollover and audit failure behavior.",
+        "Focused Vitest passed 9/9 in both sandboxed and approved unsandboxed runs; the separate PostgreSQL concurrency test remained skipped."
+      ],
+      "completionRequirements": [
+        "Read lines 1-193 exactly once and assess cross-work mutation authority, active-run attribution, containment, denial semantics, evidence/audit and test quality against Company OS exact work/contract/approval boundaries."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/cross-issue-influence-limit-postgres",
+      "path": "server/src/__tests__/cross-issue-influence-limit-postgres.test.ts",
+      "lineCount": 111,
+      "sha256": "cb01e658221cdab5743c9d6cac08ee6eae3c13105d8b03b00c08e5fede0f1df9",
+      "linkedEvidence": {
+        "history": [
+          "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 111 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. One embedded-PostgreSQL test seeds nineteen observations, races comment and update attempts, and expects exactly one allowed twentieth event plus one rejected twenty-first receipt.",
+        "The intended assertion is valuable because it verifies database serialization rather than an in-memory counter, and checks both returned counts and durable accepted/rejected activity rows.",
+        "The fixture uses a running Run with responsibleUserId but does not prove that the human exists, is active, owns the source work or approved cross-work authority. Seed observations are bare activity rows without kind/details or idempotency identity.",
+        "The PostgreSQL suite was skipped in both sandboxed and approved unsandboxed runs because embedded database support was unavailable. Therefore the concurrency property is intended, not verified in this environment. No rollback/deadlock/retry/crash test accompanies it."
+      ],
+      "completionRequirements": [
+        "Read lines 1-111 exactly once and assess real-database enforcement of cross-work mutation containment, actor/run/work binding, tenant isolation, schema interaction and failure coverage."
+      ]
     }
   ]
 }
