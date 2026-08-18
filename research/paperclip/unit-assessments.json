@@ -1496,18 +1496,24 @@
     },
     {
       "id": "application:cli/checks/index",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Defines the common CLI doctor CheckResult interface and re-exports the individual configuration, identity, database, model, log, port, Secret, storage, installation/runtime and service-health check functions. It is a barrel/contract module, not an execution orchestrator.",
+      "dependencyDirection": "All concrete CLI check modules -> the CheckResult type, while consumers may import every check through this barrel. The contract embeds an optional executable repair closure, so presentation results can carry state-changing behavior without an application-command boundary.",
+      "keyDataModels": "CheckResult{name, status(pass|warn|fail), message, canRepair?, repair? callback, repairHint?}. There is no stable code, category, structured parameters, deployment profile, affected resource, observed/expected value, timestamp, correlation ID, evidence classification, redaction state or repair authorization record.",
+      "lifecycle": "A check constructs a result and may attach an arbitrary synchronous/asynchronous closure; callers decide whether and how to invoke it. This module defines no ordering, concurrency, timeout, exception isolation, dry run, repair confirmation, idempotency, rollback, post-repair verification or audit publication.",
+      "testAssessment": "No focused contract or barrel test was found. TypeScript checking passes and will catch basic export/type drift. Existing Secret tests assert selected repair hints but do not prove generic repair authorization, callback failure handling, stable codes, serialization, redaction, ordering or evidence semantics. Individual check coverage remains unit-specific.",
+      "designRationale": "A tiny shared result type makes local CLI checks easy to add and render, and re-exports provide a convenient import surface. An in-process repair callback is convenient for an interactive single-user doctor command, but it prevents results from being safely serialized and couples diagnosis to mutation.",
+      "companyOsProblem": "Company OS needs a canonical diagnostic protocol shared by CLI, Web, API and self-hosted support bundles, plus separately authorized repair commands whose outcomes can be attributed to a human and retained as evidence.",
+      "companyOsFit": "Reuse the small composable-check idea only. Company OS should define a serializable DiagnosticObservation with stable code, versioned structured parameters, severity, scope/resource, profile, safe evidence and timestamps; RepairProposal/RepairCommand must be a separate application contract with authorization, approval policy, idempotency, dry run, expected changes, postcondition checks and audit events.",
+      "responsibilityConflict": "Embedding an arbitrary repair closure in an otherwise descriptive result obscures who authorized a mutation and what exact action was approved. It cannot cross process boundaries, be signed, persisted, replayed safely or bound to an accountable human, approval, work item and evidence digest as Company OS requires.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/checks/index.ts (20 lines; SHA-256 1573bdda62fb4eddf6514dde9f9adbdb83fa45a6cf9dba91b2f84b53e0512731)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 introduced the base contract/exports; fc5a30805ed3c95ac6598c8660261a018b5b5a7f added managed-install and service-health exports",
+        "Blame: 18 current lines from 73eb2373 and 2 from fc5a3080",
+        "Repository test/spec search found repairHint assertions only in cli/src/__tests__/secrets.test.ts and no focused generic CheckResult/barrel coverage"
+      ],
+      "securityFindings": "The result contract provides no redaction or sensitivity marker even though concrete checks propagate paths and raw driver/parser errors. repair is an unrestricted closure with no declared target, capability, actor, approval, confirmation, idempotency key or audit envelope; canRepair is advisory and may diverge from closure presence. Free-form name/message/hint are unsuitable for API contracts or localization and can leak details. Company OS must keep diagnostics data-only and route mutations through authenticated, authorized, attributable application commands."
     },
     {
       "id": "application:cli/checks/llm-check",
