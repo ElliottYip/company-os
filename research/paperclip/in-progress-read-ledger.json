@@ -1611,6 +1611,60 @@
         "Applied checksum mismatch and transaction locking are sound defensive choices, but mutable manifest coreReadTables can broaden read access during activation without approval, as the focused test explicitly demonstrates."
       ],
       "completionRequirements": ["Read lines 1-572 exactly once and trace namespace allocation, SQL validation/execution, migration ledger/checksums, transactions, concurrency, rollback, privilege isolation, upgrade and cleanup against focused tests."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-install-guard",
+      "path": "server/src/__tests__/plugin-install-guard.test.ts",
+      "lineCount": 161,
+      "sha256": "d3c7241e0ea049d7ac805d44eacb9075e89240a38eb5e55cc24668dcd4a13242",
+      "linkedEvidence": { "history": ["0ef3b320 Harden POST /plugins/install: canonicalize localPath for all instances; bundled-only floor for managed instances (#10067)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 161 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Pure tests thoroughly cover managed-config presence fail-closed behavior, realpath canonicalization, null/nonexistent/file rejection, segment-based root containment, sibling-prefix rejection and symlink escape.",
+        "The contract correctly requires callers to canonicalize before root checking, but does not itself prove the route always preserves that sequencing or that package contents remain immutable after the check.",
+        "No race test swaps the canonical directory or nested manifest/worker/migration symlinks between authorization and Loader reads, and no platform-specific case covers case-folding or mount replacement."
+      ],
+      "completionRequirements": ["Read lines 1-161 exactly once, run focused tests and map canonicalization, symlink, deployment profile, allowlist and source-mode cases to plugin-install-guard."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-install-route-security",
+      "path": "server/src/__tests__/plugin-install-route-security.test.ts",
+      "lineCount": 386,
+      "sha256": "28918e41fe95b3e2a22cde2c5c7c7605fdc820762aa817396e8d866151982a55",
+      "linkedEvidence": { "history": ["0ef3b320 Harden POST /plugins/install: canonicalize localPath for all instances; bundled-only floor for managed instances (#10067)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 386 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Route cases cover cloud rejection of npm/outside/traversal/symlink sources, allow one bundled path, validate every local path and preserve self-hosted npm behavior.",
+        "Every route case requires embedded PostgreSQL and the suite mocks lifecycle/activity/live events; no case executes locally when database support is unavailable.",
+        "Fixtures contain executable JavaScript manifests and validate only source-directory admission, not content digest/signature, nested entrypoint containment, post-check mutation, manifest policy, package identity continuity or worker sandboxing.",
+        "The actor is always an instance-admin board principal; negative anonymous, non-admin, stale-session and confused-deputy cases belong to separate authz coverage and are not proven here.",
+        "One self-hosted test intentionally attempts a real npm resolution for a random package name, creating network/time nondeterminism and testing failure wording rather than a stubbed source boundary."
+      ],
+      "completionRequirements": ["Read lines 1-386 exactly once, run focused tests and trace actor authorization plus install source normalization through POST /plugins/install without assuming mocked Loader safety."]
+    },
+    {
+      "id": "application:server/services/plugin-install-guard",
+      "path": "server/src/services/plugin-install-guard.ts",
+      "lineCount": 108,
+      "sha256": "c91cea3b6ffade1b7c167dddeda4ded84b48a19c18e981c08e6528d3f5d0e36c",
+      "linkedEvidence": { "history": ["5858ccb9 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 108 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The guard correctly uses realpath and path.relative rather than lexical normalization or string prefix, and treats any managed-config variable presence as the restrictive cloud profile.",
+        "It authorizes a directory path, not immutable package content. There is no open-file descriptor/content digest binding, TOCTOU defense, nested entrypoint/migration realpath check or provenance/signature validation.",
+        "Cloud admission trusts every directory beneath the bundled catalog root equally; because Loader dynamically imports manifest JavaScript before validation and permits problematic entrypoints, root containment alone is not a complete RCE boundary.",
+        "Self-hosted mode canonicalizes but deliberately allows arbitrary local directories and npm sources; deployment ownership must therefore require explicit operator authority and isolation rather than treating canonicalization as trust."
+      ],
+      "completionRequirements": ["Read lines 1-108 exactly once and assess canonical/real paths, TOCTOU, allowed roots, deployment profiles, npm sources, error contracts and ownership against both focused suites."]
     }
   ]
 }
