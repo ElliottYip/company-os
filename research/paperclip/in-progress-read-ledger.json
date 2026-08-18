@@ -5832,6 +5832,33 @@
       "completionRequirements": [
         "Read lines 1-303 exactly once and assess effective Run config canonicalization/fingerprints, Secret handling, workspace reuse invalidation, provider isolation, determinism and test quality against Company OS Connector runtime attestation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-config",
+      "path": "server/src/__tests__/environment-config.test.ts",
+      "lineCount": 251,
+      "sha256": "b75daf05e2f782cdf580cd2e2a4a54ccd5120d0c9e405a754b7bf6e7d2369928",
+      "linkedEvidence": {
+        "history": [
+          "5bd0f578fd3f44aac910aab774443980696f4f97 Generalize sandbox provider core for plugin-only providers (#4449)",
+          "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)",
+          "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 251 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source recovered in two non-overlapping ranges after the original tool output was lost to context truncation. Eleven pure tests cover canonical SSH, built-in sandbox, schema-driven sandbox, generic plugin-backed sandbox and plugin driver shapes.",
+        "SSH normalization converts the port, defaults strictHostKeyChecking, nulls blank knownHosts and rejects a raw private key or relative remoteWorkspacePath. This is a useful secret-reference and path-safety baseline, but the suite does not test host/user/port bounds, known-host content, secret ownership/audience/version validity, URI/IPv6 edge cases or stable structured error codes.",
+        "Built-in sandbox image values are trimmed, while schema-driven and generic plugin fields such as template/image remain untrimmed. Generic plugin-backed sandbox input preserves customFlag and other unknown keys, enabling provider extensibility but also allowing unclassified sensitive or policy-bypassing fields unless a provider schema has already validated them.",
+        "The examples put an apiKey-looking UUID directly in sandbox config rather than a Secret reference. The test cannot show whether this is a non-secret identifier or credential, so Company OS must require field-level secret classification and reject raw credential material regardless of driver/provider.",
+        "Focused Vitest passed 11/11. Missing tests include malformed/unknown drivers and providers, unknown top-level keys, prototype-pollution payloads, nested limits, schema version migration, provider disappearance/version skew, redaction/serialization, Windows/local-enterprise paths, offline execution-node policy and error-code stability."
+      ],
+      "completionRequirements": [
+        "Read lines 1-251 exactly once and assess environment config normalization, provider/transport fields, Secrets, unknown keys, validation, deployment portability and test quality against Company OS execution-node profiles."
+      ]
     }
   ]
 }

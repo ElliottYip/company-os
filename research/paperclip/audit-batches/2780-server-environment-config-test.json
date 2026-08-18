@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-config",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for normalizing and parsing persisted SSH, built-in sandbox, schema-driven sandbox, generic plugin-backed sandbox and plugin environment-driver configuration.",
+      "dependencyDirection": "Vitest -> environment-config service -> HttpError plus driver/provider schemas and in-memory normalization; no database, Secret resolver, runtime host, plugin process or authorization policy is exercised.",
+      "keyDataModels": "Environment driver discriminant, SSH host/port/user/workspace/host-key and private-key Secret reference, sandbox provider/image/template/timeout/reuse lease and plugin key/driver key/driver config.",
+      "lifecycle": "Accept an environment payload -> discriminate driver/provider -> normalize defaults and primitive types -> persist a canonical config object -> parse the stored object into a typed execution-driver configuration.",
+      "testAssessment": "Focused Vitest passed 11/11. The suite gives concise positive coverage and proves raw SSH private keys and relative remote workspace paths are rejected. It does not cover malformed drivers/providers, hostile or oversized nested objects, unknown-key policy, schema evolution/provider removal, Secret authorization and resolution, serialization/redaction, local-enterprise portability or stable error codes.",
+      "designRationale": "Keep the service-side environment envelope stable while allowing execution providers to add configuration without modifying the central server for every provider.",
+      "companyOsProblem": "Company OS needs portable managed-cloud and customer-local execution-node profiles, with vendor-neutral Connector configuration, strict Secret isolation and upgrade-safe provider extensions.",
+      "companyOsFit": "ADAPT the discriminated driver envelope and provider-extensible configuration boundary. Require a versioned provider schema, field-level Secret/reference annotations, allowlisted persisted keys, structural size/depth limits, structured validation codes, policy validation per execution node and compatibility fixtures for upgrade/downgrade.",
+      "responsibilityConflict": "An execution location/config is operational context, not authorization. The config must be bound to the exact Work, accountable human, Connector capability, data contract, approval digest and runtime attestation; permissive unknown fields cannot silently expand tools, data access or credential scope.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-config.test.ts:1-251 (SHA-256 b75daf05e2f782cdf580cd2e2a4a54ccd5120d0c9e405a754b7bf6e7d2369928)",
+        "git history: 5bd0f578fd3f44aac910aab774443980696f4f97, 70679a33216bae9247b1b6bddc5fcaad1c04e829, e4995bbb1cc36454fc0fa3142ad9c7030c397ff0",
+        "2026-08-19 focused Vitest: 11/11 passed"
+      ],
+      "securityFindings": "HIGH schema/secret-classification gap: generic provider fields are preserved and a credential-shaped apiKey field is accepted directly, so safety depends on external provider-schema behavior not proved here. MEDIUM canonicalization inconsistency: built-in image trimming differs from generic/schema-driven string preservation. MEDIUM validation gap: no hostile nested input, prototype key, resource bound, unknown driver/provider, Secret authorization, redaction or stable error-code tests."
+    }
+  ]
+}
