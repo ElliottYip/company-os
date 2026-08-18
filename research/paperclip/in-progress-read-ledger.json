@@ -4561,10 +4561,12 @@
         { "path": "cli/src/commands/client/auth.ts", "completedRanges": [{ "start": 1, "end": 203 }] },
         { "path": "cli/src/commands/client/company.ts", "completedRanges": [{ "start": 1, "end": 1805 }] },
         { "path": "cli/src/commands/client/connect.ts", "completedRanges": [{ "start": 1, "end": 265 }] },
-        { "path": "cli/src/commands/client/context.ts", "completedRanges": [{ "start": 1, "end": 158 }] }
+        { "path": "cli/src/commands/client/context.ts", "completedRanges": [{ "start": 1, "end": 158 }] },
+        { "path": "cli/src/commands/client/cost.ts", "completedRanges": [{ "start": 1, "end": 167 }] },
+        { "path": "cli/src/commands/client/dashboard.ts", "completedRanges": [{ "start": 1, "end": 35 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/cost.ts",
+      "nextFile": "cli/src/commands/client/feedback.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4630,7 +4632,13 @@
         "context.ts was read completely at pinned SHA; its history is 70b1a9109d756818fb448beafa67af27babb52de and 73eb23734f25c570d88665e672f80d740797c632. It provides show/list/use/set for local profiles, but every command advertises --data-dir while never reading opts.dataDir, so the documented state-isolation flag is ineffective in this file.",
         "context show returns the selected profile plus the complete profiles map; list exposes API origins, Company/Agent identity and credential environment-variable names. This is useful diagnostics but expands metadata disclosure in logs/automation and violates least-output defaults for multi-tenant or shared machines.",
         "context set accepts apiBase, Company/Agent IDs, persona, display name and apiKeyEnvVarName without origin, identifier, environment-variable-name or cross-field consistency validation. This directly feeds the previously proven arbitrary-origin credential-exfiltration chain and permits internally contradictory persona/identity state.",
-        "Profile update and --use are separate local writes with no atomic transaction. Arbitrary --context paths and the ignored --data-dir contract require deeper enforcement in the context store, not UI trust. Decision: REIMPLEMENT a schema-validated, permission-hardened, atomic context store; do not reuse this command layer. Next file is cost.ts."
+        "Profile update and --use are separate local writes with no atomic transaction. Arbitrary --context paths and the ignored --data-dir contract require deeper enforcement in the context store, not UI trust. Decision: REIMPLEMENT a schema-validated, permission-hardened, atomic context store; do not reuse this command layer.",
+        "cost.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It is a thin API-parity surface for cost summaries, cost/finance event ingestion, budget policies, Company/Agent budgets and incident resolution.",
+        "Cost and finance event creation accept arbitrary JSON in argv and issue POST without an exposed idempotency key, source-event identity or retry contract. A timeout/retry can double-record financially material events unless the hidden payload/service compensates; the CLI itself neither proves nor communicates that invariant.",
+        "Budget policy upsert, Company/Agent budget mutation and incident resolution have no revision precondition, plan digest, accountable-human confirmation, reason/evidence requirement or approval binding. Agent budget update is addressed only by Agent ID, leaving tenant authorization entirely implicit in server enforcement.",
+        "Finance-event listing appears as an unparameterized Company GET, with no CLI pagination/window/export controls. Decision: REFERENCE ONLY for capability taxonomy until service/schema units prove durable accounting, idempotency and reconciliation; Company OS must own responsibility-bound financial governance.",
+        "dashboard.ts was read completely at pinned SHA; its history is 70b1a9109d756818fb448beafa67af27babb52de and 73eb23734f25c570d88665e672f80d740797c632. It exposes one Company-scoped DashboardSummary GET and contains no local projection logic, mutation or client-only state.",
+        "The narrow server projection is a good independent-Web boundary pattern: clients consume a typed summary instead of reproducing aggregate logic. Reuse judgment remains REFERENCE ONLY at this command layer; the underlying dashboard service/schema/test units must establish consistency, freshness, authorization and whether responsibility/approval/data-governance states are omitted. Next file is feedback.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
