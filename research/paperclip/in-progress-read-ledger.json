@@ -4569,10 +4569,11 @@
         { "path": "cli/src/commands/client/issue.ts", "completedRanges": [{ "start": 1, "end": 1450 }] },
         { "path": "cli/src/commands/client/plugin.ts", "completedRanges": [{ "start": 1, "end": 998 }] },
         { "path": "cli/src/commands/client/project.ts", "completedRanges": [{ "start": 1, "end": 228 }] },
-        { "path": "cli/src/commands/client/prompt.ts", "completedRanges": [{ "start": 1, "end": 276 }] }
+        { "path": "cli/src/commands/client/prompt.ts", "completedRanges": [{ "start": 1, "end": 276 }] },
+        { "path": "cli/src/commands/client/routine-api.ts", "completedRanges": [{ "start": 1, "end": 154 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/routine-api.ts",
+      "nextFile": "cli/src/commands/client/run.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4680,7 +4681,11 @@
         "prompt.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It resolves an Agent identity, creates an Issue or comment, and optionally wakes the Agent, offering a compact human/Agent work handoff pattern.",
         "The legacy agent-prompt command requires the Agent API key as a positional argv argument, exposing it in process listings and shell history; prompt text also travels in argv. --api-key-env accepts an arbitrary environment-variable name and feeds the broader configurable-origin credential path already proven in common/context.",
         "Actor identity is reduced to agent or board. An Agent credential can create and self-assign work, while board authentication is not an accountable human principal. Neither path binds proposer, responsible human, objective, permission/data contract, expected evidence/result, risk level or approval policy into the created execution contract.",
-        "Issue/comment creation and Agent wakeup are separate non-transactional POSTs with no idempotency key. Wake failure leaves accepted work dormant; retry can duplicate work/comments/wakeups. Comment mode does not locally prove the Issue belongs to the selected Agent/Company. Decision: REJECT the credential interface and REIMPLEMENT handoff as one durable responsibility-bound command/outbox; retain only Agent-reference verification as a useful guard. Next file is routine-api.ts."
+        "Issue/comment creation and Agent wakeup are separate non-transactional POSTs with no idempotency key. Wake failure leaves accepted work dormant; retry can duplicate work/comments/wakeups. Comment mode does not locally prove the Issue belongs to the selected Agent/Company. Decision: REJECT the credential interface and REIMPLEMENT handoff as one durable responsibility-bound command/outbox; retain only Agent-reference verification as a useful guard.",
+        "routine-api.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It exposes Routine CRUD-like operations, revisions/restore, Run history/manual execution and public triggers with create/update/delete/Secret rotation/fire.",
+        "This capability set surfaces an important unplanned Company OS problem: scheduled/event automation needs versioned definitions, trigger identity, Secret rotation, Run linkage and public ingress. But this CLI reduces all mutations to generic JSON, with no visible schemas, revision preconditions, idempotency/replay protection, risk classification, accountable-human approval or evidence chain.",
+        "Revision restore and trigger deletion are unconfirmed; manual run and public trigger fire expose no idempotency key. Trigger payloads travel in argv, and Secret rotation prints the raw service result, so safe redaction/one-time Secret handling is not assured. Public fire still goes through the general credential/configured-origin client, blurring public ingress from authenticated control-plane operations.",
+        "Run limit is passed as an unvalidated string and list is otherwise unpaginated. Decision: REFERENCE ONLY for the automation lifecycle map pending schema/service/security audit; Company OS should model routines as versioned executable contracts through Connector, Approval and Evidence ports rather than reuse this generic command surface. Next file is run.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
