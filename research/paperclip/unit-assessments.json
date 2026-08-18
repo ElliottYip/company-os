@@ -6427,18 +6427,21 @@
     },
     {
       "id": "application:server/__tests__/issue-goal-fallback",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure unit tests for selecting an Issue goal from an explicit value, a linked Project's goal or the Company default during create and update.",
+      "dependencyDirection": "Current and requested Project/Goal IDs plus Project and Company fallback IDs enter pure resolver functions; one nullable Goal ID is returned to the Issue service.",
+      "keyDataModels": "Current/requested Project ID, current/requested Goal ID, Project Goal ID, Company default Goal ID and nullable resolved Goal ID.",
+      "lifecycle": "Creation prefers explicit Goal, then Project Goal for a linked Project, otherwise Company default; updates backfill legacy nulls, replace inferred fallback values after Project changes and preserve values judged explicit.",
+      "testAssessment": "Eight concise cases cover the intended precedence and common legacy/project transitions. Missing are an explicit assignment-origin field, the ambiguous case where a user explicitly chose the same ID as a fallback, intentional clearing, default-Goal changes, deleted/archived or cross-Company Goals, multi-Goal Projects, concurrent changes and provenance of automatic reassignment.",
+      "designRationale": "Keep ordinary Issues connected to a useful organizational Goal and migrate old unassigned records without requiring a bulk data rewrite.",
+      "companyOsProblem": "A Work item must retain whether its Goal was explicitly chosen by a human, inherited from a Project/template or supplied by organization policy because that origin affects accountability and later recomputation.",
+      "companyOsFit": "REFERENCE_ONLY for the precedence scenarios. Company OS tests must operate on a persisted GoalAssignment value containing origin, policy/template version and actor, and must prove explicit choices are never reclassified merely because their ID equals a current fallback.",
+      "responsibilityConflict": "ID equality is used to infer human intent. An explicit selection equal to the fallback can be silently rewritten after a Project change, and an automatic backfill has no actor/policy evidence in the returned value.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/issue-goal-fallback.test.ts:1-99",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/issue-identifier-routes",
@@ -7851,18 +7854,24 @@
     },
     {
       "id": "application:server/__tests__/project-icon-persistence",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres migration/service integration tests proving a Project icon and explicit color round-trip while omitted icon/color values remain null.",
+      "dependencyDirection": "Company seed data and Project create input enter projectService; all database migrations run in an embedded Postgres instance and getById reads the stored presentation fields.",
+      "keyDataModels": "Company, Project name, nullable icon identifier, nullable color string and migration 0094 schema state.",
+      "lifecycle": "Create with icon or color persists and reads it; omission leaves each field null so the UI applies a neutral presentation rather than a server-assigned color.",
+      "testAssessment": "A real migrated database gives useful schema/service round-trip evidence and covers null defaults. It does not test update/clear/import/export, Company-scoped reads, API enum rejection, arbitrary database values, unknown icon fallback, color format, concurrent updates or compatibility when the design-system catalog changes.",
+      "designRationale": "Persist user-selected visual identity while keeping new Projects neutral until an explicit presentation choice is made.",
+      "companyOsProblem": "Warm Chinese Web and future office projections need stable semantic presentation references without coupling Core to a specific icon/component catalog.",
+      "companyOsFit": "REFERENCE_ONLY the migrated-database round-trip and nullable neutral default. Store a versioned semantic appearance token in a Web/Projection-owned model, validate at the API boundary and define graceful fallback; do not put Raft assets, icon enums or renderer types in Core/Application.",
+      "responsibilityConflict": "Icon/color are presentation metadata and must not imply Project status, risk, ownership or approval. Direct service use bypasses the API enum validator, showing why display metadata cannot carry authority semantics.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/project-icon-persistence.test.ts:1-95",
+        "packages/shared/src/validators/project.ts:101-121",
+        "packages/db/src/schema/projects.ts:1-37",
+        "server/src/services/projects.ts:541-570",
+        "eaef47f4 Information Architecture + project/agent visual refresh (experimental) (#7543)"
+      ]
     },
     {
       "id": "application:server/__tests__/project-list-metrics",
@@ -12059,18 +12068,21 @@
     },
     {
       "id": "application:server/services/issue-goal-fallback",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure create/update resolver that stores only the selected Goal ID and heuristically distinguishes explicit assignments from inherited fallback assignments.",
+      "dependencyDirection": "Issue service supplies current/requested identifiers and already-resolved Project/Company fallbacks; the helper has no database or authorization dependency and returns a nullable string.",
+      "keyDataModels": "MaybeId inputs and one Goal ID without assignment-origin, actor, policy version or effective time.",
+      "lifecycle": "Create applies explicit/Project/Company precedence; update computes current and next fallback, substitutes next fallback for missing or fallback-equal current values and otherwise keeps the current Goal.",
+      "testAssessment": "The implementation is readable and deterministic, but its representation cannot distinguish explicit-equal-to-fallback from inherited state. Passing goalId:null requests fallback rather than a durable explicit-none state, and the helper cannot validate tenant ownership, Goal lifecycle or policy version.",
+      "designRationale": "Achieve automatic Goal inheritance and legacy backfill with a small stateless helper and no schema migration for assignment metadata.",
+      "companyOsProblem": "Responsibility chains require goal assignment intent and provenance to survive policy, Project and organization-template changes.",
+      "companyOsFit": "REIMPLEMENT with a GoalAssignment aggregate/value object: goalId or explicit-none, origin enum, source Project/template/policy version, assignedBy Principal, assignedAt and replacement reason. Recalculation becomes an explicit command/event rather than an ID-equality heuristic.",
+      "responsibilityConflict": "The algorithm can overwrite a human's explicit intent and cannot answer who assigned the Goal or why it changed. This directly conflicts with Company OS's accountable-human and responsibility-record requirements.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/issue-goal-fallback.ts:1-56",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/services/issue-liveness",
