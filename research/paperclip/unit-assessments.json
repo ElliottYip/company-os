@@ -1073,18 +1073,32 @@
     },
     {
       "id": "application:cli/__tests__/telemetry",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI telemetry privacy/lifecycle tests proving explicit config disablement creates no client or state file and enabled telemetry persists local identity/state only after the first tracked event.",
+      "dependencyDirection": "The Vitest suite writes a complete local deployment config, manipulates instance/home/CI environment, dynamically imports CLI telemetry and stubs fetch. It tests initialization/state timing but not transmitted requests or the event schema.",
+      "keyDataModels": "Config telemetry.enabled, local instance id/home and telemetry state.json; one install.started event with setupMode property.",
+      "lifecycle": "Load telemetry preference from config; return null and avoid filesystem state when disabled; create an enabled client without immediate state; on first track generate/persist state; flush queued telemetry.",
+      "testAssessment": "Focused Vitest passed 2/2 tests on 2026-08-19 and CLI no-emit TypeScript passed. It provides meaningful negative proof for explicit opt-out and lazy state creation. It omits default behavior, consent UX, CI suppression, endpoint/payload, identifier rotation, retries/queue limits, deletion/export, proxy/TLS, PII/Secret redaction and network-failure behavior.",
+      "designRationale": "Respect a local administrator's telemetry setting and avoid creating tracking identity/state for an unused enabled client until an actual product event occurs.",
+      "companyOsProblem": "Company OS needs product and reliability telemetry for managed-cloud/FDE learning while self-hosted enterprises retain explicit control over outbound data, identifiers, retention and air-gapped operation.",
+      "companyOsFit": "ADAPT explicit configuration, disabled no-state/no-client behavior and lazy identity creation. Define a deployment-profile-specific TelemetryPort with managed-cloud notice/controls and self-hosted default-off or customer-owned sink, a stable allowlisted event schema, local inspection/export/delete, bounded queues and a data-export firewall. Product telemetry must remain separate from tenant audit/evidence.",
+      "responsibilityConflict": "Telemetry events are product analytics, not Company OS responsibility evidence. They must never carry prompts, Agent outputs, Secrets, private sessions, enterprise data or identities beyond explicitly documented purpose and consent, and disabling telemetry must not weaken operational audit required by the customer.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/telemetry.test.ts:1-117",
+        "SHA-256 dafec4df01795d9eabf81493a1027b3a68433042c712149e8a1bc9a681e9a0b0",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "2026-08-19 focused Vitest: 1 file and 2 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "The suite does not inspect fetch URL, headers or body, so data minimization, Secret/path/PII redaction and destination trust are unproved.",
+        "Only explicit `enabled=false` is tested; installation defaults, consent notice, environment overrides and self-hosted/air-gapped policy are not established.",
+        "Persistent instance state creation is tested but file permissions, symlinks, identifier entropy/rotation, multi-user host separation and deletion are not.",
+        "Flush success uses a fixed successful fetch; failure retry, disk queue growth, duplicate delivery, shutdown timeout and proxy/TLS behavior are untested.",
+        "CI environment variables are cleared but no CI suppression test exists, despite build/test telemetry potentially leaking repository or enterprise metadata.",
+        "The full deployment config contains database/storage/log/master-key paths; this test does not prove telemetry initialization avoids serializing them."
+      ]
     },
     {
       "id": "application:cli/__tests__/token",
