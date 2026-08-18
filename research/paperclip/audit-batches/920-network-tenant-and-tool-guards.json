@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/routable-blocked",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests routing newly blocked Issues to an explicitly named Agent owner with transition-scoped idempotency and rollout compatibility.",
+      "dependencyDirection": "Blocked Issue state/unblock descriptor enters a notification service; injected wakeup and mark-notified callbacks update scheduler and Issue delivery state.",
+      "keyDataModels": "Issue blocked status, unblock owner Agent ID/action, blockedTransitionAt, notifiedAt, rollout timestamp and issue-unblock idempotency key.",
+      "lifecycle": "Post-rollout blocked transitions wake the named Agent and mark delivery; pre-rollout Issues are untouched, a notified transition deduplicates, and a later blocked flap creates a new transition-keyed notification.",
+      "testAssessment": "Tests cover prospective rollout, deterministic idempotency and repeated transitions. Missing are human owners/escalation, invalid/inactive owner, wake failure versus mark ordering, concurrent delivery, outbox durability, timeout/SLA, action validation and authorization to assign unblock ownership.",
+      "designRationale": "Turn blocked from a passive status into routable work without flooding old records or duplicate wakes.",
+      "companyOsProblem": "Agent Boss needs explicit blocker owners, escalation and evidence rather than dashboard-only blocked states.",
+      "companyOsFit": "ADAPT transition-scoped idempotency and explicit owner/action into a Blocker object supporting accountable human and Agent assignees, SLA/escalation, durable outbox and resolution evidence.",
+      "responsibilityConflict": "Only an Agent owner is modeled, with no accountable human or escalation. Free-text action and delivery do not prove authority, acknowledgement or blocker resolution.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/routable-blocked.test.ts:1-76", "148a5b11 Route blocked transitions to explicit unblock owners (#10112)"]
+    },
+    {
+      "id": "application:server/__tests__/private-hostname-guard",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP middleware tests allowing loopback/configured Host headers and rejecting unknown private-deployment hostnames with CLI remediation.",
+      "dependencyDirection": "Request Host/path/Accept and deployment bind/allowlist settings enter middleware before API or page routes; output is pass-through or JSON/plain-text 403.",
+      "keyDataModels": "Enabled flag, bindHost, allowed hostname, Host header and remediation response.",
+      "lifecycle": "Disabled guard allows all; enabled guard permits localhost and allowlisted names, while unknown API/page hosts are blocked and told how to add the hostname.",
+      "testAssessment": "Basic modes, API and page responses are covered. Missing are case/trailing-dot/IDNA/IPv6 normalization, malformed/multiple Host, ports, proxy Forwarded headers, wildcard/subdomain policy, DNS rebinding, CSRF/origin and authorization/audit of allowlist changes.",
+      "designRationale": "Reduce Host-header/DNS-rebinding exposure when a local/private server binds beyond loopback while keeping setup repairable.",
+      "companyOsProblem": "Self-hosted Company OS needs explicit trusted origins/hosts and safe enterprise ingress configuration.",
+      "companyOsFit": "ADAPT as a deployment adapter guard with canonical host/origin parsing, trusted-proxy policy, CSRF checks and audited administrator-managed allowlists; never let request headers redefine public links or tenant identity.",
+      "responsibilityConflict": "The error suggests an allowlist mutation but the test does not prove who may perform it or record the resulting security-boundary change.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/private-hostname-guard.test.ts:1-79", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/tool-content-guards",
+      "auditStatus": "COMPLETE",
+      "function": "Security tests for canonical Tool arguments, invocation/tool-bound signatures, dedicated signing-key configuration, sensitive-value summaries and prompt-injection rejection on Tool results.",
+      "dependencyDirection": "Tool name/invocation/arguments and a dedicated environment secret feed signing/verification; untrusted arguments/results enter content validation before summary or return to an Agent.",
+      "keyDataModels": "Canonical arguments, signedArguments, invocationId, toolName, signing secret, content direction, redacted summary/findings and validation errors.",
+      "lifecycle": "Arguments are canonicalized and signed for one invocation/tool, tampering fails and verified bytes parse back. Auth/JWT secrets cannot substitute for the dedicated key. Sensitive fields are redacted from summaries and a recognized prompt-injection result is blocked.",
+      "testAssessment": "Strong focused tests establish domain-separated integrity and early content controls. Missing are canonicalization edge cases, signature algorithm/version/key rotation, constant-time verification, expiry/nonce/replay, Work/approval/data binding, multi-node key custody, schema validation, nested/encoded secrets, prompt-injection false positives/bypasses, quarantine/review and signed result/evidence.",
+      "designRationale": "Prevent a Tool action from changing after inspection and keep malicious/sensitive Tool content from silently flowing into Agent context.",
+      "companyOsProblem": "High-risk actions must bind human approval to exact executable bytes and enforce data/tool firewall policy in the Connector runtime.",
+      "companyOsFit": "ADAPT as the leading ActionEnvelope reference: sign canonical action digest with Work/contract/Agent/Connector, human approval, permissions/data scope, policy version, nonce/expiry and expected evidence/result; verify in the execution node, sign outcome, and route suspicious content to quarantine/human review rather than rely only on heuristics.",
+      "responsibilityConflict": "The signature binds invocation/tool/arguments but not who proposed or approved them, the responsible human, Work contract, data authorization or expiry. A shared service secret attests only Paperclip possession and does not prevent authorized replay.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/tool-content-guards.test.ts:1-82", "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"]
+    },
+    {
+      "id": "application:server/__tests__/companies-route-path-guard",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP regression for returning a clear 400 when an Issue-list URL omits the Company ID segment.",
+      "dependencyDirection": "An Agent-authenticated malformed path reaches Company routes and is rejected before mocked services.",
+      "keyDataModels": "Agent actor, malformed /api/companies/issues path, 400 and corrected path template.",
+      "lifecycle": "The ambiguous route shape is recognized and returns actionable client guidance rather than treating issues as a Company ID.",
+      "testAssessment": "One regression path is covered. Missing are other reserved subpaths, encoded/case variants, service non-invocation assertions, stable error code and OpenAPI/client generation prevention.",
+      "designRationale": "Make a common client routing mistake diagnosable instead of producing misleading downstream behavior.",
+      "companyOsProblem": "Company OS APIs need unambiguous organization scoping and structured errors.",
+      "companyOsFit": "REFERENCE the fail-early UX; prefer generated clients, typed route schemas and stable error codes so malformed tenant paths cannot enter domain services.",
+      "responsibilityConflict": "None directly, though tenant IDs must always be verified against authenticated principal authority after parsing.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/companies-route-path-guard.test.ts:1-68", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)", "4693d770 Add company artifacts page (#7621)", "916c1350 Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"]
+    },
+    {
+      "id": "application:server/__tests__/cloud-instance",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests deriving managed-cloud status and normalized stack metadata from Paperclip-specific environment signals.",
+      "dependencyDirection": "Ambient process environment flows into cloud composition helpers; product features consume a boolean managed floor and optional provisioner metadata.",
+      "keyDataModels": "Tenant server token, managed-config presence, stack ID/slug/account group, primary host/cloud origin and nullable CloudStackContext.",
+      "lifecycle": "A nonblank tenant token or mere presence of managed config marks cloud managed; stray stack metadata outside that state is ignored; managed metadata is trimmed and absent fields remain null.",
+      "testAssessment": "Signal union, blank token and normalization are covered. Missing are malformed origins/hosts/IDs, secret redaction, conflicting sources, explicit deployment profile schema, immutable startup validation, runtime env mutation and feature-level tests proving restrictive behavior cannot weaken.",
+      "designRationale": "Unify two legacy cloud signals without lowering either existing security/restriction floor and expose optional provisioner context.",
+      "companyOsProblem": "Company OS must support managed-cloud and self-hosted from one codebase without cloud assumptions entering core or ambiguous ambient configuration changing responsibility semantics.",
+      "companyOsFit": "REFERENCE the restrictive migration rule only. Use an explicit validated DeploymentProfile at the composition root, adapter-specific stack metadata and immutable startup configuration; core/application see capabilities, not Paperclip environment variables.",
+      "responsibilityConflict": "Presence of an empty environment value can switch the product into managed semantics without an accountable deployment decision or signed configuration. Ambient mode inference is insufficient for identity/data-lifecycle responsibility.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/cloud-instance.test.ts:1-67", "5858ccb9 feat: make in-app features cloud-aware (#10850)"]
+    }
+  ]
+}
