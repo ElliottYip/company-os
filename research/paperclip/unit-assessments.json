@@ -12934,18 +12934,26 @@
     },
     {
       "id": "application:server/services/principal-access-compatibility",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Compatibility/backfill helper that creates missing Agent Company memberships and derives missing human permission grants from legacy membership roles; the same default-grant helper is also called during authentication, first-admin claim, Company import and test setup.",
+      "dependencyDirection": "The migration-oriented service reads Agent and CompanyMembership tables, writes CompanyMembership and PrincipalPermissionGrant directly, and depends on role normalization/default-grant policy. Server startup, auth middleware, board claim and AccessService call it, so a compatibility shim participates in normal runtime authorization state mutation.",
+      "keyDataModels": "Agent lifecycle status; CompanyMembership for user/agent principal, active status and membershipRole; PrincipalPermissionGrant with permission key, JSON scope, grantor and timestamps; human role-to-default-grant mapping.",
+      "lifecycle": "At startup it scans every non-pending/non-terminated Agent and inserts an active member membership on conflict-do-nothing, then scans every active human membership and inserts any missing role-default grants. Per-human helper calls repeat the additive grant insertion at login/claim/import without deleting or reconciling obsolete grants.",
+      "testAssessment": "The previously audited Access integration tests prove two-run idempotency, preservation of an existing scoped grant and exclusion of pending/terminated Agents. They do not prove bounded startup behavior, concurrent startup, partial failure/restart across the two phases, role-demotion removal, policy-version migration, unsupported/unknown roles, Agent membership status synchronization after lifecycle changes or audit provenance. The implementation performs an unpaginated instance-wide Agent scan, an unpaginated active-human scan and one insert per human, producing an N+1 startup path. Additive on-conflict behavior cannot revoke grants removed from a later role policy, so stale privilege can survive indefinitely.",
+      "designRationale": "Move an installed base from implicit role/Agent access to explicit principal memberships and grants without overwriting user-customized scopes, while keeping the migration safely repeatable.",
+      "companyOsProblem": "Company OS will need versioned, resumable migrations from legacy roles and Connector identities to explicit Principal/Authority records without silently retaining obsolete power or running large mutable backfills on every process startup.",
+      "companyOsFit": "REFERENCE ONLY for the small idempotent insert-missing pattern and preservation of explicit overrides. Company OS should implement a versioned migration job with checkpoints, pagination, policy version/source metadata, dry-run/diff, explicit grant reconciliation (add and revoke), immutable migration evidence and lifecycle-derived Agent membership projection. Runtime login and normal authorization must not depend on a compatibility module mutating policy state.",
+      "responsibilityConflict": "Every non-terminal Agent becomes an active Company member without a responsibility contract or accountable-human binding. Human grants are inferred from a mutable display role and inserted with null grantor; obsolete grants are never revoked when role policy narrows. This creates authority without a contemporaneous accountable decision and makes the effective permission set diverge from stated organizational responsibility.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/services/principal-access-compatibility.ts:1-141",
+        "server/src/index.ts:568 (startup caller located without rereading completed unit)",
+        "server/src/middleware/auth.ts:521 (runtime caller located without rereading completed unit)",
+        "server/src/board-claim.ts:147 (claim caller located without rereading completed unit)",
+        "server/src/services/access.ts:602-633 (read in batch 1060)",
+        "server/src/__tests__/access-service.test.ts:1-509 (previously audited; coverage ledger only)",
+        "38c185fb [codex] Add agent permissions and controls plan (#6386)"
+      ]
     },
     {
       "id": "application:server/services/productivity-review",
