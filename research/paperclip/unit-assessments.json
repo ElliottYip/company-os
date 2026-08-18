@@ -5803,18 +5803,23 @@
     },
     {
       "id": "application:server/__tests__/invite-accept-gateway-defaults",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit and embedded-Postgres tests for normalizing OpenClaw/Hermes Gateway invitation defaults, deriving authentication material, enforcing transport diagnostics and replacing a literal Hermes API key with a persisted Company SecretRef.",
+      "dependencyDirection": "Vendor adapter type, inbound headers, invite defaults and deployment settings enter access-route normalizers; OpenClaw device keys may be generated in-process, Hermes URLs are rewritten/validated, and persistence preparation writes through Company secret services/tables before a join request stores the resulting adapter payload.",
+      "keyDataModels": "Gateway URL/API base/Paperclip URL, authorization/x-openclaw-token/apiKey, disableDeviceAuth/devicePrivateKeyPem, dangerous insecure-HTTP flag, fatalErrors/diagnostic code-level-message-hint, Company secret/provider/version records and secret_ref secretId/version latest.",
+      "lifecycle": "Non-gateway defaults pass through. OpenClaw tokens are unwrapped or derived from inbound/Authorization headers and device authentication generates a persistent private key unless disabled. Hermes rejects remote HTTP unless explicitly overridden and maps dashboard/chat roots to its API path. Before persistence, a literal Hermes API key becomes a Company secret and the join request stores a SecretRef rather than plaintext.",
+      "testAssessment": "Useful tests cover token input variants, device-auth key generation, explicit unsafe transport override, stable diagnostics, vendor URL correction and real-database proof that one literal Hermes key is absent from the join payload. Missing are OpenClaw token/private-key secretization, immutable secret version binding, log/error/activity redaction, header allowlisting, URL SSRF/egress policy, secret ownership/expiry/rotation/revocation, transaction rollback/orphan cleanup, concurrent deduplication, key file permissions/HSM or external vault adapters, approver visibility and proof that no plaintext appears in WAL/backups/telemetry.",
+      "designRationale": "Make external gateway onboarding forgiving enough to normalize common configurations while preventing accidental remote cleartext and moving long-lived credentials out of ordinary Agent configuration JSON.",
+      "companyOsProblem": "Company OS needs Connector onboarding that normalizes vendor configuration without leaking secrets, works with cloud or enterprise vaults and binds approval to the exact runtime credential/version and network policy.",
+      "companyOsFit": "ADAPT the validate-normalize-diagnose-persist sequence, explicit unsafe transport diagnostic and secret-handle replacement. Generalize it behind Connector manifests and SecretPort; validate egress separately, allow only declared fields, store immutable SecretVersion IDs in approved ConnectorBinding revisions, rotate through a new binding/approval, generate device private keys inside the execution node and return only public-key attestation to the control plane.",
+      "responsibilityConflict": "The persisted Hermes reference uses version latest, so a later secret rotation changes execution credentials without changing or reapproving the join payload. Raw OpenClaw tokens are duplicated across Authorization and x-openclaw-token, and a device private key is generated in control-plane normalization with no proven vault treatment. The unsafe HTTP flag is caller data rather than a qualified-human/data-owner approval bound to an exact endpoint.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/invite-accept-gateway-defaults.test.ts:1-362",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "fd2f82ac [codex] Add built-in Hermes adapters (#8543)",
+        "d77fab6a fix(adapters/hermes-gateway): improve onboarding configuration (#8678)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-accept-replay",
