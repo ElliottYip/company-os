@@ -10319,6 +10319,5238 @@
       }
     }
   ],
+  "directories": [
+    {
+      "path": ".",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 20,
+      "unitIds": [
+        "area:.dockerignore",
+        "area:.env.example",
+        "area:.gitignore",
+        "area:.mailmap",
+        "area:.npmrc",
+        "area:AGENTS.md",
+        "area:CONTRIBUTING.md",
+        "area:DESIGN.md",
+        "area:Dockerfile",
+        "area:LICENSE",
+        "area:README.md",
+        "area:ROADMAP.md",
+        "area:SECURITY.md",
+        "area:adapter-plugin.md",
+        "area:package.json",
+        "area:pnpm-lock.yaml",
+        "area:pnpm-workspace.yaml",
+        "area:tsconfig.base.json",
+        "area:tsconfig.json",
+        "area:vitest.config.ts"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 11,
+        "documentation-or-instruction": 7,
+        "lockfile": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".agents/skills/check-pr",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/check-pr/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".agents/skills/company-creator",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/company-creator/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": ".agents/skills/create-agent-adapter",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/create-issue-interaction-ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/create-paperclip-bundled-skill",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/create-paperclip-bundled-skill/examples",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".agents/skills/deal-with-security-advisory",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/diagnose-why-work-stopped",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/doc-maintenance",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/doc-maintenance/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".agents/skills/garden-inbox",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/garden-inbox/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": ".agents/skills/paperclip-create-plugin",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/paperclip-dev-workspace-run-verify-fix",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/paperclip-page",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".agents/skills/paperclip-page/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": ".agents/skills/pr-gardening",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/pr-gardening/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "first-party-source": 4,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": ".agents/skills/pr-report",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/pr-report/assets",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".agents/skills/pr-report/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/prcheckloop",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/prepare-paperclip-pr",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/release",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/release-changelog",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/release-changelog-discord-message",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".agents/skills/terminal-bench-loop",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.agents"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".claude",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.claude"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": ".claude/agents",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.claude"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".claude/skills",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.claude"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": ".claude/skills/design-guide",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.claude"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".claude/skills/design-guide/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.claude"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".github",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 6
+      }
+    },
+    {
+      "path": ".github/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "first-party-source": 10
+      }
+    },
+    {
+      "path": ".github/scripts/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 10
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 10
+      }
+    },
+    {
+      "path": "cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:cli/CHANGELOG.md",
+        "application:cli/README.md",
+        "application:cli/esbuild.config.mjs",
+        "application:cli/package.json",
+        "application:cli/tsconfig.json",
+        "application:cli/vitest.config.ts"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "first-party-source": 2,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "cli/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:cli/index.ts",
+        "application:cli/install-store.ts",
+        "application:cli/onboard-service.ts",
+        "application:cli/telemetry.ts",
+        "application:cli/update-notice.ts",
+        "application:cli/version.ts"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "cli/src/__tests__",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 54,
+      "unitIds": [
+        "application:cli/__tests__"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 54
+      }
+    },
+    {
+      "path": "cli/src/__tests__/helpers",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:cli/__tests__"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "cli/src/adapters",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:cli/adapters"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "cli/src/adapters/http",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:cli/adapters"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "cli/src/adapters/process",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:cli/adapters"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "cli/src/checks",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 13,
+      "unitIds": [
+        "application:cli/checks"
+      ],
+      "classifications": {
+        "first-party-source": 13
+      }
+    },
+    {
+      "path": "cli/src/client",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:cli/client"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "cli/src/commands",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 19,
+      "unitIds": [
+        "application:cli/commands"
+      ],
+      "classifications": {
+        "first-party-source": 19
+      }
+    },
+    {
+      "path": "cli/src/commands/client",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 28,
+      "unitIds": [
+        "application:cli/commands"
+      ],
+      "classifications": {
+        "first-party-source": 28
+      }
+    },
+    {
+      "path": "cli/src/config",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 8,
+      "unitIds": [
+        "application:cli/config"
+      ],
+      "classifications": {
+        "first-party-source": 8
+      }
+    },
+    {
+      "path": "cli/src/prompts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:cli/prompts"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "cli/src/services",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:cli/services"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "cli/src/utils",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:cli/utils"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "design/pap-14557-monitor-visibility",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:design"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "design/pap-14557-monitor-visibility/.paperclip-page",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:design"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "design/pap-14557-monitor-visibility/screenshots",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:design"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "design/pap-14557-monitor-visibility/wireframes",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "area:design"
+      ],
+      "classifications": {
+        "asset-or-binary": 7
+      }
+    },
+    {
+      "path": "doc",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 35,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 35
+      }
+    },
+    {
+      "path": "doc/assets",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 5
+      }
+    },
+    {
+      "path": "doc/assets/avatars",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 12
+      }
+    },
+    {
+      "path": "doc/assets/logos",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 6
+      }
+    },
+    {
+      "path": "doc/assets/pap-2189",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 4
+      }
+    },
+    {
+      "path": "doc/assets/pap-3368",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 5
+      }
+    },
+    {
+      "path": "doc/connections",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 7
+      }
+    },
+    {
+      "path": "doc/design",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 9
+      }
+    },
+    {
+      "path": "doc/experimental",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "doc/logs",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "doc/plans",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 47,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 47
+      }
+    },
+    {
+      "path": "doc/plugins",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 5
+      }
+    },
+    {
+      "path": "doc/pr/5429",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 3
+      }
+    },
+    {
+      "path": "doc/screenshots/garden-mcp-split-stack",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 6
+      }
+    },
+    {
+      "path": "doc/screenshots/pr-6381",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "asset-or-binary": 3
+      }
+    },
+    {
+      "path": "doc/spec",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:doc"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "docker",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 6
+      }
+    },
+    {
+      "path": "docker/agent-runtime",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 8,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "docker/hermes-gateway-smoke",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "docker/openclaw-smoke",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "docker/quadlet",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "docker/untrusted-review",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "docker/untrusted-review/bin",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "docs",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 5,
+        "asset-or-binary": 1
+      }
+    },
+    {
+      "path": "docs/adapters",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 9
+      }
+    },
+    {
+      "path": "docs/api",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 13,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 13
+      }
+    },
+    {
+      "path": "docs/assets/pr-5426",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "docs/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "docs/companies",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "docs/deploy",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 11
+      }
+    },
+    {
+      "path": "docs/guides",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "docs/guides/agent-developer",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 9
+      }
+    },
+    {
+      "path": "docs/guides/board-operator",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 13,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 13
+      }
+    },
+    {
+      "path": "docs/images",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "docs/plans",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pap-2837",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 10
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pap-2944",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 10
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pap-2945",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 1
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pr-4616",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pr-5291",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 7
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pr-5356",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pr-5428",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "docs/pr-screenshots/pr-6384",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 4
+      }
+    },
+    {
+      "path": "docs/specs",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "docs/start",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "evals",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:evals"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "evals/promptfoo",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:evals"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "evals/promptfoo/prompts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:evals"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "evals/promptfoo/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:evals"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 5
+      }
+    },
+    {
+      "path": "packages/adapter-utils",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter-utils"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/adapter-utils/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 41,
+      "unitIds": [
+        "package:adapter-utils"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 18,
+        "first-party-source": 23
+      }
+    },
+    {
+      "path": "packages/adapter-utils/src/acpx-engine",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "package:adapter-utils"
+      ],
+      "classifications": {
+        "first-party-source": 7,
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "packages/adapter-utils/src/test-support",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter-utils"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/AUTHORING.md"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/adapters/claude-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/claude-local"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/claude-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/claude-local"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/claude-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/claude-local"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/claude-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 20,
+      "unitIds": [
+        "package:adapter/claude-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 7,
+        "first-party-source": 13
+      }
+    },
+    {
+      "path": "packages/adapters/claude-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/claude-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/codex-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/codex-local"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/codex-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/codex-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/codex-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/codex-local"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/codex-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 45,
+      "unitIds": [
+        "package:adapter/codex-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 23,
+        "first-party-source": 22
+      }
+    },
+    {
+      "path": "packages/adapters/codex-local/src/server/__fixtures__",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/codex-local"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/adapters/codex-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/codex-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-cloud",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/cursor-cloud"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-cloud/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/cursor-cloud"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-cloud/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/cursor-cloud"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-cloud/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:adapter/cursor-cloud"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-cloud/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/cursor-cloud"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/cursor-local"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/cursor-local"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/cursor-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "package:adapter/cursor-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4,
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-local/src/shared",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/cursor-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/cursor-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/cursor-local"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/gemini-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/gemini-local"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/gemini-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/gemini-local"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/gemini-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/gemini-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/gemini-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "package:adapter/gemini-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4,
+        "first-party-source": 8
+      }
+    },
+    {
+      "path": "packages/adapters/gemini-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/gemini-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/grok-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/grok-local"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/adapters/grok-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/grok-local"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/grok-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/grok-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/grok-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 8,
+      "unitIds": [
+        "package:adapter/grok-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3,
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "packages/adapters/grok-local/src/shared",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/grok-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/grok-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/grok-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/hermes",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/hermes-gateway",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/hermes-gateway"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/hermes-gateway/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes-gateway/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes-gateway/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes-gateway/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/skills/paperclip-task-bridge",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/gateway",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/gateway/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/gateway/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 5,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/gateway/shared",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/gateway/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 5,
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/shared",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/hermes/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/hermes"
+      ],
+      "classifications": {
+        "first-party-source": 3,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway/doc",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway/src/shared",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/openclaw-gateway/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/openclaw-gateway"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/opencode-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/opencode-local"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/opencode-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/opencode-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/opencode-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/opencode-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/opencode-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 13,
+      "unitIds": [
+        "package:adapter/opencode-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 6,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "packages/adapters/opencode-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/opencode-local"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/adapters/pi-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:adapter/pi-local"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/pi-local/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:adapter/pi-local"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/adapters/pi-local/src/cli",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:adapter/pi-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/adapters/pi-local/src/server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "package:adapter/pi-local"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "packages/adapters/pi-local/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:adapter/pi-local"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/db",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:db"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "first-party-source": 2,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/db/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:db"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/db/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 39,
+      "unitIds": [
+        "package:db"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 23,
+        "first-party-source": 16
+      }
+    },
+    {
+      "path": "packages/db/src/migrations",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 210,
+      "unitIds": [
+        "package:db"
+      ],
+      "classifications": {
+        "first-party-source": 210
+      }
+    },
+    {
+      "path": "packages/db/src/migrations/meta",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 78,
+      "unitIds": [
+        "package:db"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 78
+      }
+    },
+    {
+      "path": "packages/db/src/schema",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 111,
+      "unitIds": [
+        "package:db"
+      ],
+      "classifications": {
+        "first-party-source": 111
+      }
+    },
+    {
+      "path": "packages/google-sheets-mcp-server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:google-sheets-mcp-server"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/google-sheets-mcp-server/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "package:google-sheets-mcp-server"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 5,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "packages/kv-demo-mcp-server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:kv-demo-mcp-server"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/kv-demo-mcp-server/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "package:kv-demo-mcp-server"
+      ],
+      "classifications": {
+        "first-party-source": 7,
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "packages/mcp-server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:mcp-server"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/mcp-server/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "package:mcp-server"
+      ],
+      "classifications": {
+        "first-party-source": 6,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/create-paperclip-plugin",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin/create-paperclip-plugin"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/create-paperclip-plugin/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/create-paperclip-plugin"
+      ],
+      "classifications": {
+        "first-party-source": 2,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-authoring-smoke-example",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "package:plugin-example/plugin-authoring-smoke-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-authoring-smoke-example/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin-example/plugin-authoring-smoke-example"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-authoring-smoke-example/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-authoring-smoke-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-authoring-smoke-example/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-authoring-smoke-example"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-file-browser-example",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin-example/plugin-file-browser-example"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-file-browser-example/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-file-browser-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-file-browser-example/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin-example/plugin-file-browser-example"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-file-browser-example/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-file-browser-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-hello-world-example",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin-example/plugin-hello-world-example"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-hello-world-example/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin-example/plugin-hello-world-example"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-hello-world-example/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-hello-world-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-kitchen-sink-example",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin-example/plugin-kitchen-sink-example"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-kitchen-sink-example/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-kitchen-sink-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-kitchen-sink-example/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin-example/plugin-kitchen-sink-example"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-kitchen-sink-example/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin-example/plugin-kitchen-sink-example"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-orchestration-smoke-example",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "package:plugin-example/plugin-orchestration-smoke-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-orchestration-smoke-example/migrations",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-orchestration-smoke-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-orchestration-smoke-example/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin-example/plugin-orchestration-smoke-example"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-orchestration-smoke-example/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-orchestration-smoke-example"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/examples/plugin-orchestration-smoke-example/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-example/plugin-orchestration-smoke-example"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/paperclip-plugin-fake-sandbox",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/paperclip-plugin-fake-sandbox"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/paperclip-plugin-fake-sandbox/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:plugin/paperclip-plugin-fake-sandbox"
+      ],
+      "classifications": {
+        "first-party-source": 4,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/agents/wiki-maintainer",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/raw",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki/areas",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki/concepts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki/entities",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki/projects",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki/sources",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/fixtures/basic-root/wiki/synthesis",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/migrations",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills/index-refresh",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills/paperclip-distill",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills/wiki-ingest",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills/wiki-lint",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills/wiki-maintainer",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/skills/wiki-query",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/src/wiki",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/raw",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/wiki",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/wiki/concepts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/wiki/entities",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/wiki/projects",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/wiki/sources",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/templates/wiki/synthesis",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-llm-wiki/tests/screenshots",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin/plugin-llm-wiki"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-workspace-diff",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin/plugin-workspace-diff"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-workspace-diff/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-workspace-diff"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-workspace-diff/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin/plugin-workspace-diff"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-workspace-diff/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin/plugin-workspace-diff"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/plugin-workspace-diff/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin/plugin-workspace-diff"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 6
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-sandbox/SANDBOX-REQUIREMENTS.md"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/cloudflare",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin-sandbox/cloudflare"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/cloudflare/bridge-template",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin-sandbox/cloudflare/bridge-template"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 4,
+        "documentation-or-instruction": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/cloudflare/bridge-template/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "package:plugin-sandbox/cloudflare/bridge-template"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/cloudflare/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "package:plugin-sandbox/cloudflare"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/daytona",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:plugin-sandbox/daytona"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/daytona/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin-sandbox/daytona"
+      ],
+      "classifications": {
+        "first-party-source": 5,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/e2b",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin-sandbox/e2b"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/e2b/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin-sandbox/e2b"
+      ],
+      "classifications": {
+        "first-party-source": 5,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/exe-dev",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin-sandbox/exe-dev"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/exe-dev/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:plugin-sandbox/exe-dev"
+      ],
+      "classifications": {
+        "first-party-source": 4,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/kubernetes",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin-sandbox/kubernetes"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/kubernetes/manifests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:plugin-sandbox/kubernetes"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/kubernetes/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 24,
+      "unitIds": [
+        "package:plugin-sandbox/kubernetes"
+      ],
+      "classifications": {
+        "first-party-source": 24
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/kubernetes/test/integration",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:plugin-sandbox/kubernetes"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/kubernetes/test/unit",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 20,
+      "unitIds": [
+        "package:plugin-sandbox/kubernetes"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 20
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/modal",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin-sandbox/modal"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/modal/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:plugin-sandbox/modal"
+      ],
+      "classifications": {
+        "first-party-source": 4,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/novita",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin-sandbox/novita"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sandbox-providers/novita/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "package:plugin-sandbox/novita"
+      ],
+      "classifications": {
+        "first-party-source": 4,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sdk",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:plugin/sdk"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/plugins/sdk/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "package:plugin/sdk"
+      ],
+      "classifications": {
+        "first-party-source": 10
+      }
+    },
+    {
+      "path": "packages/plugins/sdk/src/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin/sdk"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "packages/plugins/sdk/tests",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:plugin/sdk"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 6
+      }
+    },
+    {
+      "path": "packages/shared",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/shared/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 67,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 31,
+        "first-party-source": 34,
+        "generated-source": 1,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/shared/src/app-definitions",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 12
+      }
+    },
+    {
+      "path": "packages/shared/src/telemetry",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 13,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "test-eval-or-fixture": 5,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "packages/shared/src/telemetry/generated",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "generated-source": 1
+      }
+    },
+    {
+      "path": "packages/shared/src/types",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 55,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "first-party-source": 55
+      }
+    },
+    {
+      "path": "packages/shared/src/validators",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 62,
+      "unitIds": [
+        "package:shared"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 15,
+        "first-party-source": 47
+      }
+    },
+    {
+      "path": "packages/skills-catalog",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/docs/doc-maintenance",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/paperclip-operations/issue-triage",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/paperclip-operations/reflection-coach",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/paperclip-operations/status-card-query",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/paperclip-operations/summarize-status",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/paperclip-operations/task-planning",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/product/paperclip-capsules",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/product/paperclip-capsules/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/product/wireframe",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/product/wireframe/assets",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/product/wireframe/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/quality/qa-acceptance",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/bundled/software-development/github-pr-workflow",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/browser/agent-browser",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/content/release-announcement",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/content/simplified-english",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/finance/ramp",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/product/design-critique",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/research/last30days",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/software-development/prepare-mcp-integration",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/catalog/optional/software-development/prepare-mcp-integration/examples",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/generated",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "generated-source": 1
+      }
+    },
+    {
+      "path": "packages/skills-catalog/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/skills-catalog/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "package:skills-catalog"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 5,
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "packages/teams-catalog",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/company-defaults/core-exec-team",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/company-defaults/core-exec-team/agents/ceo",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/company-defaults/core-exec-team/agents/cto",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/company-defaults/core-exec-team/agents/qa",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/company-defaults/core-exec-team/projects/first-project",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/company-defaults/core-exec-team/projects/first-project/tasks/first-heartbeat",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/product/product-design",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/product/product-design/agents/ux-designer",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/product/product-design/projects/product-design",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/product/product-design/projects/product-design/tasks/weekly-design-review",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/software-development/product-engineering",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/software-development/product-engineering/agents/cto",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/software-development/product-engineering/agents/qa",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/software-development/product-engineering/agents/senior-coder",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/software-development/product-engineering/projects/product-engineering",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/bundled/software-development/product-engineering/projects/product-engineering/tasks/weekly-engineering-sync",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/optional/content/content-machine",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/optional/content/content-machine/agents/content-lead",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/optional/content/content-machine/projects/content-operations",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/optional/content/content-machine/projects/content-operations/tasks/weekly-content-review",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/catalog/optional/content/content-machine/skills/content-calendar",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/generated",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "generated-source": 1
+      }
+    },
+    {
+      "path": "packages/teams-catalog/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/teams-catalog/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "package:teams-catalog"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "patches",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:patches"
+      ],
+      "classifications": {
+        "third-party-patch": 2
+      }
+    },
+    {
+      "path": "releases",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 24,
+      "unitIds": [
+        "area:releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 24
+      }
+    },
+    {
+      "path": "report",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:report"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "screenshots",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "area:screenshots"
+      ],
+      "classifications": {
+        "asset-or-binary": 12
+      }
+    },
+    {
+      "path": "scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 102,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 10,
+        "first-party-source": 89,
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "scripts/__tests__",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 10
+      }
+    },
+    {
+      "path": "scripts/install-sh-fixtures",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "scripts/mcp-fixtures",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "scripts/mcp-fixtures/servers",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "scripts/smoke",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "first-party-source": 9,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "server",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:server/CHANGELOG.md",
+        "application:server/package.json",
+        "application:server/tsconfig.json",
+        "application:server/vitest.config.ts"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "server/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/scripts"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "server/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 32,
+      "unitIds": [
+        "application:server/agent-auth-jwt.ts",
+        "application:server/app.ts",
+        "application:server/attachment-types.ts",
+        "application:server/board-claim.ts",
+        "application:server/build-commit.ts",
+        "application:server/build-version.ts",
+        "application:server/config-file.ts",
+        "application:server/config.ts",
+        "application:server/db-errors.ts",
+        "application:server/dev-runner-worktree.ts",
+        "application:server/dev-server-status.ts",
+        "application:server/dev-watch-ignore.ts",
+        "application:server/errors.ts",
+        "application:server/first-admin-claim.ts",
+        "application:server/home-paths.ts",
+        "application:server/index.ts",
+        "application:server/instrumentation.test.ts",
+        "application:server/instrumentation.ts",
+        "application:server/log-redaction.ts",
+        "application:server/paths.ts",
+        "application:server/redaction.ts",
+        "application:server/runtime-api.ts",
+        "application:server/server-info.ts",
+        "application:server/shutdown.test.ts",
+        "application:server/shutdown.ts",
+        "application:server/startup-banner.ts",
+        "application:server/static-index-html.ts",
+        "application:server/telemetry.ts",
+        "application:server/ui-branding.ts",
+        "application:server/version.ts",
+        "application:server/vite-html-renderer.ts",
+        "application:server/worktree-config.ts"
+      ],
+      "classifications": {
+        "first-party-source": 30,
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "server/src/__tests__",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 421,
+      "unitIds": [
+        "application:server/__tests__"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 421
+      }
+    },
+    {
+      "path": "server/src/__tests__/fixtures",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:server/__tests__"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "server/src/__tests__/helpers",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:server/__tests__"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "server/src/adapters",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "application:server/adapters"
+      ],
+      "classifications": {
+        "first-party-source": 10,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "server/src/adapters/http",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:server/adapters"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "server/src/adapters/process",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "application:server/adapters"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "server/src/auth",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/auth"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "server/src/built-ins/agents/reflection-coach",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/built-ins"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "server/src/built-ins/agents/reflection-coach/routines",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/built-ins"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "server/src/built-ins/agents/summarizer",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/built-ins"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "server/src/built-ins/agents/summarizer/routines",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/built-ins"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "server/src/http",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/http"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "server/src/lib",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:server/lib"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "server/src/middleware",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 13,
+      "unitIds": [
+        "application:server/middleware"
+      ],
+      "classifications": {
+        "first-party-source": 12,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "server/src/onboarding-assets/ceo",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:server/onboarding-assets"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "server/src/onboarding-assets/default",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/onboarding-assets"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "server/src/realtime",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:server/realtime"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "server/src/routes",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 58,
+      "unitIds": [
+        "application:server/routes"
+      ],
+      "classifications": {
+        "first-party-source": 58
+      }
+    },
+    {
+      "path": "server/src/secrets",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:server/secrets"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "server/src/services",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 224,
+      "unitIds": [
+        "application:server/services/_root"
+      ],
+      "classifications": {
+        "first-party-source": 205,
+        "test-eval-or-fixture": 19
+      }
+    },
+    {
+      "path": "server/src/services/recovery",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 17,
+      "unitIds": [
+        "application:server/services/recovery"
+      ],
+      "classifications": {
+        "first-party-source": 11,
+        "test-eval-or-fixture": 6
+      }
+    },
+    {
+      "path": "server/src/storage",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:server/storage"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "server/src/types",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:server/types"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "skills-releases/paperclip",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills-releases/paperclip/v0",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills-releases/paperclip/v0/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 7
+      }
+    },
+    {
+      "path": "skills-releases/paperclip/v0/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills-releases/paperclip/v7-roster",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills-releases/paperclip/v7-roster/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 7
+      }
+    },
+    {
+      "path": "skills-releases/paperclip/v7-roster/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills-releases"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/paperclip",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/paperclip-board",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/paperclip-converting-plans-to-tasks",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/paperclip-create-agent",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/paperclip-create-agent/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "skills/paperclip-create-agent/references/agents",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "skills/paperclip/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 7
+      }
+    },
+    {
+      "path": "skills/paperclip/scripts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/para-memory-files",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/para-memory-files/references",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "tests/e2e",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 25,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 25
+      }
+    },
+    {
+      "path": "tests/release-smoke",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "tests/storybook-visual",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "tools/agent-shim",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "area:tools"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 5
+      }
+    },
+    {
+      "path": "ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "application:ui/README.md",
+        "application:ui/components.json",
+        "application:ui/index.html",
+        "application:ui/package.json",
+        "application:ui/tsconfig.json",
+        "application:ui/vite.config.ts",
+        "application:ui/vite.qa.config.mjs",
+        "application:ui/vitest.config.ts",
+        "application:ui/vitest.setup.ts"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 3,
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "ui/public",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 14,
+      "unitIds": [
+        "application:ui/public"
+      ],
+      "classifications": {
+        "asset-or-binary": 12,
+        "configuration-or-metadata": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/public/brands",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/public"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "ui/public/fonts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "application:ui/public"
+      ],
+      "classifications": {
+        "asset-or-binary": 2,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "ui/src",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 8,
+      "unitIds": [
+        "application:ui/App.activity-routing.test.tsx",
+        "application:ui/App.cases-routing.test.tsx",
+        "application:ui/App.test.tsx",
+        "application:ui/App.tsx",
+        "application:ui/bootstrapSetup.ts",
+        "application:ui/index.css",
+        "application:ui/main.tsx",
+        "application:ui/vite-env.d.ts"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3,
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "ui/src/adapters",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 22,
+      "unitIds": [
+        "application:ui/adapters/_root"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 8,
+        "first-party-source": 14
+      }
+    },
+    {
+      "path": "ui/src/adapters/claude-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/claude-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/codex-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/codex-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/cursor",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/cursor"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/cursor-cloud",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:ui/adapters/cursor-cloud"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/adapters/gemini-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/gemini-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/grok-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/grok-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/hermes-gateway",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "application:ui/adapters/hermes-gateway"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/hermes-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:ui/adapters/hermes-local"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/adapters/http",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:ui/adapters/http"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "ui/src/adapters/openclaw-gateway",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/openclaw-gateway"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/opencode-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/opencode-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/pi-local",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/adapters/pi-local"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/adapters/process",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:ui/adapters/process"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "ui/src/api",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 64,
+      "unitIds": [
+        "application:ui/api/_root"
+      ],
+      "classifications": {
+        "first-party-source": 54,
+        "test-eval-or-fixture": 10
+      }
+    },
+    {
+      "path": "ui/src/components",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 364,
+      "unitIds": [
+        "application:ui/components/_root"
+      ],
+      "classifications": {
+        "first-party-source": 225,
+        "test-eval-or-fixture": 139
+      }
+    },
+    {
+      "path": "ui/src/components/access",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "application:ui/components/access"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/components/actions",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/components/actions"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/components/artifacts",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:ui/components/artifacts"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/components/environment-variables-editor",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "application:ui/components/environment-variables-editor"
+      ],
+      "classifications": {
+        "first-party-source": 8,
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "ui/src/components/folders",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:ui/components/folders"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "ui/src/components/interrupt-handoff",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/components/interrupt-handoff"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/components/issue-output",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:ui/components/issue-output"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "ui/src/components/issue-properties",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 11,
+      "unitIds": [
+        "application:ui/components/issue-properties"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 10
+      }
+    },
+    {
+      "path": "ui/src/components/routine-sections",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:ui/components/routine-sections"
+      ],
+      "classifications": {
+        "first-party-source": 3,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "ui/src/components/search",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "application:ui/components/search"
+      ],
+      "classifications": {
+        "first-party-source": 9
+      }
+    },
+    {
+      "path": "ui/src/components/skill-studio",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 7,
+      "unitIds": [
+        "application:ui/components/skill-studio"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3,
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "ui/src/components/task-chat",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 43,
+      "unitIds": [
+        "application:ui/components/task-chat"
+      ],
+      "classifications": {
+        "first-party-source": 26,
+        "test-eval-or-fixture": 17
+      }
+    },
+    {
+      "path": "ui/src/components/timeline",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/components/timeline"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/components/transcript",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:ui/components/transcript"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/components/ui",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 27,
+      "unitIds": [
+        "application:ui/components/ui"
+      ],
+      "classifications": {
+        "first-party-source": 26,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "ui/src/context",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 20,
+      "unitIds": [
+        "application:ui/context"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 9,
+        "first-party-source": 11
+      }
+    },
+    {
+      "path": "ui/src/fixtures",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:ui/fixtures"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 6
+      }
+    },
+    {
+      "path": "ui/src/hooks",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 32,
+      "unitIds": [
+        "application:ui/hooks"
+      ],
+      "classifications": {
+        "first-party-source": 24,
+        "test-eval-or-fixture": 8
+      }
+    },
+    {
+      "path": "ui/src/i18n",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 4,
+      "unitIds": [
+        "application:ui/i18n"
+      ],
+      "classifications": {
+        "first-party-source": 3,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "ui/src/i18n/locales",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 40,
+      "unitIds": [
+        "application:ui/i18n"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 40
+      }
+    },
+    {
+      "path": "ui/src/lib",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 284,
+      "unitIds": [
+        "application:ui/lib/_root"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 123,
+        "first-party-source": 161
+      }
+    },
+    {
+      "path": "ui/src/lib/timeline",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/lib/timeline"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/pages",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 126,
+      "unitIds": [
+        "application:ui/pages/_root"
+      ],
+      "classifications": {
+        "first-party-source": 74,
+        "test-eval-or-fixture": 52
+      }
+    },
+    {
+      "path": "ui/src/pages/agent-skills",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 9,
+      "unitIds": [
+        "application:ui/pages/agent-skills"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4,
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "ui/src/pages/apps",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 21,
+      "unitIds": [
+        "application:ui/pages/apps"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 7,
+        "first-party-source": 14
+      }
+    },
+    {
+      "path": "ui/src/pages/apps/app-detail",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 10,
+      "unitIds": [
+        "application:ui/pages/apps"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3,
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "ui/src/pages/apps/gateways",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 8,
+      "unitIds": [
+        "application:ui/pages/apps"
+      ],
+      "classifications": {
+        "first-party-source": 7,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "ui/src/pages/apps/gateways/panels",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:ui/pages/apps"
+      ],
+      "classifications": {
+        "first-party-source": 5,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "ui/src/pages/audit",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "application:ui/pages/audit"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "ui/src/pages/secrets",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 16,
+      "unitIds": [
+        "application:ui/pages/secrets"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 5,
+        "first-party-source": 11
+      }
+    },
+    {
+      "path": "ui/src/pages/skills",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 2,
+      "unitIds": [
+        "application:ui/pages/skills"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "ui/src/pages/StatusCards",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 12,
+      "unitIds": [
+        "application:ui/pages/StatusCards"
+      ],
+      "classifications": {
+        "first-party-source": 9,
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "ui/src/pages/tools",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 23,
+      "unitIds": [
+        "application:ui/pages/tools"
+      ],
+      "classifications": {
+        "first-party-source": 14,
+        "test-eval-or-fixture": 9
+      }
+    },
+    {
+      "path": "ui/src/pages/tools/profiles",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 19,
+      "unitIds": [
+        "application:ui/pages/tools"
+      ],
+      "classifications": {
+        "first-party-source": 12,
+        "test-eval-or-fixture": 7
+      }
+    },
+    {
+      "path": "ui/src/plugins",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 6,
+      "unitIds": [
+        "application:ui/plugins"
+      ],
+      "classifications": {
+        "first-party-source": 4,
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "ui/storybook",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 1,
+      "unitIds": [
+        "application:ui/storybook"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "ui/storybook/.storybook",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 5,
+      "unitIds": [
+        "application:ui/storybook"
+      ],
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "ui/storybook/fixtures",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 3,
+      "unitIds": [
+        "application:ui/storybook"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "ui/storybook/stories",
+      "auditStatus": "INVENTORIED",
+      "pathCount": 75,
+      "unitIds": [
+        "application:ui/storybook"
+      ],
+      "classifications": {
+        "first-party-source": 75
+      }
+    }
+  ],
   "paths": [
     {
       "path": ".agents/skills/check-pr/SKILL.md",

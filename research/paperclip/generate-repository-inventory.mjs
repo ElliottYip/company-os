@@ -128,6 +128,21 @@ const entries = paths.map((path) => {
   units.set(unitId, unit);
   return { path, unitId, classification };
 });
+const directoryMap = new Map();
+for (const entry of entries) {
+  const directory = dirname(entry.path) === "." ? "." : dirname(entry.path);
+  const record = directoryMap.get(directory) ?? {
+    path: directory,
+    auditStatus: "INVENTORIED",
+    pathCount: 0,
+    unitIds: new Set(),
+    classifications: {},
+  };
+  record.pathCount += 1;
+  record.unitIds.add(entry.unitId);
+  record.classifications[entry.classification] = (record.classifications[entry.classification] ?? 0) + 1;
+  directoryMap.set(directory, record);
+}
 
 const inventory = {
   schemaVersion: 1,
@@ -153,6 +168,10 @@ const inventory = {
     companyOsFit: _companyOsFit, responsibilityConflict: _responsibilityConflict,
     decision: _decision, evidence: _evidence, ...unit }) => unit)
     .sort((a, b) => a.id.localeCompare(b.id)),
+  directories: [...directoryMap.values()].map((record) => ({
+    ...record,
+    unitIds: [...record.unitIds].sort(),
+  })).sort((a, b) => a.path.localeCompare(b.path)),
   paths: entries,
 };
 

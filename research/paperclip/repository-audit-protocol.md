@@ -27,7 +27,9 @@ The evaluation axes are:
 
 `repository-inventory.json` is generated from `git ls-files` at the exact pin;
 `unit-assessments.json` is the review ledger whose unit IDs are mechanically
-kept in exact correspondence with that inventory. Every tracked path receives both:
+kept in exact correspondence with that inventory. The inventory also lists
+every directory that directly contains a tracked file, its classifications and
+the assessment units responsible for it. Every tracked path receives both:
 Every tracked path receives both:
 
 - a classification: first-party source, test/eval/fixture, documentation,
