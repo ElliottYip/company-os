@@ -6861,6 +6861,58 @@
       "completionRequirements": [
         "Read lines 1-166 exactly once and assess managed configuration overlay precedence, fail-closed parsing, secret handling, deployment-profile independence and test quality against Company OS managed-cloud and self-hosted boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/instance-settings-routes",
+      "path": "server/src/__tests__/instance-settings-routes.test.ts",
+      "lineCount": 724,
+      "sha256": "ff37d18c8f3cf74fade793aa5ebad730b7737f4fe5da7ff822152af6c053eb1a",
+      "linkedEvidence": {
+        "history": [
+          "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+          "c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)",
+          "c3bd0c5d50a45cda3c9fddbb0f80a85f44a84242 feat(skills): add beta releases for the core Paperclip skill (#10228)",
+          "70ce005bef50a59f4dec45386dcd884a6fac0ea7 Ensure worktree execution starts only after activation (#9374)",
+          "f3ca4d24bc4b931882109f9617b488d9fd74bf6b fix: repair dirty/foreign-branch execution worktrees (#9297)",
+          "8b6a06ee254b06cbadbe334e891285e22084caab [codex] Add built-in agents and Reflection Coach bundle (#9206)",
+          "83f5f5984230a0cc86c024a4173b22b4d88813ed [codex] Hide goals sidebar link behind experiment (#9189)",
+          "5163208c3caeda7690cb89175efcb5778c0fc269 Add workspace branch ancestry diagnostics (#9117)",
+          "765a75207ab162a679ccab0d9157e21bfde21896 Add experimental server info debug view (#8676)",
+          "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f External object references across issue surfaces (#8512)",
+          "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)",
+          "a71c4b678292a73ea9ddebbb96a861ce5c1687f7 [codex] feat(watchdog): add task watchdog control plane (#8339)",
+          "468edd8b221fe9991e40735b5bbba621e44eb1ad Add workspace file viewer and artifact links (#7681)",
+          "d9f91576a020812da44833d869426cbe17ae8555 Add accepted-plan decomposition exact-once guards and UI state (#6831)",
+          "e43b392a7931730c75f15b2c5deab212802d99c4 [codex] Add local Cloud Upstream sync (#6548)",
+          "0e1a5828313de7a66021e19aca8faa353cd7367a Revert newest-first issue thread (#5460)",
+          "a904effb963da5f895a532bb5c63e92a528207bc Add experimental newest-first issue thread (#5455)",
+          "fda296ee4f20768076eabc2f43c50fa6c6c5072c Add configurable liveness auto-recovery controls (#4587)",
+          "5a0c1979cf439d434c527de4935687a178be4b8e Add runtime lifecycle recovery and live issue visibility (#4419)",
+          "9a8d2199492654930ba0864dd5c0757163998649 Stabilize tests and local maintenance assets (#4423)",
+          "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)",
+          "a95739442027bdec8d291030a91e351dc434f635 Add structured issue-thread interactions (#4244)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 724 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Twenty-five mocked Express route tests cover instance/general/experimental reads and writes, default environment validation, guarded operational toggles, liveness preview/run, actor authorization and a cloud-managed execution-mode floor.",
+        "Sandboxed focused Vitest failed all 25 before route assertions because importing middleware/logger synchronously creates ~/.paperclip/instances/default/logs. Approved unsandboxed rerun passed all 25. This is a testability and deployment side-effect: merely importing HTTP routes requires a writable user home.",
+        "Instance admins, including local_implicit board users, can update settings; non-admin board users with any company access can read general and experimental instance-wide settings but cannot update; signed-in users with no company access are denied. One Agent mutation is denied, but Agent reads, other mutation endpoints, inactive memberships and computed-admin edge cases are not covered.",
+        "The route strips server-owned worktree activation timestamp/instance ID before service update while allowing the enable flag. Default environment IDs are resolved before persistence and unknown IDs return 422, but the test asserts the English error substring rather than a stable structured code.",
+        "General settings combine UI preferences, log-privacy/data-sharing policy and execution runtime mode. Treating them under one instance-admin gate is broad; Company OS must separate harmless display preferences from security/privacy/execution governance and define enterprise-scoped visibility.",
+        "Cloud-managed executionMode is made immutable when PAPERCLIP_CLOUD_TENANT_SERVER_TOKEN exists; different or newly pinned values are denied, same-value echo is allowed for full-object forms, unrelated writes avoid an extra read and self-hosted remains writable. The denial exposes a stable details.code in one assertion.",
+        "Using ambient secret-token presence as the deployment-policy switch conflates credential availability with authorization/policy state. There is no asserted issuer/version/expiry, policy receipt, behavior if the token rotates/disappears mid-process or guarantee that secrets are excluded from logs/errors.",
+        "Issue-graph liveness preview and forced recovery execution sit under experimental settings. Preview-before-run is useful, but the run test asserts only service call and activity count, not accountable initiator, affected companies/items, plan digest, approval, idempotency, partial failure or evidence/result chain.",
+        "Activity logging is asserted only by call count for writes/run; payload, actor, before/after values, deployment-policy provenance, transactional coupling and secret redaction are unverified. Reads have no access-log assertion.",
+        "Request-schema rejection, unknown fields, payload limits, stable error codes across all denials, concurrent updates/version preconditions, CSRF/session behavior, rate limits and sensitive-response minimization are absent because services/auth actor are mocked."
+      ],
+      "completionRequirements": [
+        "Read lines 1-724 exactly once and assess instance-settings HTTP authorization, sensitive-field exposure, stable error contracts, managed/self-hosted behavior, configuration lifecycle and test quality against Company OS deployment and responsibility boundaries."
+      ]
     }
   ]
 }

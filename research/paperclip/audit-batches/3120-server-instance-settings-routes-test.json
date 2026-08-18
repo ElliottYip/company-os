@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/instance-settings-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked Express tests for instance settings reads/writes, environment selection, operational recovery controls, actor authorization and managed-cloud execution-mode enforcement.",
+      "dependencyDirection": "Supertest/Vitest -> Express instance-settings routes and auth middleware -> mocked settings/environment/heartbeat/activity services; importing middleware also initializes a filesystem logger under the user home.",
+      "keyDataModels": "Instance settings, general privacy/UI/execution configuration, experimental feature and recovery controls, default execution environment, board/Agent actor and activity record.",
+      "lifecycle": "Authorize actor -> validate/strip server-owned fields or preview action -> call settings/environment/recovery service -> log mutation activity -> return effective representation; cloud token presence imposes an execution-mode floor.",
+      "testAssessment": "All 25 tests failed in the sandbox solely because logger import attempted a user-home mkdir; approved unsandboxed rerun passed 25/25. Route behavior is broad but heavily mocked and lacks full schema, concurrency, audit-content, Agent-read and sensitive-output coverage.",
+      "designRationale": "Expose one instance configuration surface with admin-only mutation, limited member reads, operational preview before recovery and platform floors that preserve managed deployment constraints while keeping self-hosted controls writable.",
+      "companyOsProblem": "Company OS needs independently deployable policy/configuration APIs that separate display preferences from privacy, execution and recovery governance and bind every material change to an accountable human and stable evidence.",
+      "companyOsFit": "ADAPT the admin/member split, server-owned-field stripping, reference validation, preview-before-run and same-value echo compatibility. Rebuild around typed configuration domains, stable error codes, explicit DeploymentPolicy identity/version instead of token presence, side-effect-free imports, scoped enterprise visibility, optimistic concurrency and immutable before/after receipts.",
+      "responsibilityConflict": "A forced recovery can mutate operational state under a generic settings endpoint with only activity-call counts asserted, while instance-wide execution and privacy controls share a broad admin role. Company OS requires action-specific authority, accountable initiator, affected scope, approval where risky and result/evidence linkage.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/instance-settings-routes.test.ts:1-724 (SHA-256 ff37d18c8f3cf74fade793aa5ebad730b7737f4fe5da7ff822152af6c053eb1a)",
+        "git history: 916c13501f80c7d1d659b89e4a06dc47366aa80f through 73eb23734f25c570d88665e672f80d740797c632 (23 commits recorded in read ledger)",
+        "2026-08-19 sandboxed focused Vitest: 0/25 passed; all failed on logger mkdir EPERM before assertions",
+        "2026-08-19 approved unsandboxed focused Vitest: 25/25 passed"
+      ],
+      "securityFindings": "HIGH deployment-policy weakness: secret-token presence is the execution policy switch, without asserted issuer/version/expiry. HIGH recovery-accountability gap: forced liveness recovery lacks action digest, approval/idempotency and evidence assertions. HIGH import side effect: route middleware creates a writable user-home log directory at import. MEDIUM authorization gaps: Agent reads and several membership/admin transitions are untested. MEDIUM audit gap: only call counts, not content or transactionality. MEDIUM error-contract gap: environment failure depends on English text. MEDIUM configuration coarseness: UI, privacy and execution controls share one broad role."
+    }
+  ]
+}
