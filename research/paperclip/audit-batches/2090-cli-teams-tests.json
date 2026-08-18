@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/teams",
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for browsing, inspecting, previewing and installing catalog Team templates, tracking installed/outdated/removed origins and converting specific Agent permission denials into board-approval requests.",
+      "dependencyDirection": "The Vitest suite registers Team Commander commands and uses fetch/output stubs. It consumes catalog/install/portability/approval projections and validates client request bodies, redaction and selected failure routing; it does not execute portability import or template content.",
+      "keyDataModels": "Catalog Team schema/trust/compatibility/content/file hashes; counts of Agents/Projects/Work/Routines/Skills; root/reporting Agent slugs, projects, required Skills, environment inputs and source refs; installed origin hashes/out-of-date/missing status; portability preview/import, adapter overrides, collision strategy, Secret inputs and approval request.",
+      "lifecycle": "Filter/search/list catalog and installed status; inspect slash-safe refs; preview installation with target manager and source policy; select Agents/files/adapter overrides/collision strategy/Secret values; install; on a specific permission denial optionally create an Issue-linked board approval with redacted attempt details; reject unrelated 403 and unsafe local paths.",
+      "testAssessment": "Focused Vitest passed 11/11 tests on 2026-08-19 and CLI no-emit TypeScript passed. Strong coverage includes origin hash drift/removal, preview policy, URL encoding, selection payloads, approval-request redaction and non-escalation of unrelated 403s. It omits template signature/license/SBOM, graph validation, dry-run/install equivalence, transactional rollback, update/uninstall, real authorization, stable error codes, Secret transport safety, approval replay and resulting organization responsibility.",
+      "designRationale": "Package a reusable multi-object Agent team as a portable catalog artifact, preview its organization/data requirements, support controlled collision/source policies and preserve origin hashes so operators can see drift or removed upstream templates.",
+      "companyOsProblem": "Company OS needs FDE-configured industry/company templates spanning organization, accountable humans, Agent roles, Workflows, Skills, permissions and data contracts, while preserving local customization, provenance and safe upgrades.",
+      "companyOsFit": "ADAPT content-addressed template manifests, preview-before-apply, installed-origin drift/missing status, explicit selection/collision/source policy and manager attachment. Extend the schema with human principals/responsibility contracts, data/tool grants, approvals, evidence expectations, license/SBOM/signature and reversible migrations. Installation must be a transaction or durable saga with per-object receipts; template origins must never own live organizational identity.",
+      "responsibilityConflict": "Paperclip Team fixtures are Agent-centric and a target manager can be another Agent; they do not require a real accountable human or bind imported roles/Work/Skills to responsibility/data contracts. Generic board approval after denial does not prove that the approver reviewed the exact content/Secret/capability digest later installed.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/teams.test.ts:1-581",
+        "SHA-256 0baaca25b31941d2cb27a4590c098d9cd803f39b2a5404f45201d5c608279ff9",
+        "fff3832a0135279d3b0f0d9fb307cfd5bd1d449d [codex] Add teams catalog extraction (#7550)",
+        "2026-08-19 focused Vitest: 1 file and 11 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Critical adoption blocker: `--secret-value key=value` places plaintext Secrets in argv/shell history/process inspection; redacting approval/output after the initial install request does not repair that exposure.",
+        "Automatic approval escalation is selected from an English error string (`Missing permission: can create agents`) rather than a stable structured denial code, making policy behavior brittle and localization-hostile.",
+        "The first denied installation request contains live Secret values before approval is created; a failed/unauthorized attempt should not receive or transmit Secrets at all.",
+        "Approval payload intentionally omits Secret values, but it also lacks immutable template/content/selection/adapter/data/permission digests, so approved intent can diverge from a later retry.",
+        "External-source allowance and local-path rejection are represented, but signatures, repository commit pinning, license/SBOM, path ownership, transitive dependencies and executable content policy are untested.",
+        "Adapter overrides are vendor-specific and supplied during organization import; capability compatibility, Secret requirements, data residency and responsibility impact need server-owned validation.",
+        "Collision strategies and selected files can materially alter the generated organization, yet preview/install equivalence, concurrent target changes, idempotency and rollback are not tested.",
+        "Environment-derived task id triggers auto-approval flow; tampering/stale context, same-company binding and whether the authenticated actor is an Agent are not proved by this test."
+      ]
+    }
+  ]
+}
