@@ -123,6 +123,38 @@ export function createDemoComposition() {
     auditEvidence,
     organization,
     sources,
+    work: {
+      workId: "demo-work-001",
+      goalInitiatorId: "demo-boss",
+      accountableHumanId: "demo-boss",
+      executingAgentId: "demo-researcher",
+      responsibilityContractId: "demo-contract-researcher",
+      permissionIds: ["permission-read-demo", "permission-publish-demo"],
+      dataAuthorizationIds: ["data-contract-demo-market"],
+      approvalId: "demo-approval-001",
+      approvalAction: {
+        id: "demo-action-publish",
+        type: "publish-content",
+        description: "发布演示市场简报",
+        inputDigest: "sha256:demo-publish-action",
+        risk: "HIGH",
+      },
+      approvalExpiresAt: "2026-08-18T08:10:00.000Z",
+      planEvidenceId: "demo-evidence-plan",
+      activityEvidenceId: "demo-evidence-tool",
+      resultEvidenceId: "demo-evidence-result",
+      resultId: "demo-result-001",
+      summaries: {
+        assigned: "Agent Boss 分配演示市场简报任务",
+        plan: "演示 Agent 形成确定性三步计划",
+        activity: "模拟读取获准的演示市场数据",
+        approvalRequested: "高风险发布动作已暂停，等待真人决定",
+        approvalApproved: "真人批准模拟发布动作",
+        approvalRejected: "真人拒绝模拟发布动作",
+        resultEvidence: "演示市场简报结果证据已记录",
+        completed: "真人批准后形成演示结果与完整责任链",
+      },
+    },
   });
   return {
     runtime: new DeterministicDemoRuntime(operations),
@@ -130,4 +162,3 @@ export function createDemoComposition() {
     ports: { approval, auditEvidence, eventStore, organization },
   };
 }
-

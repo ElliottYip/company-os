@@ -1,11 +1,13 @@
 import type {
   CompanyDomainEvent,
+  ExactAction,
   Identifier,
 } from "../core/control-plane.ts";
 import type { ApprovalPublicationPort } from "../ports/approval-publication-port.ts";
 import type { AuditEvidencePort } from "../ports/audit-evidence-port.ts";
 import type { EventDataStorePort } from "../ports/event-data-store-port.ts";
 import type { OrganizationPrincipalPort } from "../ports/organization-principal-port.ts";
+import type { IdentityPort } from "../ports/identity-port.ts";
 
 export interface DeterministicSources {
   nextId(): Identifier;
@@ -22,6 +24,35 @@ export interface CompanyOperationsDependencies {
   readonly auditEvidence: AuditEvidencePort;
   readonly organization: OrganizationPrincipalPort;
   readonly sources: DeterministicSources;
+  readonly work: WorkContext;
+  readonly identity?: IdentityPort;
+}
+
+export interface WorkContext {
+  readonly workId: Identifier;
+  readonly goalInitiatorId: Identifier;
+  readonly accountableHumanId: Identifier;
+  readonly executingAgentId: Identifier;
+  readonly responsibilityContractId: Identifier;
+  readonly permissionIds: readonly Identifier[];
+  readonly dataAuthorizationIds: readonly Identifier[];
+  readonly approvalId: Identifier;
+  readonly approvalAction: ExactAction;
+  readonly approvalExpiresAt: string;
+  readonly planEvidenceId: Identifier;
+  readonly activityEvidenceId: Identifier;
+  readonly resultEvidenceId: Identifier;
+  readonly resultId: Identifier;
+  readonly summaries: {
+    readonly assigned: string;
+    readonly plan: string;
+    readonly activity: string;
+    readonly approvalRequested: string;
+    readonly approvalApproved: string;
+    readonly approvalRejected: string;
+    readonly resultEvidence: string;
+    readonly completed: string;
+  };
 }
 
 interface EventPayload {
@@ -30,6 +61,15 @@ interface EventPayload {
   readonly approvalId?: Identifier;
   readonly decision?: "APPROVED" | "REJECTED";
   readonly resultId?: Identifier;
+  readonly authorizationReceiptId?: Identifier;
+  readonly responsibility?: {
+    readonly workId: Identifier;
+    readonly goalInitiatorId: Identifier;
+    readonly accountableHumanId: Identifier;
+    readonly executingAgentId: Identifier;
+    readonly permissionIds: readonly Identifier[];
+    readonly dataAuthorizationIds: readonly Identifier[];
+  };
 }
 
 export interface CompanyWorkState {
@@ -61,16 +101,18 @@ export interface CompanyWorkState {
   };
 }
 
-const WORK_ID = "demo-work-001";
-
 export class CompanyOperations {
   readonly #dependencies: CompanyOperationsDependencies;
 
   constructor(dependencies: CompanyOperationsDependencies) {
+    if (dependencies.mode === "PRODUCTION" && !dependencies.identity) {
+      throw new Error("PRODUCTION_IDENTITY_REQUIRED");
+    }
     this.#dependencies = dependencies;
   }
 
   async assignWork(): Promise<CompanyWorkState> {
+    const authorizationReceiptId = await this.#authorize("work:assign");
     const organization = await this.#dependencies.organization.getOrganization(
       this.#dependencies.companyId,
     );
@@ -81,99 +123,125 @@ export class CompanyOperations {
     const current = await this.snapshot();
     if (current.phase !== "READY") throw new Error("WORK_ALREADY_ASSIGNED");
     await this.#append("work.assigned", {
-      summary: "Agent Boss 分配演示市场简报任务",
+      summary: this.#dependencies.work.summaries.assigned,
+      authorizationReceiptId,
     });
     return this.snapshot();
   }
 
   async recordPlan(): Promise<CompanyWorkState> {
+    const authorizationReceiptId = await this.#authorize("work:record-plan");
     await this.#requirePhase("PLANNING");
+    await this.#dependencies.auditEvidence.recordEvidence({
+      id: this.#dependencies.work.planEvidenceId,
+      workId: this.#dependencies.work.workId,
+      kind: "PLAN",
+      summary: this.#dependencies.work.summaries.plan,
+      contentDigest: `sha256:${this.#dependencies.work.planEvidenceId}`,
+      recordedAt: this.#dependencies.sources.now(),
+      provenance: this.#dependencies.mode,
+    });
     await this.#append("plan.recorded", {
-      summary: "演示 Agent 形成确定性三步计划",
-      evidenceId: "demo-evidence-plan",
+      summary: this.#dependencies.work.summaries.plan,
+      evidenceId: this.#dependencies.work.planEvidenceId,
+      authorizationReceiptId,
     });
     return this.snapshot();
   }
 
   async recordToolActivity(): Promise<CompanyWorkState> {
+    const authorizationReceiptId = await this.#authorize("work:record-activity");
     await this.#requirePhase("SIMULATING_TOOL_ACTIVITY");
     const state = await this.snapshot();
     if (state.events.some(({ type }) => type === "tool.activity.recorded")) {
       throw new Error("TOOL_ACTIVITY_ALREADY_RECORDED");
     }
+    await this.#dependencies.auditEvidence.recordEvidence({
+      id: this.#dependencies.work.activityEvidenceId,
+      workId: this.#dependencies.work.workId,
+      kind: "TOOL_ACTIVITY",
+      summary: this.#dependencies.work.summaries.activity,
+      contentDigest: `sha256:${this.#dependencies.work.activityEvidenceId}`,
+      recordedAt: this.#dependencies.sources.now(),
+      provenance: this.#dependencies.mode,
+    });
     await this.#append("tool.activity.recorded", {
-      summary: "模拟读取获准的演示市场数据",
-      evidenceId: "demo-evidence-tool",
+      summary: this.#dependencies.work.summaries.activity,
+      evidenceId: this.#dependencies.work.activityEvidenceId,
+      authorizationReceiptId,
     });
     return this.snapshot();
   }
 
   async requestApproval(): Promise<CompanyWorkState> {
+    const authorizationReceiptId = await this.#authorize("approval:request");
     await this.#requirePhase("SIMULATING_TOOL_ACTIVITY");
     const state = await this.snapshot();
     if (!state.events.some(({ type }) => type === "tool.activity.recorded")) {
       throw new Error("TOOL_ACTIVITY_REQUIRED");
     }
     await this.#dependencies.approval.publishRequest({
-      id: "demo-approval-001",
+      id: this.#dependencies.work.approvalId,
       companyId: this.#dependencies.companyId,
       binding: {
-        action: {
-          id: "demo-action-publish",
-          type: "publish-content",
-          description: "发布演示市场简报",
-          inputDigest: "sha256:demo-publish-action",
-          risk: "HIGH",
-        },
-        workId: WORK_ID,
-        responsibilityContractId: "demo-contract-researcher",
-        executingAgentId: "demo-researcher",
-        accountableHumanId: "demo-boss",
+        action: this.#dependencies.work.approvalAction,
+        workId: this.#dependencies.work.workId,
+        responsibilityContractId: this.#dependencies.work.responsibilityContractId,
+        executingAgentId: this.#dependencies.work.executingAgentId,
+        accountableHumanId: this.#dependencies.work.accountableHumanId,
         evidenceReferences: state.responsibility.evidenceIds,
         resultReference: null,
       },
       requestedAt: this.#dependencies.sources.now(),
-      expiresAt: "2026-08-18T08:10:00.000Z",
+      expiresAt: this.#dependencies.work.approvalExpiresAt,
       status: "AWAITING_APPROVAL",
     });
     await this.#append("approval.requested", {
-      summary: "高风险发布动作已暂停，等待真人决定",
-      approvalId: "demo-approval-001",
+      summary: this.#dependencies.work.summaries.approvalRequested,
+      approvalId: this.#dependencies.work.approvalId,
+      authorizationReceiptId,
     });
     return this.snapshot();
   }
 
   async decideApproval(decision: "APPROVED" | "REJECTED"): Promise<CompanyWorkState> {
+    const authorizationReceiptId = await this.#authorize(`approval:${decision.toLowerCase()}`);
     await this.#requirePhase("AWAITING_APPROVAL");
+    if (this.#dependencies.actorId !== this.#dependencies.work.accountableHumanId) {
+      throw new Error("APPROVAL_REQUIRES_ACCOUNTABLE_HUMAN");
+    }
     await this.#dependencies.approval.publishDecision({
-      requestId: "demo-approval-001",
+      requestId: this.#dependencies.work.approvalId,
       decision,
       decidedBy: this.#dependencies.actorId,
       decidedAt: this.#dependencies.sources.now(),
     });
     await this.#append("approval.decided", {
-      summary: decision === "APPROVED" ? "真人批准模拟发布动作" : "真人拒绝模拟发布动作",
-      approvalId: "demo-approval-001",
+      summary: decision === "APPROVED"
+        ? this.#dependencies.work.summaries.approvalApproved
+        : this.#dependencies.work.summaries.approvalRejected,
+      approvalId: this.#dependencies.work.approvalId,
       decision,
+      authorizationReceiptId,
     });
     if (decision === "REJECTED") return this.snapshot();
 
     await this.#dependencies.auditEvidence.recordEvidence({
-      id: "demo-evidence-result",
-      workId: WORK_ID,
+      id: this.#dependencies.work.resultEvidenceId,
+      workId: this.#dependencies.work.workId,
       kind: "RESULT",
-      summary: "演示市场简报结果",
-      contentDigest: "sha256:demo-result",
+      summary: this.#dependencies.work.summaries.resultEvidence,
+      contentDigest: `sha256:${this.#dependencies.work.resultEvidenceId}`,
       recordedAt: this.#dependencies.sources.now(),
       provenance: this.#dependencies.mode,
     });
     await this.#append("evidence.recorded", {
-      summary: "结果证据已记录",
-      evidenceId: "demo-evidence-result",
+      summary: this.#dependencies.work.summaries.resultEvidence,
+      evidenceId: this.#dependencies.work.resultEvidenceId,
     });
     await this.#append("work.completed", {
-      summary: "真人批准后形成演示结果与完整责任链",
-      resultId: "demo-result-001",
+      summary: this.#dependencies.work.summaries.completed,
+      resultId: this.#dependencies.work.resultId,
     });
     return this.snapshot();
   }
@@ -204,12 +272,12 @@ export class CompanyOperations {
         isFixture: event.provenance === "DEMO_FIXTURE",
       })),
       responsibility: {
-        workId: WORK_ID,
-        goalInitiatorId: this.#dependencies.actorId,
-        accountableHumanId: "demo-boss",
-        executingAgentId: "demo-researcher",
-        permissionIds: ["permission-read-demo", "permission-publish-demo"],
-        dataAuthorizationIds: ["data-contract-demo-market"],
+        workId: this.#dependencies.work.workId,
+        goalInitiatorId: this.#dependencies.work.goalInitiatorId,
+        accountableHumanId: this.#dependencies.work.accountableHumanId,
+        executingAgentId: this.#dependencies.work.executingAgentId,
+        permissionIds: [...this.#dependencies.work.permissionIds],
+        dataAuthorizationIds: [...this.#dependencies.work.dataAuthorizationIds],
         approvalIds: payloads.flatMap(({ approvalId }) => approvalId ? [approvalId] : [])
           .filter((value, index, values) => values.indexOf(value) === index),
         evidenceIds: payloads.flatMap(({ evidenceId }) => evidenceId ? [evidenceId] : []),
@@ -232,6 +300,31 @@ export class CompanyOperations {
     if (state.phase !== expected) throw new Error(`INVALID_WORK_PHASE:${state.phase}`);
   }
 
+  async #authorize(action: string): Promise<Identifier | undefined> {
+    if (this.#dependencies.mode === "DEMO_FIXTURE") return undefined;
+    const identityPort = this.#dependencies.identity;
+    if (!identityPort) throw new Error("PRODUCTION_IDENTITY_REQUIRED");
+    const identity = await identityPort.getCurrentIdentity();
+    if (!identity) throw new Error("AUTHENTICATION_REQUIRED");
+    if (
+      identity.assurance === "LOCAL_DEMO" ||
+      identity.organizationId !== this.#dependencies.companyId ||
+      identity.actorId !== this.#dependencies.actorId
+    ) {
+      throw new Error("FORMAL_IDENTITY_CONTEXT_MISMATCH");
+    }
+    const receipt = await identityPort.authorize({
+      companyId: this.#dependencies.companyId,
+      action,
+      resourceId: this.#dependencies.work.workId,
+      reason: `Operate work ${this.#dependencies.work.workId}`,
+    });
+    if (receipt.principalId !== identity.actorId) {
+      throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
+    }
+    return receipt.id;
+  }
+
   async #append(type: string, payload: EventPayload): Promise<void> {
     const existing = await this.#dependencies.eventStore.read(this.#dependencies.companyId);
     const event: CompanyDomainEvent<EventPayload> = {
@@ -240,10 +333,19 @@ export class CompanyOperations {
       type,
       occurredAt: this.#dependencies.sources.now(),
       actorId: this.#dependencies.actorId,
-      payload,
+      payload: {
+        ...payload,
+        responsibility: {
+          workId: this.#dependencies.work.workId,
+          goalInitiatorId: this.#dependencies.work.goalInitiatorId,
+          accountableHumanId: this.#dependencies.work.accountableHumanId,
+          executingAgentId: this.#dependencies.work.executingAgentId,
+          permissionIds: [...this.#dependencies.work.permissionIds],
+          dataAuthorizationIds: [...this.#dependencies.work.dataAuthorizationIds],
+        },
+      },
       provenance: this.#dependencies.mode,
     };
     await this.#dependencies.eventStore.append(event, existing.length);
   }
 }
-
