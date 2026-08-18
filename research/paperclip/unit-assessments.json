@@ -20939,18 +20939,33 @@
     },
     {
       "id": "application:ui/lib/import-preflight",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Client-side UX preflight that estimates inline JSON import size, identifies content-addressed blob entries, offers a blob-dropping fallback and formats byte estimates.",
+      "dependencyDirection": "A UI-only helper depends on the shared portability file-entry type. It does not call the server or own transport policy, but hard-codes an assumed server body limit and package-path convention.",
+      "keyDataModels": "Record<string, CompanyPortabilityFileEntry>, fixed inline byte/envelope limits and InlineImportPreflight estimatedBytes/tooLarge/canDropAttachments.",
+      "lifecycle": "Estimate serialized path and entry bytes; compare against 56 MiB; re-estimate after removing matching blob paths; return display-oriented flags.",
+      "testAssessment": "Focused Vitest passed 9/9 tests in one file on 2026-08-19. Tests correctly cover UTF-8, JSON escaping, path-key bytes, envelope overhead, base64 structure, thresholds and stripping, but not server-limit negotiation, malicious path normalization, huge entry counts or non-file request fields.",
+      "designRationale": "Prevent a browser from constructing an oversized inline request and offer a lower-fidelity attachment-free path before directing large imports to ZIP upload.",
+      "companyOsProblem": "Company OS needs responsive client guidance for managed-cloud and self-hosted limits, while the API remains the canonical enforcer and data/evidence loss requires explicit informed approval.",
+      "companyOsFit": "ADAPT the UTF-8/JSON-aware estimation technique in the independent Company OS Web, but obtain negotiated transport limits/capabilities from the deployment profile, return stable loss codes and never treat the client result as a security boundary.",
+      "responsibilityConflict": "The UI labels removal of every blobs/** entry as dropping attachments, although blobs may also back embedded evidence/images. It provides no enumerated loss manifest, accountable-human confirmation or reviewed-plan digest after content removal.",
+      "decision": "ADAPT",
+      "evidence": [
+        "ui/src/lib/import-preflight.test.ts:1-92",
+        "test SHA-256 6b5f037604b55f2220e99707f46bc246ca0fce8ebac170d37099bf962b2cc8af",
+        "ui/src/lib/import-preflight.ts:1-81",
+        "implementation SHA-256 a5caeb9539638019870e31e62aa5773b3c190295b4a36b8b8148576c1361ea0e",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)",
+        "2026-08-19 focused Vitest: 1 file / 9 tests passed"
+      ],
+      "securityFindings": [
+        "The 56 MiB limit is hard-coded while the server ZIP/body cap is operator-configurable; capability drift can produce false allow/deny UX.",
+        "A fixed 256 KiB envelope can undercount very large rootPath, selection, overrides, secret-input maps or other request fields not present in files.",
+        "Blob-path matching accepts any prefix ending in blobs/<one-segment> and runs before canonical path validation.",
+        "stripBlobFiles removes all blob-backed content, including possible embedded evidence, while canDropAttachments understates the data-loss scope.",
+        "Client estimation cannot replace server streaming limits, decoded-byte/count quotas and digest verification."
+      ]
     },
     {
       "id": "application:ui/lib/inbox",

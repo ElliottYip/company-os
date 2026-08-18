@@ -4104,6 +4104,26 @@
         "Lines 101-103 finish work-product createdByRunId/sourceTrust. These optional fields are valuable but can be null, as the completed portability tests explicitly expect after migration. Formal decision: REIMPLEMENT application commands and persistence DTOs while adapting pre-generated opaque IDs and chunked-write mechanics."
       ],
       "completionRequirements": ["Read lines 1-103 exactly once and assess imported issue/comment/document/work-product/attachment field ownership, identity/provenance preservation, nullability and coupling to database schema."]
+    },
+    {
+      "id": "application:ui/lib/import-preflight",
+      "paths": [
+        { "path": "ui/src/lib/import-preflight.test.ts", "lineCount": 92, "sha256": "6b5f037604b55f2220e99707f46bc246ca0fce8ebac170d37099bf962b2cc8af" },
+        { "path": "ui/src/lib/import-preflight.ts", "lineCount": 81, "sha256": "a5caeb9539638019870e31e62aa5773b3c190295b4a36b8b8148576c1361ea0e" }
+      ],
+      "linkedEvidence": { "history": ["916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)", "5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)"] },
+      "auditStatus": "COMPLETE",
+      "completedFiles": [
+        { "path": "ui/src/lib/import-preflight.test.ts", "completedRanges": [{ "start": 1, "end": 92 }] },
+        { "path": "ui/src/lib/import-preflight.ts", "completedRanges": [{ "start": 1, "end": 81 }] }
+      ],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "The 92-line Node-environment suite covers root-level blob recognition, serialized UTF-8/key/envelope size estimation, non-underestimation against JSON.stringify, under/over-limit behavior, attachment-dropping eligibility and blob-only stripping. It is focused and catches several common undercount errors. It does not test adversarial normalized paths, enormous file counts/keys, integer overflow, nested prefixes beyond one example, server-limit negotiation, stable error codes or the fact that dropping all blobs may remove embedded evidence as well as optional attachments.",
+        "The 81-line implementation uses UTF-8 JSON-aware entry/key estimation plus a generous fixed envelope, a hard-coded 56 MiB inline limit and regex-based blob removal. This is good UX estimation but not canonical admission. Removing all blobs is mislabeled as dropping attachments even when blobs back embedded evidence; limits are not negotiated with self-hosted operators. Focused Vitest passed 9/9 on 2026-08-19. Formal decision: ADAPT only as Web UX with server-owned limits and explicit structured loss review."
+      ],
+      "completionRequirements": ["Read both files exactly once, run the focused test and assess client-side archive preflight limits, error codes, trust boundary and whether UI logic improperly owns security policy."]
     }
   ]
 }
