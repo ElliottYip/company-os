@@ -1837,18 +1837,24 @@
     },
     {
       "id": "application:cli/commands/configure",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Runs the interactive configuration editor for database, LLM, logging, server/auth, storage and Secret-provider sections. It reads the existing config, warns while preserving unknown keys, backs up invalid bytes, requires interactive repair confirmation, updates one selected section at a time, manages the local Secret key file and persists after each section.",
+      "dependencyDirection": "configure command -> config store/schema/home/Secret-key modules and section-specific prompt modules -> filesystem/config and optional environment master key. Product defaults and operational policy are assembled in the CLI, while field validation, atomic write behavior and permissions belong to separately audited config modules.",
+      "keyDataModels": "PaperclipConfig v1 metadata; embedded PostgreSQL and backup schedule; file logging; local_trusted/private/loopback server; auth base URL and sign-up flag; telemetry enabled; storage and Secret provider configuration; instance-scoped default paths and invalid-config backup path.",
+      "lifecycle": "Require an existing config -> read/validate and warn on unknown keys -> on invalid bytes create a backup and require interactive repair -> choose one section -> run its prompt -> optionally create/reuse a local Secret key -> stamp metadata -> atomically persist through writeConfig -> repeat. Each accepted section commits independently, so later cancellation or failure does not roll back earlier sections.",
+      "testAssessment": "The already completed focused test assessments were reused without rereading source: application:cli/__tests__/configure passed 3/3 and proved fail-closed invalid-config preservation while identifying malformed-byte log leakage and missing success/policy coverage; application:cli/__tests__/configure-repair passed 1/1 and proved confirmation plus atomic commit while leaving field repair, decline/cancel, diff, failure rollback, concurrency and identity/Secret rebinding untested. CLI TypeScript checking passes.",
+      "designRationale": "Interactive section editing reduces accidental full-file replacement, unknown-key preservation supports forward-compatible extensions, invalid-byte backup plus non-interactive refusal is safer than silent repair, and per-section persistence limits the amount of staged in-memory configuration. Local Secret-key bootstrap supports self-hosted operation without an external vault.",
+      "companyOsProblem": "Company OS needs one configuration model and guided setup for managed-cloud and self-hosted/local-enterprise profiles, with independently replaceable identity, database, storage, Connector/model, Secret and telemetry adapters. Repair and migration must preserve extensions and never silently change security or responsibility semantics.",
+      "companyOsFit": "Adapt the preservation, backup and section-editor patterns behind a typed versioned Company OS ConfigPort. Add preview/diff, profile policy validation, migration plans, restrictive backup/key permissions, transactional multi-resource changes, stable error codes and explicit telemetry/data-export consent. Keep environment-specific prompts outside core/application.",
+      "responsibilityConflict": "Defaults enable telemetry and sign-up while identity/telemetry are not first-class selectable sections here. Configuration changes are attributed only to metadata source=configure, not a verified human/operator with reason and evidence. Secret key creation can occur before config persistence, and multi-section edits are partial commits rather than one accountable change set.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/commands/configure.ts (243 lines; SHA-256 869b037d3db4f2757c41c6a3030829fceb4fff3cbcc5131a9e56bdc534ced156)",
+        "git history: 35132af1610c7a0435830e2d7cd834536514ffd4, 70b1a9109d756818fb448beafa67af27babb52de, 73eb23734f25c570d88665e672f80d740797c632",
+        "Completed focused assessment application:cli/__tests__/configure: 3/3 passed; REJECT as sufficient proof",
+        "Completed focused assessment application:cli/__tests__/configure-repair: 1/1 passed; ADAPT pattern"
+      ],
+      "securityFindings": "Invalid bytes are backed up before repair consent and parser errors can include original content; backup permissions and redaction are security-critical. Arbitrary config paths, environment-provided master keys and local key creation must be enforced by lower layers. The Secret key may be created before writeConfig succeeds, leaving an orphan. Default telemetry is opt-out, configuration has no displayed diff or human audit event, and each section commits separately. Unknown-key preservation is positive but also means extensions require namespace/schema ownership to prevent policy bypass."
     },
     {
       "id": "application:cli/commands/db-backup",
