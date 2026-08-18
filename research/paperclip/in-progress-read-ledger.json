@@ -5779,6 +5779,33 @@
       "completionRequirements": [
         "Read lines 1-803 exactly once and assess annotation anchor creation/remap, revision identity, author/resolve lifecycle, deletion/cleanup, transactions, concurrency, tenant isolation, content bounds and test quality against Company OS evidence integrity."
       ]
+    },
+    {
+      "id": "application:server/__tests__/documents-service",
+      "path": "server/src/__tests__/documents-service.test.ts",
+      "lineCount": 196,
+      "sha256": "dfcb15162a1495ff2a60290b2b0be9ff889cfee1da924206ffddb25eb93d8e67",
+      "linkedEvidence": {
+        "history": [
+          "5e3d6e362746eaa2907f960a9cd98e39308c62fc [codex] Preserve plan review context in agent wakes (#8649)",
+          "03ad5c5bea50e3d89e2b8153cbd11c932c6ae298 [codex] Guard issue document locking (#6009)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 196 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Four intended PostgreSQL tests cover hiding continuation-summary system documents from default lists, explicit/direct retrieval, user locks and a create-new-document fallback for locked canonical documents.",
+        "System-document filtering is useful data minimization, but direct fetch remains available and authorization/classification is outside this service test. Handoff summaries may contain sensitive Agent/user context and need an explicit system-document capability, not only UI omission.",
+        "A lock records lockedAt/lockedByUserId and blocks all upserts, including the lock owner, until unlock. unlockIssueDocument receives only issue/key in this test, so ownership/authority is caller-enforced; there is no lock token, version, expiry/lease, reason or stale-lock recovery coverage.",
+        "create_new_document preserves the locked original and returns plan-2 plus redirectedFrom metadata, a useful non-destructive pattern. But it can bypass canonical review intent and the fixture provides no creator/responsible human, lineage digest, explicit fork approval or later merge/retire workflow.",
+        "All 4 tests skipped in sandboxed and approved unsandboxed runs. Base-revision conflicts, immutable revision history, author attribution, concurrent lock/unlock/fork, tenant isolation, content limits/hash and deletion/retention are not tested."
+      ],
+      "completionRequirements": [
+        "Read lines 1-196 exactly once and assess document revision concurrency, create/update identity, attribution, immutable history, transactionality, tenant isolation, content bounds and test quality against Company OS evidence/document storage."
+      ]
     }
   ]
 }

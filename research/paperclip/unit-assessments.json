@@ -5322,18 +5322,23 @@
     },
     {
       "id": "application:server/__tests__/documents-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Intended PostgreSQL tests for system-document visibility, document locks and non-destructive fork-on-lock behavior.",
+      "dependencyDirection": "Vitest -> document service -> real documents/revisions/issue-document schema and embedded PostgreSQL when supported; no route authorization, Identity, evidence retention or external storage.",
+      "keyDataModels": "Issue document key/title/format/body/latest revision, system continuation-summary key, lock time/user and redirected locked-document lineage returned on fallback creation.",
+      "lifecycle": "Create canonical and system documents -> hide system entries from default projection -> optionally lock canonical document -> reject updates or create a new keyed document -> unlock then update exact latest revision.",
+      "testAssessment": "All 4 tests skipped in sandboxed and approved unsandboxed runs. The intended visibility/lock/fork behavior is clear, but persistence is unverified here and tests omit authorization, lock leases/ownership, base-revision conflicts, concurrent operations, revision immutability, content safety and retention.",
+      "designRationale": "Keep internal handoff documents out of ordinary UI lists and preserve a locked review artifact while allowing work to continue in a separate document instead of destructively overwriting it.",
+      "companyOsProblem": "Company OS needs versioned evidence/documents with classified visibility, accountable authors, immutable lineage, review locks/leases and explicit fork/merge outcomes tied to Work and responsibility contracts.",
+      "companyOsFit": "ADAPT system-document classification, optimistic revision identity and non-destructive fork intent. Require explicit read capability for system documents, versioned lock leases with owner/authority/expiry, content hashes, immutable revision authorship, fork reason/approval/lineage and merge/retire workflow. Bind each evidence document to Work/Agent/accountable human/data grants and retention policy.",
+      "responsibilityConflict": "A locked canonical plan can be bypassed by creating plan-2 without a creator or accountable-human decision in the test. Locks and hidden system documents are storage/UI states, not responsibility contracts, and direct retrieval may reveal handoff content without explicit evidence/data authority.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/documents-service.test.ts:1-196 (SHA-256 dfcb15162a1495ff2a60290b2b0be9ff889cfee1da924206ffddb25eb93d8e67)",
+        "git history: 5e3d6e362746eaa2907f960a9cd98e39308c62fc, 03ad5c5bea50e3d89e2b8153cbd11c932c6ae298 and 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 sandboxed and approved unsandboxed focused Vitest: all 4 embedded-PostgreSQL tests skipped"
+      ],
+      "securityFindings": "CRITICAL verification gap: all persistence tests skipped. HIGH authorization gap: system document direct fetch and unlock ownership/authority are not tested; unlock is invoked without actor/lock token at service level. HIGH review-bypass risk: create_new_document can route around a locked canonical artifact without tested human approval, immutable lineage or merge policy. Missing lock expiry/stale recovery, concurrent lock/unlock/fork, base-revision conflict, cross-tenant access, content hash/size/XSS and legal retention tests."
     },
     {
       "id": "application:server/__tests__/effective-run-config-fingerprints",
