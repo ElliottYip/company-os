@@ -8573,18 +8573,21 @@
     },
     {
       "id": "application:server/__tests__/storage-local-provider",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Real-filesystem integration tests for local object storage round-trip, byte-range streaming, lexical cross-Company access denial and idempotent deletion.",
+      "dependencyDirection": "Company/namespace/file metadata and bytes enter StorageService, which creates a Company-prefixed key and delegates filesystem operations to LocalDiskStorageProvider; callers read streams through the same service guard.",
+      "keyDataModels": "Company ID, namespace, original filename, content type, object key, SHA-256, byte range, content length and HTTP-like 403/404 errors.",
+      "lifecycle": "Put computes metadata and persists bytes; get returns the whole stream or inclusive range; another Company is denied before read; repeated delete succeeds and a later get reports not found.",
+      "testAssessment": "The suite exercises actual disk I/O and useful provider-neutral behavior. It does not test traversal/object-key validation, directory or file symlinks under the storage root, invalid/out-of-bounds ranges, zero-byte/large streaming uploads, digest verification on read, atomic write/rename cleanup, concurrent writes/deletes, permissions, quotas, encryption, retention/legal hold or S3 parity.",
+      "designRationale": "Provide zero-configuration self-hosted object storage behind the same service contract used by a cloud provider.",
+      "companyOsProblem": "Evidence and artifacts must move between managed-cloud and self-hosted profiles without weakening tenant isolation, integrity or lifecycle policy.",
+      "companyOsFit": "ADAPT the provider contract, streaming ranges, tenant-prefix guard and idempotent delete semantics. Local storage must use descriptor-based no-follow containment and atomic immutable writes; every read verifies immutable version/digest policy, while S3/local providers share conformance tests for encryption, retention and consistency.",
+      "responsibilityConflict": "A Company-prefixed mutable object and put-time hash are insufficient evidence provenance. The record must bind Work, executor, permission/data contract, collection method, immutable version and verified digest; deletion must respect retention/legal-hold authority.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/storage-local-provider.test.ts:1-98",
+        "04a19cbc Address artifact PR review feedback"
+      ]
     },
     {
       "id": "application:server/__tests__/summary-slot-routes",
@@ -8900,18 +8903,21 @@
     },
     {
       "id": "application:server/__tests__/work-products",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mock-based unit tests asserting that creation of a primary Issue work product and promotion of an existing work product execute their demotion/insertion or demotion/update sequences inside a database transaction.",
+      "dependencyDirection": "Issue/work-product IDs and a primary flag enter workProductService; mocked Drizzle transaction primitives record select/update/insert call counts and return a projected row.",
+      "keyDataModels": "Work product ID, Company/Project/Issue, type/provider, external ID/URL/status/review/health, primary flag, metadata, runtime/workspace/run references and timestamps.",
+      "lifecycle": "Creating a primary first demotes same-Company/Issue/type rows then inserts; promoting an existing row selects it, demotes its current group and updates it, all within the callback supplied to db.transaction.",
+      "testAssessment": "The tests catch accidental removal of the transaction wrapper and expected operation order at a coarse level. Mocks do not prove rollback, isolation or concurrency safety; they omit Company scoping, cross-Company Issue consistency, group-field mutation, database constraints, not-found/error paths, import batching, removal, source trust and actual primary uniqueness.",
+      "designRationale": "Avoid a visible intermediate state with no or multiple selected primary work products during ordinary sequential mutations.",
+      "companyOsProblem": "Agent Boss needs one authoritative result/evidence projection per Work and artifact type without races or cross-tenant references.",
+      "companyOsFit": "REFERENCE_ONLY. Retain the behavioral intent but replace mock call-count tests with embedded-database concurrency, rollback and tenant-invariant tests backed by schema constraints and immutable Artifact/Evidence models.",
+      "responsibilityConflict": "Transaction invocation does not prove the selected artifact is trustworthy, immutable or created under the approved Work/data contract. createdByRunId is nullable and no accountable human, approval digest or evidence digest is asserted.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/work-products.test.ts:1-95",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/work-timeline-service",
@@ -13607,18 +13613,25 @@
     },
     {
       "id": "application:server/services/work-products",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CRUD and bulk-import service for mutable Issue work-product projections, including application-level selection of one primary per Company/Issue/type group.",
+      "dependencyDirection": "Routes/importers call a Drizzle-backed service directly; database rows are cast into shared IssueWorkProduct DTOs and returned to clients.",
+      "keyDataModels": "IssueWorkProduct with Company/Project/Issue, execution workspace/runtime service, type/provider/external identity, mutable URL/status/review/health/summary/metadata/sourceTrust, primary flag and optional creating run.",
+      "lifecycle": "List/get query mutable rows; create or promotion demotes the existing group in a transaction; bulk import makes the last input primary per Issue/type and inserts chunks atomically; update and remove mutate by ID.",
+      "testAssessment": "The implementation is compact and bulk import is intentionally atomic, but dedicated tests cover only transaction call counts for two primary paths. The schema has a non-unique index rather than a partial unique primary constraint, so concurrent transactions can create multiple primaries. list/get/update/remove do not require Company scope; create accepts Company and Issue independently without a composite tenant invariant; update accepts a broad insert-row patch and can move group fields without demoting the destination group.",
+      "designRationale": "Represent external deliverables such as pull requests as lightweight mutable projections and keep one preferred result visible per Issue/type without complicating imports.",
+      "companyOsProblem": "Company OS must distinguish mutable external result projections from immutable evidence/artifact records and enforce tenant/responsibility invariants inside the application boundary.",
+      "companyOsFit": "REIMPLEMENT behind Company-scoped Artifact/Evidence and ResultProjection ports. Require TenantScope on every operation, composite ownership constraints, immutable evidence versions/digests, constrained command DTOs, database-enforced primary uniqueness or serialized selection, idempotency and explicit external-observation freshness.",
+      "responsibilityConflict": "A mutable URL/status row with nullable createdByRunId cannot establish who produced or approved a result, which permissions/data were used, or what bytes were reviewed. Missing service-level tenant scope and cross-table Company invariants create an unacceptable responsibility-chain risk.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/work-products.ts:1-172",
+        "packages/db/src/schema/issue_work_products.ts:1-70",
+        "packages/db/src/migrations/0035_marvelous_satana.sql:28-82",
+        "276ae3a7 Harden company import: durable UI, async jobs, integrity guard, batched inserts (#10523)",
+        "dbebf30c Add low-trust review containment (#7530)",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/services/work-timeline",
