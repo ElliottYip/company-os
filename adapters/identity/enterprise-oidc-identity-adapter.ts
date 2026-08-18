@@ -12,42 +12,32 @@ import {
 } from "./session-claims.ts";
 
 type ClaimsProvider = () => Promise<SessionIdentityClaims | null>;
-type AuthorizationProvider = (
-  intent: AuthorizationIntent,
-) => Promise<AuthorizationReceipt>;
+type AuthorizationProvider = (intent: AuthorizationIntent) => Promise<AuthorizationReceipt>;
 
-export class RaftIdentityAdapter implements IdentityPort {
+export class EnterpriseOidcIdentityAdapter implements IdentityPort {
   readonly #claimsProvider: ClaimsProvider;
   readonly #authorizationProvider?: AuthorizationProvider;
   readonly #policy: SessionValidationPolicy;
 
   constructor(
     claimsProvider: ClaimsProvider,
-    authorizationProvider?: AuthorizationProvider,
-    policy?: SessionValidationPolicy,
+    authorizationProvider: AuthorizationProvider | undefined,
+    policy: SessionValidationPolicy,
   ) {
     this.#claimsProvider = claimsProvider;
     this.#authorizationProvider = authorizationProvider;
-    if (!policy) throw new Error("Raft identity validation policy is required.");
     this.#policy = policy;
   }
 
   async getCurrentIdentity(): Promise<CompanyIdentity | null> {
     const claims = await this.#claimsProvider();
-    if (claims === null) return null;
-    let validated;
-    try {
-      validated = validateSessionClaims(claims, this.#policy);
-    } catch (error) {
-      throw new Error(
-        `Invalid Raft identity claims at adapter boundary: ${(error as Error).message}`,
-      );
-    }
+    if (!claims) return null;
+    const validated = validateSessionClaims(claims, this.#policy);
     return {
       actorId: validated.subject,
       organizationId: validated.organization,
       displayName: validated.displayName,
-      assurance: "HOST_ASSERTED",
+      assurance: "ENTERPRISE_ASSERTED",
     };
   }
 
@@ -60,7 +50,7 @@ export class RaftIdentityAdapter implements IdentityPort {
 
   async authorize(intent: AuthorizationIntent): Promise<AuthorizationReceipt> {
     if (!this.#authorizationProvider) {
-      throw new Error("Raft authorization provider is not configured.");
+      throw new Error("Enterprise authorization provider is not configured.");
     }
     return this.#authorizationProvider(intent);
   }
