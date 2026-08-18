@@ -1762,6 +1762,42 @@
         "The 3398-line facade centralizes dozens of unrelated authorities and depends on separate string capability dispatch for safety; it is too broad to make privilege, tenancy, data egress and responsibility invariants locally reviewable."
       ],
       "completionRequirements": ["Read lines 1-3398 exactly once and trace every worker-to-host operation from capability check through authenticated invocation/company scope, database query, Secret/HTTP/data access, mutations, approval, audit, telemetry, errors, cleanup and resource limits against focused tests."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-host-services-span",
+      "path": "server/src/__tests__/plugin-host-services-span.test.ts",
+      "lineCount": 314,
+      "sha256": "f5c65ce5a0f4484fe1f6dd82983903e1dd2f456132c2a1fb5edbff904bee7248",
+      "linkedEvidence": { "history": ["9ace548f feat(observability): rename sandbox provider spans and add run-time wrapper spans (#10999)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 314 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The suite strongly covers host-boundary span name, attribute, status, time and traceparent clamping, including forbidden command/stdout/stderr/path data and capability denial/admission through real SDK handlers.",
+        "Tests use mocked instrumentation and direct HostServices with an empty database stub, appropriate for this pure boundary; all supported name values and several invalid clock cases are enumerated.",
+        "It does not test telemetry cardinality/rate budgets, tracer failure behavior, trace ownership across tenants/runs, or that every environment provider uses this path, but the narrow trust-boundary assertions are high quality.",
+        "servicesFor instances are not disposed in tests, so the suite does not cover cleanup interactions."
+      ],
+      "completionRequirements": ["Read lines 1-314 exactly once, run focused tests and map capability denial, traceparent, name/attribute/status/time clamping and sensitive-data rejection to the already-read HostServices span boundary."]
+    },
+    {
+      "id": "application:server/services/plugin-host-service-cleanup",
+      "path": "server/src/services/plugin-host-service-cleanup.ts",
+      "lineCount": 59,
+      "sha256": "bd8ccab5c0044b1b1bfb6619346b09532b557b1c77ac009151ea836aa32965d5",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 59 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The controller centralizes disposal on lifecycle stopped/unloaded and worker crash events, retains a disposer across stop/crash for possible restart and removes it only on unload.",
+        "Disposers are synchronous and unguarded: one throwing disposer aborts disposeAll before remaining plugins and before map clear; there is no async completion, timeout, retry or failure evidence.",
+        "teardown only unregisters listeners and does not dispose resources. plugin.worker.restarted is accepted by the event type but intentionally ignored, with no focused tests documenting replacement semantics.",
+        "The lifecycle full-loader deactivate path may not emit plugin.worker_stopped, so correctness depends on other wiring invoking cleanup or replacing the map entry; this unit alone cannot prove leak-free lifecycle integration."
+      ],
+      "completionRequirements": ["Read lines 1-59 exactly once and assess registration identity, duplicate replacement, disposal ordering, async completion, leak/failure behavior and lifecycle integration."]
     }
   ]
 }

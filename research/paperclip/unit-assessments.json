@@ -7531,18 +7531,22 @@
     },
     {
       "id": "application:server/__tests__/plugin-host-services-span",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure trust-boundary tests for worker-supplied provider spans through HostServices and the real capability-gated SDK handler.",
+      "dependencyDirection": "Uses HostServices clamp/parse functions and SDK createHostClientHandlers while replacing only the final instrumentation sink.",
+      "keyDataModels": "W3C traceparent, closed span names, low-cardinality attributes, numeric status and bounded worker timestamps.",
+      "lifecycle": "Submits valid and malicious span payloads, validates capability denial/admission and inspects the exact sanitized recorder input.",
+      "testAssessment": "All sixteen cases passed. The suite is unusually strong for a narrow untrusted telemetry boundary, though it omits rate/cardinality quotas, tracer failure and tenant/run ownership.",
+      "designRationale": "Prevent commands, paths and standard-stream secrets from escaping through telemetry while retaining useful provider timing.",
+      "companyOsProblem": "Company OS needs secret-free, low-cardinality runtime attestation and telemetry that remains subordinate to the evidence model.",
+      "companyOsFit": "ADAPT closely: preserve closed names/attributes, traceparent and clock validation plus capability denial; rename provider vocabulary and add run/Connector attestation ownership, quotas and sink-failure tests.",
+      "responsibilityConflict": "Trace context proves correlation, not who authorized or is accountable for the underlying action; telemetry must not be promoted to Responsibility evidence by itself.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-host-services-span.test.ts:1-314",
+        "server/src/services/plugin-host-services.ts:503-724",
+        "2026-08-18 focused Vitest: 16 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/plugin-install-autobuild",
@@ -12710,18 +12714,22 @@
     },
     {
       "id": "application:server/services/plugin-host-service-cleanup",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Small controller mapping lifecycle stop/unload and worker crash events to per-plugin HostServices disposer callbacks.",
+      "dependencyDirection": "Depends only on lifecycle event subscription and a mutable pluginId-to-disposer Map; application wiring owns registration and replacement.",
+      "keyDataModels": "Plugin worker crash/restart event, lifecycle stopped/unloaded payload and synchronous disposer registry.",
+      "lifecycle": "Registers listeners, disposes on stop/crash, removes on unload, can dispose all and can detach listeners.",
+      "testAssessment": "No focused tests were found. Throwing/async disposers, restart replacement, duplicate registration, teardown order and lifecycle path coverage are unverified.",
+      "designRationale": "Avoid leaked event/session subscriptions across worker crashes and unloads without coupling HostServices to the lifecycle manager.",
+      "companyOsProblem": "Company OS needs a durable runtime supervisor whose cancellation and cleanup convergence can be awaited, retried and observed across crashes and deployments.",
+      "companyOsFit": "REFERENCE event-to-resource cleanup ownership, but implement async all-settled disposal with timeout, idempotency, generation fencing, restart replacement, failure evidence and focused lifecycle tests.",
+      "responsibilityConflict": "Best-effort synchronous callbacks can silently leave resources active after a state change, and no evidence shows which actions, credentials, subscriptions or data leases were actually revoked.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/services/plugin-host-service-cleanup.ts:1-59",
+        "server/src/services/plugin-lifecycle.ts:340-449",
+        "no focused test found by repository search"
+      ]
     },
     {
       "id": "application:server/services/plugin-host-services",
