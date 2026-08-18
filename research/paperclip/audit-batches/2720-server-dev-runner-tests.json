@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/dev-runner-snapshot",
+      "auditStatus": "COMPLETE",
+      "function": "Development watcher regression tests for filesystem disappearance races, missing signatures and deletion diffs.",
+      "dependencyDirection": "Vitest -> development snapshot script -> synchronous local filesystem or injected filesystem shim; no product server, deployment controller or domain layer.",
+      "keyDataModels": "Watched directory/file lists, ignored paths, relative-path-to-signature snapshot map and changed/deleted path diff.",
+      "lifecycle": "Scan watched paths -> tolerate disappearing entries -> compare metadata signatures -> trigger development restart for changed/deleted paths outside this suite.",
+      "testAssessment": "Combined dev-runner Vitest passed 9/9; this file contributes 4 deterministic race tests. It omits content/hash fidelity, symlinks, permission errors, scale and actual restart behavior, but adequately guards the narrow development crash regression.",
+      "designRationale": "Keep hot reload usable while editors/build tools atomically replace or delete files during directory traversal.",
+      "companyOsProblem": "Company OS development tooling needs reliable local iteration, but production deployment and execution-node reconciliation require stronger artifact and rollout guarantees.",
+      "companyOsFit": "REFERENCE ONLY. Reuse the injected-filesystem race-test technique if Company OS builds a watcher; do not treat metadata snapshots as a production artifact/deployment contract. Production profiles need content-addressed signed artifacts, health checks, rollback and attestation.",
+      "responsibilityConflict": "None in the narrow dev watcher, but it supplies no accountable change record or production artifact identity and therefore cannot participate in Company OS responsibility evidence.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/dev-runner-snapshot.test.ts:1-101 (SHA-256 aef3f0cdcce26f116361be0836c6e42d827b50d99f1c60857b4fc44b76c4df22)",
+        "git history: dc585448323c17b567c403bb4600dfea1f7e8fa3 and 8f25ba63816be065c5240bf81906ab7197c46712",
+        "2026-08-19 combined focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "LOW production relevance. Missing watcher cases include symlink escapes, permission errors, special files and unbounded trees. Metadata-only signatures may miss same-size/same-mtime content changes; this must not be reused for signed artifact identity or security decisions."
+    },
+    {
+      "id": "application:server/__tests__/dev-runner-worktree",
+      "auditStatus": "COMPLETE",
+      "function": "Development worktree tests for initialization markers, linked-checkout detection, environment precedence, migrated path repair and missing-env fail-fast behavior.",
+      "dependencyDirection": "Vitest -> dev-runner worktree bootstrap -> local repo/worktree files and caller-supplied process environment; no configuration schema validator, Secret store, Git command verification or deployment controller.",
+      "keyDataModels": "Worktree root/.git file, seed-pending/complete markers, repo-local env path and PAPERCLIP_HOME/INSTANCE/CONFIG/CONTEXT/worktree variables.",
+      "lifecycle": "Detect linked worktree -> block incomplete seed -> load repo-local environment without overriding explicit process values -> repair known stale paths -> report missing initialization.",
+      "testAssessment": "Combined focused Vitest passed 9/9; this file contributes 5 tests. Positive precedence and fail-fast behavior are clear, but untrusted env parsing, filesystem provenance, concurrent setup and repair safety are not tested.",
+      "designRationale": "Prevent development worktrees from accidentally sharing the main instance while allowing moved checkouts and explicit operator overrides to recover automatically.",
+      "companyOsProblem": "Company OS needs independent developer instances and safe self-hosted configuration migration without letting checked-out source silently redefine production identity/data paths.",
+      "companyOsFit": "REFERENCE ONLY for explicit-env precedence and incomplete-initialization fail-fast patterns. Keep repo-local development configuration on an allowlist with path/owner checks; production managed/self-hosted profiles require versioned configuration commands, dry-run migration plans, backup/rollback and accountable evidence.",
+      "responsibilityConflict": "Repository-controlled environment files can alter instance and data/config paths without an accountable deployment action. Marker existence is not a signed or durable proof that initialization completed correctly.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/dev-runner-worktree.test.ts:1-123 (SHA-256 e6a8aff6338ef41b031ce6d0546ed90ad7d86bb55a67d9ffc0447bcfdc4ba8cf)",
+        "git history: dcac49a4fd4739ec7177b196a869aa5d1cc169d9 and ece8a51e22144df916d977f0ac98e4affe3fa48c",
+        "2026-08-19 combined focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "HIGH configuration-injection concern: a repo-local env file can set instance/home/config/context paths; tests show no key allowlist, owner/mode/symlink/path-containment or secret policy. MEDIUM lifecycle gap: seed markers are trusted by existence, and stale paths are automatically rewritten in memory without dry-run, provenance or rollback evidence. Missing cases include malicious quoting/newlines, duplicate keys, traversal, concurrent bootstrap and moved/symlinked worktrees."
+    }
+  ]
+}

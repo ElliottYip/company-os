@@ -5641,6 +5641,57 @@
       "completionRequirements": [
         "Read lines 1-655 exactly once and assess decision proposal/approval semantics, accountable human, exact action/target/digest binding, signing, expiry, concurrency/idempotency, target lifecycle, retention/audit and test quality against Company OS responsibility contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/dev-runner-snapshot",
+      "path": "server/src/__tests__/dev-runner-snapshot.test.ts",
+      "lineCount": 101,
+      "sha256": "aef3f0cdcce26f116361be0836c6e42d827b50d99f1c60857b4fc44b76c4df22",
+      "linkedEvidence": {
+        "history": [
+          "dc585448323c17b567c403bb4600dfea1f7e8fa3 Address dev runner snapshot review feedback",
+          "8f25ba63816be065c5240bf81906ab7197c46712 Add dev runner snapshot race regression test"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 101 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Four small tests inject filesystem races to ensure disappearing files/directories and ENOENT/ENOTDIR signatures do not crash the development watcher, while deletions appear in snapshot diffs.",
+        "The dependency-injected filesystem makes race regression deterministic and is a useful test technique. The signature appears metadata-based (example 1:1), but content hashing, same-size/mtime changes, symlinks, permission errors and very large trees are not tested here.",
+        "This is development hot-reload infrastructure rather than Company OS domain/runtime ownership. It does not address production deployment reconciliation, signed artifacts, rollback or execution-node attestation.",
+        "Focused combined Vitest passed 9/9; this file contributes 4 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-101 exactly once and assess dev-runner snapshot consistency, file watching/races, process lifecycle, error recovery, security and relevance to Company OS development/deployment profiles."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/dev-runner-worktree",
+      "path": "server/src/__tests__/dev-runner-worktree.test.ts",
+      "lineCount": 123,
+      "sha256": "e6a8aff6338ef41b031ce6d0546ed90ad7d86bb55a67d9ffc0447bcfdc4ba8cf",
+      "linkedEvidence": {
+        "history": [
+          "dcac49a4fd4739ec7177b196a869aa5d1cc169d9 feat(workspaces): defer isolated setup until runtime start (#10653)",
+          "ece8a51e22144df916d977f0ac98e4affe3fa48c [codex] Bundle local branch fixes from PAP-10032 (#6604)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 123 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five tests cover seed-pending/complete markers, linked-worktree detection, repo-local env loading with explicit-env precedence, stale path repair and fail-fast missing initialization.",
+        "Explicit process env winning over file values is a useful precedence rule, and failing fast for an uninitialized linked worktree reduces accidental use of shared state. Marker and .git detection rely on file existence/shape rather than authenticated lifecycle state.",
+        "A repo-local file injects PAPERCLIP_HOME/CONFIG/CONTEXT and other process configuration. Tests do not cover malicious keys/values, path traversal, symlink/owner/mode, quoting/newlines, allowlisting, duplicate keys or secrets; a checked-out repository is therefore a configuration trust boundary.",
+        "Automatic migrated-path repair is convenient but based on inferred local locations with no dry-run/evidence. This remains developer tooling, not a safe production self-hosted migration mechanism.",
+        "Focused combined Vitest passed 9/9; this file contributes 5 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-123 exactly once and assess worktree environment injection, path/instance isolation, deferred setup, command safety, cleanup and relevance to Company OS local execution-node profiles."
+      ]
     }
   ]
 }
