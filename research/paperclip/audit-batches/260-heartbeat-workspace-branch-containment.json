@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-workspace-branch-containment",
+      "auditStatus": "COMPLETE",
+      "function": "A 1,208-line real-Git plus embedded-PostgreSQL integration suite for rejecting projectless isolated worktrees, containing recorded-versus-actual branch divergence at realize/restore/finalize boundaries, and optionally reconciling provably forward-only changes.",
+      "dependencyDirection": "Heartbeat execution crosses Git process calls, Project/workspace policy, persisted ExecutionWorkspace, Runs/wakeups, multiple related Issues, recovery actions/comments, workspace operations, activity records and adapter context; instance feature flags govern isolated workspaces and auto-forward reconciliation.",
+      "keyDataModels": "Project execution-workspace policy; ProjectWorkspace and ExecutionWorkspace recorded branch/path; Issue workspace binding and execution locks; versioned workspace_incoherence fingerprint; expected/actual refs and HEAD SHAs, cleanliness and ancestry verdict; source-scoped RecoveryAction and WorkspaceOperation.",
+      "lifecycle": "Fail before Run creation when a git-worktree request lacks a Project; validate branch identity on fresh reuse, persisted restore and post-adapter finalization; block only the source Issue, release related execution locks, create one fingerprinted recovery action and notice on unsafe divergence; when enabled, accept only clean forward ancestry, reconcile the durable workspace record, record an operation/activity and resolve a matching recovery action.",
+      "testAssessment": "Real Git fixtures and database assertions provide strong end-to-end evidence across pre-dispatch and post-execution call sites, SHA provenance, divergent-versus-forward ancestry, sibling scoping and recovery linkage. Weaknesses include a 1,208-line fixture, duplicate stable-stringify/fingerprint logic in test, absolute paths inside fingerprints, English copy assertions, no concurrent branch mutation/race, remote/submodule/LFS/symlink cases, rollback after partial reconciliation, authorization of the feature flag, or proof that all sibling lock releases and recovery writes are atomic.",
+      "designRationale": "Never let an Agent continue in a worktree whose durable branch identity no longer matches Git reality; permit automatic repair only when Git proves the actual branch is a clean forward continuation of the recorded branch.",
+      "companyOsProblem": "Company OS local execution needs tamper-evident workspace provenance and containment so evidence/results cannot be attributed to the wrong code or data snapshot.",
+      "companyOsFit": "ADAPT the multi-boundary validation, canonical provenance digest, fail-closed divergence and forward-only proof. Define a WorkspaceAttestation through Connector/ExecutionWorkspacePort using repository-relative opaque identity, commit/tree digest, cleanliness and lease epoch; exclude absolute paths. Any durable branch adoption must be an explicit risk-classified ActionReceipt bound to accountable human/approval or a narrowly pre-approved policy, with transactional recovery/outbox semantics.",
+      "responsibilityConflict": "Paperclip assigns recovery ownership/wake policy to an Agent and can automatically mutate Git/workspace identity under a global flag without proving who authorized the exact branch adoption. Absolute worktree paths leak host topology, and sibling execution locks are cleared through cross-aggregate effects without a visible atomic responsibility receipt.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-workspace-branch-containment.test.ts:1-1208",
+        "47aef634e555604cdaea8cd824375ad93a3dbce7 Add branch incoherence containment (#9131)",
+        "bb87047fe65ed0ccfc9e6f6ea4bc6ab886ecd716 Add auto-forward execution workspace branch reconciliation (#9172)",
+        "88bf71b84e089d235b2aed625e1f36630466053b Reject projectless isolated git worktree tasks (#9231)",
+        "4d898aa7af0fe90288fcd865d35711017d9d29d3 Add execution-workspace branch guard to wake prompt (#9319)"
+      ]
+    }
+  ]
+}
