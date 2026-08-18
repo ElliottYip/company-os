@@ -3645,9 +3645,9 @@
       "sha256": "98b1a08f7ac661c47bd0b24d409be8f21f0be0557286158cb19097bb06216a89",
       "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
       "auditStatus": "IN_PROGRESS",
-      "completedRanges": [{ "start": 1, "end": 1000 }],
+      "completedRanges": [{ "start": 1, "end": 1200 }],
       "sourceReadComplete": false,
-      "nextLine": 1001,
+      "nextLine": 1201,
       "notes": [
         "Lines 1-100 are import surface only. The service directly couples filesystem and hashing, Drizzle/database tables, adapter-utils preference persistence and a very broad shared Skill/API type vocabulary; this is already a high-responsibility orchestration module rather than a narrow domain service.",
         "The earlier attempt to display lines 1-250 was truncated by the tool and is not counted as reviewed evidence; lines are credited only as the smaller ranges become fully visible.",
@@ -3659,7 +3659,9 @@
         "Lines 601-700 derive canonical keys from flexible frontmatter/metadata and source identity, then classify inventory files by directory/extension. Local and URL identities embed a 10-hex locator hash, tying identity to machine paths or URLs and allowing theoretical collisions; script detection is extension/list based and omits executables without recognized suffixes, shebang/content analysis and several executable ecosystems.",
         "Lines 701-800 derive trust entirely from inventory classification, wrap GitHub fetches, resolve default branches/commits and parse/normalize remote URLs. HTTPS and credential/query/fragment rejection are good; remote error messages include full URLs, branch fallback silently assumes main, and parsing accepts arbitrary hostnames as GitHub-shaped pending later checks. Trust remains file-type risk classification, not publisher/content/integrity trust.",
         "Lines 801-900 pin symbolic refs, tokenize a narrow npx skills add syntax without executing it, and canonicalize registry/key imports to GitHub. The parser intentionally ignores most command tokens, which is safer than shelling out, but quote handling is simplistic and warnings remain unused in this segment. Skills.sh is treated as discovery provenance while GitHub becomes the fetched source.",
-        "Lines 901-1000 enforce HTTPS for explicit schemes, detect generic Git-like sources, locate bundled roots through several runtime-relative candidates and start deriving source provenance from frontmatter metadata. Generic repository detection accepts any HTTPS host/path as a Git repo; provenance fields are accepted from untrusted skill metadata and require later verification before they can be authoritative."
+        "Lines 901-1000 enforce HTTPS for explicit schemes, detect generic Git-like sources, locate bundled roots through several runtime-relative candidates and start deriving source provenance from frontmatter metadata. Generic repository detection accepts any HTTPS host/path as a Git repo; provenance fields are accepted from untrusted skill metadata and require later verification before they can be authoritative.",
+        "Lines 1001-1100 finish URL/catalog provenance derivation, parse inline package Skills, assign every co-located file under each Skill directory to its inventory and recursively walk local directories while skipping only .git and node_modules. Inline inventory contains path/kind but no size/digest here; recursive traversal has no visible depth/file-count/byte limit and follows directory entries based on Dirent classification, requiring later symlink and containment checks.",
+        "Lines 1101-1200 implement lexical plus realpath containment, reject symlinks along the selected path and recursively in admitted trees, require a regular SKILL.md, and produce sanitized user-facing scan failures. This is careful workspace escape prevention. Remaining concerns include TOCTOU between validation/read, hard links/mount aliases, unbounded traversal, and error strings embedding absolute local paths before the sanitized scan wrapper."
       ],
       "completionRequirements": ["Read lines 1-6956 exactly once and trace all local/remote/catalog/generated Skill inputs, path and archive safety, parsing/inventory/digests, database lifecycle/version/collision/merge, policy/identity/approval, Agent runtime sync/test/install/update/remove, secrets/network/process boundaries, audit/evidence, concurrency/rollback, performance and Company OS fit against completed tests."]
     }
