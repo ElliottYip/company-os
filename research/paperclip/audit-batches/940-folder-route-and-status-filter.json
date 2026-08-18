@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/folders-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Express regression test proving the static folder-item move route is selected before the parameterized folder reorder route.",
+      "dependencyDirection": "A board-authenticated HTTP request enters the folder router with mocked services; route matching must dispatch item movement to folderService.moveItem rather than moveFolder.",
+      "keyDataModels": "Company ID, folder kind, item UUID, optional folder UUID and board actor context.",
+      "lifecycle": "POST /companies/:companyId/folders/items/move is validated, dispatched once to moveItem and must never reach the later /folders/:folderId/move handler.",
+      "testAssessment": "The regression precisely catches an Express route-order collision and verifies the service call shape. It does not assert Company-access denial, invalid payloads, activity evidence, service failures, missing targets, response error codes, other actor types or transaction behavior.",
+      "designRationale": "Keep a literal path segment from being captured as the :folderId parameter of a broader route declared nearby.",
+      "companyOsProblem": "Company OS needs deterministic API routing for organization, evidence and FDE asset hierarchies, with tests that prevent broad identifiers from shadowing command endpoints.",
+      "companyOsFit": "ADAPT the route-specificity regression pattern, while preferring resource-oriented command paths or a generated router that rejects ambiguous templates and adding authorization, validation and audit assertions.",
+      "responsibilityConflict": "The mocked test proves dispatch only; it cannot prove that the caller had authority, that the moved item belongs to the Company, or that the resulting activity record forms responsibility evidence.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/folders-routes.test.ts:1-74",
+        "52aea902 feat: organize skills with nested folders and My Skills (#9633)"
+      ]
+    },
+    {
+      "id": "application:server/routes/folders",
+      "auditStatus": "COMPLETE",
+      "function": "Company-scoped HTTP CRUD and move routes for routine/skill folders, including creation of a signed-in board user's personal skill folder and activity logging after mutations.",
+      "dependencyDirection": "Express and shared Zod validators feed assertCompanyAccess and folderService; successful mutations then call the activity logger and serialize service results.",
+      "keyDataModels": "Folder ID/company/kind/parent/name/slug/path/depth/color/position/system key, routine or company-skill item reference, board/agent actor metadata and activity details.",
+      "lifecycle": "List parses a required kind; create/update/move/delete validate Company access, mutate through the service, log an activity after success and return JSON; ensure-my additionally requires a signed-in board user.",
+      "testAssessment": "The route file centralizes Company access checks and validates mutation bodies, but its dedicated test covers only the route-order regression. There is no route-level evidence here for access denial, cross-Company IDs, personal-folder ownership, logger failure after mutation, idempotency, concurrency, stable structured errors or rollback consistency.",
+      "designRationale": "Expose a thin authenticated HTTP layer over a folder service and retain actor-attributed operational history without putting hierarchy logic in Express handlers.",
+      "companyOsProblem": "FDE templates, evidence collections and office configuration may need tenant-scoped hierarchies and human-owned private areas without allowing transport code to become the policy owner.",
+      "companyOsFit": "ADAPT the thin route/service split, Company guard and post-mutation actor context. Company OS must use stable error codes, policy-scoped Principal authorization, idempotent commands and an atomic outbox/event transaction so state cannot commit while its responsibility evidence fails.",
+      "responsibilityConflict": "Mutation and activity logging are separate awaits with no visible atomicity; an activity logger failure can follow a committed mutation. Generic actor metadata also lacks the Work, responsibility contract, approval, data scope and evidence bindings required for consequential changes.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/routes/folders.ts:1-168",
+        "packages/shared/src/validators/folder.ts:1-73",
+        "b07b2994 feat: stamp responsible users on activity logs (#9731)",
+        "52aea902 feat: organize skills with nested folders and My Skills (#9633)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/parse-status-filter",
+      "auditStatus": "COMPLETE",
+      "function": "Pure unit tests normalizing absent, scalar, CSV, repeated and mixed Express query values into a trimmed Issue-status list.",
+      "dependencyDirection": "Untrusted query-parser output enters parseStatusFilter; normalized strings are later consumed by Company-scoped Drizzle equality or IN predicates in Issue list/count services.",
+      "keyDataModels": "Undefined, string or readonly string-array query values and an ordered string-array status filter.",
+      "lifecycle": "The helper copies arrays, splits each string on commas, trims values, removes empties and silently drops non-string entries before database predicates are constructed.",
+      "testAssessment": "Coverage is strong for legitimate Express encodings, whitespace, empty entries, immutability and hostile non-string array members. Missing are status-enum validation, duplicate removal, maximum item/value length, encoded delimiter behavior, unsupported object shapes, stable validation errors and proof that every service caller applies identical authorization and pagination.",
+      "designRationale": "Repair a production 500 caused by assuming repeated query keys were always one string while preserving existing CSV clients.",
+      "companyOsProblem": "Company OS Web, mobile and FDE clients need one bounded, schema-defined multi-value filter contract that never crashes on transport-specific query shapes.",
+      "companyOsFit": "ADAPT the normalization cases into a shared API-boundary primitive, then validate against canonical status codes, deduplicate, cap cardinality and length, and return a stable INVALID_ARGUMENT code with structured parameters rather than silently accepting unknown states.",
+      "responsibilityConflict": "Permissive arbitrary status strings can hide operator mistakes by returning an empty view, which is unsafe for approval and exception queues; filters must never be mistaken for authorization or evidence-access policy.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/parse-status-filter.test.ts:1-83",
+        "server/src/services/issues.ts:526-535",
+        "server/src/services/issues.ts:4132-4135",
+        "server/src/services/issues.ts:5669-5719",
+        "e1e2cef9 fix(issues): accept array-form ?status= filter and stop crashing on repeated keys (#4628) (#4890)"
+      ]
+    }
+  ]
+}
