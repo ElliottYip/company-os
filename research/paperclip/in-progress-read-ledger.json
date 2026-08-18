@@ -373,6 +373,61 @@
         ],
         "focusedTest": "Route behavior is exercised inside tool-access-service.test.ts; 7 pure tests passed locally and 118 database-backed cases were skipped because no test database was provisioned."
       }
+    },
+    {
+      "id": "evidence:package:db/schema/tool_access",
+      "path": "packages/db/src/schema/tool_access.ts",
+      "lineCount": 869,
+      "sha256": "f4f7f3d21290b4d77e16458cfc6b5a898ad84ff250f52665913a252134f5f751",
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 450,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The schema is a large shared aggregate spanning applications, connections, credentials, grants, installs, OAuth state, catalogs, profiles, gateways, invocation, approval, audit, and runtime concerns; it imports many core-company tables directly and is not a narrow connector-owned store.",
+            "The deliberate NO ACTION application foreign key is a strong database-level delete/create race defense and is documented with the exact PostgreSQL locking rationale.",
+            "Connection grants use a composite company/connection foreign key plus subject-kind checks and partial unique indexes, providing strong tenant and default-grant invariants.",
+            "Connection installs use only a single-column connection foreign key; the separate companyId is not tied to the connection's company by a composite foreign key, so cross-tenant inconsistency is structurally possible if service checks fail.",
+            "OAuth states persist the PKCE verifier in plaintext and bind actor/session/subject metadata, but issueId and interactionId have no foreign keys in this schema range.",
+            "Catalog risk defaults to read and profile defaults to deny; the combination is safer at the profile layer but still preserves the fail-open classification concern for installed read defaults.",
+            "Profile entries and bindings carry companyId without composite foreign keys tying the referenced profile/application/connection/catalog rows to the same company, leaving tenant consistency mostly to services.",
+            "Gateway bearer tokens are stored hashed and model finite expiry/override evidence, a reusable credential design, but the default TTL is 90 days and policy correctness depends on later checks and migrations."
+          ]
+        },
+        {
+          "start": 451,
+          "end": 869,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Gateway sessions bind agent, run, optional issue/gateway/token metadata and store only token hashes with expiry/revocation, which is a useful runtime-proof model; cross-company consistency of those foreign keys is again not enforced by composite constraints.",
+            "Invocation rows capture redacted argument/result summaries, hashes, catalog snapshots, policy evidence, credential/header summaries, run/issue/agent context, and structured error code plus message, making them a strong audit substrate but not a complete Company OS responsibility contract.",
+            "Invocation idempotency is unique only when a non-null key is supplied; the schema neither requires keys for mutations nor ties them to connection/tool/agent/run scope, so semantics depend on caller discipline.",
+            "Action requests bind a canonical argument hash and optional signed arguments to an invocation and approval, but have no unique one-request-per-invocation constraint, no status check, and no database-enforced company consistency with the invocation/approval/issue.",
+            "Connection token issuance records requested and issued scope, responsible user, token hash, outcome, error code and a database-bounded 1-900 second ttlSeconds; the bound applies only to the recorded integer and does not constrain the external token's explicit expiresAt.",
+            "Tool and gateway rate-limit tables have useful unique window keys, but this schema alone does not provide an atomic consume invariant; the previously observed count-then-act broker path can still race.",
+            "The generic tool-access audit table retains structured reason codes and actor ids but lacks first-class accountable-human, run, issue, approval, evidence, and responsibility-contract links; richer tool_call_events partly duplicate it instead of one canonical responsibility ledger.",
+            "The complete schema confirms strong redaction, token-hash, idempotency-option, and audit ideas alongside widespread service-enforced tenant invariants and duplicated operational/audit models; migrations and schema tests remain required before a final database judgment."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-869 exactly once against the pinned SHA-256.",
+        "Map authority, lifecycle, tenant, foreign-key, uniqueness, lease, and audit invariants to the Tool Access service and route findings.",
+        "Review every linked first-party migration and focused schema/migration test before this evidence can contribute to package:db completion."
+      ],
+      "linkedEvidence": {
+        "history": [
+          "0a511ed1 feat(apps): support multiple provider connections (#11060)",
+          "cac3c0fa feat(connections): add runtime subjects and grants (#9982)",
+          "7e00f671 feat(connections): add v3 schema core (#9958)",
+          "1de0a3bb feat(mcp) [split 2/8]: add governed access contracts (#9557)"
+        ],
+        "remaining": "All linked first-party SQL migrations and schema/migration tests remain unread evidence; package:db stays incomplete."
+      }
     }
   ]
 }
