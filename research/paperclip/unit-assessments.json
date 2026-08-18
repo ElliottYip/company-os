@@ -8942,18 +8942,31 @@
     },
     {
       "id": "application:server/__tests__/skills-catalog-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mocked filesystem/module/fetch unit suite for generated catalog manifest caching/reload, published package layout resolution, binary preview rejection, commit-pinned GitHub file reads and optional-catalog failure handling.",
+      "dependencyDirection": "Tests import the catalog service with mocked Node filesystem, module resolution, logger and global fetch. They exercise service parsing/resolution logic without package-manager authenticity, real filesystem/symlink behavior or network transport.",
+      "keyDataModels": "Catalog manifest schema/package metadata; CatalogSkill trust/compatibility/role/source; per-file size/hash and aggregate contentHash; local bundled path; GitHub owner/repo/ref/full commit/path; unavailable-manifest error/cache.",
+      "lifecycle": "Resolve package/manifest; synchronously load and cache; reload after stat change; resolve Skill; reject asset preview; read bundled or commit-pinned remote file; return an empty catalog and log once when optional package resolution fails.",
+      "testAssessment": "All 235 lines were read once and focused Vitest passed all 5 tests. The suite usefully locks package-layout compatibility, manifest refresh, binary handling, commit-pinned remote URLs and log-storm prevention. It does not test schema rejection, duplicate/ambiguous IDs, path traversal/symlinks, file or aggregate quotas, redirect/private-network policy, timeouts, response/content type, post-read hash/size mismatch, signatures/publisher/license, cache race/same-stat replacement or recovery from negative cache.",
+      "designRationale": "Treat the bundled catalog as an optional generated package that can be consumed from source or published layouts, cached cheaply and queried uniformly across local and pinned GitHub-backed entries.",
+      "companyOsProblem": "Company OS needs a capability-package registry whose availability, publisher/license/signature, immutable manifest, byte integrity, trust classification and admission health are explicit and independently deployable in cloud or offline enterprise profiles.",
+      "companyOsFit": "ADAPT the commit-pinned remote resolution, binary-safe distinction, package-layout compatibility tests and bounded warning behavior. Add signed/SPDX manifests, authenticated publisher identity, post-fetch digest/size verification, network/path/redirect quotas, structured health state, refresh/recovery and immutable admission receipts before use.",
+      "responsibilityConflict": "The manifest/test model carries technical trust and compatibility but no publisher/license/legal responsibility, approved package policy or accountable-human admission evidence. Fail-soft empty results can hide a governance subsystem outage from ordinary callers.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/skills-catalog-service.test.ts:1-235",
+        "full source SHA-256 90d8158247b982748857f6d5a113bf322950a01d0cc1bd2eed3cbab2059139d9",
+        "5e086cb828dac27a3fd16bf22e71597382458c85 fix(server): resolve published skills catalog package root and fallback (#8327)",
+        "focused Vitest: 1 file passed, 5 tests passed"
+      ],
+      "securityFindings": [
+        "No tests require publisher identity, signature, SPDX/license or authenticated manifest provenance.",
+        "Remote content is commit-pinned but the suite does not prove fetched bytes are checked against manifest size/hash.",
+        "No traversal, symlink, duplicate path/ID, file-count/byte/decompression bomb or schema-resource-limit cases are covered.",
+        "No redirect, private-network, timeout, response-size or content-type policy is tested for remote reads.",
+        "Permanent negative caching plus empty-list fallback can mask a catalog integrity/availability failure and block recovery.",
+        "Cache reload coverage does not test same mtime/size replacement, concurrent readers or partially written manifests."
+      ]
     },
     {
       "id": "application:server/__tests__/smoke-lab",

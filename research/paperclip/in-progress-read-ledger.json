@@ -3906,11 +3906,16 @@
       "lineCount": 235,
       "sha256": "90d8158247b982748857f6d5a113bf322950a01d0cc1bd2eed3cbab2059139d9",
       "linkedEvidence": { "history": ["5e086cb828dac27a3fd16bf22e71597382458c85 fix(server): resolve published skills catalog package root and fallback (#8327)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 235 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 define a fully mocked filesystem/module-resolution suite with catalog fixtures containing schema/package version, generated time, per-file and aggregate hashes, trust/compatibility and roles. No publisher identity, signature or license fields are in the manifest fixture. The file hashes use inconsistent-looking fixture values (sha256:slug rather than real digests), so tests may validate plumbing rather than cryptographic correctness. Cache invalidation appears based on manifest mtime/size, to be traced.",
+        "Lines 101-200 verify synchronous cache reload on mtime change, package metadata refresh, binary preview rejection, commit-pinned raw GitHub URL construction and published package resolution. Pinning remote reads to a full commit is strong. The remote test does not assert response/content length, redirect/host policy, content type or hash verification after fetch; the expected per-file hash happens to match content but the assertion only checks returned content. Cache validity based on filesystem timestamp may miss same-mtime replacement unless size/hash is also compared in implementation.",
+        "Lines 201-235 complete published-layout assertions and test a fail-soft unavailable catalog that caches package-resolution failure and logs once. This avoids log storms and permits optional catalog absence, but a permanent process-lifetime negative cache can prevent recovery after installation/mount repair; returning an empty list is indistinguishable to callers from a legitimately empty catalog unless health/diagnostics expose the unavailable state.",
+        "Focused Vitest completed in the sandbox: 1 file and all 5 tests passed."
+      ],
       "completionRequirements": ["Read lines 1-235 exactly once, run the focused suite, and assess catalog root/package resolution, manifest and per-file integrity, traversal/symlink handling, package/publisher/license provenance, fallback behavior, ambiguity, caching/version drift, failure modes and Company OS capability-package supply-chain fit."]
     }
   ]
