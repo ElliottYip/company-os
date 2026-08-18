@@ -148,7 +148,18 @@
         "Source lines 1-7771 are fully covered without overlap or gaps against the pinned SHA-256.",
         "Review the corresponding first-party tests and relevant file history.",
         "Only then write the canonical unit assessment and change auditStatus to COMPLETE."
-      ]
+      ],
+      "linkedEvidence": {
+        "history": [
+          "0a511ed1 feat(apps): support multiple provider connections (#11060)",
+          "03cfad7c feat(apps): connect Notion through MCP OAuth (#11009)",
+          "cac3c0fa feat(connections): add runtime subjects and grants (#9982)",
+          "d23fbf8a feat(connections): add AppDefinition Wave 1 catalog (#9981)",
+          "7e00f671 feat(connections): add v3 schema core (#9958)",
+          "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+        ],
+        "focusedTest": "2026-08-18: direct repository Vitest run passed 7 pure tests and skipped 118 database-backed tests; the full database-backed suite remains required before canonical completion."
+      }
     },
     {
       "id": "application:server/__tests__/tool-access-service",
@@ -268,7 +279,100 @@
         "Test lines 1-6996 are fully covered without overlap or gaps against the pinned SHA-256.",
         "Map covered and missing cases to the fully read implementation findings.",
         "Only then contribute test-quality evidence to the canonical unit assessment."
-      ]
+      ],
+      "linkedEvidence": {
+        "history": [
+          "0a511ed1 feat(apps): support multiple provider connections (#11060)",
+          "03cfad7c feat(apps): connect Notion through MCP OAuth (#11009)",
+          "cac3c0fa feat(connections): add runtime subjects and grants (#9982)",
+          "d23fbf8a feat(connections): add AppDefinition Wave 1 catalog (#9981)",
+          "7e00f671 feat(connections): add v3 schema core (#9958)",
+          "79473082 fix(codex): classify refresh auth failures (#9598)",
+          "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+        ],
+        "focusedTest": "2026-08-18: direct repository Vitest run passed 7 pure tests and skipped 118 database-backed tests; this is partial execution evidence, not a full pass."
+      }
+    },
+    {
+      "id": "application:server/routes/tool-access",
+      "path": "server/src/routes/tool-access.ts",
+      "lineCount": 1378,
+      "sha256": "97281fe747f1f2562e8c9e8a937637b030132c29768529d5bcdcde4827464e49",
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 400,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Route construction centralizes board and company access checks, but emits English message text for most permission and OAuth failures; only selected agent-token failures and gateway errors expose stable codes.",
+            "Local-implicit actors and instance admins bypass fine-grained tool permissions, while gallery mutations use a broader active non-viewer membership check instead of tools:admin; this creates two distinct authorization regimes for related tool mutations.",
+            "Agent token minting binds the authenticated agent, company, active run id, and optional run-id header before delegating to the broker, which is a useful anti-confusion boundary.",
+            "Agent-initiated OAuth accepts a requested subjectUserId at the route and relies on the service to bind it to the run's responsible human; the route itself does not verify current membership or responsibility-contract authority.",
+            "OAuth callback peeks state before company authorization, then delegates exact actor/session binding to the service; activity logging occurs after callback completion, so logging failure can make a successful credential mutation appear failed.",
+            "Connect and finish activity records use the real board user when present, but fall back to a synthetic board id; later ranges must verify consistent actor attribution across all mutation routes.",
+            "No conclusion is assigned yet because lines 401-1378, route tests, error middleware, and linked schema constraints remain to be examined."
+          ]
+        },
+        {
+          "start": 401,
+          "end": 800,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Read endpoints consistently hide cross-company connection existence with a 404 before asserting company access, a reusable tenant-enumeration defense.",
+            "Mutation authorization is inconsistent: application/connection CRUD and examples require only active non-viewer membership, grant/install operations require tools:manage_connections, and smoke execution requires only company access despite producing policy and audit activity.",
+            "Installation grant input is manually shape-checked rather than passed through a shared schema; credentialSecretRefs elements and providerTenant fields are not validated at the route boundary in this range.",
+            "Board test calls require tool-use or connection-management permission plus tasks:assign authorization for the selected agent, and preserve the real user id separately from the selected agent, which is a strong responsibility pattern.",
+            "The list of testable agents performs an access decision and gateway projection serially for every company agent, creating an unbounded N+1 route path without pagination.",
+            "Connection updates persist before one or multiple activity writes; partial logging failure can leave the mutation committed, and multi-event logging itself is not atomic.",
+            "Install synchronization delegates the known stale-binding revocation issue to the service and then records only the resulting install targets, so route-level logging does not compensate for missing authority revocation."
+          ]
+        },
+        {
+          "start": 801,
+          "end": 1200,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Health checks, reconnects, catalog refreshes, profile CRUD, bindings, and policy mutations all use the broad non-viewer mutation gate rather than purpose-specific tools permissions, while runtime-slot controls correctly require tools:manage_runtime.",
+            "The activity limit accepts any finite number, including negative or very large values, and relies on the service/database layer to normalize or reject it; the route exposes no shared schema or bounded contract.",
+            "Profile and policy mutations generally commit before activity logging and several service operations are already known to be nontransactional, so the route layer adds another independent partial-failure boundary.",
+            "New-tool review activity includes exact reviewed catalog entry ids, useful for evidence, but the underlying review/watermark transaction and TOCTOU defects remain unresolved.",
+            "Effective-profile and run-decision projections verify company access but do not visibly verify that the requested agent or run belongs to that company at the route; correctness depends entirely on service filtering.",
+            "Runtime-health and other company-wide projections remain unpaginated, matching the service-level full-table aggregation concerns.",
+            "Profile-binding routes pass a company-scoped profile lookup before mutation, a sound confused-deputy guard for ids embedded in company URLs."
+          ]
+        },
+        {
+          "start": 1201,
+          "end": 1378,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Trust-rule and policy mutations continue to use the broad non-viewer gate, although they change future execution authority and should have a dedicated permission comparable to runtime and stdio administration.",
+            "Local stdio command templates are correctly restricted to tools:admin and record command plus aggregate argument/environment/tool counts without logging secret values.",
+            "MCP JSON preview and policy-test endpoints require only board company access, so viewers can trigger preview activity and can request durable policy audit writes; this conflicts with the otherwise read-only viewer model.",
+            "The policy-test endpoint trusts a validated writeAuditEvent flag and writes an audit under service-defined semantics, but the route supplies no explicit actor context in the shown call.",
+            "Across the complete route, error contracts mix structured gateway reasonCode responses with many English-only error strings, which is insufficient as a stable independent Web or localization contract.",
+            "Across the complete route, the strongest reusable patterns are tenant-hiding reads, run-token binding, exact agent-assignment checks for test execution, schema validation on most mutations, and dedicated high-risk runtime/stdio permissions; the dominant weakness is inconsistent permission granularity for authority-changing operations."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-1378 exactly once against the pinned SHA-256.",
+        "Verify route authentication, permission checks, actor attribution, input validation, and error contracts against the service findings.",
+        "Link focused route tests, database constraints, and commit history before contributing a canonical assessment."
+      ],
+      "linkedEvidence": {
+        "history": [
+          "0a511ed1 feat(apps): support multiple provider connections (#11060)",
+          "cac3c0fa feat(connections): add runtime subjects and grants (#9982)",
+          "d23fbf8a feat(connections): add AppDefinition Wave 1 catalog (#9981)",
+          "79473082 fix(codex): classify refresh auth failures (#9598)",
+          "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+        ],
+        "focusedTest": "Route behavior is exercised inside tool-access-service.test.ts; 7 pure tests passed locally and 118 database-backed cases were skipped because no test database was provisioned."
+      }
     }
   ]
 }
