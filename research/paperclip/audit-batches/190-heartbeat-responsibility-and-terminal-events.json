@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-responsible-user-invariant",
+      "auditStatus": "COMPLETE",
+      "function": "PostgreSQL integration tests for resolving a human responsibleUserId before a Heartbeat run is created.",
+      "dependencyDirection": "Exercises heartbeatService against Company, membership, Issue, Agent, wakeup and Run persistence while mocking only adapter execution.",
+      "keyDataModels": "Company.defaultResponsibleUserId, Issue.responsibleUserId, HeartbeatRun.responsibleUserId, triggering actor identity and active Company membership.",
+      "lifecycle": "Issue-scoped automation uses the Issue responsible user; manual runs use the triggering user; ownerless system work falls back to the Company default; Issue creator is never treated as implicit responsibility; unresolved responsibility rejects with structured code before Run creation.",
+      "testAssessment": "Six focused integration cases validate the precedence and fail-closed behavior, including the critical no-Run side-effect assertion. Coverage does not prove the selected human is active, authorized for the exact action/data contract, notified, or accountable through approval and result acceptance.",
+      "designRationale": "Separate authorship and triggering from ongoing human responsibility, and prevent autonomous execution when no responsible human can be named.",
+      "companyOsProblem": "This is directly aligned with Company OS: every executable Work must bind an accountable human before dispatch, independent of Agent vendor or requester.",
+      "companyOsFit": "ADAPT as a stronger ResponsibilityContract resolution gate. Require active human principal, organization/role authority, execution/data/approval contract digests and a versioned resolution receipt; keep the stable responsible_user_unresolved-style code and no-side-effect failure invariant.",
+      "responsibilityConflict": "Paperclip records a responsible user but does not establish that person's acceptance, authority scope or liability for a particular Work action. A Company-level default is too broad to become silent authorization.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-responsible-user-invariant.test.ts:1-325",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-run-lease-release-terminalization",
+      "auditStatus": "COMPLETE",
+      "function": "PostgreSQL tests for eliminating phantom queued/running Runs when an execution-environment lease is released.",
+      "dependencyDirection": "Calls a Heartbeat service terminalization helper over Run, Issue and Run-event tables; telemetry is mocked.",
+      "keyDataModels": "HeartbeatRun status/errorCode, Issue terminal status, execution lease release and HeartbeatRunEvent.",
+      "lifecycle": "On lease release, preserve an already terminal Run; otherwise mark it succeeded when its Issue is done, or interrupted with lease_released_before_terminal when the Issue remains non-terminal.",
+      "testAssessment": "Five compact database cases cover queued/running, terminal/non-terminal Issue and already-terminal Run branches. They do not cover concurrent terminal writes, lease fencing tokens, multi-instance ownership, event publication atomicity or whether Issue done has valid result/evidence.",
+      "designRationale": "The execution lease is a liveness boundary: releasing it must also close any stale live Run projection.",
+      "companyOsProblem": "Company OS needs fenced execution leases and deterministic terminalization so Agent Boss never sees a phantom live Agent after a Connector or local node releases capacity.",
+      "companyOsFit": "ADAPT the invariant with a transactional Run ledger and outbox. Do not infer success from Work status alone: success requires the matching execution attempt, result/evidence receipt and responsibility contract; otherwise terminalize as interrupted or inconsistent for review.",
+      "responsibilityConflict": "Paperclip can convert a Run to succeeded solely because the Issue is done, even if another actor changed the Issue or evidence belongs to a different attempt.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-run-lease-release-terminalization.test.ts:1-212",
+        "01b51dc0e5e660cce77750a1ad9e511f1ec13b02 fix(runtime): stop Live badge and Working shimmer after task teardown (#10985)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-run-log",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for sanitizing and bounding persisted Run-log chunks.",
+      "dependencyDirection": "Pure Heartbeat helper tests with no database, adapter or UI dependencies.",
+      "keyDataModels": "Untrusted Run-log text, inline base64 image bodies, credential-shaped values and bounded persisted chunks.",
+      "lifecycle": "Redact inline image data and known credential shapes, then preserve a bounded head/tail representation with a truncation marker.",
+      "testAssessment": "Three focused cases cover base64 image omission, truncation and several Paperclip credential shapes. Missing are streaming boundary splits, Unicode/encoding, adversarial near-matches, nested structured payloads, provider-specific secrets, property/fuzz tests and proof that sanitization precedes every sink.",
+      "designRationale": "Reduce secret and binary-data retention while keeping enough terminal context for diagnosis.",
+      "companyOsProblem": "Company OS evidence and audit storage must be secret-safe, bounded and explicit about lossy transformation across every Connector.",
+      "companyOsFit": "ADAPT as one defense inside a typed EvidenceSanitizationPort, with Connector-declared redaction rules, streaming-safe scanners, structured-field allowlists, content hashes, omission receipts and fuzz/fixture compatibility tests. Raw private reasoning must never enter the control plane.",
+      "responsibilityConflict": "Regex-style post-processing of opaque logs cannot prove that production data, credentials or private reasoning were never persisted, and the truncation marker is brand/display text rather than a stable receipt code.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-run-log.test.ts:1-43",
+        "79473082762097e0622260229d52cad80ec2b3ec fix(codex): classify refresh auth failures (#9598)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-run-status-payload",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for including canonical final assistant text in terminal realtime Run-status events while suppressing partial text for active Runs.",
+      "dependencyDirection": "Pure event-payload helper tests over a Run-like object.",
+      "keyDataModels": "Run status, resultJson.summary and live status event payload finalText.",
+      "lifecycle": "Expose summary as finalText only after terminalization; emit null for a running attempt.",
+      "testAssessment": "Two cases capture the core disclosure boundary but only test succeeded versus running. They omit failed/interrupted/cancelled outcomes, schema/version compatibility, result provenance, redaction, authorization and large/malformed payloads.",
+      "designRationale": "Prevent partial model output from masquerading as a final answer while still delivering a terminal reply over realtime events.",
+      "companyOsProblem": "Company OS needs versioned progress and result events that clearly distinguish provisional output from accepted evidence-backed results.",
+      "companyOsFit": "REFERENCE the provisional-versus-final event distinction. Company OS should publish stable versioned ResultReceipt projections with attempt, evidence, authority and acceptance IDs rather than an untyped finalText field.",
+      "responsibilityConflict": "Terminal status alone does not mean the text is approved, attributable, safe to disclose or accepted by the accountable human.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-run-status-payload.test.ts:1-42",
+        "caae2778f0737c3690b1b8680735503c69e9058b fix: deliver plugin agent session turns and replies (#10137)"
+      ]
+    }
+  ]
+}
