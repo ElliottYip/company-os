@@ -4845,18 +4845,25 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-retry-scheduling",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "A 2,309-line embedded-PostgreSQL integration suite for durable bounded retries across provider quota, transient infrastructure failure, max-turn continuation, accepted-interaction continuation and workspace-validation recovery.",
+      "dependencyDirection": "The tests enter through heartbeatService scheduling/promotion methods and span HeartbeatRun, WakeupRequest, Issue execution locks, Agent state, budgets, dependencies, execution workspaces, environment leases, activity events and registered server adapters.",
+      "keyDataModels": "Scheduled HeartbeatRun with retryOfRunId/attempt/reason/dueAt; WakeupRequest idempotency key and coalescedCount; Issue executionRunId/agent lock; structured error family and retryNotBefore; workspace validation fingerprint/quarantine metadata; budget and blocker state.",
+      "lifecycle": "Classify a terminal failure; persist a scheduled_retry Run and paired wakeup; honor provider reset hints or bounded delay; coalesce duplicate schedules; promote only when due and still owning the exact Issue lock; cancel on reassignment, human handoff, terminal/non-progress status, budget or dependency change; cap retries and record exhaustion; quarantine only the currently attached, source-owned failed workspace.",
+      "testAssessment": "Broad, high-value integration coverage includes concurrency coalescing, stale/foreign workspace defense, promotion-time revalidation, provider quota, cause-specific caps, restart-durable records, reassignment/human-handoff cancellation, budget/dependency suppression and structured error hints. Weaknesses are the 2,309-line cross-domain fixture, repeated seed boilerplate, English message assertions, adapter-specific Codex fallback modes inside general scheduling tests, and no demonstrated atomicity/failure-injection across Run, wakeup, Issue, workspace and activity writes.",
+      "designRationale": "Retries are durable control-plane work, not in-memory timers. Scheduling and execution are separated so the system can survive restart and revalidate mutable ownership immediately before promotion.",
+      "companyOsProblem": "Company OS needs vendor-neutral, restart-safe retry orchestration that never repeats a high-risk action under stale human ownership, approval, data authorization or Connector identity.",
+      "companyOsFit": "ADAPT the durable schedule/promote split, cause-specific policy, provider retry hint, unique idempotency key and promotion-time fencing. Implement a RetryPolicyPort over a transactional ExecutionAttempt/Outbox boundary; bind retries to Work, Connector capability/version, accountable human, authority/data/approval contract digests and previous evidence/result. Vendor fallback ladders belong inside Connector adapters, not the application scheduler.",
+      "responsibilityConflict": "Paperclip revalidates Issue assignment and execution lock but not the exact responsible human acceptance, authority scope, approval receipt or data contract. Scheduling also mutates several aggregates and audit projections without proving one atomic commit or compensating protocol; automatic workspace quarantine is operationally destructive and needs an explicit action capability/risk policy in Company OS.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-retry-scheduling.test.ts:1-2309",
+        "09d0678840336094e70734ba429bc16bb1fd0940 Harden heartbeat scheduling and runtime controls (#4223)",
+        "6916e30f8ed440a0948255c96dc11251a098fb8d Cancel stale retries when issue ownership changes (#4445)",
+        "555391fed77d3a10949b859dc3e84f108dc052d6 Run restart recovery, workspace self-heal, quota-aware retries, failed-run metrics (#9183)",
+        "cc81eefb6047d8eaf57faf785f421c03dc97073c Make plan-approval continuations durable after failed wakes (#9331)",
+        "665408c6d015d5e8b9fe2758541d28cb3debaa8b Classify mid-turn harness crashes as retriable infrastructure (#10210)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-run-lease-release-terminalization",
