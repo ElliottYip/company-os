@@ -4568,10 +4568,11 @@
         { "path": "cli/src/commands/client/goal.ts", "completedRanges": [{ "start": 1, "end": 177 }] },
         { "path": "cli/src/commands/client/issue.ts", "completedRanges": [{ "start": 1, "end": 1450 }] },
         { "path": "cli/src/commands/client/plugin.ts", "completedRanges": [{ "start": 1, "end": 998 }] },
-        { "path": "cli/src/commands/client/project.ts", "completedRanges": [{ "start": 1, "end": 228 }] }
+        { "path": "cli/src/commands/client/project.ts", "completedRanges": [{ "start": 1, "end": 228 }] },
+        { "path": "cli/src/commands/client/prompt.ts", "completedRanges": [{ "start": 1, "end": 276 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/prompt.ts",
+      "nextFile": "cli/src/commands/client/routine-api.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4675,7 +4676,11 @@
         "project.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. Shared schemas validate create/update, and the model usefully connects multiple Goals, execution-workspace policy, environment binding, archive state and target date.",
         "Project leadership is represented only by leadAgentId, with no accountable human, department/role, responsibility contract or escalation owner. Generic status/archive mutation has no transition reason, approval/evidence or optimistic revision. Create has no idempotency key; delete needs only --yes and no dependency/retention digest.",
         "env JSON and execution-workspace-policy JSON travel in argv and may expose credentials or sensitive local configuration through shell history/process listings. The surface does not distinguish Secret references from ordinary environment data or bind data authorization/export rules to the execution workspace.",
-        "ID-or-shortname get/update/delete makes Company context optional and delegates ambiguity/tenant safety to the server. List is unpaginated, and parseNullableString returns non-null values untrimmed. Decision: REFERENCE ONLY for Project-to-Goal/workspace concepts; Company OS must own mixed human/Agent responsibility and Secret/Data contracts. Next file is prompt.ts."
+        "ID-or-shortname get/update/delete makes Company context optional and delegates ambiguity/tenant safety to the server. List is unpaginated, and parseNullableString returns non-null values untrimmed. Decision: REFERENCE ONLY for Project-to-Goal/workspace concepts; Company OS must own mixed human/Agent responsibility and Secret/Data contracts.",
+        "prompt.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It resolves an Agent identity, creates an Issue or comment, and optionally wakes the Agent, offering a compact human/Agent work handoff pattern.",
+        "The legacy agent-prompt command requires the Agent API key as a positional argv argument, exposing it in process listings and shell history; prompt text also travels in argv. --api-key-env accepts an arbitrary environment-variable name and feeds the broader configurable-origin credential path already proven in common/context.",
+        "Actor identity is reduced to agent or board. An Agent credential can create and self-assign work, while board authentication is not an accountable human principal. Neither path binds proposer, responsible human, objective, permission/data contract, expected evidence/result, risk level or approval policy into the created execution contract.",
+        "Issue/comment creation and Agent wakeup are separate non-transactional POSTs with no idempotency key. Wake failure leaves accepted work dormant; retry can duplicate work/comments/wakeups. Comment mode does not locally prove the Issue belongs to the selected Agent/Company. Decision: REJECT the credential interface and REIMPLEMENT handoff as one durable responsibility-bound command/outbox; retain only Agent-reference verification as a useful guard. Next file is routine-api.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
