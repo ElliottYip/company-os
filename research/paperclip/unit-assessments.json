@@ -3979,18 +3979,31 @@
     },
     {
       "id": "application:server/__tests__/company-skills-import-authz-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Real middleware, route, embedded-Postgres and filesystem integration test for a responsible-user-bound Agent JWT importing a local Skill from the managed company root and producing durable activity.",
+      "dependencyDirection": "The test crosses local JWT creation, actor middleware, Express route, database-backed membership/permission/run lookup, managed filesystem boundary, Company Skill import and activity persistence. It does not mock the security path but covers only one successful Agent scenario.",
+      "keyDataModels": "Company; User and Agent principals/memberships; principal permission grant; running heartbeat with responsibleUserId; Agent JWT bound to company/run/responsible User; managed local Skill; CompanySkill and ActivityLog.",
+      "lifecycle": "Seed responsible User and Agent; grant skills:create; create responsible-user-bound running heartbeat; issue local Agent JWT; import a managed-root Skill through authenticated HTTP; persist Skill and Agent/run-attributed activity; clean database and filesystem state.",
+      "testAssessment": "The 212-line test is a valuable vertical security slice because it uses real auth middleware, database relations, route/service behavior, filesystem containment and activity storage. Focused Vitest was run outside the sandbox with an isolated home, but embedded PostgreSQL failed after five attempts and the only test was skipped, so 0 runtime tests passed. Coverage is limited to a positive path: no missing/expired/mismatched JWT/run/responsible User, revoked grant, cross-company ID/path, inactive membership, policy denial, symlink/TOCTOU, repeated import, partial persistence or secret-redaction cases.",
+      "designRationale": "Prove that an Agent operating under a live run with an associated responsible User and explicit Skill grant can cross the authenticated route and managed workspace boundary while remaining attributable in activity history.",
+      "companyOsProblem": "Company OS needs Connector-neutral execution identity bound to an accountable human and responsibility contract, with short-lived secret-free attestation, exact scoped authority, package/action digest, data/egress policy, approval when required and an immutable evidence/result receipt.",
+      "companyOsFit": "ADAPT this vertical-test shape—real identity middleware, memberships, scoped grant, live run, managed-root containment and durable activity—against Company OS ports and data model. Expand it to exhaustive deny/revocation/cross-tenant/replay/failure cases and assert a complete responsibility chain; do not reuse Paperclip JWT/database/routes or role semantics.",
+      "responsibilityConflict": "The run records a responsible User but the persisted activity assertion drops that identity. The skills:create grant is company-wide, grantedByUserId is null, and no responsibility contract, exact action/package digest, approval, data scope, evidence or outcome binds the import.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skills-import-authz-routes.test.ts:1-212",
+        "full source SHA-256 ee06d80af7b2862619e393a41a4c05abf41e7080899559c9683b72ffbd0334e4",
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)",
+        "focused Vitest: 1 file and 1 test skipped after embedded PostgreSQL failed to start five times; 0 passed"
+      ],
+      "securityFindings": [
+        "Only the successful path is tested; authentication, membership, grant, run and responsible-User mismatch/expiry/revocation cases are absent.",
+        "The permission grant has null grantor and null scope even though it authorizes executable capability import.",
+        "The Agent is assigned role=ceo, making the fixture less representative of bounded worker authority.",
+        "The activity record omits responsibleUserId, permission/policy/approval evidence, source and result hashes and imported entity IDs.",
+        "No cross-company resource/path, symlink/TOCTOU, replay/idempotency, partial transaction or secret-redaction cases are present.",
+        "Process-global JWT secret/home/instance environment is mutated, requiring sequential isolation and limiting parallel-test robustness."
+      ]
     },
     {
       "id": "application:server/__tests__/company-skills-routes",

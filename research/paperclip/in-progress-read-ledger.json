@@ -3858,11 +3858,16 @@
       "lineCount": 212,
       "sha256": "ee06d80af7b2862619e393a41a4c05abf41e7080899559c9683b72ffbd0334e4",
       "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 212 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 set up a sequential real Express/auth middleware/route plus embedded-Postgres integration suite over Users, memberships, Agents, permission grants, runs, Skills and activity logs. It uses a fixed test JWT secret and isolated managed Skill root, with explicit cleanup and an approved-root fixture comment. This is stronger than the mocked route suite for real tenant/auth persistence, though runtime proof remains conditional on embedded PostgreSQL and the test owns process-global environment mutation.",
+        "Lines 101-200 seed a company, Agent, responsible User, memberships, direct skills:create grant and running heartbeat, then authenticate a local Agent JWT bound to company/run/responsibleUser and import only from the managed company root. This is close to Company OS responsibility needs, but the permission grant itself has grantedByUserId:null, the Agent is role=ceo, scope is null/company-wide, and no responsibility contract or approval binds the exact package/action digest. The test begins verifying durable activity after successful import.",
+        "Lines 201-212 assert the durable activity identifies company, Agent actor/ID, run, import action and company entity. The activity does not assert responsibleUserId, permission grant, source/package hash, imported Skill IDs, policy decision, approval, evidence/result or outcome digest, so the responsibility chain is incomplete despite the JWT/run carrying a responsible User.",
+        "Focused Vitest was run outside the sandbox with an isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the single test was skipped; 0 tests executed and no runtime pass is claimed."
+      ],
       "completionRequirements": ["Read lines 1-212 exactly once, run the focused route suite in an isolated Paperclip home, and assess import authentication, company membership/tenant isolation, User-versus-Agent authorization semantics, fail-open/fail-closed policy composition, stable denials, secret-safe parsing, activity evidence and Company OS responsibility fit."]
     }
   ]
