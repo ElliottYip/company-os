@@ -7594,6 +7594,45 @@
       "completionRequirements": [
         "Read lines 1-2087 exactly once and assess execution-policy normalization, stage transitions, typed human/Agent participants, decision authority, review caps/escalation, cancellation, liveness, idempotency and exact-action/evidence binding against Company OS responsibility contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-execution-policy-routes",
+      "path": "server/src/__tests__/issue-execution-policy-routes.test.ts",
+      "lineCount": 1073,
+      "sha256": "0dfdfc87058c4e0ab59abe0486a645454de629a3c3430d0b7ee6a3965e1cf5c0",
+      "linkedEvidence": { "history": [
+        "814cb336766cabd7c5a08fb82849d93e35a7ddaf Agents resolve review confirmations (#10939)",
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 contain cross-Issue Agent side effects (#10837)",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "ddbcf53e312db83bfd60b1201abf1764d6acaeb6 refuse Agent delegation cycles (#10658)",
+        "0f12721ee99e7dd2a0412d61316ad77ee58ecfb1 board cancellation during review (#10655)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 prevent invalid Agent assignments/runs (#7663)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions/controls (#6386)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "68f69975a41d615a0162c149fdceb23068d18292 control-plane safety/identifiers (#5292)",
+        "57229d0f24961061927078a8a3b2fad2b8990778 monitor liveness controls (#4988)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-1073"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-540 build a heavily mocked HTTP harness and require an Agent-created in_review transition to have a pending confirmation, typed execution participant or monitor. An explicitly designated confirmation must belong to the same Agent Run and its binding plus Issue update/activity share a transaction; however, merely having a pending confirmation also permits transition without recording which interaction authorized it.",
+        "Lines 541-1073 allow board repair transitions without a review path, board cancellation that clears review state, eligible reviewer replacement, non-participant reassignment that dissolves review, manual monitor triggering and child monitors. Monitor scheduling is restricted to board or parent assignee Agent, spoofed scheduledBy is normalized, and a token-bearing externalRef is redacted/omitted from activity.",
+        "The routes demonstrate useful same-Run confirmation binding, rollback coupling, stable error codes, typed participant paths and anti-spoof monitor attribution. Gaps include unbound pending-confirmation authority, board bypass without a superseding decision, decisionless review dissolution, no asserted active-review Run cancellation, no durable event/outbox proof and extensive mocks around identity, database locking and cross-Issue controls.",
+        "Sandboxed focused Vitest failed 17/17 only because Supertest could not listen on 0.0.0.0 (EPERM). Approved unsandboxed focused Vitest passed 17/17 but emitted two swallowed reusable-sandbox lease cleanup failures for terminal Issues because the test environment driver was undefined; terminal transition success therefore does not prove execution-resource cleanup."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1073 exactly once and assess HTTP authorization, actor/Run validation, assignment eligibility/cycles, confirmation resolution, persistence/audit atomicity, cross-Issue containment and error contracts around execution policy transitions."
+      ]
     }
   ]
 }

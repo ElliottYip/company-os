@@ -7923,18 +7923,24 @@
     },
     {
       "id": "application:server/__tests__/issue-execution-policy-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route tests for entering review through confirmation/policy/monitor paths, same-Run confirmation binding, board repair/cancellation/reassignment, and monitored child work.",
+      "dependencyDirection": "Vitest/Supertest -> Issue routes -> mocked access, Issue, interaction, approval, heartbeat and activity services with a transaction stub; environment lease cleanup reaches partially real services as a best-effort terminal side effect.",
+      "keyDataModels": "Board or Agent actor and Run; pending request_confirmation interaction and optional reviewInteractionId; execution policy/state; Issue assignment/status; monitor schedule/owner/externalRef; activity receipt and transaction identity.",
+      "lifecycle": "Authorize Issue mutation -> validate an Agent review path -> optionally bind a same-Agent/same-Run confirmation -> transition/update and activity in one transaction -> manage monitor/assignment effects; board actors may repair, cancel or dissolve review; terminal transitions attempt best-effort execution-environment cleanup.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 17/17; sandboxed 0/17 due solely to prohibited TCP listen. Tests cover stable error details, explicit confirmation ownership, rollback transaction identity, board/Agent distinctions and monitor anti-spoofing. They heavily mock identity/storage and omit concurrent confirmation consumption, idempotency, exact approval content, superseding decisions, active Run cancellation, outbox delivery and cross-tenant matrices. Two passing cases emitted swallowed sandbox-lease cleanup failures.",
+      "designRationale": "Require Agents to point to a real review mechanism before parking work in_review, bind higher-confidence confirmations to their originating Run, and keep operator repair/monitor controls usable.",
+      "companyOsProblem": "Company OS must convert proposed Agent actions into explicit review/approval requests whose exact subject, evidence, responsible human, Run and eventual decision are atomically linked, while cleanup and Connector control remain observable and recoverable.",
+      "companyOsFit": "ADAPT stable disposition codes, typed review paths, explicit same-Run interaction binding, transactional update/audit, monitor actor normalization and secret omission. Require every transition to reference a consumed ReviewRequest with action/evidence digest; replace board repair/cancel/reassign shortcuts with immutable superseding decisions; add CAS/idempotency, durable outbox, active Run cancellation handshake and cleanup reconciliation receipts.",
+      "responsibilityConflict": "The existence of an unbound pending confirmation can authorize in_review without recording which request applied; board actors can bypass or dissolve the review chain without a decision; terminal success can coexist with failed sandbox cleanup. These paths prevent an exact answer to who authorized what and whether execution actually stopped.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-execution-policy-routes.test.ts:1-1073 (SHA-256 0dfdfc87058c4e0ab59abe0486a645454de629a3c3430d0b7ee6a3965e1cf5c0)",
+        "git history: 16 commits from 814cb336766cabd7c5a08fb82849d93e35a7ddaf through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/17 passed; all failed because TCP listen was prohibited (EPERM)",
+        "2026-08-19 approved unsandboxed focused Vitest: 17/17 passed with two swallowed sandbox-lease cleanup warnings"
+      ],
+      "securityFindings": "CRITICAL responsibility bypass: board repair/cancel/reassignment can bypass or erase review without a superseding decision. HIGH confirmation ambiguity: an unbound pending interaction is sufficient and is absent from the activity receipt. HIGH execution-stop gap: review cancellation does not assert active Run cancellation and terminal cleanup failures are swallowed. HIGH approval-binding gap: confirmation prompt is not bound to exact action/data/evidence/result digests. MEDIUM concurrency gap: no one-time consumption/CAS test. MEDIUM durability gap: no outbox or cleanup reconciliation proof. POSITIVE: explicit same-Run binding, stable codes, transaction identity and monitor anti-spoofing are strong primitives."
     },
     {
       "id": "application:server/__tests__/issue-feedback-routes",
