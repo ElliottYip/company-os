@@ -4567,10 +4567,11 @@
         { "path": "cli/src/commands/client/feedback.ts", "completedRanges": [{ "start": 1, "end": 676 }] },
         { "path": "cli/src/commands/client/goal.ts", "completedRanges": [{ "start": 1, "end": 177 }] },
         { "path": "cli/src/commands/client/issue.ts", "completedRanges": [{ "start": 1, "end": 1450 }] },
-        { "path": "cli/src/commands/client/plugin.ts", "completedRanges": [{ "start": 1, "end": 998 }] }
+        { "path": "cli/src/commands/client/plugin.ts", "completedRanges": [{ "start": 1, "end": 998 }] },
+        { "path": "cli/src/commands/client/project.ts", "completedRanges": [{ "start": 1, "end": 228 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/project.ts",
+      "nextFile": "cli/src/commands/client/prompt.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4670,7 +4671,11 @@
         "The breadth identifies important platform needs Company OS must cover: contribution discovery, tools, background jobs/runs, webhooks, configuration tests, health/logs, bidirectional bridge channels and local execution/data bindings. But almost every mutating surface is a generic JSON POST/PUT without typed capability grants, action digest, idempotency, human approval, data contract, evidence or stable error code at the CLI boundary.",
         "Upgrade is a generic sub-POST with no explicit target version, provenance/signature verification, compatibility preview, migration/rollback plan or confirmation. Config retrieval prints raw results and may expose sensitive values unless the service redacts them. Local-folder binding/validation gives plugins a path to customer-local data without a visible authorization contract, export policy or no-follow scope here.",
         "Bridge streaming uses a separate raw fetch with Bearer credentials, writes plugin-controlled bytes directly to stdout and has no framed schema, terminal sanitization, maximum byte/rate budget, structured reconnect cursor or Run ID propagation. Server error bodies are surfaced verbatim. parseOptionalInt again accepts numeric prefixes such as 10junk.",
-        "Decision: NARROW. Preserve these platform capability categories as audit requirements, but do not copy the command or mirrored types. The Plugin SDK/runtime/service/Web units must prove isolation, manifest permissions, Secret boundaries and migration guarantees before any implementation is eligible for selective legal reuse; Company OS should converge them under its Connector/Data/Evidence contracts. Next file is project.ts."
+        "Decision: NARROW. Preserve these platform capability categories as audit requirements, but do not copy the command or mirrored types. The Plugin SDK/runtime/service/Web units must prove isolation, manifest permissions, Secret boundaries and migration guarantees before any implementation is eligible for selective legal reuse; Company OS should converge them under its Connector/Data/Evidence contracts.",
+        "project.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. Shared schemas validate create/update, and the model usefully connects multiple Goals, execution-workspace policy, environment binding, archive state and target date.",
+        "Project leadership is represented only by leadAgentId, with no accountable human, department/role, responsibility contract or escalation owner. Generic status/archive mutation has no transition reason, approval/evidence or optimistic revision. Create has no idempotency key; delete needs only --yes and no dependency/retention digest.",
+        "env JSON and execution-workspace-policy JSON travel in argv and may expose credentials or sensitive local configuration through shell history/process listings. The surface does not distinguish Secret references from ordinary environment data or bind data authorization/export rules to the execution workspace.",
+        "ID-or-shortname get/update/delete makes Company context optional and delegates ambiguity/tenant safety to the server. List is unpaginated, and parseNullableString returns non-null values untrimmed. Decision: REFERENCE ONLY for Project-to-Goal/workspace concepts; Company OS must own mixed human/Agent responsibility and Secret/Data contracts. Next file is prompt.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
