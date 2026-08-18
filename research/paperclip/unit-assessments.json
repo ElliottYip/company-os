@@ -5607,18 +5607,23 @@
     },
     {
       "id": "application:server/__tests__/environment-selection-route-guards",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP regression tests for validating selected execution-environment driver/provider types when project policies or issue workspace settings are created or updated.",
+      "dependencyDirection": "Supertest/Vitest -> project and issue routes -> mocked environment/project/issue/company/Secret/reference/activity services; no access-policy engine, database, Connector runtime or node registry is exercised.",
+      "keyDataModels": "Project executionWorkspacePolicy, issue executionWorkspaceSettings, environment ID/company/driver/provider and implicit board actor.",
+      "lifecycle": "Receive project/issue mutation -> load selected environment -> allow recognized sandbox/plugin provider or reject unsupported/internal fake driver -> persist project/issue settings through mocked service.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 7/7. It provides narrow regression coverage for allowed driver names but does not prove exact success status, tenant grants, actor authority, environment readiness, capability/data/Secret compatibility, revalidation, concurrency or structured policy evidence.",
+      "designRationale": "Prevent user-visible project/issue configuration from persisting environment types that the run path cannot execute, while allowing plugin-backed sandbox providers.",
+      "companyOsProblem": "Company OS must decide whether a specific human/Agent Work may use a particular tenant-granted execution profile with defined capabilities, Secrets, data scope, risk and accountable owner.",
+      "companyOsFit": "REIMPLEMENT as an ExecutionProfileAuthorization decision: bind tenant/deployment grant, actor and accountable human, Work/project, Connector capabilities/version, environment health, Secret/data contracts, risk/approval and policy digest. Persist structured allow/deny evidence and revalidate immutable inputs at Run admission.",
+      "responsibilityConflict": "Driver acceptance says nothing about who is responsible, which data/tools may leave the company, who approved elevated actions or whether the environment remains authorized at execution time. It cannot support the Company OS responsibility chain.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/environment-selection-route-guards.test.ts:1-399 (SHA-256 a3330c7bf0e446f37179ed565e61726ad83c2a3fdd00e97573ac893f18b7da8d)",
+        "git history: b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81, b7545823bec49b4a73c3813d8fb634f68fc84b48, d734bd43d1c79cc6e33f5a12bffacdb158021a50, 0808b388eec817fda3a798b5ec46e391a463d522, 1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34",
+        "2026-08-19 approved unsandboxed focused Vitest: 7/7 passed"
+      ],
+      "securityFindings": "CRITICAL authorization-model gap: selection is driver/provider validation without tenant grant, actor, Work, data, Secret, risk or approval binding. HIGH readiness gap: status/plugin health/capability/version and runtime attestation are untested. HIGH TOCTOU gap: no execution-time revalidation after environment mutation/deletion. MEDIUM test weakness: accepted cases only assert not-422 and rejections depend on English strings."
     },
     {
       "id": "application:server/__tests__/environment-service",

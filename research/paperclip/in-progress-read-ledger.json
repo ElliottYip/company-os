@@ -6179,6 +6179,36 @@
       "completionRequirements": [
         "Read lines 1-299 exactly once and assess runtime driver interface substitutability, acquire/release/execute/realize contracts, metadata/Secret boundaries, failure semantics and test quality against the Company OS Connector execution contract."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-selection-route-guards",
+      "path": "server/src/__tests__/environment-selection-route-guards.test.ts",
+      "lineCount": 399,
+      "sha256": "a3330c7bf0e446f37179ed565e61726ad83c2a3fdd00e97573ac893f18b7da8d",
+      "linkedEvidence": {
+        "history": [
+          "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)",
+          "b7545823bec49b4a73c3813d8fb634f68fc84b48 [codex] Add document annotations and comments (#6733)",
+          "d734bd43d1c79cc6e33f5a12bffacdb158021a50 [codex] Roll up May 17 branch changes (#6210)",
+          "0808b388eec817fda3a798b5ec46e391a463d522 [codex] Add source-scoped recovery actions (#5599)",
+          "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 [codex] Split backend control-plane QoL slice (#4700)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 399 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Seven HTTP tests cover project create/update and issue create/update accepting plugin-backed sandbox selections, while issue create rejects unknown drivers and the built-in fake provider.",
+        "The fixture environment carries companyId but the assertions do not test company/project/issue/environment scope agreement. Paperclip environments are currently instance-scoped, yet no explicit grant from the shared environment to the requesting company is required or represented.",
+        "Selection validation is a driver/provider allowlist only. It does not check environment active/disabled status, provider/plugin readiness/version, declared execution/stream/pause/cancel capabilities, Secret/data availability, execution mode, workspace compatibility or node health/attestation.",
+        "All requests use an implicit local board actor. Agent actors, non-admin members, cross-company users, archived projects/issues and accountable-human ownership are absent, so this unit cannot prove that selecting an environment is authorized rather than merely syntactically acceptable.",
+        "Accepted cases assert only status is not 422 plus service invocation, which could miss unrelated 4xx/5xx responses. Rejections rely on English error substrings and do not assert stable codes or an auditable denial reason.",
+        "Approved unsandboxed focused Vitest passed 7/7. All services are mocked; no persistence race, environment deletion/change after selection, revalidation at execution time or immutable policy decision evidence is covered."
+      ],
+      "completionRequirements": [
+        "Read lines 1-399 exactly once and assess environment-selection authorization across Agent/project/issue/workspace routes, actor and tenant scope, existence/status validation, privilege escalation, error consistency and test quality against Company OS execution-profile grants."
+      ]
     }
   ]
 }
