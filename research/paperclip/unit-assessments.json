@@ -2399,18 +2399,25 @@
     },
     {
       "id": "application:server/__tests__/agent-skills-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Broad route tests for listing and synchronizing Agent Skills across Adapters, canonical references and version pins, Secret-safe configuration resolution, direct Agent creation, managed instruction materialization and hire-approval snapshots.",
+      "dependencyDirection": "Agent routes authorize and resolve Agent/Company state, use CompanySkillService to canonicalize catalog/version selections, resolve Adapter config through SecretService with user Secrets skipped, delegate list/sync to the active Adapter, persist desired state in Agent adapterConfig and compose AgentService/Instructions/Approval/Issue-link/telemetry flows for creation and hiring.",
+      "keyDataModels": "Agent/Adapter config, desired Skill key or key+versionId, add/remove/replace merge mode, runtime Skill entry/snapshot, beta-Skill setting, user/company Secret context, managed InstructionBundle, pending hire Agent, Approval requestedConfigurationSnapshot and source Issue link.",
+      "lifecycle": "List and sync inspect catalog entries without materializing missing runtime files and skip user-specific Secrets while retaining actor context for company-Secret audit. Sync requires explicit add/remove/replace, canonicalizes references, optionally accepts version pins behind an instance beta flag and persists desired state before Adapter sync. Unknown legacy keys remain visible/removable but are excluded from runtime version selection. Direct creation and hires canonicalize Skills, reject legacy prompt fields, materialize managed default/custom instructions and include desired Skills/config in hire approval payloads.",
+      "testAssessment": "Thirty substantial route cases cover Claude/Codex/ACPX/persistent modes, Secret-resolution options, explicit merge semantics, version gating, stale references, canonicalization, direct create, telemetry role, instruction defaults, legacy rejection and hire approval/source preservation. Missing are real authorization denials and cross-tenant checks, concurrent sync/version conflicts, rollback when persistence or Adapter sync fails, Skill digest/signature/license/trust, permission/tool/data manifests, risk-based approval on post-hire changes, uninstall/rollback, Adapter partial failure, audit events, runtime attestation, malicious Skill content and proof that stale/unverified entries cannot execute through another path. Heavy mocks leave database/filesystem/plugin boundaries unverified.",
+      "designRationale": "Separate desired Skill selection from runtime representation, avoid side effects during reads, preserve backward-compatible stale choices, make destructive replacement explicit and keep Agent creation/approval configuration stable across multiple Adapter ecosystems.",
+      "companyOsProblem": "Company OS needs a vendor-neutral Skill/Plugin lifecycle where desired capability, reviewed package version, Connector materialization and effective runtime authority are distinct, auditable states tied to accountable humans and data policy.",
+      "companyOsFit": "ADAPT side-effect-free list/sync preparation, explicit add/remove/replace, canonical references, unresolved-item quarantine, Secret-safe audit context and approval configuration snapshots. Move desired Skills out of vendor Adapter config into a versioned CapabilityAssignment aggregate. Admission requires immutable package digest, provenance/license/signature, declared tools/permissions/data egress and compatibility; activation and every authority-expanding change require risk-based human approval and atomic publish/rollback. Connector-specific materialization remains an Adapter responsibility.",
+      "responsibilityConflict": "A permitted sync can change effective Agent instructions/tools without a new ResponsibilityContract or approval, and a global beta flag substitutes for package trust. versionId is not shown to bind immutable content or license. Stale/unverified keys persist alongside valid desired state. Default instruction bundles encode Paperclip-specific API and operational doctrine, so copying them would couple Company OS behavior and responsibility semantics to a competitor's control plane.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-skills-routes.test.ts:1-1295",
+        "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+        "c3bd0c5d50a45cda3c9fddbb0f80a85f44a84242 feat(skills): add beta releases for the core Paperclip skill (#10228)",
+        "e41ba306c59c4313bad0979ef5d318ec6d5807c5 feat(secrets): thread audit actor into skip-user-secret skills routes (#10124)",
+        "1413729a06ced8f8b38e044ada644c605a0cf25e Build the Skills Store (#7990)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 [codex] Add agent permissions and controls plan (#6386)"
+      ]
     },
     {
       "id": "application:server/__tests__/agent-test-environment-routes",
