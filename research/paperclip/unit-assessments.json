@@ -5784,18 +5784,22 @@
     },
     {
       "id": "application:server/__tests__/invite-accept-existing-member",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mocked HTTP route tests for human invitation acceptance when the actor is already a member, when a direct invite grants immediate membership, and when a consumed invite is replayed to repair missing access.",
+      "dependencyDirection": "A session board actor and bearer invite enter access routes; database transaction-like stubs create/update join and invite records, while access services materialize membership and grants and activity logging records approval/replay events.",
+      "keyDataModels": "Invite role/inviter/accepted state, actor user/memberships, human join request/request IP/email/status/approver, membership role/status, principal permission grants and join.approved/join.request_replayed activities.",
+      "lifecycle": "An existing active member receives 409 without invite mutation. A new invitee creates a pending request that is immediately approved under the stored inviter identity, consumes the invite, creates active owner membership and grants, and logs approval. The same user may later replay an already accepted invite, update the pending request, auto-approve it again and recreate operator access without re-consuming the invite.",
+      "testAssessment": "Tests cover non-consumption for current members, immediate grant materialization, inviter attribution, activity events and a self-healing replay path. Persistence and access services are heavily mocked; missing are real transaction/concurrency/one-time constraints, verified email and intended-recipient binding, inviter current authority, revoked/disabled identities, membership-removal reason, invite expiry/revocation during replay, grant rollback, role drift, cross-Company attacks, separation of duties and proof that replay cannot undo an administrator's revocation.",
+      "designRationale": "Treat a direct human invitation as pre-approval and make onboarding resilient when membership materialization was lost or partially completed.",
+      "companyOsProblem": "Company OS needs idempotent human admission that can recover partial writes without allowing an old invitation to override later access revocation or fabricate approval history.",
+      "companyOsFit": "Reject the replay semantics. Use one atomic admission command with an idempotency key and durable acceptance receipt; exact retries may finish the same incomplete transaction only while its intent is active. Once membership was created, any later removal/revocation is a newer authority version and cannot be repaired by the old invite. Reinstatement requires a new qualified-human approval and responsibility event. Validate inviter authority at issuance and record that issuance decision separately from system materialization.",
+      "responsibilityConflict": "A consumed invite can recreate membership and grants after they disappear, potentially reversing an intentional offboarding. The new approval is attributed to the original inviter without proving that person remains authorized or performed the replay decision. An owner role and powerful grants are thus materialized from stale bearer authority, breaking chronological responsibility and revocation precedence.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/invite-accept-existing-member.test.ts:1-439",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "ece8a51e [codex] Bundle local branch fixes from PAP-10032 (#6604)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-accept-gateway-defaults",
@@ -5945,18 +5949,25 @@
     },
     {
       "id": "application:server/__tests__/invite-onboarding-text",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Snapshot-like assertions for a generated English plain-text Agent onboarding document containing invite endpoints, vendor adapter selection, network candidates, credentials, troubleshooting and runtime installation instructions.",
+      "dependencyDirection": "Request-derived origin, host network interfaces, deployment settings, raw invite token/defaults and hardcoded Paperclip/OpenClaw/Hermes knowledge flow into one access-route string document consumed directly by external Agents or operators.",
+      "keyDataModels": "Invite token/type/allowed joins/agentMessage, deployment mode/exposure/bind host/allowed hosts, discovered LAN/tailnet/container URLs, vendor adapter names/ports/headers/API keys and fixed endpoint/instruction prose.",
+      "lifecycle": "The document advertises candidate Paperclip and gateway URLs, tells a runtime how to choose and configure an adapter, accept the invite, claim a one-time key, install skills and diagnose connectivity; optional inviter text and LAN candidates are interpolated.",
+      "testAssessment": "Tests pin extensive expected English phrases, endpoints, ports, vendor flags, token-handling warnings, inviter content and network-interface selection. They do not validate a machine-readable schema/version, escaping or prompt injection in inviter text, secret/token redaction from logs/caches, canonical trusted origin, stale vendor instructions, capability negotiation, document size, localization boundaries, signature/digest, expiry after rendering or end-to-end execution correctness.",
+      "designRationale": "Make heterogeneous external Agent onboarding self-service by giving the runtime a comprehensive copy-paste/runbook document through the same bearer invite.",
+      "companyOsProblem": "Company OS needs vendor-neutral Connector onboarding that is safe for Chinese enterprise/FDE delivery, versioned, testable and localizable without making prose or one vendor's private configuration a core contract.",
+      "companyOsFit": "Reject this monolithic text contract. Define a signed, versioned OnboardingManifest with stable codes, allowed Connector types/capability requirements, canonical endpoints, secret-handle exchange, expiry and policy digest. Connector packages own vendor instructions; Web/CLI render localized human guidance, while Agents consume the structured manifest. Treat inviter text as untrusted display content, never executable instruction.",
+      "responsibilityConflict": "The document embeds the bearer invite token, directs credential claiming and exposes host/LAN candidates, yet is not bound to a responsible operator, exact Connector configuration or signed content digest. Free-form inviter text is placed in an Agent-consumed runbook and could become unauthorized prompt instruction. Hardcoded prose can silently drift from the approved security process.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/invite-onboarding-text.test.ts:1-208",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "367d4cab Fix SSH callback URL selection for LAN and private networks (#4799)",
+        "897cc322 Improve external agent invite flow (#6183)",
+        "fd2f82ac [codex] Add built-in Hermes adapters (#8543)",
+        "d77fab6a fix(adapters/hermes-gateway): improve onboarding configuration (#8678)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-rate-limit",
