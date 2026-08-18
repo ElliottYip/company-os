@@ -3791,6 +3791,19 @@
         "Focused Vitest was run outside the sandbox with a fresh isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the single file and all 56 tests were skipped; 0 tests executed and no runtime pass is claimed."
       ],
       "completionRequirements": ["Read lines 1-3017 exactly once, run the focused suite in an isolated Paperclip home, and map coverage for import/upsert/conflicts, source/provenance/inventory, local and remote safety, versions/fork/rename/edit/delete, audit/update/reset/materialization, Agent reassignment, transactions/crash recovery, concurrency, secrets, approvals and destructive lifecycle behavior found in the completed service audit."]
+    },
+    {
+      "id": "application:server/__tests__/company-skills-catalog-service",
+      "path": "server/src/__tests__/company-skills-catalog-service.test.ts",
+      "lineCount": 529,
+      "sha256": "0888ea21aa482f8600476a8f993237d84ca0aea93326126388d7be0d0c725996",
+      "linkedEvidence": { "history": ["52aea902632fcdb9b3e689c60e3a148a2009358b feat: organize skills with nested folders and My Skills (#9633)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-529 exactly once, run the focused suite in an isolated Paperclip home, and assess catalog install/update/reset, hash/provenance/origin snapshots, local-modification holds, audit hard stops, force semantics, directory/database failure recovery, tenant boundaries, publisher/license evidence and Company OS package supply-chain fit."]
     }
   ]
 }
