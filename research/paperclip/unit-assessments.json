@@ -1240,18 +1240,32 @@
     },
     {
       "id": "application:cli/__tests__/zip-codec",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Focused portability ZIP-codec tests distinguishing root-level blob-store objects from text files and preserving arbitrary/invalid-UTF-8 bytes as base64 octet-stream entries.",
+      "dependencyDirection": "The Vitest suite imports the production CLI ZIP reader/converter and the already-audited deterministic stored-ZIP fixture builder. It exercises in-memory archives only, without filesystem extraction or full portability schema import.",
+      "keyDataModels": "Archive root path, normalized file map, UTF-8 text entries and base64 portable file entries with application/octet-stream content type; blob-store paths are exactly blobs/<single-segment> optionally under one package root.",
+      "lifecycle": "Classify archive path; decode valid UTF-8 to text; preserve known blob paths or invalid UTF-8 as base64; read a package-root ZIP and round-trip mixed text/blob/raw bytes into a portable file map.",
+      "testAssessment": "Focused Vitest passed 5/5 tests on 2026-08-19 and CLI no-emit TypeScript passed. It provides strong byte-fidelity evidence for small stored archives, Unicode text and invalid UTF-8. It omits compressed entries, traversal/absolute/collision paths, duplicate entries, symlinks, CRC corruption, encrypted/ZIP64 archives, size/ratio/depth/count limits, MIME verification and malformed central directories.",
+      "designRationale": "Avoid corrupting binary evidence or extensionless files during Company portability by using strict UTF-8 decoding and an explicit binary representation independent of filename extension.",
+      "companyOsProblem": "Company OS migration, FDE templates and evidence export/import require byte-exact, content-addressed artifacts with safe archive admission and stable provenance across cloud/local profiles.",
+      "companyOsFit": "ADAPT strict text-versus-binary conversion and byte-exact round-trip tests. Use one canonical maintained archive codec, a signed manifest with per-entry digest/size/type/purpose, streaming limits and collision-free normalized paths; evidence blobs should remain content-addressed and never rely only on their directory name for trust.",
+      "responsibilityConflict": "Byte fidelity preserves evidence content but does not establish who produced it, which Work/Run/permission/data contract it belongs to or whether its provenance and authorization survived export/import.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/zip-codec.test.ts:1-69",
+        "SHA-256 c72fd92f3c2e09ed133ef5e7c194568dcdb5fe5621b935ed1547d501cd84925c",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "2026-08-19 focused Vitest: 1 file and 5 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "No archive entry count, compressed/uncompressed size, ratio, total memory, filename length or nesting limit is tested, leaving ZIP-bomb/denial-of-service admission unproved.",
+        "Traversal, absolute paths, backslashes, Unicode normalization, case collisions, duplicate normalized names and reserved filenames are not tested.",
+        "CRC/digest mismatch, malformed headers/central directory, ZIP64, encryption, data descriptors and unsupported compression behavior are not covered.",
+        "Binary content type is always application/octet-stream in this converter; claimed/actual media type, malware scanning and safe serving policy need separate validation.",
+        "Recognizing blobs/<id> by path shape does not validate an opaque content hash or manifest membership.",
+        "The archive is fully in memory in this test; large production imports require bounded streaming and transactional staging."
+      ]
     },
     {
       "id": "application:cli/adapters/http",
