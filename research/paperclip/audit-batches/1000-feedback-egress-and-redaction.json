@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/feedback-share-client",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests fixing the default external feedback destination and verifying a full FeedbackTraceBundle is wrapped as gzip/base64 JSON with an optional bearer token before upload.",
+      "dependencyDirection": "Feedback export URL/token configuration and a trace bundle enter a fetch-based client; compressed data leaves the server for the configured or Paperclip-operated telemetry endpoint.",
+      "keyDataModels": "Trace/export/Company/Issue/adapter identifiers, capture status, envelope, run/raw/normalized traces, privacy/integrity/files, object key, gzip+base64 encoding and bearer token.",
+      "lifecycle": "With no URL configured the client posts to telemetry.paperclip.ing; with a token it serializes objectKey/exportedAt/bundle, synchronously gzips and base64-encodes the payload, then sends it as JSON.",
+      "testAssessment": "The payload decoding assertion precisely documents the transmitted envelope and destination. It does not cover consent/company sharing gates, prior redaction, HTTPS/private-address validation, token leakage, timeout/cancellation, payload limits, idempotency, retries after ambiguous success, redirects, response schema, non-2xx bodies or structured audit receipts.",
+      "designRationale": "Make user-authorized diagnostic sharing work without self-hosters configuring a backend and reduce payload size through a simple transport-neutral envelope.",
+      "companyOsProblem": "Enterprise data export must be disabled by default, destination-specific, policy-evaluated and provable even when a user asks to share diagnostics.",
+      "companyOsFit": "Reject the implicit vendor endpoint and opaque whole-bundle upload contract. Company OS tests must require an enabled DataEgressPolicy, approved destination, manifest of fields/digests, accountable consent, redaction receipt, bounded asynchronous transfer, idempotency and a durable export receipt.",
+      "responsibilityConflict": "The test proves transport shape but not that the exact exported fields were authorized. A default external destination can surprise self-hosted operators, and compression is not protection or evidence of consent.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/feedback-share-client.test.ts:1-101",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    },
+    {
+      "id": "application:server/services/feedback-share-client",
+      "auditStatus": "COMPLETE",
+      "function": "Direct HTTP uploader for feedback trace bundles using a default Paperclip telemetry endpoint, optional plaintext configuration token and gzip/base64 request envelope.",
+      "dependencyDirection": "Server config and shared FeedbackTraceBundle flow directly into global fetch; a remote JSON response supplies or overrides the returned object key.",
+      "keyDataModels": "Backend base URL/token, date-partitioned Company object key, exportedAt, entire trace bundle, encoding marker, bearer header and remote objectKey/error text.",
+      "lifecycle": "Client creation resolves a default endpoint; upload synchronously serializes/compresses the full bundle, posts it without an abort deadline, throws remote text or status on failure and accepts any nonempty response objectKey.",
+      "testAssessment": "Implementation is small and deterministic but lacks protocol/host allowlisting, private-network/redirect defense, timeout/AbortSignal, size limits/streaming, idempotency key/content digest, retry classification, response validation, stable errors and SecretRef handling. A response-lost success can be retried under a different date-derived object key after midnight.",
+      "designRationale": "Keep feedback export deployment-light and decouple server storage from the telemetry service's object layout.",
+      "companyOsProblem": "The data-exit firewall must be the sole canonical owner of outbound enterprise payloads across managed and self-hosted profiles.",
+      "companyOsFit": "REIMPLEMENT behind DataEgressPort. Default is disabled/no destination; policy resolves a registered HTTPS sink and short-lived audience secret, blocks private/redirect escapes, streams a bounded immutable manifest, uses digest-bound idempotency, enforces timeout/retry/dead-letter policy and records consent plus delivery receipt.",
+      "responsibilityConflict": "This client can transmit all bundle fields based only on caller behavior and ambient config; it has no Work/data contract, accountable approver, destination policy or field-level export proof. Remote error text may also enter local failure logs as untrusted content.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/feedback-share-client.ts:1-59",
+        "server/src/config.ts:151-158",
+        "server/src/services/feedback.ts:1774-1878",
+        "server/src/services/feedback.ts:1928-2090",
+        "server/src/index.ts:647-653",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    },
+    {
+      "id": "application:server/services/feedback-redaction",
+      "auditStatus": "COMPLETE",
+      "function": "Deterministic recursive feedback sanitizer for current-user paths, credential-shaped structures/free text, PEM/JWT/provider keys, connection strings, email/phone PII, truncation metadata and SHA-256 digests.",
+      "dependencyDirection": "Arbitrary feedback strings/JSON-like values enter shared structural redaction plus module-local regex patterns; sanitized values, transformation summary and deterministic hashes feed the feedback export bundle.",
+      "keyDataModels": "Redacted/truncated/omitted field sets, notes/counts, regex kind/replacement, deterministic_feedback_v2 summary, canonicalized value and SHA-256 digest.",
+      "lifecycle": "Text first removes current-user data then applies ordered secret/PII patterns and truncates; records pass through generic secret-field sanitization and recurse; summaries sort field/count metadata; stableStringify sorts object keys before hashing.",
+      "testAssessment": "The design records what was transformed and applies defense-in-depth across structured and free text. In this unit there is no dedicated exhaustive test file; coverage is indirect through large feedback-service tests. Regex detection is necessarily incomplete, recursion/arrays are unbounded and cyclic values fail. Non-plain objects such as Buffer pass through, and the custom canonicalizer has undefined/sparse-array/non-finite-number collision or serialization-parity risks.",
+      "designRationale": "Produce useful reproducible diagnostic traces while automatically removing common secrets, local identity and PII and exposing a machine-readable redaction summary.",
+      "companyOsProblem": "Data egress needs deterministic minimization and a reviewable transformation receipt, but enterprise policy cannot rely on regex scrubbing after assembling an unrestricted bundle.",
+      "companyOsFit": "ADAPT the transformation-summary and ordered deterministic pipeline. Company OS first constructs a typed allowlisted export manifest under DataAuthorization, rejects unknown/non-JSON shapes, enforces depth/count/byte limits, applies pluggable DLP rules and human preview, then hashes RFC-defined canonical bytes and retains source-to-export digest lineage.",
+      "responsibilityConflict": "Heuristic redaction cannot establish authorization, completeness or non-disclosure. A digest over a custom ambiguous canonicalization is not adequate integrity evidence, and a redaction summary must identify policy/version/actor as well as transformations.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/feedback-redaction.ts:1-193",
+        "server/src/services/feedback.ts:218-263",
+        "server/src/services/feedback.ts:1343-1450",
+        "server/src/services/feedback.ts:1623-1695",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    }
+  ]
+}
