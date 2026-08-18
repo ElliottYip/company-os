@@ -6522,6 +6522,45 @@
       "completionRequirements": [
         "Read lines 1-1525 exactly once and assess file/workspace resource authentication, tenant and path containment, symlink/traversal/race defenses, content types/download headers, size/range limits, Secret redaction, runtime bridge access, Agent versus human authority, evidence semantics and test quality against Company OS Artifact/Data governance."
       ]
+    },
+    {
+      "id": "application:server/__tests__/fixtures",
+      "path": "server/src/__tests__/fixtures/*.cjs",
+      "lineCount": 371,
+      "sha256": "b45a29d58e5ea91213a2b2fd230402decbf3b31a6f959598bda335ff2fa7a027",
+      "linkedEvidence": {
+        "history": [
+          "6b7e0814a08b228a2d9c685e46fa8ef0e3569c11 feat(acp): stream Daytona sandbox agent output and remove the host output poll (#11049)",
+          "f2f168f6a10a24c924516808f414baba52b1c080 fix(plugins): seed proactive company scopes before worker setup() + events.subscribe resolver parity (#10113)",
+          "3093c5e694e124ea094984e0ab23f28be1cd44b7 fix(plugin-worker): resolve a company scope for proactive worker→host calls (#10103)",
+          "931eec3fbf83dc425b5381ba5823125162cd13e7 feat(mcp): wire gateway runtime and Smoke Lab (#9559)",
+          "a1835cfa5e5f4926591cb956055dd870ede492ef Harden plugin runtime invocation scope (#6547)",
+          "38c185fb8b50f909d29c0b62783731a3b326d021 Add agent permissions and controls plan (#6386)",
+          "b24c6909e89fac62b5954f2416f857a378fd97ce Harden remote sandbox runtime probes, timeouts, and installs (#5685)",
+          "fe3904f4343c055f5a45a859de58fed1d677dd59 Stabilize runtime probes and Codex env tests (#5445)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        { "path": "plugin-worker-delayed.cjs", "start": 1, "end": 65 },
+        { "path": "plugin-worker-execute-log.cjs", "start": 1, "end": 117 },
+        { "path": "plugin-worker-invocation-scope.cjs", "start": 1, "end": 130 },
+        { "path": "plugin-worker-terminated.cjs", "start": 1, "end": 59 }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once across all four fixture files (371 total lines). These are deterministic JSON-RPC worker-process adversaries, not real Agents: delayed execution, streamed log forgery/oversize, nested host-call scope forgery and a classified termination error.",
+        "All fixtures implement newline-delimited JSON-RPC over stdin/stdout with initialize/shutdown and method-not-found behavior. They intentionally omit malformed-input recovery and production validation so host tests, not the fixture, own trust enforcement.",
+        "The execute-log fixture emits valid own-invocation logs plus unknown, missing and previous-invocation IDs. Remembering the previous ID models a single worker process that has observed two companies and attempts cross-company log injection; invalid stream/empty chunk and a pre-parse oversized line can also be generated.",
+        "The invocation-scope fixture turns a plugin call into nested companies.get, secrets.resolve, state.get or events.subscribe host requests. requestedCompanyId can differ from the active invocation; the active ID can be echoed, omitted or forged unknown. Company identity appears in different parameter locations, testing that the host derives scope per method rather than trusting one top-level field.",
+        "The delayed fixture lets host tests exercise timeout/late-response behavior, while the terminated fixture returns JSON-RPC -32002 with [unknown] terminated. Neither fixture models cancellation acknowledgment, partial side effects, retry idempotency, process crash/signal, backpressure or restart/version negotiation.",
+        "The fixtures contain no real credentials, production data or model calls. They should be documented as protocol test doubles and never described as Agent executions or Demo company behavior.",
+        "All four files passed node --check. Behavioral verification belongs to the later plugin-worker-manager test unit that references these fixtures and was not pre-read here."
+      ],
+      "completionRequirements": [
+        "Read all four fixture files (371 lines total) exactly once and assess worker protocol, invocation/company scope, delayed/terminated behavior, log/stream data handling, fixture determinism and whether they adequately exercise Company OS plugin/Connector isolation without representing Demo fixtures as real Agents."
+      ]
     }
   ]
 }
