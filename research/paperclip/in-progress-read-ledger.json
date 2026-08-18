@@ -1112,6 +1112,60 @@
         "Verify protocol and management authentication, tenant hiding, approval authority, input bounds, actor attribution and stable error contracts against the service findings.",
         "Map the already-read Tool Gateway acceptance tests and route history before a canonical decision."
       ]
+    },
+    {
+      "id": "application:server/services/tool-runtime-supervisor",
+      "path": "server/src/services/tool-runtime-supervisor.ts",
+      "lineCount": 889,
+      "sha256": "2a52046b6e61310a3a1d885715ae4f4a11cfff26f6fa435c17fbac3ba433f38d",
+      "linkedEvidence": {
+        "history": [
+          "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+        ],
+        "tests": "Runtime-supervisor scenarios are embedded in the already-read server/src/__tests__/tool-gateway.test.ts:3201-3941."
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 460,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Despite its name, this supervisor models a simulated Paperclip local-stdio runtime slot: providerRef is synthetic, process.spawnedPid is null and memory limits are metadata only. Actual subprocess execution/lifecycle is owned elsewhere, so this is an operational projection/state coordinator rather than a process supervisor.",
+            "Authenticated public deployments fail closed without an explicitly trusted local runtime host, a sound managed-cloud versus trusted execution-node boundary.",
+            "Slot logs are entry/byte bounded and apply basic token redaction, but regex redaction is not a complete Secret/DLP boundary and its recursive/structured log behavior must be reviewed in the remaining range.",
+            "Idle cleanup loads every slot globally when no company is provided and sequentially scans/updates it. Capacity checks call this global cleanup on the request path, then load every active row and count in memory, which is unbounded and unsuitable for large/multi-region deployments.",
+            "Idle expiry updates by id only after a stale read, without status/deadline/version predicate. A concurrent call can reactivate or extend a slot and still be overwritten as stopped by the cleanup worker.",
+            "Capacity is a count-then-start check with no transaction, advisory lock or database constraint. Concurrent starts across service instances can both pass and exceed company/host limits.",
+            "Restart counters, backoff and storm windows live in mutable JSON metadata and are computed by read-modify-write without CAS, allowing concurrent restarts to lose increments or bypass suppression.",
+            "Runtime state changes, dedicated audit and general activity are sequential writes without a transaction/outbox. A slot can start or stop while its evidence write fails, and retries may duplicate transitions.",
+            "Audit actors are either the Agent or generic system; no accountable human, execution-node identity/attestation or ResponsibilityContract is bound to runtime authority and lifecycle events."
+          ]
+        },
+        {
+          "start": 461,
+          "end": 889,
+          "readAt": "2026-08-18",
+          "notes": [
+            "getOrCreateSlot performs select-then-insert without conflict recovery. Even if the database uniquely constrains company/slotKey, concurrent creation can return an avoidable error rather than re-read the winner; capacity is still not reserved atomically.",
+            "Caller-provided metadata is spread after fixture, hostId, counters and logs during slot creation, so callers can override supervisor-owned host/accounting fields. A forged hostId can make activeRows undercount host capacity until a later lifecycle write repairs metadata.",
+            "ensureRunningSlot does not acquire an exclusive lease. Multiple calls can concurrently mark and use the same connection slot, execute callbacks against the same conceptual stdio process and overwrite metadata/idle state; no queue, fencing token or lease owner protects protocol serialization.",
+            "Stuck recovery and explicit stop/restart update by id only after a stale read. They can mark an actively used slot failed/stopped or restart it while another call is executing. startSlot itself does not reserve capacity, and explicit restart bypasses a fresh capacity check.",
+            "Critical confidentiality defect: execution errors are persisted in lastError and dedicated audit details after only character truncation, not redactLogLine or structured Secret filtering. Provider/process errors containing bearer tokens, API keys or customer data can enter durable database/audit records.",
+            "useFixtureSlot has a different failure path from useConnectionSlot: it marks failure but emits no runtime_failed audit, producing inconsistent evidence for the bundled fixture path.",
+            "Log append is locally entry/byte bounded and token-redacted, but metadata is persisted only in later idle/failure writes and concurrent handles mutate independent snapshots; log records can be lost by last-writer-wins updates.",
+            "listSlots remains unpaginated and cleanup-coupled. It returns only active states, hiding failed/stopped operational history from this projection even though rows remain stored.",
+            "The acceptance suite covers sequential lazy reuse, idle expiry, capacity, public-host gating, restart suppression and stuck recovery, but not any of these multi-instance races, metadata ownership, real process enforcement or error-Secret leakage."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-889 exactly once against the pinned SHA-256.",
+        "Trace slot claims, tenant/host capacity, process identity, timeout/idle/restart/stuck recovery, audit evidence and deployment exposure controls.",
+        "Map already-read acceptance coverage and history before a canonical decision."
+      ]
     }
   ]
 }

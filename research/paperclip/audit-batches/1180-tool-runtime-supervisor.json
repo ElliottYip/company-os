@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/tool-runtime-supervisor",
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed operational state coordinator for simulated local-stdio runtime slots, including deployment gating, capacity, idle cleanup, stuck recovery, restart backoff/storm suppression, bounded logs and management views.",
+      "dependencyDirection": "Depends directly on Paperclip Tool runtime/audit tables, activity logging, deployment enums, process environment/PID and caller-supplied execution callbacks. Tool Gateway depends on it; actual subprocess execution remains elsewhere.",
+      "keyDataModels": "ToolRuntimeSlot with company/application/connection identity, slot/reuse key, runtime kind/status, provider reference, health, idle deadlines and mutable metadata containing host, process, resource, restart, counter and log projections.",
+      "lifecycle": "Finds or creates a connection slot, checks deployment and capacity, marks it running, lends a mutable handle to a callback, records idle/failure state, lazily stops expired slots, detects stale progress, applies restart controls and exposes stop/restart/list operations.",
+      "testAssessment": "Runtime scenarios in the already-read Tool Gateway acceptance suite cover sequential lazy start/reuse/idle reap, host capacity, public-host fail-closed behavior, explicit control, restart storms and stuck recovery. Local execution skipped the embedded-PostgreSQL tests. Missing are concurrent creation/use/stop/restart, atomic capacity reservation, real process death/resource enforcement, fencing, caller metadata spoofing, error Secret leakage, log-write races, multi-host cleanup ownership and audit failure recovery.",
+      "designRationale": "Make local stdio execution operationally observable and controllable while preventing it in untrusted public deployments and providing basic capacity/recovery behavior without a separate scheduler.",
+      "companyOsProblem": "Company OS needs a real customer-local execution node with short-lived secret-free attestation, exclusive fenced leases, bounded resources, cancellation and durable effect/evidence semantics across managed-cloud and self-hosted profiles.",
+      "companyOsFit": "REFERENCE the public-deployment fail-closed gate, separate company/host quotas, idle TTL, exponential restart backoff, storm suppression, stuck recovery states, bounded logs and structured reason codes. Implement them in an independent ExecutionNode/RuntimeLease boundary with database-atomic reservations, host attestation, CAS/fencing, real process/container controls, Secret-safe structured errors and transactional event outbox.",
+      "responsibilityConflict": "The supervisor represents a simulated process with no spawned PID or enforced memory ceiling, accepts caller overrides of supervisor metadata, allows concurrent unfenced use and stale lifecycle overwrites, and writes state/audits nontransactionally. Errors are durably stored and audited without Secret redaction. Events bind only Agent/system, not accountable human, ResponsibilityContract, execution-node proof or data authorization.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/services/tool-runtime-supervisor.ts:1-889",
+        "server/src/__tests__/tool-gateway.test.ts:3201-3941",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+      ]
+    }
+  ]
+}
