@@ -6757,18 +6757,24 @@
     },
     {
       "id": "application:server/__tests__/plugin-environment-driver-ready-recovery",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Focused failure-recovery suite for lazily restoring managed bundled sandbox-provider plugin workers when shared plugin state says ready but the current server process has no worker.",
+      "dependencyDirection": "Tests cross app-level managed-plugin recovery, environment-driver discovery, plugin loader and worker manager. Registry persistence is mocked; worker state and loader failure paths are process-local, with temporary filesystem fixtures for partial activation cleanup.",
+      "keyDataModels": "Plugin manifest/capabilities/environmentDrivers, shared Plugin ready state, managed bundled allowlist, process-local worker handle, loader activation result and registered event/job/tool/runtime resources.",
+      "lifecycle": "List ready providers; only for an allowlisted bundled sandbox plugin with no worker/handle, single-flight a local load; suppress shared error writes; on partial failure unregister jobs/events/tools and stop the worker; discard dead handles; retry later; start multiple plugins concurrently under a timeout.",
+      "testAssessment": "Ten focused tests cover sibling-process installation, allowlist/capability gating, existing handles, concurrent single-flight, process-local failure isolation, dead-handle retry, shared-state suppression, partial cleanup and bounded parallel timeout. Gaps include multi-process thundering herd, worker protocol/version skew, malicious manifest fields, cleanup failures, timeout cancellation/resource leaks, persistent crash loops, rollout/rollback and authorization of provider activation.",
+      "designRationale": "Separate cluster-shared plugin readiness from per-process worker availability and avoid one server's transient spawn failure poisoning shared state for healthy peers.",
+      "companyOsProblem": "Company OS Connector and execution-node discovery needs separate desired/shared registration state and node-local runtime health, bounded recovery, single-flight activation and explicit degraded status.",
+      "companyOsFit": "ADAPT the two-level readiness model, capability/allowlist gate, process-local failure isolation, cleanup and bounded parallel recovery. Express it as ConnectorInstallation plus ConnectorInstance health with signed version/capability attestation and distributed activation fencing; do not inherit Paperclip plugin identities or worker internals.",
+      "responsibilityConflict": "Recovery activation is infrastructure-driven and does not bind the human authorization, tenant policy, secret scope or data-export contract permitting a sandbox provider to start. Company OS must require those grants before readiness becomes executable authority.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-environment-driver-ready-recovery.test.ts:1-515",
+        "server/src/app.ts",
+        "server/src/services/plugin-environment-driver.ts",
+        "server/src/services/plugin-loader.ts",
+        "78f8c6c3 Recover managed bundled plugin workers on demand (#10429)"
+      ]
     },
     {
       "id": "application:server/__tests__/plugin-environment-driver-seam",
@@ -7297,18 +7303,23 @@
     },
     {
       "id": "application:server/__tests__/recovery-classifiers",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Contract tests for the centralized recovery classifiers, compatibility exports, monitor-aware Issue graph liveness, recovery origin recognition and stable string idempotency keys.",
+      "dependencyDirection": "The tests compare the new recovery package exports with compatibility facades in issue-liveness and run-continuations, and otherwise exercise pure functions with shared Issue, Agent and Run-shaped fixtures.",
+      "keyDataModels": "Issue graph node/relation, Agent reporting line, monitor schedule/attempt state, run liveness continuation input, recovery origin/reason constants and string-form incident, leaf and continuation keys.",
+      "lifecycle": "Classify live or stranded Issue graphs; treat future non-exhausted monitors as explicit waiting paths; compare compatibility outputs; build/parse keys; recognize recovery-owned origins.",
+      "testAssessment": "Six concise deterministic tests protect compatibility during a classifier extraction and several key literals. Coverage does not explore graph cycles, tenant mixing, invalid timestamps, key escaping/collisions, concurrent monitor updates, human participants, approval waits or property-based round trips. Literal colon-delimited IDs are asserted without adversarial ID components.",
+      "designRationale": "Move recovery policy toward pure functions without silently changing legacy callers or persisted idempotency identifiers.",
+      "companyOsProblem": "Company OS needs pure, versioned recovery policies and canonical idempotency keys that survive adapter changes and replay across cloud/local nodes.",
+      "companyOsFit": "REFERENCE the compatibility-test pattern and monitor-aware liveness rule. Use an encoded/versioned key format or structured database key in Company OS, add responsibility/approval/data-wait states and property-test tenant isolation and parse/build round trips.",
+      "responsibilityConflict": "Fixtures include only Agent managers and do not treat a pending accountable-human approval, evidence request or data-authorization hold as a first-class live path.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/recovery-classifiers.test.ts:1-248",
+        "server/src/services/recovery/issue-graph-liveness.ts",
+        "server/src/services/recovery/run-liveness-continuations.ts",
+        "57229d0f Add issue monitor liveness controls (#4988)"
+      ]
     },
     {
       "id": "application:server/__tests__/recovery-observability",
@@ -7330,18 +7341,23 @@
     },
     {
       "id": "application:server/__tests__/recovery-stale-issue-lock-sweep",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration suite for the Heartbeat backstop that terminalizes orphaned runs and clears stale Issue checkout/execution locks.",
+      "dependencyDirection": "The suite invokes heartbeatService against real Paperclip tables and mocks only telemetry. It spans Issue lock columns, Heartbeat run/event rows and activity log, including host PID liveness.",
+      "keyDataModels": "Issue checkoutRunId, executionRunId and executionLockedAt; HeartbeatRun status/PID/context snapshot; HeartbeatRunEvent; activity log; active and terminal Issue references to a potentially shared run.",
+      "lifecycle": "Seed terminal and running runs; sweep locks; preserve any live referenced execution; terminalize a missing-process run as interrupted or map a terminal Issue to succeeded/cancelled; clear locks; repeat for idempotency; tolerate audit-event failure after terminalization.",
+      "testAssessment": "Eleven strong integration cases cover terminal/live/mixed locks, idempotency, missing processes, reuse-lease terminal Issues, shared-run safety including misleading context snapshot, and post-terminalization audit failure. Missing cases include cross-company references, two sweepers racing, PID reuse, remote/container execution where host PID is meaningless, lease expiry/fencing token, transaction crash points, audit repair and Connector-signed termination receipts.",
+      "designRationale": "Repair durable execution state after process teardown paths fail, while avoiding terminalizing a run still referenced by active work.",
+      "companyOsProblem": "Managed-cloud and self-hosted Company OS need fenced execution leases, crash recovery and proof that a Connector run is gone before releasing authority or scheduling a replacement.",
+      "companyOsFit": "ADAPT the shared-reference safety cases, idempotent sweep and explicit unknown-outcome terminal status. Replace host-PID authority with versioned ExecutionLease plus Connector heartbeat/attestation and compare-and-set fencing; make terminal event and audit/outbox atomic or add a tested repair projection.",
+      "responsibilityConflict": "The sweeper can infer success solely because an Issue is done and can proceed when the audit event fails. Company OS must not turn mutable task status into execution proof or lose the evidence/authority receipt that explains who or what terminalized the run.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/recovery-stale-issue-lock-sweep.test.ts:1-593",
+        "server/src/services/heartbeat.ts",
+        "f3db7b88 Clear stale checkoutRunId on run finalization and add backstop sweeper (#6008)",
+        "01b51dc0 fix runtime task teardown (#10985)"
+      ]
     },
     {
       "id": "application:server/__tests__/redact-sensitive",
