@@ -4497,18 +4497,26 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-active-run-output-watchdog",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres end-to-end specification for detecting active Heartbeat runs with stale output, creating deduplicated evaluation work, redacting log evidence, recording reviewer decisions, folding source-resolved runs and preventing recursive recovery.",
+      "dependencyDirection": "The suite drives heartbeatService and recoveryService against real Run, Issue, WatchdogDecision, RecoveryAction, comment, relation and activity tables; it mocks execution adapters/telemetry but uses the real run-log store and redaction path.",
+      "keyDataModels": "HeartbeatRun output timestamps/sequence/log reference, source Issue and executionRunId, stale_active_run_evaluation Issue, WatchdogDecision with continue/snooze/dismissed_false_positive, IssueRecoveryAction, same-run activity/comment evidence and source-resolved fold receipt in resultJson.",
+      "lifecycle": "Seed an apparently running silent execution; scan suspicion/critical thresholds; create one manager-Agent evaluation without blocking the source; redact evidence; accept authorized decisions and re-arm windows; suppress false positives/board-closed repeats; when exact same-run terminal evidence proves source resolution, terminalize/fold the run, clear execution linkage, resolve recovery work and record event/decision; otherwise escalate.",
+      "testAssessment": "Eighteen substantial cases cover priority thresholds, dedupe, source-comment idempotency, blocked-source exemption, secret/JWT/GitHub token redaction, decision authorization and run binding, re-arm/snooze, recursive recovery, same-run evidence versus other-actor completion, idempotent fold and board-close behavior. Gaps include Connector heartbeats that legitimately emit no text, structured progress versus log silence, distributed scanner races, clock skew, log-store outage, redaction property/fuzz tests, crash points across fold writes, human reviewer authorization, remote process attestation and immutable responsibility/data/approval digests.",
+      "designRationale": "Treat silence as a suspicion requiring review rather than immediate cancellation, avoid self-amplifying blocker/recovery loops, and demand run-bound durable evidence before interpreting a terminal source Issue as proof that an apparently active execution actually finished.",
+      "companyOsProblem": "Company OS needs runtime health policies that distinguish no output from no progress, generate one intervention case, preserve secret-free evidence and require a responsible human or policy-approved actor to continue, stop or dismiss a run.",
+      "companyOsFit": "ADAPT the graduated suspicion/critical states, observability-only incident, evidence redaction, run-bound decision authorization, finite continue re-arm, recursive-recovery guard and exact same-run fold requirement. Build on structured Connector progress/health/attestation events, immutable InterventionDecision receipts, human-first authority and an atomic event/outbox projection rather than Paperclip log silence and Issue rows.",
+      "responsibilityConflict": "Although the fixture sets a company default responsible user, evaluation work is assigned to a manager Agent and an Agent recovery owner records decisions. Board-closing an Issue is automatically interpreted as dismissed_false_positive without an explicit human receipt. The fold spans multiple mutable tables and stores proof in resultJson, so authority/evidence can diverge if a write fails.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-active-run-output-watchdog.test.ts:1-1014",
+        "server/src/services/heartbeat.ts",
+        "server/src/services/recovery/service.ts",
+        "server/src/services/run-log-store.ts",
+        "5a0c1979 Add runtime lifecycle recovery and live issue visibility (#4419)",
+        "01e59c07 fix(watchdog): suppress repeat alerts (#5942)",
+        "ad961227 feat(secrets): add user-specific runtime secrets (#8825)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-agent-session-message",
