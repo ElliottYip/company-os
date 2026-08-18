@@ -5253,6 +5253,32 @@
       "completionRequirements": [
         "Read lines 1-252 exactly once and assess Codex adapter registration, configuration schema, capability declaration, execution contract, vendor leakage, security boundaries and test quality against Company OS Connector SDK requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/codex-local-adapter-environment",
+      "path": "server/src/__tests__/codex-local-adapter-environment.test.ts",
+      "lineCount": 146,
+      "sha256": "eb96897fdf841bfa8fd100caf6e8494019e74e88dd609f475e247feee2a556b7",
+      "linkedEvidence": {
+        "history": [
+          "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 146 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Three portable tests passed and the Windows-only command-wrapper probe was skipped on macOS.",
+        "The tests positively establish structured diagnostic codes for valid cwd, native auth presence, missing credentials and a successful hello probe, avoiding English display strings as the machine contract.",
+        "testEnvironment is intentionally effectful: merely diagnosing an absolute missing cwd creates it. That conflates read-only preflight with workspace provisioning and can mutate arbitrary configured filesystem paths without an accountable change action.",
+        "Native authentication is considered present from auth.json existence; the suite does not assert file type, ownership, permissions, parseability, token validity/expiry/audience or symlink containment. Plain API keys and PATH are supplied directly through adapter env fixtures.",
+        "Coverage omits relative/traversal/symlink cwd, unwritable or wrong-owner paths, hostile command resolution, probe timeout/cancel/output limits, nonzero/malformed output, ACP engine behavior, secret references, redaction and platform cases other than one Windows success path."
+      ],
+      "completionRequirements": [
+        "Read lines 1-146 exactly once and assess environment construction, credential/data propagation, engine selection, configuration precedence, isolation and test quality against Company OS Connector execution-node boundaries."
+      ]
     }
   ]
 }

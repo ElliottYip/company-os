@@ -4192,18 +4192,23 @@
     },
     {
       "id": "application:server/__tests__/codex-local-adapter-environment",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Codex-local environment diagnostic tests for working-directory readiness, native/API-key authentication signals and a Windows command-wrapper hello probe.",
+      "dependencyDirection": "Vitest -> @paperclipai/adapter-codex-local testEnvironment -> real temporary filesystem and, on Windows only, a fake executable resolved through PATH; no database, Secret service, authorization or durable audit layer.",
+      "keyDataModels": "Company/adapter identity, engine/command/cwd/env configuration, CODEX_HOME auth.json, OPENAI_API_KEY/PATH and structured diagnostic status/check codes.",
+      "lifecycle": "Operator requests environment test -> adapter may create missing cwd -> checks auth-file/API-key presence -> may spawn a hello probe -> returns structured checks and aggregate status.",
+      "testAssessment": "On macOS, 3 tests passed and the single Windows-only probe test skipped. Stable diagnostic codes are a strong contract choice, but coverage is shallow: it proves path creation and auth-file existence, not credential validity, filesystem safety, process isolation, timeout/output controls, ACP behavior or failure modes.",
+      "designRationale": "Give operators actionable preflight diagnostics across subscription auth and API-key setups, including Windows .cmd resolution, before assigning real work to a local Agent.",
+      "companyOsProblem": "Company OS needs Connector health/capability attestation that is secret-free, non-destructive by default, platform-aware and bound to an execution node, tenant and short validity window.",
+      "companyOsFit": "ADAPT the stable check-code/result-envelope and cross-platform fixture pattern. Separate read-only diagnose from an explicit provision/remediate command; execute probes inside the local node boundary with path policy, credential-reference resolution, timeout/output limits and a short-lived signed attestation. Keep all Codex specifics in the Connector adapter.",
+      "responsibilityConflict": "A diagnostic call can create a configured absolute directory without a distinct authorized action or evidence. Auth presence says nothing about which human/company authorized the external identity, its audience or data scope, so it cannot serve as a responsibility or readiness proof.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/codex-local-adapter-environment.test.ts:1-146 (SHA-256 eb96897fdf841bfa8fd100caf6e8494019e74e88dd609f475e247feee2a556b7)",
+        "git history: eedc7ddef27e852ab130c8f5c68149ff86bec17f and 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest on macOS: 3 passed, 1 Windows-only test skipped"
+      ],
+      "securityFindings": "HIGH effect-boundary concern: a nominal environment diagnostic creates any configured absolute missing cwd, mixing observation and mutation. HIGH credential assurance gap: auth.json existence is accepted without checking regular-file/symlink status, containment, owner/mode, parsing, expiry, audience or revocation. MEDIUM command-resolution gap: the Windows test proves PATH wrapper execution but not hostile shadowing, command provenance/signature or allowlisting. Missing tests cover traversal/symlink races, wrong ownership, permission failures, hostile env, Secret references, probe timeout/cancel/output caps, malformed/secret-bearing output, concurrent tests and short-lived attestation."
     },
     {
       "id": "application:server/__tests__/codex-local-execute",
