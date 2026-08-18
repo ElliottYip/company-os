@@ -4195,6 +4195,25 @@
         "Implementation lines 201-272 build the checked set: root/null always exports, embedded owners can override attachment toggles, orphan blobs follow attachment state, and category paths follow toggles. The algorithm is pure and readable, but client-side raw paths/manifest metadata define disclosure scope. Focused Vitest passed 19/19 on 2026-08-19. Formal decision: REIMPLEMENT server-side canonical export planning; adapt only multi-owner closure and its tests."
       ],
       "completionRequirements": ["Read both files exactly once, run focused tests and assess data-minimizing selection closure, dependency expansion, stale paths, identity stability, blob/evidence inclusion and whether Web policy can broaden a reviewed export."]
+    },
+    {
+      "id": "application:ui/pages/CompanyExport",
+      "paths": [
+        { "path": "ui/src/pages/CompanyExport.test.tsx", "lineCount": 353, "sha256": "2d02535c0c597d8eb09c45286597f7b78a1d8b94d5ba691778c2b1141e28e092" },
+        { "path": "ui/src/pages/CompanyExport.tsx", "lineCount": 1110, "sha256": "ed0352022e59ffb5615bc7dedd3140c5b614023046c31a3dd4fdb1ab79ced7bd" }
+      ],
+      "linkedEvidence": { "history": ["916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/CompanyExport.test.tsx", "completedRanges": [{ "start": 1, "end": 353 }] }],
+      "sourceReadComplete": false,
+      "nextFile": "ui/src/pages/CompanyExport.tsx:1",
+      "notes": [
+        "Test lines 1-100 build a jsdom/React Query harness with all company export, Agent, project and auth APIs mocked plus fixed CompanyContext company-1. This isolates page behavior but cannot prove route/server authorization or tenant switching. The preview fixture has schemaVersion 1, no entities/evidence and one README, so early tests are likely happy-path UI contracts rather than full modern schema fidelity.",
+        "Test lines 101-200 add Agent, one-off/routine and attachment fixtures plus a zeroed fidelity report, then configure default successful user/API mocks and object-URL spies. The rich blob is incorrectly represented as plain text rather than the binary entry type, weakening download realism. All fidelity domains remain zero; warning display may be tested, but exact approvals/evidence/data-loss behavior is not seeded.",
+        "Test lines 201-300 render with mocked React Query, locate controls by English text/data attributes, and verify default-all selectedFiles plus Tasks/Routines/Attachments dependency behavior and dimmed tree nodes. These tests assert the client sends its computed file list but do not bind it to the preview revision/digest or prove the server returns exactly those files. Accessibility testing is shallow (absence of per-file checkboxes, role lookup only), with no keyboard/mobile coverage.",
+        "Test lines 301-353 verify approximate download size changes and render server-provided fidelity blocker/warning messages by stable code/severity but assert English message text. There is no assertion that a blocker disables export, requires acknowledgement, or binds approval; no auth failure, preview/export error, stale preview, cancellation, large bundle, object-URL cleanup or mobile behavior is tested. Test source is complete; implementation starts next."
+      ],
+      "completionRequirements": ["Read both files exactly once, run focused tests and assess auth/tenant gating, preview-to-apply consistency, selection/data-loss UX, package integrity, large-file handling, stable errors, accessibility/mobile behavior and responsibility approval semantics."]
     }
   ]
 }
