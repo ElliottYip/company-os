@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-comment-wake-batching",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres and controlled-WebSocket integration specification for serializing Issue-bound Agent execution, batching comment/approval/recovery wakes, promoting deferred work after terminal runs, and preserving the distinction between assignee execution ownership and mentioned-Agent participation.",
+      "dependencyDirection": "The suite drives heartbeatService against real Company, Agent, Issue, comment, wake-request and run tables, process liveness state and an OpenClaw-compatible WebSocket adapter; the adapter boundary receives a rendered wake message while database projections control execution ownership and follow-up scheduling.",
+      "keyDataModels": "HeartbeatRun execution/comment status and retryOfRunId, AgentWakeupRequest deferred status and embedded wake context, Issue assignee/execution/checkout/completion fields, IssueComment authorUserId/authorAgentId/createdByRunId/presentation/metadata, wake actor provenance, approval/recovery/comment/mention reasons, and ordered comment ID batches.",
+      "lifecycle": "Wakes that arrive while an Issue has an active execution are persisted and coalesced rather than started concurrently; approval and recovery hand-backs wait for the current run; ordered comments are forwarded after success or cancellation; a finished Issue reopens only when a deferred batch contains an external human comment, not another Agent or the closing run's own comment; mentioned Agents may inspect without stealing assignment/execution ownership; a run that emits no Issue comment receives exactly one cheaper retry, while a real run-authored comment satisfies the communication requirement and automatic summary remains fallback-only.",
+      "testAssessment": "Twelve broad integration cases cover approval/recovery deferral, ordered coalescing, cancellation and completion promotion, human-versus-Agent reopen behavior, mixed batches, bounded missing-comment retry, concurrent mention deferral, non-owning direct mentions and summary fallback. Tests exercise database and adapter concurrency but omit simultaneous claim/promotion races across service instances, transaction/outbox crash points, queue expiry/cancellation/revocation, deleted or edited comments, authorization and tenant-spoof resistance, oversized/adversarial batches, delivery acknowledgment and replay, Connector failure partitions, data-access effects of non-owner runs, and proof that approval/recovery payloads reference authoritative records. Human-versus-Agent semantics partly depend on authorUserId plus createdByRunId conventions rather than a typed principal.",
+      "designRationale": "Prevent multiple Agents or reentrant events from executing the same Issue concurrently, preserve every follow-up while compressing wake noise, avoid self-generated completion comments reopening finished work, and require an Agent to leave a visible handoff rather than treating an adapter summary as sufficient collaboration evidence.",
+      "companyOsProblem": "Company OS needs durable human/Agent collaboration queues that do not lose input during execution, distinguish discussion from authority, prevent ownership theft, and preserve who requested, executed, reviewed and resumed each Work item.",
+      "companyOsFit": "ADAPT the durable per-Work mailbox, ordered idempotent batching, single-executor lease, terminal promotion, non-owner participation role and bounded handoff retry. Model typed HumanPrincipal/AgentPrincipal/ConnectorPrincipal and explicit message purpose; a comment is collaboration input, not execution authorization. Reopen, resume or high-risk continuation must consume a capability or ApprovalDecision bound to Work/action/digest/responsibility/data contract. Non-owner mentions receive an inspection capability with least-privilege data/tool access. Publish queue and Work projections transactionally and retain delivery/acknowledgment evidence.",
+      "responsibilityConflict": "The fixtures set responsibleUserId but do not require that accountable human to authorize comment-triggered execution or reopen. An approval wake is accepted from payload/context without a persisted, action-bound approval receipt. Local CLI Agent comments can appear under authorUserId and are distinguished by createdByRunId, while any external human comment in a mixed batch reopens Work regardless of intent or role. A mentioned Agent avoids owning the Issue row but can still be dispatched, so row ownership alone does not enforce data/tool authority. Mandatory comments and system notices are communication artifacts, not verified evidence of result quality or responsibility discharge.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-comment-wake-batching.test.ts:1-2184",
+        "09d0678840336094e70734ba429bc16bb1fd0940 Harden heartbeat scheduling and runtime controls (#4223)",
+        "d9ea1bf9e104fc95aaa1abb28ec854a4a24342ef fix: skip same-run self-comments (Path A heartbeat-reopen + Path B implicit-todo move) (#4973)",
+        "cd7f84965c5b606868c8443d66672df7337ad2ff fix(recovery): preserve hand-back wake liveness (#10562)",
+        "2e4774ac90dc17a5a25d0b77e5a01778d332764e fix(adapter-utils): correct confirmation wake semantics (#10588)"
+      ]
+    }
+  ]
+}
