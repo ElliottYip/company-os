@@ -8857,18 +8857,22 @@
     },
     {
       "id": "application:server/__tests__/trust-preset-resolver",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure unit tests for trust-preset defaulting, restrictive boundary intersection, fail-closed parsing/scoping, Company isolation and JSON normalization preservation.",
+      "dependencyDirection": "Tests call the resolver directly with shared policy schemas and also verify Issue execution-policy normalization, crossing the boundary between trust resolution and serialization compatibility without database or runtime dependencies.",
+      "keyDataModels": "Agent/Project/Issue policy inputs, low-trust boundary dimensions, standard/low-trust/denied results, review preset version and raw-output disposition.",
+      "lifecycle": "Construct policies, resolve once and assert exact effective boundary or denial; one case normalizes policy JSON and confirms custom extension data survives serialization.",
+      "testAssessment": "ADAPT as a concise base suite, then add a generated pairwise source/dimension matrix, malformed scalar/object inputs, contradictory duplicate preset declarations, Run policy, scalar conflict rules, empty intersections, output promotion, stable digest/provenance and property-based tests proving that adding a restriction can never widen the effective set.",
+      "designRationale": "Prove the safety-critical property that low-trust selection and boundary composition fail closed while allowing extension fields to round-trip.",
+      "companyOsProblem": "Company OS needs monotonic policy-composition tests: every more restrictive source must preserve or narrow authority, never widen it accidentally.",
+      "companyOsFit": "ADAPT the small table-driven style and add monotonicity/property tests against the Company OS PolicyContext compiler and canonical serializer.",
+      "responsibilityConflict": "Tests validate technical resource boundaries only; they do not bind policies to an accountable human, accepted responsibility, approval evidence or exact Work/action snapshot.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/trust-preset-resolver.test.ts:1-222",
+        "server/src/services/trust-preset-resolver.ts:1-349",
+        "dbebf30c Add low-trust review containment (#7530)"
+      ]
     },
     {
       "id": "application:server/__tests__/trust-proxy",
@@ -13729,18 +13733,22 @@
     },
     {
       "id": "application:server/services/trust-preset-resolver",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure resolver that parses Agent, Project, Issue and Run trust policy JSON, selects standard versus low-trust-review execution, intersects low-trust boundaries and rejects unsupported, invalid, cross-Company, conflicting-root or unscoped policies.",
+      "dependencyDirection": "The resolver depends only on shared Zod schemas/constants and is consumed by AuthorizationService and runtime/workspace flows. Persistence rows are projected into a small input shape before evaluation, making this one of the cleaner policy components.",
+      "keyDataModels": "TrustPreset, four ordered policy sources, LowTrustBoundary with Company/project/root Issue/Issue/Agent/Secret binding/tool class/output promotion constraints, structured denied resolution and source-presets provenance.",
+      "lifecycle": "Each source is parsed from top-level and nested authorization policy fields; any low-trust implication makes the effective preset low trust. Source Company IDs must match. List constraints are normalized and intersected, root Issue IDs must agree, and a concrete project/root/Issue scope is mandatory before returning a low-trust boundary.",
+      "testAssessment": "Six focused pure tests cover default standard, three-source intersection, unknown preset, missing concrete scope, cross-Company source/boundary and normalization preservation. Missing are Run source, invalid authorization/boundary shapes, conflicting root IDs, empty set intersections, duplicate/order normalization, allowed Secret/tool/Agent constraints independently, output-promotion conflicts and mixed top-level/nested declarations. The implementation silently prefers topPreset/topReviewPreset/authPreset/authReviewPreset in that order, so an explicit top-level standard can mask a nested low-trust preset instead of rejecting ambiguity. Non-object raw policy becomes absent/standard. outputPromotionTarget is last-non-null-wins rather than intersected or conflict-checked. Multi-dimensional boundary matching is OR-based downstream, leaving conjunction semantics under-specified.",
+      "designRationale": "Fail closed when a restricted execution policy cannot be understood, and combine restrictions from increasingly specific Agent/Project/Issue/Run contexts so no source can simply widen enumerated allowlists.",
+      "companyOsProblem": "Company OS needs a pure, deterministic PolicyContext compiler that combines organization, Work, data, risk, approval and runtime restrictions with explicit precedence and a reproducible policy digest.",
+      "companyOsFit": "ADAPT the pure discriminated result, source provenance, strict parsing, cross-tenant rejection, restrictive-set intersection and mandatory concrete scope. Replace positional field precedence with one canonical schema or conflict rejection, define conjunction/union semantics per dimension, conflict-check scalar constraints, include policy/schema version and canonical digest, and extend sources to ResponsibilityContract, DataAuthorization, Approval and Connector attestation. Keep it independent from persistence and HTTP.",
+      "responsibilityConflict": "The resolver has no accountable-human, ResponsibilityContract, approval, action digest, data purpose/export or effective-time inputs. A low-trust boundary can therefore constrain technical resources without proving who accepted responsibility. Ambiguous duplicate preset fields and last-writer scalar promotion policy can produce an effective authorization context that no single human explicitly approved.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/trust-preset-resolver.ts:1-349",
+        "server/src/__tests__/trust-preset-resolver.test.ts:1-222",
+        "dbebf30c Add low-trust review containment (#7530)"
+      ]
     },
     {
       "id": "application:server/services/work-products",
