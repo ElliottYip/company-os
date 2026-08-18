@@ -7146,6 +7146,49 @@
       "completionRequirements": [
         "Read lines 1-341 exactly once and assess assigned-backlog liveness contract, duplicate/recovery-loop containment, Agent eligibility, event/wakeup semantics and test quality against Company OS Work assignment responsibility."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-attachment-routes",
+      "path": "server/src/__tests__/issue-attachment-routes.test.ts",
+      "lineCount": 786,
+      "sha256": "5efcaed3a759441070193e52be2f49269ab867b73ca11415c9e8b6b728f780ed",
+      "linkedEvidence": { "history": [
+        "b565603a862cc9f8b6cee2eee7b179bc6c1687ea accept Office issue attachments (#8562)",
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 close cross-tenant existence oracle (#3967)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "8f7282066e37ec2657f340f122027aa176599d88 workspace file downloads",
+        "5f481d50f1b45fe291fb189c12f286dd99809304 inline video previews",
+        "8af359b6563bec8f94377a739ed25870634e8a0f detect misclassified video attachments",
+        "04a19cbc6e228d02784d2cdcd236dd7f2470e96e artifact review feedback",
+        "bbf77fcb6984a319067f781e19e9bb951e145856 harden artifact metadata",
+        "75f88c588c2fd57ceaf57aac673541576cc2bc63 support video attachments",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 rollup (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 786 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Twenty-one tests cover cap normalization, uploads, MIME handling, content/range serving, tenant/Issue read boundaries and attachment-backed Work Product metadata.",
+        "The effective upload cap is the minimum of process and company limits; oversized bodies return 422 before storage/metadata creation. Uploads are buffered as an in-memory Buffer in this harness, with no concurrency/memory-pressure or streaming test.",
+        "The route deliberately accepts ZIP, Office, video, generic binary and arbitrary executable MIME types. Generic Office/video types may be inferred from filename extension; no magic-byte verification, malware scan, archive-bomb detection, quarantine or content-disarm workflow is tested.",
+        "HTML and arbitrary binary responses use nosniff, but the HTML test accepts either attachment disposition or no disposition. Images and videos are inline; SVG/script-capable images, filename header injection, Unicode/path traversal and same-origin active-content isolation are absent.",
+        "Video range serving correctly returns 206/content-range/length and rejects invalid ranges with 416 before storage. Generic .mp4 may be retyped and served inline from its filename, which is unsafe without verified content classification.",
+        "Cross-company content reads return indistinguishable 404 and do not access storage; same-company reads outside the parent Issue authorization return 403. Only a local board actor is used; Agent/Run/scoped-key/share-link cases are absent.",
+        "Paperclip Work Product metadata is rebuilt from the authoritative attachment, replacing attacker-supplied external/javascript paths, and cross-Issue attachment references are rejected. This is a strong canonical-reference pattern.",
+        "Object-store/metadata atomicity, orphan cleanup, delete behavior, checksum verification, immutable evidence versions, encryption keys, retention/legal hold, data residency, egress policy, antivirus status and access receipts are not covered. The stored sha256 is a fixture string and not validated.",
+        "Sandboxed run passed the pure cap test but failed 20 route tests on TCP bind; approved unsandboxed run passed 21/21."
+      ],
+      "completionRequirements": [
+        "Read lines 1-786 exactly once and assess attachment upload/download/delete authorization, tenant isolation, content validation, object-store consistency, evidence provenance, retention and test quality against Company OS data governance."
+      ]
     }
   ]
 }

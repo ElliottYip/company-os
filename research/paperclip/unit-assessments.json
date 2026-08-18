@@ -7652,18 +7652,24 @@
     },
     {
       "id": "application:server/__tests__/issue-attachment-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for Issue attachment upload/content delivery, global/company size caps, MIME inference, byte ranges, tenant/Issue authorization and attachment-backed artifact metadata canonicalization.",
+      "dependencyDirection": "Supertest -> Issue routes -> mocked access/Issue/company/work-product/activity services and in-memory StorageService; object metadata and blob operations are not transactional.",
+      "keyDataModels": "Attachment metadata with tenant/Issue/object key/MIME/size/SHA/creator, company upload cap, byte range and Work Product artifact metadata referencing an attachment.",
+      "lifecycle": "Authorize parent Work -> buffer upload -> classify mostly from declared MIME/filename -> store blob -> create attachment metadata -> serve inline/download/range -> derive canonical artifact paths; deletion/retention lifecycle is not covered.",
+      "testAssessment": "The sandbox passed 1 pure test and failed 20 route tests on TCP bind; approved unsandboxed run passed 21/21. HTTP/range and reference checks are useful, but arbitrary active content is explicitly accepted and storage consistency, scanning, deletion and evidence governance are absent.",
+      "designRationale": "Support broad user artifacts and media previews while limiting size, hiding cross-tenant existence, enforcing parent-Work access and preventing clients from injecting artifact URLs.",
+      "companyOsProblem": "Company OS attachments may contain enterprise data and responsibility evidence, requiring verified classification, quarantine, immutable provenance, retention, residency and controlled egress in addition to ordinary upload/download behavior.",
+      "companyOsFit": "REIMPLEMENT behind DataStore/Evidence/Blob ports. Retain min(global, tenant) limits, range semantics, cross-tenant 404, parent-resource authorization and server-derived canonical references. Require streaming upload, magic-byte/type policy, malware/archive scanning and quarantine, isolated active-content origin, safe filenames, checksums, encryption, transactional metadata/outbox, legal hold/retention, access receipts and Agent Run/accountable-human provenance.",
+      "responsibilityConflict": "A fixture SHA and mutable attachment reference are insufficient evidence. Arbitrary executables and potentially inline active content can enter the control plane without a data-authorization contract, scanner result or accountable acceptance decision.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/issue-attachment-routes.test.ts:1-786 (SHA-256 5efcaed3a759441070193e52be2f49269ab867b73ca11415c9e8b6b728f780ed)",
+        "git history: 17 commits from b565603a862cc9f8b6cee2eee7b179bc6c1687ea through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 1 passed, 20 failed due TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 21/21 passed"
+      ],
+      "securityFindings": "CRITICAL active-content policy gap: arbitrary executable MIME is accepted and HTML may lack forced attachment disposition. HIGH classification gap: filename/MIME inference lacks byte verification and malware/archive scanning. HIGH consistency gap: blob/metadata transaction and orphan cleanup are untested. HIGH evidence-governance gap: checksum, immutability, legal hold and provenance are absent. MEDIUM resource gap: upload is buffered and concurrency limits are untested. MEDIUM filename/inline gap: header injection, SVG and isolated origin are absent. MEDIUM authorization gap: Agent/Run/scoped sharing paths are untested."
     },
     {
       "id": "application:server/__tests__/issue-blocker-attention",
