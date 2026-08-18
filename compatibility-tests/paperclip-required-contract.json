@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "headless": {
+    "uiMode": "none",
+    "serveUi": false
+  },
+  "requiredEndpoints": [
+    { "method": "GET", "path": "/api/openapi.json" },
+    { "method": "POST", "path": "/api/companies/{companyId}/issues" },
+    { "method": "GET", "path": "/api/companies/{companyId}/issues" },
+    { "method": "GET", "path": "/api/issues/{id}" },
+    { "method": "GET", "path": "/api/companies/{companyId}/goals" },
+    { "method": "GET", "path": "/api/companies/{companyId}/budgets/overview" },
+    { "method": "GET", "path": "/api/companies/{companyId}/artifacts" },
+    { "method": "GET", "path": "/api/companies/{companyId}/heartbeat-runs" },
+    { "method": "POST", "path": "/api/heartbeat-runs/{runId}/cancel" },
+    { "method": "GET", "path": "/api/heartbeat-runs/{runId}/events" }
+  ],
+  "durableRunEvents": {
+    "cursorField": "seq",
+    "queryField": "afterSeq"
+  },
+  "companyLiveEvents": {
+    "authority": "cache-hint-only",
+    "replayRequired": false
+  },
+  "errorContract": {
+    "stableCodeRequiredForProductBranching": true,
+    "englishMessageMayBeContract": false
+  },
+  "forbiddenDependencies": [
+    "paperclip-database",
+    "paperclip-server-private-import",
+    "paperclip-react-ui",
+    "paperclip-session-token"
+  ]
+}

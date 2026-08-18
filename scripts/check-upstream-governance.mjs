@@ -13,7 +13,10 @@ const required = [
   "docs/upstream-adoption-plan.md",
   "docs/upstreams/paperclip-patch-ledger.md",
   "compatibility-tests/README.md",
+  "compatibility-tests/paperclip-required-contract.json",
   "compatibility-tests/paperclip-versions.json",
+  "compatibility-tests/snapshots/v2026.817.0.json",
+  "docs/upstreams/paperclip-security-admission.md",
   "THIRD_PARTY_NOTICES.md",
   ...projects.map((project) => `docs/upstreams/${project}.md`),
 ];

@@ -45,7 +45,9 @@ adopt the upstream React UI or to start localization work.
   approved runner.
 - Migration safety TypeScript was inspected but not executed because external
   execution of untrusted upstream scripts was denied by the safety gate.
-- `pnpm audit --prod`: 99 advisories (1 critical, 35 high, 53 moderate, 10 low).
+- Exact `corepack pnpm@9.15.4 audit --prod`: 99 advisories (1 critical,
+  35 high, 53 moderate, 10 low). Production remains blocked; detailed package
+  paths and the headless-image gate are in `paperclip-security-admission.md`.
 - The stable pin to observed HEAD is 176 commits and 850 changed files; never
   track master and avoid a fork.
 - Root lock configuration patches `embedded-postgres` and `acpx`, increasing the

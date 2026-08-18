@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "tag": "v2026.817.0",
+  "commit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "capturedAt": "2026-08-18",
+  "evidenceKind": "code-audit",
+  "headless": {
+    "uiMode": "none",
+    "serveUi": false
+  },
+  "openApi": {
+    "format": "3.0.0",
+    "documentVersion": "1.0.0",
+    "exactMountedRouteCoverageTest": true,
+    "experimentalExclusions": ["pipelines", "cases", "smoke-lab"]
+  },
+  "endpoints": [
+    { "method": "GET", "path": "/api/openapi.json" },
+    { "method": "POST", "path": "/api/companies/{companyId}/issues" },
+    { "method": "GET", "path": "/api/companies/{companyId}/issues" },
+    { "method": "GET", "path": "/api/issues/{id}" },
+    { "method": "GET", "path": "/api/companies/{companyId}/goals" },
+    { "method": "GET", "path": "/api/companies/{companyId}/budgets/overview" },
+    { "method": "GET", "path": "/api/companies/{companyId}/artifacts" },
+    { "method": "GET", "path": "/api/companies/{companyId}/heartbeat-runs" },
+    { "method": "POST", "path": "/api/heartbeat-runs/{runId}/cancel" },
+    { "method": "GET", "path": "/api/heartbeat-runs/{runId}/events" }
+  ],
+  "durableRunEvents": {
+    "cursorField": "seq",
+    "queryField": "afterSeq"
+  },
+  "companyLiveEvents": {
+    "implementation": "process-local-event-emitter",
+    "replay": false,
+    "authority": "cache-hint-only"
+  },
+  "pluginSdk": {
+    "jsonRpc": true,
+    "capabilities": true,
+    "events": true,
+    "jobs": true,
+    "tools": true,
+    "state": true,
+    "sameOriginUiIsSecurityBoundary": false
+  },
+  "errors": {
+    "envelope": "error-code-optional",
+    "stableCodeCoverage": "partial",
+    "directEnglishErrorResponsesObserved": 492
+  },
+  "dependencyAudit": {
+    "tool": "corepack pnpm@9.15.4 audit --prod --json",
+    "observedAt": "2026-08-18",
+    "critical": 1,
+    "high": 35,
+    "moderate": 53,
+    "low": 10
+  },
+  "admission": {
+    "architectureApproved": true,
+    "productionApproved": false,
+    "blockers": [
+      "critical-and-high-production-dependency-findings",
+      "live-pinned-service-contract-suite-not-yet-complete",
+      "migration-backup-rollback-rehearsal-not-yet-complete",
+      "stable-error-codes-partial"
+    ]
+  }
+}

@@ -20,3 +20,9 @@ The pinned manifest is `paperclip-versions.json`. Live upstream execution is an
 admission-runner concern; repository verification validates the manifest and
 Company OS fixtures without credentials or network access.
 
+`paperclip-required-contract.json` is the minimum Company OS seam. Each admitted
+or candidate tag has one auditable snapshot under `snapshots/`. Setting a
+candidate in `paperclip-versions.json` without its snapshot fails verification;
+promotion is forbidden while its snapshot reports critical/high dependency
+findings or missing production gates. These snapshots record code/live-runner
+evidence but never replace the live pinned-image admission suite.

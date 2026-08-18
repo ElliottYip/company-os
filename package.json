@@ -14,7 +14,8 @@
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
     "check:boundaries": "node scripts/check-boundaries.mjs",
-    "check:upstreams": "node scripts/check-upstream-governance.mjs",
+    "check:compatibility": "node scripts/check-paperclip-compatibility.mjs",
+    "check:upstreams": "node scripts/check-upstream-governance.mjs && npm run check:compatibility",
     "build": "vite build --config web/vite.config.mjs",
     "verify": "npm test && npm run check:boundaries && npm run check:upstreams && npm run typecheck && npm run build"
   },
