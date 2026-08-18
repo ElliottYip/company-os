@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "agent-compiler",
+    "repository": "https://github.com/thetpmguy/agent-compiler",
+    "branch": "main",
+    "tag": null,
+    "commit": "81f1e81ba5d82ed38408bba09e0c104209c1d9cc",
+    "actualCommit": "81f1e81ba5d82ed38408bba09e0c104209c1d9cc",
+    "license": "NOASSERTION-no-license-file",
+    "licenseFile": null,
+    "trackedPathCount": 9,
+    "commitCountAtPin": 7,
+    "latestCommit": "2025-12-31T00:33:27-08:00\tthetpmguy\tUpdate README.md"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.DS_Store",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:backend",
+      "pathCount": 3,
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:CONTRIBUTING.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:examples",
+      "pathCount": 2,
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 4,
+      "unitIds": [
+        "area:.DS_Store",
+        "area:.gitignore",
+        "area:CONTRIBUTING.md",
+        "area:README.md"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "backend",
+      "pathCount": 2,
+      "unitIds": [
+        "area:backend"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "backend/app",
+      "pathCount": 1,
+      "unitIds": [
+        "area:backend"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "examples/support-agent",
+      "pathCount": 2,
+      "unitIds": [
+        "area:examples"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".DS_Store",
+      "unitId": "area:.DS_Store",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "unitId": "area:CONTRIBUTING.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "backend/.DS_Store",
+      "unitId": "area:backend",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "backend/app/main.py",
+      "unitId": "area:backend",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "unitId": "area:backend",
+      "classification": "configuration-or-metadata",
+      "extension": ".txt"
+    },
+    {
+      "path": "examples/support-agent/compiled_plan.json",
+      "unitId": "area:examples",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "examples/support-agent/intent.yaml",
+      "unitId": "area:examples",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    }
+  ]
+}

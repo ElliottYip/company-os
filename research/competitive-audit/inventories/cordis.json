@@ -1,0 +1,1270 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "cordis",
+    "repository": "https://github.com/cordiverse/cordis",
+    "branch": "main",
+    "tag": null,
+    "commit": "8cc9e33fab69e2d0476d126baaf2acb24e6a6ab4",
+    "actualCommit": "8cc9e33fab69e2d0476d126baaf2acb24e6a6ab4",
+    "license": "MIT",
+    "licenseFile": "LICENSE",
+    "trackedPathCount": 112,
+    "commitCountAtPin": 550,
+    "latestCommit": "2026-08-13T21:48:18+08:00\tShigma\tchore: update readme (#45)"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.editorconfig",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.eslintignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.eslintrc.yml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitattributes",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.github",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.nycrc.json",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.yarnrc.yml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:LICENSE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:package.json",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:tsconfig.base.json",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:tsconfig.json",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:tsconfig.test.json",
+      "pathCount": 1,
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "id": "area:vitest.config.ts",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:yakumo.yml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "packages:core/_root",
+      "pathCount": 13,
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "first-party-source": 10,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "id": "packages:core/tests",
+      "pathCount": 14,
+      "classifications": {
+        "test-eval-or-fixture": 14
+      }
+    },
+    {
+      "id": "packages:create/_root",
+      "pathCount": 6,
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1,
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "packages:group/_root",
+      "pathCount": 3,
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "packages:hmr/_root",
+      "pathCount": 5,
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "packages:hmr/locales",
+      "pathCount": 2,
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "id": "packages:hmr/tests",
+      "pathCount": 14,
+      "classifications": {
+        "test-eval-or-fixture": 14
+      }
+    },
+    {
+      "id": "packages:include/_root",
+      "pathCount": 3,
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "packages:include/tests",
+      "pathCount": 5,
+      "classifications": {
+        "test-eval-or-fixture": 5
+      }
+    },
+    {
+      "id": "packages:loader/_root",
+      "pathCount": 5,
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2,
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "packages:loader/config",
+      "pathCount": 5,
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "id": "packages:loader/tests",
+      "pathCount": 5,
+      "classifications": {
+        "test-eval-or-fixture": 5
+      }
+    },
+    {
+      "id": "packages:logger-console/_root",
+      "pathCount": 5,
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 3
+      }
+    },
+    {
+      "id": "packages:logger-console/tests",
+      "pathCount": 2,
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "id": "packages:timer/_root",
+      "pathCount": 3,
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "packages:timer/tests",
+      "pathCount": 2,
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "id": "packages:utils/_root",
+      "pathCount": 4,
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "documentation-or-instruction": 1,
+        "first-party-source": 1
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 15,
+      "unitIds": [
+        "area:.editorconfig",
+        "area:.eslintignore",
+        "area:.eslintrc.yml",
+        "area:.gitattributes",
+        "area:.gitignore",
+        "area:.nycrc.json",
+        "area:.yarnrc.yml",
+        "area:LICENSE",
+        "area:README.md",
+        "area:package.json",
+        "area:tsconfig.base.json",
+        "area:tsconfig.json",
+        "area:tsconfig.test.json",
+        "area:vitest.config.ts",
+        "area:yakumo.yml"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 12,
+        "documentation-or-instruction": 1,
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "packages/core",
+      "pathCount": 4,
+      "unitIds": [
+        "packages:core/_root"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "first-party-source": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/core/src",
+      "pathCount": 9,
+      "unitIds": [
+        "packages:core/_root"
+      ],
+      "classifications": {
+        "first-party-source": 9
+      }
+    },
+    {
+      "path": "packages/core/tests",
+      "pathCount": 14,
+      "unitIds": [
+        "packages:core/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 14
+      }
+    },
+    {
+      "path": "packages/create",
+      "pathCount": 4,
+      "unitIds": [
+        "packages:create/_root"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/create/src",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:create/_root"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/group",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:group/_root"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/group/src",
+      "pathCount": 1,
+      "unitIds": [
+        "packages:group/_root"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/hmr",
+      "pathCount": 3,
+      "unitIds": [
+        "packages:hmr/_root"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/hmr/src",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:hmr/_root"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/hmr/src/locales",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:hmr/locales"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/hmr/tests",
+      "pathCount": 14,
+      "unitIds": [
+        "packages:hmr/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 14
+      }
+    },
+    {
+      "path": "packages/include",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:include/_root"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/include/src",
+      "pathCount": 1,
+      "unitIds": [
+        "packages:include/_root"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/include/tests",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:include/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/include/tests/fixtures",
+      "pathCount": 3,
+      "unitIds": [
+        "packages:include/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "packages/loader",
+      "pathCount": 3,
+      "unitIds": [
+        "packages:loader/_root"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/loader/src",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:loader/_root"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "packages/loader/src/config",
+      "pathCount": 5,
+      "unitIds": [
+        "packages:loader/config"
+      ],
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "packages/loader/tests",
+      "pathCount": 5,
+      "unitIds": [
+        "packages:loader/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 5
+      }
+    },
+    {
+      "path": "packages/logger-console",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:logger-console/_root"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/logger-console/src",
+      "pathCount": 3,
+      "unitIds": [
+        "packages:logger-console/_root"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "packages/logger-console/tests",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:logger-console/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/timer",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:timer/_root"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "packages/timer/src",
+      "pathCount": 1,
+      "unitIds": [
+        "packages:timer/_root"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "packages/timer/tests",
+      "pathCount": 2,
+      "unitIds": [
+        "packages:timer/tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "packages/utils",
+      "pathCount": 3,
+      "unitIds": [
+        "packages:utils/_root"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "packages/utils/src",
+      "pathCount": 1,
+      "unitIds": [
+        "packages:utils/_root"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".editorconfig",
+      "unitId": "area:.editorconfig",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".eslintignore",
+      "unitId": "area:.eslintignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".eslintrc.yml",
+      "unitId": "area:.eslintrc.yml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitattributes",
+      "unitId": "area:.gitattributes",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".github/workflows/build.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".nycrc.json",
+      "unitId": "area:.nycrc.json",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": ".yarnrc.yml",
+      "unitId": "area:.yarnrc.yml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "LICENSE",
+      "unitId": "area:LICENSE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "package.json",
+      "unitId": "area:package.json",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/core/README.md",
+      "unitId": "packages:core/_root",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "packages/core/bin.js",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "packages/core/package.json",
+      "unitId": "packages:core/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/core/src/context.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/events.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/fiber.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/index.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/logger.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/reflect.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/registry.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/service.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/src/utils.ts",
+      "unitId": "packages:core/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/associate.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/decorator.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/dispose.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/events.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/fiber.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/invoke.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/isolate.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/logger.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/plugin.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/reflect.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/service.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/shadow.spec.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tests/tsconfig.json",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/core/tests/utils.ts",
+      "unitId": "packages:core/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/core/tsconfig.json",
+      "unitId": "packages:core/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/create/.eslintrc.yml",
+      "unitId": "packages:create/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/create/README.md",
+      "unitId": "packages:create/_root",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "packages/create/package.json",
+      "unitId": "packages:create/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/create/src/bin.ts",
+      "unitId": "packages:create/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/create/src/index.ts",
+      "unitId": "packages:create/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/create/tsconfig.json",
+      "unitId": "packages:create/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/group/package.json",
+      "unitId": "packages:group/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/group/src/index.ts",
+      "unitId": "packages:group/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/group/tsconfig.json",
+      "unitId": "packages:group/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/hmr/README.md",
+      "unitId": "packages:hmr/_root",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "packages/hmr/package.json",
+      "unitId": "packages:hmr/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/hmr/src/error.ts",
+      "unitId": "packages:hmr/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/src/index.ts",
+      "unitId": "packages:hmr/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/src/locales/en-US.yml",
+      "unitId": "packages:hmr/locales",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/src/locales/zh-CN.yml",
+      "unitId": "packages:hmr/locales",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/tests/cordis-dep.yml",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/tests/cordis-error.yml",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/tests/cordis-event.yml",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/tests/cordis-multi.yml",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/tests/cordis.yml",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/hmr/tests/dep.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/index.spec.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/plugin-a.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/plugin-b.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/plugin-dep.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/plugin-error.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/plugin-event.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/plugin.ts",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/hmr/tests/tsconfig.json",
+      "unitId": "packages:hmr/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/hmr/tsconfig.json",
+      "unitId": "packages:hmr/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/include/package.json",
+      "unitId": "packages:include/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/include/src/index.ts",
+      "unitId": "packages:include/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/include/tests/fixtures/base.yml",
+      "unitId": "packages:include/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "packages/include/tests/fixtures/extra-plugin.ts",
+      "unitId": "packages:include/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/include/tests/fixtures/test-plugin.ts",
+      "unitId": "packages:include/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/include/tests/patch.spec.ts",
+      "unitId": "packages:include/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/include/tests/tsconfig.json",
+      "unitId": "packages:include/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/include/tsconfig.json",
+      "unitId": "packages:include/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/loader/README.md",
+      "unitId": "packages:loader/_root",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "packages/loader/package.json",
+      "unitId": "packages:loader/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/loader/src/config/entry.ts",
+      "unitId": "packages:loader/config",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/src/config/group.ts",
+      "unitId": "packages:loader/config",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/src/config/isolate.ts",
+      "unitId": "packages:loader/config",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/src/config/tree.ts",
+      "unitId": "packages:loader/config",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/src/config/utils.ts",
+      "unitId": "packages:loader/config",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/src/index.ts",
+      "unitId": "packages:loader/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/src/internal.ts",
+      "unitId": "packages:loader/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/tests/group.spec.ts",
+      "unitId": "packages:loader/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/tests/index.spec.ts",
+      "unitId": "packages:loader/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/tests/isolate.spec.ts",
+      "unitId": "packages:loader/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/tests/tsconfig.json",
+      "unitId": "packages:loader/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/loader/tests/utils.ts",
+      "unitId": "packages:loader/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/loader/tsconfig.json",
+      "unitId": "packages:loader/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/logger-console/package.json",
+      "unitId": "packages:logger-console/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/logger-console/src/browser.ts",
+      "unitId": "packages:logger-console/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/logger-console/src/index.ts",
+      "unitId": "packages:logger-console/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/logger-console/src/shared.ts",
+      "unitId": "packages:logger-console/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/logger-console/tests/index.spec.ts",
+      "unitId": "packages:logger-console/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/logger-console/tests/tsconfig.json",
+      "unitId": "packages:logger-console/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/logger-console/tsconfig.json",
+      "unitId": "packages:logger-console/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/timer/package.json",
+      "unitId": "packages:timer/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/timer/src/index.ts",
+      "unitId": "packages:timer/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/timer/tests/index.spec.ts",
+      "unitId": "packages:timer/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/timer/tests/tsconfig.json",
+      "unitId": "packages:timer/tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/timer/tsconfig.json",
+      "unitId": "packages:timer/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/utils/package.json",
+      "unitId": "packages:utils/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "packages/utils/readme.md",
+      "unitId": "packages:utils/_root",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "packages/utils/src/index.ts",
+      "unitId": "packages:utils/_root",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "packages/utils/tsconfig.json",
+      "unitId": "packages:utils/_root",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "tsconfig.base.json",
+      "unitId": "area:tsconfig.base.json",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "tsconfig.json",
+      "unitId": "area:tsconfig.json",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "tsconfig.test.json",
+      "unitId": "area:tsconfig.test.json",
+      "classification": "test-eval-or-fixture",
+      "extension": ".json"
+    },
+    {
+      "path": "vitest.config.ts",
+      "unitId": "area:vitest.config.ts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "yakumo.yml",
+      "unitId": "area:yakumo.yml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    }
+  ]
+}

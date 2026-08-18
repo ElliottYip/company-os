@@ -10,7 +10,11 @@ const projects = [
 ];
 const required = [
   "docs/adr/0008-independent-open-source-product.md",
+  "docs/competitive-audit-charter.md",
+  "docs/research/audit-execution-plan.md",
+  "docs/research/competitor-audit-index.md",
   "docs/upstream-capability-matrix.md",
+  "research/competitive-audit/targets.json",
   "research/paperclip/README.md",
   "research/paperclip/audit-manifest.json",
   "research/paperclip/repository-audit-protocol.md",
@@ -63,6 +67,15 @@ try {
   }
 } catch {
   errors.push("Paperclip competitive-audit manifest is missing or invalid JSON");
+}
+
+try {
+  execFileSync(process.execPath, [
+    join(root, "research/competitive-audit/generate-inventories.mjs"),
+    "--check",
+  ], { cwd: root, stdio: "pipe" });
+} catch (error) {
+  errors.push(`Competitor repository inventories are incomplete or stale: ${error.stderr?.toString().trim() || error.message}`);
 }
 
 try {

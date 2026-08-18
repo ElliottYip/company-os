@@ -72,62 +72,97 @@
     },
     {
       "id": "openspawn", "name": "OpenSpawn", "tier": 1,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": null,
-      "candidateProductUrl": "https://openspawn.ai/",
-      "identityEvidence": ["official product site claims an MIT open-source repository, but repository ownership and pin still require verification"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/openspawn/openspawn",
+      "localPath": "work/upstream-audit/openspawn",
+      "branch": "main", "tag": null,
+      "commit": "30a70886e7e13a2f750c07fb9e464cb5743ded19",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["repository README links openspawn.ai and the official site names the same OpenSpawn product", "package name @openspawn/monorepo"]
     },
     {
       "id": "org-studio", "name": "Org Studio", "tier": 1,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": null,
-      "candidateProductUrl": "https://orgstudio.dev/",
-      "identityEvidence": ["official product site exposes a GitHub entry, but repository ownership and pin still require verification"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/ToomeSauce/org-studio",
+      "localPath": "work/upstream-audit/org-studio",
+      "branch": "main", "tag": "v0.4.1",
+      "commit": "30cfffb52c1da347285472b01680c445907d0555",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["orgstudio.dev links directly to the repository", "repository package metadata links the same repository and product domain"]
     },
     {
       "id": "agent-compiler", "name": "Agent Compiler", "tier": 1,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/thetpmguy/agent-compiler",
-      "identityEvidence": ["candidate repository matches the named compile-only governance product; official ownership relationship still requires verification"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/thetpmguy/agent-compiler",
+      "localPath": "work/upstream-audit/agent-compiler",
+      "branch": "main", "tag": null,
+      "commit": "81f1e81ba5d82ed38408bba09e0c104209c1d9cc",
+      "license": "NOASSERTION-no-license-file", "licenseFile": null,
+      "identityEvidence": ["repository title and implementation match the named compile-only governance prototype"],
+      "copyRestriction": "No code copying: the repository contains no license grant at the audited pin."
     },
     {
       "id": "synthorg", "name": "SynthOrg", "tier": 1,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/Aureliolo/synthorg",
-      "candidateProductUrl": "https://synthorg.io/",
-      "identityEvidence": ["product and repository cross-reference each other; exact pin and BUSL-1.1 terms still require verification"],
-      "copyRestriction": "Treat as source-available, not open source, until the exact license grant and change date are reviewed."
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/Aureliolo/synthorg",
+      "localPath": "work/upstream-audit/synthorg",
+      "branch": "main", "tag": "v0.9.4-dev.138",
+      "commit": "55cb552b98433df6fcc53c27c97daebbe39f3908",
+      "license": "BUSL-1.1-change-to-Apache-2.0-2029-07-08", "licenseFile": "LICENSE",
+      "identityEvidence": ["repository and synthorg.io cross-reference each other"],
+      "copyRestriction": "Source-available, not OSI open source at the audited pin. Competing hosted, managed or embedded use is prohibited; Company OS must not copy code under the current license."
     },
     {
       "id": "deepseek-harness", "name": "DeepSeek Harness", "tier": 2,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/deepseek-ai/deepseek-harness",
-      "identityEvidence": ["official organization candidate found; exact repository availability, pin and license must be verified directly"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "localPath": "work/upstream-audit/deepseek-harness",
+      "branch": "master", "tag": "dsh-v0.1.0-rc.7",
+      "commit": "99f6f02fecdb7dff40c3fbc9470f5907c29f74ca",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["DeepSeek-owned repository, README clone instructions and @deepseek-ai package names agree"]
     },
     {
       "id": "cordis", "name": "Cordis", "tier": 2,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/cordiverse/cordis",
-      "identityEvidence": ["official npm package metadata points to this repository; relationship to DeepSeek Harness must be verified in source"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/cordiverse/cordis",
+      "localPath": "work/upstream-audit/cordis",
+      "branch": "main", "tag": null,
+      "commit": "8cc9e33fab69e2d0476d126baaf2acb24e6a6ab4",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["official npm metadata points to the repository", "DeepSeek Harness README names the same Cordis repository as its foundation"]
     },
     {
       "id": "compozyos", "name": "CompozyOS", "tier": 2,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/compozy/compozy",
-      "candidateProductUrl": "https://www.compozy.com/",
-      "identityEvidence": ["official product site and repository cross-reference; stable beta pin and license require verification"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/compozy/compozy",
+      "localPath": "work/upstream-audit/compozyos",
+      "branch": "main", "tag": "sdk/go/v0.3.0-beta.17",
+      "commit": "86e92b6d63aa7976c3c0ffcb69eb11e69a570257",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["official product site and repository cross-reference", "Go module is github.com/compozy/compozy"]
     },
     {
       "id": "smythos-sre", "name": "SmythOS SRE", "tier": 2,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/SmythOS/sre",
-      "identityEvidence": ["official product pages and package metadata point to this repository; exact pin and license map require verification"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/SmythOS/sre",
+      "localPath": "work/upstream-audit/smythos-sre",
+      "branch": "main", "tag": null,
+      "commit": "5c382a1ec07accc75947c3e4fa24841532ae7c88",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["official SmythOS product pages and npm metadata point to the repository"],
+      "copyRestriction": "Do not copy SmythOS trademark or any proprietary modules referenced by NOTICE.md."
     },
     {
       "id": "juggler", "name": "Juggler", "tier": 2,
-      "identityStatus": "DISCOVERY_IN_PROGRESS",
-      "candidateRepository": "https://github.com/juggler-ai/juggler",
-      "identityEvidence": ["official product repository found; submodules and split AGPL-3.0-or-later/Apache-2.0 surfaces require exact mapping"]
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/juggler-ai/juggler",
+      "localPath": "work/upstream-audit/juggler",
+      "branch": "develop", "tag": null,
+      "commit": "ada4754c7230280c2172c87d2882997ef36a50c7",
+      "license": "AGPL-3.0-or-later-except-Apache-2.0-web-sdk-and-web-extensions", "licenseFile": "LICENSING.md",
+      "identityEvidence": ["repository README links juggler.studio and official releases"],
+      "copyRestriction": "Application code is AGPL-3.0-or-later. Only web/sdk and web/extensions are Apache-2.0; the uninitialized 3rdparty/wails submodule is separately owned and must be audited independently."
     },
     {
       "id": "beanos-blueprint", "name": "BeanOS Blueprint", "tier": 2,
@@ -173,7 +208,7 @@
       "identityEvidence": ["repository product statement identifies the human control plane in scope"]
     },
     {
-      "id": "openworker", "name": "OpenWorker", "tier": 2,
+      "id": "openworker", "name": "OpenWorker", "tier": 1,
       "identityStatus": "CONFIRMED",
       "repository": "https://github.com/openworker-io/openworker",
       "localPath": "work/upstream-audit/openworker", "branch": "main",

@@ -35,20 +35,20 @@ or enter 3D production. Existing correct Company OS boundaries are preserved.
 | StaffDeck | confirmed and pinned | zero-gap whole repository |
 | Provision | confirmed and pinned | zero-gap whole repository |
 | OpenWorker | confirmed and pinned; license text missing | zero-gap whole repository; no code copy |
-| OpenSpawn | official product found; repository pin pending | zero-gap after identity and license verification |
-| Org Studio | official product found; repository pin pending | zero-gap after identity and license verification |
-| Agent Compiler | candidate repository found; ownership proof pending | zero-gap if identity is confirmed |
-| SynthOrg | candidate repository found; BUSL constraints require verification | zero-gap, source-available kept separate from open source |
+| OpenSpawn | confirmed, pinned, MIT | zero-gap whole repository |
+| Org Studio | confirmed, pinned at `v0.4.1`, MIT | zero-gap whole repository |
+| Agent Compiler | confirmed, pinned, no license grant | zero-gap; no code copying |
+| SynthOrg | confirmed, pinned, BUSL-1.1 until 2029-07-08 | zero-gap; source-available kept separate from open source and no code copying |
 
 ### Runtime, plugin and Company-as-Code references
 
 | Project | Current identity state | Required depth |
 |---|---|---|
-| DeepSeek Harness | official repository candidate found; exact pin pending | whole-repository inventory and runtime/plugin call chains |
-| Cordis | official package metadata points to `cordiverse/cordis`; pin pending | framework lifecycle, isolation and plugin ownership |
-| CompozyOS | official repository candidate found; beta pin pending | daemon state, permissions, sessions, events and extension boundaries |
-| SmythOS SRE | official product/package points to `SmythOS/sre`; pin pending | runtime/API/provider/storage abstractions and license map |
-| Juggler | official repository found; split AGPL/Apache license map pending | session document, approvals, plugins, headless/mobile and deployment |
+| DeepSeek Harness | confirmed, pinned at `dsh-v0.1.0-rc.7`, MIT | whole-repository inventory and runtime/plugin call chains |
+| Cordis | confirmed, pinned, MIT | framework lifecycle, isolation and plugin ownership |
+| CompozyOS | confirmed, pinned at current beta commit, MIT | daemon state, permissions, sessions, events and extension boundaries |
+| SmythOS SRE | confirmed, pinned, MIT plus trademark/proprietary exclusions | runtime/API/provider/storage abstractions and license map |
+| Juggler | confirmed, pinned, AGPL app with Apache SDK/extensions | session document, approvals, plugins, headless/mobile and deployment |
 | BeanOS Blueprint | public blueprint confirmed; linked code not yet established | public architecture audit; code audit only for proven linked repositories |
 
 ### Previously admitted comparison set

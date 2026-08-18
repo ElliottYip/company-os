@@ -1,0 +1,5576 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "org-studio",
+    "repository": "https://github.com/ToomeSauce/org-studio",
+    "branch": "main",
+    "tag": "v0.4.1",
+    "commit": "30cfffb52c1da347285472b01680c445907d0555",
+    "actualCommit": "30cfffb52c1da347285472b01680c445907d0555",
+    "license": "MIT",
+    "licenseFile": "LICENSE",
+    "trackedPathCount": 659,
+    "commitCountAtPin": 540,
+    "latestCommit": "2026-07-30T19:10:11-04:00\tHenry Toome\trelease: align vision and harden v0.4.1 (#111)"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.dockerignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.env.example",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.github",
+      "pathCount": 5,
+      "classifications": {
+        "documentation-or-instruction": 2,
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.trash",
+      "pathCount": 9,
+      "classifications": {
+        "first-party-source": 8,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:app.log",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:backups",
+      "pathCount": 89,
+      "classifications": {
+        "configuration-or-metadata": 89
+      }
+    },
+    {
+      "id": "area:BEFORE_AFTER_ANALYSIS.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:bin",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:CHANGELOG.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:CHROME_RELAY_TEST_REPORT.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:CONTRIBUTING.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:data",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:Dockerfile",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:docs",
+      "pathCount": 27,
+      "classifications": {
+        "documentation-or-instruction": 25,
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "id": "area:E2E_TEST_REPORT.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:eslint.config.mjs",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:lib",
+      "pathCount": 10,
+      "classifications": {
+        "first-party-source": 9,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:LICENSE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:LOCAL_TESTING_EVIDENCE.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:middleware.ts",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:migrations",
+      "pathCount": 2,
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "area:next.config.ts",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:package-lock.json",
+      "pathCount": 1,
+      "classifications": {
+        "lockfile": 1
+      }
+    },
+    {
+      "id": "area:package.json",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:postcss.config.mjs",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:public",
+      "pathCount": 7,
+      "classifications": {
+        "asset-or-binary": 6,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:READY_FOR_DEPLOYMENT.txt",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:schema",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:scripts",
+      "pathCount": 92,
+      "classifications": {
+        "first-party-source": 92
+      }
+    },
+    {
+      "id": "area:server.mjs",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:skills",
+      "pathCount": 3,
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "id": "area:src",
+      "pathCount": 386,
+      "classifications": {
+        "test-eval-or-fixture": 112,
+        "first-party-source": 274
+      }
+    },
+    {
+      "id": "area:test-regex.js",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:test-signals.sh",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:test-version-utils.mjs",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:tsconfig.json",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:vitest.config.ts",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 26,
+      "unitIds": [
+        "area:.dockerignore",
+        "area:.env.example",
+        "area:.gitignore",
+        "area:BEFORE_AFTER_ANALYSIS.md",
+        "area:CHANGELOG.md",
+        "area:CHROME_RELAY_TEST_REPORT.md",
+        "area:CONTRIBUTING.md",
+        "area:Dockerfile",
+        "area:E2E_TEST_REPORT.md",
+        "area:LICENSE",
+        "area:LOCAL_TESTING_EVIDENCE.md",
+        "area:README.md",
+        "area:READY_FOR_DEPLOYMENT.txt",
+        "area:app.log",
+        "area:eslint.config.mjs",
+        "area:middleware.ts",
+        "area:next.config.ts",
+        "area:package-lock.json",
+        "area:package.json",
+        "area:postcss.config.mjs",
+        "area:server.mjs",
+        "area:test-regex.js",
+        "area:test-signals.sh",
+        "area:test-version-utils.mjs",
+        "area:tsconfig.json",
+        "area:vitest.config.ts"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 9,
+        "documentation-or-instruction": 7,
+        "first-party-source": 9,
+        "lockfile": 1
+      }
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 3,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": ".trash",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.trash"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal",
+      "pathCount": 5,
+      "unitIds": [
+        "area:.trash"
+      ],
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/dms",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.trash"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/dms/[threadId]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.trash"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".trash/2026-04-20-flag-cleanup",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.trash"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "backups",
+      "pathCount": 89,
+      "unitIds": [
+        "area:backups"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 89
+      }
+    },
+    {
+      "path": "bin",
+      "pathCount": 1,
+      "unitIds": [
+        "area:bin"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "data",
+      "pathCount": 1,
+      "unitIds": [
+        "area:data"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "docs",
+      "pathCount": 13,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 13
+      }
+    },
+    {
+      "path": "docs/audits",
+      "pathCount": 3,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "docs/decisions",
+      "pathCount": 5,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 5
+      }
+    },
+    {
+      "path": "docs/design",
+      "pathCount": 3,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "docs/examples",
+      "pathCount": 1,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "docs/images",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "asset-or-binary": 2
+      }
+    },
+    {
+      "path": "lib",
+      "pathCount": 10,
+      "unitIds": [
+        "area:lib"
+      ],
+      "classifications": {
+        "first-party-source": 9,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "migrations",
+      "pathCount": 2,
+      "unitIds": [
+        "area:migrations"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "public",
+      "pathCount": 6,
+      "unitIds": [
+        "area:public"
+      ],
+      "classifications": {
+        "asset-or-binary": 6
+      }
+    },
+    {
+      "path": "public/proto-idea-pipeline",
+      "pathCount": 1,
+      "unitIds": [
+        "area:public"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "schema",
+      "pathCount": 1,
+      "unitIds": [
+        "area:schema"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "scripts",
+      "pathCount": 92,
+      "unitIds": [
+        "area:scripts"
+      ],
+      "classifications": {
+        "first-party-source": 92
+      }
+    },
+    {
+      "path": "skills/org-studio-api",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "skills/org-studio-api/references",
+      "pathCount": 2,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "src",
+      "pathCount": 2,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "src/__tests__",
+      "pathCount": 77,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 77
+      }
+    },
+    {
+      "path": "src/app",
+      "pathCount": 3,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "src/app/(dashboard)",
+      "pathCount": 2,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/activity",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/admin/notification-health",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/agents",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/calendar",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/context",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/cron",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/docs",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/health",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/memory",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/performance",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/projects",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/projects/[id]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/projects/[id]/ledger",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/scheduler",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/settings",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/system",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/tasks",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/team",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/usage",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/(dashboard)/vision",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/activity-feed",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/activity-status",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/audit",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/backfill-metrics",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/migrate-roadmap",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/notification-health",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/roadmap-audit",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/tokens",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/admin/tokens/[id]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/agent/bootstrap-ping",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/alive",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/auth/login",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/auth/logout",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/auth/users",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/backups",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/dispatch-health/[agentId]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/docs",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/gateway",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/health",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/health/pubsub",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/health/roadmap",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/kudos",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/memory",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/memory/search",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/[agentId]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/agent-comparison",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/coaching-insights",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/cultural-alignment",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/quality-scorecard",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/team",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/team-health",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/metrics/weekly-digest",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/notify/comment",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/observability",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/observability/costs",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/observability/host",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/observability/schedules",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/observability/worker-receipts/[ticketNumber]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/observability/worker-scorecard",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/org-context",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/org-context/refreshes",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/outbox/drain",
+      "pathCount": 2,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/ping",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/projects/[id]/repo-context",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/roadmap",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/health",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/versions/[version]/items",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/versions/[version]/items/[itemId]/ticket",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/roadmap/reconcile",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/runtimes",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/scheduler",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/scheduler/pause-watchdog",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/scheduler/status",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/settings/storage",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/signals",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/skill-install-ping",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/stats/[agentId]",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/store",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/[id]/approve",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/[id]/complete",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/[id]/doc",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/[id]/launch",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/[id]/propose",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/[id]/reject",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/vision/callback",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/webhooks/health-alerts",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/api/workspaces",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/dashboard",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/app/login",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/components",
+      "pathCount": 38,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 38
+      }
+    },
+    {
+      "path": "src/components/dashboard",
+      "pathCount": 4,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "src/components/ledger",
+      "pathCount": 1,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "src/lib",
+      "pathCount": 135,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 104,
+        "test-eval-or-fixture": 31
+      }
+    },
+    {
+      "path": "src/lib/embedding",
+      "pathCount": 7,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "src/lib/messaging",
+      "pathCount": 6,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "src/lib/runtimes",
+      "pathCount": 8,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 7,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "src/lib/workers",
+      "pathCount": 12,
+      "unitIds": [
+        "area:src"
+      ],
+      "classifications": {
+        "first-party-source": 12
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".dockerignore",
+      "unitId": "area:.dockerignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".env.example",
+      "unitId": "area:.env.example",
+      "classification": "configuration-or-metadata",
+      "extension": ".example"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "unitId": "area:.github",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "unitId": "area:.github",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".github/workflows/vision-sync.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".github/workflows/worker-job.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/BoardChat.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/ChatThread.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/DmSidebar.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/NewDmButton.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/ProjectChat.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/dms/[threadId]/page.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-dms-removal/dms/page.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/2026-04-20-flag-cleanup/FeatureFlagsSection.tsx",
+      "unitId": "area:.trash",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": ".trash/app-page.tsx.removed",
+      "unitId": "area:.trash",
+      "classification": "configuration-or-metadata",
+      "extension": ".removed"
+    },
+    {
+      "path": "BEFORE_AFTER_ANALYSIS.md",
+      "unitId": "area:BEFORE_AFTER_ANALYSIS.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "unitId": "area:CHANGELOG.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CHROME_RELAY_TEST_REPORT.md",
+      "unitId": "area:CHROME_RELAY_TEST_REPORT.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "unitId": "area:CONTRIBUTING.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "Dockerfile",
+      "unitId": "area:Dockerfile",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "E2E_TEST_REPORT.md",
+      "unitId": "area:E2E_TEST_REPORT.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "LICENSE",
+      "unitId": "area:LICENSE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "LOCAL_TESTING_EVIDENCE.md",
+      "unitId": "area:LOCAL_TESTING_EVIDENCE.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "READY_FOR_DEPLOYMENT.txt",
+      "unitId": "area:READY_FOR_DEPLOYMENT.txt",
+      "classification": "configuration-or-metadata",
+      "extension": ".txt"
+    },
+    {
+      "path": "app.log",
+      "unitId": "area:app.log",
+      "classification": "configuration-or-metadata",
+      "extension": ".log"
+    },
+    {
+      "path": "backups/migration-2026-04-19T17-39-48-193Z.log",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".log"
+    },
+    {
+      "path": "backups/migration-2026-04-19T17-40-33-865Z.log",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".log"
+    },
+    {
+      "path": "backups/migration-2026-04-19T17-41-10-889Z.log",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".log"
+    },
+    {
+      "path": "backups/pre-1112-pr4-2026-04-24T02-37-57-001Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-approvedThrough-semver-2026-04-19T23-08-12-712Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-approvedThrough-semver-2026-04-19T23-08-16-388Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-backfill-sort-order-2026-04-20T20-43-19-926Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-consolidate-approved-2026-04-20T02-34-35-525Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-consolidate-approved-2026-04-20T02-34-39-867Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-drop-top-approvedThrough-2026-04-20T02-59-21-099Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-fix-1.05.0-2026-04-20T12-34-29-466Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-phase3-memberships-2026-04-20T20-50-33-224Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-roadmap-semver-2026-04-19T23-08-12-712Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-roadmap-semver-2026-04-19T23-08-16-388Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-semver-2026-04-19T17-40-33-865Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-semver-2026-04-19T17-41-10-889Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T16-39-44-200Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T16-39-44-202Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T16-41-03-110Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T16-41-03-112Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T23-17-49-593Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T23-17-49-594Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T23-49-24-072Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T23-49-24-073Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-21T23-55-11-961Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-07-48-661Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-07-48-662Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-48-46-374Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-48-46-376Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-51-38-109Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-51-38-110Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-56-11-388Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-56-11-389Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-58-08-314Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T00-58-08-317Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-02-04-275Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-02-04-276Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-04-37-572Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-04-37-573Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-30-23-944Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-30-23-945Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-51-36-446Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-51-36-447Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-53-21-056Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-58-38-787Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T01-58-38-789Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-00-47-847Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-09-22-845Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-09-22-848Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-16-19-746Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-16-19-748Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-26-45-915Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T02-26-45-918Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T03-13-17-363Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T13-11-17-460Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T13-11-17-461Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T13-20-15-217Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T13-20-15-219Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T20-09-44-797Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T20-09-44-798Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T21-13-43-630Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T21-13-43-631Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T21-16-11-530Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T21-20-42-669Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T21-20-42-671Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T23-43-14-461Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-22T23-43-14-463Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T03-00-37-900Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T03-00-37-901Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T03-01-25-707Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T03-01-25-708Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-05-48-307Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-05-48-310Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-08-54-342Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-08-54-343Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-09-36-853Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-09-36-854Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-09-56-909Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T11-09-56-910Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T14-27-15-396Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T14-27-15-397Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T14-37-53-290Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T14-37-53-292Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T14-50-14-358Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T14-50-14-359Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T16-00-56-150Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T16-00-56-151Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-state-unification-2026-04-23T16-02-18-900Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "backups/pre-strip-shadow-keys-2026-04-23T11-04-11-056Z.json",
+      "unitId": "area:backups",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "bin/org-studio.js",
+      "unitId": "area:bin",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "data/store.example.json",
+      "unitId": "area:data",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "docs/agent-api.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/architecture.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/audits/1387-multitenant-audit.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/audits/1387-slice-a-decisions.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/audits/1388-a4-schema-migration.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/configuration.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/decisions/2026-04-19-version-numbering-convention.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/decisions/2026-04-21-silent-drift-audit.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/decisions/2026-04-22-calver-migration.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/decisions/2026-05-29-two-version-schemes.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/decisions/2026-07-16-materialyze-separation.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/design/execution-workers.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/design/teams-adapter.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/design/vision-launch-model.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/examples/openai-compatible-worker.json",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".json"
+    },
+    {
+      "path": "docs/getting-started.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/guide.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/images/demo.gif",
+      "unitId": "area:docs",
+      "classification": "asset-or-binary",
+      "extension": ".gif"
+    },
+    {
+      "path": "docs/images/hero-team.png",
+      "unitId": "area:docs",
+      "classification": "asset-or-binary",
+      "extension": ".png"
+    },
+    {
+      "path": "docs/messaging-setup.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/performance-report.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/performance.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/remote-agent-quickstart.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/telegram-migration.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/vision-cycles.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/vision.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/workspace-auth.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "unitId": "area:eslint.config.mjs",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/health-alerts.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/heartbeats.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/host-sampler.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/leash-block.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/outbox.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/runtime-ownership.d.mts",
+      "unitId": "area:lib",
+      "classification": "configuration-or-metadata",
+      "extension": ".mts"
+    },
+    {
+      "path": "lib/runtime-ownership.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/runtimes.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/skill-installs.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "lib/webhook-auth.mjs",
+      "unitId": "area:lib",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "middleware.ts",
+      "unitId": "area:middleware.ts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "migrations/1388-a4-schema-workspace-id-conflict-keys.mjs",
+      "unitId": "area:migrations",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "migrations/1461-roadmap-version-invariants.mjs",
+      "unitId": "area:migrations",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "next.config.ts",
+      "unitId": "area:next.config.ts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "package-lock.json",
+      "unitId": "area:package-lock.json",
+      "classification": "lockfile",
+      "extension": ".json"
+    },
+    {
+      "path": "package.json",
+      "unitId": "area:package.json",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "unitId": "area:postcss.config.mjs",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "public/favicon.svg",
+      "unitId": "area:public",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "public/file.svg",
+      "unitId": "area:public",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "public/globe.svg",
+      "unitId": "area:public",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "public/next.svg",
+      "unitId": "area:public",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "public/proto-idea-pipeline/index.html",
+      "unitId": "area:public",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "public/vercel.svg",
+      "unitId": "area:public",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "public/window.svg",
+      "unitId": "area:public",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "schema/org-studio-schema.json",
+      "unitId": "area:schema",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "scripts/862-remove-qa-column.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/863-stress-ticket-numbers.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/948-chain-test.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/add-metrics-section-id.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/add-version-column.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/add-version-meta-column.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/audit-semver.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/audit-version-approval.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/backfill-1531-status-drift.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/backfill-azure-embeddings.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/backfill-embeddings.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/backfill-metrics.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/backfill-possibly-shipped.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/backfill-project-doc-items.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/backfill-roadmap-sort-order.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/backfill-ticket-numbers.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/backfill-version-owner.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/build-skill.sh",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "scripts/check-garage.cjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".cjs"
+    },
+    {
+      "path": "scripts/check-version-schemes.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/check-vision-sync.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/collapse-qa-to-rolling-version.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/consolidate-approved-through.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/deploy.sh",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "scripts/dispatch-parity-1534.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/generate-semver-map.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/hydrate-component-versions.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/link-qa-tasks-to-versions.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-api-tokens-table.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-approved-versions.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-comments-table.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-embeddings.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-metrics.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-per-component-roadmaps.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-performance.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-project-state.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-qa-projects.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-remove-approvedthrough.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-roadmap.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-semver-part2.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-semver.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-task-kind.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-task-sort-order.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-test-fixtures.cjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".cjs"
+    },
+    {
+      "path": "scripts/migrate-thrivor-versions.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-to-calver.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-to-postgres.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-to-postgres.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/migrate-version-type.sql",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "scripts/migrate-versioned-ownership.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-vision-docs.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/migrate-workspace-id-phase2.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-workspace-id-phase3-notnull.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/migrate-workspace-id.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/noise-check.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/normalize-assignees.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/normalize-roadmap-sort-orders.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/probe-resolveagent-1353.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/reconcile-project-integrity.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/record-demo.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/refresh-schema-manifest.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/rename-proj-mc-to-proj-org-studio.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/report-status.sh",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "scripts/restore-versions-from-backup.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/run-migrate-comments.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/seed-proj-ops-v0-1.cjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".cjs"
+    },
+    {
+      "path": "scripts/seed-workspace-memberships.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/sim-dead-claim-1352.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/sim-enforcement-1352.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/sim-escalation-1352.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/strip-approvedthrough-direct.cjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".cjs"
+    },
+    {
+      "path": "scripts/strip-shadow-keys.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/strip-task-priority.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/strip-vision-roadmaps.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/sync-skills.sh",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "scripts/test-auto-unblock.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-blocked-in-dispatch.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-blocked-in-dispatch.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/test-components-pr1.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-health-alerts.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-hook-e2e.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/test-incident-emission.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-matcher-1349.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/test-mention-dispatch.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-mention-parsing.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-pr4-migration.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-workspace-auth.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/test-workspace-isolation.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "scripts/verify-1529-slim-parity.ts",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "scripts/verify-comments-migration.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/verify-dual-write.js",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "scripts/worker-spike.mjs",
+      "unitId": "area:scripts",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "server.mjs",
+      "unitId": "area:server.mjs",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "skills/org-studio-api/SKILL.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/org-studio-api/references/api-reference.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/org-studio-api/references/metrics-reference.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "src/__tests__/addComment-validation.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/admin-audit.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/agent-control-gate-1623.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/auth-cookie-validation-1619.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/auto-promote-approved-versions.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/autonomy-budget.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/autonomy-panel-math.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/azure-provider.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/blocked-gate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/budget-gate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/comment-audit.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/components-waitsfor.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/cost-analytics-1644.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/dispatch-attempts.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/dispatch-breaker-1643.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/dispatch-gate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/dispatch-ledger-1641.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/domain-steward.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/done-but-unmet.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/embedding-core.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/engine-openai-compat.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/get-effective-owner.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/get-tasks-for-agent-1534.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/health-alerts-webhook-1621.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/health-webhook-auth-1621.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/host-profile.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/indexer.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/launch-already-current-1594.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/launch-message.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/launch-prep.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/leash-block.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/list-comments-shorthand-1536.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/loop-safety.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/manual-shipped-auto-advance.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/memory-search.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/messaging-commands.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/messaging-registry.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/messaging-slack.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/messaging-telegram.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/metric-source.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/metrics-comments-bigint-1649.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/model-tier.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/onboarding-legibility-1609.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/onboarding-recovery-1607.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/onboarding-step-view-1608.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/org-generator.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/outcome-bound-versions.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/planner.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/precedent.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/project-page-components.test.tsx",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/__tests__/promote-refusal-1646.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/provisioning.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/read-gate-1624.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/repo-context.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/resolve-agent-model-1353.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/resolve-section-id.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/route-tier.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/runtime-audit-1353.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/runtime-metadata-1353.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/schedule-registry-1642.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/scheduler.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/sequential-gate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/sql-schema-guard-1647.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/start-button-gate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/status-drift-1531.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/status-transition-invariant.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/store-logic.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/store-service-1645.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/sync-skills-1537.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/task-creation-guardrails.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/updateTask-validation.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/weekly-digest-1694.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/worker-pipeline-receipt-route.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/worker-pipeline-receipt.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/worker-runtime.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/worker-scorecard.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/__tests__/workspace-id-backfill-1622.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/(dashboard)/activity/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/admin/notification-health/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/agents/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/calendar/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/context/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/cron/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/docs/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/health/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/layout.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/memory/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/performance/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/projects/[id]/ledger/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/projects/[id]/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/projects/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/scheduler/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/settings/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/system/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/tasks/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/team/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/usage/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/(dashboard)/vision/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/api/activity-feed/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/activity-status/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/audit/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/backfill-metrics/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/migrate-roadmap/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/notification-health/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/roadmap-audit/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/tokens/[id]/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/admin/tokens/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/agent/bootstrap-ping/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/alive/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/auth/login/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/auth/logout/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/auth/users/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/backups/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/dispatch-health/[agentId]/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/docs/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/gateway/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/health/pubsub/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/health/roadmap/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/health/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/kudos/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/memory/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/memory/search/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/[agentId]/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/agent-comparison/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/coaching-insights/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/cultural-alignment/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/quality-scorecard/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/team-health/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/team/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/metrics/weekly-digest/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/notify/comment/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/observability/costs/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/observability/host/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/observability/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/observability/schedules/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/observability/worker-receipts/[ticketNumber]/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/observability/worker-scorecard/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/org-context/refreshes/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/org-context/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/outbox/drain/route.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/outbox/drain/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/ping/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/projects/[id]/repo-context/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/health/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/versions/[version]/items/[itemId]/ticket/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/roadmap/[projectId]/versions/[version]/items/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/roadmap/reconcile/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/roadmap/version-rename.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/runtimes/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/scheduler/pause-watchdog/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/scheduler/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/scheduler/status/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/settings/storage/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/signals/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/skill-install-ping/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/stats/[agentId]/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/store/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/[id]/approve/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/[id]/complete/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/[id]/doc/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/[id]/launch/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/[id]/propose/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/[id]/reject/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/vision/callback/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/webhooks/health-alerts/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/api/workspaces/route.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/app/dashboard/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/globals.css",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".css"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/app/ledger.css",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".css"
+    },
+    {
+      "path": "src/app/login/page.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/ActivityTimeline.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/AgentComparisonSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/ApiTokensSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/ArchiveModal.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/BootstrapDriftSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/CostAnalyticsSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/CulturalAlignmentSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/ForceGraph.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/GatewayNotice.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/GiveKudosModal.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/KudosBoard.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/KudosLeaderboard.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/OnboardingWizard.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/OrgRefreshSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/PageHeader.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/PersonCardStats.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/PingPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/QualityScorecardSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/RoadmapEditor.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/RoadmapTaskCreator.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/RoadmapWithApprovalHorizon.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/RunHistoryPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/SettingsModal.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/Sidebar.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/SkillFreshnessSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/SolarSystem.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/StatusCard.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/SuggestedFeedbackSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/TaskDetailPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/TeamHealthSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/TeamPerformanceSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/TeammateDetailPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/TeammateEditor.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/ThemeProvider.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/TopBar.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/VisionDetailPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/WeeklyDigestSection.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/WorkspaceSwitcher.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/dashboard/AutonomyPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/dashboard/DispatchHealthBanner.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/dashboard/ProjectDashboardPage.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/dashboard/ProjectSettingsPanel.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/components/ledger/LedgerProjectPage.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/instrumentation.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/add-comment-validation.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/api-tokens.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/api-tokens.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/archived-project-compat.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/archived-project-compat.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/auth.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/autonomy-budget.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/autonomy-panel-math.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/blocked-gate.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/blocker-filters.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/blocker-filters.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/bootstrap-pings.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/budget-alerts.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/budget-gate.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/budget-spend.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/canonicalize-teammate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/canonicalize-teammate.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/claim-contract.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/claim-contract.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/coaching-insights.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/component-helpers-approved-versions.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/component-helpers.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/cost-analytics.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/device-identity.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/dispatch-attempts.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/dispatch-breaker.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/dispatch-gate.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/dispatch-gate.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/dispatch-ledger.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/dm.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/domain-steward.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/done-but-unmet.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/duplicate-matcher.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/azure-provider.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/corpus.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/indexer.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/pipeline.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/precedent.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/provider.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/embedding/search.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/evidence-detector.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/feature-flags.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/gateway-rpc.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/gateway.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/gh-pr-cache.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/heartbeats.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/hooks.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/hydrate-component-versions-read.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/launch-prep.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/lease-bounce.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/lease-bounce.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/leash-block.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/loop-safety.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/memoized-store-reader.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/memoized-store-reader.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/mention-notifier.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/mentions.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/messaging/commands.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/messaging/config.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/messaging/registry.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/messaging/slack.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/messaging/telegram.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/messaging/types.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/metric-source.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/metrics-section.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/metrics-section.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/mobile-menu-context.tsx",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "src/lib/model-tier.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-bridge-ownership.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-context.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-dedup.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-dedup.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-recency.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-recency.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-router.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-router.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-runtime.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/notification-runtime.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/offline-queue.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/onboarding-legibility.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/onboarding-recovery.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/onboarding-step-view.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/org-context-refresh-tracker.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/org-generator.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/orphan-blocked-tasks.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/outbox.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/pg-pool.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/pg-pool.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/possibly-shipped-hook.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/postgres-column-map.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/postgres-pubsub.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/postgres-pubsub.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/postgres-store-with-pubsub.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/principles-generator.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/project-state.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/promote-refusal.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/qa-migration.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/qa-migration.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/read-gate.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/resolve-section-id.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/roadmap-item-display.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/roadmap-rename.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/roadmap-sync.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/audit.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/hermes-auth.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/hermes.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/openclaw.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/registry.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/scaffold.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/scheduler-bridge.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/runtimes/types.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/schedule-registry.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/scheduler-dispatch-policy.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/scheduler-dispatch-policy.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/scheduler-state.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/scheduler.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/section-access.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/section-access.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/signal-detector.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/skill-installs.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/sql-schema-guard.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/stop-window.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/stop-window.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/store-provider.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/store-provider.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/store-service.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/store.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/task-status.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/teammate-sync.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/teammates.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/teammates.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/telegram-guard.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/update-task-validation.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/useOfflineQueue.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/version-guard.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/version-guard.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/version-metric.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/version-metric.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/version-utils.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-completion.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-cron.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-notify.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-notify.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-prompt.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-status.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-template.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/vision-topic.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/wake-trigger.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/wake-trigger.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/weekly-digest.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/worker-pipeline-receipt.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/worker-scorecard.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/config.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/context-assembler.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/engine-codex.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/engine-openai-compat.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/github-app-auth.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/host-profile.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/host-semaphore.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/planner.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/provisioning.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/repo-context.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/route-tier.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workers/worker-runtime.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workspace-auth-browser.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/workspace-auth.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/write-scope-sweep.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/lib/ws.ts",
+      "unitId": "area:src",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "src/middleware.test.ts",
+      "unitId": "area:src",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "test-regex.js",
+      "unitId": "area:test-regex.js",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "test-signals.sh",
+      "unitId": "area:test-signals.sh",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "test-version-utils.mjs",
+      "unitId": "area:test-version-utils.mjs",
+      "classification": "first-party-source",
+      "extension": ".mjs"
+    },
+    {
+      "path": "tsconfig.json",
+      "unitId": "area:tsconfig.json",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "vitest.config.ts",
+      "unitId": "area:vitest.config.ts",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    }
+  ]
+}
