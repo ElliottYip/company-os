@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/checks/port-check",
+      "auditStatus": "COMPLETE",
+      "function": "Reads the configured server port, delegates availability probing to the CLI network utility, reports pass when available, and otherwise emits a warning plus a Unix lsof troubleshooting hint.",
+      "dependencyDirection": "CLI doctor leaf -> PaperclipConfig.server.port -> CLI utils/net.checkPort -> CheckResult. It does not pass configured host, bind mode, address family, transport or deployment exposure into the probe. Actual socket behavior remains owned by the separately inventoried pending application:cli/utils/net unit.",
+      "keyDataModels": "Numeric server port; delegated {available,error} result; free-form CheckResult. There is no endpoint/listener identity, host/interface/address-family, owning process/service, reservation lease, deployment profile or stable error-code model.",
+      "lifecycle": "Read port -> await one availability probe -> pass if available -> otherwise warn using delegated raw error or fallback text. It does not reserve the socket, attribute the occupant, retry, time out at this layer, compare the existing service identity, or verify that the eventual server binds the same endpoint.",
+      "testAssessment": "Repository search found no focused portCheck/checkPort test under cli/src. CLI TypeScript checking passes, but behavior is unproved for invalid/boundary ports, configured host versus wildcard binding, IPv4/IPv6 differences, permission errors, dual-stack conflicts, probe timeout, existing healthy Paperclip service, sandbox EPERM and check-then-bind races. Underlying network utility behavior is deliberately deferred to its separate pending audit.",
+      "designRationale": "A preflight availability signal and concrete lsof hint are useful for local onboarding. Warning instead of failure may allow doctor to coexist with an already-running service, but without occupant identity it cannot distinguish healthy reuse from a startup-blocking conflict.",
+      "companyOsProblem": "Company OS needs profile-aware listener diagnostics for local enterprise nodes and managed services, including effective bind/exposure, TLS/proxy topology, address family, existing service identity and safe startup coordination.",
+      "companyOsFit": "Reimplement behind a deployment/network diagnostics adapter. Probe the exact effective endpoints, return stable classifications such as AVAILABLE, OWN_SERVICE_HEALTHY, OCCUPIED_OTHER, FORBIDDEN and UNREACHABLE, and combine this with authenticated service-health identity. Treat availability as advisory because only atomic bind or supervisor/socket activation can prevent TOCTOU; platform-specific remediation belongs in adapters.",
+      "responsibilityConflict": "No direct human/Agent domain conflict. However, killing or reconfiguring a port occupant is a privileged host action and must never be an implicit repair; Company OS should bind any remediation to an accountable operator, target process/service evidence and approval policy.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/checks/port-check.ts (24 lines; SHA-256 f74c5598087a0df64414a2e71bf6db8d8456e47c6042394a29944f3afa229717)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Repository search found no portCheck/checkPort-focused test under cli/src",
+        "cli/src/utils/net.ts is separately inventoried as application:cli/utils/net and remains PENDING; its implementation was not read or credited here"
+      ],
+      "securityFindings": "The check ignores configured host/bind/exposure at its call boundary, so a port-only result cannot prove the intended interface is safe or available. Delegated raw errors can expose host details; the lsof hint is platform-specific and asks the operator to inspect processes without a safe structured workflow. An availability probe has an unavoidable TOCTOU window and supplies no reservation or ownership proof. Occupancy is only a warning even when it may prevent startup, while an already-running legitimate service is not authenticated."
+    }
+  ]
+}
