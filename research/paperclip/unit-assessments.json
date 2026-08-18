@@ -7949,21 +7949,24 @@
       "dependencyDirection": "Board/Agent actor context and validated vote/query inputs enter the large Issue router; it calls Issue/Feedback/InstanceSettings/Activity/Export services and returns vote, trace or bundle JSON.",
       "keyDataModels": "Issue/Company identity, board or Agent actor, feedback target/vote/reason/allowSharing, trace ID, sharingEnabled/consentEnabledNow/preference, Company membership and flush attempt counts.",
       "lifecycle": "A board vote is saved and, when the service reports sharing enabled plus a trace ID, synchronously triggers a Company/trace-scoped flush before returning 201; Agents are denied before trace service access; inaccessible Company traces/bundles are concealed as 404.",
-      "testAssessment": "The negative ordering test and cross-Company concealment are useful, and the positive path checks a narrowly scoped flush. Missing are saveIssueVote argument/author assertions, non-admin board authorization, missing user identity, validation errors, consent enable/deny/version/destination, activity evidence, flush timeout/failure/duplicate overlap, response export status, payload-default minimization, permission tiers for full bundles and service queries scoped by Company before loading data.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 4/4 on 2026-08-19; sandboxed 0/4 failed solely because TCP listen was prohibited. The negative ordering test and cross-Company concealment are useful, and the positive path checks a narrowly scoped flush. Missing are saveIssueVote argument/author assertions, non-admin board authorization, missing user identity, validation errors, consent enable/deny/version/destination, activity evidence, flush timeout/failure/duplicate overlap, response export status, payload-default minimization, permission tiers for full bundles and service queries scoped by Company before loading data.",
       "designRationale": "Let human board users rate AI output, optionally share diagnostics immediately and prevent Agents or other Companies from inspecting sensitive trace data.",
       "companyOsProblem": "Human feedback and diagnostic export need separate local-save, consent, access-review and delivery lifecycles with exact accountability and data minimization.",
       "companyOsFit": "ADAPT fail-before-fetch Agent denial, Company-scoped 404 and explicit allowSharing. Company OS returns the saved vote plus an asynchronous export receipt; DataEgressWorker owns delivery. Trace APIs default to metadata-only, require a dedicated diagnostics permission for payload/bundle access and query by TenantScope before materialization.",
       "responsibilityConflict": "The route substitutes the shared `local-board` identity when userId is absent, allows any board member with Company access to retrieve full redacted bundles and defaults direct trace reads to include payload. It awaits an unbounded external flush after persistence, so the caller cannot distinguish local success from pending/failed export, and the activity record omits destination, consent version and payload digest.",
       "decision": "ADAPT",
       "evidence": [
-        "server/src/__tests__/issue-feedback-routes.test.ts:1-277",
+        "server/src/__tests__/issue-feedback-routes.test.ts:1-277 (SHA-256 4a5d96c8badf3fdf1f7c752a3e35289281894f20b057088f5be040de5e427198)",
         "server/src/routes/issues.ts:10899-10979",
         "server/src/routes/issues.ts:11671-11765",
         "packages/shared/src/validators/feedback.ts:1-22",
         "ded813ad feat(interactions): add governed agent addressees (#10252)",
         "b13eb5b2 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)",
-        "1991ec9d [codex] Split backend control-plane QoL slice (#4700)"
-      ]
+        "1991ec9d [codex] Split backend control-plane QoL slice (#4700)",
+        "2026-08-19 sandboxed focused Vitest: 0/4 passed; all failed because TCP listen was prohibited (EPERM)",
+        "2026-08-19 approved unsandboxed focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "CRITICAL data-egress evidence gap: the suite does not prove payload, destination, purpose or authorization before immediate export. HIGH target-scope gap: voted target ownership/visibility is untested. HIGH privacy-lifecycle gap: withdrawal, deletion, retention and data-subject rights are absent. HIGH bundle risk: file classification/redaction/malware and granular download authorization are untested. MEDIUM delivery gap: export failure/retry/idempotency and receipts are absent. POSITIVE: Agent callers are denied before lookup and cross-Company reads return 404."
     },
     {
       "id": "application:server/__tests__/issue-goal-fallback",

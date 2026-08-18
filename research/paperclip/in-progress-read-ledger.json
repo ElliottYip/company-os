@@ -7633,6 +7633,38 @@
       "completionRequirements": [
         "Read lines 1-1073 exactly once and assess HTTP authorization, actor/Run validation, assignment eligibility/cycles, confirmation resolution, persistence/audit atomicity, cross-Issue containment and error contracts around execution policy transitions."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-feedback-routes",
+      "path": "server/src/__tests__/issue-feedback-routes.test.ts",
+      "lineCount": 277,
+      "sha256": "4a5d96c8badf3fdf1f7c752a3e35289281894f20b057088f5be040de5e427198",
+      "linkedEvidence": { "history": [
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "70679a33216bae9247b1b6bddc5fcaad1c04e829 sandbox environment support (#4415)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-277"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "NO COVERAGE CREDIT: this unit was already COMPLETE in audit batch 1020. It was accidentally reread because the next-unit query printed IDs without their existing statuses. The duplicate batch was removed and only the newly executed focused-test evidence was consolidated into batch 1020; future selection must filter auditStatus=PENDING before any source read.",
+        "Lines 1-277 test immediate export flush after a board user's per-vote allowSharing saves a trace, reject Agent trace reads before lookup, and hide cross-company trace/bundle existence behind 404 responses.",
+        "The privacy/security coverage is narrow: no test proves the voted target belongs to the Issue/company or is visible to the voter; trace/bundle fields, redaction, files, destination, encryption, purpose, retention, consent withdrawal, deletion, failure/retry, audit receipt, instance-admin scope or data-subject handling are absent.",
+        "Sandboxed focused Vitest failed 4/4 only because Supertest could not listen on 0.0.0.0 (EPERM). Approved unsandboxed focused Vitest passed 4/4."
+      ],
+      "completionRequirements": [
+        "Read lines 1-277 exactly once and assess feedback/vote identity, consent, data sharing, tenant isolation, Issue visibility, privacy lifecycle, auditability and Company OS training/evaluation governance."
+      ]
     }
   ]
 }
