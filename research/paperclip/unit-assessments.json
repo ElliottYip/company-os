@@ -1370,18 +1370,23 @@
     },
     {
       "id": "application:cli/commands/db-backup",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "One-off CLI database backup wrapper selecting external/embedded connection, destination, retention and filename prefix.",
+      "dependencyDirection": "CLI/config/environment inputs feed the already-audited @paperclipai/db backup library; UI and JSON output expose its result.",
+      "keyDataModels": "Database connection source, backup directory, tiered retention policy, filename prefix and backup file/size/prune result.",
+      "lifecycle": "Resolve config/connection/destination, run a gzip SQL backup, prune by policy and print human or nominal JSON output.",
+      "testAssessment": "No focused CLI test exists in the reviewed CLI test tree. Actual backup/restore mechanics were previously covered within the completed package:db unit, but CLI JSON purity, option validation, failure codes and restore workflow are not proven.",
+      "designRationale": "Expose the shared backup engine for operators and pre-update safeguards without duplicating database logic.",
+      "companyOsProblem": "Company OS needs encrypted, verifiable, profile-aware backups tied to schema/app versions and a rehearsed restore path before releases or destructive changes.",
+      "companyOsFit": "REFERENCE_ONLY. Keep the thin-wrapper principle, but define a BackupPort operation/resource with ID, checksum, encryption/key reference, consistency point, schema/app version, retention/location and stable outcomes; add symmetric restore and verification commands.",
+      "responsibilityConflict": "The full-company data export is not bound to an accountable operator, data-export approval, destination contract or immutable evidence, and absolute paths are returned as the primary identity.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "cli/src/commands/db-backup.ts:1-102",
+        "full source SHA-256 b15ab7ac36e72845e9680be38e7ab968380ff1417211608be75968db985cf2af",
+        "existing completed package:db evidence includes backup-lib.ts:10-1030",
+        "CLI tree search found no db restore command"
+      ]
     },
     {
       "id": "application:cli/commands/doctor",
@@ -5981,18 +5986,22 @@
     },
     {
       "id": "application:server/__tests__/instance-database-backups-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Authorization and platform-floor tests for manually triggering a server database backup.",
+      "dependencyDirection": "Injected actor and backup service exercise the real Express route/error middleware over Supertest.",
+      "keyDataModels": "Board/Agent actor, instance-admin/local-implicit/cloud-tenant source, backup result and conflict/platform error.",
+      "lifecycle": "Authorize, apply cloud-managed floor, trigger once, return backup metadata or conflict/forbidden response.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 7/7 with PAPERCLIP_HOME isolated under /private/tmp. The initial runs exposed import-time user-home logging and sandbox TCP coupling. Data integrity, audit/approval, rate/CSRF/idempotency, restore and adversarial actors remain uncovered.",
+      "designRationale": "Let self-hosted instance operators create backups while reserving managed-cloud backup ownership for the platform.",
+      "companyOsProblem": "Company OS must separate customer/platform backup responsibilities across deployment profiles and govern full-instance exports.",
+      "companyOsFit": "ADAPT the explicit platform floor and Agent denial tests. Add profile contracts, step-up human auth, data-export approval, idempotent operation resources, stable codes, evidence and restore/verification scenarios.",
+      "responsibilityConflict": "Local implicit board access can export the full instance without a named accountable human, approval, destination policy or evidence chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/instance-database-backups-routes.test.ts:1-195",
+        "full source SHA-256 a2928440169df27ddd9a67cfbfab8f8ef4ed9cd8053eabfe8a6a3a7f00ead3a4",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 7/7 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/instance-settings-managed-overlay",
@@ -10374,18 +10383,22 @@
     },
     {
       "id": "application:server/routes/instance-database-backups",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Single manual full-instance backup POST endpoint guarded by instance-admin and managed-cloud policy.",
+      "dependencyDirection": "HTTP actor and environment-derived cloud profile gate an injected server backup service; the raw service result is returned.",
+      "keyDataModels": "InstanceDatabaseBackupService/RunResult, manual/scheduled trigger, retention/timing/path metadata and platform error detail.",
+      "lifecycle": "Authorize, deny cloud-managed tenants, synchronously await a manual backup and return 201.",
+      "testAssessment": "Focused route tests pass; operation lifecycle, export governance, stable conflict/status resource and restore are absent.",
+      "designRationale": "Keep database backup infrastructure instance-scoped rather than company-scoped and prevent managed tenants from learning platform filesystem paths.",
+      "companyOsProblem": "Company OS needs deployment-profile ownership and governed backup/export APIs covering independent control-plane and customer-local data stores.",
+      "companyOsFit": "ADAPT only the narrow injected service and explicit managed-cloud floor. Model backup as an asynchronous, idempotent, auditable operation with redacted projection, approval and verification/restore links.",
+      "responsibilityConflict": "Instance-admin authorization alone does not establish data-export purpose, accountable approver, destination authorization, evidence or retention responsibility.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/routes/instance-database-backups.ts:1-41",
+        "full source SHA-256 99152213c4e7a3632d7def6c57fc3bafe7487beff694c89068b37393b7c276e9",
+        "5858ccb981717b6589b66e672f80d740797c632 feat: make in-app features cloud-aware (#10850)"
+      ]
     },
     {
       "id": "application:server/routes/instance-settings",
@@ -11536,18 +11549,22 @@
     },
     {
       "id": "application:server/services/database-backup-health",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem-derived health projection for newest gzip SQL backup freshness/size and failure-marker state.",
+      "dependencyDirection": "Configured directories and alert paths are synchronously enumerated/read; their metadata and first error line become internal health state.",
+      "keyDataModels": "Stable warning codes, max age, latest backup name/path/mtime/age/size, last failure path/message and aggregate status.",
+      "lifecycle": "Find newest .sql.gz, compare age, read newest failure marker, classify missing/stale/failure/check-error and return paths plus warnings.",
+      "testAssessment": "Relevant integration assertions exist in the still-pending broader health test unit, so this unit does not claim them as completed evidence. Source inspection shows integrity/link/performance and future-time gaps.",
+      "designRationale": "Surface backup freshness and external backup-to-S3 failures in the ordinary health endpoint.",
+      "companyOsProblem": "Company OS needs provable backup recoverability, not only file freshness, across managed-cloud and self-hosted/local enterprise profiles.",
+      "companyOsFit": "REFERENCE_ONLY. Retain stable warning-code ideas, but health must verify signed metadata/checksum, nonzero/decompressible content, schema/app compatibility, trusted ownership/modes, replicated destination and periodic restore drills using bounded asynchronous inspection.",
+      "responsibilityConflict": "A fresh file is not evidence of recoverability or assigned remediation ownership; paths and raw failure prose can also leak infrastructure details.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/services/database-backup-health.ts:1-153",
+        "full source SHA-256 34d8e2adb7b38e76369492c964fddb7a96aa8f656a19918a99c3930fb5839b25",
+        "be821a4f7ecd9a61dc7e29982ee65ff06ae6559c Fix DB backup health alerts (#9147)"
+      ]
     },
     {
       "id": "application:server/services/decision-queues",

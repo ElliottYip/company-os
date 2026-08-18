@@ -4,6 +4,75 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:cli/commands/db-backup",
+      "path": "cli/src/commands/db-backup.ts",
+      "lineCount": 102,
+      "sha256": "b15ab7ac36e72845e9680be38e7ab968380ff1417211608be75968db985cf2af",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 102 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The CLI resolves external or embedded Postgres without printing the credential, delegates the actual backup/retention mechanics to the already-audited @paperclipai/db package, and supports config/dir/retention/prefix/JSON options.",
+        "JSON mode still emits banner, prompts/spinner and outro, so stdout is not a clean machine contract. Results expose absolute backup paths and lack backup ID, checksum, schema/app version, encryption state, consistency point and stable error codes.",
+        "No CLI restore command exists in the reviewed CLI tree even though update rollback instructs users to restore a pre-update backup. This command creates a gzip SQL backup but exposes no encryption/envelope, offsite verification or accountable operator/evidence binding."
+      ],
+      "completionRequirements": ["Read lines 1-102 exactly once and assess backup target/config, consistency, encryption, retention, output and failure semantics against already-audited package:db evidence."]
+    },
+    {
+      "id": "application:server/__tests__/instance-database-backups-routes",
+      "path": "server/src/__tests__/instance-database-backups-routes.test.ts",
+      "lineCount": 195,
+      "sha256": "a2928440169df27ddd9a67cfbfab8f8ef4ed9cd8053eabfe8a6a3a7f00ead3a4",
+      "linkedEvidence": { "history": ["c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 195 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Seven route tests cover instance-admin/local-implicit authorization, ordinary user and Agent denial, concurrent-backup conflict, and a cloud-managed platform floor that denies every tenant admin.",
+        "The response exposes absolute backupFile/backupDir paths. Tests do not cover unauthenticated/malformed actors, CSRF, audit records, rate limits, backup result integrity/encryption, stable conflict codes outside the cloud floor or cross-tenant/server-token edge cases.",
+        "The first sandboxed run could not import because logger initialized ~/.paperclip; an isolated PAPERCLIP_HOME rerun entered tests but all 7 were blocked by sandbox TCP policy. The approved unsandboxed run with the isolated home passed 7/7."
+      ],
+      "completionRequirements": ["Read lines 1-195 exactly once and assess identity/permission boundaries, trigger/status behavior, tenant isolation and test quality."]
+    },
+    {
+      "id": "application:server/routes/instance-database-backups",
+      "path": "server/src/routes/instance-database-backups.ts",
+      "lineCount": 41,
+      "sha256": "99152213c4e7a3632d7def6c57fc3bafe7487beff694c89068b37393b7c276e9",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 41 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "A single POST route requires instance-admin authority, disables tenant-triggered backups on cloud-managed instances and returns the full server backup result.",
+        "There is no idempotency key, request/approval/evidence record, step-up authentication, data-export policy or restore API. Local implicit board authority can trigger full-instance export, while the response reveals filesystem paths in non-cloud profiles.",
+        "Concurrency is delegated to the service and represented by generic error handling rather than a versioned backup operation/status resource."
+      ],
+      "completionRequirements": ["Read lines 1-41 exactly once and assess backup API authorization, status/trigger contract, concurrency and evidence semantics."]
+    },
+    {
+      "id": "application:server/services/database-backup-health",
+      "path": "server/src/services/database-backup-health.ts",
+      "lineCount": 153,
+      "sha256": "34d8e2adb7b38e76369492c964fddb7a96aa8f656a19918a99c3930fb5839b25",
+      "linkedEvidence": { "history": ["be821a4f7ecd9a61dc7e29982ee65ff06ae6559c Fix DB backup health alerts (#9147)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 153 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Health inspection reports newest .sql.gz mtime/size, stale/missing state and the newest failure-marker first line with stable warning codes.",
+        "Freshness is only filesystem metadata: a zero-byte, corrupt, wrong-schema or malicious symlinked file can pass. Future mtimes produce negative age and pass; backup/alert file ownership, mode, link, checksum, decompression and restore verification are absent.",
+        "An old failure marker warns forever even after newer success unless external code removes it. Synchronous unbounded directory enumeration/sort and full alert-file reads can block health requests or consume memory; one bad candidate collapses the entire check into a generic failure.",
+        "The function still emits missing/stale warnings when enabled is false if called directly, and returns absolute server paths/messages that require redaction at every external projection."
+      ],
+      "completionRequirements": ["Read lines 1-153 exactly once and assess backup freshness/integrity/alert health semantics, filesystem trust, monitoring privacy and operational usefulness."]
+    },
+    {
       "id": "application:cli/__tests__/update-command",
       "path": "cli/src/__tests__/update-command.test.ts",
       "lineCount": 240,
