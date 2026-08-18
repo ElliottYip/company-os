@@ -2423,6 +2423,43 @@
         "pruneInstallPayloads deletes every non-dot unretained entry recursively after checking only the source root, with no per-candidate lstat/owner/manifest digest; remove/rollback safety depends on exclusive store ownership. Post-switch health and atomic coordination with manifest/service/database migrations remain absent."
       ],
       "completionRequirements": ["Read lines 1-483 exactly once and trace install-store path trust, manifest/current/shim atomicity, locking, symlink/hardlink defenses, pruning, permissions, provenance, failure cleanup and observed Node 24 test failures."]
+    },
+    {
+      "id": "application:cli/__tests__/managed-install-check",
+      "path": "cli/src/__tests__/managed-install-check.test.ts",
+      "lineCount": 88,
+      "sha256": "77df088f984b6a9cfc42993c48b7acc797801c01d9f6a156f06de5c00d298be0",
+      "linkedEvidence": { "history": ["fc5a3080 feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 88 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four tests cover a consistent manifest/current/shim/PATH, fail on managed marker without manifest, and correctly ignore update-notice-only or empty-installs residue.",
+        "The health check distinguishes harmless shared CLI state from an actual managed installation, reducing false alarms, but only missing-manifest corruption is negative-tested.",
+        "Payload digest/signature, manifest/current/version/entrypoint mismatch, shim tamper variants, ownership/modes/symlinks, lock state, service health, previous rollback and repair guidance are not asserted.",
+        "Each test creates a temporary install root without removing it.",
+        "Focused Vitest passed 4/4 in this file as part of a 9/9 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-88 exactly once and assess managed-install diagnostics/provenance, tamper and current/manifest mismatch detection, repair guidance and production readiness."]
+    },
+    {
+      "id": "application:cli/__tests__/network-bind",
+      "path": "cli/src/__tests__/network-bind.test.ts",
+      "lineCount": 69,
+      "sha256": "8873e26fb15ff40b4920c5c6b491d82de867f3e4adb1f82be874af14ad686351",
+      "linkedEvidence": { "history": ["4811d8dd Fix wrapped company issue prefix conflicts (#6423)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 69 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Five pure tests prove local_trusted rejects LAN/wildcard exposure, tailnet resolves a detected address, custom requires a host, tailnet presets persist detected address and missing Tailscale falls back to loopback.",
+        "The fail-closed local_trusted invariant and loopback fallback are strong defaults. However, authenticated/managed modes, LAN/custom exposure, allowed Host/origin, proxy headers and TLS are not tested.",
+        "PAPERCLIP_TAILNET_BIND_HOST is trusted in the preset fixture without validation; non-Tailscale/private/public/IPv6/malformed values, runtime interface disappearance and DNS/address changes are absent.",
+        "Focused Vitest passed 5/5 in this file as part of a 9/9 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-69 exactly once and assess bind/host/exposure/deployment-auth invariants, IPv4/IPv6/wildcard/proxy semantics, fail-closed defaults and test gaps."]
     }
   ]
 }
