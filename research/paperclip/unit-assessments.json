@@ -13503,18 +13503,33 @@
     },
     {
       "id": "application:server/services/plugin-managed-skills",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Plugin host service compiling manifest Skill declarations into generated package files, deriving canonical keys/default metadata, binding Company Skills to Plugin resource keys, calculating file-level drift, reconciling missing/orphaned resources and resetting to Plugin defaults.",
+      "dependencyDirection": "The service depends directly on Paperclip database tables, CompanySkill service/DTOs, Plugin manifest DTOs, shared key normalization, Paperclip errors and activity logging. It is a Paperclip application adapter, not a neutral Plugin ownership domain.",
+      "keyDataModels": "Plugin ID/key/manifest Skill declaration; canonical plugin/<slug>/<skillKey>; generated SKILL.md and reference files; PluginManagedResource company/plugin/kind/key/resource/defaults binding; CompanySkill; resolution status and changedFiles drift.",
+      "lifecycle": "Compile declaration; locate scoped binding; load bound Skill and compare declared/current files; if missing, adopt any canonical-key Skill or import package with replace; upsert binding; log created/relinked/reset activity; preserve existing Skill edits unless explicit reset.",
+      "testAssessment": "The linked six-case integration suite was already audited and not reread; all 6 were skipped because embedded PostgreSQL failed after five attempts. Implementation inspection confirms stable scoped keys, idempotent no-op binding, local-edit preservation, drift and explicit reset. It also exposes untested non-transactional read/import/bind races, silent error-to-drift conversion, automatic adoption, replace conflicts, lack of uninstall/upgrade/rollback and no package/executable admission.",
+      "designRationale": "Provide Plugins with stable declarative company resources while avoiding surprise overwrites of operator customization during ordinary reconciliation and offering an explicit reset escape hatch.",
+      "companyOsProblem": "Company OS needs a declarative desired-state ownership kernel for Plugin/Connector resources with authenticated package identity, tenant-safe adoption, immutable default revisions, transactional/leased reconciliation, explicit plan/apply/reset/uninstall, conflict and failure states, approval/responsibility evidence and node activation receipts.",
+      "companyOsFit": "REIMPLEMENT. Adapt the stable owner/resource key, desired-versus-observed drift, preserve-edits default, no-op reconciliation and explicit reset concepts. Replace direct Paperclip table/service coupling, first-match declaration, auto-adoption, replace import and best-effort activity with a versioned ownership contract, plan/apply workflow, signed provenance, transactions/outbox and accountable approval.",
+      "responsibilityConflict": "A Plugin can create, adopt or destructively reset Company Skills under its own actor identity with no accountable human, approval, exact action/default digest or downstream Agent impact evidence. Reconcile can silently update binding defaults or take ownership of an existing canonical-key Skill without a human adoption decision.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/plugin-managed-skills.ts:1-359",
+        "full source SHA-256 8ce9b497c51c6dbc1d2b4b0effbe0f0e0ea5cb39c08c085d59556ec8a3eadce4",
+        "0096b56a1c4e69c077320c0194c804cdaea7615d [codex] Add LLM Wiki plugin host support (#5597)",
+        "linked focused suite: 1 file and 6 tests skipped after embedded PostgreSQL failed five times; 0 passed"
+      ],
+      "securityFindings": [
+        "Declaration skillKey/file paths are concatenated into ordinary object keys; this service does not itself reject traversal, reserved keys or collisions.",
+        "Duplicate declaration keys are resolved by first match rather than rejected.",
+        "Binding upsert and import/adopt/bind are non-transactional read-then-write flows with no concurrency lock or idempotency key.",
+        "Reconcile automatically adopts any same-company canonical-key Skill without validating provenance or requiring an ownership-transfer decision.",
+        "Import uses onConflict:replace before binding; failure can overwrite or orphan resources without an atomic rollback receipt.",
+        "Every file-read error is swallowed as null drift, conflating storage/authorization/integrity outages with operator modifications.",
+        "Reset is destructive and unauthenticated at this service boundary; no human approval, pre-state digest or downstream assignment impact is recorded.",
+        "No package signature/license/hash, executable/data/egress admission, uninstall/upgrade/rollback or durable event/outbox handling exists."
+      ]
     },
     {
       "id": "application:server/services/plugin-manifest-validator",

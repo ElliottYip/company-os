@@ -3960,12 +3960,15 @@
       "lineCount": 359,
       "sha256": "8ce9b497c51c6dbc1d2b4b0effbe0f0e0ea5cb39c08c085d59556ec8a3eadce4",
       "linkedEvidence": { "history": ["0096b56a1c4e69c077320c0194c804cdaea7615d [codex] Add LLM Wiki plugin host support (#5597)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [{ "start": 1, "end": 100 }],
-      "sourceReadComplete": false,
-      "nextLine": 101,
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 359 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
       "notes": [
-        "Lines 1-100 couple Plugin resource bindings directly to Company Skill service/DTOs and compile manifest declarations into a portable-package-like string map. Canonical keys normalize only pluginKey; declaration.skillKey and file.path are concatenated as paths/ordinary object keys here, so traversal, reserved keys and collision safety depend on upstream manifest validation or downstream import normalization. YAML scalar values use JSON quoting, but existing frontmatter key replacement is regex-based and may accept malformed/duplicate YAML structures."
+        "Lines 1-100 couple Plugin resource bindings directly to Company Skill service/DTOs and compile manifest declarations into a portable-package-like string map. Canonical keys normalize only pluginKey; declaration.skillKey and file.path are concatenated as paths/ordinary object keys here, so traversal, reserved keys and collision safety depend on upstream manifest validation or downstream import normalization. YAML scalar values use JSON quoting, but existing frontmatter key replacement is regex-based and may accept malformed/duplicate YAML structures.",
+        "Lines 101-200 flatten declared files, record defaults as names/paths rather than content hashes, and compare defaults through a hand-rolled stable JSON serializer. Undefined serializes to undefined inside template interpolation and exotic numbers are not relevant but reveal non-canonical generality. Declaration lookup uses first matching skillKey, so duplicate manifest keys are not rejected here. Binding reads are correctly scoped by company, plugin ID, kind and key; upsert begins as a read-then-write sequence, leaving concurrency behavior to inspect.",
+        "Lines 201-300 confirm binding upsert is non-transactional read-then-insert/update. Drift loads every unioned file sequentially and converts every read error—including permission/storage/integrity failures—into null, misclassifying outages as content drift. Reconcile adopts any same-company Skill with the canonical key and binds it without verifying prior provenance/ownership. Otherwise it imports with onConflict:replace, selects a result through multiple fallbacks and only then writes the Plugin binding; import/binding failure can leave orphaned or overwritten Skills.",
+        "Lines 301-359 expose only get/reconcile/reset. Reconcile with an already bound Skill silently refreshes defaults metadata without activity; missing reconcile/reset logs Plugin actor and stable keys only after import/binding. Reset always uses replace and is callable without human identity, approval or expected prior digest. There is no detach/uninstall/upgrade/rollback API, deletion/tombstone handling, responsibility evidence, outbox or Connector-node activation boundary. Linked tests were not reread and their 6 cases were skipped after embedded PostgreSQL failed five times."
       ],
       "completionRequirements": ["Read lines 1-359 exactly once and trace Plugin manifest-to-Skill compilation, stable ownership/binding, tenant isolation, reconcile/adopt/reset, drift hashing, transactions/concurrency, upgrade/downgrade/uninstall, path/content safety, executable admission, activity/events, Agent assignment and Company OS Plugin/Connector reuse decision. Link the completed test evidence without rereading it."]
     }
