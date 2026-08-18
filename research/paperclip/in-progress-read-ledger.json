@@ -171,10 +171,41 @@
             "A second catalog refresh omits a previously discovered tool, but the test does not inspect or require the missing tool to be disabled or removed, leaving stale-capability lifecycle behavior untested.",
             "No final test-quality or implementation verdict is valid until lines 1001-6996 and linked route/schema/history evidence are reviewed."
           ]
+        },
+        {
+          "start": 1001,
+          "end": 2000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Route integration verifies tools:admin for arbitrary admin-defined stdio templates, active-template enforcement, direct private-endpoint rejection in authenticated public deployment, and same-company profile target validation.",
+            "The stdio tests prove commands cannot be supplied directly on a connection, but intentionally permit arbitrary command, args, and env keys once an administrator creates a template; runtime sandbox and command provenance remain outside this evidence.",
+            "Remote endpoint defense is tested only against a direct link-local metadata URL; redirect targets, DNS rebinding, timeouts, and oversized responses are not covered in this range.",
+            "Board-initiated test calls preserve the real user actor and separately attribute the selected agent with source=test metadata, a useful responsibility distinction that the older smoke fixture does not consistently preserve.",
+            "Ask-first tests exercise pending request creation, signed arguments, approval execution, repeated side-effecting requests, rejection without execution, block policy, quarantined tools, and unassignable agents.",
+            "The rejection test explicitly accepts an invocation that remains status=awaiting_approval while approvalState=rejected, leaving a non-terminal execution status after a terminal human decision.",
+            "Profile CRUD and effective-access tests cover normal outcomes and narrowest-scope precedence but do not inject database failures or concurrency into the non-transactional create/update/delete paths.",
+            "List and projection scale, cross-profile deny semantics, and uninstall-to-revoke behavior remain untested in this range."
+          ]
+        },
+        {
+          "start": 2001,
+          "end": 3000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Tests confirm agent-scoped profiles completely replace broader company profiles in effective previews, profile copies may include assignments, and database cascades remove entries and bindings on successful profile deletion.",
+            "Delete-with-reassignment failure atomicity and duplicate-profile partial failure are not exercised; successful cascade evidence does not close those implementation risks.",
+            "Profile routes enforce board-only mutation, viewer-safe read access, cross-company read hiding, and mutation denial.",
+            "The safe example installation is tested as idempotent and verifies allow, deny, and audit decisions, but no real company agent exists in the fixture, so it misses the implementation path that attributes smoke audit records to the first production agent.",
+            "MCP JSON preview proves raw header values are not echoed and link connection setup stores them as secrets, while payload-size and object-count limits remain untested.",
+            "Class-3 static lease tests verify exact allowlist admission and fail-closed rejection without connection or binding residue.",
+            "Google Sheets tests intentionally assert that a cross-company conflict returns the exact spreadsheet id, codifying a cross-tenant resource-identifier disclosure instead of a non-enumerating error.",
+            "Agent-initiated user OAuth verifies active-run responsibleUserId snapshot matching, separate user/workspace secret sets, and consent-card resolution, but does not prove current membership, a versioned responsibility contract, or requested-scope restriction.",
+            "No final test-quality or reuse judgment is valid until the remaining OAuth, lifecycle, concurrency, runtime, and route cases are read."
+          ]
         }
       ],
       "sourceReadComplete": false,
-      "nextLine": 1001,
+      "nextLine": 3001,
       "completionRequirements": [
         "Read every test line through 6996 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Map covered and missing cases to the fully read implementation findings.",
