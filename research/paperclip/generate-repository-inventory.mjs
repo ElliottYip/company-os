@@ -35,18 +35,31 @@ function packageUnit(path) {
   return parts[1] ? `package:${parts[1]}` : "area:packages";
 }
 
+function moduleStem(fileName) {
+  return fileName
+    .replace(/\.(test|spec)\.(ts|tsx|js|jsx|mjs|cjs)$/i, "")
+    .replace(/\.(ts|tsx|js|jsx|mjs|cjs|md|json)$/i, "");
+}
+
 function applicationUnit(path, root) {
   const parts = path.split("/");
   if (parts[0] !== root) return null;
   if (parts[1] !== "src") return `application:${root}/${parts[1] ?? "root"}`;
   const area = parts[2] ?? "root";
   if (root === "ui" && ["components", "pages", "lib", "api", "adapters"].includes(area)) {
-    const child = parts[3]?.includes(".") ? "_root" : (parts[3] ?? "_root");
+    const child = parts[3]?.includes(".") ? moduleStem(parts[3]) : (parts[3] ?? "_root");
     return `application:ui/${area}/${child}`;
   }
   if (root === "server" && area === "services") {
-    const child = parts[3]?.includes(".") ? "_root" : (parts[3] ?? "_root");
+    const child = parts[3]?.includes(".") ? moduleStem(parts[3]) : (parts[3] ?? "_root");
     return `application:server/services/${child}`;
+  }
+  if (root === "server" && ["routes", "__tests__"].includes(area) && parts[3]) {
+    return `application:server/${area}/${moduleStem(parts[3])}`;
+  }
+  if (root === "cli" && parts[3]) {
+    const child = parts[3].includes(".") ? moduleStem(parts[3]) : parts[3];
+    return `application:cli/${area}/${child}`;
   }
   return `application:${root}/${area}`;
 }
