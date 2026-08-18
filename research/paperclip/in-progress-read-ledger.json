@@ -7189,6 +7189,47 @@
       "completionRequirements": [
         "Read lines 1-786 exactly once and assess attachment upload/download/delete authorization, tenant isolation, content validation, object-store consistency, evidence provenance, retention and test quality against Company OS data governance."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-blocker-attention",
+      "path": "server/src/__tests__/issue-blocker-attention.test.ts",
+      "lineCount": 949,
+      "sha256": "a62789997c6222469b6356f1e7f3258c1feae46a081982124f6c842827ce8a97",
+      "linkedEvidence": { "history": [
+        "c2b41bb7cde7bceb9a55dcf251f0bdb60fdd89eb quiet missing-disposition warnings during live continuation (#10899)",
+        "6ec059ab4eb36faa3ad62c915095916c80829c1b suppress stale handoff alarms during live continuation (#9695)",
+        "9af96461d53517edaa34153395dd400fc700b0db restore stranded recovery continuations (#9630)",
+        "9ac24317e6d70107dfebda40b6902025bc2c392b ignore cancelled child blockers (#7577)",
+        "3fbab2e6dbe9e8215d7ce50f1b9e4c3826d6462f orphan-sweep null-assignee fix (#8018)",
+        "4142559c378ed9d356b8fa73acb93c61f5813b18 blocked inbox attention view (#5603)",
+        "e400315cbf3cf0a69e5820efd6bafbc81bf8d7ae assigned backlog liveness (#5428)",
+        "ad5432feced3644439e1690c5fbbb8a10902ee3b recovery reliability (#4875)",
+        "82e257c7baa5ff4747829215707721150d14a9a4 cancel stale queued heartbeats (#4534)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e runtime recovery/live visibility (#4419)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 949 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Read lines 1-320 exactly once. This is a real embedded-Postgres projection suite over companies, Agents, Issues, relations, Runs, approvals, interactions, wakeups and activity, stronger than the preceding mocked route units when the database is available.",
+        "A blocked parent is covered when a child/dependency has a current running Run, while an assigned Agent backlog leaf without a waiting path needs attention. Any uncovered member of a mixed blocker set keeps the parent attention-required.",
+        "A human-owned backlog blocker is treated as covered merely because it has assigneeUserId, even with no explicit acknowledgement, due date, activity or waiting-state contract. This may hide abandoned human responsibility from the Agent Boss queue.",
+        "Cancelled direct children are excluded from unresolved attention counts. Recursive blocker chains propagate coverage when a downstream leaf has active work.",
+        "Read lines 321-640 exactly once. Another company's Run and a stale Run no longer referenced by the Issue cannot cover a blocker, showing tenant and current-Run binding.",
+        "An in_review leaf without an active path becomes stalled_review recursively; an active Run covers it. needs_attention outranks stalled when the graph also contains a hard attention case.",
+        "An open synthetic liveness escalation can cover a cancelled blocker, while a cancelled escalation cannot. A scheduled_retry Run is not considered active coverage, avoiding indefinite suppression by mere retry intent.",
+        "The blocked inbox projection supports count and search, returns critical severity, unknown owner and Assign blocker action for an unassigned leaf, and declares secret fields omitted.",
+        "Read lines 641-949 exactly once. Cancelled dependencies map to Replace blocker; assigned backlog maps high severity; invalid review participant maps critical Repair review participant; recovery Issues and successful-Run missing disposition have dedicated projection states.",
+        "External owner/action lines are parsed out of free-form description and excluded from projected description, attention JSON and search/count matches. This is a useful privacy intent but a fragile text convention, not structured classification; raw storage and other projections/logs are not proven redacted.",
+        "Healthy active blockers are excluded. Missing-disposition attention is suppressed while a live continuation or scheduled retry Run exists and reappears after success; escalation activity alone does not clear it. Run-to-Issue matching and relevance must be hardened to prevent unrelated/stale continuation suppression.",
+        "Blocked-inbox list/count support exact null or UUID assignee filters and reject malformed values. No pagination/performance, graph cycle/depth bound, concurrent graph mutation, deterministic sample selection or projection snapshot consistency is tested here.",
+        "The unit cleans approval/interaction tables but contains no approval-path assertions. Human acknowledgement/decline/deadline/escalation is absent; merely assigned human backlog is treated covered indefinitely.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 24 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-949 exactly once and assess blocker attention classification, continuation/recovery suppression, human/Agent ownership, stale alarm handling, projection consistency and test quality against Company OS Agent Boss responsibility queues."
+      ]
     }
   ]
 }

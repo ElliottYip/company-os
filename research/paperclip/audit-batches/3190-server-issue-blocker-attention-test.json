@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-blocker-attention",
+    "auditStatus": "COMPLETE",
+    "function": "Embedded-Postgres specification for recursive blocker coverage and an Agent-Boss-style blocked attention projection with severity, owner, action, redaction, search/count and assignment filters.",
+    "dependencyDirection": "Vitest -> real Issue service -> Drizzle/PostgreSQL graph, Run, activity and assignment records; no HTTP authorization layer is exercised.",
+    "keyDataModels": "Issue dependency graph, human/Agent assignee, current and continuation Runs, recovery/escalation Issue, successful-Run handoff activity and blockedInboxAttention projection.",
+    "lifecycle": "Traverse unresolved blocker graph -> classify active/waiting/stalled/attention paths -> suppress during valid live continuation/retry -> map reason/severity/owner/action -> redact selected external text -> filter/search/count for inbox.",
+    "testAssessment": "All 24 tests skipped in both sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Source coverage is broad, but cycles/depth/performance, concurrent graph changes, projection consistency, authorization and human acknowledgement are absent.",
+    "designRationale": "Reduce noisy blocked queues by surfacing only graphs with no credible work/wait/recovery path while providing actionable reason codes and protecting selected external wait details.",
+    "companyOsProblem": "Agent Boss needs deterministic responsibility-aware attention that distinguishes healthy execution, legitimate waiting, stalled review, abandoned human work and unresolved risk without hiding obligations behind stale Runs or nominal assignees.",
+    "companyOsFit": "ADAPT recursive graph classification, tenant/current-Run binding, needs_attention-over-stalled precedence, dedicated recovery/disposition reasons, structured severity/action and exact filters. Require human acknowledgement/deadline/escalation, versioned projection snapshots, cycle/depth limits, strict continuation attestation, structured ExternalWaitContract and policy-based redaction rather than parsing descriptions.",
+    "responsibilityConflict": "A human-owned backlog item is considered covered indefinitely without acceptance or SLA, and live/scheduled Runs can suppress missing-disposition attention without accountable-human review. Free-text redaction cannot guarantee responsibility evidence confidentiality.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-blocker-attention.test.ts:1-949 (SHA-256 a62789997c6222469b6356f1e7f3258c1feae46a081982124f6c842827ce8a97)",
+      "git history: 10 commits from c2b41bb7cde7bceb9a55dcf251f0bdb60fdd89eb through 5a0c1979cf439d434c527de4935687a178be4b8e recorded in read ledger",
+      "2026-08-19 sandboxed focused Vitest: 24/24 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 24/24 skipped"
+    ],
+    "securityFindings": "HIGH human-responsibility suppression: assignment alone counts as a healthy waiting path. HIGH redaction weakness: external secrets are detected by free-text convention only. HIGH verification gap: all database tests skipped. MEDIUM Run suppression risk: continuation/retry relevance and attestation need stronger binding. MEDIUM graph robustness gap: cycles, depth, scale and concurrent changes are untested. MEDIUM authorization gap: service projection bypasses caller access in this unit."
+  }]
+}
