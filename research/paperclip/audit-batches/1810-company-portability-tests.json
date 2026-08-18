@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-portability",
+      "auditStatus": "COMPLETE",
+      "function": "A 5,421-line mocked integration suite specifying Paperclip company package export, preview, import, legacy compatibility, selection, collision, secret, permission, workspace, routine, issue, evidence, attachment and embedded-asset behavior.",
+      "dependencyDirection": "The suite mocks nearly every domain and infrastructure service, then imports the real monolithic portability service. It verifies orchestration contracts but not database transactions, storage atomicity, route authorization, concurrent imports or full crash recovery.",
+      "keyDataModels": "Schema-v6 manifest and file map; company, Agent, project, workspace, routine and issue plans; environment input declarations; permission grants; content-addressed blobs; embedded assets; labels; comments; documents; work products; blocker relations; monitors; collision/name/adapter overrides; compatibility warnings.",
+      "lifecycle": "Build broad fixtures; export and preview portable packages; filter selected subgraphs; normalize/remap identities and secrets; apply create/skip/rename/replace strategies; materialize instructions, assets and evidence; exercise legacy versions and agent_safe policy; assert warnings and partial compensation.",
+      "testAssessment": "Focused Vitest passed 78/78 tests in one file on 2026-08-19 using an isolated PAPERCLIP_HOME. The suite has unusually broad behavioral coverage and valuable adversarial cases for content hashes, tenant-owned assets, secret scrubbing, future schema rejection, selection pruning, cycles and safe-mode execution inputs. Its heavy mocking cannot prove multi-entity atomicity, authorization, concurrency or durable recovery. Some assertions deliberately lock unsafe semantics, and the skills-only assertion is tautological.",
+      "designRationale": "Make complete companies portable between Cloud and self-hosted deployments while retaining human-readable Markdown, Paperclip extensions, backward compatibility, collision choices and an opt-in safer Agent import profile.",
+      "companyOsProblem": "Company OS also needs governed organization portability, but every imported executable surface, permission, human attribution and evidence relationship must remain bound to a reviewed package digest, accountable human and destination-specific authority contract.",
+      "companyOsFit": "REIMPLEMENT the orchestration and tests around typed, versioned ports. ADAPT the content-addressed blob model, pre-write hash verification, cross-tenant asset guard, stable-key remapping, selection-pruned subgraphs, future-version rejection, unarmed monitors and managed instruction materialization. Do not copy the monolithic mocked fixture architecture or Paperclip-specific adapter/package types.",
+      "responsibilityConflict": "The tests accept active imported Agents/routines, ordinary adapter overrides that bypass approvals and sandboxing, permission grants from package metadata, bulk membership copying, human comments rewritten as importer/system, run provenance removed from evidence and cyclic reporting graphs exported without rejection. These contradict Company OS responsibility and data-governance invariants.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/company-portability.test.ts:1-5421",
+        "full source SHA-256 621734dbcb5c74e00c4c17a6a9f71ef40baf643a3afa84981e919a209907b8be",
+        "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+        "2026-08-19 isolated focused Vitest: 1 file / 78 tests passed in 1.65s",
+        "exact-once read ledger completed ranges 1-5421"
+      ],
+      "securityFindings": [
+        "A zero-match Skill selector falls back to exporting every Skill, violating fail-closed data minimization.",
+        "Package permission metadata directly grants Agent permissions without a privilege ceiling, signed authority, human confirmation or responsibility contract.",
+        "Normal import creates Agents idle and routines active by default; safety depends on an optional pauseAutomations flag or caller-selected agent_safe mode.",
+        "adapterOverrides can explicitly persist dangerouslyBypassApprovalsAndSandbox=true on an allowed local adapter.",
+        "Workspace setup/cleanup commands and repository metadata are executable supply-chain inputs; agent_safe rejects some fields but ordinary import lacks capability-based admission.",
+        "Attachment hashes are verified before writes and foreign assets are blocked, but aggregate decoded bytes/blob count, MIME sniffing and archive-wide resource limits are not exercised.",
+        "Human comment IDs are removed and comments may be rewritten as system; documents, relations, assets and evidence are attributed to the importer while original actors/runs are discarded.",
+        "nameOverrides bypass collision revalidation, and cyclic reportsTo graphs export without warning or quarantine.",
+        "Secret compensation covers one Agent-create failure but the mocked suite does not prove rollback or reconciliation across the full mutation graph."
+      ]
+    }
+  ]
+}
