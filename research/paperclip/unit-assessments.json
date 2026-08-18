@@ -1689,18 +1689,25 @@
     },
     {
       "id": "application:cli/client/board-auth",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Implements Paperclip's custom browser-approved CLI authentication flow and plaintext local bearer-token store: create challenge, print/open approval URL, poll status by challenge token, call /me with a pre-issued board API token after approval, persist it by normalized API-base string, and expose remote revoke plus local credential CRUD helpers.",
+      "dependencyDirection": "CLI auth client -> direct fetch to bespoke /api/cli-auth routes, OS browser opener, command-label/config-home helpers, process environment and filesystem JSON store. It bypasses a standard OIDC/OAuth client abstraction, OS credential vault, IdentityPort and structured API client/error contract.",
+      "keyDataModels": "RequestedAccess(board|instance_admin_required); challenge id/token/boardApiToken/approval and poll paths/expiry/interval; status with requested company/access/command and approving human; local BoardAuthCredential{apiBase, bearer token, timestamps, optional userId}. The stored credential has no issuer, audience, scopes/capabilities, tenant/company binding, expiry, key ID, refresh/rotation or approval evidence.",
+      "lifecycle": "Create unauthenticated challenge -> derive/print approval URL -> optionally launch OS browser -> parse expiry and poll status with token in query string -> on approved call /me using the board API token returned at challenge creation -> write token to JSON -> return. Cancel/expiry throw; malformed expiry makes the loop unbounded. Remote revoke is separate from local removal. Store reads tolerate malformed records but JSON parse errors escape; writes replace the whole store non-atomically.",
+      "testAssessment": "Previously completed tests were reused without rereading. board-auth filesystem tests passed 3/3 and prove basic API-base-keyed create/get/remove; open-url regression tests passed 3/3 and prove asynchronous child-process error handling; auth command registration/route parity tests passed 3/3. Missing coverage includes protocol binding/replay, token usability before approval, expiry/invalid dates, poll interval bounds, redirects/timeouts, approver/company/access mismatch, denial/tenant policy, stable errors, token permissions/encryption/atomicity/symlinks/concurrency, revoke-plus-local cleanup and end-to-end server enforcement.",
+      "designRationale": "Browser-mediated approval is preferable to asking users to paste long-lived credentials into a CLI and makes a headless fallback visible. Per-API-base credential separation and explicit requested company/access are useful ideas. The custom protocol and local JSON bearer store trade standards-based assurance and keychain protection for implementation simplicity.",
+      "companyOsProblem": "Company OS needs humans to authorize CLI, Connector and local-node access across managed and self-hosted deployments while preserving separate issuer/audience/scope, company binding, expiry, revocation and an accountable approval record.",
+      "companyOsFit": "Reimplement through IdentityPort using OIDC/OAuth device authorization (or a rigorously equivalent profile) with PKCE/state where applicable, short-lived audience-bound access tokens, refresh rotation, explicit company/capability consent and stable errors. Store credentials in OS keychain/enterprise credential provider; a file adapter may store only protected references or encrypted material with atomic owner-only semantics. Preserve original approval details as immutable evidence and keep Raft Identity as one adapter.",
+      "responsibilityConflict": "The status payload contains approving human and requested command/company/access, but the client does not compare them with the original request or persist them with the credential. The stored token therefore cannot answer who approved which authority for what company and command. instance_admin_required is a broad access label rather than an exact action/digest-bound approval and cannot satisfy Company OS high-risk responsibility semantics.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/client/board-auth.ts (302 lines; SHA-256 6728296590cf65d43334417de038e756224c093ea22414a6db9b9783665f47b2)",
+        "git history/blame: 260 current lines from 73eb23734f25c570d88665e672f80d740797c632; 42 from 9cd62cf3bb7b9e86f0b08894a1c48bbdb79a9488 fixing headless browser-open failure",
+        "Existing application:cli/__tests__/board-auth reused without reread: SHA-256 3cbbf3c94d69f16eb97af52a60e7403965998882d28698ad66d546b465549e85; focused Vitest 3/3 passed",
+        "Existing application:cli/__tests__/open-url reused without reread: SHA-256 fd1af9f6d46cbd13aa26bdc54ba304da05c6eb26bc3595305bee537647f54c5e; focused Vitest 3/3 passed",
+        "Existing application:cli/__tests__/auth-command-registration reused without reread: focused Vitest 3/3 passed; replay/state/PKCE/authority semantics absent"
+      ],
+      "securityFindings": "Critical adoption gaps: the challenge response places boardApiToken in unauthenticated client memory before human approval (server-side unusability until approval must be proven separately); the poll token is placed in a URL query string and can leak through access logs/proxies; API/public bases are only trailing-slash-normalized, not origin/TLS validated; fetch has no timeout/AbortSignal or explicit redirect policy. Malformed expiresAt creates an infinite poll loop and suggested interval has no upper bound. The client trusts approved status without matching id, command, access, company or approver fields. Bearer tokens are plaintext JSON; mode 0600 applies only on creation, with no chmod/owner/symlink/allowed-root/atomic-write/locking/keychain protection. Parse corruption can crash, concurrent writes can lose credentials, and remote revocation does not itself remove the local copy. Server English error strings become thrown client contracts."
     },
     {
       "id": "application:cli/client/command-label",
