@@ -4760,18 +4760,25 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-process-recovery",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "A 6,889-line PostgreSQL integration suite exercising Paperclip's process/run recovery, hot restart, graceful shutdown, stranded Issue reconciliation, durable retry, interaction continuation, approval resumption, workspace/secret preflight, missing-disposition handoff and recovery escalation paths.",
+      "dependencyDirection": "The suite enters through heartbeatService but reaches across Runs, wakeups, Issues/comments/relations, recovery actions, interactions, holds, Agents, secrets, workspaces, environments/leases, budgets, documents/work products, hot-restart snapshots, local process supervision and telemetry. It also launches real child processes/process groups while mocking adapters, telemetry and selected termination hooks.",
+      "keyDataModels": "HeartbeatRun and contextSnapshot retry metadata; AgentWakeupRequest; Issue assignment/checkout/execution linkage; IssueRecoveryAction and source-scoped evidence; IssueInteraction; Company/Agent responsibility fields; pause holds; execution workspace and environment lease; document/work-product progress; hot-restart process identity and snapshot markers.",
+      "lifecycle": "Protect live work owned by another service instance; classify lost/succeeded/failed/interrupted runs; retry only bounded, cause-matched continuations; persist scheduled retries across restart; adopt or drain eligible processes during hot restart; release locks and leases; require durable external-wait or disposition evidence; avoid nested recovery; create or reuse a canonical source-scoped recovery action; pause or escalate when no live path remains.",
+      "testAssessment": "Exceptionally broad regression evidence accumulated through more than fifty commits and many real failure classes. Strong cases cover cross-instance protection, exact run/interaction binding, restart persistence, retry caps by cause, secret redaction, race deduplication, recovery recursion prevention, pause-hold exemption and durable-wait validation. The monolithic fixture is nevertheless expensive and highly coupled: one file spans host-process behavior, database orchestration, domain policy, recovery presentation copy and adapter-specific details; numerous assertions depend on English notice strings and mutable multi-table side effects.",
+      "designRationale": "Paperclip treats recovery as a backstop control loop over persisted execution state rather than trusting process exit alone. It distinguishes a productive terminal run from a genuinely live continuation path, requires durable wait evidence, bounds automated retries, and keeps repeated failures attached to one canonical source incident.",
+      "companyOsProblem": "Company OS needs the same failure knowledge across managed-cloud and self-hosted execution: exact-once or idempotent recovery, Connector loss, restart adoption, approval/interaction continuation, durable waits, evidence redaction and human-visible escalation without losing the responsibility chain.",
+      "companyOsFit": "ADAPT the scenario catalogue and invariants, not this test file or schema. Split Company OS coverage into Connector execution-lease compatibility tests, durable retry/outbox tests, Approval/Interaction continuation tests, Responsibility/RecoveryCase aggregate tests, and deployment-profile restart tests. General runtime proof must use short-lived secret-free Connector attestation rather than host PID; every retry or escalation must bind accountable human, authority/data/approval contract digests and evidence/result identity.",
+      "responsibilityConflict": "Paperclip can assign orphan blockers and recovery ownership to an Agent, infer recent Agent comments as progress, and perform several sequential Issue/comment/activity/wakeup mutations without an explicit accountable-human decision or atomic durable publication contract. Its default responsibleUserId is present in fixtures but is not consistently the authority or approver governing recovery actions. English issue copy and host process metadata also leak into behavior assertions instead of stable domain codes and verifiable receipts.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-process-recovery.test.ts:1-6889",
+        "server/src/__tests__/heartbeat-process-recovery.test.ts:5601-6889",
+        "cc35c3c395ae0da3bb7aea107e02eca479267beb feat: structure and humanize recovery notices (#11075)",
+        "1fe89eb8f8762e51db27fb44a74d436c2f7dc7c9 Enforce durable external-wait liveness (#9373)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 Add source-scoped recovery actions (#5599)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e Add runtime lifecycle recovery and live issue visibility (#4419)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-project-env",
