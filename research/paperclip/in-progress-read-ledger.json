@@ -3935,6 +3935,19 @@
         "Lines 301-355 reject ambiguous slugs, normalize requested paths, require manifest membership, block asset previews, hash-check bytes, and expose read/copy/package metadata. Non-asset bytes are blindly decoded as UTF-8 for preview based on declared kind; declared kind/content mismatch is not detected. copyCatalogSkillFile accepts an unrestricted targetPath and relies entirely on callers for destination containment/symlink/atomic replacement. Errors remain English-only, and no publisher/license/signature/admission evidence is returned. Linked focused tests passed 5/5 and were not reread."
       ],
       "completionRequirements": ["Read lines 1-355 exactly once and trace manifest/package resolution, schema validation, cache and failure recovery, reference ambiguity, local and GitHub path construction, traversal/symlink containment, network and resource limits, per-file/content hash verification, binary handling, provenance/license/signature gaps and Company OS reuse decision. Link the completed 5/5 focused test evidence without rereading its source."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-managed-skills",
+      "path": "server/src/__tests__/plugin-managed-skills.test.ts",
+      "lineCount": 281,
+      "sha256": "49c5ef91320395be1f02172b7fa4adddb9dfb85e257b6c101e23a99f2ac16c97",
+      "linkedEvidence": { "history": ["0096b56a1c4e69c077320c0194c804cdaea7615d [codex] Add LLM Wiki plugin host support (#5597)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-281 exactly once, run the focused suite, and assess Plugin-owned Skill discovery/install/update/removal, ownership and tenant boundaries, idempotency/reconciliation, version/hash/provenance/license, executable capability admission, failure recovery, uninstall cleanup, Agent assignment impact and Company OS Plugin/Connector fit."]
     }
   ]
 }
