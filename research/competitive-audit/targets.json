@@ -71,6 +71,72 @@
       "identityEvidence": ["Provision official website links to provision-org/provision-core"]
     },
     {
+      "id": "openspawn", "name": "OpenSpawn", "tier": 1,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": null,
+      "candidateProductUrl": "https://openspawn.ai/",
+      "identityEvidence": ["official product site claims an MIT open-source repository, but repository ownership and pin still require verification"]
+    },
+    {
+      "id": "org-studio", "name": "Org Studio", "tier": 1,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": null,
+      "candidateProductUrl": "https://orgstudio.dev/",
+      "identityEvidence": ["official product site exposes a GitHub entry, but repository ownership and pin still require verification"]
+    },
+    {
+      "id": "agent-compiler", "name": "Agent Compiler", "tier": 1,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/thetpmguy/agent-compiler",
+      "identityEvidence": ["candidate repository matches the named compile-only governance product; official ownership relationship still requires verification"]
+    },
+    {
+      "id": "synthorg", "name": "SynthOrg", "tier": 1,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/Aureliolo/synthorg",
+      "candidateProductUrl": "https://synthorg.io/",
+      "identityEvidence": ["product and repository cross-reference each other; exact pin and BUSL-1.1 terms still require verification"],
+      "copyRestriction": "Treat as source-available, not open source, until the exact license grant and change date are reviewed."
+    },
+    {
+      "id": "deepseek-harness", "name": "DeepSeek Harness", "tier": 2,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/deepseek-ai/deepseek-harness",
+      "identityEvidence": ["official organization candidate found; exact repository availability, pin and license must be verified directly"]
+    },
+    {
+      "id": "cordis", "name": "Cordis", "tier": 2,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/cordiverse/cordis",
+      "identityEvidence": ["official npm package metadata points to this repository; relationship to DeepSeek Harness must be verified in source"]
+    },
+    {
+      "id": "compozyos", "name": "CompozyOS", "tier": 2,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/compozy/compozy",
+      "candidateProductUrl": "https://www.compozy.com/",
+      "identityEvidence": ["official product site and repository cross-reference; stable beta pin and license require verification"]
+    },
+    {
+      "id": "smythos-sre", "name": "SmythOS SRE", "tier": 2,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/SmythOS/sre",
+      "identityEvidence": ["official product pages and package metadata point to this repository; exact pin and license map require verification"]
+    },
+    {
+      "id": "juggler", "name": "Juggler", "tier": 2,
+      "identityStatus": "DISCOVERY_IN_PROGRESS",
+      "candidateRepository": "https://github.com/juggler-ai/juggler",
+      "identityEvidence": ["official product repository found; submodules and split AGPL-3.0-or-later/Apache-2.0 surfaces require exact mapping"]
+    },
+    {
+      "id": "beanos-blueprint", "name": "BeanOS Blueprint", "tier": 2,
+      "identityStatus": "PUBLIC_ARCHITECTURE_ONLY",
+      "candidateProductUrl": "https://beanos.ai/blueprint/",
+      "identityEvidence": ["official public blueprint confirmed; no linked first-party implementation has yet been proven"],
+      "copyRestriction": "No code audit or reuse claim until a public implementation and license are proven."
+    },
+    {
       "id": "symphony", "name": "Symphony", "tier": 2,
       "identityStatus": "CONFIRMED",
       "repository": "https://github.com/openai/symphony",

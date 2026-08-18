@@ -1,15 +1,16 @@
 # Competitive and open-source audit charter
 
-Status: Active goal amendment and implementation gate  
+Status: Independent active goal and implementation gate
 Effective: 2026-08-18
 
-## Goal amendment
+## Active goal replacement
 
-Before Company OS resumes large-scale implementation of overlapping Agent
-management capabilities, it must complete an independent market and source-code
-audit. This amendment expands the active Pre-3D goal; it does not replace the
-independent-product constitution in ADR 0008 and does not make any competitor a
-runtime dependency or upstream owner.
+Company OS product implementation and Pre-3D delivery are no longer the active
+goal. Before any large-scale implementation resumes, Company OS must complete an
+independent market and source-code audit and the user must confirm a product
+direction. The independent-product constitution in ADR 0008 remains a constraint,
+but no product shape, upstream strategy, fork strategy, differentiation thesis,
+or decision to continue is assumed in advance.
 
 The audit evaluates every product against the Company OS product charter:
 independent open source, mixed human/Agent organizations, accountable humans,
@@ -54,15 +55,31 @@ explicitly marked; marketing claims are not implementation evidence.
 
 ## Open-source scope and depth
 
-Tier 1 requires complete, zero-unexplained-gap audits:
+The original tier list remains admitted evidence. The new first batch broadens
+the zero-unexplained-gap audit to:
 
 - AgentSpace
 - StaffDeck
 - Paperclip
+- OpenSpawn
+- Org Studio
+- Agent Compiler
+- SynthOrg
+- OpenWorker
 - Provision
 
-Tier 2 requires code-level audits proportionate to each repository but still
-covering all first-party modules:
+Runtime/plugin and Company-as-Code references also require complete repository
+classification plus code-level tracing of every Company OS-relevant path:
+
+- DeepSeek Harness
+- Cordis
+- CompozyOS
+- SmythOS SRE
+- Juggler
+- BeanOS Blueprint and any linked public implementation
+
+Previously admitted tier-2 projects remain in scope and must still cover all
+first-party modules:
 
 - Symphony
 - AgentArea
@@ -71,6 +88,24 @@ covering all first-party modules:
 - OpenWorker
 - Agent Control
 - Mesa
+
+Names are discovery prompts, not repository identities. A project stays
+`DISCOVERY_IN_PROGRESS` until an official owner/repository relationship is
+proven. A public blueprint without an implementation is classified as public
+architecture research, never as a completed code audit.
+
+## Review continuity
+
+Previously completed fixed-SHA audit units are carried forward and are not read
+again merely because the active goal changed. Their evidence remains reviewable
+and may be invalidated only by a pin change, a detected evidence defect, or a
+cross-cutting contradiction. Partially read files and sampled ranges do not
+become complete units; they resume at the first unverified path or range.
+
+At this goal transition, Paperclip has 103 complete units and 1,457 pending
+units at `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`. The other admitted repository
+inventories exist, but their module assessments remain pending. This is the
+continuity baseline, not a claim of full audit completion.
 
 Repository identity is not inferred from a project name. Before auditing, record
 the official repository URL, owner, license, stable tag when one exists, full
@@ -161,6 +196,5 @@ coverage gaps, every production capability has one best reference, all copy
 decisions include license/provenance boundaries, and the resulting architecture
 adjustments are accepted in ADRs.
 
-Only then may overlapping generic Agent-management implementation resume. The
-larger active goal still stops before production of formal 3D characters, scenes,
-rigs, and animation assets.
+Only after the reports are complete and the user confirms one product direction
+may overlapping generic Agent-management or Pre-3D implementation resume.

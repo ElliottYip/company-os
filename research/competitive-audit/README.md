@@ -18,6 +18,13 @@ build dependencies.
   source evidence in an open-source audit.
 - `ADOPT-CODE` still requires a separate copied-code provenance record. An
   inventory or positive assessment does not authorize copying by itself.
+- A completed fixed-SHA unit is carried forward across goal changes and is not
+  reread unless its pin changes or its evidence is invalidated. Partial reads
+  remain pending and resume from the unverified path or range.
+- `DISCOVERY_IN_PROGRESS` and `PUBLIC_ARCHITECTURE_ONLY` are explicit gaps, not
+  repositories that the inventory generator may silently skip at completion.
+- Commercial/public product research is maintained separately from source-code
+  evidence and cannot close an open-source unit.
 
 ## Commands
 
