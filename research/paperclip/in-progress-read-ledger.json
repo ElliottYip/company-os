@@ -6717,6 +6717,34 @@
       "completionRequirements": [
         "Read all four helper files (186 lines total) exactly once and assess database-test portability, route fixture realism, actor/auth defaults, Run teardown quiescence, message compatibility and whether helper shortcuts create audit coverage blind spots for Company OS."
       ]
+    },
+    {
+      "id": "application:server/__tests__/hire-hook",
+      "path": "server/src/__tests__/hire-hook.test.ts",
+      "lineCount": 180,
+      "sha256": "b8c866ea17fb6882b6ef79d3403e05dde6510fa85c425f780148b6c59b3096ec",
+      "linkedEvidence": {
+        "history": [
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 180 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five mocked service tests cover adapter hook success, missing Agent, absent hook, structured ok=false and thrown error behavior after approval/join request.",
+        "The hook is deliberately non-fatal: failed/throwing adapter provisioning resolves successfully and only appends hire_hook.failed/error activity. This preserves the approval transaction but can leave an organizationally approved Agent unusable or partially provisioned without a durable retry/reconciliation state.",
+        "Missing Agent and adapters without onHireApproved silently no-op; the latter produces no activity. The test therefore does not require every approved Agent to reach a defined binding state or make unsupported provisioning visible to operators.",
+        "Inputs identify company, Agent and source/sourceId (approval or join request), while success activity includes adapter type. They do not bind the exact approval decision, approver human, role/job, responsible manager, requested capabilities/permissions/data, Connector version or provisioning result digest.",
+        "The fake database does not verify that the Agent lookup is company-scoped or protect a pathological cross-company Agent ID. Real database, transaction/outbox ordering, duplicate delivery/idempotency, concurrent approvals, retry/backoff/timeout and restart recovery are absent.",
+        "Adapter ok=false and thrown Error messages such as HTTP 500/Network error are written directly to activity details. Redaction, bounded detail, stable error code and prevention of Secret/provider-response leakage are not tested; adapterConfig also exists on the loaded Agent but its handoff/sanitization is not asserted.",
+        "The model conflates organizational hiring approval with a vendor adapter lifecycle callback. Company OS needs separate AgentPrincipal/RoleAssignment/ResponsibilityContract activation and ConnectorBinding provisioning states so an external integration failure cannot ambiguously redefine employment/authority status.",
+        "Focused Vitest passed 5/5 with all database, adapter and activity effects mocked."
+      ],
+      "completionRequirements": [
+        "Read lines 1-180 exactly once and assess Agent hire hook authentication, company/role/manager responsibility, approval and idempotency, bootstrap authority, Secret/config handling and test quality against Company OS human-accountable organization lifecycle."
+      ]
     }
   ]
 }

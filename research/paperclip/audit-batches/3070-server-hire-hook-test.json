@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/hire-hook",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked post-approval service tests that notify an Agent's active server adapter and log success/failure/error without failing the hiring path.",
+      "dependencyDirection": "Vitest -> notifyHireApproved -> mocked Agent lookup/adapter registry/onHireApproved/activity log; no real database, approval record, Connector, transaction or retry worker is exercised.",
+      "keyDataModels": "Company/Agent/adapter/config, approval or join-request source ID, adapter hook ok/error/detail and hire-hook activity action/details.",
+      "lifecycle": "Load approved Agent -> find adapter -> optional provisioning callback -> append success/failure/error activity -> always return; missing Agent/hook no-op.",
+      "testAssessment": "Focused Vitest passed 5/5 with all meaningful dependencies mocked. The cases pin best-effort semantics but do not establish tenant-safe lookup, idempotency, durable retry, approval identity, redaction or a usable post-hire state machine.",
+      "designRationale": "Keep external adapter provisioning from rolling back or breaking an already-approved hire while leaving an operational activity trail when the callback exists and fails.",
+      "companyOsProblem": "Company OS must distinguish organizational Agent activation and accountable role assignment from Connector provisioning, then reconcile each durable state without granting authority to an unbound or partially provisioned runtime.",
+      "companyOsFit": "REIMPLEMENT as an idempotent saga/outbox: Approval activates an AgentPrincipal/RoleAssignment/ResponsibilityContract only under exact policy; a separate ConnectorBinding transitions pending -> provisioning -> healthy/failed with retry and operator remediation. Raw adapter errors remain restricted diagnostics and public/audit outcomes use stable safe codes.",
+      "responsibilityConflict": "source/sourceId is not a complete approval or responsibility chain. No approver, accountable manager, job/role, requested authority, data grant, Connector capability or result evidence is bound, and best-effort failure can leave authority and execution readiness inconsistent.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/hire-hook.test.ts:1-180 (SHA-256 b8c866ea17fb6882b6ef79d3403e05dde6510fa85c425f780148b6c59b3096ec)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 5/5 passed"
+      ],
+      "securityFindings": "CRITICAL authority/readiness inconsistency: approval succeeds even when Connector provisioning fails, with no durable reconciliation state. HIGH audit gap: missing Agent/hook silently no-op and activity is not shown durable/transactional. HIGH tenant gap: company-scoped Agent lookup is not asserted. HIGH error disclosure: raw adapter errors enter activity without tested redaction. HIGH idempotency gap: duplicate/concurrent callbacks and partial effects are untested. HIGH responsibility gap: approver, manager, role, capability and data authority are absent."
+    }
+  ]
+}
