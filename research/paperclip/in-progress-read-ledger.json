@@ -3851,6 +3851,19 @@
         "The first focused Vitest run inside the sandbox failed all 53 tests because Supertest could not bind 0.0.0.0 (EPERM); this was an environment restriction, not a product assertion failure. The suite was rerun outside the sandbox with the same isolated PAPERCLIP_HOME and instance ID: 1 file and all 53 tests passed."
       ],
       "completionRequirements": ["Read lines 1-2319 exactly once, run the focused route suite in an isolated Paperclip home, and assess authentication/authorization and tenant scoping for every endpoint; stable API/error contracts; input/file/path/size validation; import, version, fork, update, reset, rename and deletion lifecycle; approval/responsibility evidence; concurrency/idempotency; secret and local-path exposure; and suitability as a reference for Company OS API boundaries."]
+    },
+    {
+      "id": "application:server/__tests__/company-skills-import-authz-routes",
+      "path": "server/src/__tests__/company-skills-import-authz-routes.test.ts",
+      "lineCount": 212,
+      "sha256": "ee06d80af7b2862619e393a41a4c05abf41e7080899559c9683b72ffbd0334e4",
+      "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-212 exactly once, run the focused route suite in an isolated Paperclip home, and assess import authentication, company membership/tenant isolation, User-versus-Agent authorization semantics, fail-open/fail-closed policy composition, stable denials, secret-safe parsing, activity evidence and Company OS responsibility fit."]
     }
   ]
 }
