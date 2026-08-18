@@ -4769,18 +4769,24 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-managed-clone-credentials",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit/integration tests for authenticated managed Git checkout materialization, concurrent clone serialization, atomic installation, failure cleanup and credential-environment preservation.",
+      "dependencyDirection": "ensureManagedProjectWorkspace derives a Company/Project checkout path, optionally calls a Git auth provider, invokes Git with a sanitized environment and scoped credential helper, atomically renames a temporary clone and returns a workspace; git-credentials owns host gating, secret-to-invocation conversion and error scrubbing.",
+      "keyDataModels": "Company/Project/repository checkout identity, optional GitRemoteAuthProvider result, company-secret token source/name, URL-scoped credential-helper config, token environment variable, in-process materialization promise map, temporary/target checkout paths and operator warning.",
+      "lifecycle": "No provider or null credentials preserves ordinary cloning; a supported credential is passed only through a child environment to a GitHub-HTTPS-scoped helper, never URL/argv/disk; same-process concurrent materializations share one promise, while temp-sibling clone plus atomic rename tolerates a cross-process winner; failures remove temp/target remnants and classify auth-shaped errors without exposing credential text; pre-existing Git or non-empty non-Git paths are adopted without cloning.",
+      "testAssessment": "Eight cases cover no/null auth, non-auth error attribution, same-process concurrency, unauthenticated errors, failure cleanup, preserving an existing non-Git directory and sanitizer spread order. Related implementation adds two host/protocol gates, clears ambient helpers, disables prompts, sets a clone timeout and scrubs URL credentials. Missing are real authenticated Git server tests, token leakage assertions over process lists/logs/core dumps, secret TTL/rotation/revocation, multi-instance locks, crash between clone/rename, disk permissions/symlink attacks, remote identity verification for existing checkouts, malicious pre-existing directories, repository URL mutation, Git LFS/submodules, GHES/GitLab/Gitee and audit receipts. Tests do not prove that the selected company secret is authorized for this Work or repository.",
+      "designRationale": "Provide private-repository access without embedding tokens in persistent Git state, serialize common clone races, install only complete workspaces and give actionable but correctly attributed failures.",
+      "companyOsProblem": "Company OS needs brokered, least-privilege source-data access for local and cloud execution nodes while preventing credential exfiltration, stale workspace adoption and cross-tenant repository confusion.",
+      "companyOsFit": "ADAPT—and consider source-level reuse after license/provenance review—the URL/argv/disk avoidance, ambient-helper clearing, double host/protocol validation, noninteractive timeout, error scrubbing, temp clone and atomic rename. Generalize behind CredentialBrokerPort and WorkspacePort for GitHub/GHES/GitLab/Gitee/enterprise Git; issue short-lived repository/action-scoped credentials on the execution node, bind them to Work/data authorization and record a secret-free access receipt. Replace the process-local promise map with a fenced filesystem/database lease, reject or quarantine non-Git paths, and verify existing checkout remote URL, commit trust and ownership before adoption.",
+      "responsibilityConflict": "The secret source is Company-scoped but not bound to accountable human, Work, data contract or exact repository action. A pre-existing path may silently override the requested repository, and successful clone establishes filesystem state rather than authorized evidence. Secret name in diagnostic text is operationally useful but should itself be policy-controlled metadata.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-managed-clone-credentials.test.ts:1-197",
+        "server/src/services/heartbeat.ts:1473-1578",
+        "server/src/services/git-credentials.ts:1-121",
+        "e0c2448267721f672bc2cb6cd16f6da99fdcf89e feat(server): authenticate server-side git clone and fetch with a company-secret GitHub token (#10720)",
+        "2c90cf0f2c60d3851880eca3c643c01313af9ffd fix(server): serialize managed-checkout materialization and stop misattributing clone failures (#10723)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-model-profile",
