@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/inbox-dismissals",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres service/route tests for per-user inbox dismiss/snooze/restore and timestamp-based badge resurfacing across Approvals, join requests and failed Runs.",
+      "dependencyDirection": "Vitest/Supertest -> dismissal routes/service and sidebar badge service -> real Drizzle/PostgreSQL; authentication and referenced-entity authorization are not exercised.",
+      "keyDataModels": "Company/user/itemKey Dismissal with kind/dismissedAt/snoozedUntil, Approval, join request, failed/timed-out Run and aggregate inbox/sidebar badge counts.",
+      "lifecycle": "Upsert personal dismissal or future snooze -> suppress item while item updatedAt is not newer -> resurface on later activity -> delete dismissal to restore.",
+      "testAssessment": "All 3 tests skipped in sandboxed and approved unsandboxed runs due unavailable embedded PostgreSQL. The source proves a compact projection rule but leaves entity validation, authorization, audit, typed keys, concurrency and mandatory-approval visibility untested.",
+      "designRationale": "Let each human tidy a mixed attention queue without mutating underlying approvals/requests/Runs and automatically restore attention when an item changes after it was dismissed.",
+      "companyOsProblem": "Company OS needs personal queue presentation state that never changes business responsibility, cannot permanently hide mandatory approvals/exceptions and resurfaces deterministically when material evidence or risk changes.",
+      "companyOsFit": "ADAPT the separate personal projection, idempotent upsert, reversible restore and activity-driven resurfacing. Replace free-form keys/timestamps with typed AttentionItemRef plus source version/risk class, cap snooze by policy, disallow permanent suppression for mandatory approvals and record a safe immutable receipt for high-risk dismiss/snooze actions.",
+      "responsibilityConflict": "A human can hide approval and failure attention indefinitely without reason or durable receipt in this unit. The underlying responsibility object remains, but the Agent Boss queue may no longer surface a required action, undermining operational accountability.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/inbox-dismissals.test.ts:1-272 (SHA-256 db501a041649575831030cc40d627bc61a9fb61e7e169d67bad61f40049766d8)",
+        "git history: 36ec79c196fcb149c331657a0eb5fa710ae074a9, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 sandboxed focused Vitest: 3/3 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 3/3 skipped"
+      ],
+      "securityFindings": "HIGH mandatory-attention risk: Approvals/failures can be dismissed or snoozed to 2099 with no risk-class policy. HIGH reference-integrity gap: free-form itemKey existence/tenant/type is untested. HIGH audit gap: dismiss/snooze/restore has no asserted activity receipt. HIGH authorization gap: identity is injected and cross-company cases are absent. MEDIUM ordering gap: wall-clock updatedAt controls resurfacing. MEDIUM verification gap: all database tests skipped locally."
+    }
+  ]
+}

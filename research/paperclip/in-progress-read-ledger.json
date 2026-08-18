@@ -6804,6 +6804,35 @@
       "completionRequirements": [
         "Read lines 1-491 exactly once and assess human/Agent archive authority, cross-Work side-effect containment, completion ownership, policy consumption, idempotency/concurrency, tenant privacy, audit receipts and test quality against Company OS human workspace delegation and responsibility chain."
       ]
+    },
+    {
+      "id": "application:server/__tests__/inbox-dismissals",
+      "path": "server/src/__tests__/inbox-dismissals.test.ts",
+      "lineCount": 272,
+      "sha256": "db501a041649575831030cc40d627bc61a9fb61e7e169d67bad61f40049766d8",
+      "linkedEvidence": {
+        "history": [
+          "36ec79c196fcb149c331657a0eb5fa710ae074a9 feat: add attention queue and Decisions surface (#9380)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 272 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Three embedded-Postgres tests cover per-user dismissal upsert, snooze/restore route validation and badge resurfacing for approvals, join requests and failed Runs based on newer activity timestamps.",
+        "Dismissal is a personal company-scoped projection keyed by a free-form itemKey; repeated dismissal updates one row and the latest timestamp. This is lightweight and idempotent, but the test does not validate that the referenced entity exists, belongs to the company/user or remains eligible for dismissal.",
+        "The route supports dismiss/snooze and delete-to-restore. Past snooze time is rejected, but a date in 2099 is accepted with no maximum duration, policy class or mandatory-review override. Authentication is bypassed by an injected board actor and cross-company/Agent/instance-admin cases are absent.",
+        "Badge calculation hides a pending approval, pending human join request or failed Run if its updatedAt is not newer than the dismissal; an approval updated after dismissal and an undismissed timed-out Run remain visible. This generic resurfacing rule is useful, but timestamps rather than monotonic entity versions can misorder under clock skew/backfill.",
+        "The examples use both approval:<id> and attention:approval:<id> namespaces, exposing a stringly typed item-key contract that can drift across inbox surfaces. Unknown kinds, delimiter injection, maximum key length and canonical serialization are not tested.",
+        "No activity/audit assertion accompanies dismissal, snooze or restore despite activityLog fixture cleanup. For ordinary UI tidying that may be acceptable, but hiding a high-risk Approval or responsibility exception requires a durable user action receipt and must not change the approval's business state.",
+        "Concurrent updates/CAS, user membership, deletion/retention, snooze expiry worker, pagination, bulk dismissals, reason and notification are absent. Request IP is seeded on join request but not projected in this unit.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 3 tests because embedded PostgreSQL support was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-272 exactly once and assess attention/inbox dismissal ownership, resurfacing/version semantics, human versus Agent authority, tenant isolation, immutable audit and test quality against Company OS approval and responsibility queues."
+      ]
     }
   ]
 }
