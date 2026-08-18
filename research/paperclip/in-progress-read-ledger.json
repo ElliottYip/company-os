@@ -4746,6 +4746,32 @@
       ]
     },
     {
+      "id": "application:cli/commands/worktree-lib",
+      "path": "cli/src/commands/worktree-lib.ts",
+      "lineCount": 294,
+      "sha256": "ec04e2c9e9157323b0fe481dc39c228900269e3cfd67e56a6e8a0d6fa72f1f03",
+      "linkedEvidence": {
+        "history": [
+          "dcac49a4fd4739ec7177b196a869aa5d1cc169d9 feat(workspaces): defer isolated setup until runtime start (#10653)",
+          "7cfb655f60a2f98e322d056f27aaeebcafce8d75 fix(worktree): disable automatic database backups (#10520)",
+          "08af83043076a95bc335a928826fca8117704594 Tighten publicBaseUrl port rewriting (#4553)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 294 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once at the pinned SHA.",
+        "Minimal seeding is an exclusion-list clone, so unknown future tables copy by default; source config inheritance also carries exposure, auth, storage, LLM, Secret and telemetry semantics into the supposedly isolated target.",
+        "Decision: REIMPLEMENT as a deny-by-default, schema-aware SnapshotProfile; retain only narrow deterministic-marker and value-escaping ideas."
+      ],
+      "completionRequirements": [
+        "Read lines 1-294 exactly once and assess path/config derivation, seed profiles, redaction, identity/Secret propagation, deployment-profile coupling and test evidence."
+      ]
+    },
+    {
       "id": "application:cli/commands/worktree",
       "path": "cli/src/commands/worktree.ts",
       "lineCount": 3690,

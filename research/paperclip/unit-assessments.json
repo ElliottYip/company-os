@@ -2140,18 +2140,23 @@
     },
     {
       "id": "application:cli/commands/worktree-lib",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure and near-pure helpers for worktree seed profiles, marker paths, instance naming/color, local path layout, source-config rewriting, environment construction and POSIX shell export formatting.",
+      "dependencyDirection": "worktree helper -> PaperclipConfig schema and home-prefix expansion -> Node crypto/path/URL. It does not access the database or filesystem directly, but its returned plans/configuration govern the destructive command audited separately.",
+      "keyDataModels": "minimal/full WorktreeSeedPlan; excluded database table and nullified-column lists; WorktreeLocalPaths; seed marker paths; PaperclipConfig clone; worktree branding and environment entries.",
+      "lifecycle": "Choose full or minimal snapshot profile -> derive deterministic paths/markers -> clone selected source deployment/auth/LLM/storage/Secret settings into an embedded local instance -> emit worktree identity environment and optional shell exports.",
+      "testAssessment": "Reused completed worktree test evidence without rereading: 37 passed, 2 macOS logical/canonical temporary-path failures and 4 embedded-PostgreSQL skips; CLI TypeScript passed. Helper functions receive useful unit coverage, but the profile is an allow-by-default table clone and tests do not prove future-schema safety, sensitive-column classification, config/credential rebinding, shell variable-name validation or responsibility preservation.",
+      "designRationale": "A declarative seed plan centralizes which volatile runtime tables are omitted, while deterministic paths and markers make branch-scoped instances discoverable. Source configuration inheritance minimizes developer setup and explicit backup disabling avoids duplicate local backup work.",
+      "companyOsProblem": "Company OS needs versioned, policy-driven environment snapshots whose data, credentials, identities, Connectors, responsibilities and execution state are explicitly classified and rebound for Demo, FDE staging and local-enterprise recovery.",
+      "companyOsFit": "REIMPLEMENT as a schema-aware, deny-by-default SnapshotProfile registry. Each entity/field must declare copy, redact, pseudonymize, reset, rebind or prohibit behavior; unknown schema additions must fail closed. Keep deterministic path/marker concepts and tested POSIX value escaping only as narrow references. Never clone deployment exposure, signup, telemetry, storage endpoint, LLM or Secret provider settings implicitly.",
+      "responsibilityConflict": "The minimal profile excludes selected runtime/cost/activity tables but retains the rest of the database by default, so humans, permissions, evidence, data grants and responsibility records can be copied without a disposition contract. Source config inheritance can also reproduce exposure and identity semantics while appearing to create an isolated instance.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/commands/worktree-lib.ts:1-294 (full source SHA-256 ec04e2c9e9157323b0fe481dc39c228900269e3cfd67e56a6e8a0d6fa72f1f03)",
+        "git history: dcac49a4fd4739ec7177b196a869aa5d1cc169d9, 7cfb655f60a2f98e322d056f27aaeebcafce8d75, 08af83043076a95bc335a928826fca8117704594 and 73eb23734f25c570d88665e672f80d740797c632",
+        "Existing completed application:cli/__tests__/worktree assessment reused: 37 passed, 2 failed, 4 skipped"
+      ],
+      "securityFindings": "HIGH: minimal seeding is an exclusion list, so every current and future table not named is cloned by default; it is not a safe data-minimization boundary. HIGH: buildWorktreeConfig inherits LLM configuration, deployment mode/exposure/bind/allowed hosts, signup policy, S3 endpoint/bucket/prefix, Secret-provider strictness and telemetry defaults without classifying or rebinding authority. It defaults telemetry to enabled and signup to allowed when source values are absent. MEDIUM: rewriteLocalUrlPort returns malformed/portless public URLs unchanged, potentially retaining a production origin. MEDIUM: formatShellExports escapes values but does not validate environment variable names; current callers can also pass complete env maps containing credentials. Positive properties include deterministic isolated directories, backup disabling, URL API use, CSPRNG branding color and robust POSIX single-quote escaping for values."
     },
     {
       "id": "application:cli/commands/worktree-merge-history-lib",
