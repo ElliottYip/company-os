@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/company",
+      "auditStatus": "COMPLETE",
+      "function": "Broad CLI tests for scoped company discovery, creation errors, import route/confirmation policy, portability preview/result rendering, entity/file selection and legacy Adapter defaults.",
+      "dependencyDirection": "Imports company CLI pure helpers and command registration, mocks HTTP, and consumes the shared portability result type without running archive parsing, database apply or server authorization.",
+      "keyDataModels": "Company portability manifest, include flags, collision/action plan, Agent hierarchy/config/permissions, skills/files, projects/workspaces, tasks/routines/comments, env-input declarations, selected files and Adapter overrides.",
+      "lifecycle": "Resolves company scope, selects preview/apply routes, gates apply confirmation, renders plans/results, maps entity selections to files and assigns a default Adapter for legacy process Agents.",
+      "testAssessment": "Focused Vitest passed 18/18. Scoped fallback, explicit preview/apply and selection semantics are valuable, but archive/path/signature limits, terminal sanitization, Secret/identity/responsibility rebinding, plan digest, transactional apply/rollback and real authorization are absent.",
+      "designRationale": "Make whole-company templates inspectable and selectively portable across Paperclip instances while supporting legacy Agent definitions.",
+      "companyOsProblem": "Company OS needs safe managed-cloud/self-hosted organization templates and FDE industry packages that can be previewed, selectively applied and rebound to local humans, Connectors, data grants and policies.",
+      "companyOsFit": "ADAPT the explicit manifest, dry-run plan, collision actions, entity/file selection and non-interactive --yes gate. Remove vendor-default mapping, require signed/digested bundles, bind preview to apply, sandbox archive paths/content, and force identity/Connector/Secret/permission/data/responsibility rebinding before activation.",
+      "responsibilityConflict": "The manifest can carry Agent permissions and reporting lines but has no accountable human or responsibility/evidence contract; unconditional .paperclip.yaml inclusion and silent claude_local fallback introduce behavior outside explicit entity/runtime consent.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/company.test.ts:1-899", "full source SHA-256 021e3b627cecdb01c17b9707a21bd58614cf2af5c1f5d6fe91f45e59e9b9ba60", "2026-08-18 focused Vitest: 18 passed via existing local binary"]
+    }
+  ]
+}

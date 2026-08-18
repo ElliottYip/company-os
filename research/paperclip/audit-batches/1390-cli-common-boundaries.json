@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/common",
+      "auditStatus": "COMPLETE",
+      "function": "Shared CLI tests for profile/context resolution, authentication and API-base precedence, company requirement, attachment MIME inference and dynamic API path construction.",
+      "dependencyDirection": "Calls production context, credential-store and common command helpers against temporary files and environment variables; it does not execute HTTP or server authorization.",
+      "keyDataModels": "Versioned CLI profile, API base, company ID, API-key source, authSource discriminator, filename extension and tagged-template URL path.",
+      "lifecycle": "Writes profiles/config/auth fixtures, resolves precedence variants, infers allowlisted MIME types, percent-encodes path segments and rejects blank dynamic IDs.",
+      "testAssessment": "Focused Vitest passed 10/10. Path encoding/blank rejection and explicit precedence are strong; stored-credential fallback, origin validation, credential audience/company binding, malformed files, permissions/atomicity, content sniffing and cleanup are missing.",
+      "designRationale": "Centralize CLI defaults and eliminate repeated unsafe URL concatenation and attachment-type guessing across commands.",
+      "companyOsProblem": "Company OS needs generated, tenant-aware clients whose credentials, deployment origin and dynamic identifiers cannot be confused across managed-cloud and self-hosted profiles.",
+      "companyOsFit": "ADAPT the tagged path builder and table-driven precedence tests. Replace manual MIME duplication with generated/shared policy; require canonical trusted origins and credential audience/company validation, prefer env/SecretStore over argv bearer input, and add stored-fallback, corruption, atomic-write and cleanup coverage.",
+      "responsibilityConflict": "A present company ID and bearer token do not prove membership or action accountability; every effect still needs server-side company/audience checks and responsibility evidence.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/common.test.ts:1-201", "full source SHA-256 ce724a4b261d0b14a8e27d4edcdb40fe54e53ccd7bede319f7007ac21dc6486b", "2026-08-18 focused Vitest: 10 passed via existing local binary"]
+    }
+  ]
+}

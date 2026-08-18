@@ -1972,6 +1972,89 @@
         "Focused Vitest passed 1/1 through the existing local binary."
       ],
       "completionRequirements": ["Read lines 1-80 exactly once and assess hostname allowlist parsing, exact/wildcard/IP/IDN/port/case/trailing-dot semantics, fail-closed behavior and deployment relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/auth-command-registration",
+      "path": "cli/src/__tests__/auth-command-registration.test.ts",
+      "lineCount": 80,
+      "sha256": "0800050ac890d2c0185a7c1242104eab59b6376a660ccddbf8f88bd0eb5f3968",
+      "linkedEvidence": { "history": ["9cd62cf3 fix(cli): handle headless browser-open failure in board auth (#8328)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 80 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The suite proves auth login registers one company-id option and a --no-browser flag, then maps six challenge/revocation commands to expected endpoints.",
+        "Challenge GET places the secret token in the URL query and the test accepts this, exposing it to HTTP access logs, proxy histories and observability; direct --token also risks shell history while --token-env is the safer tested path.",
+        "No browser/headless fallback behavior is executed despite the file history, and no challenge expiry, single-use/replay, state/PKCE, approver identity/authority, cross-company denial, stable error or token redaction assertion exists.",
+        "The fixed board API key and mocked fetch mean the suite proves neither actual authentication nor that approve/cancel/revoke effects are bound to an accountable human.",
+        "Focused Vitest passed all 3 tests in this file as part of a 6/6 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-80 exactly once and assess board-auth command registration, headless fallback, bind/redirect/origin/token safety, error handling and operator experience."]
+    },
+    {
+      "id": "application:cli/__tests__/board-auth",
+      "path": "cli/src/__tests__/board-auth.test.ts",
+      "lineCount": 53,
+      "sha256": "3cbbf3c94d69f16eb97af52a60e7403965998882d28698ad66d546b465549e85",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 53 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "This file tests plaintext board credential storage rather than callback parsing: missing-file default, trailing-slash API-base normalization, token/user retrieval and removal.",
+        "It does not assert file/directory permissions, encryption/keychain integration, atomic writes, symlink resistance, corruption recovery, concurrent updates, token expiry/rotation, selective revocation or redaction.",
+        "Only one HTTP localhost origin is tested; scheme/host case, default ports, path/query fragments, HTTPS requirements and credential separation across subtly different origins are unverified.",
+        "Temporary credential directories are never removed, so token-123 fixtures persist under the OS temporary directory until external cleanup.",
+        "Focused Vitest passed all 3 tests in this file as part of a 6/6 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-53 exactly once and assess board-auth callback token parsing, URL/hash/query handling, secrecy, validation, replay/expiry/state/PKCE and test gaps."]
+    },
+    {
+      "id": "application:cli/__tests__/common",
+      "path": "cli/src/__tests__/common.test.ts",
+      "lineCount": 201,
+      "sha256": "ce724a4b261d0b14a8e27d4edcdb40fe54e53ccd7bede319f7007ac21dc6486b",
+      "linkedEvidence": { "history": ["876ac759 test(cli): cover API path construction (#9254)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 201 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The suite covers command-context precedence, required company scope, API-base precedence and trailing-slash normalization, authentication-source precedence, attachment MIME inference and safe tagged-template encoding/rejection of empty path segments.",
+        "Explicit option > environment > profile is clear, and profiles reference an environment variable name instead of persisting an Agent key. However, the test titled stored board auth never reaches or asserts the stored-credential fallback, and explicit --api-key still normalizes shell-visible bearer input.",
+        "API bases accept arbitrary HTTP origins without HTTPS, URL validity, credentials/path/query rejection or origin canonicalization tests; company IDs are only presence-checked here, not bound to credential audience or membership.",
+        "apiPath dynamic-segment encoding and blank rejection are strong reusable primitives. MIME inference duplicates the server allowlist by comment rather than generated contract and relies on extension, not content validation.",
+        "Temporary context/auth/config directories are never removed; file permissions, symlink/atomic write behavior, malformed config and missing environment-key errors are absent.",
+        "Focused Vitest passed 10/10 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-201 exactly once and assess shared CLI HTTP construction, authentication precedence, origin/path/query safety, payload/error/redaction behavior, file output and Company OS client-contract relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/company",
+      "path": "cli/src/__tests__/company.test.ts",
+      "lineCount": 899,
+      "sha256": "021e3b627cecdb01c17b9707a21bd58614cf2af5c1f5d6fe91f45e59e9b9ba60",
+      "linkedEvidence": { "history": ["5da382fd feat(skills): require explicit merge modes (#10978)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 899 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-300 test company current/list behavior under explicit or Agent-derived scope, including graceful fallback from denied board-wide listing and a specific instance-admin error for create.",
+        "Import preview/apply route selection distinguishes existing-company from new-company targets and rejects blank company IDs; non-interactive and JSON apply require --yes while interactive text mode prompts, a useful destructive-operation UX gate.",
+        "The tests use direct --api-key values and mocked fetch, so membership/audience authorization and actual creation/import effects remain server assumptions. Existing-company path and dashboard prefix examples contain only safe characters, leaving dynamic-segment encoding unproven.",
+        "Lines 301-600 exercise rich preview/result rendering and reveal the portability schema covers company, Agent hierarchy, adapter/runtime config, permission grants, skills with provenance-like fields, projects/workspaces, tasks/routines, comments, environment-input declarations and collision plans.",
+        "Secret env inputs are represented as declarations with null defaults in fixtures rather than values, a sound portability direction, but human principals, accountable owners, responsibility contracts, approvals/evidence, data authorization/export rules and identity rebinding are absent from the shown manifest.",
+        "Preview/result rendering tests use only trusted-looking strings; terminal escape/control-character injection and Secret/error redaction are not tested. Warnings can advise API-key review but no mandatory unresolved-Secret or permission-risk gate is proven.",
+        "Lines 601-899 prove entity selection defaults to all, keeps project versus task selection separate, and selects nested project/task/Agent/skill files consistently; archive traversal, duplicate/case-conflicting paths, symlinks, decompression limits, hashes/signatures and content schema enforcement are not covered.",
+        "The extension file .paperclip.yaml is always included even when every entity is deselected, so extension-controlled behavior can cross the import boundary outside the user's entity selection unless separately reviewed and consented.",
+        "Legacy process Agents are silently default-mapped to claude_local while explicit adapters remain unchanged. This vendor-specific fallback conflicts with Company OS runtime neutrality and should instead require an explicit compatible Connector selection or leave the import unresolved.",
+        "Selection tests do not require re-binding human identities, accountable owners, Agent credentials, permissions, data contracts or responsibility contracts before apply; preview/apply plan drift and transactional rollback are also untested.",
+        "Focused Vitest passed 18/18 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-899 exactly once and assess company create/import/export lifecycle, archive/delete safety, portable data coverage, identity/Secret handling, path/archive/network trust, preview/apply parity, rollback/idempotency and test quality."]
     }
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/auth-command-registration",
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for login option registration and challenge create/get/approve/cancel plus current-token revocation route parity.",
+      "dependencyDirection": "Imports auth CLI registration and mocks fetch; it does not invoke challenge services, browser callback handling, identity verification or audit persistence.",
+      "keyDataModels": "Company option, no-browser flag, challenge ID, challenge Secret from argument/environment and board API key.",
+      "lifecycle": "Registers commands, creates/reads/approves/cancels a challenge, approves an encoded ID with env Secret and revokes the current credential.",
+      "testAssessment": "Three tests passed. Option/route wiring and encoded IDs are covered, but browser fallback, token headers/redaction, expiry, replay, state/PKCE, approver authority, tenant denial, stable errors and real effects are absent.",
+      "designRationale": "Offer interactive and headless CLI authentication with challenge approval and an operator escape hatch when a browser cannot open.",
+      "companyOsProblem": "Company OS needs secure device/CLI authorization that binds a human identity and explicit company scope without leaking bearer material.",
+      "companyOsFit": "REJECT this test contract because it normalizes a challenge Secret in a GET query. Rebuild around short-lived single-use device codes or authorization code plus PKCE, Secret-free URLs/logs, explicit audience/company binding, revocation and accountable approval evidence; retain only no-browser UX and encoded-ID test ideas.",
+      "responsibilityConflict": "Challenge approval is reduced to an unaudited POST with a static board token; the suite cannot prove who approved, their company authority, exact requested grant, expiry or resulting credential audience.",
+      "decision": "REJECT",
+      "evidence": ["cli/src/__tests__/auth-command-registration.test.ts:1-80", "full source SHA-256 0800050ac890d2c0185a7c1242104eab59b6376a660ccddbf8f88bd0eb5f3968", "2026-08-18 focused Vitest: 3 passed in combined 6-test run"]
+    },
+    {
+      "id": "application:cli/__tests__/board-auth",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests for board credential store creation defaults, API-base-keyed retrieval and removal.",
+      "dependencyDirection": "Calls production credential-store helpers against temporary files; it does not invoke server auth, OS keychain or token validation.",
+      "keyDataModels": "Versioned credential map keyed by normalized API base, bearer token and optional user ID.",
+      "lifecycle": "Reads an absent store, writes/retrieves one credential and removes it.",
+      "testAssessment": "Three tests passed. Basic normalization and lifecycle work, but permissions, encrypted/keychain storage, atomicity, symlinks, corruption/concurrency, token expiry/rotation, origin canonicalization and fixture cleanup are untested.",
+      "designRationale": "Allow a CLI to remember separate board credentials for multiple server origins.",
+      "companyOsProblem": "Company OS operator tooling needs per-deployment credentials with strong origin/audience isolation and secure local storage.",
+      "companyOsFit": "REFERENCE ONLY for the versioned per-origin store shape. Prefer OS credential storage or a pluggable SecretStore, enforce HTTPS/origin canonicalization, store metadata rather than raw long-lived tokens when possible, and test permissions, rotation, corruption, concurrency and cleanup.",
+      "responsibilityConflict": "A locally retrievable bearer token identifies possession, not accountable human intent for each high-risk action; responsibility evidence must be created at action approval/execution boundaries.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["cli/src/__tests__/board-auth.test.ts:1-53", "full source SHA-256 3cbbf3c94d69f16eb97af52a60e7403965998882d28698ad66d546b465549e85", "2026-08-18 focused Vitest: 3 passed in combined 6-test run"]
+    }
+  ]
+}
