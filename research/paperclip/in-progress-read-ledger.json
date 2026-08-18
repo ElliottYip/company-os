@@ -4574,10 +4574,10 @@
         { "path": "cli/src/commands/client/run.ts", "completedRanges": [{ "start": 1, "end": 321 }] },
         { "path": "cli/src/commands/client/secrets.ts", "completedRanges": [{ "start": 1, "end": 726 }] },
         { "path": "cli/src/commands/client/skill.ts", "completedRanges": [{ "start": 1, "end": 150 }] },
-        { "path": "cli/src/commands/client/skills.ts", "completedRanges": [{ "start": 1, "end": 600 }] }
+        { "path": "cli/src/commands/client/skills.ts", "completedRanges": [{ "start": 1, "end": 1024 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/skills.ts",
+      "nextFile": "cli/src/commands/client/teams.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4707,7 +4707,12 @@
         "skills.ts exact range 1-600 provides a richer catalog/library/runtime lifecycle distinct from skill.ts: browse/search/inspect before install, install without Agent attachment, local/source import, project scan, update check/install, non-executing byte audit, pinned-origin reset/remove, and desired-skill runtime sync.",
         "Several design choices are strong candidates: separate discovery from installation and Agent assignment; audit bytes without executing; distinguish soft findings from hard stops; preserve a pinned origin for reset; expose desired versus runtime snapshots; and require confirmation for reset/remove/clear.",
         "Risk remains substantial: import accepts local/GitHub/skills.sh/arbitrary URL sources with no CLI preview or displayed commit/digest/license/trust grant; project scanning can report imported/updated content without a preceding confirmation; update --all with --force can bulk-discard local modifications/soft holds; and body files are read whole without size/data classification controls.",
-        "Agent sync supports destructive replace with any non-empty list but does not use the confirmation applied to clear. The interface assigns executable Skills directly to an Agent without visible per-Skill tool/data/network/Secret capabilities, accountable approver, rollout cohort, runtime attestation or evidence. skills.ts remains partial; next exact range is 601-1024."
+        "Agent sync supports destructive replace with any non-empty list but does not use the confirmation applied to clear. The interface assigns executable Skills directly to an Agent without visible per-Skill tool/data/network/Secret capabilities, accountable approver, rollout cohort, runtime attestation or evidence.",
+        "skills.ts exact range 601-1024 completes reference resolution, bulk checking/updating/auditing, catalog/hash/audit rendering, Agent runtime reconciliation and input/confirmation helpers. History is 5da382fd59222819cff110f85ca738a74fb335d1, 33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe and 9eac727cf13f6445c76e61190b6f831833759979.",
+        "Catalog inspection exposes contentHash plus per-file size/SHA-256; update status exposes installed/origin hashes, current/latest refs, hold reason and audit verdict; runtime snapshot distinguishes desired/managed/origin/state and adapter support. These are unusually strong supply-chain and desired-vs-actual patterns and make Paperclip the current best-reference candidate for the Skill lifecycle category, subject to service/audit-engine tests and license review.",
+        "Bulk update is an N+1 sequential partial-success workflow with no atomic set, rollout cohort, rollback or batch approval digest. It checks status first, then independently installs each update; source/audit state can change between check and apply. Bulk audit/check/list also lack pagination and can be slow at enterprise scale.",
+        "Warnings, findings, names and runtime details are printed without terminal-control sanitization. Skill body file/stdin is buffered without a size limit. Interactive confirmation types yes but is not bound to the resolved Skill ID/hash/revision; --yes bypasses it, and update replace mode remains unconfirmed.",
+        "Decision: NARROW/EXTEND-AS-DESIGN, not runtime adoption. Company OS should independently implement the catalog/hash/audit/hold/pinned-origin/reconciliation model, then add capability grants, accountable approvals, transactional rollout/rollback and Connector attestation. No code is selected for copying at this command layer. Next file is teams.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
