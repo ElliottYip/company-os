@@ -3994,18 +3994,34 @@
     },
     {
       "id": "application:server/__tests__/company-skills-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Supertest route-contract suite for Skill catalog reads, local/remote/catalog creation, workspace scans, CRUD/version/file/social/fork/rename/audit/reset operations, policy and access decisions, activity/telemetry, test inputs/templates/runs and hidden Issue/heartbeat orchestration.",
+      "dependencyDirection": "The suite runs real Express routes, authz and error middleware around mocked access, policy, Skill, Agent, catalog, activity, telemetry, Issue and heartbeat services. It validates HTTP composition but not database tenant enforcement, service transactions, durable activity/event publication or real package/runtime boundaries.",
+      "keyDataModels": "Board/Agent/none actor; permission decision and Skill policy decision; catalog and CompanySkill provenance; Skill versions/files/forks/comments; activity records; test input/template/run snapshots; hidden Issue origin fingerprint; heartbeat wake/cancel; cost/token counters and soft-delete state.",
+      "lifecycle": "Authenticate; canonicalize remote/stored resources; evaluate platform access and optional Skill policy; call Skill/catalog services; publish activity/telemetry; create hidden harness Issue and wake Agent; cancel/delete runs and hide Issues; block deletion while Agents still reference a Skill.",
+      "testAssessment": "All 2,319 lines were read once under the exact-range ledger. The suite has broad, readable HTTP behavior coverage and strong cases for auth-before-parse, secret-safe URL rejection, canonicalization-before-policy, provenance activity, Agent API-key/run attribution, no-op suppression, immutable test snapshots, cross-company Agent denial and side-effect-free reads. The first sandbox run failed all 53 cases solely because Supertest could not bind 0.0.0.0 (EPERM); the isolated rerun outside the sandbox passed all 53. Major missing cases are cross-company opaque resource IDs across endpoints, concurrent/idempotent mutations, route/service partial failure, stable error codes, path/size/resource limits, durable audit publication, secret-redacted Agent config and approval/responsibility evidence.",
+      "designRationale": "Expose the full Skills Studio and test harness through one company-scoped Express surface while layering platform actor restrictions, optional source-aware Skill policy and generic activity logging over service operations.",
+      "companyOsProblem": "Company OS needs an independent, versioned API whose commands carry tenant, principal, responsible human, exact action/resource digest, authority/data scope, approval evidence and idempotency; package admission, executable activation, destructive mutation and test execution require distinct risk actions and durable event/outbox semantics.",
+      "companyOsFit": "REIMPLEMENT the API and authorization composition. Adapt selected test cases for authenticate-before-parse, canonical-resource policy matching, secret non-echo, provenance receipts, cross-company Agent rejection, actor/run/key attribution, referential deletion blockers and snapshot-based test runs. Do not inherit the open-default permission semantics, route-level saga orchestration, English-string contracts or Paperclip DTOs.",
+      "responsibilityConflict": "The suite intentionally permits board users and same-company Agents to create/import executable Skills after the generic access layer denies them whenever no explicit Skill policy exists; it deliberately bypasses a consent gate and allows Agents with canCreateSkills:false or no grants. Destructive reset/delete, sharing changes and capability reassignment share a generic mutation action and are not bound to accountable humans, approvals, action digests or evidence chains.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/company-skills-routes.test.ts:1-2319",
+        "full source SHA-256 c6dec8f2d6c7fa11da9c8a45d89c63083a631faad932667dd1540de6ebea8a63",
+        "fcf66f3a91e6d1e5b81200f5ebf945b0d6ecad9d feat(skills): add managed skill rename API (#9688)",
+        "focused Vitest sandbox run: 53 failed from Supertest listen EPERM on 0.0.0.0",
+        "focused Vitest isolated out-of-sandbox rerun: 1 file passed, 53 tests passed"
+      ],
+      "securityFindings": [
+        "Critical: absence of an explicit Skill policy overrides a denied skill_config:update decision for board users and same-company Agents.",
+        "Critical: tests explicitly allow Agents with canCreateSkills:false or no Skill grants to import/create Skills and bypass the legacy consent gate.",
+        "One generic mutation permission covers creation, remote/catalog admission, editing, audit, reset and deletion despite materially different risk.",
+        "Remote source validation rejects credentials/query/fragments but the tested contract does not establish scheme/host/private-network/redirect/size policy or stable validation codes.",
+        "Service DTOs expose absolute local sourceLocator paths, raw file/prompt content, public sharing fields and raw Agent config snapshots; route redaction is not proven.",
+        "Route-owned Skill/Issue/heartbeat sagas have no tested transaction, outbox, retry/idempotency or compensation behavior.",
+        "Multiple mutation services omit actor context; board actors may act with userId:null, and no operation binds an accountable human or approval evidence.",
+        "Many errors rely on English strings and may reveal Agent display names; structured blocker IDs, policy revision and stable codes are incomplete."
+      ]
     },
     {
       "id": "application:server/__tests__/company-skills-service",
