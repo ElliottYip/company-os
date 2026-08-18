@@ -13714,18 +13714,29 @@
     },
     {
       "id": "application:server/services/portable-path",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Normalizes package paths by converting backslashes, stripping leading relative/absolute markers, removing dot segments and lexically popping parent segments.",
+      "dependencyDirection": "A dependency-free utility imported broadly by company portability, company Skills, Skills catalog and teams catalog services; policy-sensitive callers all depend outward on the same permissive normalization semantics.",
+      "keyDataModels": "Unbranded input and output path strings with no typed provenance, trust level, platform, validation result or rejected-reason model.",
+      "lifecycle": "Transform separators; strip leading ./ and /; split; discard empty/dot segments; pop accumulated segments for ..; join remaining segments.",
+      "testAssessment": "No direct focused test file was found by symbol search. Behavior is exercised indirectly by previously audited portability and Skills suites, but adversarial absolute, drive-letter, UNC, NUL, Unicode-normalization and collision cases are not owned by this unit.",
+      "designRationale": "Produce stable slash-separated relative-looking paths across operating systems and tolerate imperfect package input.",
+      "companyOsProblem": "Company OS needs canonical package paths, but untrusted path validation must distinguish normalization from rejection and must make collisions explicit before any lookup, extraction or write.",
+      "companyOsFit": "REIMPLEMENT as a typed canonical-path parser that rejects absolute/UNC/drive paths, root escapes, control/NUL characters, invalid Unicode and ambiguous normalized collisions; return stable error codes and use separate APIs for trusted local relative paths versus untrusted package entries.",
+      "responsibilityConflict": "Silent path reinterpretation can cause the reviewed package path set and the applied path set to differ, invalidating approval digests and evidence about exactly which content was imported.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/portable-path.ts:1-12",
+        "full source SHA-256 04ac34271f447d4a3df92621ed485c6d40f550e2af2537459fbc1374bf856509",
+        "9eac727cf13f6445c76e61190b6f831833759979 [codex] Add skills CLI and catalog management (#6782)",
+        "symbol search found broad consumers but no direct focused test owner"
+      ],
+      "securityFindings": [
+        "Leading / and excess .. are silently clamped instead of rejected, so malicious and benign paths can canonicalize to the same output.",
+        "Windows drive and UNC semantics are not rejected; C: remains a segment after backslash conversion.",
+        "Control characters, NUL, Unicode normalization/case collisions and reserved platform names are not checked.",
+        "The function returns an ordinary string and cannot prove whether normalization was lossless or policy-safe."
+      ]
     },
     {
       "id": "application:server/services/principal-access-compatibility",

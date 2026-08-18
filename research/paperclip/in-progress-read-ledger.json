@@ -4041,6 +4041,21 @@
         "Focused Vitest passed 78/78 tests in one file on 2026-08-19 using isolated PAPERCLIP_HOME=/tmp/company-os-paperclip-portability.BVZ3Su. An initial pnpm exec attempt did not enter tests because pnpm requested a non-TTY modules purge; direct use of the already-installed Vitest binary succeeded without dependency installation or source changes. Formal decision: REIMPLEMENT, with selective adaptation of content-addressed preflight, tenant ownership guards, stable-key remapping, pruned subgraphs and unarmed monitors."
       ],
       "completionRequirements": ["Read lines 1-5421 exactly once, run the focused suite in an isolated Paperclip home, and map coverage for export/import schemas, compatibility versions, selection/data minimization, path/parser/archive safety, secrets and consent, every entity lifecycle, collision/merge/idempotency, transactions/crash recovery/concurrency, external fetch/resource limits, responsibility evidence, performance and the completed service findings. Before reading, confirm no formal audit batch or prior completed ledger exists for this exact unit."]
+    },
+    {
+      "id": "application:server/services/portable-path",
+      "path": "server/src/services/portable-path.ts",
+      "lineCount": 12,
+      "sha256": "04ac34271f447d4a3df92621ed485c6d40f550e2af2537459fbc1374bf856509",
+      "linkedEvidence": { "history": ["9eac727cf13f6445c76e61190b6f831833759979 [codex] Add skills CLI and catalog management (#6782)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 12 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-12 implement a dependency-free, tolerant lexical normalizer: backslashes become slashes, leading ./ and / are removed, empty/dot segments disappear and parent segments pop only when possible. It is widely reused but conflates canonicalization with security validation. Absolute paths and excess traversal are silently clamped; drive/UNC, NUL/control, Unicode/case and normalized-collision hazards remain. Formal decision: REIMPLEMENT with typed reject-or-canonicalize results and stable error codes."
+      ],
+      "completionRequirements": ["Read lines 1-12 exactly once and assess normalization, traversal and absolute-path behavior for portable package paths; confirm no formal audit batch or completed ledger exists first."]
     }
   ]
 }
