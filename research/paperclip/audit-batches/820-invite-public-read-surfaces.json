@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/invite-logo-route",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP tests for anonymously serving a Company's stored logo through an active invitation token.",
+      "dependencyDirection": "An anonymous bearer token resolves an invite and Company logo asset record; the route performs Company-scoped storage metadata/read calls and streams bytes to the client.",
+      "keyDataModels": "Invite status/Company/token hash/expiry, logo asset Company/objectKey/contentType/byteSize/filename and storage head/get stream metadata.",
+      "lifecycle": "A valid active invite authorizes lookup of its Company's logo; existing storage content is streamed with its MIME type, while a database record whose object is missing returns a specific 404 without reading it.",
+      "testAssessment": "Tests cover anonymous invite-bound access, Company-scoped storage keys and metadata-before-read missing-object behavior. Missing are invalid/revoked/expired/accepted tokens, cross-Company asset mismatch, rate limiting, MIME and size allowlists, SVG/script content, Content-Disposition/X-Content-Type-Options/CSP, cache policy, range requests, streaming errors and malicious storage metadata.",
+      "designRationale": "Provide branded onboarding before the invitee has a Company identity without making all Company assets public.",
+      "companyOsProblem": "Company OS needs a warm branded human onboarding experience while keeping enterprise assets and identity boundaries isolated.",
+      "companyOsFit": "ADAPT the narrow invite-scoped public-brand projection and Company-scoped storage lookup. Serve only preprocessed raster variants through a dedicated public asset ID, enforce type/size/security headers and cache rules, rate-limit access, never expose general asset keys and retain provenance/license metadata.",
+      "responsibilityConflict": "A bearer invite implicitly authorizes public asset access, but the test does not prove who approved that brand asset for publication or whether the invite's lifecycle immediately revokes cached/public access.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/invite-logo-route.test.ts:1-146", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/invite-list-route",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres route test for descending offset pagination over Company invitation history with an associated join-request projection.",
+      "dependencyDirection": "An implicit local board actor requests one Company path; access routes join persisted Company invites and join requests, sort and page them into an administrative response.",
+      "keyDataModels": "Company, invite ID/type/tokenHash/join type/default role/expiry/timestamps and join request ID/type/status/IP/email snapshot, limit/offset/nextOffset.",
+      "lifecycle": "Three persisted invitations are returned newest-first in two pages; an invitation with a pending join request includes its relatedJoinRequestId and the final page returns no next offset.",
+      "testAssessment": "A real database validates ordering, pagination and relationship projection. It does not test permission denial, cross-Company access, invalid/large/negative paging, stable tie ordering, concurrent inserts, redaction of tokenHash/IP/email/default secrets, revoked/accepted status, N+1 behavior or audit access. Services are mocked and the board actor has no accountable user ID.",
+      "designRationale": "Give administrators an operational history of onboarding links and their resulting requests.",
+      "companyOsProblem": "Agent Boss and enterprise administrators need an auditable human/Agent admission ledger without exposing invitation secrets or personal data broadly.",
+      "companyOsFit": "REFERENCE the combined invite/join projection and newest-first cursor UX. Company OS should use cursor pagination, explicit users:invite or joins:approve authorization, row-level organization isolation, field-level PII/secret redaction and immutable admission/audit events rather than treating an implicit board as sufficient.",
+      "responsibilityConflict": "The test's board actor has userId null, and no assertion proves who is allowed to see request IP/email or whether tokenHash is excluded. A related request ID is operational linkage, not a complete inviter/approver/identity-binding responsibility chain.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/invite-list-route.test.ts:1-164", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/invite-test-resolution-route",
+      "auditStatus": "COMPLETE",
+      "function": "Anonymous invitation route tests for server-side reachability probing of a proposed public Agent gateway URL with extensive SSRF address filtering and DNS-pinned HEAD requests.",
+      "dependencyDirection": "A bearer invite token, arbitrary URL and timeout enter access routes; the route verifies invite state, resolves DNS through an injected network layer, rejects forbidden address classes and passes the approved hostname plus pinned addresses to a HEAD requester.",
+      "keyDataModels": "Agent invitation state, requested URL/timeout, DNS address family/list, pinned resolvedAddress/resolvedAddresses/Host/TLS server name and reachable/httpStatus response.",
+      "lifecycle": "Missing, revoked or expired invites fail before DNS. Literal or resolved loopback, RFC1918, link-local metadata, multicast, NAT64/reserved and any mixed private answer fail before connection. An all-public HTTPS target is probed with a pinned address, original Host/SNI and bounded timeout.",
+      "testAssessment": "Strong adversarial coverage includes IPv4-mapped IPv6, NAT64, mixed DNS answers, pre-lookup invite gating and connection pinning. Missing are scheme/port allowlists, redirects, repeated/rebinding resolutions, IDNA and exotic literals, proxy behavior, response size/body avoidance proof, connection timeout bounds, rate/concurrency limits, audit, domain ownership and authorization beyond possession of a bearer invite.",
+      "designRationale": "Help an external Agent gateway validate connectivity during onboarding without exposing obvious private-network SSRF paths.",
+      "companyOsProblem": "Company OS needs safe FDE/Connector diagnostics and a data-egress firewall, but network probes are privileged execution actions rather than anonymous onboarding conveniences.",
+      "companyOsFit": "Reject the anonymous invitation surface. Preserve the DNS classification and connect-to-pinned-IP technique inside an authenticated local execution node or FDE diagnostic workflow, constrained by organization egress policy, approved destination/port, rate and timeout budgets, responsible-human authority and durable evidence.",
+      "responsibilityConflict": "Any bearer invite holder can make the server probe arbitrary public infrastructure. No human/organization policy approves the destination, no Connector binding or data contract exists, and the response becomes an unauthenticated network oracle even though private ranges are blocked.",
+      "decision": "REJECT",
+      "evidence": ["server/src/__tests__/invite-test-resolution-route.test.ts:1-195", "7a329fb8 Harden API route authorization boundaries (#4122)", "a9573944 [codex] Add structured issue-thread interactions (#4244)", "e4995bbb Add SSH environment support (#4358)", "5a0c1979 [codex] Add runtime lifecycle recovery and live issue visibility (#4419)"]
+    }
+  ]
+}
