@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/plugin-scoped-api-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Focused route tests for plugin-scoped HTTP dispatch, authentication modes, company resolution, checkout policy, worker readiness and header filtering.",
+      "dependencyDirection": "Exercises the production Express router with mocked registry, lifecycle, worker and surrounding services; the route remains the authorization and envelope owner.",
+      "keyDataModels": "Manifest-declared route, auth mode, company scope source, checkout policy, sanitized HTTP envelope and worker response.",
+      "lifecycle": "Registers a ready plugin, dispatches board or Agent requests, applies route/company/checkout checks, forwards to worker and normalizes response headers.",
+      "testAssessment": "Nine focused cases passed after an escalated local-port rerun; the initial sandbox run failed only because listen was denied. Coverage proves header stripping, manifest route exclusion, worker state and several run checks, but explicitly accepts peer-Agent checkout bypass and omits cross-company ordinary members, response bounds, timeout, cancellation and idempotency.",
+      "designRationale": "Expose plugin-owned endpoints under a host namespace without giving plugins direct access to the host HTTP server or inbound authorization credentials.",
+      "companyOsProblem": "Company OS Connectors need a narrow ingress/extension envelope with stable tenant and actor binding, payload limits and auditable execution ownership.",
+      "companyOsFit": "ADAPT the table-driven boundary tests and negative-header assertions, adding ordinary-user and cross-tenant cases, exact run/assignment ownership, response limits, stable error codes, timeout/cancel and idempotency.",
+      "responsibilityConflict": "A test deliberately permits a peer Agent to invoke a route labeled required-for-agent-in-progress without checkout ownership, so the suite codifies a weaker responsibility boundary than Company OS permits.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/plugin-scoped-api-routes.test.ts:1-477", "server/src/routes/plugins.ts:1819-1965", "2026-08-18 focused Vitest: 9 passed after sandbox listen EPERM and escalated local-port rerun"]
+    },
+    {
+      "id": "application:server/routes/plugins",
+      "auditStatus": "COMPLETE",
+      "function": "Single Express router for plugin listing, installation, lifecycle, configuration and Secrets, UI bridge and streams, scoped APIs, tools, jobs, webhooks, trusted local folders, health, logs and dashboard diagnostics.",
+      "dependencyDirection": "Imports database schema and queries, authentication assertions, registry/lifecycle/loader, worker RPC, tool gateway, Secret service, job scheduler, local filesystem inspection, activity/live events and UI metadata directly into one 3140-line application boundary.",
+      "keyDataModels": "Plugin record and manifest, instance/company config, Secret reference binding, tool run context, UI bridge envelope, scoped API declaration, job/run, webhook delivery, local-folder grant and health projection.",
+      "lifecycle": "Installs and upgrades packages, starts/stops workers, mutates company config, dispatches synchronous RPC and public webhooks, exposes SSE, records jobs/webhooks and aggregates diagnostics.",
+      "testAssessment": "Scoped API tests pass 9/9, but route-wide negative coverage is incomplete. Webhook authenticity/tenant/replay/retention, local-folder authority, cross-company dashboards, config transactionality, SSE recovery/backpressure and lifecycle concurrency lack proof in the inspected focused suite.",
+      "designRationale": "Offer one public management and runtime surface around the plugin subsystem while keeping worker code behind RPC and manifest declarations.",
+      "companyOsProblem": "Company OS needs equivalent extension operations, but split into explicit administration, tenant configuration, Connector execution, external ingress and diagnostics boundaries governed by human responsibility and data authorization.",
+      "companyOsFit": "REJECT the module as reusable code. ADAPT only narrow primitives: canonical local-path checks, explicit company binding, request/response header allowlists, request size limits, stable categorical RPC errors and raw-body preservation for verified signatures.",
+      "responsibilityConflict": "Manifest declaration acts as authority; peer Agents can bypass protected checkout; instance mutations are copied into every company audit stream; public webhooks persist unverified full payloads and headers without tenant identity; board members can inspect and persist arbitrary host paths; global dashboards can expose cross-company operational errors. None binds high-risk effects to an accountable human, approved purpose, exact data contract and evidence chain.",
+      "decision": "REJECT",
+      "evidence": ["server/src/routes/plugins.ts:1-3140", "server/src/__tests__/plugin-scoped-api-routes.test.ts:1-477", "full source SHA-256 9fa9a7018892499fbd387a6b8c35e955e7e59727e70c020814c04b01c5fa19fd", "2026-08-18 focused Vitest: 9 passed after sandbox listen EPERM and escalated local-port rerun"]
+    }
+  ]
+}

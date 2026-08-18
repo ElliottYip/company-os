@@ -1798,6 +1798,68 @@
         "The lifecycle full-loader deactivate path may not emit plugin.worker_stopped, so correctness depends on other wiring invoking cleanup or replacing the map entry; this unit alone cannot prove leak-free lifecycle integration."
       ],
       "completionRequirements": ["Read lines 1-59 exactly once and assess registration identity, duplicate replacement, disposal ordering, async completion, leak/failure behavior and lifecycle integration."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-scoped-api-routes",
+      "path": "server/src/__tests__/plugin-scoped-api-routes.test.ts",
+      "lineCount": 477,
+      "sha256": "410b4b236771fc34865f67ff902c6c6d7378ace4c75e587e71ba92c177312297",
+      "linkedEvidence": { "history": ["3c73ed26 Expand plugin host surface (#5205)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 477 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The pure route suite covers board and Agent dispatch envelopes, authorization-header stripping, response-header allowlisting, checkout owner calls, disabled/no-worker rejection and manifest core-path exclusion.",
+        "One test explicitly permits a non-assignee Agent to invoke an in-progress route marked required-for-agent-in-progress without asserting checkout ownership; this weakens the route label and can expose mutation handlers to peer Agents.",
+        "The board fixture is always an instance admin and resolves arbitrary companyId from query; no ordinary member, missing membership, forged company, anonymous, stale token or cross-company Agent negative is present.",
+        "Worker output status/body is trusted in the fixtures and only selected headers are tested; response size/type, invalid status, timeout/cancel, duplicate/idempotent POST and error-code stability are absent.",
+        "Registry, lifecycle, Issue and activity/live-event services are mocked, so tests do not prove actual actor authentication, company membership, capability approval, audit evidence or worker invocation-scope binding."
+      ],
+      "completionRequirements": ["Read lines 1-477 exactly once, run focused tests and trace public plugin API authentication, plugin/company scope, lifecycle status, capability, validation, response redaction and cross-tenant denial to its production routes/services."]
+    },
+    {
+      "id": "application:server/routes/plugins",
+      "path": "server/src/routes/plugins.ts",
+      "lineCount": 3140,
+      "sha256": "9fa9a7018892499fbd387a6b8c35e955e7e59727e70c020814c04b01c5fa19fd",
+      "linkedEvidence": { "history": ["5858ccb9 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 3140 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-800 show one 3140-line Express router owns instance plugin lifecycle, config/Secrets, UI, bridge, tools, jobs, webhooks, diagnostics and custom APIs, making authorization and side-effect review highly coupled.",
+        "Scoped API request/response header allowlists and 1 MB request-body constant are good boundary primitives; route matching directly decodeURIComponent calls without local malformed-encoding handling.",
+        "required-for-agent-in-progress checkout enforcement deliberately returns early for a peer Agent, so a route labeled checkout-protected can dispatch a mutating request from a non-assignee without any run ownership check.",
+        "Company resolution can take body/query values; later call sites must bind them with assertCompanyAccess. Auth mode checks principal type only at this helper.",
+        "Instance-wide plugin mutation audit resolves every company in the database and writes the same event to each, conflating global administration with company activity, scaling with tenant count and omitting future companies.",
+        "Secret-ref validation checks current secret company/status but not yet exact plugin/config-path/version binding, approver, purpose or destination. Bridge scope without company requires instance admin and scoped paths use assertCompanyAccess.",
+        "Bundled catalog metadata is regex-extracted from TypeScript source for display and cached; it is not a trust/provenance decision and can drift from the built manifest.",
+        "Lines 801-1100 validate run, Agent, company and project foreign-key scope before tool dispatch, but the board path bypasses the Agent ToolGateway policy layer and invokes the dispatcher directly after company-access checks.",
+        "Tool and route errors remain mostly free-form English strings with message-substring classification; only ToolGateway errors expose a reasonCode, so clients lack a uniform stable failure contract.",
+        "Tool discovery is company/policy-filtered only for Agents when ToolGateway is configured; board callers receive dispatcher-global tools, relying on board access rather than explicit per-company plugin availability.",
+        "Lines 1101-1400 restrict installation to instance admins, canonicalize local paths and impose a bundled-root allowlist in managed cloud; these are useful deployment controls, while npm/local installation failures still return raw loader messages and no package signature or immutable digest is established in this route.",
+        "Bridge RPC errors have stable categorical codes, a stronger client contract than most routes, but attachPluginBridgeErrorContext copies request body, params and query into observability context without local redaction, potentially capturing plugin-defined sensitive values.",
+        "Lines 1401-1700 duplicate bridge and URL-keyed endpoints. Read calls require board access while action calls begin with generic authentication and defer company authorization to an optional body companyId; absent companyId permits an instance-admin global scope, creating an implicit dual-scope contract rather than manifest-declared scope.",
+        "Lines 1701-2000 show the SSE bridge correctly requires board and company access and keys subscriptions by plugin/channel/company, but does not verify ready status or a stream capability and has no replay cursor, heartbeat or bounded backpressure contract.",
+        "Scoped APIs require ready/running status, manifest capability and declared route, resolve and authorize company scope, restrict JSON bodies to 1 MB, sanitize forwarded request headers and allowlist response headers. These are strong reusable boundary primitives.",
+        "Scoped API response bodies are not size-limited, worker status/body schemas are trusted, errors expose raw messages, and checkout enforcement still permits peer Agents for the protected route class; mutation idempotency, timeout/cancel and proof of run ownership are absent.",
+        "Lines 2001-2300 keep enable, disable, uninstall and upgrade behind instance-admin checks and emit audit/live events, but lifecycle errors and plugin lastError/log rows are returned verbatim to board users, so Secret and external-system redaction depends entirely on upstream writers.",
+        "Health is a shallow registry/manifest/status/lastError projection rather than an active worker, dependency or company-configuration probe. Log queries are bounded to 500 but accept arbitrary level strings and have no cursor pagination.",
+        "Configuration reads are company-scoped, while writes are restricted to instance admins even though records are company-owned; this creates an operational bottleneck and does not model delegated company administrators.",
+        "Lines 2301-2600 validate configuration against manifest schema, strip the SSRF-capable devUiUrl for non-admins, bind Secret references to the company and synchronize reference metadata without returning Secret values—useful patterns for Company OS.",
+        "Secret-reference synchronization occurs before config persistence without an explicit transaction, so a later upsert failure can leave reference metadata inconsistent. Worker notification failures are intentionally swallowed after persistence, yielding eventual configuration activation without a durable delivery/outbox status.",
+        "Configuration testing is available to board users and forwards the candidate config to the plugin worker; worker warnings/errors become display strings, and neither this route nor the schema establishes purpose-limited Secret access or accountable-human approval.",
+        "Lines 2601-2900 restrict manual job triggering to instance admins and bind job IDs to plugin IDs, but expose raw scheduler errors and provide no request idempotency or accountable approval for side-effecting jobs.",
+        "The public webhook route verifies only plugin readiness, declared capability and endpoint key; signature verification is delegated to plugin code after the host has persisted the full parsed payload and every request header, including potentially authorization, cookie and signature material.",
+        "Webhook delivery has no host-level tenant resolution, replay/idempotency key, rate limit, retention/redaction, retry/dead-letter or pre-persistence authenticity gate in this route. Invalid unauthenticated traffic can therefore create stored delivery rows and reach the worker.",
+        "Company-scoped local-folder inspection is exposed to any board member with company access; validation accepts an arbitrary absolute path and can act as a host-filesystem existence/shape oracle unless lower services impose additional roots not visible here.",
+        "Lines 2901-3140 also let any company board member persist an arbitrary validated host path as plugin settings; there is no instance-admin gate, approved root policy, human approval or explicit read-versus-write grant in this route.",
+        "The dashboard aggregates process IDs, crash state, raw job errors and global webhook delivery errors for any board user. Because webhook deliveries have no companyId, this projection cannot enforce tenant isolation and can expose cross-company operational metadata.",
+        "Overall route verdict: REJECT as a reusable module because of its multi-responsibility surface and inconsistent authority, tenant, evidence and error contracts; ADAPT only narrow primitives such as path canonicalization, scoped company binding, request/response header allowlists, body limits and categorical RPC errors."
+      ],
+      "completionRequirements": ["Read lines 1-3140 exactly once and trace every plugin management/config/UI/webhook/scoped-API route through request validation, actor/company authorization, capability/lifecycle/worker checks, package trust, Secret handling, side effects, redaction, audit/events, errors, pagination and concurrency against focused tests."]
     }
   ]
 }
