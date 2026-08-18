@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-stale-queue-invalidation",
+      "auditStatus": "COMPLETE",
+      "function": "A 1,647-line embedded-PostgreSQL integration suite for suppressing non-actionable timers and invalidating queued Runs when budget, assignment, task status, execution lock, review participant or continuation intent changes before adapter execution.",
+      "dependencyDirection": "The suite enters through Heartbeat timer/wakeup/resume APIs and spans Agents, wakeups, Runs, Issues/executionState, cost events, continuation-summary documents, comments and deferred wake promotion; adapter execution is mocked as the final side-effect boundary.",
+      "keyDataModels": "Agent heartbeat policy and lastHeartbeatAt; WakeupRequest queued/skipped/coalesced/deferred states; HeartbeatRun execution/retry metadata; Issue assignee/status/executionRunId/executionState; daily Run and cost observations; continuation-summary document.",
+      "lifecycle": "Atomically claim timer intervals; optionally skip timers without actionable work; coalesce same-Issue wakes; apply zero/inclusive daily caps before queueing and again before execution; cancel stale queued work and release its Issue lock; promote a deferred contender; reject changed assignee, human handoff, terminal status, stale retry lock or changed review participant; allow comment feedback and accepted-interaction continuations through narrowly different paths.",
+      "testAssessment": "Twenty-four substantial cases cover overlapping timer ticks, cap edge values, started-cancelled accounting, same-Issue coalescing, queued-run revalidation, lock release, deferred promotion, reassignment, terminal status, max-turn ownership fencing, review-participant changes and accepted-interaction override. Weaknesses: a large cross-domain fixture with teardown race retries; no concurrent budget-reservation test, timezone/window-boundary cases, multi-instance resume race, transactional failure injection or proof that promoted deferred work is still authorized; several assertions and continuation classification depend on English free-form text.",
+      "designRationale": "A queue entry is only an intention. Mutable work and policy state must be revalidated immediately before external execution, and stale holders must release their lock so the next eligible participant can proceed.",
+      "companyOsProblem": "Company OS must ensure an Agent cannot execute using stale responsibility, approval, data authorization, budget or assignment after waiting in a queue, across both managed and local execution nodes.",
+      "companyOsFit": "ADAPT the pre-queue plus pre-execution gates, atomic timer claim, coalescing and explicit stale cancellation. Replace observed-only cost checks with transactional BudgetReservation and settlement; bind each queued attempt to Work/version, accountable human, assignment epoch, Connector capability/version, authority/data/approval digests and execution-lease fencing token. Represent wait/review/interaction state as structured codes and receipts, never parse presentation Markdown.",
+      "responsibilityConflict": "Paperclip rechecks Agent assignment and review participant but not the accountable human's active acceptance or the exact approval/data contract. An interactionResolvedAt marker can bypass a prior review park without demonstrating the approver, authorized action/digest or evidence binding. Daily cost/run caps are Agent-local policy and can race because no reservation is established before execution.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-stale-queue-invalidation.test.ts:1-1647",
+        "82e257c7baa5ff4747829215707721150d14a9a4 Cancel stale queued heartbeats when issue graph changes (#4534)",
+        "631b7806ed92c43bd6b5666ad8b1406635d1ab18 Add heartbeat preflight budget caps (#8347)",
+        "ef617bee5c1568bfa7cbb74bdb2eb04ef06788a2 Enforce backend execution release gates (#9089)",
+        "4f9894df4459fde964de91aee9ae09c73bf57efc Bound accepted-interaction continuation recovery (#9656)",
+        "7301fae942c3d5826974335cb40d6f1e0d95d1e0 Atomically claim due timer intervals (#10584)"
+      ]
+    }
+  ]
+}
