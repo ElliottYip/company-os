@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-timer-wake-session-reset-pf4",
+      "auditStatus": "COMPLETE",
+      "function": "Pure policy tests deciding whether a provider task session should reset for timer, assignment, review, approval, change-request, comment and retry wake reasons, plus an English diagnostic reason.",
+      "dependencyDirection": "Pure Heartbeat helper over an untyped wake-context object; no persistence or adapter invocation.",
+      "keyDataModels": "Wake reason, optional Issue scope and forceFreshSession flag.",
+      "lifecycle": "Start fresh for exploratory unscoped timers and new review/approval work, preserve context for Issue-scoped timers/comments/retries, and keep the boolean decision consistent with a diagnostic string.",
+      "testAssessment": "Fourteen concise cases cover known, unknown, null, forced and scoped inputs and cross-check the explanation against the decision. Missing are a versioned exhaustive wake enum, adapter capability differences, session privacy/retention limits, failed reset behavior and stable diagnostic codes.",
+      "designRationale": "Balance context quality/cost: exploratory activity should not grow stale context indefinitely, while continuation work should not repay orientation cost.",
+      "companyOsProblem": "Company OS needs reproducible Connector session policy without treating any vendor's private session as the Work or responsibility record.",
+      "companyOsFit": "REFERENCE the fresh-versus-continuation policy distinction. Put session reuse/reset behind Connector capability and retention policy; core should bind attempts to Work/evidence contracts using opaque external session references, stable reason codes and no private reasoning.",
+      "responsibilityConflict": "Wake reason alone does not prove whether prior context is still authorized for the current human, data scope or approval contract, and English explanations are not protocol fields.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-timer-wake-session-reset-pf4.test.ts:1-133",
+        "a0f7d3dabaf5308ade45cae0c64ebd133948dca2 Reset task session on timer-driven wakes (PF-4) (#4838)",
+        "1cd09ed5556b3d0bd1c70f1262d491544b1d97bf Reuse task sessions for issue-scoped timer wakes (#10350)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-workspace-ready-comment",
+      "auditStatus": "COMPLETE",
+      "function": "A unit test for emitting a workspace-ready Issue comment with duplicate Markdown body plus structured presentation metadata.",
+      "dependencyDirection": "Heartbeat presentation helper calls IssueService.addComment using a realized workspace and runtime-service list.",
+      "keyDataModels": "RealizedExecutionWorkspace strategy/branch/CWD and version-1 system-notice presentation metadata.",
+      "lifecycle": "After workspace realization, publish an Agent/Run-authored informational comment containing strategy, branch and absolute CWD in both Markdown and structured rows.",
+      "testAssessment": "One exact interaction test catches argument-order/presentation regressions but is brittle to English copy and tests no warnings, runtime services, remote/sandbox workspace, missing branch, path redaction or authorization.",
+      "designRationale": "Expose execution-environment readiness in the Work thread and allow the UI to render it as a compact structured notice.",
+      "companyOsProblem": "Agent Boss needs a safe, structured execution-environment receipt rather than raw infrastructure prose.",
+      "companyOsFit": "REFERENCE the structured notice projection, not the comment body. Company OS should persist a versioned EnvironmentReady receipt with Connector/workspace opaque IDs, capability and attestation digest; Web localizes it and only shows sanitized labels permitted by deployment profile.",
+      "responsibilityConflict": "Publishing absolute filesystem paths and branch names can leak local enterprise topology, while the notice omits responsible human, data/approval contract and environment attestation.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-workspace-ready-comment.test.ts:1-66",
+        "a388ea1cac073f41b0ce00ee3293f17199dd9e09 Render workspace-ready comments as compact system notices (#10636)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/heartbeat-zombie-guard",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests that refuse to coalesce new wakes into a database Run marked running when its ID is absent from the current process's runningProcesses map.",
+      "dependencyDirection": "Pure predicate/filter over a Run-like object and in-memory process registry.",
+      "keyDataModels": "Run ID/status and local running-process membership.",
+      "lifecycle": "Treat only untracked running Runs as zombies; filter them from coalescing so a new queued Run can be created instead of refreshing the dead Run timestamp.",
+      "testAssessment": "Thirteen readable unit cases cover running/queued/terminal/null, post-restart and mixed live/zombie cases. They do not cover another server instance owning the Run, detached/remote Connector execution, stale process entries, liveness attestation, race between check and coalesce or actual database behavior.",
+      "designRationale": "Avoid making a dead Run immortal by repeatedly coalescing work into it and refreshing its age.",
+      "companyOsProblem": "Company OS must never coalesce work into an execution attempt whose lease or Connector attestation is no longer live.",
+      "companyOsFit": "REFERENCE the no-coalescing-into-dead-attempt invariant, but reject local process-map membership as production liveness. Use durable lease owner/epoch, expiry, Connector heartbeat/attestation and an atomic conditional coalesce.",
+      "responsibilityConflict": "Absence from one process map is not proof of death in managed multi-node or self-hosted execution, and creating a replacement without fencing the prior authority can duplicate an approved high-risk action.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-zombie-guard.test.ts:1-125",
+        "d782c4cd5344d793d93bd7ce0c847163741c725e Prevent zombie run coalescing and order startup reap (#1731)"
+      ]
+    }
+  ]
+}
