@@ -171,7 +171,7 @@
       "lineCount": 867,
       "sha256": "c67df6127649209de5ca4b042dabf65ba0b2cd76388cde6f996116b9b9575934",
       "linkedEvidence": { "history": ["1f1f54523876481ab0011c3fdd0b842753cd511a feat: add built-in summarizer and summary slots (#9713)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 867 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -4743,6 +4743,42 @@
         "Reuse rather than reread completed focused tests; execute only missing focused verification where it adds evidence.",
         "Trace endpoint and credential selection, board/Agent persona, Company/Run binding, every mutation/approval/Secret/data export path, idempotency/concurrency, output redaction, pagination/performance and stable errors.",
         "Inspect relevant per-file history and reconcile final reuse/Fork judgment only after all source files are covered."
+      ]
+    },
+    {
+      "id": "application:cli/commands/worktree",
+      "path": "cli/src/commands/worktree.ts",
+      "lineCount": 3690,
+      "sha256": "0379b1830402c77dfc1e38642d521119d79eda64e771a11b5d49dde7b500a46f",
+      "linkedEvidence": {
+        "history": [
+          "b18b0fc39bb35b8596e6f2418a8100317e3ab5fe feat: refine app connections and legacy worktree startup (#11040)",
+          "dcac49a4fd4739ec7177b196a869aa5d1cc169d9 feat(workspaces): defer isolated setup until runtime start (#10653)",
+          "9c8adee48b15aa7d12becd767e461a83a306f552 feat(mcp) [split 5/8]: integrate adapters and deployment runtime (#9560)",
+          "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+          "ad6effa65c6cb17266ba392e614dc8ea6916ce7b Improve runtime and import reliability (#6549)",
+          "242a2c2f2baf044c375c53b7ced71bec9c358b88 fix(cli): stop worktree init --force from wiping repo worktrees/ (#6240)",
+          "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 3690 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Registered before source reading to preserve exact-once progress across compaction.",
+        "Lines 1-500 define a large operator command that directly imports database tables/migrations/backups, configuration/Secret helpers, storage providers, Git and host networking. Local/S3 attachment access validates tenant prefixes and traversal, but buffers full objects and dynamically imports the AWS SDK; the command layer owns substantial data-plane behavior.",
+        "Lines 501-1000 allocate ports by probing local state/configs, inspect Git internals, recursively copy hooks including symlinks, rebind database workspace paths and resolve reseed/repair targets. Several check-then-act paths lack a durable lock; copying executable hooks across worktrees expands supply-chain trust.",
+        "Lines 1001-1500 copy the source Secrets master key into the target, start embedded PostgreSQL with fixed local credentials, snapshot/reset/restore/migrate a target database, then quarantine copied Agent/issue execution state, pause scheduled Routines and rebind workspaces. The execution quarantine is a useful isolation pattern, but preserveLiveWork can bypass it and the cloned database plus key reproduces all decryptable Secrets/data without an explicit authorization/export contract.",
+        "Lines 1501-2000 implement an exclusive seed marker lock with token-safe release, lazy compatibility markers, forceful instance-root replacement, shared JWT Secret propagation, optional live-work preservation, git worktree creation and best-effort dependency execution. The lock is strong locally but PID reuse/stale cleanup is manual; force deletion and cloned authority occur without an accountable plan, and newly fetched code can immediately run package install hooks.",
+        "Lines 2001-2500 implement destructive cleanup with Git-safety heuristics, direct recursive deletion of instance data, an env command that emits every adjacent environment entry including credentials, multi-database opening/migration checks and merge-plan projection. Cleanup is ordered/idempotent but not journaled; --force bypasses unique/uncommitted work guards, and the env export repeats the separately identified critical credential disclosure pattern.",
+        "Lines 2501-3000 collect whole-company issue/comment/document/revision/attachment/project/Agent/workspace/goal/run sets into memory, build an import preview, prompt project mappings and begin a target transaction. The preview clearly reports exclusions and identity-clearing adjustments, but it is not a signed/revision-bound data-transfer contract and bulk reads have no pagination or snapshot isolation across source and target.",
+        "Lines 3001-3500 import records by stable IDs inside a target DB transaction and reserve issue numbers atomically, but copy attachment objects during that DB transaction without verifying size/SHA-256. Object writes cannot roll back with SQL, so failures can leave orphans or overwrite existing keys. Preview/confirmation is not bound to a source snapshot or digest; --yes bypasses review, identity provenance is partly cleared, and reseed can override a live database guard.",
+        "Lines 3501-3690 complete repair orchestration and command registration. Repair internally forces replacement and confirmation bypass after shallow metadata checks; public flags expose preserve-live-work, allow-live-target, no-seed, force and yes escape hatches. Full source is now read once; final assessment remains pending test-evidence reconciliation."
+      ],
+      "completionRequirements": [
+        "Read lines 1-3690 exactly once and trace local/SSH/database worktree initialization, migration, switching, snapshots, destructive operations, secrets, locking, concurrency, recovery, deployment coupling, tests and Company OS ownership boundaries."
       ]
     },
     {
