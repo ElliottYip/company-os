@@ -3244,6 +3244,25 @@
         "Focused Vitest passed 5/5 in this file as part of a 9/9 two-file run."
       ],
       "completionRequirements": ["Read lines 1-69 exactly once and assess bind/host/exposure/deployment-auth invariants, IPv4/IPv6/wildcard/proxy semantics, fail-closed defaults and test gaps."]
+    },
+    {
+      "id": "application:server/services/company-search-rate-limit",
+      "path": "server/src/services/company-search-rate-limit.ts",
+      "lineCount": 63,
+      "sha256": "b72ce7ff11f6f5d5000002b784986d5f566dc6b71190992e9155ba9dae65b235",
+      "linkedEvidence": { "history": ["320fd5d23b77c7f14700437bdc937acece41d411 Add full company search page (#5293)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 63 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The service is a dependency-free in-memory sliding-window limiter keyed by companyId, actorType and actorId. Structured allowed/limit/remaining/retryAfterSeconds output and injectable time make behavior simple and testable.",
+        "State is process-local, so horizontal replicas, restarts and multiple deployment profiles have independent quotas. It cannot provide a canonical production control for managed-cloud, and it has no persistence/degradation policy for self-hosted clustering.",
+        "The colon-concatenated key is ambiguous when IDs contain colons, allowing distinct principals to share a bucket. Each unique key remains in the Map forever because expired keys are cleaned only when that same actor consumes again; high-cardinality inputs cause unbounded memory growth.",
+        "windowMs/maxRequests are not validated, wall-clock regression is not handled, and every request filters and reallocates the full hit array. There is no capability/query-cost/data-sensitivity dimension, policy provenance, standardized denial code or evidence hook.",
+        "Focused route Vitest passed 3/3 with isolated PAPERCLIP_HOME and approved local TCP listening. It checks same-actor rejection plus two route concerns, but not cross-company/actor isolation, key collisions, expiration cleanup, invalid config, clock movement, high cardinality, concurrency or multi-instance behavior."
+      ],
+      "completionRequirements": ["Read lines 1-63 exactly once and assess rate-limit identity and tenancy scope, distributed/deployment behavior, memory lifecycle, time semantics, error contract and test coverage."]
     }
   ]
 }

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/company-search-rate-limit",
+      "auditStatus": "COMPLETE",
+      "function": "Per-company and per-actor sliding-window request limiter for company search.",
+      "dependencyDirection": "A pure service owns a process-local Map and wall-clock function; routes consume its synchronous result, with no database, shared cache, policy or audit dependency.",
+      "keyDataModels": "Actor tuple of companyId/agent-or-board/actorId, an array of hit timestamps per concatenated key, and a structured allowed/limit/remaining/retryAfterSeconds result.",
+      "lifecycle": "Construct one in-memory limiter, derive an actor key, filter timestamps outside the window, deny at the maximum or append the current hit. Keys are never globally expired and all state disappears on restart.",
+      "testAssessment": "The focused route suite passed 3/3 with isolated PAPERCLIP_HOME and approved local TCP listening. It verifies rejection before search invocation, board `me` resolution and invalid route filters, but does not isolate the service or cover cross-tenant/principal keys, colon collisions, expiry cleanup, invalid limits/windows, wall-clock regression, high cardinality, concurrency, multiple instances or fail-open/fail-closed behavior when a shared limiter is unavailable.",
+      "designRationale": "Provide cheap dependency-free abuse protection with predictable headers and a test-injectable clock.",
+      "companyOsProblem": "Company OS needs tenant- and principal-scoped resource governance for search and other data-sensitive or costly capabilities across managed-cloud and clustered/self-hosted profiles.",
+      "companyOsFit": "REIMPLEMENT behind a RateLimitPort using unambiguous structured keys, shared atomic storage for clustered profiles, bounded local fallback for single-node/demo profiles, validated policies, monotonic-safe time semantics, TTL cleanup, capability/query-cost/data-classification dimensions, stable denial codes and observability without leaking query contents. ADAPT the small structured result, injectable clock and focused same-actor behavior test.",
+      "responsibilityConflict": "The actor tuple is only a caller-provided string key; the limiter does not consume a verified Principal, authority/data contract or policy version and produces no evidence that a governed human or Agent exceeded a defined capability budget.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-search-rate-limit.ts:1-63",
+        "full source SHA-256 b72ce7ff11f6f5d5000002b784986d5f566dc6b71190992e9155ba9dae65b235",
+        "320fd5d23b77c7f14700437bdc937acece41d411 Add full company search page (#5293)",
+        "2026-08-18 focused verbose Vitest: server/src/__tests__/company-search-rate-limit-routes.test.ts, 1 file / 3 tests passed"
+      ],
+      "securityFindings": [
+        "Process-local state lets callers multiply their effective quota across replicas and loses all quota state on restart.",
+        "Colon-concatenated unescaped IDs create ambiguous keys, so distinct company/actor tuples can collide and interfere with one another.",
+        "Unique actor keys are never evicted unless that actor returns, allowing unbounded Map growth under high-cardinality or attacker-controlled identities.",
+        "Invalid maxRequests/windowMs values, wall-clock rollback and concurrent/distributed consumption have no defined fail-closed behavior."
+      ]
+    }
+  ]
+}
