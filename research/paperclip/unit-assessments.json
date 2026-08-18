@@ -4813,18 +4813,24 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-plugin-environment",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration tests for selecting plugin-provided execution environments, acquiring/releasing leases through the Heartbeat path, applying instance defaults and Agent overrides, and rejecting stale non-reused workspace environment selection.",
+      "dependencyDirection": "Heartbeat resolves Environment precedence from instance/Agent/Work/workspace state, looks up a ready plugin manifest/driver, calls PluginWorkerManager environmentAcquireLease/environmentReleaseLease, passes lease context toward adapter execution and records workspace/environment projections.",
+      "keyDataModels": "Plugin manifest capability and environment driver schema, instance- or Company-scoped Environment with opaque driverConfig, instance defaultEnvironmentId, Agent defaultEnvironmentId, ExecutionWorkspace metadata/settings/mode, provider lease ID/metadata, Company/Issue/Agent/Run/adapter identity and remote cwd.",
+      "lifecycle": "A selected plugin driver receives a lease request with environment/workspace/Work/Agent/Run/adapter context and returns provider identity/metadata; terminal execution releases it. A global instance default can serve Agents from different Companies unless an Agent explicitly overrides it. When a non-reused workspace contains stale environment metadata, the current assignee selection wins and a new execution workspace identity is sent to the provider.",
+      "testAssessment": "Three broad integration cases cover acquire/release RPC shape, adapter type forwarding, global default across Companies, explicit Agent override and stale workspace environment replacement. Missing are real sandbox execution, database lease assertions, acquire/release idempotency, failure/timeout/cancel/crash and orphan cleanup, plugin restart/version upgrade, RPC authentication, provider attestation, Company authorization for global environments, secret/config isolation, schema validation, network/egress/filesystem policy, resource quotas, regional/data-residency constraints, concurrent leases and proof the adapter actually executes inside the leased environment. The manifest insert uses any and an unconstrained object schema.",
+      "designRationale": "Make execution infrastructure extensible through plugin drivers, keep per-run adapter context visible to the provider, offer an instance-wide operational default with Agent-level exceptions, and prevent stale workspace metadata from overriding current assignment policy.",
+      "companyOsProblem": "Company OS needs a neutral ExecutionEnvironmentPort spanning managed cloud, customer-local and hybrid nodes, with tenant isolation, data-egress policy, attestation and explicit selection precedence independent of any Agent vendor.",
+      "companyOsFit": "ADAPT the capability-declared driver, typed acquire/release lease contract, per-attempt identity and explicit selection receipt. Replace opaque config and instance-global implicit sharing with versioned EnvironmentProfile, Company authorization, region/trust/data-egress/resource policies and secret references; global definitions may be templates, but each Company receives isolated credentials/leases. Require provider-signed runtime attestation, lease fencing/renewal/revocation, failure cleanup and compatibility tests. Environment selection should resolve Company policy → Work risk/data requirement → explicit approved override → Agent default, and record why stale workspace state was rejected.",
+      "responsibilityConflict": "responsibleUserId is present but does not authorize environment choice or cross-Company default use. Plugin readiness and a returned providerLeaseId are trusted without isolation or execution proof; opaque driverConfig may contain secrets or policy-changing fields. Selecting a new Agent environment while reusing Work/workspace state has no accountable handoff or data-contract re-evaluation.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-plugin-environment.test.ts:1-687",
+        "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)",
+        "0e51fa2b0de1d0d0d88f6d133f6b8dd6509ab3c3 Honor reuse-existing preference and assignee default environment in issue runs (#5139)",
+        "4ad94d0bde593c6d1b678228cafc6a8d6c87ffb4 feat(server): kubernetes execution integration for sandbox-provider plugins (stage 2/3) (#7938)",
+        "7f766526a67c5564d8e029986ede23aed488eba8 feat(sandbox): add task-scoped egress grants (#10155)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-process-recovery",
