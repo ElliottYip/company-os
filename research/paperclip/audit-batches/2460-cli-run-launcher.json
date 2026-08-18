@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/commands/run",
+      "auditStatus": "COMPLETE",
+      "function": "Bootstraps and starts a local Paperclip instance in the foreground. It selects instance/config through process environment, creates home directories, optionally onboards, seeds deferred worktree database state, runs doctor with automatic repairs, dynamically imports a development or published server entrypoint and may create an authenticated embedded-database bootstrap CEO invite after server start.",
+      "dependencyDirection": "run command -> home/config/env, service manager, onboarding, worktree seeding, doctor repairs, update notice and bootstrap identity -> dynamic local workspace or @paperclipai/server entrypoint. Deployment, database seeding, diagnostics/repair, identity bootstrap, Web middleware and server runtime are coupled in one process-level launcher.",
+      "keyDataModels": "instance ID/home/config paths; global PAPERCLIP_INSTANCE_ID/PAPERCLIP_CONFIG/UI middleware env; PaperclipConfig deployment/database modes; StartedServer{apiUrl,databaseUrl,host,listenPort}; local worktree seed; doctor summary; bootstrap invite origin/DB URL.",
+      "lifecycle": "Assert foreground eligibility -> create directories and mutate process env -> load env/update notice -> onboard if missing -> seed worktree DB -> run all doctor checks with repair and yes defaulting true -> abort on failures -> dynamically prepare/import/start server -> if authenticated+embedded, generate a bootstrap CEO invite after server start. No explicit shutdown/rollback orchestration appears here.",
+      "testAssessment": "Repository search found no focused runCommand/importServerEntry test. Adjacent install/update/service-manager/http tests reference run-related integration surfaces but are separately audited and were not reread. CLI TypeScript checking passes; startup rollback, automatic repair, onboarding/seed failure, duplicate foreground force, dynamic build/import, server shutdown and post-start invite failure are not directly proven.",
+      "designRationale": "One local command minimizes self-hosted setup friction by composing onboarding, health repair, data seeding and server launch. Development entrypoint detection enables monorepo iteration while the published package supports installed use; foreground exclusion protects against accidental duplicate service instances.",
+      "companyOsProblem": "Company OS needs independently testable managed-cloud and self-hosted launch profiles, explicit initialization/migration/claim ceremonies, safe local-node supervision and recovery without coupling product identity or business data bootstrap to a developer launcher.",
+      "companyOsFit": "Reimplement as a profile-aware supervisor with explicit plan/apply phases: validate first, require consent for repairs/migrations/seeding, start services with health/readiness and shutdown contracts, then perform a one-time DeploymentClaim ceremony. Keep Web optional, services independently deployable and identity/accountability records separate from process globals.",
+      "responsibilityConflict": "The launcher can mutate configuration, storage, Secrets, database/worktree state and identity authority without a verified human change record. Bootstrap CEO conflates instance administration with a business role, and automatic repair/seed operations have no reason/evidence chain.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/commands/run.ts (227 lines; SHA-256 e61512b0ef4160377c8d529871c166cc737b48951f44669ee2279c8388c8533c)",
+        "git history: dcac49a4fd4739ec7177b196a869aa5d1cc169d9, fc5a30805ed3c95ac6598c8660261a018b5b5a7f and 73eb23734f25c570d88665e672f80d740797c632",
+        "Repository search found no focused runCommand/importServerEntry test",
+        "Existing completed bootstrap-ceo and doctor audits reused without source reread"
+      ],
+      "securityFindings": "Critical: doctor is invoked with repair=true and yes=true by default, so ordinary run silently executes every repairable callback without an impact plan. Worktree database seeding occurs before diagnostics. Process-global instance/config/UI settings contaminate embedded consumers. --force can bypass foreground exclusion. Arbitrary config/env can redirect database/public origins. Development mode executes a repository script synchronously with inherited stdio and dynamically imports local server code. Server startup and bootstrap invite are not one rollback unit; invite failure can occur after the server is running. Authenticated embedded mode attempts bootstrap invite generation on startup, while the separately audited bootstrap command can reject when an admin exists and prints bearer URLs. Public base URL is not validated here. Directory permission hardening, update-notice networking consent, readiness publication, signal cleanup and child/service supervision are absent from this module."
+    }
+  ]
+}
