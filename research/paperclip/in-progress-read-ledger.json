@@ -4746,6 +4746,60 @@
       ]
     },
     {
+      "id": "application:cli/prompts/database",
+      "path": "cli/src/prompts/database.ts", "lineCount": 157,
+      "sha256": "2c83fd459ae924812d7c971f61036677227f3e4a2f6f62e35f6cea1c8a28ede5",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 157 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-157 exactly once; assess credentials, connectivity probes, timeouts, TLS, destructive defaults and tests."]
+    },
+    {
+      "id": "application:cli/prompts/llm",
+      "path": "cli/src/prompts/llm.ts", "lineCount": 43,
+      "sha256": "03c2b545e746b7a4e93d2ffbca5aace49254fe448e130fe2cdd47d67231c4196",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 43 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-43 exactly once; assess provider neutrality, credentials, model validation and tests."]
+    },
+    {
+      "id": "application:cli/prompts/logging",
+      "path": "cli/src/prompts/logging.ts", "lineCount": 37,
+      "sha256": "01161a6b6b58b95892525ec7e991657ac9ef105d04a67ab76bd11530d7696552",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 37 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-37 exactly once; assess destinations, sensitive data, retention and tests."]
+    },
+    {
+      "id": "application:cli/prompts/secrets",
+      "path": "cli/src/prompts/secrets.ts", "lineCount": 101,
+      "sha256": "c4601036542a42302717827768f40245d0a7bafd6d50dbb862e4943ad9102484",
+      "linkedEvidence": { "history": ["778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 101 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-101 exactly once; assess provider custody, root credentials, namespace, migration and tests."]
+    },
+    {
+      "id": "application:cli/prompts/server",
+      "path": "cli/src/prompts/server.ts", "lineCount": 221,
+      "sha256": "bb3bae18a5147db56fc06621458cf37958ffb8b9f43c3e08eb2689157b13d0fa",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 221 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-221 exactly once; assess deployment profiles, bind/auth/origin/signup policy, validation and tests."]
+    },
+    {
+      "id": "application:cli/prompts/storage",
+      "path": "cli/src/prompts/storage.ts", "lineCount": 146,
+      "sha256": "ebffd28fe9563deb21b878380f3b514a5ac78bd01f2408dd038b74d33dc079a4",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 146 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": ["Registered before source reading."],
+      "completionRequirements": ["Read lines 1-146 exactly once; assess data location, credentials, endpoint/TLS, namespace, validation and tests."]
+    },
+    {
       "id": "application:cli/esbuild.config.mjs",
       "path": "cli/esbuild.config.mjs",
       "lineCount": 80,
