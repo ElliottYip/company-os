@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/gemini-local-skill-sync",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem test listing a desired Paperclip skill as missing and persistently installing it into Gemini Local's user skill home through a symbolic link.",
+      "dependencyDirection": "Agent/Company adapter config supplies HOME and desired skill keys; the Gemini adapter inspects and mutates .gemini/skills, linking a Paperclip-owned source into a vendor runtime directory.",
+      "keyDataModels": "Agent/company/adapter identity, HOME, desired skill key, persistent mode, missing/installed state and vendor skill symlink path.",
+      "lifecycle": "A desired built-in skill is initially missing, sync creates a persistent symlink, and the returned projection reports it installed.",
+      "testAssessment": "One happy path covers state transition and symlink materialization. Missing are path/symlink escapes, existing files/conflicts, permissions, concurrent sync, uninstall/rollback/update, source disappearance, version/hash/license/signature, tenant isolation, explicit host-owner approval and execution verification.",
+      "designRationale": "Bridge Paperclip skills into a vendor CLI's native persistent discovery directory with minimal copying.",
+      "companyOsProblem": "Company OS Connector nodes need one trustworthy package lifecycle across vendors without each adapter independently owning installation policy.",
+      "companyOsFit": "REFERENCE only. Make a Connector-node SkillPackageManager the canonical owner of signed/versioned install plans, host consent, paths, rollback and attestations; Gemini adapter contributes only a narrow target-directory/runtime activation driver.",
+      "responsibilityConflict": "Caller-configured HOME is persistently mutated without a responsible host owner, approved package digest or rollback receipt. Installed state does not prove the skill is authorized for any Work or data scope.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/gemini-local-skill-sync.test.ts:1-50", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)", "33353ce6 feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)"]
+    },
+    {
+      "id": "application:server/__tests__/pi-local-skill-sync",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem test listing a desired Paperclip skill as missing and persistently installing it into Pi Local's user Agent skill home through a symbolic link.",
+      "dependencyDirection": "Agent/Company adapter config supplies HOME and desired skill keys; the Pi adapter inspects and mutates .pi/agent/skills, linking a Paperclip-owned source into a vendor runtime directory.",
+      "keyDataModels": "Agent/company/adapter identity, HOME, desired skill key, persistent mode, missing/installed state and vendor skill symlink path.",
+      "lifecycle": "A desired built-in skill is initially missing, sync creates a persistent symlink, and the returned projection reports it installed.",
+      "testAssessment": "The single happy path mirrors Gemini almost exactly. Missing are path/symlink security, conflicts, permissions, concurrency, uninstall/rollback/update, provenance/signature, tenant/host ownership and proof of runtime activation.",
+      "designRationale": "Use the vendor's native persistent skill directory while avoiding copied skill contents.",
+      "companyOsProblem": "The same Skill package lifecycle must be canonical and vendor-neutral across Raft, Codex, DeepSeek, Gemini, Pi and enterprise Agents.",
+      "companyOsFit": "REFERENCE only and do not create a second owner. Reuse the Connector-node SkillPackageManager contract; Pi-specific code is limited to capability discovery and an install/activate adapter with signed receipt.",
+      "responsibilityConflict": "A symlink is installed into a user home from caller configuration without human consent, immutable package identity, permission/data contract or accountable evidence.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/pi-local-skill-sync.test.ts:1-50", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)", "33353ce6 feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)"]
+    }
+  ]
+}
