@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/export-fidelity",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL tests for tenant-scoped export-fidelity counts and construction of the v1 warning report.",
+      "dependencyDirection": "Tests instantiate the real database layer and fidelity service, but only a narrow subset of the counted schema is populated; host capability can skip the entire suite.",
+      "keyDataModels": "Companies, issues, labels, issue-label links, blocker relations, monitor markers and ExportFidelityCounts/Report.",
+      "lifecycle": "Start disposable PostgreSQL; seed two tenants; count selected records; verify isolation; build one report; clean tables and database.",
+      "testAssessment": "The source contains two focused real-database tests. On 2026-08-19 the isolated Vitest command exited successfully but skipped the file and both tests because embedded PostgreSQL was unavailable, so no passing claim is made. Seven counted domains remain zero-only and snapshot/failure/determinism cases are absent.",
+      "designRationale": "Use a real schema to catch tenant-predicate drift and ensure human-readable migration warnings reflect source counts.",
+      "companyOsProblem": "Company OS needs a reproducible proof that a reviewed export contains exactly the intended responsibility, evidence and governed-data graph, not merely approximate source cardinalities.",
+      "companyOsFit": "REIMPLEMENT a real-database compatibility suite comparing source snapshot counts/identities/digests against the emitted manifest and restored target, while adapting the two-tenant isolation fixture pattern.",
+      "responsibilityConflict": "The suite does not cover accountable humans, responsibility contracts, approval bindings, evidence/run provenance or authorship preservation even though approvals/activity are counted by the service.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/export-fidelity.test.ts:1-127",
+        "full source SHA-256 278bfe4bded85b30c2cc0f2ccefa3a22055708616d9958cad8b21de555795ea9",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "2026-08-19 isolated focused Vitest: 1 file / 2 tests skipped; no passing claim"
+      ],
+      "securityFindings": [
+        "Only labels, label references, blockers and monitors are populated; approvals, costs, activity, documents, evidence and attachments have no positive tenant-isolation cases.",
+        "Host capability silently converts the full suite to skipped, requiring CI policy that treats unsupported critical integration fixtures as visible non-coverage.",
+        "No concurrent mutation or repeatable-snapshot case proves all counts describe one source state."
+      ]
+    },
+    {
+      "id": "application:server/services/export-fidelity",
+      "auditStatus": "COMPLETE",
+      "function": "Collects ten source-table cardinalities for one company and emits a timestamped versioned warning report.",
+      "dependencyDirection": "Server service depends directly on Drizzle, database schema tables and shared warning/report types. It is called as an observational helper rather than owning export selection or serialization.",
+      "keyDataModels": "ExportFidelityCounts for labels, label links, blockers, documents, work products, attachments, approvals, costs, activity and monitors; ExportFidelityReport v1.",
+      "lifecycle": "Launch ten independent count queries concurrently; coerce missing rows to zero; delegate warning construction; stamp current time.",
+      "testAssessment": "The implementation is small and readable, but its focused real-database suite was skipped on this host. Previously completed portability evidence confirms the report participates in a much broader migration flow but does not upgrade these counts into a reconciliation proof.",
+      "designRationale": "Give operators a low-cost inventory of data categories that a migration may omit or treat specially.",
+      "companyOsProblem": "Company OS must bind export selection, source snapshot, actor/authority, package digest and target reconciliation into one auditable migration record.",
+      "companyOsFit": "REIMPLEMENT as a typed snapshot-bound reconciliation manifest with per-domain identities/digests, selection and loss codes. ADAPT only the explicit tenant predicates and inexpensive count-query technique.",
+      "responsibilityConflict": "Approvals and activity are reduced to anonymous counts; accountable humans, exact actions/digests, evidence, results and source actors cannot be reconstructed from the report.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/export-fidelity.ts:1-83",
+        "full source SHA-256 44fab40bfecc3c011d2b09c9d0ed2afef848ceb09f8599ee905378ea8dac471a",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "linked focused test evidence: 1 file / 2 tests skipped on 2026-08-19"
+      ],
+      "securityFindings": [
+        "Ten independent queries are not bound to one transaction snapshot, so concurrent changes can yield an internally inconsistent report.",
+        "The report counts source rows but does not compare emitted or imported rows, detect substitutions, or bind a package digest.",
+        "generatedAt makes reports nondeterministic while providing no source revision or database watermark.",
+        "Cardinality-only warnings cannot identify exactly which governed records or responsibility evidence will be lost."
+      ]
+    }
+  ]
+}

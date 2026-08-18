@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/import-write-types",
+      "auditStatus": "COMPLETE",
+      "function": "Defines fully resolved, pre-ID-generated row shapes handed from the company portability orchestrator to chunked issue, comment, attachment, document and work-product writers.",
+      "dependencyDirection": "A server-layer contract depends on shared enum/metadata types and mirrors database write shapes. The portability orchestrator produces it and persistence services consume it, so database concerns leak into migration orchestration.",
+      "keyDataModels": "ImportIssueRow, ImportIssueCommentRow, ImportIssueAttachmentRow, ImportIssueDocumentRow and ImportIssueWorkProductRow.",
+      "lifecycle": "Resolve slugs/IDs/statuses/assets before persistence; pre-generate parent and child IDs; batch insert rows; keep imported monitors unarmed.",
+      "testAssessment": "No direct test owner exists for the type-only module. Previously completed portability and import-batching suites exercise consumers: 78/78 mocked portability tests passed, while the embedded-PostgreSQL batching suite was skipped and not claimed as passed.",
+      "designRationale": "Avoid N per-row returning round trips and let child rows reference stable pre-generated parent IDs during bulk import.",
+      "companyOsProblem": "Company OS also needs efficient batch import, but mutation rows must be derived from a typed, digest-bound migration plan that retains source principals, responsibility/evidence identities and destination authorization decisions.",
+      "companyOsFit": "REIMPLEMENT as application-owned import commands and persistence-port DTOs. ADAPT pre-generated opaque IDs, resolved foreign keys and chunked writes, while keeping database row shapes and Paperclip shared types out of core/application.",
+      "responsibilityConflict": "Attribution fields are nullable and optional by entity; issue rows have no responsible human or contract, comments carry local actor IDs without source identity, and evidence rows can lose creating run/source trust. No row is bound to importer, reviewed package digest or approval decision.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/import-write-types.ts:1-103",
+        "full source SHA-256 ffeec9583ae3bec4ac9e6f986cedd7e90d5d76f5a77c5934696a3b340b6484ce",
+        "276ae3a75d1661b360f1ff30506942a6d0d0647c Harden company import: durable UI, async jobs, integrity guard, batched inserts (#10523)",
+        "linked completed company-portability test evidence: 78/78 passed",
+        "linked completed company-import-batching evidence: embedded PostgreSQL fixture skipped; no passing claim"
+      ],
+      "securityFindings": [
+        "Record<string, unknown> adapter/workspace/metadata fields cross the persistence boundary without a typed capability or data-classification contract.",
+        "Most attribution and source-trust fields are nullable, permitting imported records with no accountable actor or provenance.",
+        "The row shapes contain no package/plan digest, source record identity, target revision or idempotency key.",
+        "Pre-generated IDs support efficient relationships but do not by themselves provide transactional or replay safety."
+      ]
+    }
+  ]
+}

@@ -4056,6 +4056,54 @@
         "Lines 1-12 implement a dependency-free, tolerant lexical normalizer: backslashes become slashes, leading ./ and / are removed, empty/dot segments disappear and parent segments pop only when possible. It is widely reused but conflates canonicalization with security validation. Absolute paths and excess traversal are silently clamped; drive/UNC, NUL/control, Unicode/case and normalized-collision hazards remain. Formal decision: REIMPLEMENT with typed reject-or-canonicalize results and stable error codes."
       ],
       "completionRequirements": ["Read lines 1-12 exactly once and assess normalization, traversal and absolute-path behavior for portable package paths; confirm no formal audit batch or completed ledger exists first."]
+    },
+    {
+      "id": "application:server/__tests__/export-fidelity",
+      "path": "server/src/__tests__/export-fidelity.test.ts",
+      "lineCount": 127,
+      "sha256": "278bfe4bded85b30c2cc0f2ccefa3a22055708616d9958cad8b21de555795ea9",
+      "linkedEvidence": { "history": ["916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 127 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 use real embedded PostgreSQL when supported, clean relevant tables and verify per-company counts for labels, label links, blocker relations and monitors. Cross-tenant isolation is directly exercised and valuable. The expected count model explicitly sets documents, work products, attachments, approvals, cost events and activity logs to zero but does not yet prove those tables when populated; test execution can silently skip on unsupported hosts.",
+        "Lines 101-127 assert a v1 report, company identity, informational label counts, no warnings and parseable generatedAt. No deterministic timestamp/digest, exported-count comparison, completeness flag or stable structured warning is tested. The helpers are minimal; the two-case suite does not populate the seven other counted domains or test database failures/snapshot consistency. Exact source reading is complete.",
+        "Focused Vitest on 2026-08-19 used an isolated PAPERCLIP_HOME and exited successfully but skipped the one file and both tests because embedded PostgreSQL support was unavailable. No passing claim is made. Formal decision: REIMPLEMENT broader source-versus-export reconciliation and responsibility/evidence coverage while retaining real-database tenant-isolation fixtures."
+      ],
+      "completionRequirements": ["Read lines 1-127 exactly once, run the focused suite and assess whether the fidelity manifest is complete, deterministic, bounded, versioned and adequate for Company OS responsibility/data-governance migration evidence."]
+    },
+    {
+      "id": "application:server/services/export-fidelity",
+      "path": "server/src/services/export-fidelity.ts",
+      "lineCount": 83,
+      "sha256": "44fab40bfecc3c011d2b09c9d0ed2afef848ceb09f8599ee905378ea8dac471a",
+      "linkedEvidence": { "history": ["916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 83 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-83 run ten company-scoped count queries concurrently for labels, label references, blocker relations, issue documents/work products/attachments, approvals, costs, activity and monitors, then build a timestamped v1 warning report. Tenant predicates are explicit and the code is clear, but ten independent queries have no shared snapshot, counts are source-only rather than source-versus-bundle reconciliation, all rows are flattened to cardinalities, and no digest, export selection, actor, data class, responsibility contract, evidence identity or completeness proof is present. Warning semantics are delegated to a shared module that requires its own audit. Formal decision: REIMPLEMENT as a snapshot-bound typed reconciliation manifest; ADAPT the simple per-tenant count-query pattern only."
+      ],
+      "completionRequirements": ["Read lines 1-83 exactly once and trace every counted table, tenant predicate, consistency boundary, warning semantic and relationship to the separately completed portability service/test evidence."]
+    },
+    {
+      "id": "application:server/services/import-write-types",
+      "path": "server/src/services/import-write-types.ts",
+      "lineCount": 103,
+      "sha256": "ffeec9583ae3bec4ac9e6f986cedd7e90d5d76f5a77c5934696a3b340b6484ce",
+      "linkedEvidence": { "history": ["276ae3a75d1661b360f1ff30506942a6d0d0647c Harden company import: durable UI, async jobs, integrity guard, batched inserts (#10523)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 103 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 define pre-resolved batch-write row contracts for issues, comments, attachments, documents and most work-product fields. Pre-generated IDs remove per-row returning calls and support child references; monitors explicitly remain unarmed. The contracts directly expose database-like mutable records and untyped provider/config/metadata fields. Issue rows omit companyId (writer context must supply it), comments preserve local author IDs, and document/attachment attribution supports actor/run fields, but no source-principal, responsibility contract, import manifest digest, original external identity or per-row provenance envelope is mandatory.",
+        "Lines 101-103 finish work-product createdByRunId/sourceTrust. These optional fields are valuable but can be null, as the completed portability tests explicitly expect after migration. Formal decision: REIMPLEMENT application commands and persistence DTOs while adapting pre-generated opaque IDs and chunked-write mechanics."
+      ],
+      "completionRequirements": ["Read lines 1-103 exactly once and assess imported issue/comment/document/work-product/attachment field ownership, identity/provenance preservation, nullability and coupling to database schema."]
     }
   ]
 }
