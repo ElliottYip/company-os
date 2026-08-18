@@ -6487,6 +6487,41 @@
       "completionRequirements": [
         "Read lines 1-906 exactly once and assess external-object discovery/persistence/refresh, resolver boundaries, provenance/freshness, tenant isolation, failure/idempotency/concurrency, credential and data-exfiltration risks, summaries and test quality against Company OS DataConnector/DataAuthorization semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/file-resources",
+      "path": "server/src/__tests__/file-resources.test.ts",
+      "lineCount": 1525,
+      "sha256": "ca306a6cdae49129b13171eab92fa45f9325e6cf05bf6a83e011f3f32e7148ec",
+      "linkedEvidence": {
+        "history": [
+          "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+          "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+          "2eba718befc22b2feaec28d9f5ddaab5a946289f Fix sandbox bridge credentials and stalled review recovery (#8844)",
+          "8f7282066e37ec2657f340f122027aa176599d88 Add workspace file downloads",
+          "468edd8b221fe9991e40735b5bbba621e44eb1ad Add workspace file viewer and artifact links (#7681)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1525 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in four non-overlapping ranges. Thirty-one embedded-Postgres tests combine real temporary files, Git, symlinks/FIFO and HTTP routes across resolution, listing/search, preview/download, cross-project access, path safety, audit logging and rate/concurrency limits.",
+        "The resource API never exposes absolute roots in normal responses or tested audit details, sets nosniff, uses attachment filenames for binary downloads and distinguishes text/image/video/unsupported previews. It rejects HTML preview and returns SVG as source text, reducing active-content execution in the Web layer.",
+        "Path defenses cover parent/encoded traversal, home-relative paths, backslashes, control/null bytes, double-encoding behavior, static file and directory symlink escapes, symlinks to .env, .git, non-regular paths, oversized text and binary preview. Static tests do not cover symlink/root swaps between validation and open/stream, hard links, mount/bind changes, case-insensitive aliases, Unicode normalization or special devices beyond a controlled FIFO download.",
+        "List/search hides .env, node_modules, escaping symlinks and binaries; defaults to 25, caps at 100, bounds traversal depth at 20, paginates flat folder levels, and supports search/recent/Git-changed offsets. Overlong searches and invalid paths use stable details codes and omit raw query/path from denial audit details.",
+        "The major Company OS conflict is authorization: after the current Work's execution/project workspace misses, auto mode searches unhinted workspaces across the entire company; explicit same-company cross-project file/folder reads are also accepted and logged. No project membership, data owner, DataAuthorization, purpose, sensitivity label or accountable approval is required. Ambiguous matches fail closed, but unique sensitive matches can be disclosed by convenience discovery.",
+        "Cross-company explicit workspace access returns 403 cross_company_workspace and is audited, project/workspace mismatch returns 422, and a board user from another company receives uniform 404 for the owning Work. All Agent actors are denied these Web endpoints, implying a separate runtime file bridge, but no scoped Connector/DataGrant relationship is exercised here.",
+        "Remote-managed workspaces produce unavailable/remote resources and are never fetched from caller-supplied URLs, including a metadata-service URL, which is a sound SSRF boundary. The tests do not validate configured workspace-root provenance or prevent an authorized local workspace root from pointing at a broader sensitive host directory.",
+        "Text has a preview byte cap, but the suite previews video as base64 without a tested media byte cap and streams arbitrary binary/FIFO downloads without a tested maximum duration or bytes. The FIFO test usefully proves concurrency is held until stream completion, but a stalled stream can potentially monopolize a slot; disconnect cleanup/backpressure/range requests and Content-Disposition injection are absent.",
+        "Successful resolve/content/list and security denials produce activity rows without absolute roots; list audits intentionally omit filenames/search strings, while successful content reads carry displayPath and cross-project identifiers. Activity durability, log failure, immutable evidence, download byte/hash receipt and sensitive filename classification are untested.",
+        "Separate list and content/resolve limiters enforce request-window and in-flight concurrency in-process, including streaming lifetime. Multi-process/global quotas, actor/company keying, memory cleanup, slowloris deadlines and fairness are not tested.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 31 tests because embedded PostgreSQL support was unavailable. None of the filesystem, Git, HTTP, audit or limiter assertions executed on the audit host."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1525 exactly once and assess file/workspace resource authentication, tenant and path containment, symlink/traversal/race defenses, content types/download headers, size/range limits, Secret redaction, runtime bridge access, Agent versus human authority, evidence semantics and test quality against Company OS Artifact/Data governance."
+      ]
     }
   ]
 }

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/file-resources",
+      "auditStatus": "COMPLETE",
+      "function": "End-to-end service/route tests for resolving, listing, previewing and downloading local workspace files with tenant, path, content, audit and resource-consumption guards.",
+      "dependencyDirection": "Supertest/Express -> file-resource routes/limiters -> workspace-file service -> Drizzle/PostgreSQL + local filesystem/Git/stream; remote providers are deliberately not fetched and all Agent Web access is denied.",
+      "keyDataModels": "Company/Goal/Project/Work and project/execution workspace, file/directory/remote resource capability, workspace selector/path/search/list page, preview encoding/content type/size, activity record and in-process request/concurrency limiter.",
+      "lifecycle": "Authorize owning Work/company -> select execution/project or discover another company workspace -> validate and realpath resource -> list/preview/stream under caps -> return sanitized display metadata -> audit success/denial while holding concurrency through download completion.",
+      "testAssessment": "All 31 tests are behind embedded-Postgres gating and skipped in both sandboxed and approved unsandboxed focused runs. The source suite is broad and security-aware, but none of its database, filesystem, Git, HTTP, FIFO, audit or limiter assertions executed locally.",
+      "designRationale": "Offer a bounded human workspace viewer without exposing host paths or fetching remote resources, fail closed on ambiguous/escaping/sensitive paths, keep active content out of previews and control expensive recursive/streaming access with separate limits.",
+      "companyOsProblem": "Company OS needs Artifact/Evidence access that is explicitly authorized by company data contracts, purpose and responsibility—not ambient filesystem browsing—and must produce immutable provenance/hash/access receipts while protecting customer-local execution nodes.",
+      "companyOsFit": "REIMPLEMENT the authority and artifact model. ADAPT the path/content test matrix, uniform tenant handling, sanitized display metadata, remote no-fetch rule, bounded listing, active-content handling, stream-lifetime concurrency and safe audit-field discipline. Require an ArtifactRef issued by a Connector/runtime, bind it to Work/Attempt/DataAuthorization, open by stable handle, enforce classification/size/expiry and record digest/bytes/actor/purpose.",
+      "responsibilityConflict": "Same-company board access is sufficient for automatic and explicit cross-project file discovery, with no accountable data owner, ResponsibilityContract, DataAuthorization or approval. A file path is treated as a discoverable convenience resource rather than a declared evidence/data object, so successful access cannot answer why that person was authorized to view or export it.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/file-resources.test.ts:1-1525 (SHA-256 ca306a6cdae49129b13171eab92fa45f9325e6cf05bf6a83e011f3f32e7148ec)",
+        "git history: 7f2ed0ad90d7186d108f65400e322bda08dcbfe2, ad961227f57a217655c9e05e5987e6d0e5524409, 2eba718befc22b2feaec28d9f5ddaab5a946289f, 8f7282066e37ec2657f340f122027aa176599d88, 468edd8b221fe9991e40735b5bbba621e44eb1ad",
+        "2026-08-19 sandboxed focused Vitest: 31/31 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 31/31 skipped"
+      ],
+      "securityFindings": "CRITICAL authorization conflict: company membership permits unique cross-project file auto-discovery and explicit reads without DataAuthorization or project/data-owner approval. HIGH local-root trust gap: configured workspace-root provenance and host-directory scope are untested. HIGH TOCTOU gap: static symlink tests do not prove race-safe descriptor opening. HIGH resource-exhaustion gap: media preview/download byte and duration limits, disconnect handling and distributed quotas are untested. HIGH evidence gap: reads/downloads lack immutable content digest, byte count, purpose and authorization receipt. MEDIUM sensitive-path coverage: examples cover .env/.git but broader credential/config classifications are not demonstrated. MEDIUM verification gap: all tests skipped locally."
+    }
+  ]
+}
