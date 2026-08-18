@@ -2,16 +2,16 @@
   "schemaVersion": 1,
   "effectiveDate": "2026-08-18",
   "commercial": [
-    { "id": "workday-agent-system-of-record", "name": "Workday Agent System of Record", "status": "PENDING" },
-    { "id": "microsoft-agent-365", "name": "Microsoft Agent 365", "status": "PENDING" },
-    { "id": "servicenow-ai-control-tower", "name": "ServiceNow AI Control Tower", "status": "PENDING" },
-    { "id": "salesforce-agentforce", "name": "Salesforce Agentforce", "status": "PENDING" },
-    { "id": "relevance-ai-workforce", "name": "Relevance AI Workforce", "status": "PENDING" },
-    { "id": "sintra", "name": "Sintra", "status": "PENDING" },
-    { "id": "lindy", "name": "Lindy", "status": "PENDING" },
-    { "id": "artisan", "name": "Artisan", "status": "PENDING" },
-    { "id": "11x", "name": "11x", "status": "PENDING" },
-    { "id": "openai-presence", "name": "OpenAI Presence", "status": "PENDING" }
+    { "id": "workday-agent-system-of-record", "name": "Workday Agent System of Record", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "microsoft-agent-365", "name": "Microsoft Agent 365", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "servicenow-ai-control-tower", "name": "ServiceNow AI Control Tower", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "salesforce-agentforce", "name": "Salesforce Agentforce", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "relevance-ai-workforce", "name": "Relevance AI Workforce", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "sintra", "name": "Sintra", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "lindy", "name": "Lindy", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "artisan", "name": "Artisan", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "11x", "name": "11x", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" },
+    { "id": "openai-presence", "name": "OpenAI Presence", "status": "IN_PROGRESS", "evidenceFile": "commercial-capability-matrix.md" }
   ],
   "openSource": [
     {
