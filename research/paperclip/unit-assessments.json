@@ -5840,18 +5840,21 @@
     },
     {
       "id": "application:server/__tests__/invite-expiry",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit test for a fixed Company invite expiration timestamp exactly 72 hours after creation.",
+      "dependencyDirection": "A pure access-route helper converts caller-supplied creation milliseconds into an absolute Date; no database, policy or identity dependency is exercised.",
+      "keyDataModels": "Invite createdAt milliseconds and expiresAt timestamp.",
+      "lifecycle": "Creation time deterministically produces a three-day expiration time.",
+      "testAssessment": "One deterministic UTC example proves duration arithmetic. It does not test invalid times, exact expiry boundary semantics, clock skew, configurable policy, renewal, revocation, one-time consumption or database enforcement under concurrency.",
+      "designRationale": "Limit the exposure window of a bearer invite while keeping onboarding usable.",
+      "companyOsProblem": "Company OS needs time-bounded, revocable and auditable invitations for real human principals and enterprise identity binding.",
+      "companyOsFit": "ADAPT the explicit absolute expiry field, but make duration an organization policy and enforce expiry, revocation, intended principal/domain, one-time atomic consumption and identity-provider binding server-side.",
+      "responsibilityConflict": "A timestamp alone does not identify who authorized the invitation, what role/data authority it grants, who consumed it or whether responsibility was reassigned or revoked.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/invite-expiry.test.ts:1-10",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-join-grants",
@@ -5870,18 +5873,21 @@
     },
     {
       "id": "application:server/__tests__/invite-join-manager",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests selecting an Agent manager for a join request by searching Company Agents for a root CEO and otherwise the first CEO.",
+      "dependencyDirection": "An unvalidated list of Agent id/role/reportsTo records flows directly into access-route assignment logic; no human principal, organization role registry or authorization policy participates.",
+      "keyDataModels": "Agent id, free-form role, reportsTo and chosen manager Agent ID.",
+      "lifecycle": "No CEO yields no manager; a CEO without reportsTo wins; otherwise array order selects the first CEO.",
+      "testAssessment": "Three small cases document the heuristic. Missing are deterministic ordering, duplicate/root cycles, inactive or compromised Agents, Company isolation, human owners, authorization, delegation, conflicts of interest, escalation and approval/audit behavior.",
+      "designRationale": "Route onboarding work to the nominal top of an Agent organization without requiring a separate human ownership model.",
+      "companyOsProblem": "Company OS must route real-person access requests to a qualified accountable human or enterprise IdP policy, never infer legal authority from an Agent title.",
+      "companyOsFit": "Do not reuse this ownership rule. Model accountable human roles and delegated access approvers explicitly; an Agent may prepare evidence or recommendations but cannot be the final identity-admission authority.",
+      "responsibilityConflict": "The heuristic assigns a real-person join workflow to an Agent called CEO, and its fallback depends on input array order. Agent title and reporting topology do not confer legal or security responsibility.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/invite-join-manager.test.ts:1-33",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-list-route",
@@ -5930,18 +5936,21 @@
     },
     {
       "id": "application:server/__tests__/invite-rate-limit",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for a fixed-window in-memory invitation endpoint limiter keyed by IP address.",
+      "dependencyDirection": "Public-route caller IP and an injected clock feed a process-local service that returns allowed, remaining and retry-after values; no shared store or trusted-proxy layer is involved.",
+      "keyDataModels": "IP key, maxRequests, windowMs, hit timestamps, allowed/remaining and retryAfterSeconds.",
+      "lifecycle": "Requests are counted independently per IP until a fixed window is exhausted; old hits are forgotten after time advances.",
+      "testAssessment": "Tests cover threshold, IP independence and window expiry. Missing are distributed consistency, atomic concurrency, proxy/IP normalization, IPv6/subnet strategy, authenticated principal/device keys, memory bounds and eviction, restart behavior, adaptive abuse controls, observability, lockout recovery and denial-of-service against shared NAT users.",
+      "designRationale": "Add a cheap local barrier against brute-force or enumeration of public invite endpoints.",
+      "companyOsProblem": "Company OS needs layered abuse protection for human onboarding across managed-cloud and self-hosted profiles.",
+      "companyOsFit": "REFERENCE only as a development fallback. Production should use a canonical shared limiter with trusted ingress identity, atomic counters, bounded retention, principal plus network signals, audit telemetry and deployment-profile adapters.",
+      "responsibilityConflict": "Process-local IP state neither proves actor identity nor provides durable evidence; inconsistent replicas can admit excess attempts and shared-IP blocking can deny legitimate employees without an accountable override path.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/invite-rate-limit.test.ts:1-47",
+        "1cfed0c0 security(invites): widen invite-token entropy and rate-limit public invite endpoints (#8979)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-rate-limit-route",
@@ -5990,18 +5999,21 @@
     },
     {
       "id": "application:server/__tests__/invite-token-entropy",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for human-readable invite bearer tokens backed by a base64url random suffix.",
+      "dependencyDirection": "The access-route token factory uses runtime randomness and returns a prefixed opaque value; tests inspect only its output format and sample uniqueness.",
+      "keyDataModels": "pcp_invite_ prefix, base64url suffix, estimated entropy and a 1,000-token sample set.",
+      "lifecycle": "A token is generated with a recognizable prefix and random suffix; persistence, delivery, lookup, consumption and deletion are outside this unit.",
+      "testAssessment": "Format, minimum encoded length and sample uniqueness are covered. The test's characters-times-six estimate ignores base64 padding-bit details and does not prove the random source; missing are deterministic source inspection, hashing at rest, constant-time verification, token rotation/revocation, log redaction, one-time atomic use and leak-response tests.",
+      "designRationale": "Provide support-friendly token recognition without sacrificing brute-force resistance.",
+      "companyOsProblem": "Company OS needs safe invitation secrets that can cross email or FDE workflows without becoming durable credentials.",
+      "companyOsFit": "ADAPT a distinct prefix and at least 256 random bits, but store only a keyed hash, display once, redact everywhere, scope to organization/role/intended identity, expire and consume atomically, and support revocation and incident evidence.",
+      "responsibilityConflict": "Possession is the only proven authority in this test; the token is not bound to an accountable inviter, recipient identity, approved role or responsibility contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/invite-token-entropy.test.ts:1-27",
+        "1cfed0c0 security(invites): widen invite-token entropy and rate-limit public invite endpoints (#8979)"
+      ]
     },
     {
       "id": "application:server/__tests__/issue-activity-events-routes",
