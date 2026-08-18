@@ -1,6 +1,6 @@
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 
 import type {
   CompanyDomainEvent,
@@ -16,6 +16,11 @@ interface PersistedEventStream {
   readonly schemaVersion: 1;
   readonly companyId: Identifier;
   readonly events: readonly CompanyDomainEvent[];
+}
+
+interface EventStoreBackup extends PersistedEventStream {
+  readonly backupVersion: 1;
+  readonly digest: string;
 }
 
 const PORTABLE_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
@@ -96,6 +101,47 @@ export class LocalEventStore implements EventDataStorePort {
     });
   }
 
+  async exportBackup(companyId: Identifier): Promise<string> {
+    const stream = await this.#load(companyId);
+    const digest = this.#digest(stream);
+    const backup: EventStoreBackup = { backupVersion: 1, ...stream, digest };
+    return `${JSON.stringify(backup)}\n`;
+  }
+
+  async restoreBackup(companyId: Identifier, source: string): Promise<void> {
+    return this.#exclusive(companyId, async () => {
+      const current = await this.#load(companyId);
+      if (current.events.length) throw new Error("Event store is not empty.");
+      let candidate: EventStoreBackup;
+      try {
+        const parsed: unknown = JSON.parse(source);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
+        candidate = parsed as EventStoreBackup;
+      } catch {
+        throw new Error("Invalid event store backup.");
+      }
+      if (
+        candidate.backupVersion !== 1 ||
+        candidate.schemaVersion !== 1 ||
+        candidate.companyId !== companyId ||
+        !Array.isArray(candidate.events) ||
+        !candidate.events.every((event) => isDomainEvent(event, companyId)) ||
+        candidate.digest !== this.#digest({
+          schemaVersion: candidate.schemaVersion,
+          companyId: candidate.companyId,
+          events: candidate.events,
+        })
+      ) {
+        throw new Error("Event store backup digest or schema is invalid.");
+      }
+      await this.#persist({
+        schemaVersion: 1,
+        companyId,
+        events: structuredClone(candidate.events),
+      });
+    });
+  }
+
   async #load(companyId: Identifier): Promise<PersistedEventStream> {
     const path = this.#path(companyId);
     let source: string;
@@ -137,6 +183,10 @@ export class LocalEventStore implements EventDataStorePort {
   #path(companyId: Identifier): string {
     assertCompanyId(companyId);
     return join(this.#directory, `${companyId}.events.json`);
+  }
+
+  #digest(stream: PersistedEventStream): string {
+    return `sha256:${createHash("sha256").update(JSON.stringify(stream)).digest("hex")}`;
   }
 
   async #exclusive<T>(companyId: Identifier, operation: () => Promise<T>): Promise<T> {

@@ -60,3 +60,28 @@ test("local event store fails closed on corrupt persisted state", async () => {
     /corrupt event store/i,
   );
 });
+
+test("local event store backup and restore round-trip preserves the event digest", async () => {
+  const sourceDirectory = await mkdtemp(join(tmpdir(), "company-os-events-"));
+  const restoredDirectory = await mkdtemp(join(tmpdir(), "company-os-events-"));
+  const source = new LocalEventStore(sourceDirectory);
+  await source.append(event("company-one", "event-one"), 0);
+
+  const backup = await source.exportBackup("company-one");
+  const restored = new LocalEventStore(restoredDirectory);
+  await restored.restoreBackup("company-one", backup);
+
+  assert.deepEqual(await restored.read("company-one"), await source.read("company-one"));
+  assert.equal(await restored.exportBackup("company-one"), backup);
+});
+
+test("restore rejects tampered backups and refuses to overwrite existing records", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "company-os-events-"));
+  const store = new LocalEventStore(directory);
+  const emptyBackup = await store.exportBackup("company-one");
+  const tampered = emptyBackup.replace('"digest":"sha256:', '"digest":"sha256:tampered-');
+  await assert.rejects(store.restoreBackup("company-one", tampered), /backup digest/i);
+
+  await store.append(event("company-one", "event-one"), 0);
+  await assert.rejects(store.restoreBackup("company-one", emptyBackup), /not empty/i);
+});
