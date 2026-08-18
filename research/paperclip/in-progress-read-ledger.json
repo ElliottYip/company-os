@@ -6969,6 +6969,38 @@
       "completionRequirements": [
         "Read lines 1-377 exactly once and assess settings normalization, singleton creation/update lifecycle, persistence integrity, forward/backward compatibility, deployment-profile separation and test quality against Company OS configuration ownership."
       ]
+    },
+    {
+      "id": "application:server/__tests__/instrumentation",
+      "path": "server/src/__tests__/instrumentation.test.ts",
+      "lineCount": 230,
+      "sha256": "fa811e041cc764c86ab897e66f99afdb19353172d627c5a7179b5bb0c88912ba",
+      "linkedEvidence": {
+        "history": [
+          "9ace548fd21536f83ca5dd8181bf978bc2a723ea feat(observability): rename sandbox provider spans and add run-time wrapper spans (#10999)",
+          "d114c4925e168174895c458218674054d0ef2cc6 feat(observability): give sandbox sync spans true wall-clock width (#10864)",
+          "740554acc6e04fc945032e7f06d58bbeec66438e feat: add a no-op OpenTelemetry span seam for the sandbox startup path (#10522)",
+          "362c30ccdcf52a39bfa0fc42e7725e66c1a36091 feat(server): opt-in OpenTelemetry auto-instrumentation (#3735)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 230 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Fifteen tests cover opt-in OpenTelemetry protocol resolution, bootstrap readiness, no-op tracer, shutdown and provider-plugin span duration; 13 passed and the 2 real-SDK duration tests skipped because optional SDK packages are absent.",
+        "Tracing is disabled when OTEL_EXPORTER_OTLP_ENDPOINT is unset, avoids SDK imports and still returns a tracer-shaped no-op object. This keeps call sites simple and gives self-hosted deployments a network-silent default in the tested path.",
+        "When an endpoint is configured but optional OTel packages are missing, bootstrap warns and resolves rather than crashing. Shutdown is memoized/idempotent and settles even after failed bootstrap, a strong failure-isolation pattern.",
+        "Protocol parsing is case-normalized for supported values but an unknown value warns and falls back to gRPC. Company OS enterprise egress should reject ambiguous exporter configuration rather than select a transport implicitly.",
+        "Environment is captured at module import, so endpoint/protocol changes require module/process restart in this unit. Tests omit endpoint URL validation, HTTPS/mTLS, auth headers, certificate trust, DNS/private-network restrictions, retry/backpressure, queue limits and exporter shutdown timeout.",
+        "Actual SDK/exporter initialization is intentionally not exercised in CI because optional packages are absent. Thus configured production export, batching, resource attributes, sampling, propagation and delivery failure remain unverified despite the bootstrap contract.",
+        "Provider-plugin span recording accepts caller-provided span name, parent trace/span IDs, arbitrary attributes and optional wall-clock timestamps. Real-SDK tests verify native duration semantics only; they do not validate names/IDs/timestamp bounds or filter secrets, prompts, paths, tenant identifiers, evidence and Agent outputs.",
+        "Warnings are asserted only broadly and may include an arbitrary error object. Redaction of endpoint credentials, headers and local paths is not tested. No audit proves who enabled telemetry or which Data Export Contract authorized each destination/attribute class.",
+        "Company OS should keep operational traces separate from immutable responsibility/evidence records: telemetry loss must not erase accountability, and telemetry export must pass enterprise data classification, residency and egress-firewall policy."
+      ],
+      "completionRequirements": [
+        "Read lines 1-230 exactly once and assess telemetry opt-in/default behavior, exporter/configuration trust, sensitive attributes, failure isolation, span lifecycle and test quality against Company OS enterprise privacy and self-hosted guarantees."
+      ]
     }
   ]
 }

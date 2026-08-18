@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/instrumentation",
+      "auditStatus": "COMPLETE",
+      "function": "Tests for opt-in OpenTelemetry bootstrap, protocol selection, network-silent no-op tracing, failure-tolerant readiness/shutdown and provider-plugin span timing.",
+      "dependencyDirection": "Vitest -> instrumentation module -> optional OpenTelemetry API/SDK/exporters selected from environment; real SDK path is conditional and absent in this local run.",
+      "keyDataModels": "Exporter endpoint/protocol environment, tracer/provider lifecycle, span name, parent trace context, arbitrary attributes and wall-clock start/end timestamps.",
+      "lifecycle": "Read environment at import -> stay no-op or dynamically bootstrap optional SDK -> expose readiness/tracer -> record spans -> memoized shutdown; bootstrap failure degrades to warning/no tracing.",
+      "testAssessment": "13 tests passed and 2 real-SDK duration tests skipped because optional packages are unavailable. Disabled/failure paths are strong; actual export, security, redaction, sampling, backpressure and delivery behavior are not established.",
+      "designRationale": "Make observability explicitly opt-in and operationally non-fatal while preserving a uniform tracer seam and accurate native span widths for asynchronous provider/plugin work.",
+      "companyOsProblem": "Company OS needs optional operational telemetry across managed and self-hosted profiles without exporting enterprise data outside authorization, blocking product startup or confusing lossy traces with durable responsibility evidence.",
+      "companyOsFit": "ADAPT the network-silent default, no-op seam, optional dependency loading, accurate timestamps and idempotent failure-isolated shutdown. Add an ObservabilityPort behind Data Export Contracts, strict protocol/endpoint validation, mTLS/auth, tenant-scoped sampling, attribute allowlists/redaction, bounded queues and explicit operator receipts.",
+      "responsibilityConflict": "Telemetry spans are lossy operational signals and accept arbitrary caller attributes; they cannot serve as evidence or responsibility records. Export without an accountable data-authorization contract could leak prompts, paths, Agent outputs or tenant identity.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/instrumentation.test.ts:1-230 (SHA-256 fa811e041cc764c86ab897e66f99afdb19353172d627c5a7179b5bb0c88912ba)",
+        "git history: 9ace548fd21536f83ca5dd8181bf978bc2a723ea, d114c4925e168174895c458218674054d0ef2cc6, 740554acc6e04fc945032e7f06d58bbeec66438e, 362c30ccdcf52a39bfa0fc42e7725e66c1a36091",
+        "2026-08-19 focused Vitest: 13 passed, 2 skipped because optional OTel SDK was absent"
+      ],
+      "securityFindings": "HIGH egress-policy gap: exporter destination and attributes are not bound to enterprise authorization. HIGH redaction gap: arbitrary span attributes/errors are accepted without secret/content filters. HIGH production-verification gap: actual SDK/export path skipped. MEDIUM transport gap: endpoint TLS/auth/trust and unknown-protocol fail-closed behavior are absent. MEDIUM resource-control gap: sampling, retry, queue bounds and shutdown timeout are untested. MEDIUM context-integrity gap: caller-supplied trace IDs/timestamps/names lack validation in this unit."
+    }
+  ]
+}
