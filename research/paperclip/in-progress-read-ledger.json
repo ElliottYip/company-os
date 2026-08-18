@@ -3798,11 +3798,19 @@
       "lineCount": 529,
       "sha256": "0888ea21aa482f8600476a8f993237d84ca0aea93326126388d7be0d0c725996",
       "linkedEvidence": { "history": ["52aea902632fcdb9b3e689c60e3a148a2009358b feat: organize skills with nested folders and My Skills (#9633)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 529 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 define catalog integrity helpers and a bundled skill fixture with per-file hashes plus a deterministic aggregate contentHash. The test mocks the catalog package metadata and file-copy boundary, then gates all behavior on embedded PostgreSQL. The fixture records package name/version, trust level and compatibility, but carries no publisher identity, signature, license/SPDX expression or authenticated catalog manifest evidence.",
+        "Lines 101-200 isolate PAPERCLIP_HOME per test and verify install materializes files, creates a taxonomy folder, persists catalog/package/hash provenance and records a pass verdict/scan version. This is a useful supply-chain projection pattern, but the mock makes copied bytes trustworthy by construction: the test does not prove post-copy digest verification, authenticated package provenance, publisher/license policy or cleanup when filesystem and database steps diverge.",
+        "Lines 201-300 verify inventory refresh repairs folder placement, binary assets survive without UTF-8 rewriting, update/reset leave no hold for unchanged bytes, and script-bearing skills are installable after a static audit with only warning severity. Treating executable content as warning-plus-install conflicts with Company OS default-deny execution governance: installation, execution capability grant and accountable-human approval must be distinct. Assertions still do not compare materialized bytes to catalog hashes.",
+        "Lines 301-400 show package import can restore catalog provenance and audit/local-modification state verbatim from YAML metadata, then verify idempotent reinstall and begin drift detection. Portable provenance is valuable, but imported audit verdicts/timestamps and origin hashes are trusted as data rather than demonstrably revalidated against bytes and an authenticated source; Company OS must distinguish asserted historical evidence from locally verified admission evidence.",
+        "Lines 401-500 verify missing catalog entries become unsupported, restored bytes clear local-modification holds, missing SKILL.md is a 422 hard stop, reset requires force when locally modified, and even force cannot override a remote-execution hard stop. These are strong fail-closed lifecycle semantics to adapt. Weaknesses are English message contracts, no explicit accountable-human approval/evidence for destructive reset, and no tested recovery if replacement fails between directory and row updates.",
+        "Lines 501-529 test same-company duplicate slug rejection with 409. The suite does not exercise cross-company isolation, concurrent installs, folder or directory races, partial copy/rename/database failures, malicious paths/symlinks, mismatched file hashes, package signatures, publisher/license policy, approval publication or an immutable installation receipt.",
+        "Focused Vitest was run outside the sandbox with a fresh isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the single file and all 13 tests were skipped; 0 tests executed and no runtime pass is claimed."
+      ],
       "completionRequirements": ["Read lines 1-529 exactly once, run the focused suite in an isolated Paperclip home, and assess catalog install/update/reset, hash/provenance/origin snapshots, local-modification holds, audit hard stops, force semantics, directory/database failure recovery, tenant boundaries, publisher/license evidence and Company OS package supply-chain fit."]
     }
   ]

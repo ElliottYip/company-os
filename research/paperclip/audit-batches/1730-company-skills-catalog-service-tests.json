@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-skills-catalog-service",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres and real-filesystem integration suite for installing bundled catalog Skills, materializing Markdown/assets/scripts, restoring portable provenance, drift/audit/update/reset behavior and duplicate-slug rejection.",
+      "dependencyDirection": "Tests call companySkillService directly over Paperclip database tables and isolated PAPERCLIP_HOME directories while mocking the catalog manifest/file-copy service. HTTP authorization, authentic package transport, Connector execution and distributed behavior are outside scope.",
+      "keyDataModels": "CatalogSkill and file inventory/content hash, CompanySkill sourceRef/sourceLocator/trust/compatibility, catalog and package provenance metadata, origin/installed hashes, audit verdict/codes/scan version, local-modification hold, taxonomy Folder and portable YAML metadata.",
+      "lifecycle": "Resolve a shipped catalog record; materialize files; create or repair folder and CompanySkill state; return unchanged for matching content; detect drift or missing catalog origin; audit and hold local changes; force reset to pinned origin; reject hard-stop patterns and slug conflicts.",
+      "testAssessment": "The 13 tests clearly specify integrity-oriented catalog lifecycle behavior: deterministic file/content hashes, byte-preserving assets, idempotent install, drift holds, missing-entry state, force boundaries and hard-stop audit findings. Focused Vitest was run outside the sandbox with an isolated home, but embedded PostgreSQL failed after five attempts and all 13 tests were skipped, so 0 runtime tests passed. The suite lacks authentic publisher/package verification, post-copy hash mismatch, tenant/concurrency/crash recovery, path/symlink/resource-limit, approval and immutable installation-receipt cases.",
+      "designRationale": "Make a shipped Skills catalog reproducibly installable and updateable while protecting local edits and statically blocking known-dangerous content patterns.",
+      "companyOsProblem": "Company OS needs a governed capability-package supply chain for managed-cloud and self-hosted deployments, including immutable source provenance, admission policy, accountable-human approval, scoped execution authorization, safe activation and reproducible revocation evidence.",
+      "companyOsFit": "ADAPT the per-file plus aggregate digest model, byte-preserving materialization, explicit drift hold, unsupported-origin status, idempotence and non-overridable hard-stop concept. Rebuild them around signed/verified manifests, SPDX/publisher evidence, stable error codes, atomic directory/database publication, activation leases and responsibility evidence rather than Paperclip schemas or English strings.",
+      "responsibilityConflict": "Executable scripts can be installed with only a warning, while force reset is controlled by a boolean rather than an approved action digest bound to an accountable human. Imported audit state is treated as portable metadata and the tests do not distinguish historical claims from locally verified admission evidence.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skills-catalog-service.test.ts:1-529",
+        "full source SHA-256 0888ea21aa482f8600476a8f993237d84ca0aea93326126388d7be0d0c725996",
+        "52aea902632fcdb9b3e689c60e3a148a2009358b feat: organize skills with nested folders and My Skills (#9633)",
+        "focused Vitest: 1 file and 13 tests skipped after embedded PostgreSQL failed to start five times; 0 passed"
+      ],
+      "securityFindings": [
+        "The fixture/catalog contract has hashes, trust and compatibility but no publisher identity, signature, license/SPDX expression or authenticated manifest evidence.",
+        "The copy service is mocked to provide expected bytes; no test proves post-materialization verification rejects a per-file or aggregate digest mismatch.",
+        "Script-bearing packages install with a warning; install, capability grant and execution activation are not separate approved transitions.",
+        "Portable YAML can restore origin hashes and prior audit verdict/timestamps without a test requiring local revalidation or labeling them untrusted historical claims.",
+        "Reset force has no accountable-human approval, exact action digest, evidence record or durable destructive-operation receipt.",
+        "No tests cover cross-tenant references, concurrent same-slug installs, partial directory/database failures, malicious paths/symlinks, file/count/byte bombs or cleanup failure.",
+        "Error assertions depend on English message substrings rather than stable machine-readable codes and structured parameters."
+      ]
+    }
+  ]
+}
