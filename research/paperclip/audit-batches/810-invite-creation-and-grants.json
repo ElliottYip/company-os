@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/invite-create-route",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route test proving a board actor can create a human Company invitation and receive Company branding plus relative and absolute invitation links.",
+      "dependencyDirection": "An implicit local board actor and request headers enter the access route; a stub database returns the created invite and Company branding, while the route constructs a client-facing URL from request-derived base information.",
+      "keyDataModels": "Board actor/companyIds, allowedJoinTypes, humanRole, invite token hash/defaults/expiry/inviter/revocation/acceptance, Company name/color/logo and invitePath/inviteUrl.",
+      "lifecycle": "A board request creates a viewer invitation, fetches Company display metadata and returns an opaque-token path plus an absolute URL derived from Host and X-Forwarded-Proto.",
+      "testAssessment": "The test covers a useful API response contract and branding lookup but mocks authorization and persistence heavily. It does not assert permission checks, inviter identity, raw-token/hash separation, audit activity, role validation, transactionality, duplicate/idempotent creation, expiry/revocation or trusted-host/proxy behavior. Most importantly, it expects attacker-controlled request headers to determine a security-sensitive invite URL without testing allowedHostnames or a configured canonical origin.",
+      "designRationale": "Return a shareable, branded absolute onboarding link immediately after creation.",
+      "companyOsProblem": "Company OS needs safe human invitations that FDE teams and administrators can distribute without phishing or cross-tenant origin confusion.",
+      "companyOsFit": "Reject request-header-derived security links. Build invitation URLs from a deployment-profile canonical public origin or a validated tenant domain, require explicit users:invite authority and accountable inviter identity, store only a token hash, emit a responsibility/audit event and keep branding projection separate from authorization.",
+      "responsibilityConflict": "The tested actor has no real userId and is implicitly treated as board authority; the resulting invite has invitedByUserId null. A bearer invitation granting a human role is therefore created without an accountable human, while Host/protocol input can redirect the recipient to an untrusted origin.",
+      "decision": "REJECT",
+      "evidence": ["server/src/__tests__/invite-create-route.test.ts:1-137", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)", "a9573944 [codex] Add structured issue-thread interactions (#4244)", "9a8d2199 [codex] Stabilize tests and local maintenance assets (#4423)"]
+    },
+    {
+      "id": "application:server/__tests__/invite-join-grants",
+      "auditStatus": "COMPLETE",
+      "function": "Pure policy tests deriving Agent and human permission grants from invitation defaults and fixed human role templates.",
+      "dependencyDirection": "Untrusted or persisted invite defaults flow into grant helpers; Agent grants are augmented with a default task-assignment permission, while human role normalization and explicit grants determine the resulting permission list.",
+      "keyDataModels": "Agent/human defaults, permissionKey/scope grants, owner/admin/operator/viewer roles and legacy member normalization.",
+      "lifecycle": "Every Agent join receives tasks:assign unless any scoped or unscoped copy already exists; other explicit Agent grants are retained. Owner/admin map to broad static management sets, missing or legacy human roles normalize to operator, and explicit human grants replace role-derived defaults.",
+      "testAssessment": "Tests clearly pin deduplication, role mappings, legacy fallback and explicit-grant precedence. Missing are permission-key/scope validation, deny rules, unknown roles, least-privilege defaults, organization/project/data boundaries, privilege-escalation combinations, grant issuer authority, expiry/revocation, separation of duties, role versioning/migrations and database enforcement.",
+      "designRationale": "Ensure invited Agents can immediately delegate work and provide simple human onboarding roles with backward compatibility.",
+      "companyOsProblem": "Company OS needs explicit, scoped and auditable authority for both humans and Agents, with real-person accountability and separate data/tool/action grants.",
+      "companyOsFit": "Reject the default policy. New humans and Agents start with no operational authority beyond viewing their pending binding; a qualified human assigns a versioned role/permission/data contract with explicit scope. Static role templates may inform UX, but they must expand through one policy engine, preserve denies, validate every capability and support review, expiry and revocation.",
+      "responsibilityConflict": "A newly joined Agent automatically receives unscoped tasks:assign, and a missing/legacy human role silently becomes operator. Explicit grant arrays are preserved without evidence that the inviter was authorized to delegate them. These defaults create authority without an accountable grant decision or bounded Work/data responsibility.",
+      "decision": "REJECT",
+      "evidence": ["server/src/__tests__/invite-join-grants.test.ts:1-136", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)", "38c185fb [codex] Add agent permissions and controls plan (#6386)", "ed65d08d [codex] Gate skill mutations with skills:create permission (#8616)", "8b6a06ee [codex] Add built-in agents and Reflection Coach bundle (#9206)"]
+    }
+  ]
+}
