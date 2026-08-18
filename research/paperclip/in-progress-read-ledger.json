@@ -4477,6 +4477,22 @@
         "Lines 4301-4360 list active and revoked keys and revoke with one click. Revocation history is retained visually, but there is no confirmation, reason, actor, last-used metadata, scope, expiry or replacement workflow in this page. The full 4,360-line review confirms REIMPLEMENT at the page boundary: selectively adapt real-time/log pagination, invalid-chain admission, revision history and responsive layout patterns, while separating Company OS identity, responsibility, governance, Connector execution, evidence and presentation projections."
       ],
       "completionRequirements": ["Read all 4,360 lines exactly once, run available focused supporting tests and no-emit UI typecheck, then assess Agent identity/lifecycle, organization and accountable-human semantics, run/work/evidence projection, configuration/instructions/tools/Skills, budgets/costs, audit, permissions, pause/resume/terminate/duplicate/invoke actions, auth/tenant, Connector neutrality, concurrency, stable errors, accessibility/mobile behavior and decomposition/reuse judgment."]
+    },
+    {
+      "id": "application:cli/__tests__/worktree",
+      "path": "cli/src/__tests__/worktree.test.ts",
+      "lineCount": 1675,
+      "sha256": "3d6f444f0f69686ccb53dde1b6a8dd9335a1408282e310cbd1e1a7553f339be8",
+      "linkedEvidence": {},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 200 }],
+      "sourceReadComplete": false,
+      "nextLine": 201,
+      "notes": [
+        "Lines 1-200 establish a broad worktree test surface spanning Git subprocesses, networking/port reservation, direct database tables, embedded PostgreSQL, configuration/database/storage/Secret copying, routine pausing, execution-state quarantine, workspace cwd rebinding and reseed/init/make/repair commands. This is a deployment and data-lifecycle subsystem, not a simple Git helper.",
+        "The tests deliberately prefer a repository-local .paperclip/config.json over an ambient PAPERCLIP_CONFIG and begin verifying discovery from nested working directories. This reduces accidental cross-worktree targeting, but the boundary still processes host paths/config/Secret keys and must defend against symlinks, untrusted repositories and incorrect root discovery."
+      ],
+      "completionRequirements": ["Read all 1,675 lines exactly once, run the focused test and CLI no-emit typecheck, record skipped embedded-PostgreSQL cases explicitly, inspect relevant history, then assess configuration/Secret/database copying, execution quarantine, scheduled Routine safety, Git hooks and subprocesses, port/instance isolation, workspace path rebinding, repair/reseed lifecycle, concurrency, rollback and Company OS hybrid/self-hosted relevance."]
     }
   ]
 }
