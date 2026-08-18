@@ -7563,6 +7563,37 @@
       "completionRequirements": [
         "Read lines 1-394 exactly once and assess document restore authorization, version/provenance, annotation/reference remapping, concurrent edits, evidence preservation, audit receipts and Company OS immutable evidence requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-execution-policy",
+      "path": "server/src/__tests__/issue-execution-policy.test.ts",
+      "lineCount": 2087,
+      "sha256": "6c1694f7988fd748c1766faec19e00ea1c96b1ba6f474f2403e112d2433b1abc",
+      "linkedEvidence": { "history": [
+        "0f12721ee99e7dd2a0412d61316ad77ee58ecfb1 board users cancel active review stage (#10655)",
+        "27f8c8dbcf42781e1886df2d96805ef41688690c cap Agent review rounds and escalate to responsible human (#10650)",
+        "39666aa9069fad093a8ad2c1f16dc96c0eea8eef clarify execution-policy decision comments (#9105)",
+        "3e1dc90bf250ada7ac847e310d6102356c143b82 final-stage approval terminates policy (#7893/#7936)",
+        "57229d0f24961061927078a8a3b2fad2b8990778 Issue monitor liveness controls (#4988)",
+        "7ad225a19830db2bc515e2049aa9ba38f2cdf87a Issue thread review flow (#4381)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-2087"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-780 define normalized sequential review/approval stages with typed Agent/user participants, one active participant, required same-request comments, stage decisions, changes-requested hand-back, board override and non-participant containment. Board cancellation, reassignment to a non-participant or unassignment can dissolve active review state without a decision.",
+        "Lines 781-1560 require non-empty decision comments, clear workflow state when policies are removed/reopened, repair some status/assignee drift, select among participants, skip self-review-only stages, tolerate regenerated/stale stage IDs, terminate final approval correctly and support user reviewers. Policies reject approvalsNeeded above one, so quorum/multi-approval is absent.",
+        "Lines 1561-2087 handle active-policy edits, one-shot monitors, exhaustion bounds and an Agent-review circuit breaker that escalates to responsibleUserId, makes the human hold sticky and limits who can advance/reassign. If no responsible human exists, review loops remain unbounded. Monitor URL tokens are redacted during normalization, but broader secret/PII and evidence binding are not covered.",
+        "Strong reusable elements are typed human/Agent participant identity, explicit decision outcomes, comment co-submission, drift repair, self-review avoidance, bounded Agent review escalation and sticky accountable-human control. Company OS cannot accept decisionless board overrides/policy removal, regenerated policy identity, single-approver limits, approval without exact action/evidence digest or loss of completed state on reopen.",
+        "Sandboxed focused Vitest passed all 70 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-2087 exactly once and assess execution-policy normalization, stage transitions, typed human/Agent participants, decision authority, review caps/escalation, cancellation, liveness, idempotency and exact-action/evidence binding against Company OS responsibility contracts."
+      ]
     }
   ]
 }

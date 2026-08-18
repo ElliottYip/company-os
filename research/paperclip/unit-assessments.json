@@ -7903,18 +7903,23 @@
     },
     {
       "id": "application:server/__tests__/issue-execution-policy",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure state-machine tests for sequential Issue review/approval policies, Agent/user participants, decision comments, changes-requested loops, board overrides, policy edits, monitors and responsible-human escalation.",
+      "dependencyDirection": "Vitest -> pure issue-execution-policy normalization/parser/transition helpers -> shared IssueExecutionPolicy and IssueExecutionState types; no route, database, event delivery or identity provider is exercised.",
+      "keyDataModels": "Policy/stage/participant UUIDs; review or approval stage; single active typed participant; return assignee; completed stage IDs; decision outcome/comment; changesRequestedCount; responsibleUserId; monitor schedule/attempts/notes; workflow-controlled assignment patch.",
+      "lifecycle": "Normalize embedded policy -> executor requests completion -> route to selected reviewer/approver -> participant approves or requests changes with a same-request comment -> advance, return to executor or complete; excessive Agent review rounds escalate to a sticky responsible-human hold; policy edits/removal and board overrides can repair or dissolve state.",
+      "testAssessment": "Sandboxed focused Vitest passed 70/70. Coverage is unusually broad for pure transitions: valid/invalid normalization, actor-kind matching, happy/negative paths, drift, self-review, stale policy IDs, board overrides, edits, monitors and escalation. Missing are database concurrency/idempotency, immutable decision history, exact action/evidence binding, quorum, delegation/absence, revocation timing, tenant/role authorization, event/outbox effects, malicious comments and property/state-machine exploration.",
+      "designRationale": "Keep Issue assignment/status synchronized with a lightweight embedded execution workflow, prevent unauthorized stage advancement and stop endless Agent-to-Agent review loops by escalating to the responsible human.",
+      "companyOsProblem": "Company OS requires a first-class responsibility contract where every high-risk transition identifies the accountable human, exact proposed action, evidence, authority, policy version and durable decision history, including overrides, cancellation and supersession.",
+      "companyOsFit": "ADAPT typed human/Agent participants, stage-specific outcomes, same-command rationale, self-review exclusion, drift repair, review-round cap and sticky responsible-human escalation. Rebuild as versioned ResponsibilityPolicy plus immutable ApprovalDecision/Supersession records, stable stage identities, exact action/data/evidence digests, configurable quorum/separation-of-duties, required responsible human, explicit override/cancel decisions, idempotent commands and transactional event outbox.",
+      "responsibilityConflict": "Board cancellation, non-participant reassignment, unassignment or policy removal can erase active execution state without recording a decision; reopening clears completed state; self-only stages may be silently skipped; a policy can lack a responsible human and loop indefinitely. A required comment is rationale, not proof of which exact action/evidence was approved.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-execution-policy.test.ts:1-2087 (SHA-256 6c1694f7988fd748c1766faec19e00ea1c96b1ba6f474f2403e112d2433b1abc)",
+        "git history: 7 commits from 0f12721ee99e7dd2a0412d61316ad77ee58ecfb1 through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 70/70 passed"
+      ],
+      "securityFindings": "CRITICAL responsibility-chain gap: privileged overrides/removal can dissolve review without an immutable decision. HIGH approval-binding gap: no exact action/permission/data/evidence digest or runtime attestation. HIGH policy-identity gap: regenerated/stale stage IDs are tolerated rather than versioned/superseded. HIGH governance gap: only one approval is supported and no quorum/separation-of-duties exists. MEDIUM liveness gap: no responsible human means unbounded Agent review loops. MEDIUM history gap: reopen clears current completed state. MEDIUM monitor-data gap: URL is redacted but notes and downstream propagation lack broader classification tests. POSITIVE: typed actor kinds, participant checks, sticky human escalation and Agent-review caps are strong controls."
     },
     {
       "id": "application:server/__tests__/issue-execution-policy-routes",
