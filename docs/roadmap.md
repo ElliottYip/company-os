@@ -40,6 +40,9 @@ risk/autonomy, approvals, evidence, and responsibility projections. Validate
 rather than promise a 3–10 agent management span.
 Generic work records come from the admitted Paperclip adapter; responsibility
 and accountable-human records remain authoritative Company OS data.
+The application dispatch boundary enforces enterprise-human identity and a
+revisioned responsibility contract before issuing an idempotent Paperclip
+command; fixtures cannot write formal contracts.
 
 ### F. Model and data boundary
 

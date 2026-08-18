@@ -34,6 +34,7 @@ these layers.
 | `DataConnectorPort` | Enforce data authorization and egress decisions |
 | `ApprovalPublicationPort` | Publish exact high-risk requests and human decisions |
 | `AuditEvidencePort` | Record evidence and project the first-class responsibility chain |
+| `ResponsibilityContractPort` | Persist revisioned Agent-to-accountable-human contracts |
 | `OfficeRendererPort` | Render a versioned office scene without owning organization logic |
 
 ## Connector contract
@@ -99,6 +100,12 @@ cross the adapter boundary.
 Paperclip remains canonical for generic Task/Goal/Run/Heartbeat/Budget/Artifact
 state. Company OS remains canonical for accountable humans, responsibility,
 data authorization, exact approvals, evidence, Agent Boss, and Office state.
+
+Formal dispatch is ordered deliberately: enterprise identity and tenant match →
+organization and active responsibility contract → allowed action validation →
+exact authorization receipt → Company OS dispatch-request event → idempotent
+`GenericWorkPort` command. An upstream failure records only a stable code and
+retryability; it cannot erase or redefine the Company OS responsibility fact.
 
 ## HTTP service boundary
 

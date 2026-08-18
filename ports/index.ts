@@ -8,3 +8,4 @@ export * from "./identity-port.ts";
 export * from "./model-provider-port.ts";
 export * from "./office-renderer-port.ts";
 export * from "./organization-principal-port.ts";
+export * from "./responsibility-contract-port.ts";
