@@ -149,6 +149,37 @@
         "Review the corresponding first-party tests and relevant file history.",
         "Only then write the canonical unit assessment and change auditStatus to COMPLETE."
       ]
+    },
+    {
+      "id": "application:server/__tests__/tool-access-service",
+      "path": "server/src/__tests__/tool-access-service.test.ts",
+      "sha256": "5ed486cead2abd930d1f12baa039f250db0e427aaede58fe73c1be45805c0a41",
+      "lineCount": 6996,
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 1000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The suite uses real embedded Postgres plus Express route integration, providing stronger persistence and HTTP-contract evidence than isolated mocks.",
+            "Broker tests cover active-run enforcement, exact responsible-user subject matching, revoked grants, explicit mint permission, parent-scope denial, static credential refusal, OAuth bearer non-projection, secret-access evidence, and hash-only token persistence.",
+            "The successful exchange test asserts ttlSeconds is at most 900 but does not assert the returned expiresAt is bounded by 900 seconds, so it does not catch the implementation's far-future explicit-expiry defect.",
+            "The hourly rate-limit test is strictly sequential and provides no evidence for concurrent reservation safety.",
+            "Scoped-credential tests correctly fail closed when the requested scope cannot select the configured parent credential and verify no secret access occurs on denial.",
+            "Catalog tests cover quarantine of new and changed entries and MCP Streamable HTTP/SSE interoperability.",
+            "A second catalog refresh omits a previously discovered tool, but the test does not inspect or require the missing tool to be disabled or removed, leaving stale-capability lifecycle behavior untested.",
+            "No final test-quality or implementation verdict is valid until lines 1001-6996 and linked route/schema/history evidence are reviewed."
+          ]
+        }
+      ],
+      "sourceReadComplete": false,
+      "nextLine": 1001,
+      "completionRequirements": [
+        "Read every test line through 6996 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
+        "Map covered and missing cases to the fully read implementation findings.",
+        "Only then contribute test-quality evidence to the canonical unit assessment."
+      ]
     }
   ]
 }
