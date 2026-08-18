@@ -7530,6 +7530,39 @@
       "completionRequirements": [
         "Read lines 1-390 exactly once and assess dependency-resolution wake targeting, human/Agent ownership, fan-out, duplicate delivery, transaction ordering, blocked-state semantics and Company OS evidence/approval propagation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-document-restore-routes",
+      "path": "server/src/__tests__/issue-document-restore-routes.test.ts",
+      "lineCount": 394,
+      "sha256": "10fc993607c73bc0c40a554a374ff62cc127e78c8896d557f98958ef529fde80",
+      "linkedEvidence": { "history": [
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "bfe6369ef58cce7bbfa2dcbd09414d4809fe7bf7 cheap recovery model usage guard (#6371)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests/maintenance (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-394"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-394 test revision snapshots, default filtering of system documents, explicit debug inclusion, append-only restoration as a new revision with actor attribution/activity metadata, cheap status-only recovery denial and document-key validation.",
+        "The append-only restore pattern is strong, but the suite does not assert the exact mutation permission, expected-current revision/CAS, restore reason, approval/evidence hold, annotation/reference remapping, cryptographic integrity, cross-tenant/system-document authorization, concurrent edit behavior or activity-write atomicity.",
+        "Sandboxed focused Vitest failed 6/6 only because Supertest could not listen on 0.0.0.0 (EPERM). Approved unsandboxed focused Vitest passed 6/6 but emitted a swallowed external-object document-sync failure because the test DB stub lacks transactions; restore success therefore does not prove downstream replica/projection consistency."
+      ],
+      "completionRequirements": [
+        "Read lines 1-394 exactly once and assess document restore authorization, version/provenance, annotation/reference remapping, concurrent edits, evidence preservation, audit receipts and Company OS immutable evidence requirements."
+      ]
     }
   ]
 }

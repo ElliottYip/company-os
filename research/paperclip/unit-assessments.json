@@ -7882,18 +7882,24 @@
     },
     {
       "id": "application:server/__tests__/issue-document-restore-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for listing Issue document revisions, filtering internal/system documents, restoring an older snapshot as a new append-only revision and restricting low-trust recovery Runs.",
+      "dependencyDirection": "Vitest/Supertest -> Issue document routes -> mocked access, Issue and document services plus activity logging/heartbeat/routine surfaces; external-object synchronization executes as a best-effort side effect against a minimal DB stub.",
+      "keyDataModels": "Issue document key/title/format/body/latest revision; immutable revision snapshot/number/creator/time; restored-from revision receipt; actor and Run recovery context; includeSystem debug flag.",
+      "lifecycle": "Read revision history -> select an older revision -> validate actor/Run and key -> append restored content as a new latest revision -> log restored-from and new revision numbers -> best-effort synchronize external projection.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 6/6; sandboxed 0/6 due solely to prohibited TCP listen. Tests cover the main route shapes and one low-trust denial, but omit exact mutation permission, tenant/role matrix, CAS/conflict handling, restore reason, annotation/reference remapping, integrity, approval/legal hold, concurrent edits and transactional activity/external sync. The passing run emitted a swallowed external-sync warning.",
+      "designRationale": "Preserve document history by making restoration an append-only new revision instead of overwriting or deleting later evidence, while preventing cheap recovery Agents from producing deliverable changes.",
+      "companyOsProblem": "Company OS needs reversible work documents without rewriting evidence history, with explicit human/Agent authority, integrity, provenance and consistent propagation to every authorized projection and Connector.",
+      "companyOsFit": "ADAPT immutable snapshots, append-only restore, restored-from lineage, actor attribution, system-document filtering and capability-limited recovery Runs. Require an explicit RestoreDocument command with expected latest revision, reason, responsible human, evidence/legal-hold policy and idempotency key; transactionally write revision plus audit/outbox, remap annotations/references deterministically, integrity-hash content and authorize system-document access separately.",
+      "responsibilityConflict": "The test proves a user identifier is passed but not the precise authority or accountable-human approval behind restoration. A restore can succeed while external synchronization fails, and no CAS prevents restoring across a concurrent edit; the resulting projections may disagree about which evidence version is operative.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-document-restore-routes.test.ts:1-394 (SHA-256 10fc993607c73bc0c40a554a374ff62cc127e78c8896d557f98958ef529fde80)",
+        "git history: 11 commits from ded813ad6fae2c0b2c9009e04f59b117ecae0151 through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/6 passed; all failed because TCP listen was prohibited (EPERM)",
+        "2026-08-19 approved unsandboxed focused Vitest: 6/6 passed with one swallowed external-object sync warning"
+      ],
+      "securityFindings": "HIGH authorization evidence gap: exact restore permission and accountable approval are not asserted. HIGH consistency gap: external projection sync may fail while restore succeeds. MEDIUM concurrency gap: no expected-current revision/CAS test. MEDIUM audit atomicity gap: revision, activity and sync are not proven atomic/durable. MEDIUM internal-data risk: includeSystem debug access lacks a role/tenant matrix. MEDIUM evidence-integrity gap: no digest/signature or legal-hold behavior. POSITIVE: append-only revision lineage and low-trust Run restriction avoid destructive overwrite and some Agent overreach."
     },
     {
       "id": "application:server/__tests__/issue-execution-policy",
