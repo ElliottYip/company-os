@@ -4456,18 +4456,22 @@
     },
     {
       "id": "application:server/__tests__/express5-auth-wildcard",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Framework regression test proving the Express 5 named catch-all syntax dispatches shallow and deep Better Auth paths without matching unrelated API routes.",
+      "dependencyDirection": "Express route syntax directly gates access to an external authentication handler; Supertest sends requests through an isolated in-memory app.",
+      "keyDataModels": "HTTP method/path, named authPath wildcard, handler invocation count and status code.",
+      "lifecycle": "All /api/auth subpaths reach the handler while unrelated /api paths remain 404.",
+      "testAssessment": "A concise regression catches a real framework-upgrade failure. It does not exercise the production auth handler, middleware order, encoded paths, path normalization, CSRF/CORS, method policy, rate limiting or authentication outcomes.",
+      "designRationale": "Pin a subtle Express 4-to-5 routing compatibility requirement that otherwise breaks every authentication endpoint silently.",
+      "companyOsProblem": "Company OS needs compatibility tests around IdentityPort HTTP adapters so framework upgrades cannot silently bypass or disable identity flows.",
+      "companyOsFit": "REFERENCE the narrow upgrade-regression pattern only; Company OS identity contracts remain framework-neutral and require full adapter security tests.",
+      "responsibilityConflict": "Route reachability proves neither identity assurance nor authorization, token audience, tenant isolation or audit responsibility.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/express5-auth-wildcard.test.ts:1-56",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "9a8d2199 [codex] Stabilize tests and local maintenance assets (#4423)"
+      ]
     },
     {
       "id": "application:server/__tests__/external-object-routes",
@@ -5810,18 +5814,21 @@
     },
     {
       "id": "application:server/__tests__/invite-accept-replay",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests permitting replay of pending or approved OpenClaw Gateway Agent invitation acceptance and merging replacement gateway defaults before normalization.",
+      "dependencyDirection": "Request type, vendor adapter type, existing join-request state and caller-supplied defaults flow through access-route helpers into a vendor-specific Agent configuration payload.",
+      "keyDataModels": "Human/Agent request type, openclaw_gateway adapter type, join status, websocket URL, Paperclip API URL and arbitrary headers including x-openclaw-token.",
+      "lifecycle": "Pending or already approved gateway Agent joins are replayable; rejected or human joins are not. Replay preserves old values, overlays a new API URL and gateway token, keeps unrelated headers and then rebuilds acceptance defaults.",
+      "testAssessment": "Tests document state/type restrictions and merge precedence. Missing are immutable approved-payload digest, token secrecy/redaction/storage, endpoint validation, header allowlist, owner authorization, expiry, idempotency key, concurrency, rejected/revoked tokens and mandatory reapproval when any security-sensitive field changes.",
+      "designRationale": "Allow an external gateway to retry onboarding and refresh connection material without duplicating a join request.",
+      "companyOsProblem": "Company OS Connectors need idempotent onboarding and credential rotation without changing the action a human approved.",
+      "companyOsFit": "Reject this replay rule. Separate idempotent retry of an identical canonical payload from credential rotation; any endpoint, credential handle, permission or data-scope change creates a new versioned ConnectorBinding proposal and approval digest. Never carry raw vendor tokens in control-plane configuration.",
+      "responsibilityConflict": "An approved request can be replayed with a different gateway token and Paperclip API URL while retaining approved status. Approval A can therefore activate connection B, and arbitrary old headers survive the merge. This violates exact action/digest binding and makes the responsibility record misleading.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/invite-accept-replay.test.ts:1-92",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-create-route",
@@ -5954,18 +5961,22 @@
     },
     {
       "id": "application:server/__tests__/invite-rate-limit-route",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP integration tests proving invitation lookup and acceptance routes share an IP limiter, return Retry-After metadata and ignore spoofed X-Forwarded-For under the default untrusted-proxy setting.",
+      "dependencyDirection": "Anonymous Express requests pass through access routes configured with a process-local limiter before stubbed database lookup and common error handling.",
+      "keyDataModels": "Invite token URL, anonymous actor, socket IP, X-Forwarded-For, 429 response, Retry-After and structured retryAfterSeconds.",
+      "lifecycle": "A first request reaches lookup and returns 404; the next lookup or accept request from the same socket is blocked for the remaining fixed window, regardless of spoofed forwarding headers.",
+      "testAssessment": "Tests cover middleware ordering, shared budget across read/accept, response metadata and a useful proxy-spoof regression. Missing are trusted-proxy production configuration, distributed atomic counters, token/principal/device keys, IPv6 normalization, multi-process behavior, endpoint enumeration response parity, bounded state, telemetry and legitimate shared-NAT recovery.",
+      "designRationale": "Protect both public invite surfaces before database work while avoiding client-controlled proxy headers in local/private deployment.",
+      "companyOsProblem": "Company OS needs consistent public-onboarding abuse controls across deployment profiles and ingress topologies.",
+      "companyOsFit": "REFERENCE middleware ordering and shared endpoint budget; implement the production owner as an ingress-aware, shared, atomic limiter with explicit trusted-proxy policy, bounded retention, multi-signal keys and auditable overrides.",
+      "responsibilityConflict": "The route identifies only a network source and does not establish a human principal. A local process counter supplies no durable responsibility evidence and may diverge across replicas.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/invite-rate-limit-route.test.ts:1-120",
+        "1cfed0c0 security(invites): widen invite-token entropy and rate-limit public invite endpoints (#8979)",
+        "89ce36d7 feat(skills): open-by-default company skill policy and core UX (#9564)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-summary-route",
@@ -7894,18 +7905,22 @@
     },
     {
       "id": "application:server/__tests__/remote-http-endpoint-guard",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for rejecting remote HTTP/MCP endpoints whose host resolves to private or reserved network addresses.",
+      "dependencyDirection": "An untrusted URL flows into a service-level DNS guard with injectable lookup and error factory; resolved IP classification decides whether a later remote connection may proceed.",
+      "keyDataModels": "URL hostname, DNS address/family list and stable remote_http_private_endpoint error code.",
+      "lifecycle": "The guard resolves hostnames, rejects any private address, accepts an all-public result and directly rejects selected reserved IPv6 literals.",
+      "testAssessment": "Tests cover private IPv4 resolution, all-public DNS and several reserved IPv6 ranges. Missing are localhost/link-local/multicast/IPv4-mapped IPv6 breadth, mixed answers, empty/failing DNS, schemes/ports/userinfo, redirects, DNS rebinding and TOCTOU, connection-time IP pinning, proxies, IDNA/trailing-dot normalization and validation on every reconnect.",
+      "designRationale": "Reduce SSRF risk when user-configured remote tool endpoints are contacted by the server.",
+      "companyOsProblem": "Company OS data connectors and Agent tool gateways must not turn control-plane or execution nodes into paths toward cloud metadata, private enterprise services or forbidden egress destinations.",
+      "companyOsFit": "ADAPT the stable error and resolve-all-addresses denial rule into the Data Connector/egress firewall. Enforce allowed scheme/port/domain policy, resolve and pin the actual connection address, revalidate redirects and reconnects, resist rebinding, support enterprise-approved private destinations explicitly and record policy evidence.",
+      "responsibilityConflict": "A public-IP check alone does not prove that the destination or data export was authorized by the responsible human/data owner, and lookup-time approval may differ from connection-time routing.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/remote-http-endpoint-guard.test.ts:1-37",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)",
+        "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+      ]
     },
     {
       "id": "application:server/__tests__/rerun-survival.integration",
