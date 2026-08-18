@@ -99,18 +99,22 @@
     },
     {
       "id": "application:cli/__tests__/allowed-hostname",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI config test for adding, normalizing and de-duplicating an allowed hostname.",
+      "dependencyDirection": "Calls the production CLI config mutation helper against a temporary JSON file; it does not invoke server Host-header middleware.",
+      "keyDataModels": "server.allowedHostnames string array and a URL-shaped versus bare hostname input.",
+      "lifecycle": "Writes a base config, adds the same host twice in two forms and inspects the persisted normalized array.",
+      "testAssessment": "Focused Vitest passed 1/1. It proves lowercase/scheme/port normalization and duplicate suppression only; runtime enforcement and adversarial hostname forms, atomic updates, permissions, symlinks and cleanup are absent.",
+      "designRationale": "Make self-hosted exposure configuration easier and prevent duplicate hostname entries.",
+      "companyOsProblem": "Company OS self-hosted deployments need explicit trusted-origin/host policy and safe config mutation across reverse proxies and local enterprise networks.",
+      "companyOsFit": "REFERENCE ONLY. Specify host/origin/proxy trust centrally and test the real middleware with exact canonicalization, IDN/IP/trailing-dot/wildcard rejection, forwarded-host policy, DNS-rebinding cases and atomic config writes.",
+      "responsibilityConflict": "No direct responsibility-model conflict, but a weak ingress-host test can undermine the authenticated human and Agent boundary before responsibility checks execute.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "cli/src/__tests__/allowed-hostname.test.ts:1-80",
+        "full source SHA-256 9e1a17f9490f827a110fe9393b174640e808974d0de3d96224576d90358db314",
+        "2026-08-18 focused Vitest: 1 passed via existing local binary"
+      ]
     },
     {
       "id": "application:cli/__tests__/auth-command-registration",

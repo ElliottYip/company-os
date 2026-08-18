@@ -1954,6 +1954,24 @@
         "Focused Vitest passed 2/2 through the existing local binary."
       ],
       "completionRequirements": ["Read lines 1-125 exactly once and assess Agent create/update/archive/restore lifecycle CLI contracts, role/tenant/responsibility semantics, destructive confirmation, adapter/skill configuration, payload validation and error coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/allowed-hostname",
+      "path": "cli/src/__tests__/allowed-hostname.test.ts",
+      "lineCount": 80,
+      "sha256": "9e1a17f9490f827a110fe9393b174640e808974d0de3d96224576d90358db314",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 80 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The only test adds one mixed-case URL with scheme/port and the equivalent bare hostname, proving lowercase normalization, scheme/port removal and duplicate suppression in the persisted config.",
+        "It does not test runtime Host-header enforcement or exact/wildcard/subdomain/IP/IPv6/IDN/trailing-dot/userinfo/path/invalid-input semantics, so it cannot establish DNS-rebinding or host-header protection.",
+        "The config file is created with default fs.writeFileSync permissions and the temporary directory is never removed; atomic concurrent config updates and symlink handling are also absent.",
+        "Focused Vitest passed 1/1 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-80 exactly once and assess hostname allowlist parsing, exact/wildcard/IP/IDN/port/case/trailing-dot semantics, fail-closed behavior and deployment relevance."]
     }
   ]
 }
