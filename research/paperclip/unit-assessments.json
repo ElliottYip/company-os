@@ -1454,18 +1454,24 @@
     },
     {
       "id": "application:cli/checks/database-check",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Checks the configured database mode. External PostgreSQL requires a connection string, dynamically creates Paperclip's database client and executes SELECT 1; embedded PostgreSQL resolves and creates its data directory, then reports configuration as passing without starting or querying a database; unknown modes fail.",
+      "dependencyDirection": "CLI doctor leaf -> CLI PaperclipConfig and runtime-like path resolver; external mode dynamically imports @paperclipai/db; embedded mode directly mutates the local filesystem. This is deployment plumbing rather than a domain dependency, but the check is coupled to Paperclip's two database-mode enum values and database client.",
+      "keyDataModels": "PaperclipConfig.database mode, connectionString, embeddedPostgresDataDir and embeddedPostgresPort; CheckResult display fields. It has no database readiness or migration-state model, no stable diagnostic code, and no structured/redacted failure detail.",
+      "lifecycle": "Postgres: reject missing connection string -> construct DB client -> execute SELECT 1 -> pass, or catch and stringify any error. Embedded: resolve data path -> recursively create the directory when absent -> immediately pass with path and configured port. Unknown mode fails. No client shutdown, timeout, cancellation, migration/schema check, read/write transaction probe or rollback is visible.",
+      "testAssessment": "Repository search found no focused databaseCheck test. CLI TypeScript checking passes, but behavior is unproved for connection timeout, authentication/TLS failures, leaked clients, read-only databases, schema/migration mismatch, concurrent invocation, unsafe paths, mkdir permission errors, occupied embedded ports or an embedded engine that cannot start. The earlier package:db audit found 24 client/embedded/backup/migration tests, but those do not exercise this doctor wrapper and cannot justify its embedded pass result.",
+      "designRationale": "The external SELECT 1 probe is a cheap liveness check and the dynamic import avoids loading database code for other modes. Creating the embedded directory offers onboarding convenience, but it conflates configuration preparation with health verification and makes a diagnostic command state-changing.",
+      "companyOsProblem": "Company OS needs profile-aware database diagnostics for managed-cloud and self-hosted deployments: configuration, network/TLS/authentication, server compatibility, migration/schema state, read/write capability, isolation and recoverability must be distinguishable without exposing credentials.",
+      "companyOsFit": "The external liveness-probe pattern is useful only as one stage of a larger readiness protocol. The embedded branch does not establish database health and should not be adopted. Company OS should define stable staged diagnostics (configured, reachable, authenticated, compatible, migrated, writable, isolated), strict timeouts/cancellation, safe client cleanup and an explicitly authorized repair path separate from read-only checks.",
+      "responsibilityConflict": "A false embedded pass can tell an accountable operator that the data plane is healthy when only a directory exists. Health evidence must preserve who initiated any repair, what changed, and which deployment profile and database target were tested; a doctor command must not silently create production paths under an Agent's authority.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/checks/database-check.ts (59 lines; SHA-256 9f1872f2d833340ea7318e8f4e4c486670ffc321176ca323a6f3e63cf6f53d29)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Repository-wide test/spec search found no databaseCheck or its success-message assertions",
+        "Earlier formal package:db assessment: research/paperclip/audit-batches/030-shared-db-plugin-sdk.json (ADAPT; 24 focused client/embedded/backup/migration tests, not this wrapper)"
+      ],
+      "securityFindings": "Caught database errors are embedded verbatim and may disclose hostnames, usernames, database names, TLS details or driver internals; the connection string itself is not printed directly but driver messages are not sanitized. No explicit timeout or cancellation bounds a hostile/unreachable endpoint, and no client disposal is visible. Embedded mode accepts a configured path and recursively creates it during diagnosis without local ownership/mode/symlink policy checks; mkdir failures are uncaught and can crash the doctor. Stable codes, redacted details, bounded probes, path policy, least-privilege test credentials and separation of check versus repair are required."
     },
     {
       "id": "application:cli/checks/deployment-auth-check",
