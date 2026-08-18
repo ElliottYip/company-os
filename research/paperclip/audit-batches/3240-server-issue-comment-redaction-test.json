@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-comment-redaction",
+    "auditStatus": "COMPLETE",
+    "function": "Embedded-Postgres tests ensuring deleted comment content is redacted from reads, heartbeat/Agent wake context, company search and Issue-reference projections while tombstone dates/identity remain usable.",
+    "dependencyDirection": "Vitest/Supertest -> real Issue routes/services, heartbeat payload builder, company search and reference service -> PostgreSQL comments/Issues/memberships/reference mentions.",
+    "keyDataModels": "Comment body/presentation/metadata, deletedAt/deletedBy tombstone, heartbeat wake context, search result and reference mention.",
+    "lifecycle": "Mark comment deleted while raw content may remain -> redact all normal/Agent-facing projections -> exclude search -> resync and remove derived Issue references -> preserve tombstone timestamps/identity.",
+    "testAssessment": "All 4 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Projection coverage is cross-cutting, but physical erasure, exports/backups, logs, caches, training data and repair guarantees are not proven.",
+    "designRationale": "Prevent deleted content from continuing to influence users or Agents while preserving a stable tombstone and avoiding generic secret-redaction corruption of Date fields.",
+    "companyOsProblem": "Company OS needs explicit privacy lifecycle states—hidden, tombstoned, legally retained and physically erased—across control plane, Agent context, search, evidence, analytics, connectors, replicas and backups.",
+    "companyOsFit": "ADAPT centralized tombstone projection, wake/search/reference exclusion and typed serializer tests. Add ErasurePolicy and LegalHold decisions, content encryption/key destruction, derived-copy registry with durable scrub jobs, export/backup/telemetry coverage, repair scans, deletion receipts and clear APIs distinguishing hidden from erased content.",
+    "responsibilityConflict": "The UI/Agent sees a tombstone while raw deleted content remains in PostgreSQL, so presenting this as erasure would be false. Evidence retention and privacy deletion require an explicit accountable policy decision rather than implicit deletedAt semantics.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-comment-redaction.test.ts:1-281 (SHA-256 81f5dae5456e0e7db55a4c448e664a41da6fef1cc91d6f9acce874f7ed3b7d2e)",
+      "git history: 5 commits from 656ecfa585b31938e2685ffab3db22e794474803 through 7f70759e6155003b12621d4d57bfdc6db759511c recorded in read ledger",
+      "2026-08-19 sandboxed focused Vitest: 4/4 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 4/4 skipped"
+    ],
+    "securityFindings": "HIGH retained-secret gap: raw body/metadata remains in the primary database. HIGH lifecycle-coverage gap: backups, exports, logs, caches, analytics and training copies are absent. HIGH verification gap: all database tests skipped. MEDIUM repair gap: reference removal requires explicit sync. MEDIUM role-coverage gap: Agent, support and inactive/cross-tenant identities are untested. MEDIUM semantic risk: deleted may be mistaken for erased without a separate contract."
+  }]
+}

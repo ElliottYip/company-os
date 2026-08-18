@@ -7360,6 +7360,36 @@
       "completionRequirements": [
         "Read lines 1-441 exactly once and assess comment deletion/cancellation semantics, Run targeting, human/Agent authority, atomic cleanup, redaction, audit/evidence preservation and test quality against Company OS responsibility records."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-comment-redaction",
+      "path": "server/src/__tests__/issue-comment-redaction.test.ts",
+      "lineCount": 281,
+      "sha256": "81f5dae5456e0e7db55a4c448e664a41da6fef1cc91d6f9acce874f7ed3b7d2e",
+      "linkedEvidence": { "history": [
+        "656ecfa585b31938e2685ffab3db22e794474803 preserve Date fields through secret redaction (#10984)",
+        "606e74d11f77808880da39a9753d81e12d33d8c3 company-scoped cloud tenants, never instance-admin (#7525)",
+        "7fb40264f8df21e18a036bcf104b2c4c565268c8 revert comment wake handoffs (#7765)",
+        "4da79a88c67e54084d40bd18cada5ee5c8be23da refine comment wake handoffs (#7678)",
+        "7f70759e6155003b12621d4d57bfdc6db759511c redact deleted Issue comments"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 281 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Four embedded-Postgres tests cover deleted-comment redaction in service reads, exact lookup, heartbeat context, Agent wake payload, company search and Issue-reference projection, plus Date serialization.",
+        "Deleted comments expose tombstone identity/time fields while body, presentation and metadata become empty/null across ordinary service reads, heartbeat API and wake payload. Agent execution context therefore does not receive deleted secrets in these paths.",
+        "The fixture deliberately leaves secret body/metadata in the database and only sets deletedAt/deleter fields. The unit proves projection redaction, not physical erasure, encryption-key destruction or backup deletion; privileged/raw/export paths may still access content.",
+        "Company search excludes deleted body text. Issue references are removed after syncComment is explicitly called, so correctness depends on every deletion path invoking synchronization or a repair job.",
+        "The redaction layer preserves Date objects so API timestamps serialize as parseable ISO strings rather than empty objects, an important generic serializer regression guard.",
+        "The cloud_tenant actor is an active company owner but never instance admin, proving one ordinary tenant route path. Agent, member-only, inactive membership, cross-company, audit export, backup and support-admin paths are absent.",
+        "No test covers deletion activity content, logs/telemetry, decision-training copies, external object caches, attachments, database replicas, exports or retention/legal-hold decisions; those appear only in adjacent units.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 4 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-281 exactly once and assess deleted-comment redaction across reads, identity/date preservation, secret handling, tenant roles and test quality against Company OS privacy/evidence lifecycle."
+      ]
     }
   ]
 }
