@@ -2705,18 +2705,23 @@
     },
     {
       "id": "application:server/__tests__/auth-session-route",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Actor-middleware integration tests for authenticated sessions and a Paperclip Cloud tenant-header bootstrap path that provisions users, Companies, memberships and defaults, repairs legacy Company names and removes stale instance-admin elevation.",
+      "dependencyDirection": "Either the configured session resolver or a shared Cloud tenant server token plus identity headers enters actorMiddleware; middleware reads/writes auth users, Companies, memberships, permission defaults, instance settings/roles and activity log before publishing a board actor consumed by route authorization.",
+      "keyDataModels": "Session/user profile, cloud tenant token, global user id/email/name, stack id/role, external Paperclip Company id/name, generated internal Company id, active membership, principal permission grants, instance role, Company rename activity and actor source.",
+      "lifecycle": "Normal sessions preserve persisted human profile and load memberships/admin state. A matching tenant token causes header claims to be trusted, marks email verified, idempotently seeds identity/Company/membership/default grants/settings and emits a non-admin cloud_tenant actor. Real membership rows extend access to imported Companies. Trusted human names repair known machine-generated Company names with an audit event. A tenant-header request deletes a legacy instance_admin row so later session requests stop elevating that user.",
+      "testAssessment": "Six substantial route/integration scenarios cover session projection, JIT tenant bootstrap, imported-Company membership access, legacy-name migration with activity evidence, stale-admin cleanup and naming heuristics. Database behavior is still heavily stubbed. Missing are invalid/missing/rotated token cases, constant-time comparison, signed issuer/audience/expiry/nonce and replay, header stripping by proxies, role allowlist validation, cross-stack identity collisions, concurrent bootstrap, transaction rollback, deprovisioning/suspension, membership downgrade, email ownership, failure before stale-admin purge and proof that a session cannot elevate during the migration window.",
+      "designRationale": "Let a managed Cloud front door inject tenant/user context into a self-contained Paperclip instance, bootstrap resources without a separate onboarding flow, preserve access to imported Companies and clean up authorization artifacts from older deployments.",
+      "companyOsProblem": "Company OS managed-cloud and self-hosted profiles need replaceable enterprise identity federation, JIT provisioning and migration without equating an upstream account with all Company permissions or letting migration order temporarily expand authority.",
+      "companyOsFit": "REIMPLEMENT behind IdentityPort and OrganizationPrincipalPort using OIDC/SAML or short-lived signed workload assertions with issuer, audience, tenant, subject, expiry, nonce and key rotation. Map external identity to opaque internal Principal, validate roles against policy, transact JIT provisioning and audit receipts, process deprovisioning, and run privilege-revocation migrations before serving sessions rather than lazily after a privileged request.",
+      "responsibilityConflict": "A single long-lived server token authenticates arbitrary identity/role headers and directly marks email verified; compromise permits impersonation and organization provisioning. Legacy cloud users can receive instance-admin authority through the ordinary session path until they first make a trusted-header request, so the cleanup sequence temporarily violates least privilege and accountable-human guarantees.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/auth-session-route.test.ts:1-432",
+        "606e74d11f77808880da39a9753d81e12d33d8c3 cloud_tenant: company-scoped tenants, never instance-admin (#7525)",
+        "1c52f02d348080b12326d43704de7f0f6cbb8052 Let cloud tenant sessions reach companies they hold memberships in (#10524)",
+        "2495e29f7fadb160dc1fbd6d875ff809fe8eabfc Preserve company display names in cloud tenants (#10845)"
+      ]
     },
     {
       "id": "application:server/__tests__/authorization-service",
