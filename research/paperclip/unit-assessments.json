@@ -5997,18 +5997,23 @@
     },
     {
       "id": "application:server/__tests__/invite-summary-route",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP tests for the public invitation summary projection, including Company branding, optional logo availability and status recovery for accepted human join requests.",
+      "dependencyDirection": "An anonymous or session actor plus bearer invite token enters access routes; sequential database projections resolve invite, join request, user/email, Company branding and logo metadata, while storage HEAD determines whether a public logo URL is emitted.",
+      "keyDataModels": "Invite Company/type/join types/hash/defaults/expiry/accepted state, Company stable ID/name/brand color/logo, asset metadata/existence, join request ID/type/status/requesting user/email and response logo URL/status fields.",
+      "lifecycle": "An active invite returns Company identity and branding; a missing stored logo suppresses its URL. After invite acceptance, the summary returns the associated pending request, or for a signed-in user falls back to a reusable same-email human queue entry when the accepted invite did not retain a direct association.",
+      "testAssessment": "Tests cover branded public projection, storage drift, accepted-request status and reusable human-request recovery. Missing are missing/revoked/expired tokens, cross-Company joins/assets, stable Company-ID minimization, defaults/permission/secret redaction, allowed join type and role presentation, rate limiting, cache/privacy headers, authenticated applicant ownership, email-change/takeover cases, multiple reusable requests, rejected/approved terminal states and query-count/performance behavior.",
+      "designRationale": "Make invitation onboarding trustworthy and recoverable: show the target Company's identity before sign-in and let a returning person see that their acceptance is already awaiting approval.",
+      "companyOsProblem": "Company OS needs a warm, branded zero-confusion entry flow while ensuring public invitations reveal only deliberate public metadata and application status is bound to the real human identity.",
+      "companyOsFit": "ADAPT into two projections: a token-scoped PublicInviteSummary containing a revocable public organization alias, sanitized brand variant, intended join category and expiry; and an authenticated ApplicantStatus keyed by IdentityPort principal plus one-time acceptance receipt. Do not expose stable internal Company IDs, grants, Connector defaults, emails or queue details publicly.",
+      "responsibilityConflict": "Possession of a bearer token is sufficient to receive a stable Company ID and, for accepted invitations, request status. The test does not prove that the viewer is the applicant or that the fallback email identity is verified and current. It also records invitedByUserId as null, so the public experience lacks an accountable inviter.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/invite-summary-route.test.ts:1-278",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "a9573944 [codex] Add structured issue-thread interactions (#4244)",
+        "9a8d2199 [codex] Stabilize tests and local maintenance assets (#4423)"
+      ]
     },
     {
       "id": "application:server/__tests__/invite-test-resolution-route",
