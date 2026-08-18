@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/execution-workspace-policy",
+      "auditStatus": "COMPLETE",
+      "function": "Pure policy-resolver tests for selecting execution workspace mode, strategy, concurrency, runtime config, environment and task network egress across issue, project, Agent and instance defaults.",
+      "dependencyDirection": "Vitest -> server execution-workspace policy helpers -> shared Zod schemas; the suite does not invoke persistence, authorization, workspace provisioning, runtime drivers, network enforcement or source-control operations.",
+      "keyDataModels": "ProjectExecutionWorkspacePolicy, IssueExecutionWorkspaceSettings, workspace mode/strategy/runtime, shared concurrency, low-trust review boundary, FQDN/CIDR egress grants, Agent/instance/local environment IDs and legacy compatibility flags.",
+      "lifecycle": "Parse persisted policy -> gate feature -> resolve layered mode/concurrency/environment -> reject known unrunnable worktree shapes -> synthesize adapter configuration -> map persisted workspace state back to issue settings.",
+      "testAssessment": "Focused Vitest passed 17/17. The pure suite strongly pins precedence and compatibility decisions, but does not test who may mutate policy, the actual isolation/egress controls, concurrent workspace use, command safety, tenant ownership, failure cleanup or migration round trips.",
+      "designRationale": "Centralize compatibility and default resolution so API/runtime paths agree, allow projects to standardize workspace behavior while preserving issue overrides, keep task egress independent of workspace isolation and avoid eagerly realizing isolated workspaces before a Run starts.",
+      "companyOsProblem": "Company OS must compile a Work's execution envelope from company policy, ResponsibilityContract, DataAuthorization, Agent capability, environment health and explicit human approval without allowing lower-precedence preferences to widen authority.",
+      "companyOsFit": "ADAPT the deterministic resolver, typed modes, feature gate, separate network/workspace dimensions and pure precedence tests. Replace configuration precedence with deny-preserving policy intersection: company/department/data contract establish ceilings; Work and Agent may only narrow; runtime emits a signed/hashed ExecutionGrant bound to Work, Attempt, Connector, environment and approval.",
+      "responsibilityConflict": "Issue-level mode, egress and concurrency can override project defaults without any accountable-human or approval evidence in this unit. Environment selection starts with Agent preference, and arbitrary lifecycle commands are treated as configuration rather than privileged actions, so the resolved config is not itself an auditable authority contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/execution-workspace-policy.test.ts:1-441 (SHA-256 7585554827e9ec5308a187116fc7a332ed8be9973fdbc9f472c9dfc9be66b46b)",
+        "git history: ba396c608c5d5115561093b5cd0c75852c716c8c, dcac49a4fd4739ec7177b196a869aa5d1cc169d9, 7f766526a67c5564d8e029986ede23aed488eba8, 38cca22b09d616c91408fb6f7e7f8ecef2d572be, 88bf71b84e089d235b2aed625e1f36630466053b, 547463d3a2a0aa931b2d011f5e9abb6a5fff68, dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2, 1f70fd9a22be00c7e2daefadaa17699e72ca3a6a",
+        "2026-08-19 focused Vitest: 17/17 passed"
+      ],
+      "securityFindings": "CRITICAL authority gap if reused directly: project policy carries arbitrary provision/teardown/service shell commands with no tested approval, signing or provenance boundary. HIGH policy-widening gap: issue overrides and Agent-first environment selection are not shown to be deny-preserving or tenant-scoped. HIGH data-egress gap: FQDN/CIDR grants lack DataAuthorization, redirect/DNS semantics, expiry and evidence binding. HIGH containment gap: selection tests do not prove filesystem, process or network enforcement. MEDIUM concurrency gap: allow/serialize/auto are resolved but shared workspace collision and stale-lock behavior are untested."
+    }
+  ]
+}
