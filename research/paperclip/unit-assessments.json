@@ -1300,18 +1300,30 @@
     },
     {
       "id": "application:cli/adapters/index",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Two-line CLI adapter facade exporting registry lookup and the shared CLIAdapterModule type.",
+      "dependencyDirection": "Consumers import inward through this local facade; the implementation delegates lookup to the CLI registry and exposes its contract from @paperclipai/adapter-utils.",
+      "keyDataModels": "CLIAdapterModule and adapter-type-to-module lookup.",
+      "lifecycle": "Import the facade; request an adapter through registry lookup; type consumers against the shared module interface.",
+      "testAssessment": "No focused test exists for this facade. CLI no-emit TypeScript passed on 2026-08-19. The export itself is trivial, while behavior and completeness belong to registry/adapter units.",
+      "designRationale": "Keep consumers independent of registry file layout and centralize the public CLI adapter import path.",
+      "companyOsProblem": "Company OS needs a narrow stable Connector SDK and separate presentation adapter facade so vendor implementations can evolve without leaking registry or runtime internals into core/application.",
+      "companyOsFit": "ADAPT the narrow facade pattern only. Company OS must own its Connector contracts in connector-sdk/ports, version them explicitly and avoid re-exporting upstream/Paperclip types. CLI event formatting should remain downstream of normalized Connector projections.",
+      "responsibilityConflict": "None in the facade itself; the risk is architectural—re-exporting an implementation-owned type can allow its incomplete identity/evidence/session semantics to become the system-wide contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/adapters/index.ts:1-2",
+        "SHA-256 cc69ec7857352de9e4b955172092b3bcecd8fdd214ec2712c839c3497a389751",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed",
+        "2026-08-19 no focused facade tests found"
+      ],
+      "securityFindings": [
+        "The facade exposes an upstream shared type as the public contract; security-critical omissions in that type can propagate to every adapter consumer.",
+        "No version/capability negotiation, structured event/evidence schema or secret-free invariant is visible at this boundary.",
+        "Registry lookup failure/unknown adapter behavior is not tested here.",
+        "Type-level separation does not enforce runtime plugin trust, provenance or sandbox policy."
+      ]
     },
     {
       "id": "application:cli/adapters/process",
