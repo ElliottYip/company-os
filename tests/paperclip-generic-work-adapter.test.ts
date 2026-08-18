@@ -12,21 +12,21 @@ class MemoryResourceMap implements PaperclipResourceMap {
   readonly #out = new Map<string, string>();
   readonly #back = new Map<string, Identifier>();
 
-  seed(kind: PaperclipResourceKind, companyOsId: Identifier, upstreamId: string) {
-    this.#out.set(`${kind}:${companyOsId}`, upstreamId);
-    this.#back.set(`${kind}:${upstreamId}`, companyOsId);
+  seed(companyId: Identifier, kind: PaperclipResourceKind, companyOsId: Identifier, upstreamId: string) {
+    this.#out.set(`${companyId}:${kind}:${companyOsId}`, upstreamId);
+    this.#back.set(`${companyId}:${kind}:${upstreamId}`, companyOsId);
   }
 
-  async getUpstreamId(kind: PaperclipResourceKind, companyOsId: Identifier) {
-    return this.#out.get(`${kind}:${companyOsId}`) ?? null;
+  async getUpstreamId(companyId: Identifier, kind: PaperclipResourceKind, companyOsId: Identifier) {
+    return this.#out.get(`${companyId}:${kind}:${companyOsId}`) ?? null;
   }
 
-  async getCompanyOsId(kind: PaperclipResourceKind, upstreamId: string) {
-    return this.#back.get(`${kind}:${upstreamId}`) ?? null;
+  async getCompanyOsId(companyId: Identifier, kind: PaperclipResourceKind, upstreamId: string) {
+    return this.#back.get(`${companyId}:${kind}:${upstreamId}`) ?? null;
   }
 
-  async bind(kind: PaperclipResourceKind, companyOsId: Identifier, upstreamId: string) {
-    this.seed(kind, companyOsId, upstreamId);
+  async bind(companyId: Identifier, kind: PaperclipResourceKind, companyOsId: Identifier, upstreamId: string) {
+    this.seed(companyId, kind, companyOsId, upstreamId);
   }
 }
 
@@ -46,9 +46,9 @@ function issue(overrides: Record<string, unknown> = {}) {
 
 test("Paperclip adapter creates generic work through the documented issue API", async () => {
   const resources = new MemoryResourceMap();
-  resources.seed("company", "company-coral", "22222222-2222-4222-8222-222222222222");
-  resources.seed("goal", "goal-brief", "33333333-3333-4333-8333-333333333333");
-  resources.seed("agent", "agent-research", "44444444-4444-4444-8444-444444444444");
+  resources.seed("company-coral", "company", "company-coral", "22222222-2222-4222-8222-222222222222");
+  resources.seed("company-coral", "goal", "goal-brief", "33333333-3333-4333-8333-333333333333");
+  resources.seed("company-coral", "agent", "agent-research", "44444444-4444-4444-8444-444444444444");
   const requests: Parameters<PaperclipHttpTransport["request"]>[0][] = [];
   const adapter = new PaperclipGenericWorkAdapter({
     resources,
@@ -74,7 +74,7 @@ test("Paperclip adapter creates generic work through the documented issue API", 
   if (!result.ok) return;
   assert.equal(result.value.id, "work-brief");
   assert.equal(result.value.status, "READY");
-  assert.equal(await resources.getUpstreamId("work", "work-brief"), issue().id);
+  assert.equal(await resources.getUpstreamId("company-coral", "work", "work-brief"), issue().id);
   assert.deepEqual(requests[0], {
     method: "POST",
     path: "/api/companies/22222222-2222-4222-8222-222222222222/issues",
@@ -90,8 +90,8 @@ test("Paperclip adapter creates generic work through the documented issue API", 
 
 test("Paperclip adapter rejects cross-company or malformed issue projections", async () => {
   const resources = new MemoryResourceMap();
-  resources.seed("company", "company-coral", "22222222-2222-4222-8222-222222222222");
-  resources.seed("work", "work-brief", issue().id);
+  resources.seed("company-coral", "company", "company-coral", "22222222-2222-4222-8222-222222222222");
+  resources.seed("company-coral", "work", "work-brief", issue().id);
   const adapter = new PaperclipGenericWorkAdapter({
     resources,
     transport: { async request() { return { status: 200, body: issue({ companyId: "other-company" }) }; } },
@@ -110,9 +110,9 @@ test("Paperclip adapter rejects cross-company or malformed issue projections", a
 
 test("Paperclip adapter consumes durable run events without message, payload, or secrets", async () => {
   const resources = new MemoryResourceMap();
-  resources.seed("company", "company-coral", "22222222-2222-4222-8222-222222222222");
-  resources.seed("run", "run-brief", "55555555-5555-4555-8555-555555555555");
-  resources.seed("run-work", "work-brief", "55555555-5555-4555-8555-555555555555");
+  resources.seed("company-coral", "company", "company-coral", "22222222-2222-4222-8222-222222222222");
+  resources.seed("company-coral", "run", "run-brief", "55555555-5555-4555-8555-555555555555");
+  resources.seed("company-coral", "run-work", "work-brief", "55555555-5555-4555-8555-555555555555");
   const adapter = new PaperclipGenericWorkAdapter({
     resources,
     transport: {

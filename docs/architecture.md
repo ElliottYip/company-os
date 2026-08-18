@@ -85,6 +85,11 @@ REST paths and DTO shapes. It maps Company OS opaque IDs through an injected
 resource map, validates every response, normalizes stable error codes, and
 projects only sanitized run-event attributes.
 
+The resource map is Company OS adapter state, not a Paperclip foreign key in
+the domain. Local/self-hosted storage is tenant-partitioned, atomic, integrity
+checked, and portable through a digest-bound backup. A future managed-cloud map
+must satisfy the same contract.
+
 Company-level WebSocket events are cache hints because the pinned upstream does
 not replay them. Durable evidence and recovery use the heartbeat run-event
 endpoint with `afterSeq`. Paperclip database tables, private server modules,

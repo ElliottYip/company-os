@@ -15,9 +15,9 @@ import { normalizePaperclipError } from "./error-contract.ts";
 export type PaperclipResourceKind = "company" | "agent" | "goal" | "work" | "run" | "run-work";
 
 export interface PaperclipResourceMap {
-  getUpstreamId(kind: PaperclipResourceKind, companyOsId: Identifier): Promise<string | null>;
-  getCompanyOsId(kind: PaperclipResourceKind, upstreamId: string): Promise<Identifier | null>;
-  bind(kind: PaperclipResourceKind, companyOsId: Identifier, upstreamId: string): Promise<void>;
+  getUpstreamId(companyId: Identifier, kind: PaperclipResourceKind, companyOsId: Identifier): Promise<string | null>;
+  getCompanyOsId(companyId: Identifier, kind: PaperclipResourceKind, upstreamId: string): Promise<Identifier | null>;
+  bind(companyId: Identifier, kind: PaperclipResourceKind, companyOsId: Identifier, upstreamId: string): Promise<void>;
 }
 
 export interface PaperclipHttpResponse {
@@ -148,14 +148,14 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
   }
 
   async createWork(command: CreateGenericWorkCommand): Promise<GenericWorkResult<GenericWorkRecord>> {
-    const companyId = await this.#resources.getUpstreamId("company", command.companyId);
+    const companyId = await this.#resources.getUpstreamId(command.companyId, "company", command.companyId);
     if (!companyId) return mappingFailure("company");
     const goalId = command.goalId
-      ? await this.#resources.getUpstreamId("goal", command.goalId)
+      ? await this.#resources.getUpstreamId(command.companyId, "goal", command.goalId)
       : null;
     if (command.goalId && !goalId) return mappingFailure("goal");
     const assigneeAgentId = command.assigneeId
-      ? await this.#resources.getUpstreamId("agent", command.assigneeId)
+      ? await this.#resources.getUpstreamId(command.companyId, "agent", command.assigneeId)
       : null;
     if (command.assigneeId && !assigneeAgentId) return mappingFailure("agent");
 
@@ -175,14 +175,14 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
     }
     const issue = parseIssue(response.body);
     if (!issue || issue.companyId !== companyId) return contractFailure("UPSTREAM_ISSUE_CONTRACT_INVALID");
-    await this.#resources.bind("work", command.id, issue.id);
+    await this.#resources.bind(command.companyId, "work", command.id, issue.id);
     return this.#toWork(command.companyId, command.id, issue);
   }
 
   async getWork(companyId: Identifier, workId: Identifier): Promise<GenericWorkResult<GenericWorkRecord>> {
-    const upstreamCompanyId = await this.#resources.getUpstreamId("company", companyId);
+    const upstreamCompanyId = await this.#resources.getUpstreamId(companyId, "company", companyId);
     if (!upstreamCompanyId) return mappingFailure("company");
-    const upstreamWorkId = await this.#resources.getUpstreamId("work", workId);
+    const upstreamWorkId = await this.#resources.getUpstreamId(companyId, "work", workId);
     if (!upstreamWorkId) return mappingFailure("work");
     const response = await this.#transport.request({
       method: "GET",
@@ -201,7 +201,7 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
     readonly cursor?: string;
     readonly limit: number;
   }): Promise<GenericWorkResult<GenericWorkPage>> {
-    const upstreamCompanyId = await this.#resources.getUpstreamId("company", query.companyId);
+    const upstreamCompanyId = await this.#resources.getUpstreamId(query.companyId, "company", query.companyId);
     if (!upstreamCompanyId) return mappingFailure("company");
     const offset = parseOffset(query.cursor);
     if (offset === null || !Number.isInteger(query.limit) || query.limit < 1 || query.limit > 200) {
@@ -224,7 +224,7 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
       if (!issue || issue.companyId !== upstreamCompanyId) {
         return contractFailure("UPSTREAM_ISSUE_LIST_CONTRACT_INVALID");
       }
-      const workId = await this.#resources.getCompanyOsId("work", issue.id);
+      const workId = await this.#resources.getCompanyOsId(query.companyId, "work", issue.id);
       if (!workId) continue;
       const mapped = await this.#toWork(query.companyId, workId, issue);
       if (!mapped.ok) return mapped;
@@ -240,9 +240,9 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
   }
 
   async cancelRun(command: CancelGenericRunCommand): Promise<GenericWorkResult<void>> {
-    const upstreamCompanyId = await this.#resources.getUpstreamId("company", command.companyId);
+    const upstreamCompanyId = await this.#resources.getUpstreamId(command.companyId, "company", command.companyId);
     if (!upstreamCompanyId) return mappingFailure("company");
-    const upstreamRunId = await this.#resources.getUpstreamId("run", command.runId);
+    const upstreamRunId = await this.#resources.getUpstreamId(command.companyId, "run", command.runId);
     if (!upstreamRunId) return mappingFailure("run");
     const response = await this.#transport.request({
       method: "POST",
@@ -261,9 +261,9 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
     readonly afterSequence: number;
     readonly limit: number;
   }): Promise<GenericWorkResult<GenericRunEventPage>> {
-    const upstreamCompanyId = await this.#resources.getUpstreamId("company", query.companyId);
+    const upstreamCompanyId = await this.#resources.getUpstreamId(query.companyId, "company", query.companyId);
     if (!upstreamCompanyId) return mappingFailure("company");
-    const upstreamRunId = await this.#resources.getUpstreamId("run", query.runId);
+    const upstreamRunId = await this.#resources.getUpstreamId(query.companyId, "run", query.runId);
     if (!upstreamRunId) return mappingFailure("run");
     if (!Number.isInteger(query.afterSequence) || query.afterSequence < 0 ||
         !Number.isInteger(query.limit) || query.limit < 1 || query.limit > 500) {
@@ -287,7 +287,7 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
       events.push({
         sequence: event.seq,
         runId: query.runId,
-        workId: await this.#workIdForRun(upstreamRunId, query.runId),
+        workId: await this.#workIdForRun(query.companyId, upstreamRunId, query.runId),
         type: event.eventType,
         occurredAt: event.createdAt,
         attributes: {
@@ -314,10 +314,10 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
     const status = statusFromPaperclip(issue.status);
     if (!status) return contractFailure("UPSTREAM_ISSUE_STATUS_UNSUPPORTED");
     const goalId = issue.goalId
-      ? await this.#resources.getCompanyOsId("goal", issue.goalId)
+      ? await this.#resources.getCompanyOsId(companyId, "goal", issue.goalId)
       : null;
     const assigneeId = issue.assigneeAgentId
-      ? await this.#resources.getCompanyOsId("agent", issue.assigneeAgentId)
+      ? await this.#resources.getCompanyOsId(companyId, "agent", issue.assigneeAgentId)
       : null;
     return {
       ok: true,
@@ -334,9 +334,9 @@ export class PaperclipGenericWorkAdapter implements GenericWorkPort {
     };
   }
 
-  async #workIdForRun(upstreamRunId: string, fallbackRunId: Identifier): Promise<Identifier> {
+  async #workIdForRun(companyId: Identifier, upstreamRunId: string, fallbackRunId: Identifier): Promise<Identifier> {
     // Run-to-work binding is created when controlled dispatch is admitted.
     // Until then a run may use the same opaque ID without exposing upstream IDs.
-    return await this.#resources.getCompanyOsId("run-work", upstreamRunId) ?? fallbackRunId;
+    return await this.#resources.getCompanyOsId(companyId, "run-work", upstreamRunId) ?? fallbackRunId;
   }
 }

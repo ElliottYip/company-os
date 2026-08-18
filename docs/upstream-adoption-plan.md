@@ -109,6 +109,13 @@ Paperclip-owned records, import them into a replacement adapter, replay events,
 compare Company OS projections and cut over. Responsibility and data contracts
 remain in Company OS and are not migrated out of their canonical store.
 
+The self-hosted mapping implementation stores one atomic, mode-0600 map per
+Company OS company. Bindings are one-to-one within resource kind, idempotent,
+tenant-scoped, corruption checked, and independently backup/restore tested.
+Managed cloud must provide the same mapping contract in its own database. This
+map is a first-class exit asset and must be backed up with both stores before an
+upgrade or replacement cutover.
+
 Connector registrations, capability declarations, Company OS identities and
 runtime attestations stay behind Company OS ports. At exit, rebind Connector
 runtime endpoints, preserve Company OS opaque IDs, import/export Paperclip-owned
