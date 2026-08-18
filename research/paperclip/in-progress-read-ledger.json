@@ -6680,6 +6680,43 @@
       "completionRequirements": [
         "Read lines 1-294 exactly once and assess Git credential discovery/resolution, Secret scope, URL/host binding, subprocess injection/redaction, clone/fetch concurrency/failure attribution, tenant isolation and test quality against Company OS SecretPort, DataConnector and customer-local execution boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/helpers",
+      "path": "server/src/__tests__/helpers/*",
+      "lineCount": 186,
+      "sha256": "ca270c14648cbdf2e42dddb90c94383a4a5c66a783b316cf1f1b0551a391a4c3",
+      "linkedEvidence": {
+        "history": [
+          "2ebc236b089d77bb1ac48f19d06b35a44fa3ff05 fix(server): accept parentIssueId alias in GET /issues (#4032)",
+          "d51f42ed648c4711a5e6bc4c41a6d4ff4e6e187b test(server): drain heartbeat runs to quiescence in sibling suite teardown (#10464)",
+          "4b1332b61c7d5148a2f49f709cfa60f680552aad fix(openclaw-gateway): drop root paperclip params (#4416)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        { "path": "drain-heartbeat-runs.ts", "start": 1, "end": 26 },
+        { "path": "embedded-postgres.ts", "start": 1, "end": 6 },
+        { "path": "route-test-harness.ts", "start": 1, "end": 141 },
+        { "path": "wake-message.ts", "start": 1, "end": 13 }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once across all four helper files (186 total lines). They centralize heartbeat teardown, embedded-Postgres gating/lifecycle, owner-board route fixtures and OpenClaw wake-message JSON extraction.",
+        "drainHeartbeatRunsToQuiescence waits internal wakeup/Run promises, rechecks queued/running rows up to 50 times with 10ms macrotask gaps, addressing fire-and-forget writes and delete deadlocks. If still non-quiescent after the bound it silently returns instead of throwing or reporting remaining Runs, allowing teardown races to surface later and obscuring the responsible test.",
+        "The embedded-Postgres helper selects describe or describe.skip once at module import and re-exports the database support. This makes local portability convenient but offers no in-helper distinction between optional developer runs and mandatory CI/security suites; the current audit host consequently skipped hundreds of database assertions while commands exited successfully.",
+        "useEmbeddedPostgres provides clean lifecycle and a guarded db getter, but resetEach is optional and the 20-second startup bound is fixed. It does not expose skip reason/test telemetry or enforce migration/version checks itself.",
+        "seedCompanyWithBoardAccess creates an active owner user, disables board approval for new Agents and materializes default owner grants. This is convenient for happy-path route tests but can hide missing granular permission, approval and separation-of-duty checks unless every suite adds explicit lower-privilege actors.",
+        "routeApp uses real route/error middleware but injects a fixed actor directly, bypassing authentication/session/token parsing, CSRF and actor-construction behavior; storage is an empty never-cast stub. It is an application authorization harness, not an end-to-end identity test.",
+        "resetCompanyIssueFixtures removes only issues/grants/memberships/companies and assumes suites clean additional foreign-key tables. The helper does not drain background Runs or verify zero leaked rows, so misuse can cause cross-test interference.",
+        "parseWakePayloadFromMessage extracts the first fenced json block from an OpenClaw text message because the gateway rejects a structured root field. It improves assertion stability but confirms a vendor-specific protocol compromise: structured control context is embedded in model-visible text, and a failure includes the entire message in the thrown error.",
+        "The helpers are compiled by the successful server TypeScript check but have no dedicated focused test unit. Behavioral confidence comes indirectly from consuming suites, many of which are database-gated."
+      ],
+      "completionRequirements": [
+        "Read all four helper files (186 lines total) exactly once and assess database-test portability, route fixture realism, actor/auth defaults, Run teardown quiescence, message compatibility and whether helper shortcuts create audit coverage blind spots for Company OS."
+      ]
     }
   ]
 }

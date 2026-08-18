@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/helpers",
+      "auditStatus": "COMPLETE",
+      "function": "Shared helpers for draining background Runs, gating/lifecycling embedded PostgreSQL, seeding owner-board route access and extracting structured wake JSON from OpenClaw text messages.",
+      "dependencyDirection": "Consuming Vitest suites -> helpers -> heartbeat internals/Drizzle/PostgreSQL/Express routes and real error handler; identity middleware and real storage are bypassed, while wake parsing is vendor-message specific.",
+      "keyDataModels": "Queued/running heartbeat Run, embedded DB context, company membership/default permission grant, fixed board actor, route app/reset fixture and fenced wake payload.",
+      "lifecycle": "Start optional embedded DB -> seed owner/grants and inject actor -> run route tests -> optionally reset rows/drain asynchronous Runs -> cleanup DB; parse message-embedded wake JSON for assertions.",
+      "testAssessment": "All files passed the repository TypeScript check but have no dedicated focused tests. Their design explains broad local database skips and contains a silent quiescence timeout; consuming suites provide only indirect evidence and bypass identity construction.",
+      "designRationale": "Reduce duplicated DB/route setup, stabilize teardown against fire-and-forget heartbeat work, exercise real authorization/error route code with a known owner and keep OpenClaw assertions independent of JSON formatting.",
+      "companyOsProblem": "Company OS needs test infrastructure that proves required database/security suites actually execute, isolates background work deterministically and distinguishes application authorization tests from full IdentityPort/authentication coverage.",
+      "companyOsFit": "ADAPT the centralized lifecycle, guarded DB accessor, real error handler and structured fixture factories. Make mandatory CI profiles fail when PostgreSQL capability is absent, throw with remaining Run IDs on quiescence timeout, seed a privilege matrix rather than owner-only defaults, verify complete cleanup and keep Connector envelopes structured instead of parsing model-visible fenced JSON.",
+      "responsibilityConflict": "Owner defaults with Agent approval disabled bias tests away from accountable-human and separation-of-duty failures. Direct actor injection proves neither identity binding nor responsibility eligibility, and vendor wake text is not a trustworthy responsibility event envelope.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/helpers/drain-heartbeat-runs.ts:1-26 (SHA-256 097ce537ad4e0175379e116cc44378080eb3825f77cf0651427fa16fab120b09)",
+        "server/src/__tests__/helpers/embedded-postgres.ts:1-6 (SHA-256 5bf1911980adc5457afd06e3b56a7e867e2bdad2f96c91862c6fed52c7f5d00f)",
+        "server/src/__tests__/helpers/route-test-harness.ts:1-141 (SHA-256 f068e08eb106c5593d1a251ae39f6062e566226c1b2356a6a04023e8ffdfc3a7)",
+        "server/src/__tests__/helpers/wake-message.ts:1-13 (SHA-256 e2a2d44f2d0a7841fd7a6dfc86dcf68ff60faed760718b2cce3fd22f54ea9481)",
+        "aggregate checksum manifest SHA-256 ca270c14648cbdf2e42dddb90c94383a4a5c66a783b316cf1f1b0551a391a4c3",
+        "git history: 2ebc236b089d77bb1ac48f19d06b35a44fa3ff05, d51f42ed648c4711a5e6bc4c41a6d4ff4e6e187b, 4b1332b61c7d5148a2f49f709cfa60f680552aad, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 server TypeScript check: passed"
+      ],
+      "securityFindings": "CRITICAL verification gap: embedded-Postgres absence silently skips security/database suites unless an external CI gate detects it. HIGH teardown false-negative: Run drain silently returns after its bound. HIGH authorization-coverage bias: helper grants owner defaults and disables Agent approval. HIGH identity gap: routes receive an injected actor and bypass authentication. MEDIUM isolation gap: partial reset relies on callers and does not prove no leaked rows/background work. MEDIUM data-leak test risk: wake parse failures include the entire message."
+    }
+  ]
+}
