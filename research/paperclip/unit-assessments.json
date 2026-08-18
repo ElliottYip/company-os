@@ -7840,18 +7840,24 @@
     },
     {
       "id": "application:server/__tests__/issue-create-deduplication-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL route tests for Issue-create idempotency-key replay, recent-title soft deduplication, concurrent serialization, duplicate overrides, key retention and Run-origin attribution.",
+      "dependencyDirection": "Vitest/Supertest -> trusted-local actor middleware and Issue routes/service -> Drizzle -> PostgreSQL companies, Issues, Agents, heartbeat Runs, idempotency keys and activity log.",
+      "keyDataModels": "Company-scoped idempotency key -> Issue ID mapping with createdAt; Issue parent/title/status/createdAt/originKind/originRunId; allowDuplicate request flag; deduplicated response and reason.",
+      "lifecycle": "Create request -> expire old keys -> replay exact company/key if present -> otherwise optionally serialize and match recent open sibling by normalized parent/title -> insert Issue and key -> return created or deduplicated response; explicit duplicate and internal service paths bypass title guard.",
+      "testAssessment": "All 8 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. The source intends meaningful real-database race coverage, but no behavior was executed here; payload-conflict, cross-principal/cross-Connector scope, invalid Run attribution, crash windows, pruning races and high-contention/property cases are absent.",
+      "designRationale": "Stop retrying Agents and recovery loops from creating duplicate child work while retaining a convenient recent-title guard for non-keyed UI/API submissions.",
+      "companyOsProblem": "Company OS must make Connector retries, offline replay and workflow recovery idempotent without merging distinct accountable work or accepting a reused operation key with different intent.",
+      "companyOsFit": "ADAPT the durable database key, company isolation, concurrency serialization, explicit response reason and origin Run receipt. Scope an OperationId to tenant, authenticated principal/Connector instance and command type; persist canonical request digest and return conflict on payload mismatch; bind retention to workflow/evidence policy; use title similarity only as a non-authoritative warning requiring an explicit human decision; remove ungoverned internal bypasses.",
+      "responsibilityConflict": "The same key silently replays the first Issue even when the retry payload and allowDuplicate intent differ, while title heuristics can merge separately intended work. Conversely, internal calls can bypass protection. Those behaviors obscure which goal/command was actually authorized and weaken responsibility attribution.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-create-deduplication-routes.test.ts:1-325 (SHA-256 77fbc65b2411ba7a8e7170b6209c13727f2b56886228fb03b16c780dd7b6935d)",
+        "git history: 53f09cb818b934beadc2a58897604c9ddca1d42e and bd7c0d5f8340a04a4a340beedb8de56fc9edaf7b recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 8/8 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 8/8 skipped"
+      ],
+      "securityFindings": "HIGH intent-confusion risk: identical keys accept changed payloads without a digest conflict. HIGH verification gap: all real-database tests skipped. MEDIUM scope gap: key uniqueness is company-level rather than explicitly principal/Connector/command scoped. MEDIUM attribution gap: a Run header is stored but this suite does not prove it belongs to the authenticated actor and company. MEDIUM bypass risk: allowDuplicate and internal service creates evade the soft guard. MEDIUM retention risk: expired keys permit old offline retries to recreate work. POSITIVE: intended database serialization and explicit deduplication reasons address retry races."
     },
     {
       "id": "application:server/__tests__/issue-dependency-wakeups-routes",

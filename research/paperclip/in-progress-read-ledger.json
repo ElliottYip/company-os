@@ -7473,6 +7473,30 @@
       "completionRequirements": [
         "Read lines 1-115 exactly once and assess how continuation summaries encode handoff context, evidence, responsibility, secret exposure, determinism and token/size constraints for Company OS human-Agent continuity."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-create-deduplication-routes",
+      "path": "server/src/__tests__/issue-create-deduplication-routes.test.ts",
+      "lineCount": 325,
+      "sha256": "77fbc65b2411ba7a8e7170b6209c13727f2b56886228fb03b16c780dd7b6935d",
+      "linkedEvidence": { "history": [
+        "53f09cb818b934beadc2a58897604c9ddca1d42e prevent duplicate task creation and recovery loops (#9648)",
+        "bd7c0d5f8340a04a4a340beedb8de56fc9edaf7b deduplicate repeated creates (#9650)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-325"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-325 exercise real routes and PostgreSQL for company-scoped idempotency-key replay, retention expiry, normalized-title soft deduplication, concurrent keyed/title-only serialization, explicit duplicate bypass, internal-service bypass, age/terminal exclusions and origin Run attribution.",
+        "The strongest pattern is database-backed serialization of concurrent creates with a stable deduplication reason. Important gaps are silent replay of a changed payload under the same key, finite expiry without contract-aware retry horizon, heuristic title equality as an authoritative response, bypasses for allowDuplicate/internal service, and no asserted principal/Connector scope or authorization around the Run header.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 8 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-325 exactly once and assess duplicate-create identity, idempotency scope, race behavior, authorization, recovery-loop containment, auditability and Company OS retry/offline Connector requirements."
+      ]
     }
   ]
 }
