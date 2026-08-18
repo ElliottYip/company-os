@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/routes/authz",
+      "auditStatus": "COMPLETE",
+      "function": "Shared route authorization helpers for actor type, instance/company access, cross-tenant existence-oracle protection, actor audit fields and secret-consumer context.",
+      "dependencyDirection": "Express route layer consumes the middleware actor and server authorization shadow-mode setting; services do not depend on these helpers, so some security invariants exist only at HTTP call sites.",
+      "keyDataModels": "Board/Agent actor, company membership and viewer role, on-behalf-of responsible user snapshot, actor source/run/key IDs and secret consumer context.",
+      "lifecycle": "Authenticate actor, hide inaccessible resource existence, intersect Agent company scope with an optional responsible-user membership, enforce read/write role, derive audit/secret context, then call a service.",
+      "testAssessment": "The authorization suites cover 19 company-access cases, five secret-context cases and a static route scan preventing known existence-oracle regressions. Gaps: HTTP method is used as the write-risk proxy; static source scanning cannot prove every dynamic path; stable denial codes are inconsistent; shadow mode intentionally permits responsible-user denials; and an Agent whose onBehalfOfUserId is absent skips the human-membership intersection entirely.",
+      "designRationale": "Centralize backwards-compatible company scoping and prevent 403/404 differences from leaking cross-tenant resource existence.",
+      "companyOsProblem": "Every use case must combine tenant, principal, role, responsible human, data grant, work contract and risk-specific approval without leaking object existence.",
+      "companyOsFit": "The indistinguishable not-found pattern, server-derived secret consumer and human/Agent permission intersection are strong references. Company OS must enforce them inside application use cases across every transport, require an accountable human for formal Agent work, remove shadow bypass from production and authorize named actions rather than HTTP verbs.",
+      "responsibilityConflict": "Paperclip treats responsible human context as optional for some JWT/legacy paths and permits a shadow mode. Company OS requires every formal Agent action to resolve an active responsibility contract and exact human owner before execution.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/routes/authz.ts", "server/src/__tests__/authz-company-access.test.ts", "server/src/__tests__/authz-existence-oracle-guard.test.ts", "server/src/__tests__/authz-secret-context.test.ts", "server/src/middleware/auth.ts:278-320"]
+    },
+    {
+      "id": "application:server/http",
+      "auditStatus": "COMPLETE",
+      "function": "Defines default JSON and company-portability upload ceilings, including an environment-overridable compressed ZIP limit.",
+      "dependencyDirection": "Transport constants are imported by app/import routes; no inward domain dependency.",
+      "keyDataModels": "10 MiB default JSON, 64 MiB portable JSON and a 1 GiB default/64 GiB maximum compressed ZIP byte limit.",
+      "lifecycle": "Parse the environment override at module load, clamp/fallback, configure whole-body parsers and derive decompression guards in import handling.",
+      "testAssessment": "Six focused tests verify constants, override fallback and arithmetic clamping. The code explicitly states the entire upload is buffered in memory and allows up to 64 GiB, but tests do not exercise concurrency, process memory, slow uploads, authenticated tenant quotas or streaming decompression.",
+      "designRationale": "Accept large real-world company packages in one request while bounding decompression arithmetic.",
+      "companyOsProblem": "Enterprise import/export and FDE templates need large portable packages without turning the API into a memory/zip-bomb denial-of-service path.",
+      "companyOsFit": "Separate route-specific limits are sensible, but the in-memory 1–64 GiB design is unacceptable. Company OS should stream to quarantined object storage, enforce compressed/uncompressed/file-count/ratio/tenant quotas, verify digest/signature, scan before activation and resume idempotently.",
+      "responsibilityConflict": "Import mutates organization/data/permission state and needs an accountable initiator, validated manifest digest, preview and explicit apply receipt.",
+      "decision": "REJECT",
+      "evidence": ["server/src/http/body-limits.ts", "server/src/__tests__/body-limits.test.ts", "server/src/app.ts:280-295"]
+    },
+    {
+      "id": "application:server/storage",
+      "auditStatus": "COMPLETE",
+      "function": "StorageService/StorageProvider abstraction with company-prefixed object keys and local-disk or S3 implementations.",
+      "dependencyDirection": "Routes/services consume a server-local storage interface; provider registry selects filesystem or AWS SDK from runtime config.",
+      "keyDataModels": "Provider ID, object key, content type/length, byte range, ETag/mtime and PutFile SHA-256 metadata.",
+      "lifecycle": "Validate file metadata, generate tenant/date/UUID key, hash and put bytes, read/head/range/delete after company-prefix check, switch provider by deployment config.",
+      "testAssessment": "Four local-provider tests cover round-trip, range, cross-company prefix and idempotent delete. No S3 provider tests were found. Local containment is lexical only: directory/file symlinks under the storage root are followed by write/read/head/delete, with no realpath or O_NOFOLLOW defense. Range validity, atomic temp cleanup after failure, content digest on read and concurrent overwrite semantics are not tested.",
+      "designRationale": "Keep asset storage replaceable and tenant-scoped while making local self-hosting zero-config.",
+      "companyOsProblem": "Evidence/artifacts and imports need independent cloud/local storage with tenant isolation, integrity, retention and lifecycle policy.",
+      "companyOsFit": "The provider/service split and returned content digest are useful. Company OS should own an Evidence/Artifact Store port with immutable version IDs, digest verification, encryption/retention/legal-hold metadata and streaming; local storage must use descriptor-based no-follow containment and S3 must have integration/consistency tests.",
+      "responsibilityConflict": "A tenant-prefixed key is not evidence provenance. Every artifact must bind to work, executor, data authorization, collection method and immutable digest before appearing in the responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/storage/types.ts", "server/src/storage/service.ts", "server/src/storage/local-disk-provider.ts", "server/src/storage/s3-provider.ts", "server/src/__tests__/storage-local-provider.test.ts"]
+    }
+  ]
+}
