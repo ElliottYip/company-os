@@ -940,18 +940,36 @@
     },
     {
       "id": "application:cli/__tests__/secrets",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI unit/parity tests for Secret declaration filters, inline Agent-env migration to references, provider bootstrap diagnostics, provider discovery/import, metadata/rotation/usage/access-event and deletion routes.",
+      "dependencyDirection": "The Vitest suite uses shared Agent/CompanySecret types, CLI config schema, a secrets doctor check and Secret command helpers. Pure migration logic is tested alongside fetch-stubbed API routing; no real vault or encryption provider is contacted.",
+      "keyDataModels": "Company/Agent/user-scoped Secret metadata, managed mode/provider/external reference/provider config/version/creator/resolution/rotation/deletion fields; Agent env plain or secret_ref bindings; provider config, remote discovery/import and access events.",
+      "lifecycle": "Select declaration scopes; detect sensitive inline Agent environment values; match or create migration Secret names; replace plaintext with latest-version references; verify AWS provider bootstrap via non-secret deployment/KMS/profile settings; preview/import remote Secrets; update/rotate/inspect usage/access/delete Secret metadata.",
+      "testAssessment": "Focused Vitest passed 8/8 tests on 2026-08-19 and CLI no-emit TypeScript passed. It meaningfully proves migrated output drops plaintext, secret_ref is not read as plain, provider preview/health/usage/access routes exist and AWS root credentials are discouraged. It omits real encryption/vault behavior, migration transaction/rollback, value transport safety, name collisions, authorization, redaction, provider failures, version pinning/rotation propagation and deletion dependencies.",
+      "designRationale": "Separate Secret metadata/references from values, support local and external providers behind configurations, make discovery/import previewable and migrate legacy inline credentials without retaining plaintext in Agent configuration.",
+      "companyOsProblem": "Company OS needs vendor-neutral, self-hosted/cloud Secret handling where the control plane never carries unnecessary credentials or private sessions, principals receive least-privilege runtime references, and every resolution/rotation/use is governed and auditable.",
+      "companyOsFit": "ADAPT SecretPort/provider abstraction, preview-before-import, access/usage projections, strict plaintext-to-reference migration and default credential-chain guidance. Use collision-resistant opaque Secret IDs, explicit version/rotation policy, transactional migration and secure interactive/stdin/file-descriptor value ingestion. Keep Secret values in customer execution/data nodes where configured and never encode them into Connector or responsibility events.",
+      "responsibilityConflict": "Secret access events are necessary evidence but do not alone prove authorized purpose. Each runtime resolution must bind the exact Work/Agent/runtime, responsible human, permission/data contract, provider/version and result without revealing the value; user-specific Secrets must not silently transfer with Work or Agent reassignment.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/secrets.test.ts:1-335",
+        "SHA-256 87380ca2372d3124caa5375c1e4ba31c0b5f0ff9d71454ee4dae94f0220f0bc6",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+        "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 8 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Critical adoption blocker: the tested rotate command accepts the new Secret through `--value`, which can leak through shell history, process listings, terminal recording and diagnostic capture; Company OS must prohibit this interface.",
+        "Migration naming uses a short Agent-id prefix plus normalized environment key; collision and rename behavior are untested and names must not be identity/security keys.",
+        "Sensitive-key detection can miss unconventional names or classify benign values; migration needs policy-driven classification, preview, explicit confirmation and a no-plaintext postcondition over all persisted/logged artifacts.",
+        "The test proves output no longer contains one plaintext fixture but does not inspect requests, logs, errors, memory lifetime, backups or old configuration revisions for residual Secret values.",
+        "Provider discovery/import/config/health requests use generic JSON and fixed auth; external namespace allowlists, credential scope, cross-company isolation, SSRF, pagination/rate limits and partial import rollback are untested.",
+        "Using version `latest` can make execution non-reproducible and approval-substitutable; high-risk Work may need an immutable resolved version/digest recorded without exposing the value.",
+        "Secret deletion has typed confirmation in the CLI but no tested active usage/dependency block, grace period, recovery, concurrent resolution or evidence-retention behavior.",
+        "User-specific runtime Secrets raise reassignment and delegation risks; owner authority and non-transfer semantics are present in metadata but not exercised here."
+      ]
     },
     {
       "id": "application:cli/__tests__/service-health-check",
