@@ -3924,11 +3924,16 @@
       "lineCount": 355,
       "sha256": "fff360dc948f5b7212d98ece9a7d4ac6a89d40f827e993f5333786b3b31df411",
       "linkedEvidence": { "history": ["5e086cb828dac27a3fd16bf22e71597382458c85 fix(server): resolve published skills catalog package root and fallback (#8327)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 355 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 define a process-global synchronous catalog cache, published/dev package resolution and a custom unavailable error. The manifest interface only declares package name/version/skills and is a TypeScript compile-time shape, not yet runtime schema evidence. Paths are derived from module resolution or a repository-relative dev root. A false sentinel plus cached error creates permanent negative caching, while operational error messages expose local paths and build commands in English.",
+        "Lines 101-200 parse manifest JSON with an unchecked type assertion and cache it by mtime+size. There is no runtime schema/version validation, duplicate ID/path detection, signature/hash authentication or atomic-write protection; same-stat replacement can remain stale and malformed structures fail later unpredictably. All Skills are cloned with package metadata on every access. Language inference is extension-based, and sourceRootPath normalizes source.path before string concatenation but containment against an authorized repository/package root is not yet proven.",
+        "Lines 201-300 enforce local path containment with resolved-root prefix checks, restrict remote source type to GitHub, build a commit-pinned raw URL, require HTTP success and verify SHA-256 bytes against the manifest entry—strong integrity patterns absent from the earlier test assertion. However file size is not checked, full responses buffer without local cap/timeout/content-type control, error strings reveal repository/path/commit, hostname/network safety is delegated to ghFetch, and manifest hashes remain unauthenticated. Catalog search is full in-memory and unpaginated; unavailable manifests fail soft to an empty list.",
+        "Lines 301-355 reject ambiguous slugs, normalize requested paths, require manifest membership, block asset previews, hash-check bytes, and expose read/copy/package metadata. Non-asset bytes are blindly decoded as UTF-8 for preview based on declared kind; declared kind/content mismatch is not detected. copyCatalogSkillFile accepts an unrestricted targetPath and relies entirely on callers for destination containment/symlink/atomic replacement. Errors remain English-only, and no publisher/license/signature/admission evidence is returned. Linked focused tests passed 5/5 and were not reread."
+      ],
       "completionRequirements": ["Read lines 1-355 exactly once and trace manifest/package resolution, schema validation, cache and failure recovery, reference ambiguity, local and GitHub path construction, traversal/symlink containment, network and resource limits, per-file/content hash verification, binary handling, provenance/license/signature gaps and Company OS reuse decision. Link the completed 5/5 focused test evidence without rereading its source."]
     }
   ]

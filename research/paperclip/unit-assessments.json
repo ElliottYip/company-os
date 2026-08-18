@@ -14098,18 +14098,33 @@
     },
     {
       "id": "application:server/services/skills-catalog",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Process-local service resolving an optional generated Skills catalog from published or development package layouts, caching/parsing its manifest, filtering/resolving entries, reading hash-verified bundled or commit-pinned GitHub files, previewing text and copying bytes.",
+      "dependencyDirection": "The service depends on Node filesystem/module/path/crypto, shared Paperclip catalog DTOs, HTTP errors/logger, GitHub fetch/URL helpers and portable-path normalization. It is infrastructure/application code tied to @paperclipai/skills-catalog packaging and Paperclip error types, not a neutral domain port.",
+      "keyDataModels": "Catalog manifest packageName/packageVersion/skills; CatalogSkill ID/key/slug/path/files/source/trust; GitHub hostname/owner/repo/commit/path; per-file size/SHA-256; package root/manifest cache; unavailable error and ambiguity result.",
+      "lifecycle": "Resolve published then dev package; negative-cache failure; stat and synchronously parse manifest; inject package metadata; filter/search or resolve exact/slug reference; normalize and authorize manifest file path; read local or commit-pinned remote bytes; verify SHA-256; preview text or copy bytes.",
+      "testAssessment": "The linked 235-line focused suite passed all 5 tests and was not reread. It covers package layout, mtime reload, asset rejection, pinned URL construction and unavailable fallback. Implementation inspection adds evidence of local containment and actual post-read SHA-256 verification. Missing verification includes runtime manifest schema/signature, duplicate IDs/paths, symlink/hardlink/TOCTOU, file and aggregate size, response timeout/redirect/private-network/content type, target containment, negative-cache recovery and concurrent/partial manifest writes.",
+      "designRationale": "Keep the catalog optional and lightweight while supporting source and published package layouts, deterministic immutable GitHub reads and a uniform local/remote byte integrity check.",
+      "companyOsProblem": "Company OS needs an independently owned capability-package registry and admission service with signed/SPDX manifests, publisher identity, immutable provenance, offline mirror support, bounded transport/storage, explicit health, policy/approval and evidence receipts across cloud and local enterprise deployments.",
+      "companyOsFit": "ADAPT the small-service decomposition, exact-or-ambiguous reference result, package-layout tests, normalized manifest membership, resolved-root containment, full-commit GitHub pin and post-read SHA-256 verification. Replace Paperclip package/error/DTO coupling and add authenticated manifests, license/publisher policy, resource/network bounds, atomic refresh, health state and governed destination publication.",
+      "responsibilityConflict": "Integrity is checked against an unauthenticated manifest; publisher/legal provenance and accountable admission are absent. Fail-soft empty catalog hides subsystem failure, and copy writes to a caller-selected target without returning an approved installation/evidence receipt.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/skills-catalog.ts:1-355",
+        "full source SHA-256 fff360dc948f5b7212d98ece9a7d4ac6a89d40f827e993f5333786b3b31df411",
+        "5e086cb828dac27a3fd16bf22e71597382458c85 fix(server): resolve published skills catalog package root and fallback (#8327)",
+        "linked focused suite: 1 file passed, 5 tests passed"
+      ],
+      "securityFindings": [
+        "Manifest JSON is cast without runtime schema/version, duplicate identity/path, signature, publisher or license validation.",
+        "Remote and local bytes are SHA-256 checked, but declared size is not enforced and the manifest supplying the digest is unauthenticated.",
+        "Remote responses are fully buffered with no local byte limit; timeout, redirects, private-network and content-type policy are delegated or absent here.",
+        "Local containment is lexical after resolve; symlink/hardlink/TOCTOU behavior is not handled or tested in this service.",
+        "copyCatalogSkillFile accepts an unrestricted targetPath and performs a direct write without destination containment, temp-file atomicity or symlink defense.",
+        "Non-asset kinds are decoded as UTF-8 based on declared metadata, so kind/content mismatch and binary resource behavior are not validated.",
+        "Permanent negative caching plus empty fallback can mask outage and prevent process-local recovery; cache refresh is not atomic/concurrency-aware.",
+        "Errors may expose local manifest paths and repository/path/commit details and lack stable structured codes."
+      ]
     },
     {
       "id": "application:server/services/smoke-lab",
