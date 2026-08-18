@@ -4212,18 +4212,24 @@
     },
     {
       "id": "application:server/__tests__/codex-local-execute",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Sixteen real-process integration tests for Codex-local home/config preparation, MCP gateway injection, prompt/wake/session behavior, sandbox callback bridging and runtime failure classification.",
+      "dependencyDirection": "Server Vitest -> @paperclipai/adapter-codex-local execute -> adapter-utils child-process/execution-target bridge -> temporary filesystem, executable fixtures and localhost callback server; it bypasses real database, Secret service, policy gateway persistence and approval/audit services.",
+      "keyDataModels": "Run/Agent/company/runtime session, Codex engine/command/cwd/env/model/fast-mode, managed and shared CODEX_HOME, MCP server token/config, wake/comment/execution-stage payload, auth token/bridge token, usage/cost, structured error family/code/retry time and invocation metadata.",
+      "lifecycle": "Prepare an isolated or explicit Codex home -> copy config/link auth/inject Skills and MCP gateway -> assemble fresh/resume/fallback prompt and environment -> spawn local or sandbox target -> parse stream/session/usage/failure -> return retry/session metadata.",
+      "testAssessment": "Sandboxed Vitest passed 15/16; the remote callback case failed solely because listen on 127.0.0.1 was denied. Approved unsandboxed rerun passed 16/16. The suite exercises meaningful filesystem/process integration and several production regressions, but lacks cancellation/timeout/kill, concurrency/idempotency/replay, resource bounds, hostile workspace/config/prompt input, credential rotation, enforced capabilities, evidence durability and authorization integration.",
+      "designRationale": "Make Codex CLI execution resilient across shared/worktree homes, local/remote targets, resumed/fallback sessions, provider/harness failures and Paperclip wake/review workflows while surfacing operational metadata.",
+      "companyOsProblem": "Company OS needs a vendor-neutral Connector execution protocol covering capability declaration, scoped credential/data leases, immutable work/approval binding, progress/evidence/result events, pause/resume/cancel/timeout/idempotency and short-lived runtime attestation across local and remote nodes.",
+      "companyOsFit": "ADAPT the real-process fixture strategy, structured error families/retry-not-before, fresh-session fallback, wake-delta efficiency and derived remote bridge token concepts inside an independently specified Connector SDK. Reimplement credential, instruction, policy and evidence boundaries: vendor types remain adapter-private; credentials are per-principal scoped leases; actions are runtime-enforced; events are classified, idempotent and bound to work/contract/approval digests.",
+      "responsibilityConflict": "Reviewer/executor separation and allowed actions are only prompt text, shared auth collapses external identity across Agents/companies, repo AGENTS.md can alter instructions, and wake comments become highest-priority prompt content. No test binds tool/data authority, approval, accountable human, evidence digest and result into one durable responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/codex-local-execute.test.ts:1-1525 (SHA-256 e6d8fd68d7c5fde4c2d1e898c271eed78922212dc9db584a89e5ac0ba36698b8)",
+        "git history includes 665408c6d015d5e8b9fe2758541d28cb3debaa8b, 79473082762097e0622260229d52cad80ec2b3ec, b79f744a8d2694a0c8853c0367ec8b8664de0049, 931eec3fbf83dc425b5381ba5823125162cd13e7 and c8253e36412abf307cdb67719388e0e22547893a",
+        "2026-08-19 sandboxed focused Vitest: 15 passed, 1 callback-listen EPERM failure",
+        "2026-08-19 approved unsandboxed focused Vitest: 16/16 passed"
+      ],
+      "securityFindings": "CRITICAL policy bypass: a same-name direct MCP entry remains active alongside the managed gateway; the adapter only warns that Paperclip cannot enforce policy. CRITICAL attribution/isolation conflict: managed homes across companies can share one auth.json credential. HIGH secret-at-rest concern: MCP bearer token is rendered into config.toml; tests prove only that logs omit it, not mode, lifetime, cleanup, rotation or other telemetry. HIGH instruction-integrity concern: repo AGENTS.md auto-applies unsuppressed, user comments are promoted into high-priority prompts, and reviewer/executor capabilities are prompt-only. HIGH mutation-boundary concern: explicit CODEX_HOME is honored and receives Skill symlinks even in worktree mode. MEDIUM lifecycle concern: resume omits current managed instructions, risking stale policy, while quota/error classification depends on English provider strings and local time parsing. Missing security tests include symlink/config injection, secret-bearing outputs, direct-network egress, token expiry/audience, malicious PATH/command, prompt injection, cancellation acknowledgement, output limits, evidence hashes and cross-tenant negatives."
     },
     {
       "id": "application:server/__tests__/codex-local-skill-injection",

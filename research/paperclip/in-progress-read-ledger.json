@@ -5279,6 +5279,41 @@
       "completionRequirements": [
         "Read lines 1-146 exactly once and assess environment construction, credential/data propagation, engine selection, configuration precedence, isolation and test quality against Company OS Connector execution-node boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/codex-local-execute",
+      "path": "server/src/__tests__/codex-local-execute.test.ts",
+      "lineCount": 1525,
+      "sha256": "e6d8fd68d7c5fde4c2d1e898c271eed78922212dc9db584a89e5ac0ba36698b8",
+      "linkedEvidence": {
+        "history": [
+          "665408c6d015d5e8b9fe2758541d28cb3debaa8b fix(codex): classify mid-turn harness crashes structurally as retriable infra (#10210)",
+          "79473082762097e0622260229d52cad80ec2b3ec fix(codex): classify refresh auth failures (#9598)",
+          "b79f744a8d2694a0c8853c0367ec8b8664de0049 Fix Codex auth merge host-unusable fail closed (#9276)",
+          "931eec3fbf83dc425b5381ba5823125162cd13e7 feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)",
+          "c8253e36412abf307cdb67719388e0e22547893a fix(adapters): inject execution contract once per fresh heartbeat (#9469)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        { "start": 1, "end": 400 },
+        { "start": 401, "end": 800 },
+        { "start": 801, "end": 1200 },
+        { "start": 1201, "end": 1525 }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-400 define real-process fixtures and prove per-company/worktree managed CODEX_HOME layout, but auth.json is a symlink to one shared credential while config.toml is copied. Managed MCP bearer tokens are written into config.toml; overlapping direct MCP entries remain active with only a warning that policy cannot be enforced.",
+        "The adapter explicitly reports that repo-scoped AGENTS.md is auto-applied and not suppressed. This acknowledges an uncontrolled instruction source inside the workspace rather than establishing a trusted instruction/evidence boundary.",
+        "Lines 401-800 prove resolved command/HOME metadata, a localhost queue bridge with a derived remote token, structured wake payload injection into both env and prompt, and string-based classification of transient demand and harness crashes. Metadata contains local paths, while comments and work state become prompt instructions without content trust classification.",
+        "Lines 801-1200 parse English provider quota reset text into retry timestamps, suppress refresh-token credential telemetry, use fresh-session/safer-invocation fallback with a continuation summary, and render reviewer/executor roles plus allowed actions into prompts. The role boundary is advisory text, not a capability-enforced execution policy.",
+        "Lines 1201-1525 use a compact resume delta that deliberately omits the current heartbeat prompt and managed instruction file, establish worktree home/Skill symlinks, and allow explicit CODEX_HOME overrides even in worktree mode while injecting the Paperclip Skill into that external home. Resume efficiency can preserve stale policy; explicit overrides broaden mutation and credential boundaries.",
+        "Sandboxed focused Vitest passed 15/16 and failed only because the callback bridge could not listen on 127.0.0.1. Approved unsandboxed rerun passed all 16/16. The suite is strong on observed regression scenarios but omits cancellation, timeout, duplicate/replay/idempotency, concurrent runs, kill acknowledgement, output/resource limits, structured evidence, exact approval binding and hostile workspace/prompt/config inputs."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1525 exactly once and assess process/ACP execution, configuration precedence, auth materialization, runtime events, sessions, retries, cancellation, timeout, idempotency, capabilities, evidence, failure classification and test quality against Company OS Connector SDK and responsibility contracts."
+      ]
     }
   ]
 }
