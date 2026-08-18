@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-skill-policy-service",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL regression suite for Skill policy defaults, rule precedence/resources, legacy grants, locator normalization, principal tenancy and transactional Activity.",
+      "dependencyDirection": "Real database fixtures drive the policy service and permission/activity tables directly.",
+      "keyDataModels": "Effective policy revision/default/rules, Agent principal/role, action/resource/decision, legacy permission grant and Activity row.",
+      "lifecycle": "Seed company/Agent; read implicit default; replace and evaluate policies; normalize legacy locators; deny foreign principals; inject invalid Activity attribution and assert transaction rollback.",
+      "testAssessment": "The seven tests are behavior-focused and strong on stable reasons, deterministic priority, normalized/legacy locators, cross-company principals and activity-coupled rollback. All 7 were explicitly skipped by the embedded-PostgreSQL support gate in the focused run; no passing claim. Missing cases include concurrent update/reset ABA, duplicate/conflicting rules, deny precedence, human principals, lifecycle/role changes, signed source/digest/capability/data selectors, expiry/delegation, separation of duties and execution-bound decisions.",
+      "designRationale": "Provide a small deployable policy layer that remains compatible with older broad Skill grants.",
+      "companyOsProblem": "Company OS needs adversarial policy tests spanning human/Agent responsibility, code/tool/data risk, approvals and decision-to-execution integrity.",
+      "companyOsFit": "ADAPT CAS, deterministic rule, source-normalization, cross-tenant principal, stable decision and transaction/activity rollback scenarios. Replace expected open-default/legacy escalation with risk-tiered defaults, human authority, deny/conflict diagnostics, policy epochs and approval/action-digest cases.",
+      "responsibilityConflict": "Tests make implicit allow and Agent-authored policy replacement first-class successful behavior, without accountable-human approval or data/tool responsibility.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skill-policy-service.test.ts:1-282",
+        "full source SHA-256 31638515157224b72e04502be25f959ea0b6559104ca54385ea5945a42dd0233",
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)",
+        "2026-08-19 focused verbose Vitest: 0 passed / 7 explicitly skipped by embedded-PostgreSQL support gate"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/company-skill-policy-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Express/PostgreSQL contract tests for Skill policy read, administration, evaluation, validation, tenancy, revisions and Activity.",
+      "dependencyDirection": "A real route, error middleware and database are exercised with synthetic board/Agent/none actors.",
+      "keyDataModels": "HTTP actor, policy document/revision, action/resource/principal simulation, stable error code and Activity mutation.",
+      "lifecycle": "Read default; deny unauthenticated/cross-company; deny Agent admin; board replace/conflict/evaluate/reset; inspect Activity; reject invalid action/secret locator.",
+      "testAssessment": "The three tests cover stable boundaries and optimistic conflicts, but all 3 were explicitly skipped by the embedded-PostgreSQL support gate. They omit deny-before-parse, ordinary human roles, enterprise identity, Agent-held admin permissions, reset ABA, concurrent/replayed mutations, rule size/depth, evaluation evidence and approval.",
+      "designRationale": "Expose the policy engine with explicit machine errors and board administration while allowing Agents to inspect/evaluate their company policy.",
+      "companyOsProblem": "Company OS requires transport tests proving verified identities, separation of duties, human approvals and decision evidence before any executable capability policy changes.",
+      "companyOsFit": "ADAPT stable auth/company/admin/validation codes, deny-before-service and expected-revision cases. Add auth-before-body-parse, IdentityPort human/Agent matrices, approval digest, reset epoch, idempotency and immutable decision/activity evidence.",
+      "responsibilityConflict": "The board fixture is a synthetic instance admin, Activity assertions omit responsible human/approval/digest and reset deliberately returns revision zero.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skill-policy-routes.test.ts:1-201",
+        "full source SHA-256 7f3496354ec7b42f42986506f0a8578a01bd6934734242c6ec974ea57fafa514",
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)",
+        "2026-08-19 focused verbose Vitest: 0 passed / 3 explicitly skipped by embedded-PostgreSQL support gate"
+      ]
+    },
+    {
+      "id": "application:server/routes/company-skill-policy",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP routes for reading, replacing, resetting and simulating company Skill policies.",
+      "dependencyDirection": "Express routes directly compose shared Zod documents, route authz, broad access permissions, policy service and Activity actor mapping.",
+      "keyDataModels": "Board/Agent actor, users:manage_permissions, policy DTO, simulated Agent principal, stable transport errors and Activity actor.",
+      "lifecycle": "Validate body; assert company/admin; map actor; mutate/reset or resolve current/simulated principal and evaluate.",
+      "testAssessment": "Source exposes important untested boundaries because route tests were skipped: validation precedes authorization, Agent broad permission can administer policy, every company actor can read full rules and evaluations are not evidenced.",
+      "designRationale": "Reuse existing company permission administration and permit self-service Agent evaluation with little route complexity.",
+      "companyOsProblem": "Executable capability policy is a high-risk governance object requiring authenticated accountable-human ownership, scoped disclosure and approval publication.",
+      "companyOsFit": "REIMPLEMENT as application commands/queries over Identity, Authority, Approval and Audit/Evidence ports. Authenticate/company-bind before parsing expensive policy bodies; separate policy view from self-decision; require human policy-owner authority and separation of duties; bind replace/reset/evaluate to stable request/policy/action digests and codes.",
+      "responsibilityConflict": "An Agent with users:manage_permissions may rewrite/reset its own Skill authority. Local/instance admins bypass company authority, board identity can be synthetic, and no responsible-human approval is required.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/routes/company-skill-policy.ts:1-137",
+        "full source SHA-256 cf25bcc64777dfb92c0519db5534d73a6eef0d09c6e83d6dba637451c7f7fc2e",
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)",
+        "companion route suite fully read; 3/3 tests skipped on this host"
+      ],
+      "securityFindings": [
+        "PUT/evaluate body validation runs before authentication and company/admin authorization, exposing schema behavior and parsing work to denied callers.",
+        "Agent possession of broad users:manage_permissions grants executable Skill-policy administration, enabling self-escalation without human approval.",
+        "Any company actor can retrieve the full policy including protected IDs, roles and internal source locators rather than only its effective decision.",
+        "Reset has no expected revision/idempotency key, and evaluate produces no immutable access-decision evidence."
+      ]
+    },
+    {
+      "id": "application:server/services/company-skill-policy",
+      "auditStatus": "COMPLETE",
+      "function": "Persisted first-match company Skill policy engine with source normalization, optimistic replacement, reset, legacy permissions and Activity.",
+      "dependencyDirection": "The service directly owns database rows, shared policy schema, Agent lookup, legacy grants, English remediation and Activity logging; caller supplies authority and actor correctness.",
+      "keyDataModels": "Open effective policy, policy row/revision/rules/default, Agent/board principal and role, action/resource selector, decision/reason and Activity summary.",
+      "lifecycle": "Read materialized or implicit-open policy; resolve Agent; normalize/match first rule; fallback to legacy/default; transactionally CAS replace plus Activity; delete/reset plus summary Activity.",
+      "testAssessment": "The source is compact and CAS replacement is well designed, but every database test was skipped. Critical semantics—implicit allow, broad legacy fallback, reset ABA, decision/execution race, authority absence and erased historical rules—are directly visible in source and lack countervailing tests.",
+      "designRationale": "Add incremental Skill governance without breaking existing companies or older broad grants, favoring usability/open defaults.",
+      "companyOsProblem": "Company OS needs a canonical CapabilityPolicy decision service covering code supply chain, tools, data ingress/egress and human responsibility across deployment profiles.",
+      "companyOsFit": "REIMPLEMENT as versioned append-only policy epochs and decisions over verified Principals/Organization roles. Use risk-tiered fail-closed defaults, digest/signature/publisher/capability/data/egress selectors, deny/conflict diagnostics, expiry/delegation, human approval/separation, CAS/idempotency and decision leases bound to exact execution action/digest. ADAPT normalization, deterministic matching, CAS transaction and activity-rollback patterns.",
+      "responsibilityConflict": "No-policy allows all eight mutations, legacy create/suggest grants authorize every action, caller-supplied Activity can lie, and reset erases rules. Decisions omit accountable human, approval and action/data/evidence binding.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-skill-policy.ts:1-292",
+        "full source SHA-256 f69d74b2ab2787aa37db3e23675ff1f44dde75fdf65eb58aa16b17ff1df6098f",
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)",
+        "companion service suite fully read; 7/7 tests skipped on this host"
+      ],
+      "securityFindings": [
+        "No materialized policy means allow for create/import/install/edit/update/test/reset/remove, including external code supply-chain and destructive actions.",
+        "Legacy skills:create or skills:suggest-changes can authorize the entire mutation surface under default deny, far exceeding least privilege.",
+        "Policy selectors omit source digest/signature/publisher, executable capabilities, tools, data/egress and responsibility/approval scope.",
+        "Reset deletes the policy and returns revision 0 without compare-and-set, creating stale-client ABA and erasing reconstructable rule history.",
+        "Evaluation is neither logged nor leased/bound to execution, so a decision at one revision can be replayed after policy or resource changes."
+      ]
+    }
+  ]
+}
