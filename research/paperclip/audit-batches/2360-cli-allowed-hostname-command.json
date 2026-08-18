@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/commands/allowed-hostname",
+      "auditStatus": "COMPLETE",
+      "function": "Reads Paperclip configuration, normalizes and de-duplicates one hostname into server.allowedHostnames, updates configuration metadata, writes the file and tells the operator to restart; it warns that enforcement applies only in authenticated/private mode.",
+      "dependencyDirection": "CLI configuration command -> hostname normalizer and config store -> server private-hostname guard after restart. It changes inbound server Host policy only and does not constrain CLI/client outbound API origins, credential audiences, DNS resolution or TLS.",
+      "keyDataModels": "server.allowedHostnames string set; deploymentMode/exposure; config metadata updatedAt/source. There is no canonical origin, port/scheme/certificate, IDNA form, resolved-address policy, proxy trust, change actor/approval or stable command-result model.",
+      "lifecycle": "Resolve/read config -> normalize input -> lower/trim existing values -> add and sort -> stamp metadata -> rewrite config -> print existed/added/restart messages -> warn when outside authenticated/private profile. No dry run, removal, rollback, lock, atomic compare-and-swap, runtime reload verification or audit event is present.",
+      "testAssessment": "The previously completed allowed-hostname test was reused without rereading: focused Vitest passed 1/1 and proves scheme/port/lowercase normalization plus duplicate suppression. Existing server guard assessments prove the basic private-profile predicate and allow/reject paths, but omit actual adversarial Host parsing dimensions including trailing-dot/IDNA/IPv6, malformed/multiple Host, proxy headers, wildcard/subdomain, DNS rebinding and authorization/audit of allowlist changes. CLI storage atomicity/permissions/symlink and concurrent updates remain untested.",
+      "designRationale": "A dedicated remediation command is safer and less error-prone than asking operators to edit JSON manually, and normalization/de-duplication produces deterministic config. Restricting the guard to private authenticated deployments reflects an intended deployment policy but is not a general network trust boundary.",
+      "companyOsProblem": "Company OS needs coherent inbound Host/origin/proxy protection and outbound egress-origin pinning across managed and self-hosted profiles, with authorized configuration changes and runtime verification.",
+      "companyOsFit": "Reference the operator workflow, not the implementation. Define canonical EndpointPolicy and TrustedOrigin/AllowedHost value objects with IDNA/IPv6/port/proxy semantics; separate inbound Host/CSRF policy from outbound credential audience/egress policy. Apply changes through an authenticated application command with preview, actor, reason, revision CAS, audit event, reload/restart status and rollback.",
+      "responsibilityConflict": "Changing an inbound trust allowlist can expand who reaches the control plane, yet this local mutation records only source=configure and no accountable human, approval or reason. A hostname entry must not confer Company/Principal authorization; identity and role checks remain independent.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "cli/src/commands/allowed-hostname.ts (40 lines; SHA-256 69d5a47938399813967a269346251e48a718ca5b9db85334479423c29154a539)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Existing application:cli/__tests__/allowed-hostname reused without reread: SHA-256 9e1a17f9490f827a110fe9393b174640e808974d0de3d96224576d90358db314; focused Vitest 1/1 passed",
+        "Existing server assessments reused: app-private-hostname-gate 4 predicate cases; private-hostname-guard basic HTTP allow/reject; Better Auth 17 cookie/origin/rate-limit cases, all with documented adversarial gaps"
+      ],
+      "securityFindings": "This command does not mitigate the confirmed outbound context/apiBase credential-exfiltration chain. It rewrites security configuration without actor authorization, revision conflict detection or atomic/locked storage and follows config-store filesystem semantics. Runtime enforcement requires restart but is not verified. The command itself warns enforcement is limited to authenticated/private, leaving other profiles dependent on different controls. Host allowlisting alone does not handle DNS rebinding, proxy trust, CSRF Origin, TLS/certificate identity or outbound credential destination."
+    }
+  ]
+}
