@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/budgets-service",
+      "auditStatus": "COMPLETE",
+      "function": "BudgetService tests for Company, project and Agent spend policies, soft/hard incidents, approval creation, pause/cancellation, invocation release gates, budget raise/resume, ledger reconciliation, overview projection and telemetry redaction.",
+      "dependencyDirection": "Immutable-ish cost events and active policies enter BudgetService; it aggregates observed spend, writes incidents and budget-override approvals, pauses Company/project/Agent records, calls a runtime cancellation boundary and logs sanitized activity. Invocation paths query the same service before starting work, while board incident resolution updates policy/budget and resumes only budget-owned pauses.",
+      "keyDataModels": "Budget policy scope/metric/window/amount/warn percent/hard-stop flags, CostEvent provider/model/tokens/cents/time, soft/hard incident and observed/limit/window, budget_override_required Approval, Company/project/Agent pause reason/time, invocation block, overview utilization and decision note/user.",
+      "lifecycle": "Each cost event reevaluates applicable policies against live ledger totals. Crossing warning creates one soft incident per window; crossing hard resolves soft state, creates one hard incident plus pending override Approval, marks the scope budget-paused and cancels work. New invocations are blocked by either pause state or still-exceeded live policy. Resolution rejects a limit not above current spend, approves the incident, raises the policy/Company monthly budget and clears only budget-owned pause; overview reconciles live ledger values.",
+      "testAssessment": "Seven focused unit/integration cases cover reactive enforcement, release-gate checks independent of pause lag, manual-versus-budget pause reason, live spend at resolution, Company budget sync, one-incident idempotency, Agent/project cancellation, ledger-derived overview and telemetry redaction. Gaps include cost-event dedup/idempotency key, transaction/outbox around incident/approval/pause/cancel, cancellation failure/retry, concurrent spend/raises, reservations before expensive actions, delayed/estimated/negative/refund costs, currency/FX, hierarchical policy precedence, window boundaries/timezones, authorization/separation of duties, maximum override and evidence tying the Approval to exact policy/action digest.",
+      "designRationale": "Make spend governance an enforceable backend release gate rather than a dashboard warning, preserve a human override path, stop already-running work and reconcile decisions against the authoritative cost ledger instead of stale incident snapshots.",
+      "companyOsProblem": "Company OS needs cost and resource governance across heterogeneous models/Agents where an accountable human approves exceptional spend and the system can prove which work was stopped, resumed and charged.",
+      "companyOsFit": "ADAPT the ledger-derived live check, scope hierarchy, soft/hard incident split, budget-owned pause reason, pre-invocation block, sanitized telemetry and raise-above-observed rule. Add budget reservations/estimated upper bounds before execution, currency and provider billing normalization, immutable policy/action digest, risk-based approver separation, transaction + outbox for cancel/resume, Connector cancellation receipts and reconciliation for late/refunded costs.",
+      "responsibilityConflict": "Enforcement is primarily reactive after a CostEvent, so spend can exceed the limit before cancellation. The service API accepts a board-user id to approve and raise without proving role, separation of duties or maximum authority. Repeated hard evaluation avoids duplicate incidents but calls cancellation twice, and no durable side-effect receipt proves every affected Run stopped before later spend.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/budgets-service.test.ts:1-640",
+        "ef617bee5c1568bfa7cbb74bdb2eb04ef06788a2 [codex] Enforce backend execution release gates (#9089)"
+      ]
+    }
+  ]
+}
