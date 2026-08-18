@@ -4,6 +4,7 @@ export * from "./application/get-control-plane-snapshot.ts";
 export * from "./connector-sdk/index.ts";
 export * from "./core/control-plane.ts";
 export * from "./core/data-governance.ts";
+export * from "./core/demo-promotion.ts";
 export * from "./core/model-governance.ts";
 export * from "./core/office.ts";
 export * from "./core/organization.ts";
