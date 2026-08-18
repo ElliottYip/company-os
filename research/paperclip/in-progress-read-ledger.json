@@ -7114,6 +7114,38 @@
       "completionRequirements": [
         "Read lines 1-2169 exactly once and assess Agent mutation ownership, cross-Work containment, Run/checkout binding, human responsibility, authorization denials, audit receipts, idempotency/concurrency and test quality against Company OS execution contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-assigned-backlog-contract-routes",
+      "path": "server/src/__tests__/issue-assigned-backlog-contract-routes.test.ts",
+      "lineCount": 341,
+      "sha256": "721f85167b2ac4ba461fe3be7e7c3fa75070ad35266410cec3ef34e99f1c5f66",
+      "linkedEvidence": { "history": [
+        "53f09cb818b934beadc2a58897604c9ddca1d42e prevent duplicate task creation and recovery loops (#9648)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed test runs (#9241)",
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 prevent invalid agents from receiving assignments/runs (#7663)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions/controls (#6386)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 rollup (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "e400315cbf3cf0a69e5820efd6bafbc81bf8d7ae guard assigned backlog liveness (#5428)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 341 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Three mocked board-route tests cover top-level and parent-blocking child creation with assigned Agent plus omitted status, and explicitly parked assigned backlog.",
+        "The first two tests accept two mutually exclusive implementations: either reject ambiguous assigned-without-status input or silently default it to todo, wake the Agent and log the default reason. This prevents an unwoken assigned backlog leaf but does not define one stable API contract.",
+        "Explicit status backlog remains parked, skips wakeup and logs assigned_backlog as the skip reason. Separating deliberate parking from executable todo is useful, but assignment and activation are still coupled through a status convention rather than explicit execution intent.",
+        "Parent-blocking child behavior checks parentBlockerAdded plus wakeup, addressing a real recovery-loop risk where a parent is blocked by work that no Agent was prompted to execute.",
+        "Wakeup and activity are mocked independently from Issue creation; no transaction/outbox, duplicate request, wake failure, retry, Agent availability change or concurrent creation behavior is proven. The broad mock always resolves assignee references as active/healthy.",
+        "Only a local board actor is exercised. Agent-created assignments, accountable human, assignment authority, workload limits, budget/risk approval and assignment acceptance are outside this unit.",
+        "Sandboxed focused Vitest failed 3/3 on prohibited TCP bind; approved unsandboxed rerun passed 3/3. Passing does not resolve which allowed branch the implementation took, so contract certainty remains weak."
+      ],
+      "completionRequirements": [
+        "Read lines 1-341 exactly once and assess assigned-backlog liveness contract, duplicate/recovery-loop containment, Agent eligibility, event/wakeup semantics and test quality against Company OS Work assignment responsibility."
+      ]
     }
   ]
 }

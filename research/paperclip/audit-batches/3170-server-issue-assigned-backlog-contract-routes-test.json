@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-assigned-backlog-contract-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Mocked route tests intended to prevent assigned top-level or parent-blocking child Work from becoming an unwoken backlog leaf while preserving explicitly parked assigned backlog.",
+    "dependencyDirection": "Supertest -> Issue creation routes -> mocked Agent resolution, Issue creation, wakeup and activity services; board authorization is universally allowed.",
+    "keyDataModels": "Issue status/assignee, parent blocker relationship, assignment wake request and activity metadata describing defaulted or explicit status.",
+    "lifecycle": "Create assigned Work -> reject ambiguous missing status or default to todo -> optionally block parent -> wake Agent -> log creation; explicit backlog creates parked Work and skips wake.",
+    "testAssessment": "Sandboxed run failed 3/3 on TCP bind; approved unsandboxed run passed 3/3. The first two tests accept either rejection or auto-activation, so they do not establish a single stable contract; all persistence/wakeup/audit behavior is mocked.",
+    "designRationale": "Avoid liveness loops caused by assigning executable or parent-blocking Work into backlog without notifying its Agent, while retaining intentional parking.",
+    "companyOsProblem": "Company OS must distinguish assigning responsibility, accepting work and activating execution so no implicit default starts an Agent or leaves blocking work inert without an accountable decision.",
+    "companyOsFit": "REIMPLEMENT with explicit assignmentDisposition/activation intent and one canonical validation rule. Persist Work, responsibility assignment, activation decision and mandatory outbox atomically; bind initiator/accountable human, Agent eligibility/capacity, risk/budget policy, idempotency and delivery status. Retain explicit parked-versus-active audit reasons and parent-blocker liveness checks.",
+    "responsibilityConflict": "The test permits implicit auto-start or rejection for identical input and does not bind wakeup to an accountable human or durable transaction. Assignment alone must not silently imply authority to execute.",
+    "decision": "REIMPLEMENT",
+    "evidence": [
+      "server/src/__tests__/issue-assigned-backlog-contract-routes.test.ts:1-341 (SHA-256 721f85167b2ac4ba461fe3be7e7c3fa75070ad35266410cec3ef34e99f1c5f66)",
+      "git history: 8 commits from 53f09cb818b934beadc2a58897604c9ddca1d42e through e400315cbf3cf0a69e5820efd6bafbc81bf8d7ae recorded in read ledger",
+      "2026-08-19 sandboxed focused Vitest: 0/3 passed due TCP listen EPERM",
+      "2026-08-19 approved unsandboxed focused Vitest: 3/3 passed"
+    ],
+    "securityFindings": "HIGH ambiguous execution authority: identical input may reject or auto-activate. HIGH atomicity gap: Issue, wake and audit are independent mocks. HIGH responsibility gap: no accountable human or Agent acceptance. MEDIUM idempotency gap: duplicate create/wake is untested. MEDIUM eligibility gap: assignee resolver always reports active/healthy. MEDIUM liveness gap: wake delivery failure/retry and parent-blocker rollback are absent."
+  }]
+}
