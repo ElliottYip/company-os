@@ -4172,18 +4172,23 @@
     },
     {
       "id": "application:server/__tests__/codex-local-adapter",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Cross-surface parser and formatter regression tests for Codex JSONL session, usage, reasoning, command, file-change and error events.",
+      "dependencyDirection": "One server test imports vendor-specific server, UI and CLI entry points from @paperclipai/adapter-codex-local; static JSONL fixtures are parsed directly with no runtime process, database, API, authorization or event persistence.",
+      "keyDataModels": "Codex thread_id, item/turn lifecycle events, agent_message/reasoning/command_execution/file_change/error items, usage tokens and Paperclip stream-event/console projections.",
+      "lifecycle": "Codex emits newline-delimited private events -> server parser derives session/summary/usage/error -> UI parser maps individual lines to display events -> CLI formatter prints selected raw fields.",
+      "testAssessment": "All 6 focused tests passed with PAPERCLIP_HOME redirected to /tmp. They provide inexpensive fixture compatibility for several happy-path vendor events but do not test process execution, streaming boundaries, schema/version drift, malformed or oversized input, unknown events, cancellation, replay, truncation, redaction, persistence or authorization.",
+      "designRationale": "Keep server result extraction and operator-facing UI/CLI projections aligned with Codex JSONL output and catch known stale-session and model-access failure shapes.",
+      "companyOsProblem": "Company OS needs each vendor Connector to translate private runtime protocols into one versioned, secret-free, idempotent progress/evidence/result contract without leaking vendor sessions or raw sensitive activity into the control plane.",
+      "companyOsFit": "ADAPT only as a raft/codex-specific Connector compatibility test pattern. Keep all Codex event names and parsing in the adapter package; map to neutral event codes, capability declarations, classified/truncated evidence references and opaque external session handles. The core must not import this package or depend on English errors.",
+      "responsibilityConflict": "The tested projection exposes raw reasoning, shell commands, absolute paths, command output and vendor error text without binding them to work, principal, granted data/tool scope, approval digest or evidence retention policy. A session ID plus summary cannot establish the required responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/codex-local-adapter.test.ts:1-252 (SHA-256 16c5e7e0675b17bb23f34b83a71c14101b81fde16ae15e9dcb46a2148c7a5bb4)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest with temporary PAPERCLIP_HOME: 6/6 passed"
+      ],
+      "securityFindings": "HIGH data-exposure concern: UI/CLI events include raw reasoning, full shell command lines, absolute local paths, aggregated stdout and upstream error messages, with no redaction/classification assertions. MEDIUM compatibility concern: tests encode vendor-private strings and event shapes but omit version negotiation and unknown-event behavior. Missing adversarial cases include secrets in argv/output/path/error, ANSI/control sequences, malformed or deeply nested JSON, huge lines/output, partial/multiline chunks, duplicate/out-of-order events, multiple Agent messages/turns, stale-session false positives and stable error-code mapping."
     },
     {
       "id": "application:server/__tests__/codex-local-adapter-environment",

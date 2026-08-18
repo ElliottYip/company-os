@@ -5228,6 +5228,31 @@
       "completionRequirements": [
         "Read lines 1-206 exactly once and assess credential reconciliation, source/target ownership, failure modes, secret handling, idempotency, concurrency, portability and test quality against Company OS Connector and Identity boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/codex-local-adapter",
+      "path": "server/src/__tests__/codex-local-adapter.test.ts",
+      "lineCount": 252,
+      "sha256": "16c5e7e0675b17bb23f34b83a71c14101b81fde16ae15e9dcb46a2148c7a5bb4",
+      "linkedEvidence": {
+        "history": [
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 252 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. The file is a six-test parser/formatter suite spanning the Codex adapter server, UI and CLI exports; it is not an adapter registration or execution-contract test despite its broad unit name.",
+        "It proves extraction of thread/session ID, final Agent text, token counts and terminal error, plus detection of one stale-session stderr signature and mapping of turn/reasoning/command/file/error events into Paperclip stream events and console text.",
+        "Raw reasoning, shell commands, absolute file paths, aggregated command output and vendor English error strings flow directly to UI/CLI projections. No classification, redaction, data-egress policy, evidence digest, tenant/work/approval binding or stable error-code normalization is asserted.",
+        "The fixture contract is tightly coupled to Codex private event names and shapes. Company OS should confine these types to a Connector adapter and emit a versioned neutral envelope with opaque external session references, structured capabilities, classified evidence and secret-free summaries.",
+        "Focused Vitest passed 6/6 with PAPERCLIP_HOME redirected to /tmp. Missing coverage includes malformed/partial/oversized JSONL, unknown versions/events, multiline buffering, multiple turns/messages, cancellation/timeout, replay/deduplication, output truncation, Unicode/ANSI/terminal injection and redaction."
+      ],
+      "completionRequirements": [
+        "Read lines 1-252 exactly once and assess Codex adapter registration, configuration schema, capability declaration, execution contract, vendor leakage, security boundaries and test quality against Company OS Connector SDK requirements."
+      ]
     }
   ]
 }
