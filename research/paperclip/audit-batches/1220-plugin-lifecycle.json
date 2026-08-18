@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/plugin-lifecycle",
+      "auditStatus": "COMPLETE",
+      "function": "Plugin state-machine facade coordinating persisted status, loader activation/deactivation, worker control, package upgrades, cleanup and process-local lifecycle notifications.",
+      "dependencyDirection": "Depends inward on the plugin registry and outward on the loader, worker manager, database, logger and Node EventEmitter; callers receive a service interface but Paperclip shared records and statuses cross the boundary.",
+      "keyDataModels": "PluginRecord, PluginStatus, manifest capabilities, package version/path, lastError, removeData and lifecycle/worker event payloads.",
+      "lifecycle": "Validates read-time state, persists status, activates or deactivates runtime, upgrades package files, detects added capability strings, optionally waits in upgrade_pending, cleans artifacts, uninstalls and emits in-process events.",
+      "testAssessment": "The only dedicated lifecycle test at this path is a two-case restart regression and both cases pass. It does not exercise the state graph, activation/deactivation failures, concurrent transitions, listener failures, upgrade approval, cleanup retention or durable audit/event delivery.",
+      "designRationale": "Centralize plugin state transitions and ensure hot restart re-reads the manifest and reapplies idempotent migrations rather than merely bouncing a stale worker process.",
+      "companyOsProblem": "Company OS needs a governed Connector/plugin installation lifecycle whose declared state cannot diverge from executable reality, and whose upgrade, approval, rollback, retention and actor evidence remain valid across crashes and concurrent operators.",
+      "companyOsFit": "REFERENCE the explicit transition graph, loader/worker separation and full manifest-plus-migration reload. Rebuild lifecycle commands around per-installation serialization or compare-and-swap, staged desired/observed state, compensating recovery, durable outbox events, manifest digests and Responsibility/Approval/DataAuthorization evidence.",
+      "responsibilityConflict": "The service carries no company, actor, accountable human, request, approval or evidence context. Database state, filesystem/worker effects and events are not atomic; shutdown failures may be swallowed while disabled/error/uninstalled is persisted, and capability approval is only a flat-string diff without an exact package digest.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["server/src/services/plugin-lifecycle.ts:1-849", "server/src/__tests__/plugin-lifecycle-restart.test.ts:1-129", "c91a0623 Runtime control-plane fixes (#6380)"]
+    },
+    {
+      "id": "application:server/__tests__/plugin-lifecycle-restart",
+      "auditStatus": "COMPLETE",
+      "function": "Regression test proving restart uses loader unload/load when runtime services exist and falls back to a bare worker-handle restart otherwise.",
+      "dependencyDirection": "Mocks the registry and supplies loader/worker stubs around the production lifecycle service.",
+      "keyDataModels": "Ready PluginRecord, registered runtime counts and worker lifecycle events.",
+      "lifecycle": "Invokes restart for a ready plugin and asserts either a full deactivate/reactivate cycle or fallback handle restart with stopped/started notifications.",
+      "testAssessment": "Two of two focused Vitest cases passed. The suite captures PAP-9585 call routing but does not prove migrations actually apply or cover reload failure, status reconciliation, idempotency and concurrency.",
+      "designRationale": "Prevent hot-reload schema drift when a local plugin adds a migration.",
+      "companyOsProblem": "Company OS needs compatibility tests proving upgrades and restarts preserve schema/runtime alignment and recover safely from each failure boundary.",
+      "companyOsFit": "ADAPT the regression intent into contract tests over desired/observed installation state, migration ledger, crash recovery, digest-bound approvals and rollback.",
+      "responsibilityConflict": "No actor, approval, tenant, audit evidence or failure-state assertion is present, so the test cannot establish a trustworthy enterprise lifecycle.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/plugin-lifecycle-restart.test.ts:1-129", "server/src/services/plugin-lifecycle.ts:730-823", "2026-08-18 focused Vitest: 2 passed"]
+    }
+  ]
+}

@@ -1423,6 +1423,45 @@
       "sourceReadComplete": true,
       "nextLine": null,
       "completionRequirements": ["Read lines 1-213 exactly once, run focused tests and map positive/negative Secret scope and leakage coverage."]
+    },
+    {
+      "id": "application:server/services/plugin-lifecycle",
+      "path": "server/src/services/plugin-lifecycle.ts",
+      "lineCount": 849,
+      "sha256": "950782c7c35e7eb33b9929194990bb353a0852e876968208ce5920923525c80e",
+      "linkedEvidence": { "history": ["c91a0623 Runtime control-plane fixes (#6380)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 849 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The explicit state graph and loader/worker abstraction are useful reference patterns, but lifecycle coordination is not atomic: registry state, worker/file side effects and in-process events are updated in separate steps with no transaction, compensation log or durable outbox.",
+        "load/enable transition the database to ready before activation; activation failure leaves persisted ready state and an already-emitted status_changed event without rollback or automatic error transition.",
+        "disable/unload/error paths can record an offline lifecycle state after fallback worker shutdown failed because stopWorkerIfRunning deliberately swallows the failure; the worker may remain active despite disabled, error or uninstalled state.",
+        "Transitions use read-then-update without compare-and-swap, version fencing or per-plugin serialization, so concurrent enable/disable/unload/upgrade operations can validate against stale state and interleave destructive side effects.",
+        "EventEmitter notifications are process-local, non-durable and synchronous after persistence; a throwing listener can surface failure after state was committed, while crashed processes lose integration events entirely.",
+        "Upgrade approval compares only newly added flat capability strings and is not bound here to a package or manifest digest, exact permission parameters, approver, or evidence. Re-upgrading from upgrade_pending with additional capabilities attempts the invalid upgrade_pending-to-upgrade_pending transition.",
+        "Unload cleans runtime and install artifacts before registry deletion, without staged rollback. Hard-delete and data-retention ownership are represented by a boolean removeData rather than an explicit retention/export/tombstone contract.",
+        "Lifecycle operations carry no actor, tenant/company, request id, reason code, approval reference or durable audit evidence; logs and free-form errors are operational telemetry rather than Company OS responsibility records.",
+        "restartWorker correctly reloads manifests and idempotent migrations when runtime services exist, but a failed unload/load can leave the ready record with no worker and has only a narrow regression test."
+      ],
+      "completionRequirements": ["Read lines 1-849 exactly once and trace install/enable/disable/unload/restart, state transitions, worker/tool cleanup, data retention/removal, concurrency, rollback, audit and upgrade ownership."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-lifecycle-restart",
+      "path": "server/src/__tests__/plugin-lifecycle-restart.test.ts",
+      "lineCount": 129,
+      "sha256": "556bd6bdd3c5bfcb422dcf0c58231af04906fc9b3f58807b779a2cbac72f959d",
+      "linkedEvidence": { "history": ["c91a0623 Runtime control-plane fixes (#6380)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 129 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Regression scope is intentionally narrow: runtime-capable loaders must unload and reload so new plugin migrations run; loader-less setups only bounce the worker handle.",
+        "The test verifies call selection and lifecycle event behavior, but not migration application, registry status transitions, reload failure recovery, concurrency, or cleanup after a partial restart."
+      ],
+      "completionRequirements": ["Read lines 1-129 exactly once, run focused tests and map restart regression coverage against the complete lifecycle implementation."]
     }
   ]
 }
