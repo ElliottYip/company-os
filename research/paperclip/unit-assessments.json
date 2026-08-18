@@ -3001,18 +3001,21 @@
     },
     {
       "id": "application:server/__tests__/built-in-agent-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route tests for listing, provisioning and resetting registry-defined built-in Agents and controlling their scheduled/manual routines behind an experimental feature gate.",
+      "dependencyDirection": "Company-scoped board or Agent actor enters feature/access checks; routes validate strict payloads and call BuiltInAgentService for state/provision/reset/routine operations, then emit activity. Generic AuthorizationService gates provision/reset with agents:create, while routine controls use board-only tasks:assign.",
+      "keyDataModels": "Built-in definition key/display/purpose/instructions/role/allowed Adapter types, materialized Agent/state/pause, optional Adapter override and monthly budget, hire Approval, routine key/schedule/run, actor/requester and activity event.",
+      "lifecycle": "Feature-disabled routes hide with 404. Authorized Company actors may list redacted state. Provision validates exact fields and can materialize immediately or return pending hire approval under Company policy. Reset uses the same create grant. Only board users with tasks:assign may enable/disable/trigger routines; Agent actors are categorically denied. Every accepted mutation logs actor and entity context.",
+      "testAssessment": "Fourteen route cases cover Company isolation, feature gate ordering, explicit create denial, strict body schema, Adapter/budget forwarding, board-only routine controls, pending approval response, reset auditing and cross-Company Agent denial. Services and auth are mocked. Missing are idempotency/concurrency, exact definition/version/digest, Adapter Secret redaction beyond response config, risk-specific reset/reconfigure approval, requester/approver separation, routine input/goal/budget/data grants, cancellation/timeouts, feature-toggle audit, stable errors and E2E proof that the approved registry revision is materialized.",
+      "designRationale": "Ship opinionated first-party Agent capabilities with a simple setup experience while preserving Company isolation, existing Agent-creation policy, strict configuration and human control over recurring autonomous work.",
+      "companyOsProblem": "Company OS needs FDE-driven industry templates and installable capability packs that can create organization roles, Agent/Connector bindings, workflows, policies and views without embedding one vendor's runtime or silently bypassing responsibility.",
+      "companyOsFit": "ADAPT the definition registry, allowed Adapter constraints, redacted state, strict payloads, approval-aware provisioning and disabled-by-default routines into a signed TemplatePackage contract. Separate template installation from Agent creation/reset permissions, pin package/version/digest, preview a change plan, require risk-based human approval, and instantiate vendor-neutral Connector/Position/Responsibility/DataGrant objects transactionally with rollback.",
+      "responsibilityConflict": "A generic agents:create grant also authorizes resetting built-in defaults, including for Agent actors, without proving which instructions/resources changed or requiring a human. Routine runs are gated only by tasks:assign and do not bind a Work goal, data/Secret grants, budget reservation or accountable result owner in the route contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/built-in-agent-routes.test.ts:1-442",
+        "8b6a06ee254b06cbadbe334e891285e22084caab [codex] Add built-in agents and Reflection Coach bundle (#9206)"
+      ]
     },
     {
       "id": "application:server/__tests__/built-in-agents",
