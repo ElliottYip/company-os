@@ -4,6 +4,97 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:cli/__tests__/service-manager",
+      "path": "cli/src/__tests__/service-manager.test.ts",
+      "lineCount": 216,
+      "sha256": "56770f471a7a54c83004154bbfefd646543555ebcc1aef79f36d13637055edce",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 216 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Tests cover systemd/launchd rendering, newline and expansion injection, drift replacement, unsupported detection, launchd login state, foreground single-writer behavior and symlinked definition refusal.",
+        "The systemd uninstall failure test explicitly expects the definition to remain after stop fails, favoring recoverability over partial removal.",
+        "Definition ownership/mode/hardlink, shim provenance, malicious instance identifiers beyond newlines/regex characters, concurrent lifecycle operations, command timeouts and rollback are not covered.",
+        "Focused Vitest passed all 19 service-manager tests."
+      ],
+      "completionRequirements": ["Read lines 1-216 exactly once and assess service definitions, instance isolation, permissions, lifecycle failures and test quality."]
+    },
+    {
+      "id": "application:cli/__tests__/service-health-check",
+      "path": "cli/src/__tests__/service-health-check.test.ts",
+      "lineCount": 142,
+      "sha256": "1c79005736f0279597e717cb0c5b35d3e23c8dfc6fb59d8ee0647388b6df2829",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 142 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Seven tests cover managed-process doctor skip, explicit restart-version semantics, in-process restart serialization/stale-PID recovery, IPv6 health URL formatting, healthy service and foreground-process conflict.",
+        "Temporary restart and doctor directories are not removed. Cross-process lock races, PID reuse, lock-file links/ownership/modes, service definition drift/failure and health probe timeout/auth/spoofing are absent.",
+        "Focused Vitest passed all 7 service-health tests."
+      ],
+      "completionRequirements": ["Read lines 1-142 exactly once and assess diagnostic accuracy, stale service detection, remediation and test quality."]
+    },
+    {
+      "id": "application:cli/services/service-manager",
+      "path": "cli/src/services/service-manager.ts",
+      "lineCount": 311,
+      "sha256": "e5123f216e12f16e07ea4b87c65127903dbe40ad503fb0012e058d206f31e2cd",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 311 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "A small ServiceManager abstraction owns systemd-user and launchd-agent definitions/lifecycle. Definitions escape systemd/XML values, contain no vendor credentials and scope names/logs by instance.",
+        "writeIfChanged rejects unsafe existing definition types, hard links and wrong ownership and uses wx plus rename, but validates only the immediate directory, does not repair permissive mode when current content already matches and has no directory/file fsync.",
+        "PAPERCLIP_SHIM_PATH and home/instance inputs become persistent executable/environment configuration; this module does not verify the shim against a signed managed-install manifest or independently validate instance identifiers.",
+        "Systemd status collapses every show error into not-installed; disable/reset errors are swallowed. A disable failure followed by definition removal can leave stale enablement. Launchd bootstrap failure falls back to kickstart, status may report loaded without a definition, and stop unloads without changing saved enablement.",
+        "Neither service definition applies OS sandbox/hardening boundaries. Lifecycle commands have no timeout, transaction, cross-process serialization, postcondition verification or structured partial-state result."
+      ],
+      "completionRequirements": ["Read lines 1-311 exactly once and trace launchd/systemd definitions, command execution, file trust, instance scoping, install/start/stop/uninstall and log behavior."]
+    },
+    {
+      "id": "application:cli/commands/service",
+      "path": "cli/src/commands/service.ts",
+      "lineCount": 223,
+      "sha256": "8bfcfc447e654f0a954d143c9bba2d7c862024ea3d6b800c1c8c23f61d192bd8",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 223 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The CLI exposes install/uninstall/start/stop/restart/status/logs and a hot-restart protocol with an instance lock, restart intent, supervisor restart, health/version wait and optional drain report.",
+        "Unsupported service management prints a value then returns without a failing exit status. JSON install can still prompt on a TTY, and errors are prose rather than stable codes.",
+        "The restart lock is PID-liveness based and vulnerable to PID reuse; it lacks lstat/owner/mode/link checks and robust atomic stale-owner reclamation. Intent/report files are not atomically or safely written against links and contain no accountable operator/action/config/artifact digest.",
+        "Health success is based on an unauthenticated local endpoint response, not a cryptographic/process binding to the supervisor PID. Restart has no rollback on health/version failure, and a missing drain/adoption report is returned as null rather than making the preservation claim fail.",
+        "healthUrl mutates process-global instance state. Service mutation postconditions are checked only after uninstall; start/stop/install merely print status and do not require the requested state."
+      ],
+      "completionRequirements": ["Read lines 1-223 exactly once and assess CLI lifecycle policy, explicit operator intent, output contracts, failure status and managed-install coupling."]
+    },
+    {
+      "id": "application:cli/checks/service-health-check",
+      "path": "cli/src/checks/service-health-check.ts",
+      "lineCount": 136,
+      "sha256": "ca908a7a83d86a15cf1856b2d3134600c373cfdc9f691feb08d3c5d8c1d267d9",
+      "linkedEvidence": { "history": ["fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 136 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Doctor treats unsupported or uninstalled background service as an acceptable optional state, then checks exact definition text, supervisor activity, local HTTP health/version and systemd linger.",
+        "Exact text detects ordinary drift but fs.readFile follows symlinks and no ownership/mode/hardlink/shim-manifest provenance is checked. Manifest read errors are silently ignored, disabling version comparison.",
+        "The local health response is not bound to the reported supervisor PID, so another process can satisfy health/version. Results are human names/prose rather than stable diagnostic codes, limiting automation and localization.",
+        "Skipping all checks inside a managed process avoids recursive activation problems but also removes self-diagnostics; an explicit self-safe subset would be stronger."
+      ],
+      "completionRequirements": ["Read lines 1-136 exactly once and assess health invariants, executable/config provenance, service activity and remediation semantics."]
+    },
+    {
       "id": "application:cli/__tests__/onboard",
       "path": "cli/src/__tests__/onboard.test.ts",
       "lineCount": 226,
