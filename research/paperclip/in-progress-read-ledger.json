@@ -136,7 +136,7 @@
       "lineCount": 485,
       "sha256": "f964b5a772adf2fb368c4f1acd0d6343f6fb4328fc484f0521f14f5dae4e2150",
       "linkedEvidence": { "history": ["075951f6bde525de0ff5b0daad216f60c3083ded Fix import completion UX: inbox flood, false-failure message, stale company list (#10538)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 485 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -4171,6 +4171,30 @@
         "Implementation lines 1-61 sort by locale-sensitive name only, allocate numeric collision suffixes, map requested order and silently drop unresolved IDs. Equal names rely on incoming stable-sort order, so slug identity can change when source order changes. Focused Vitest passed 1/1 on 2026-08-19. Formal decision: ADAPT only as versioned Web presentation preferences with deterministic ID tie-breakers and diagnostics; never as organization or responsibility truth."
       ],
       "completionRequirements": ["Read both files exactly once, run focused tests and assess deterministic ordering, identity mapping, stale entries and whether presentation ordering leaks into domain responsibility semantics."]
+    },
+    {
+      "id": "application:ui/lib/company-export-selection",
+      "paths": [
+        { "path": "ui/src/lib/company-export-selection.test.ts", "lineCount": 308, "sha256": "e99e5adcc2c602fa19ff64b20c9d888cf098e2c429db3ce56eebb59d4db550d3" },
+        { "path": "ui/src/lib/company-export-selection.ts", "lineCount": 272, "sha256": "b8b6eeaffd07d61e78cd77c269a1a852d3557c7d4dbd99bc1fc8fc683231f3fc" }
+      ],
+      "linkedEvidence": { "history": ["916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [
+        { "path": "ui/src/lib/company-export-selection.test.ts", "completedRanges": [{ "start": 1, "end": 308 }] },
+        { "path": "ui/src/lib/company-export-selection.ts", "completedRanges": [{ "start": 1, "end": 272 }] }
+      ],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "Test lines 1-100 define root/company/image, Agent, project, Skill, one-off/recurring task, document and blob fixtures, then verify default selection includes everything and category toggles remove Agent/project/Skill or one-off task paths. This tests a client-side file-path classifier, not server authorization. Default-all is convenient but risky for governed exports; roots and .paperclip.yaml remain implicitly selected and may still contain metadata for disabled domains.",
+        "Test lines 101-200 cover attachment-blob closure: owner category removal prunes blobs, attachment toggle removes all blobs, shared blobs survive while any owner remains, and orphan blobs follow only the attachment toggle. Root files are always included even when every category is off. Shared ownership logic is thoughtful, but unreferenced/orphan blobs default to included and root extension files can encode excluded-domain references, so the UI selection is not a complete least-data proof. Embedded-asset ownership tests begin next.",
+        "Test lines 201-300 separate embedded-asset ownership from attachments: task/Agent-owned blobs follow their categories, root/ownerless blobs are always kept, attachment ownership can independently retain a shared blob, and attachment controls disable only when both task kinds are off. This models multi-owner closure well, but ownerless means always include—a fail-open policy. It does not test unknown owner strings, contradictory ownership metadata, missing blob paths, digest collisions or evidence/data-classification owners.",
+        "Implementation lines 1-100 define six English-labeled categories, default every category on, declare root-level files untoggleable and derive recurring-task path prefixes from manifest paths. The helper is presentation-focused and shared-type coupled. Default-all plus unconditionally exported COMPANY/.paperclip/images is incompatible with a proof of least-data selection unless the server rebuilds those roots from the selected graph. No data classification, purpose or approval category exists.",
+        "Implementation lines 101-200 lowercase attachment digests, union embedded owners, intentionally include ownerless and unknown-owner blobs, classify files only by raw prefix, and count categories. Multi-owner union is sound, but unknown schema extensions fail open to byte disclosure and unnormalized paths can evade or change classification. Root null is indistinguishable from unknown/unrecognized path, so future categories also export by default.",
+        "Implementation lines 201-272 build the checked set: root/null always exports, embedded owners can override attachment toggles, orphan blobs follow attachment state, and category paths follow toggles. The algorithm is pure and readable, but client-side raw paths/manifest metadata define disclosure scope. Focused Vitest passed 19/19 on 2026-08-19. Formal decision: REIMPLEMENT server-side canonical export planning; adapt only multi-owner closure and its tests."
+      ],
+      "completionRequirements": ["Read both files exactly once, run focused tests and assess data-minimizing selection closure, dependency expansion, stale paths, identity stability, blob/evidence inclusion and whether Web policy can broaden a reviewed export."]
     }
   ]
 }

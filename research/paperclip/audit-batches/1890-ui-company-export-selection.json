@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/lib/company-export-selection",
+      "auditStatus": "COMPLETE",
+      "function": "Maps six UI category toggles to a selected package-file set, distinguishing one-off versus recurring tasks and retaining content-addressed blobs according to attachment and embedded-asset ownership closure.",
+      "dependencyDirection": "UI helper depends on shared portability manifest types and English presentation labels. It derives an export file set client-side from raw paths and manifest ownership metadata, while the server performs the actual export.",
+      "keyDataModels": "ExportCategorySelection, issue path/recurring/attachment projections, embedded asset digest/ownedBy projections and Set<string> selected file paths.",
+      "lifecycle": "Default every category on; classify raw paths; compute task and embedded blob owners; retain a blob when any selected owner qualifies; always retain root/unknown paths; return the checked-file set.",
+      "testAssessment": "Focused Vitest passed 19/19 tests on 2026-08-19. Coverage is strong for category toggles, recurring task splits, shared attachment blobs, embedded multi-owner blobs, ownerless roots and counts. It does not challenge path normalization, unknown categories/owners, malformed digests, missing references, root metadata leakage, data classification or server/client selection divergence.",
+      "designRationale": "Present understandable category toggles instead of thousands of file checkboxes while preventing obvious orphan attachment blobs.",
+      "companyOsProblem": "Company OS needs purpose- and authority-scoped export planning where the server computes a canonical selected entity/evidence graph and the Web only renders and confirms it.",
+      "companyOsFit": "REIMPLEMENT selection as a server-side typed plan over normalized entity identities, data classifications and responsibility/evidence dependencies. ADAPT the multi-owner blob-closure algorithm and focused test matrix as one projection, then bind the approved plan to the package digest.",
+      "responsibilityConflict": "The six categories omit humans, responsibility contracts, approvals, evidence and data-authority scopes. Root metadata and unknown/ownerless files are always included, so the checked set cannot prove least-privilege export or exact accountable approval scope.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/lib/company-export-selection.test.ts:1-308",
+        "test SHA-256 e99e5adcc2c602fa19ff64b20c9d888cf098e2c429db3ce56eebb59d4db550d3",
+        "ui/src/lib/company-export-selection.ts:1-272",
+        "implementation SHA-256 b8b6eeaffd07d61e78cd77c269a1a852d3557c7d4dbd99bc1fc8fc683231f3fc",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "2026-08-19 focused Vitest: 1 file / 19 tests passed"
+      ],
+      "securityFindings": [
+        "All categories default on, and root, unknown and unclassified files are always exported.",
+        "Unknown embedded owner strings and ownerless embedded assets fail open to inclusion.",
+        "Raw prefix classification occurs without canonical path validation; malformed or future paths can fall into the always-exported null category.",
+        "Unreferenced blobs are included whenever attachments remain on, rather than failing closed or requiring explicit purpose.",
+        "COMPANY.md, .paperclip.yaml and images remain selected even when every business category is off and may retain references or sensitive metadata.",
+        "Client-side selection is not bound to a server revision, authorization decision, reviewed plan digest or emitted package digest."
+      ]
+    }
+  ]
+}
