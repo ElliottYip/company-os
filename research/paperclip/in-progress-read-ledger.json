@@ -4575,10 +4575,11 @@
         { "path": "cli/src/commands/client/secrets.ts", "completedRanges": [{ "start": 1, "end": 726 }] },
         { "path": "cli/src/commands/client/skill.ts", "completedRanges": [{ "start": 1, "end": 150 }] },
         { "path": "cli/src/commands/client/skills.ts", "completedRanges": [{ "start": 1, "end": 1024 }] },
-        { "path": "cli/src/commands/client/teams.ts", "completedRanges": [{ "start": 1, "end": 720 }] }
+        { "path": "cli/src/commands/client/teams.ts", "completedRanges": [{ "start": 1, "end": 720 }] },
+        { "path": "cli/src/commands/client/token.ts", "completedRanges": [{ "start": 1, "end": 244 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/token.ts",
+      "nextFile": "cli/src/commands/client/workspace.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4719,7 +4720,11 @@
         "Install does not require preview or confirmation and is not bound to a preview/catalog content digest. replace collision can be applied directly. The displayed preview summarizes only counts plus warnings/errors, omitting exact human responsibility, Connector/data/permission/Secret changes and evidence/rollback. Catalog or target state can change between preview and install.",
         "--secret-value carries plaintext in argv, and the shared key=value parser trims the Secret value, corrupting valid leading/trailing whitespace. Duplicate Secret/adapter/name keys overwrite silently. Approval omission/redaction of Secret values is good, but the approval stores only catalogRef/options/denial text, not catalog hash, target revision, exact actions or a resume token; approval still requires a manual rerun that can differ.",
         "Approval fallback depends on English 403 message substrings and can auto-trigger merely because PAPERCLIP_TASK_ID exists. It handles only agents:create denial, identifies the requester as an Agent Run rather than accountable human, and embeds raw server denial text. Issue linkage silently disappears for non-UUID task identifiers.",
-        "Decision: NARROW/EXTEND-AS-DESIGN. Independently implement a signed, versioned FDE/industry template format with human-role mappings, preview/apply digest, safe Secret channels, explicit Connector rebinding, transactional rollout and approval-resume identity. No CLI code is selected for copying. Next file is token.ts."
+        "Decision: NARROW/EXTEND-AS-DESIGN. Independently implement a signed, versioned FDE/industry template format with human-role mappings, preview/apply digest, safe Secret channels, explicit Connector rebinding, transactional rollout and approval-resume identity. No CLI code is selected for copying.",
+        "token.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It manages Agent and board keys, including labels, timestamps, board expiry/TTL and Agent-to-Company resolution checks.",
+        "Created Agent and board tokens are returned and printed in plaintext. Agent keys expose no expiry, audience, capability, data scope, device/runtime binding or maximum-use policy. Board --company-id is documented as audit context rather than an authorization scope, so one identity token can remain broadly privileged across Companies.",
+        "Board keys may explicitly never expire; conflicting --never-expires/--expires-at/--ttl-days options are not rejected and precedence silently favors never, then absolute expiry. Creation/revocation has no MFA/step-up, accountable-human approval, reason or evidence; revoke has no confirmation. Agent terminal list omits lastUsedAt despite the response type carrying it.",
+        "Company membership verification during Agent resolution is a useful guard, and list metadata supports rotation hygiene. Decision: REJECT this credential ceremony for Company OS. IdentityPort must mint audience- and scope-bound short-lived credentials, keep product permissions independent, use one-time secure delivery, and retain human/device/Connector audit context. Next file is workspace.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
