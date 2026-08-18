@@ -3644,7 +3644,7 @@
       "lineCount": 6956,
       "sha256": "98b1a08f7ac661c47bd0b24d409be8f21f0be0557286158cb19097bb06216a89",
       "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 6956 }],
       "sourceReadComplete": true,
       "nextLine": null,
