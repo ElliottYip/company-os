@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-user-directory-route",
+      "auditStatus": "COMPLETE",
+      "function": "One mocked route test for returning active human company members to an operator who lacks manage-permissions authority.",
+      "dependencyDirection": "Supertest/Express -> real access route/error middleware -> handwritten database query stub and mocked access/auth/Agent/activity services; no real schema, Identity provider or authorization service behavior.",
+      "keyDataModels": "Board actor with company membership, active human membership principalId/status and auth-user id/name/email/image.",
+      "lifecycle": "Authenticated operator requests company user directory -> membership rows and auth users are joined in route logic -> full contact projection is returned.",
+      "testAssessment": "Sandboxed focused Vitest failed because Supertest could not listen; approved unsandboxed rerun passed 1/1. The single positive fixture establishes intent but cannot prove tenant/status filtering because its database stub ignores predicates. It omits all privacy, scale and negative authorization cases.",
+      "designRationale": "Allow ordinary operators to discover human coworkers for assignment and collaboration without granting them membership-administration permission.",
+      "companyOsProblem": "Company OS needs a first-class Organization/Principal directory that distinguishes identity, employment/membership, job, accountable-human responsibility, management relation and display profile while supporting enterprise OIDC/SCIM/LDAP adapters and privacy controls.",
+      "companyOsFit": "REIMPLEMENT behind IdentityPort and Organization/Principal application projections. Return purpose-specific fields with explicit directory.read capability, tenant/status enforcement, pagination/search and audit/privacy policy. Keep stable internal principal IDs and external identities separate; project accountable roles and responsibility eligibility without leaking provider records into core.",
+      "responsibilityConflict": "The response identifies people but cannot answer who is responsible for which Agent/job/action. Operator membership alone reveals all emails, while no responsible-human role, employment validity, delegation, certification or data-purpose evidence is represented.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/company-user-directory-route.test.ts:1-132 (SHA-256 c6818b8e6098dec5156573fed7b2f067d0ba24fe50e0edb30f601ed36aa87a5a)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 sandboxed focused Vitest: failed from Supertest listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 1/1 passed"
+      ],
+      "securityFindings": "HIGH tenant-proof gap: the DB stub ignores where clauses, so the only test cannot catch missing company, principalType or active-status predicates. HIGH privacy gap: every operator receives all member emails and arbitrary external image URLs without field-level policy, purpose, audit or minimization assertions. MEDIUM availability gap: no pagination or limit is visible in the contract test. Missing cases include cross-company/unaffiliated users, inactive/suspended members, Agent/service principals, stale/missing users, multiple memberships, instance admins, field redaction, image URL safety and stable error responses."
+    }
+  ]
+}

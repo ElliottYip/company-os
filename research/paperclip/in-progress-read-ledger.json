@@ -5341,6 +5341,31 @@
       "completionRequirements": [
         "Read lines 1-360 exactly once and assess branding asset upload/read/delete authorization, tenancy, storage lifecycle, content validation, caching, portability, error semantics and test quality against Company OS independent brand/asset boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/company-user-directory-route",
+      "path": "server/src/__tests__/company-user-directory-route.test.ts",
+      "lineCount": 132,
+      "sha256": "c6818b8e6098dec5156573fed7b2f067d0ba24fe50e0edb30f601ed36aa87a5a",
+      "linkedEvidence": {
+        "history": [
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 132 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. A single mocked route test proves that an active operator membership can retrieve all active human member IDs plus name, email and image even without manage-permissions access.",
+        "The response is a minimal contact directory, not an accountable-human or organization projection: membership role, department/job, responsibility scope, manager, identity-provider provenance and certification state are absent.",
+        "The DB stub returns fixed rows regardless of where clauses, so actual company/principal/status filtering is not exercised. No cross-company, inactive/suspended/removed, Agent principal, missing auth user or duplicate membership negative case exists.",
+        "Full email and external image URL are exposed to every operator with no field-level purpose/privacy control, consent, audit assertion or data-minimization test. The endpoint has no pagination, search, limit or deterministic scale behavior in this suite.",
+        "Sandboxed Vitest failed because Supertest listen was denied; approved unsandboxed rerun passed 1/1. The test proves only the intended positive response shape under stubs."
+      ],
+      "completionRequirements": [
+        "Read lines 1-132 exactly once and assess human-directory authorization, tenant visibility, identity fields, role/membership semantics, privacy, pagination and test quality against Company OS Organization/Principal boundaries."
+      ]
     }
   ]
 }
