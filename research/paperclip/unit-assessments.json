@@ -3922,18 +3922,23 @@
     },
     {
       "id": "application:server/__tests__/company-skills-detail",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Performance/truthfulness regression tests for Skill detail Agent-usage projection.",
+      "dependencyDirection": "Embedded PostgreSQL and a tracked Drizzle proxy drive the large companySkillService while adapter runtime listing is replaced by a never-resolving mock.",
+      "keyDataModels": "Company Skill key/slug/markdown/source metadata, Agent desiredSkills configuration and usedByAgents desired/actual state.",
+      "lifecycle": "Seed local Skills/Agents; request detail under a one-second race; prove no adapter runtime probe and no implicit full Skill-row selection; clean temporary filesystem/database state.",
+      "testAssessment": "The two tests encode valuable principles: do not block detail views on external runtime state, never claim unknown actual state, support key/slug compatibility and avoid loading unrelated large markdown. Both tests were explicitly skipped after embedded PostgreSQL failed to start; no passing claim. They omit tenancy/not-found, high Agent cardinality, lifecycle filtering, ambiguity, provenance/version/test/policy fields, secret redaction and responsibility/data authority.",
+      "designRationale": "Keep the Skill detail page fast and available even when an Agent adapter hangs, and prevent large Skill content from inflating usage-resolution queries.",
+      "companyOsProblem": "Company OS needs fast, honest Connector capability/Skill detail projections whose desired, observed and attested states remain distinct.",
+      "companyOsFit": "ADAPT the no-runtime-probe, null-unknown-state, explicit-column and hang-regression scenarios into Connector Capability detail tests. Add observed-at/attestation provenance, lifecycle, high-cardinality batching, tenant/data visibility and responsible-human certification cases.",
+      "responsibilityConflict": "The projection only says an Agent desires a Skill; it does not identify who assigned/approved it, which policy/data scope applies, whether runtime attestation is current or who is accountable for use.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skills-detail.test.ts:1-232",
+        "full source SHA-256 ead8f0fc444a89e585c05ef01ff50c6528502592e04a48de75c98de6ac292895",
+        "35a9dc37b00574c46e31fbd624c49ba1bc5de858 [codex] Speed up company skill detail loading (#4380)",
+        "2026-08-19 focused verbose Vitest: 0 passed / 2 explicitly skipped after five embedded-PostgreSQL startup attempts"
+      ]
     },
     {
       "id": "application:server/__tests__/company-skills-import-authz-routes",

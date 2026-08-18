@@ -3597,6 +3597,25 @@
         "Evaluation has no decision logging/cache/version lease; a skill operation can be authorized at revision N and execute after policy N+1 without binding the action digest to the evaluated revision."
       ],
       "completionRequirements": ["Read lines 1-292 exactly once and trace policy model/defaults, database lifecycle, authorization assumptions, evaluation scope, auditability, concurrency and Company OS data/tool governance fit."]
+    },
+    {
+      "id": "application:server/__tests__/company-skills-detail",
+      "path": "server/src/__tests__/company-skills-detail.test.ts",
+      "lineCount": 232,
+      "sha256": "ead8f0fc444a89e585c05ef01ff50c6528502592e04a48de75c98de6ac292895",
+      "linkedEvidence": { "history": ["35a9dc37b00574c46e31fbd624c49ba1bc5de858 [codex] Speed up company skill detail loading (#4380)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 232 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Both tests target detail-load performance and truthfulness: Agent usage is derived from desired configuration without invoking potentially hanging adapter listSkills, and actualState remains null instead of being fabricated.",
+        "A proxy asserts usage resolution never performs implicit SELECT * from companySkills, preventing unrelated 32KB markdown payloads from being loaded. Desired Skill matching covers canonical key and slug compatibility.",
+        "The 1-second Promise.race guards hangs but does not cancel underlying work. Tests create local directories/files even though their relevance to detail usage is unclear, and validate implementation query shape through a Drizzle proxy rather than a database query/byte budget.",
+        "Missing coverage includes cross-company ID lookup, not-found, large Agent counts/N+1, duplicate slug/key ambiguity, terminated Agents, secret/source locator redaction, test/policy/version/provenance projection, filesystem disappearance and responsible-human/data authority.",
+        "Focused verbose Vitest: both embedded-PostgreSQL tests were explicitly skipped after the database failed to start following five attempts; 0 passed and no behavior is claimed on this host."
+      ],
+      "completionRequirements": ["Read lines 1-232 exactly once and assess detail query batching/performance, company/provenance isolation, source/version/test/policy visibility, missing/notfound semantics and regression quality."]
     }
   ]
 }
