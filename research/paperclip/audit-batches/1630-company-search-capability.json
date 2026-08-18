@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-search-service",
+      "auditStatus": "COMPLETE",
+      "function": "Query-schema and embedded-PostgreSQL regression suite for company-wide issue, comment, document, artifact, Agent and project search.",
+      "dependencyDirection": "Pure schema cases and real Drizzle/PostgreSQL fixtures drive the search service directly; pg_trgm is enabled explicitly and database tables are cleaned between cases.",
+      "keyDataModels": "Company search query, ranked heterogeneous result, snippets/highlights, counts by type, issue facets, zero-result loosen suggestions and hidden/harness issue visibility.",
+      "lifecycle": "Create isolated company records and searchable children, execute one search, assert ordering/projections/counts, then delete all fixture rows.",
+      "testAssessment": "Strong behavior cases cover wildcard escaping, exact/phrase/token/fuzzy ranking, cross-field snippets, hidden and cross-company exclusion, filter-only search, facets, cross-type pagination and artifact projections. The focused run passed 2 pure validation tests while all 17 embedded-PostgreSQL tests were explicitly skipped after five database-start attempts; no database behavior is claimed as passing. Missing coverage includes CJK/Unicode segmentation, ACL/data-contract visibility, high-offset pages containing real artifacts, stable cursor behavior under concurrent writes, large-content/query-cost limits, untrusted preview URLs and query-plan budgets.",
+      "designRationale": "Lock a rich command-palette search experience against the actual PostgreSQL query engine rather than mocks.",
+      "companyOsProblem": "Company OS needs similarly strong end-to-end search fixtures, including Chinese enterprise content, human/Agent authority and evidence/data-governance semantics.",
+      "companyOsFit": "ADAPT the real-database, wildcard, cross-tenant, hidden-record, ranking and pagination fixtures as provider-neutral compatibility scenarios. Add Chinese tokenization/pinyin, Principal/DataContract matrices, confidential evidence, cursor consistency, resource budgets, lifecycle-restricted Agents, sanitized assets and failure/degraded-mode tests.",
+      "responsibilityConflict": "The suite proves company predicates but never proves that the caller is an authorized accountable human/Agent or that each result is permitted by its data and responsibility contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-search-service.test.ts:1-726",
+        "full source SHA-256 1dd93ec92a839e553d85a4d46aa9dc7a3c6b9b821dcc503c11d7682717b0bd7a",
+        "606aa4f266f6c092ea2916f385cc3f9329dc1ae7 feat(search): filters, sorting, operators & command-palette parity (#9327)",
+        "2026-08-18 focused verbose Vitest: 2 passed / 17 explicitly skipped after embedded PostgreSQL failed to start; no database pass claim"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/company-search-extract-service",
+      "auditStatus": "COMPLETE",
+      "function": "Query validation and embedded-PostgreSQL regression suite for bulk literal/URL extraction from issue threads and documents.",
+      "dependencyDirection": "Shared query schema and real database fixtures exercise the extraction service directly.",
+      "keyDataModels": "Literal or URL extraction query, issue-grouped matches, source field/reference, per-issue match cap, paging and truncation indicators.",
+      "lifecycle": "Create issue/comment/document sources, extract matches, assert provenance/deduplication/filtering/caps, and clean database fixtures.",
+      "testAssessment": "The suite usefully covers ambiguous/unsafe input rejection, URL source fields, deduplication, status/time filters, cross-company exclusion and explicit truncation. The focused run passed 1 pure validation case while all 6 database cases were explicitly skipped after embedded PostgreSQL failed to start. It omits hidden/harness records, malformed cross-company relations, duplicated evidence with multiple provenance, wildcard adversaries, huge content, CJK, stable paging, field-level authority and immutable extraction evidence.",
+      "designRationale": "Support bounded machine-readable discovery such as PR URLs without allowing arbitrary regex execution.",
+      "companyOsProblem": "Agent Boss and FDE workflows need governed structured extraction from authorized company evidence, with provenance preserved rather than flattened.",
+      "companyOsFit": "ADAPT validation, bounded-match and explicit-truncation scenarios into an EvidenceQuery compatibility suite. Require every occurrence/source to remain attributable and add data-contract, Chinese text, adversarial size and authority cases.",
+      "responsibilityConflict": "Cross-company exclusion is tested, but source authors, evidence contracts and the accountable principal requesting extraction are absent.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-search-extract-service.test.ts:1-269",
+        "full source SHA-256 c36a755b856e7ded6eb12aa5c14baf9292a85d33c9bb340decb4e22451172a85",
+        "ea0e8999059b57d57858bec42309bdb0a135b661 fix(search): honor extract match limits + harden pr-gardening candidate discovery (#9652)",
+        "2026-08-18 focused verbose Vitest: 1 passed / 6 explicitly skipped after embedded PostgreSQL failed to start; no database pass claim"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/company-search-extract-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Express contract tests for extract-search parsing, company membership denial and shared search rate limiting.",
+      "dependencyDirection": "A real issue router consumes stubbed search services and the real in-memory limiter under a synthetic board/session actor.",
+      "keyDataModels": "Board actor, companyIds membership list, extraction query/response and HTTP 403/429 plus Retry-After.",
+      "lifecycle": "Inject actor, issue GET requests, verify parsed service invocation or deny before service execution.",
+      "testAssessment": "Focused route Vitest passed 3/3. The deny-before-service and shared-limiter assertions are useful. Coverage is limited to an instance-admin board actor and lacks unauthenticated/Agent/inactive membership, granular search/data permissions, stable error codes and unforgeable limiter identity.",
+      "designRationale": "Keep high-volume extraction behind the same company boundary and abuse protection as interactive search.",
+      "companyOsProblem": "Company OS needs a stable Search/Evidence API whose transport maps verified principals and data authority into application commands.",
+      "companyOsFit": "ADAPT deny-before-work and shared resource-governor route cases. Extend with IdentityPort principals, scoped authority, DataContract denial, stable machine codes, audit/evidence IDs and distributed limiter behavior.",
+      "responsibilityConflict": "Membership in a companyIds array is treated as sufficient extraction authority; accountable-human and data-owner approval are not modeled.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-search-extract-routes.test.ts:1-104",
+        "full source SHA-256 eae777e4fa079c38d1621f023b1bc5313997c372e6de88db64ad3ef7607b0739",
+        "ea0e8999059b57d57858bec42309bdb0a135b661 fix(search): honor extract match limits + harden pr-gardening candidate discovery (#9652)",
+        "2026-08-18 focused verbose Vitest: 3/3 passed with isolated PAPERCLIP_HOME and approved local TCP listening"
+      ]
+    },
+    {
+      "id": "application:server/services/company-search-extract",
+      "auditStatus": "COMPLETE",
+      "function": "Bulk literal/URL extraction from visible issue titles/descriptions, comments and linked documents with source references and truncation.",
+      "dependencyDirection": "The service directly owns Drizzle/PostgreSQL predicates, custom URL parsing, content scanning, English presentation labels and shared response DTOs; callers supply only companyId and query.",
+      "keyDataModels": "Extract source, issue-grouped match, source reference, excerpt, query filters and paged/truncated response.",
+      "lifecycle": "SQL-prefilter visible company issues, page candidates, batch-load matching comments/documents, rescan full text in JavaScript, deduplicate values, create excerpts and return grouped matches.",
+      "testAssessment": "Source and tests show bounded result/match counts, stable updatedAt/id paging and strong same-company joins. Database behavior was skipped on this host. No tests cover provenance loss from deduplication, content/query resource budgets, CJK, ACL/data contracts, unsafe output rendering or concurrent paging.",
+      "designRationale": "Use SQL to narrow candidates and deterministic in-process parsing to return exact values rather than database match fragments.",
+      "companyOsProblem": "Company OS needs evidence extraction for governed Agent and FDE workflows, but every occurrence must retain source principal, data authorization, classification and immutable query/result evidence.",
+      "companyOsFit": "REIMPLEMENT as an EvidenceQuery application service over SearchIndex/DataConnector ports. Bind a verified Principal and DataContract, retain every provenance occurrence, enforce byte/CPU/result budgets, return stable codes/digests and support locale-specific extractors. ADAPT SQL parameterization, same-company joins, batch child loading, stable ordering and explicit truncation semantics.",
+      "responsibilityConflict": "Identical values from multiple sources are collapsed first-wins, erasing corroborating or conflicting evidence provenance. The service has no requesting Principal, approval, data-owner contract or immutable extraction record.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-search-extract.ts:1-349",
+        "full source SHA-256 98afb44df08d716e4ed494dbf1bdefafa9f8600c99e576e9c40babbdac7989a0",
+        "ea0e8999059b57d57858bec42309bdb0a135b661 fix(search): honor extract match limits + harden pr-gardening candidate discovery (#9652)",
+        "focused companion evidence: 1 validation test passed / 6 database tests skipped; 3/3 route tests passed"
+      ],
+      "securityFindings": [
+        "Authorization is a caller-provided companyId; the service does not require a verified Principal or field/data-contract access decision.",
+        "Up to 200 issues and 200 matches each are allowed while complete matching comment/document bodies are loaded and rescanned without byte, CPU or aggregate-memory budgets.",
+        "Deduplication by lowercased value discards subsequent source references, weakening evidence completeness and responsibility provenance.",
+        "Original content excerpts and internal issue/assignee/comment/document IDs are returned without classification-aware redaction or an output policy decision."
+      ]
+    },
+    {
+      "id": "application:server/services/company-search",
+      "auditStatus": "COMPLETE",
+      "function": "Company-wide interactive search and filter/facet projection over issues, comments, documents, Paperclip artifacts, Agents and projects.",
+      "dependencyDirection": "A 1,340-line service couples shared UI DTOs and routes to PostgreSQL-specific ranking/CTEs/extensions, most search tables, artifact taxonomy/service, extraction service and in-process cross-type merge/pagination.",
+      "keyDataModels": "Search query/scope/sort, heterogeneous result and snippet/highlight, issue summary, artifact summary, type counts, filter facets, zero-result loosen suggestions and internal ranking fields.",
+      "lifecycle": "Normalize/tokenize; construct phrase/token/fuzzy and comment/document match CTEs; materialize visible company issues; UNION results/counts/facets; enrich snippets; concurrently query artifacts/Agents/projects and counts; merge/sort/page in memory; optionally issue many loosen-count queries.",
+      "testAssessment": "The suite is strong on wildcard escaping, ranking and tenant/hidden-record predicates but database cases were skipped on this host. Source proves uncaught gaps: no Principal/data ACL, English-only fuzzy word splitting, independently capped artifact page retrieval, large query fan-out, unvalidated preview-image URLs, Agent lifecycle visibility and no cost-aware admission.",
+      "designRationale": "Deliver one rich command-palette response with ranking, snippets, heterogeneous counts, facets and recovery suggestions while using PostgreSQL indexes and avoiding row-level N+1 queries.",
+      "companyOsProblem": "Company OS needs a governed Chinese-first enterprise search plane over organizations, humans, Agents, responsibilities, tasks, approvals, evidence and authorized data, portable across cloud and local deployment profiles.",
+      "companyOsFit": "REIMPLEMENT behind SearchQuery/SearchIndex ports with verified Principal and data-policy predicates, neutral typed projections, cursor/snapshot pagination, stable codes, query-cost budgets, Chinese segmentation/pinyin and pluggable local/cloud index adapters. Keep PostgreSQL as one small/self-hosted adapter. ADAPT parameterized LIKE/array helpers, visible/same-company predicates, materialized match-set concept, batch snippet enrichment, deterministic ties and wildcard/tenant regression fixtures.",
+      "responsibilityConflict": "The service can reveal human assignee IDs, Agent capabilities and evidence-derived snippets based solely on companyId. It neither records who searched nor proves result-level authority, data contract, purpose, approval or query/result digest.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-search.ts:1-1340",
+        "full source SHA-256 4fe5a5460e92cb5363ceab041f3dd5feda2acc19314072a022437a32ac1230fc",
+        "ae7790861811323de7ffcedffa9f56cd88b98bc0 feat(search): add bulk extract endpoint (#9507)",
+        "focused companion evidence: 2 validation tests passed / 17 database tests skipped; source fully reviewed"
+      ],
+      "securityFindings": [
+        "The service accepts companyId/query without a verified Principal, data contract, purpose or row/field-level access predicate.",
+        "Preview image URLs are extracted from arbitrary Markdown with a regex and returned without scheme/asset/provenance validation.",
+        "Result limits do not bound database work: comment/document pattern scans, MATERIALIZED match sets, facets, fuzzy operations and zero-result count fan-out can be expensive for large tenants or common queries.",
+        "Artifact rows are fetched with a lower independent cap than the global offset window, while hasMore is derived from fetched arrays rather than canonical counts; high-offset artifact/cross-type pages can falsely report completion.",
+        "All matching Agents are searched without a lifecycle/status visibility condition, potentially exposing terminated or otherwise restricted worker metadata."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/company-search-rate-limit-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Express route tests for interactive company search rate limiting, current-board-user filter resolution and query rejection.",
+      "dependencyDirection": "A real issue router consumes a stubbed search service and the real in-memory limiter under a synthetic local board actor.",
+      "keyDataModels": "Board actor, company membership, search query/response, assigneeUserId=me, HTTP 400/429 and Retry-After.",
+      "lifecycle": "Inject actor, invoke search twice or send invalid filters, and verify search execution count plus transport response.",
+      "testAssessment": "Focused route Vitest passed 3/3 in the prior verified run. It proves deny-before-search on quota, Retry-After, board `me` resolution and invalid-filter rejection. It omits cross-company/unauthenticated/Agent/inactive principals, key separation/collision, whether invalid requests consume quota, stable machine codes, shared-store failure and multi-instance behavior.",
+      "designRationale": "Protect an expensive global search operation and keep common board-user filtering ergonomic.",
+      "companyOsProblem": "Company OS needs deny-before-work and verified current-principal mapping for every governed search profile.",
+      "companyOsFit": "ADAPT the route-level deny-before-search, Retry-After and current-principal cases. Extend with IdentityPort principals, scoped authority/DataContracts, stable codes, distributed RateLimitPort behavior, invalid-request ordering and immutable access-decision evidence.",
+      "responsibilityConflict": "The only actor is an instance-admin local board user; company membership is implicitly sufficient and no accountable-human/data-purpose decision is tested.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-search-rate-limit-routes.test.ts:1-121",
+        "full source SHA-256 e854d33dc55af43c99adf9dc2bc477986fc328c8b98524157a0805fc91508aa8",
+        "606aa4f266f6c092ea2916f385cc3f9329dc1ae7 feat(search): filters, sorting, operators & command-palette parity (#9327)",
+        "2026-08-18 focused verbose Vitest: 3/3 passed with isolated PAPERCLIP_HOME and approved local TCP listening"
+      ]
+    }
+  ]
+}

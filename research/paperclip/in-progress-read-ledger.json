@@ -3263,6 +3263,132 @@
         "Focused route Vitest passed 3/3 with isolated PAPERCLIP_HOME and approved local TCP listening. It checks same-actor rejection plus two route concerns, but not cross-company/actor isolation, key collisions, expiration cleanup, invalid config, clock movement, high cardinality, concurrency or multi-instance behavior."
       ],
       "completionRequirements": ["Read lines 1-63 exactly once and assess rate-limit identity and tenancy scope, distributed/deployment behavior, memory lifecycle, time semantics, error contract and test coverage."]
+    },
+    {
+      "id": "application:server/__tests__/company-search-service",
+      "path": "server/src/__tests__/company-search-service.test.ts",
+      "lineCount": 726,
+      "sha256": "1dd93ec92a839e553d85a4d46aa9dc7a3c6b9b821dcc503c11d7682717b0bd7a",
+      "linkedEvidence": { "history": ["606aa4f266f6c092ea2916f385cc3f9329dc1ae7 feat(search): filters, sorting, operators & command-palette parity (#9327)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 726 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 combine pure query-schema tests with embedded-PostgreSQL integration setup and real pg_trgm. They cover query truncation, filter/sort/pagination validation, offset-aware branch caps, identifier ranking, phrase/all-token ranking, cross-field issue/comment matching, snippets/highlights and comment counts.",
+        "The fixture deletes all searched tables after each case and uses company-scoped factories, but this segment has not yet shown adversarial tenant isolation or authorization; service calls accept companyId directly with no Principal.",
+        "Lines 251-500 cover issue-document and artifact projections, artifact high-offset handling, combined filters before sort/pagination, filter-only searches, zero-result loosen suggestions, hidden issue/artifact exclusion, harness issue exclusion and explicit cross-company isolation.",
+        "The test intentionally counts facet options before active filtering in one case and treats hidden/harness records as globally absent. It still tests companyId isolation as a data query property rather than caller authority to choose that company.",
+        "Lines 501-726 strongly exercise SQL LIKE wildcard escaping for %, _ and backslash across every result branch, cross-type merge pagination, pg_trgm fuzzy matching and common transpositions. These are useful correctness/security regression cases.",
+        "The suite does not cover empty/whitespace-only unconstrained searches, Unicode/CJK tokenization and normalization, malicious highlight/snippet content, huge comments/documents, stable pagination under ties/concurrent writes, query plans/index use, permission/data-contract filtering or per-result evidence visibility.",
+        "Focused run: 2 pure validation tests passed; all 17 embedded-PostgreSQL service tests were explicitly skipped because the embedded database failed to start after five attempts (init exit code null). No database behavior is claimed as passing on this host."
+      ],
+      "completionRequirements": ["Read lines 1-726 exactly once and assess company/identity isolation, query/filter/sort semantics, result authorization, pagination/bounds, SQL safety, evidence exposure and regression quality."]
+    },
+    {
+      "id": "application:server/__tests__/company-search-extract-service",
+      "path": "server/src/__tests__/company-search-extract-service.test.ts",
+      "lineCount": 269,
+      "sha256": "c36a755b856e7ded6eb12aa5c14baf9292a85d33c9bb340decb4e22451172a85",
+      "linkedEvidence": { "history": ["ea0e8999059b57d57858bec42309bdb0a135b661 fix(search): honor extract match limits + harden pr-gardening candidate discovery (#9652)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 269 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-200 validate literal/URL extraction inputs, reject regex and ambiguous missing kind, cap limit/offset/matches-per-issue, reject conflicting time filters, and use real embedded PostgreSQL fixtures.",
+        "Tests cover URL extraction/deduplication and source-field attribution across issue title/description, comments and linked document title/body, including scheme-less containment queries. They do not yet show tenant/hidden-record or result authorization behavior.",
+        "Lines 201-269 cover status/time filters, default and explicit distinct-match caps with truncation flags, and cross-company data exclusion. Missing cases include hidden/harness issues, foreign-company documents/comments attached by malformed relations, duplicate values with different provenance, wildcard escaping, extremely long source content, Unicode/CJK, stable paging and caller authority.",
+        "Focused run: 1 pure validation test passed; all 6 embedded-PostgreSQL extraction tests were explicitly skipped because the embedded database failed to start after five attempts (init exit code null). No database behavior is claimed as passing on this host."
+      ],
+      "completionRequirements": ["Read lines 1-269 exactly once and assess extract authorization, selectors, result caps, content/provenance fidelity, adversarial input and regression quality."]
+    },
+    {
+      "id": "application:server/__tests__/company-search-extract-routes",
+      "path": "server/src/__tests__/company-search-extract-routes.test.ts",
+      "lineCount": 104,
+      "sha256": "eae777e4fa079c38d1621f023b1bc5313997c372e6de88db64ad3ef7607b0739",
+      "linkedEvidence": { "history": ["ea0e8999059b57d57858bec42309bdb0a135b661 fix(search): honor extract match limits + harden pr-gardening candidate discovery (#9652)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 104 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "All 104 lines use a real Express route with stubbed search/extract services. Tests cover parsed/capped query delivery, deny-before-service for a board actor lacking company membership, and reuse of the same search limiter with Retry-After.",
+        "The test actor is an instance admin and only board/session identity is exercised. Missing cases include Agent authentication, unauthenticated requests, inactive membership, granular search/data permission, stable structured error codes, malformed extract queries and proof that rate-limit identity cannot be forged or collide.",
+        "Focused route Vitest passed 3/3 with isolated PAPERCLIP_HOME and approved local TCP listening."
+      ],
+      "completionRequirements": ["Read lines 1-104 exactly once and assess transport authz, validation/error codes, tenant binding, rate limiting and route-to-service contract coverage."]
+    },
+    {
+      "id": "application:server/services/company-search-extract",
+      "path": "server/src/services/company-search-extract.ts",
+      "lineCount": 349,
+      "sha256": "98afb44df08d716e4ed494dbf1bdefafa9f8600c99e576e9c40babbdac7989a0",
+      "linkedEvidence": { "history": ["ea0e8999059b57d57858bec42309bdb0a135b661 fix(search): honor extract match limits + harden pr-gardening candidate discovery (#9652)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 349 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-200 implement SQL prefiltering plus in-process exact extraction. Drizzle parameterization and explicit LIKE/regex escaping reduce injection/wildcard risk; visibleIssueCondition and company predicates are present in issue/comment/document branches.",
+        "URL extraction is a custom ASCII/domain regex and literal matching lowercases JavaScript strings. It deduplicates solely by lowercased value, so the first source wins and repeated identical evidence from different comments/documents is discarded, weakening provenance and completeness.",
+        "Full source text is later needed to create excerpts; current code has no content-length or aggregate-memory constraint in this segment. Data authorization is only companyId and visibility, with no Principal, DataContract or field-level permission.",
+        "Lines 201-349 use stable updatedAt/id ordering and limit+1 pagination, then issue two batched child queries rather than N+1. Company predicates, nondeleted comments and same-company document joins are explicit, which are strong tenancy/integrity details.",
+        "The service loads entire matching comment/document bodies for up to 200 issues and can emit up to 200 distinct matches per issue. It reruns sourceOccurrences on each full text and has no byte/time/cost budget; a high-volume extraction request can be CPU/memory heavy even behind a request-count limiter.",
+        "Labels and excerpts are English presentation strings in the service. The response exposes issue, assignee, comment and document identifiers plus original excerpts without data-classification redaction, access-decision evidence or an immutable extraction/query digest."
+      ],
+      "completionRequirements": ["Read lines 1-349 exactly once and trace extraction query planning, tenant/data authorization, boundedness, SQL/content safety, provenance and dependency direction."]
+    },
+    {
+      "id": "application:server/services/company-search",
+      "path": "server/src/services/company-search.ts",
+      "lineCount": 1340,
+      "sha256": "4fe5a5460e92cb5363ceab041f3dd5feda2acc19314072a022437a32ac1230fc",
+      "linkedEvidence": { "history": ["ae7790861811323de7ffcedffa9f56cd88b98bc0 feat(search): add bulk extract endpoint (#9507)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1340 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 show a search service coupled directly to many database tables, shared presentation DTOs, artifacts, extract search and route URL construction. Search query parsing/ranking, Markdown simplification, snippets/highlights, navigation and artifact image discovery are mixed in one service.",
+        "Parameterized SQL-array helpers and LIKE escaping are sound primitives. Tokenization supports Unicode letter/number boundaries and caps token count, but code-unit length, whitespace tokenization and English fuzzy thresholds are not designed for Chinese segmentation or locale-aware normalization.",
+        "plainText is a regex-based Markdown approximation and extractFirstImageUrl returns an unvalidated Markdown target. Presentation consumers must not treat that URL as trusted; Company OS needs a sanitized asset/provenance boundary rather than discovering media from arbitrary text.",
+        "Lines 251-500 build issue filters and facet-omission queries with parameterized values and explicit company-scoped label EXISTS checks. Stable sort tie-breaking by ID and filtering before cross-type pagination are thoughtful correctness choices.",
+        "Facet and result functions embed English labels, route paths and issue presentation. The service exposes assignee human/Agent IDs, project IDs and raw-derived preview URLs based only on company scope; no per-principal field/evidence/data-contract visibility is represented.",
+        "Agent/project relevance scoring later occurs in JavaScript over fetched rows rather than one canonical indexed ranking. Chinese tokenization, pinyin/word segmentation, locale collation and enterprise ACL-aware search remain outside the model.",
+        "Lines 501-750 compose one sophisticated issue-side SQL pipeline with capped per-branch fetching, escaped phrase/token patterns, company-scoped nondeleted comment CTEs, same-company document joins and precomputed flags/facets to avoid correlated N+1 queries.",
+        "The query deliberately optimizes PostgreSQL pg_trgm/fuzzy matching and assumes database extensions/planner behavior. Title fuzzy word splitting is hardcoded to [a-z0-9], explicitly English-centric; it cannot serve Company OS Chinese search without a separate locale-aware search abstraction/index strategy.",
+        "For multi-pattern comments the service joins every company comment against unnest(patterns), while documents UNION one scan per pattern. Caps limit result rows, not scan work. Common/short queries over large enterprise content can produce high CPU/IO before the request limiter reacts.",
+        "Lines 751-1000 use one MATERIALIZED matched CTE and dynamically UNION ranked rows, per-type counts, every facet, time buckets and zero-result omission totals. This avoids application N+1 and gives coherent results within one SQL statement, but branch count and work grow with active filters/facets.",
+        "The matched CTE materializes every visible company issue matching the text before filter branches and result caps. Offset/limit bound returned rows but not match-set, comment/document scans, facet groups or fuzzy work; a large tenant/common query remains an expensive database operation.",
+        "Counts labeled comment/document are counts of matched issues, not occurrences or source records. This projection semantic should be explicit; otherwise Agent Boss users may misinterpret data volume and evidence coverage.",
+        "Lines 1001-1250 enrich only the fetched issue window with one lateral comment/document query and keep company/same-company joins, avoiding classic per-result N+1. However it selects complete comment/document bodies to create snippets and still lacks field-level evidence visibility/redaction.",
+        "Agent/project branches are company-scoped and projects exclude archived rows, but Agents have no lifecycle/status visibility filter. Agent capabilities and identity metadata can therefore appear based on text match even if a principal should not see terminated/restricted workers.",
+        "Artifact list and three artifact count branches duplicate query work, then run alongside issue aggregates, snippets, Agent/project rows and counts in Promise.all. One search can fan out into many heavy concurrent SQL statements; request-count limiting is not a query-cost budget.",
+        "Artifact media is defined by Paperclip-specific work-product provider and Agent-created heuristics, so this taxonomy is not a neutral Company OS evidence/artifact model and should not be copied.",
+        "Lines 1251-1340 merge issue/artifact/Agent/project results in memory with deterministic sorting and then paginate. Routes, labels and result presentation remain embedded in the service rather than returned as neutral projections.",
+        "Zero-result recovery can launch three nonissue count queries for the unfiltered query plus three more for every active filter, all concurrently. With many filters this creates a large database fan-out on the exact no-result path likely to contain broad/common searches.",
+        "hasMore derives from the truncated in-memory branch rows rather than canonical counts. Artifact fetching is capped independently of offset+limit, so high-offset artifact or cross-type pages can report no rows/hasMore=false while countArtifacts reports additional matches; the existing high-offset test has no artifact rows and does not catch this.",
+        "The service accepts only companyId/query and returns human/Agent/evidence-derived data without a verified Principal or access decision. Company OS must move authorization/data-contract filtering into the canonical search projection boundary, not rely on a route membership check."
+      ],
+      "completionRequirements": ["Read lines 1-1340 exactly once and trace query grammar, SQL generation, company/principal/data scope, result projections, pagination/sorting, performance and Company OS governance fit."]
+    },
+    {
+      "id": "application:server/__tests__/company-search-rate-limit-routes",
+      "path": "server/src/__tests__/company-search-rate-limit-routes.test.ts",
+      "lineCount": 121,
+      "sha256": "e854d33dc55af43c99adf9dc2bc477986fc328c8b98524157a0805fc91508aa8",
+      "linkedEvidence": { "history": ["606aa4f266f6c092ea2916f385cc3f9329dc1ae7 feat(search): filters, sorting, operators & command-palette parity (#9327)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 121 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "All 121 lines use a real Express router with a synthetic instance-admin local_implicit board actor and stubbed search. Tests prove same-actor denial before search execution, Retry-After, board assigneeUserId=me resolution, and invalid sort/Agent-ID rejection before search.",
+        "Focused route Vitest passed 3/3 in the prior verified run. Missing cases include cross-company/unauthenticated/Agent/inactive identities, limiter separation and key collisions, whether invalid queries consume quota, stable machine error codes, distributed replicas and authority beyond company membership."
+      ],
+      "completionRequirements": ["Read lines 1-121 exactly once and assess deny-before-work, actor/company scope, query validation, stable error/headers and distributed limiter test gaps."]
     }
   ]
 }
