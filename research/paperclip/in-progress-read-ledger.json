@@ -4,6 +4,38 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/services/company-portability",
+      "path": "server/src/services/company-portability.ts",
+      "lineCount": 6179,
+      "sha256": "5edef5e6a98e2ffbeac5f384a347257c7b38b15b946b075f7c53a905d93dce2b",
+      "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1500 }],
+      "sourceReadComplete": false,
+      "nextLine": 1501,
+      "notes": [
+        "Lines 1-250 show a 6,179-line portability service directly coupled to database tables, shared DTOs, adapter-utils, an OpenCode-local adapter, server adapter registry, GitHub fetch, storage, secrets, org-chart rendering and most domain services. Portability is not a narrow application boundary; vendor/runtime/presentation concerns all flow inward.",
+        "The bundle writes schema version 6 and treats unstamped bundles as version 5. Inline completeness relies on an optional client-declared expectedFileCount and rejects only received<expected; it does not authenticate the set, reject extra files or replace a manifest-level canonical file inventory/digest.",
+        "Agent-safe mode is implemented as a blacklist of selected project workspace commands/settings and non-schedule triggers. This is vulnerable to policy drift as new executable fields/capabilities are added; Company OS needs capability/data classifications with default-deny admission.",
+        "Org-tree export hardcodes English role labels and active status in the service, silently treats missing-parent Agents as roots, omits pure reporting cycles, and leaves an unused rootSlugs set. Presentation and validation are mixed into migration logic.",
+        "Lines 251-500 devote substantial portability logic to Paperclip skill identity/provenance and export directory naming across catalog, GitHub, skills.sh, URL, bundled and local-path sources. This is product/vendor-specific taxonomy rather than a neutral migration kernel.",
+        "Skill paths are ASCII-normalized, lowercased by default and collision-resolved deterministically with source suffixes then truncated eight-hex hashes. The behavior is useful for stable exports but may collapse international names/case-sensitive identities; original canonical key/source provenance must remain authoritative and collision mapping must be explicit in a manifest.",
+        "Lines 501-750 redact secret_ref values and heuristic-sensitive plain env defaults, omit PATH, and label absolute-command defaults system-dependent. The key-name heuristic is neither a data classification contract nor complete secret detection (for example generic key/DSN/cert material can evade it, while unrelated names containing auth can be over-redacted).",
+        "Portable env inputs are always marked optional and generated descriptions are English. Original binding policy, secret owner/audience, requiredness, data-export permission, residency and rebind workflow are not preserved here.",
+        "Internal portability types mirror broad database/service DTOs and introduce explicit board_full versus agent_safe modes, while runtime/adapter defaults begin to be encoded in the same module—further evidence that serialization, policy, product UX and vendor runtimes lack separation.",
+        "Lines 751-1000 hardcode default runtime and adapter settings for Codex, Gemini, OpenCode, Cursor, Claude and OpenClaw, including Paperclip-specific fixed session/admin scope defaults. Provider configuration migration is therefore coupled to this central service and will drift whenever adapters evolve.",
+        "Permission grants accept known keys but silently discard malformed/unknown entries and preserve any plain-record scope without a versioned scope schema or warning. This can quietly reduce or distort authority during migration instead of producing an explicit review plan.",
+        "Comment/document/work-product parsers are tolerant: malformed entries are skipped, invalid dates become null, labels and blockers are deduplicated, and arbitrary work-product metadata survives. Warnings are English strings; authorUserId, URLs and metadata lack explicit privacy/egress classification, while documents normalize referenced paths but do not yet prove existence or content binding.",
+        "Lines 1001-1250 normalize embedded assets/blobs/attachments but only require nonempty sha256 strings, not canonical 64-hex digests; byte sizes are merely nonnegative/unbounded, content types and filenames are untrusted strings, and attachment comment indices are not checked against the comment collection here.",
+        "Import silently injects --skip-git-repo-check into Codex-local adapter arguments. This changes runtime security posture during data migration and is provider-specific behavior that must instead be an explicit, reviewed Connector compatibility decision.",
+        "Routine variables/triggers are permissively normalized and imported timer heartbeat is disabled by default—a useful safety instinct. However absolute/system-path detection is heuristic recursive string scanning and executable settings remain interleaved with serialization rather than passed through a versioned capability/policy admission layer.",
+        "Lines 1251-1500 translate workspace IDs to portable keys and may execute local git subprocesses against database-supplied cwd values to infer remote/ref/default branch. execFile avoids shell injection, but there is no timeout/path ownership boundary and exported remote URLs are not scrubbed for embedded credentials or restricted schemes.",
+        "Workspace deduplication signature uses only name/repoUrl/repoRef/defaultRef, ignoring visibility, source type, setup/cleanup commands and metadata; distinct security/execution configurations can collapse into one exported workspace.",
+        "Arbitrary setup/cleanup commands remain portable unless they contain an absolute-path fragment, and arbitrary repository schemes/metadata are retained. The heuristic removes some machine paths but does not constitute executable-code admission or data-egress governance."
+      ],
+      "completionRequirements": ["Read lines 1-6179 exactly once and trace export/import formats, schemas, parsing/path safety, every entity lifecycle, transactions, collision/idempotency, secrets/data provenance, responsibility, performance and dependency direction against completed route/batching evidence."]
+    },
+    {
       "id": "application:server/__tests__/company-portability-routes",
       "path": "server/src/__tests__/company-portability-routes.test.ts",
       "lineCount": 1236,
