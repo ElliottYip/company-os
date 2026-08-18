@@ -3812,6 +3812,19 @@
         "Focused Vitest was run outside the sandbox with a fresh isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the single file and all 13 tests were skipped; 0 tests executed and no runtime pass is claimed."
       ],
       "completionRequirements": ["Read lines 1-529 exactly once, run the focused suite in an isolated Paperclip home, and assess catalog install/update/reset, hash/provenance/origin snapshots, local-modification holds, audit hard stops, force semantics, directory/database failure recovery, tenant boundaries, publisher/license evidence and Company OS package supply-chain fit."]
+    },
+    {
+      "id": "application:server/__tests__/company-skills-routes",
+      "path": "server/src/__tests__/company-skills-routes.test.ts",
+      "lineCount": 2319,
+      "sha256": "c6dec8f2d6c7fa11da9c8a45d89c63083a631faad932667dd1540de6ebea8a63",
+      "linkedEvidence": { "history": ["fcf66f3a91e6d1e5b81200f5ebf945b0d6ecad9d feat(skills): add managed skill rename API (#9688)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-2319 exactly once, run the focused route suite in an isolated Paperclip home, and assess authentication/authorization and tenant scoping for every endpoint; stable API/error contracts; input/file/path/size validation; import, version, fork, update, reset, rename and deletion lifecycle; approval/responsibility evidence; concurrency/idempotency; secret and local-path exposure; and suitability as a reference for Company OS API boundaries."]
     }
   ]
 }
