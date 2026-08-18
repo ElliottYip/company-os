@@ -4360,6 +4360,54 @@
         "Focused Vitest passed 23/23 tests across four files and a no-emit/non-incremental UI TypeScript check passed on 2026-08-19. Formal decision: ADAPT only AgentSkillRow, filter/source-display and desired-versus-detected projection patterns; replace autosave orchestration with digest-bound, concurrency-safe, policy/approval-governed Skill assignment and runtime attestation."
       ],
       "completionRequirements": ["Read all nine files exactly once, run four focused tests and no-emit UI typecheck, then assess release pinning, merge modes, provenance/trust, capability compatibility, Agent assignment lifecycle, auth/tenant and accountable-human semantics, failure UX, stable codes, accessibility/mobile behavior and long-term applicability to Company OS training/certification versus runtime Skills."]
+    },
+    {
+      "id": "application:ui/pages/AgentDetail.instructions",
+      "paths": [{ "path": "ui/src/pages/AgentDetail.instructions.test.tsx", "lineCount": 389, "sha256": "c690e01f3107d79ceb60e055d3199a35deb6bc614287f2eca7d528aa59748c9f" }],
+      "linkedEvidence": { "history": ["d1f6a6850a3b765f7580b172f3a06fd1f9b9e2c8 Fix agent detail URL after agent rename (#9340)", "9a1d4b7983dfd50e8eb40ee9770e44999d405f60 fix(ui): use prose editor for markdown agent instructions (#9332)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/AgentDetail.instructions.test.tsx", "completedRanges": [{ "start": 1, "end": 389 }] }],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "This test-only unit is read before the 4,360-line AgentDetail implementation to establish instruction-editing intent without rereading the implementation later.",
+        "Lines 1-100 build a jsdom harness for PromptsTab with instruction bundle/file CRUD mocked, fixed company-1 context and all adapter capabilities forced true. MarkdownEditor is replaced by a textarea and image upload by a constant path, so rich-editor sanitization, upload authorization/content handling and unsupported-capability behavior are outside the suite.",
+        "Lines 101-200 define DOM helpers and realistic Agent/instruction bundle fixtures. The Agent has no accountable human, zero budget and only canCreateAgents permission; instruction bundles expose absolute managed filesystem paths, editable/deprecated/virtual flags and mutable entry-file resolution. Fixtures contain no revision, digest, author/approver, provenance, permission/data effects or runtime attestation.",
+        "Lines 201-300 initialize successful CRUD defaults, mount PromptsTab with external save/cancel/dirty callbacks and begin a Markdown metadata/save test. The suite exercises component state through mocks and real React Query, but API calls are not authorization- or revision-aware and all server writes succeed by default.",
+        "Lines 301-389 verify extensionless server-declared Markdown saves, unsaved .md creation, extension fallback when metadata is missing and server metadata overriding a .md suffix to raw text. These are useful content-mode precedence tests. They do not test bundle/entry updates, delete, legacy clearing, save conflicts, errors, cancellation, path traversal, size limits, untrusted Markdown/images, dirty navigation, mobile/a11y or responsibility/approval evidence.",
+        "Focused Vitest passed 4/4 instruction-editor cases on 2026-08-19. Formal decision: ADAPT the metadata precedence and dirty/save contract, adding immutable revisions, validation, concurrency, approval and runtime attestation."
+      ],
+      "completionRequirements": ["Read exactly once, run focused test, and assess instruction editing/saving, stale identity, auth/tenant, concurrency, content trust, approval/evidence and accessibility behavior owned or omitted by the suite."]
+    },
+    {
+      "id": "application:ui/pages/AgentDetail.liveRun",
+      "paths": [{ "path": "ui/src/pages/AgentDetail.liveRun.test.ts", "lineCount": 118, "sha256": "defe274aa2ef5bdffcd0d6222caa16bf3e9211e1a9c725862dc36b4f9c7d7472" }],
+      "linkedEvidence": { "history": ["b67c512f8228f0bd5ddcc4cfd92676ba1ab31cf7 feat(ui): live run label → run detail, running row → task detail (#11034)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/AgentDetail.liveRun.test.ts", "completedRanges": [{ "start": 1, "end": 118 }] }],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "This test-only unit is read before AgentDetail to establish live-run navigation/projection intent.",
+        "Lines 1-118 verify issueId/taskId compatibility, identifier/id task routes, timer fallback to Run detail, bounded-list misses and a targeted-fetch fold-in. The pure helpers tolerate non-string snapshot ids by coercion. Tests do not prove tenant authorization of the fallback fetch, stale/deleted/reassigned Work, snapshot authenticity, responsibility/evidence visibility, route encoding or component accessibility.",
+        "Focused Vitest passed 12/12 live-run navigation cases on 2026-08-19. Formal decision: ADAPT the fallback/targeted lookup pattern behind typed tenant-authorized Work projections."
+      ],
+      "completionRequirements": ["Read exactly once, run focused test, and assess live-run selection/navigation identity, missing/stale data, tenant scope, responsibility/evidence projection and accessibility behavior."]
+    },
+    {
+      "id": "application:ui/pages/AgentDetail.progress",
+      "paths": [{ "path": "ui/src/pages/AgentDetail.progress.test.ts", "lineCount": 104, "sha256": "17710a2062edcbfcec716fc097ed479cf1c46cbe2784197e63c6f9eb44be9888" }],
+      "linkedEvidence": { "history": ["85e36aaefb37cc258e295d8667156bfa96ef3723 Show heartbeat progress in run logs (#8965)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/AgentDetail.progress.test.ts", "completedRanges": [{ "start": 1, "end": 104 }] }],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "This test-only unit is read before AgentDetail to establish progress-event formatting intent.",
+        "Lines 1-104 verify progress message/phase rendering, fallback timestamps, whitespace suppression, replay-key concatenation and query-cache/route replacement after Agent rename. Progress is unstructured free text promoted to system logs; dedup identity is timestamp/stream/content, not an event id. Tests omit ordering/skew, adversarial text, size limits, duplicate legitimate messages, stable phase codes, evidence linkage, cross-company route collisions and browser component behavior.",
+        "Focused Vitest passed 6/6 progress/rename helper cases on 2026-08-19. Formal decision: REFERENCE ONLY; Company OS requires structured event ids, sequence/fencing, stable codes and evidence references."
+      ],
+      "completionRequirements": ["Read exactly once, run focused test, and assess structured progress, untrusted content, stable codes, ordering/time, evidence semantics and accessibility behavior."]
     }
   ]
 }
