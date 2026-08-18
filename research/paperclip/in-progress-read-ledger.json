@@ -2116,6 +2116,42 @@
         "Focused E2E could not execute on this host: sandbox run skipped on loopback listen EPERM; escalated rerun reached embedded Postgres setup but skipped after five init failures with exit code null. This is missing runtime evidence, not a passing or failing product assertion."
       ],
       "completionRequirements": ["Read lines 1-623 exactly once and assess end-to-end export/import fidelity, archive/network trust, preview/apply binding, identities/Secrets/permissions/responsibility, failures/rollback/idempotency, artifact integrity and actual process coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/company-import-url",
+      "path": "cli/src/__tests__/company-import-url.test.ts",
+      "lineCount": 74,
+      "sha256": "6d8726e195553eb7183ef4e02f3a959eaa0eed068551493b433c16bd0021f36e",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 74 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The pure tests classify HTTP/HTTPS versus paths, restrict repo URLs to GitHub-shaped owner/repo forms, distinguish Windows/relative/absolute local paths from shorthand, and normalize GitHub shorthand/tree URLs with encoded ref/path.",
+        "Plain HTTP is explicitly accepted. Default shorthand pins mutable main, while --ref accepts branch-like names rather than requiring a full commit SHA; no fetched content digest/signature or provenance record is asserted.",
+        "No actual network request is exercised, so redirects, DNS rebinding, private/link-local/metadata targets, credentials/userinfo, proxy behavior, timeouts, response size/content type, GitHub rate/auth failures and TOCTOU ref changes are untested.",
+        "Focused Vitest passed 11/11 in this file as part of a 12/12 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-74 exactly once and assess remote import URL/provider normalization, SSRF/redirect/DNS/private-network controls, pinning/integrity, credentials, size/timeouts and source provenance."]
+    },
+    {
+      "id": "application:cli/__tests__/company-import-zip",
+      "path": "cli/src/__tests__/company-import-zip.test.ts",
+      "lineCount": 51,
+      "sha256": "f590bdc4882722c4123089a315ddb8af39a20a392364b7889233e4b83514c60b",
+      "linkedEvidence": { "history": ["916c1350 Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 51 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The one happy-path test writes a stored ZIP under a wrapper directory, resolves only recognized portable text files and a binary blob, base64-encodes the blob, ignores an unrelated notes file and cleans temporary directories.",
+        "Root normalization and binary preservation are useful, but traversal/absolute/backslash paths, duplicate and case-colliding entries, symlinks, special files, nested archives, compression ratios, per-file/total/count limits, CRC corruption and invalid UTF-8 are untested.",
+        "No manifest hash/signature, source provenance, permission metadata or extraction atomicity is verified; this suite cannot establish that untrusted ZIP import is safe.",
+        "Focused Vitest passed 1/1 in this file as part of a 12/12 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-51 exactly once and assess ZIP extraction traversal/absolute/symlink/duplicate/case/bomb/size controls, root layout normalization, cleanup, integrity and provenance coverage."]
     }
   ]
 }
