@@ -4572,10 +4572,11 @@
         { "path": "cli/src/commands/client/prompt.ts", "completedRanges": [{ "start": 1, "end": 276 }] },
         { "path": "cli/src/commands/client/routine-api.ts", "completedRanges": [{ "start": 1, "end": 154 }] },
         { "path": "cli/src/commands/client/run.ts", "completedRanges": [{ "start": 1, "end": 321 }] },
-        { "path": "cli/src/commands/client/secrets.ts", "completedRanges": [{ "start": 1, "end": 726 }] }
+        { "path": "cli/src/commands/client/secrets.ts", "completedRanges": [{ "start": 1, "end": 726 }] },
+        { "path": "cli/src/commands/client/skill.ts", "completedRanges": [{ "start": 1, "end": 150 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/skill.ts",
+      "nextFile": "cli/src/commands/client/skills.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4697,7 +4698,11 @@
         "Inline migration detects Secrets with a heuristic key regex that can miss keys such as AWS_ACCESS_KEY_ID and can misclassify ordinary values. Generated names use only eight Agent-ID characters plus an unsanitized lowercased key; an existing same-name Secret is rotated without first proving exclusive ownership/usage, so collision or shared usage can change credentials for unrelated consumers.",
         "Apply rotates/creates Secrets first, then patches Agents one by one with replaceAdapterConfig=true from stale full snapshots. There is no transaction, idempotency, revision check, rollback or preview/apply digest: failure leaves partial migration, orphaned/rotated Secrets and plaintext env still present; concurrent Agent changes can be overwritten. Binding version=latest also makes execution non-reproducible.",
         "Secret deletion has a useful --yes plus exact-ID confirmation. Provider-config deletion, rotation, default changes, remote import and metadata updates do not have equivalent dependency preview, accountable-human approval or exact digest. JSON list/config/health output relies entirely on server redaction and can disclose provider topology or credential-source metadata; access-event lists are unpaginated.",
-        "Decision: NARROW. Preserve lifecycle/usage/audit/provider abstraction concepts, but do not copy the CLI or heuristic migration. Company OS needs a transactional migration plan, immutable version binding, Secret-safe input channel, provider-neutral SecretPort, least-data projections and responsibility/data-export approval. Next file is skill.ts."
+        "Decision: NARROW. Preserve lifecycle/usage/audit/provider abstraction concepts, but do not copy the CLI or heuristic migration. Company OS needs a transactional migration plan, immutable version binding, Secret-safe input channel, provider-neutral SecretPort, least-data projections and responsibility/data-export approval.",
+        "skill.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It exposes Company Skill list/read/file/create/import/project-scan/file-update/update-status/install-update/delete through a compact API wrapper.",
+        "Importing Skills, scanning project workspaces and installing updates are executable-instruction supply-chain operations, yet generic JSON and empty POSTs expose no source commit/digest/signature, license, trust tier, reviewer, capability/tool/data grants, prompt-injection analysis, compatibility plan or accountable-human approval.",
+        "Skill-relative file reads rely on the service to reject traversal. File update has no base revision/digest; install-update does not select or pin an exact version and has no rollback preview; delete has no confirmation. List/import/scan results have no pagination or bounded workspace scope visible here.",
+        "Decision: REFERENCE ONLY for lifecycle vocabulary. Company OS must treat Skills as versioned, provenance-bearing executable policy artifacts governed by Connector/Data/Approval boundaries, not ordinary mutable files. The larger skills.ts is a distinct next file and has not yet been read."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
