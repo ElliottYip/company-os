@@ -6240,6 +6240,32 @@
       "completionRequirements": [
         "Read lines 1-1324 exactly once and assess environment persistence, managed provisioning/drift, default/local uniqueness, lease state/concurrency, delete blast radius and deletion safety, tenant scope, metadata/Secret handling and test quality against Company OS deployment/profile storage."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-test-harness",
+      "path": "server/src/__tests__/environment-test-harness.test.ts",
+      "lineCount": 237,
+      "sha256": "9308d242bc20117818aa80e9b07fe45fedaaa07a202c6d71306db5d40584ab79",
+      "linkedEvidence": {
+        "history": [
+          "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 237 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Thirteen pure tests exercise the plugin-sdk environment harness and fake driver across validate/probe, acquire/realize/execute/release ordering, probe/acquire/execute failures, resume/unknown lease, destroy, lifecycle assertions, missing hook errors and base logger/state capabilities.",
+        "The harness records an ordered provider-neutral event stream and exposes reusable assertions for lease, realization and execution boundaries. This is a stronger seed for a public conformance kit than the server's acquire/release-only driver contract, and runs hermetically without credentials, database, network or filesystem writes.",
+        "All tests use the SDK's own fake driver, so they prove the harness agrees with its fixture rather than an independent provider implementation. Manifest/API/version negotiation, capability-to-hook consistency and compatibility across SDK releases are not challenged.",
+        "Failure injection covers probe false, acquire throw and execute nonzero plus missing hooks, but not realize/release/destroy failure, partial side effects, retry/idempotency, concurrent lease ownership, worker crash/restart, cancellation/timeouts or cleanup recovery.",
+        "Events contain enough input/output to assert order, but this suite has no privacy/classification test for config, command, args, env, stdin/stdout/stderr/errors or paths. It also lacks streamed progress, pause/approval/resume, evidence/result hashes and signed runtime proof.",
+        "Focused Vitest passed 13/13. Company/run IDs are fixtures but lifecycle assertions do not test their consistency, tenant separation, Agent/accountable-human identity or DataAuthorization across events."
+      ],
+      "completionRequirements": [
+        "Read lines 1-237 exactly once and assess test-harness fixture isolation, lifecycle/cleanup, determinism, failure reporting and whether it can support Company OS Connector runtime conformance without real credentials or production data."
+      ]
     }
   ]
 }

@@ -5648,18 +5648,23 @@
     },
     {
       "id": "application:server/__tests__/environment-test-harness",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure self-tests for the plugin-sdk environment driver harness, fake provider, lifecycle event recorder/assertions and configurable failure behavior.",
+      "dependencyDirection": "Vitest -> plugin-sdk testing harness and fake environment driver -> in-memory events/logs/state; no server runtime, database, provider process, network, filesystem, Secret store or real Connector is exercised.",
+      "keyDataModels": "Plugin manifest/API version/capability, driver key, company/environment/Run inputs, provider lease, workspace, execute result and ordered environment lifecycle/error events.",
+      "lifecycle": "Instantiate manifest and fake driver -> validate/probe -> acquire -> realize -> execute one or more commands -> release or destroy/resume -> inspect event order/errors/logs through reusable assertions.",
+      "testAssessment": "Focused Vitest passed 13/13. The suite is fast and covers more lifecycle stages than the server contract, but remains a self-referential fake-driver test. It omits independent implementations, compatibility versions, cancellation/streaming/timeouts, concurrency/idempotency, cleanup failures, privacy, Secret/data policy, approval/evidence and attestation.",
+      "designRationale": "Give plugin authors a hermetic way to exercise environment hooks and assert lifecycle ordering before connecting a real infrastructure provider.",
+      "companyOsProblem": "Company OS needs one canonical Connector SDK conformance framework that vendors and enterprise teams can run locally and in certification pipelines without real production credentials or data.",
+      "companyOsFit": "ADAPT this harness as the single conformance-kit foundation. Add independent reference Connectors, version/capability matrices, deterministic clock/IDs, stream/pause/approval/resume/cancel/timeout/idempotency/concurrency, failure/recovery, Secret handles, DataAuthorization/egress, evidence/result/run attestation, privacy guards and explicit PASS/SKIP/INFRA_ERROR reports.",
+      "responsibilityConflict": "Recorded company/Run values are not checked against goal initiator, executing Agent, accountable human, approval or data contract. A driver can pass lifecycle ordering while violating the responsibility chain and leaking sensitive event payloads.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-test-harness.test.ts:1-237 (SHA-256 9308d242bc20117818aa80e9b07fe45fedaaa07a202c6d71306db5d40584ab79)",
+        "git history: 70679a33216bae9247b1b6bddc5fcaad1c04e829",
+        "2026-08-19 focused Vitest: 13/13 passed"
+      ],
+      "securityFindings": "HIGH self-conformance gap: only the SDK fake driver is tested. HIGH lifecycle gap: cancel/timeout/stream/pause/approval and cleanup failures are absent. HIGH payload-privacy gap: no guard prevents credentials, commands, data or error text entering harness events/logs. HIGH responsibility/evidence/attestation gap. MEDIUM compatibility gap: no multi-version manifest/SDK fixtures."
     },
     {
       "id": "application:server/__tests__/error-handler",
