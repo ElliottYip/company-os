@@ -5837,18 +5837,24 @@
     },
     {
       "id": "application:server/__tests__/external-objects-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Registry, built-in GitHub provider and persistence-service tests for sanitized external-object detection, company-scoped identity, status snapshots, refresh scheduling/fencing, mention sync and plugin-backed providers.",
+      "dependencyDirection": "Vitest -> detector/resolver registries and GitHub provider -> external-object service -> Drizzle/PostgreSQL; built-in HTTP is mocked and plugin calls use a fake worker manager, so real network, credential provider and worker isolation are outside the unit.",
+      "keyDataModels": "Canonical URL/hash, ExternalObject, ExternalObjectMention/source context, provider/object/external IDs, structured status/liveness/error/TTL/ETag, refresh token/start/next time, company status and plugin manifest/capabilities.",
+      "lifecycle": "Extract and sanitize URLs -> provider-first detect or generic fallback -> upsert company-scoped object/mention -> schedule due refresh -> claim/fence resolver work -> persist snapshot or safe failure while retaining last good status -> skip paused companies/terminal objects -> remove deleted-source mentions.",
+      "testAssessment": "Fourteen pure tests passed and twelve embedded-Postgres tests skipped in both sandboxed and approved unsandboxed runs. Source coverage includes unusually good concurrent refresh replacement and stale-writer fencing, but no real database behavior, network policy, plugin isolation or credential boundary executed on the audit host.",
+      "designRationale": "Keep raw secret-bearing URLs out of storage, let providers own typed detection before a generic link fallback, separate business status from reachability, preserve useful stale state during outages and coordinate refreshes across processes with a replaceable claimant token.",
+      "companyOsProblem": "Company OS requires enterprise DataReferences and snapshots that are tenant-owned, provenance-rich, safely refreshed through equal Connectors and governed by purpose/data/export contracts rather than being ambient links found in Work text.",
+      "companyOsFit": "ADAPT canonical sanitization, provider registry, company-scoped identity, structured liveness/status, last-good snapshot, safe error codes, scheduled refresh and database fencing. Reframe detectors/resolvers as DataConnector capabilities under DataAuthorization; define provider-specific identity normalization, immutable provenance/snapshot digests, retention, size/time/network budgets, approval-aware refresh and explicit terminal revalidation policy.",
+      "responsibilityConflict": "The service records source mentions and company context but no accountable human, Work purpose, ResponsibilityContract, DataAuthorization, approval or immutable access receipt. An installed plugin with declared capabilities is treated as a provider without this unit proving tenant consent or data/credential scope.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/external-objects-service.test.ts:1-906 (SHA-256 7b2131610e3ed3f8f8d9e17f03ce615be494777e9802275a70113e1bd4408d47)",
+        "git history: 185515c97be41d545d4a54633e45faf6f458cc62, 2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f",
+        "2026-08-19 sandboxed focused Vitest: 14/14 pure passed, 12/12 embedded-Postgres skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 14/14 pure passed, 12/12 embedded-Postgres skipped"
+      ],
+      "securityFindings": "CRITICAL plugin/data authority gap if reused directly: declared detect/read capabilities are not shown to enforce tenant consent, DataAuthorization, credential or egress scope. HIGH network hardening gap: timeout, redirect/DNS behavior, response-size/schema abuse and cancellation are untested. HIGH identity-normalization risk: universally removing query parameters can merge distinct enterprise resources. HIGH evidence gap: no immutable snapshot/access receipt or purpose binding. MEDIUM lifecycle gap: terminal objects never auto-refresh and orphan object retention is untested. MEDIUM distributed-scheduler gap: clock skew, crash/restart and fairness are absent. MEDIUM verification gap: all 12 database tests skipped locally."
     },
     {
       "id": "application:server/__tests__/feedback-flush-controller",

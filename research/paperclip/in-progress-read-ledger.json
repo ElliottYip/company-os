@@ -6457,6 +6457,36 @@
       "completionRequirements": [
         "Read lines 1-294 exactly once and assess external-object tenancy, existence-oracle resistance, read/write authority, Agent cross-Work attribution, validation, audit receipts and test quality against Company OS DataConnector and responsibility semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/external-objects-service",
+      "path": "server/src/__tests__/external-objects-service.test.ts",
+      "lineCount": 906,
+      "sha256": "7b2131610e3ed3f8f8d9e17f03ce615be494777e9802275a70113e1bd4408d47",
+      "linkedEvidence": {
+        "history": [
+          "185515c97be41d545d4a54633e45faf6f458cc62 fix(external-objects): refresh PR status labels (#10704)",
+          "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f External object references across issue surfaces (#8512)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 906 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Twenty-six tests include fourteen pure registry/GitHub-provider cases and twelve embedded-Postgres cases for sync, sanitization, refresh scheduling/fencing, company state, mention lifecycle, terminal behavior, tenant identity and plugin providers.",
+        "Detection canonicalizes URLs before providers see them, lets a provider claim a URL before the generic fallback, and uses a company-scoped canonical identity. Query/fragment secrets are absent from detections, persisted objects and mentions; generic display URLs omit them. This is strong secret minimization but may incorrectly merge enterprise resources whose identity legitimately depends on selected query parameters.",
+        "The built-in GitHub detector recognizes PR/issue paths and the resolver derives fixed api.github.com endpoints from parsed owner/repo/number. Public access sends no Authorization header; an injected company token is used when configured and is not copied into snapshots. PR/issue states map to structured status/liveness fields rather than English-only logic.",
+        "GitHub 401, rate limit and 404 map to provider-safe results without URL leakage. Resolver failures preserve the last known good business status while updating liveness/error/backoff, and error sanitization redacts token query values and full failing URLs. HTTP timeout, redirects, DNS, response-size/schema abuse, retry jitter and conditional ETag requests are not tested.",
+        "New detections receive nextRefreshAt. Concurrent automatic/manual requests coalesce in one service instance, while a database refresh claimant prevents duplicate cross-instance work. A claimant older than roughly five minutes can be replaced; its eventual result is fenced as refresh_superseded and cannot overwrite the replacement. Crash recovery, clock skew, transaction isolation and large scheduler fairness are absent.",
+        "Paused companies are excluded from global refresh and terminal objects are never refreshed automatically. The latter saves work but can indefinitely miss reopened/deleted/restored remote objects unless a separate manual or lifecycle policy exists.",
+        "Hard-deleting a synced comment removes its mention; object garbage collection after the last mention and retention/legal-hold behavior are not asserted. Duplicate canonical URLs create separate objects per company, which is the correct tenant ownership direction.",
+        "A ready, instance-level plugin manifest with external.objects.detect/read capabilities can detect and resolve a non-GitHub object through the worker manager using sanitized URLs. The test does not prove capability enforcement, company-specific plugin enablement, DataAuthorization, network egress, token scoping, worker isolation, output size/content validation, timeout/cancel or provenance/signature binding.",
+        "Sandboxed and approved unsandboxed focused Vitest both passed 14 pure tests and skipped all 12 embedded-Postgres tests. Database concurrency, persistence, tenant and plugin integration assertions were therefore inspected but not executed on the audit host."
+      ],
+      "completionRequirements": [
+        "Read lines 1-906 exactly once and assess external-object discovery/persistence/refresh, resolver boundaries, provenance/freshness, tenant isolation, failure/idempotency/concurrency, credential and data-exfiltration risks, summaries and test quality against Company OS DataConnector/DataAuthorization semantics."
+      ]
     }
   ]
 }
