@@ -2152,6 +2152,63 @@
         "Focused Vitest passed 1/1 in this file as part of a 12/12 two-file run."
       ],
       "completionRequirements": ["Read lines 1-51 exactly once and assess ZIP extraction traversal/absolute/symlink/duplicate/case/bomb/size controls, root layout normalization, cleanup, integrity and provenance coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/config-store",
+      "path": "cli/src/__tests__/config-store.test.ts",
+      "lineCount": 139,
+      "sha256": "2739ed1cee449ef5635ecda5ce1f3923d8adea3b52d216fb76f7b078359b4fd0",
+      "linkedEvidence": { "history": ["35132af1 fix(config): preserve extensions and guard invalid repairs (#11005)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 139 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Three focused tests prove recursive unknown extension-key preservation across typed updates, semantic no-op detection with stable mtime/no backup, and collision-safe invalid-byte backup followed by an explicitly authorized atomic repair.",
+        "The invalid repair test verifies backup bytes, file and directory fsync ordering, refusal to overwrite without the exact backup path, atomic temp rename, valid reread and temp-file cleanup—unusually strong local durability coverage.",
+        "Unknown keys are preserved rather than validated or quarantined, which supports forward/plugin compatibility but can retain stale or malicious extension configuration; ownership/schema/version provenance for extensions is not tested.",
+        "File/directory modes and ownership, symlink/hardlink protection, concurrent writers/version compare, disk-full/rename failure recovery, backup retention/encryption and Secret redaction are absent. Semantic no-op also intentionally discards metadata-only source/timestamp changes, so audit metadata is not a write trigger.",
+        "Focused Vitest passed 3/3 as part of a 7/7 three-file run."
+      ],
+      "completionRequirements": ["Read lines 1-139 exactly once and assess config load/write/migration, unknown extension preservation, schema validation, atomicity, permissions, symlink/concurrency/corruption handling, rollback and Secret hygiene."]
+    },
+    {
+      "id": "application:cli/__tests__/configure",
+      "path": "cli/src/__tests__/configure.test.ts",
+      "lineCount": 124,
+      "sha256": "0fc62966bce8dedc0de2b273ad1c7f84dc04b9acb26e8cc26fe5ff3840f9ae1e",
+      "linkedEvidence": { "history": ["35132af1 fix(config): preserve extensions and guard invalid repairs (#11005)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 124 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "All three tests are fail-closed paths: unknown section, missing config, and invalid config in non-interactive mode set exitCode 1; invalid bytes are backed up exactly and the original is not replaced.",
+        "The suite cleans temporary roots and restores stdin TTY state. It does not exercise any successful interactive or non-interactive configuration change, schema field validation, unknown-extension preservation after configure, or before/after diff/confirmation.",
+        "Deployment/auth/signup/telemetry/storage/backup/Secret defaults appear only as a fixture, so the tests provide no evidence that risky combinations are prevented—for example exposing local_trusted beyond loopback, weak Secret mode, public signup, or telemetry/data policy changes.",
+        "No permissions/ownership, symlink/concurrency, atomic-write failure, rollback, audit record or structured exit/error-code contract is asserted.",
+        "Focused Vitest passed 3/3, but its real console output included the JSON parser excerpt containing the invalid original bytes. A malformed config containing credentials can therefore leak Secret-adjacent content to terminal or CI logs unless the command layer redacts parser details."
+      ],
+      "completionRequirements": ["Read lines 1-124 exactly once and assess interactive/noninteractive configuration defaults, deployment/auth/storage/Secret decisions, validation, extension preservation, operator intent and test gaps."]
+    },
+    {
+      "id": "application:cli/__tests__/configure-repair",
+      "path": "cli/src/__tests__/configure-repair.test.ts",
+      "lineCount": 83,
+      "sha256": "859b19048cbc05176e674b66f563ba46fda2165bcfbd172dacf971eb43847e79",
+      "linkedEvidence": { "history": ["35132af1 fix(config): preserve extensions and guard invalid repairs (#11005)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 83 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The single interactive happy-path test forces a TTY, confirms a default-false repair prompt, verifies exact invalid-byte backup, successful valid reread and atomic temp-file rename, then cleans the temporary root and restores TTY globals.",
+        "The actual server prompt is mocked to return current defaults unchanged, so field-level repair choices, invalid partial-value salvage, extension preservation, deployment/auth/Secret policy and post-repair behavior are not exercised.",
+        "Decline/cancel, prompt exception, backup failure, validation failure after staging, rename/fsync failure, concurrent modification, rollback and structured audit evidence are absent.",
+        "Repair from defaults is explicitly lossy by design; the prompt names the backup but does not show a diff, risk classification or require re-entry/rebinding of Secrets and identity settings.",
+        "Focused Vitest passed 1/1 as part of a 7/7 three-file run."
+      ],
+      "completionRequirements": ["Read lines 1-83 exactly once and assess invalid-config repair safety, backup/rollback, lossy transforms, extension preservation, validation-before-write, operator confirmation and failure recovery."]
     }
   ]
 }

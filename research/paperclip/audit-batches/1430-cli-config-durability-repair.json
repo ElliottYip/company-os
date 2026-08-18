@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/config-store",
+      "auditStatus": "COMPLETE",
+      "function": "Focused filesystem tests for lossless extension-key updates, semantic no-op writes and durable invalid-config backup plus atomic repair.",
+      "dependencyDirection": "Calls production config store/schema directly against cleaned temporary roots and spies on filesystem durability primitives.",
+      "keyDataModels": "Typed Paperclip config with unknown extensions, metadata source/timestamp, invalid raw bytes, collision-safe backup path and atomic temp path.",
+      "lifecycle": "Reads and merges known fields, skips semantic no-op, fsyncs backup and directory, refuses unauthorized overwrite, atomically renames repaired config and removes staging files.",
+      "testAssessment": "Focused Vitest passed 3/3. Durability ordering and byte preservation are strong; permissions/ownership, symlinks, concurrent versions, disk failures, backup lifecycle/encryption, Secret redaction and extension ownership remain absent.",
+      "designRationale": "Preserve forward/plugin configuration across upgrades and make recovery from malformed JSON explicit and crash-resistant.",
+      "companyOsProblem": "Company OS needs safe config evolution across managed-cloud/self-hosted profiles without destroying enterprise extensions or Secrets.",
+      "companyOsFit": "ADAPT closely: preserve namespaced extensions, semantic no-op and backup+fsync+atomic rename. Add extension schema/owner provenance, compare-and-swap generation, 0600/ownership and symlink checks, encrypted/retained backups, failure injection and Secret-safe errors.",
+      "responsibilityConflict": "Configuration durability is compatible, but metadata-only changes are discarded and no accountable change record binds who authorized security-sensitive configuration mutations.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/config-store.test.ts:1-139", "full source SHA-256 2739ed1cee449ef5635ecda5ce1f3923d8adea3b52d216fb76f7b078359b4fd0", "2026-08-18 focused Vitest: 3 passed"]
+    },
+    {
+      "id": "application:cli/__tests__/configure",
+      "auditStatus": "COMPLETE",
+      "function": "Fail-closed command tests for unknown sections, missing config and non-interactive malformed-config handling.",
+      "dependencyDirection": "Runs the production configure command against temporary files but does not exercise successful prompts or server deployment.",
+      "keyDataModels": "Config section, exitCode, malformed raw JSON and invalid-byte backup.",
+      "lifecycle": "Rejects unsupported/missing input and backs up malformed bytes without replacing them when confirmation is unavailable.",
+      "testAssessment": "Focused Vitest passed 3/3. Fail-closed preservation works, but no successful configuration path or policy combination is tested; observed output includes the parser excerpt of malformed original bytes, creating a Secret-log risk.",
+      "designRationale": "Prevent unattended repair from silently destroying operator configuration.",
+      "companyOsProblem": "Company OS needs safe deployment-profile changes and diagnostics that never leak identity, database or Connector Secrets.",
+      "companyOsFit": "REJECT the current error-output contract because malformed config excerpts can expose Secrets. Keep the fail-closed backup behavior, but emit stable redacted codes, show a structured security diff for successful changes and validate deployment/auth/storage/Secret invariants before an accountable apply.",
+      "responsibilityConflict": "A process exit code and backup path do not record who approved a security-policy change; successful configuration must create an accountable change/evidence record.",
+      "decision": "REJECT",
+      "evidence": ["cli/src/__tests__/configure.test.ts:1-124", "full source SHA-256 0fc62966bce8dedc0de2b273ad1c7f84dc04b9acb26e8cc26fe5ff3840f9ae1e", "2026-08-18 focused Vitest: 3 passed; console output exposed malformed JSON parser excerpt"]
+    },
+    {
+      "id": "application:cli/__tests__/configure-repair",
+      "auditStatus": "COMPLETE",
+      "function": "Interactive test for confirmed, backed-up and atomically committed repair of an invalid config from defaults.",
+      "dependencyDirection": "Runs configure with prompt/server modules mocked, checks the production store output and atomic rename, and restores TTY globals.",
+      "keyDataModels": "Invalid raw bytes, numbered backup, default-false confirmation and staged config path.",
+      "lifecycle": "Detects invalid config, backs it up, asks confirmation, stages defaults and atomically replaces the original.",
+      "testAssessment": "Focused Vitest passed 1/1. Confirmation and atomic commit work, but actual field repair, decline/cancel, diff, validation/failure rollback, concurrency and identity/Secret rebinding are untested.",
+      "designRationale": "Provide an operator recovery path while preserving the exact broken input.",
+      "companyOsProblem": "Company OS needs recoverable local-enterprise configuration repair without silently changing authentication, data or execution boundaries.",
+      "companyOsFit": "ADAPT the default-false prompt, exact backup and staged validation/rename. Require a redacted before/after risk diff, preserve salvageable namespaced config, rebind Secrets/identity explicitly, support rollback/failure injection and record accountable approval.",
+      "responsibilityConflict": "Repair from defaults is potentially a security-boundary change, yet the confirmation is not bound to an identified human, exact diff/digest or durable audit evidence.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/configure-repair.test.ts:1-83", "full source SHA-256 859b19048cbc05176e674b66f563ba46fda2165bcfbd172dacf971eb43847e79", "2026-08-18 focused Vitest: 1 passed in combined 7-test run"]
+    }
+  ]
+}
