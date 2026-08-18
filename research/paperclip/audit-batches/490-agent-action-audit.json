@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/agent-action-audit-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed end-to-end route tests for the Agent/all-actor audit feed, two disclosure tiers, high-precision cursor pagination, filters, safe entity enrichment and permissioned CSV export with export self-auditing.",
+      "dependencyDirection": "Authenticated actor and permission grants select a basic or full audit projection; the route queries Company ActivityLog rows, optionally joins run attribution and visible Issue/comment/document context, serializes cursor/JSON/CSV output and appends an audit.exported activity after export.",
+      "keyDataModels": "Activity actor/action/entity/details, Agent/run/responsible user, Company membership and permission grant, hidden Issue, comment/document projection, microsecond timestamp-plus-UUID cursor, access tier and export receipt.",
+      "lifecycle": "Default Agent-only audit requires explicit permission, while actorScope=all offers a basic redacted feed to Company members and even Agent actors. Basic readers cannot apply attribution/time/entity filters and receive null Agent/run/responsible/details fields. Full readers can filter and receive safe visible-entity enrichment. Cursor pagination preserves sub-millisecond ordering. CSV export escapes spreadsheet formulas and writes a row-count/truncation audit event; denied exports have no export event.",
+      "testAssessment": "Ten substantial integration cases cover authorization order, tiered redaction, all filters, invalid cursors/queries, microsecond pagination, run-attribution fallback, hidden/mismatched entity suppression, CSV injection and export auditing. Missing are immutable/tamper-evident storage, deterministic ordering under identical timestamp/id anomalies, retention/legal hold, very large streaming exports and truncation limits, export purpose/approval, download encryption, actorId pseudonymization, deleted-source history, concurrent inserts, data-classification policy and proof that no sensitive detail leaks through action/entity identifiers or timing.",
+      "designRationale": "Provide a practical, searchable operational audit UI and export while protecting sensitive attribution from ordinary members, preventing hidden-resource disclosure and preserving stable pagination at PostgreSQL timestamp precision.",
+      "companyOsProblem": "Company OS needs both a broad operational activity view and a narrowly governed, exportable responsibility/evidence ledger that can answer who acted, under which authority, with which data and approval, without leaking identities or hidden business objects.",
+      "companyOsFit": "ADAPT the precision cursor, validate-before-query discipline, hidden-entity suppression, formula-safe export and self-audited export. Split OperationalAuditProjection from append-only ResponsibilityLedger. Apply purpose- and field-level policy to actorId/action/entity metadata, require explicit export authority plus reason/approval, content-hash export manifests, retention/legal hold and immutable source receipts. Never infer authoritative responsibility from a mutable run row.",
+      "responsibilityConflict": "The full feed's responsible user can be backfilled from current run state rather than the contract effective at action time, and ActivityLog is not shown to be append-only or tamper-evident. Basic all-actor access retains actorType/actorId/action/entity identifiers, potentially exposing humans/plugins and sensitive workflows to Agent principals. Export records that an export occurred but not the requester's purpose, approval, exact query/hash or downstream custody.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-action-audit-routes.test.ts:1-527",
+        "68ddd6a7a0aeb5ca20d0dda24593806522c6a72c feat(activity): add two-tier all-actors audit feed (#10831)",
+        "71231dfa38681c10cb2a453485ea402a5258ca8b feat(audit): agent audit UI — company page + per-agent tab (#9744)"
+      ]
+    }
+  ]
+}
