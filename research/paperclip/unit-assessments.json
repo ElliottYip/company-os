@@ -4544,18 +4544,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-archived-company-guard",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration tests preventing new Heartbeat activity for archived Companies and Agents whose reporting chain contains a terminated manager.",
+      "dependencyDirection": "Heartbeat timer, wake, queue-resume and scheduled-retry entry points consult Company status and Agent organization-chain invokability before creating or starting Runs; invalid queued work is terminalized in Run and wake-request projections.",
+      "keyDataModels": "Company active/archived status, Agent status/reportsTo hierarchy and heartbeat settings, Issue monitor timestamps, queued/scheduled-retry Run, wake request and structured agent_not_invokable/company.inactive reasons.",
+      "lifecycle": "Archived Companies are excluded from timer iteration and monitor advancement; background wakes are persisted as skipped, explicit user invokes fail with 409, and existing queued Runs are left unstarted. A child of a terminated manager rejects explicit invocation, cancels queued Run/wake pairs at resume, and cancels due scheduled retries with a stable error code.",
+      "testAssessment": "Eight integration cases cover timers, background and explicit wakes, monitors, queued resume, terminated-manager chain and scheduled retries. Missing are archive/reactivation authorization, archive while a Run is already executing, Connector/token/tool revocation, cancellation acknowledgment, queued-work pause versus cancel semantics, evidence retention, multi-level/cyclic/cross-Company chains, other manager/Agent statuses, reassignment to a valid accountable owner, concurrent status changes and transaction/outbox atomicity. Archived queued Runs remain queued without a durable pause reason or tested reactivation policy.",
+      "designRationale": "Treat organization validity and Company lifecycle as hard execution admission invariants across every scheduler entry point, not just UI visibility, and prevent deferred work from bypassing them.",
+      "companyOsProblem": "Company OS must stop or safely suspend all Agent authority when a Company, employment relationship or reporting/responsibility chain becomes invalid, while preserving evidence and an explicit recovery path.",
+      "companyOsFit": "ADAPT the centralized invokability policy and revalidation across timer/wake/dequeue/retry paths. Model CompanyLifecycleDecision and Principal/ResponsibilityContract validity separately; on archive, atomically stop admission, revoke runtime/data capabilities, request cancellation of active attempts, classify queued work as suspended or cancelled by policy, and retain immutable receipts. A terminated manager should invalidate affected responsibility contracts and route reassignment to an accountable human, not merely make descendant Agents unusable indefinitely.",
+      "responsibilityConflict": "The organization chain contains only Agents; no accountable-human role or formal responsibility contract determines who may restore or reassign work. Archival does not address active external execution, and mutable status/error rows do not prove capability revocation. Queued Runs for archived Companies are silently retained, leaving future execution semantics ambiguous.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-archived-company-guard.test.ts:1-382",
+        "93206f73fa65bb6709c039854a1eb8c57c63c2e3 fix: Stop archived companies from waking agents (#7478)",
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 prevent invalid agents from receiving assignments and runs (#7663)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-auto-checkout",
@@ -4598,18 +4602,24 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-context-summary",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for rendering Work/wake state into adapter task Markdown, merging coalesced interaction context without stale plan approvals, and projecting small allowlisted Run context/result summaries for clients.",
+      "dependencyDirection": "Heartbeat combines mutable Issue mode/description, comment and interaction context into Paperclip-specific prompt text; coalescing mutates context keys; summary helpers reduce stored context/result JSON into client list projections.",
+      "keyDataModels": "Issue planning/standard/ask/skill_test work mode, accepted-plan continuation, wake comment, confirmation/checkbox interaction and continuation policy, retry/link fields, summary/result/error strings and three numeric cost aliases.",
+      "lifecycle": "Initial planning asks for plan-only work, a planning comment asks for revision, accepted confirmation asks for child creation, ask mode requests answer-only and skill_test requests dry-run output; compact resume omits the description but keeps directives/comment; later ordinary comments clear stale accepted interaction state while the exact interaction wake preserves it; client summaries allowlist linkage fields and small result/cost values.",
+      "testAssessment": "Twelve focused cases cover mode directives, compact resume, stale-versus-current interaction merge, context allowlisting and numeric result projection. Missing are prompt injection/escaping, enforcement outside prose, authoritative approval lookup and action/digest binding, rejected/revoked/expired interactions, conflicting coalesced events, permission/data/tool restrictions, session fingerprint validation, localization-neutral codes, secret/PII classification, byte limits on allowed strings, currency/precision/pricing provenance and end-to-end adapter behavior. A checkbox example describes deleting files but carries no action capability contract.",
+      "designRationale": "Keep Agent instructions aligned with Work mode, avoid replaying stale approval state after a newer comment, reduce repeated prompt context on resumed sessions and protect list APIs from large nested Run payloads.",
+      "companyOsProblem": "Company OS needs deterministic Work intent, approval continuity and safe client projections without relying on prompt compliance or leaking full Agent/session content.",
+      "companyOsFit": "ADAPT the explicit mode projection, stale-event clearing and allowlisted summary DTOs. Enforce WorkMode through tool/data/execution capabilities and sandbox policy before prompting; derive continuation from an immutable ApprovalDecision bound to action/digest/Work/Agent/human/evidence, and bind compact resumes to a session/config/workspace fingerprint. Treat comments as untrusted content, keep display localization outside domain contracts, bound/redact every projected string and use Money/UsageReceipt types rather than numeric cost aliases.",
+      "responsibilityConflict": "Prompt sentences such as do not write code or make no durable changes are not security controls. Accepted-plan and destructive checkbox semantics can be carried by caller context without proving approver authority or exact action. Client summaries omit responsible human, responsibility contract, permission/data snapshot and evidence receipt; parsed cost strings have no owner, currency or settlement status.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-context-summary.test.ts:1-301",
+        "a1b30c9f351a1d6a8c18ccd7aec4f35ac01ee4b9 Add planning mode for issue work (#5353)",
+        "d9f91576a020812da44833d869426cbe17ae8555 Add accepted-plan decomposition exact-once guards and UI state (#6831)",
+        "7069053a1fdd871024b80bea9ac35b7518aeb1d8 Include ask issue work mode (#8334)",
+        "b996b71a389b502b38c19d661bfd9c30f6e02b46 Deduplicate wake-payload issue descriptions and compact resume deltas (#10216)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-cost-accounting",
