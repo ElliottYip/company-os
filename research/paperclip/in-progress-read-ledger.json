@@ -4560,10 +4560,11 @@
         { "path": "cli/src/commands/client/asset.ts", "completedRanges": [{ "start": 1, "end": 147 }] },
         { "path": "cli/src/commands/client/auth.ts", "completedRanges": [{ "start": 1, "end": 203 }] },
         { "path": "cli/src/commands/client/company.ts", "completedRanges": [{ "start": 1, "end": 1805 }] },
-        { "path": "cli/src/commands/client/connect.ts", "completedRanges": [{ "start": 1, "end": 265 }] }
+        { "path": "cli/src/commands/client/connect.ts", "completedRanges": [{ "start": 1, "end": 265 }] },
+        { "path": "cli/src/commands/client/context.ts", "completedRanges": [{ "start": 1, "end": 158 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/context.ts",
+      "nextFile": "cli/src/commands/client/cost.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4625,7 +4626,11 @@
         "connect.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de (Improve CLI API parity coverage, 2026-06-03). The wizard validates health, obtains a board login, enumerates Companies/Agents, creates a board or Agent key and stores non-secret profile metadata.",
         "After key creation, profile writes and current-profile selection are separate local mutations with no compensating revocation. Any write/cancel/crash failure leaves a live remote credential. Board keys may have null expiry and Agent keys expose no expiry here; Company OS requires bounded credential lifetime, transactional enrollment or cleanup, rotation and accountable-human ownership.",
         "The result called publicKeyResult includes the plaintext token, and normal/JSON output returns both the token and copy-paste shell exports. apiKeyEnvVarName is not validated as a shell variable identifier before interpolation into `export ${name}=...`, so a crafted/configured name can produce shell syntax injection. Printing secrets also exposes terminal capture, scrollback, logs and automation outputs.",
-        "The wizard fetches complete Company and Agent arrays without pagination and treats a broad board credential as the bootstrap authority for creating Agent keys. It does not establish a distinct verified human principal, reason, approval/evidence record, device binding or target/revision digest. Decision: REIMPLEMENT enrollment as a server-authorized, short-lived, auditable credential ceremony; retain only the general interactive UX idea. Next file is context.ts."
+        "The wizard fetches complete Company and Agent arrays without pagination and treats a broad board credential as the bootstrap authority for creating Agent keys. It does not establish a distinct verified human principal, reason, approval/evidence record, device binding or target/revision digest. Decision: REIMPLEMENT enrollment as a server-authorized, short-lived, auditable credential ceremony; retain only the general interactive UX idea.",
+        "context.ts was read completely at pinned SHA; its history is 70b1a9109d756818fb448beafa67af27babb52de and 73eb23734f25c570d88665e672f80d740797c632. It provides show/list/use/set for local profiles, but every command advertises --data-dir while never reading opts.dataDir, so the documented state-isolation flag is ineffective in this file.",
+        "context show returns the selected profile plus the complete profiles map; list exposes API origins, Company/Agent identity and credential environment-variable names. This is useful diagnostics but expands metadata disclosure in logs/automation and violates least-output defaults for multi-tenant or shared machines.",
+        "context set accepts apiBase, Company/Agent IDs, persona, display name and apiKeyEnvVarName without origin, identifier, environment-variable-name or cross-field consistency validation. This directly feeds the previously proven arbitrary-origin credential-exfiltration chain and permits internally contradictory persona/identity state.",
+        "Profile update and --use are separate local writes with no atomic transaction. Arbitrary --context paths and the ignored --data-dir contract require deeper enforcement in the context store, not UI trust. Decision: REIMPLEMENT a schema-validated, permission-hardened, atomic context store; do not reuse this command layer. Next file is cost.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
