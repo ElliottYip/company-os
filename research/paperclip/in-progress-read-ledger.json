@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
+  "units": [
+    {
+      "id": "application:server/services/tool-access",
+      "path": "server/src/services/tool-access.ts",
+      "sha256": "4b3f135c0c5cf363e3402ca3ed2151980b1b519dbeb27eba5140ceef8f98204b",
+      "lineCount": 7771,
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 1000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Imports show a very broad orchestration boundary spanning applications, connections, OAuth, secrets, catalogs, profiles, policy decisions, runtime slots, invocations, action requests, events, metrics, and runtime supervision.",
+            "OAuth registration uses an in-process single-flight map; later ranges must verify whether database leases and multi-instance recovery fully cover this lifecycle.",
+            "The generic service embeds Google Sheets-specific schemas, environment normalization, and catalog fallback behavior, indicating provider logic may not be isolated behind a connector boundary.",
+            "OAuth actor binding checks actor type, actor id, and optionally session id; missing persisted actor identity fails closed.",
+            "Class-3 static lease credentials require an explicit allowlist key and config path and return structured error details, while several other boundary failures in this range expose only English message text.",
+            "The range is dominated by schemas, conversion projections, and lifecycle helpers; no final correctness, security, reuse, or ownership decision is valid until the remaining ranges and tests are reviewed."
+          ]
+        }
+      ],
+      "nextLine": 1001,
+      "completionRequirements": [
+        "Read lines 1001-7771 without overlap or gaps against the pinned SHA-256.",
+        "Review the corresponding first-party tests and relevant file history.",
+        "Only then write the canonical unit assessment and change auditStatus to COMPLETE."
+      ]
+    }
+  ]
+}
