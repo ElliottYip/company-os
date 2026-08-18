@@ -2680,18 +2680,25 @@
     },
     {
       "id": "application:server/__tests__/attention-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Extensive embedded-Postgres and HTTP suite for a human-only decision-attention projection that merges approvals, interactions, join requests, recovery actions, productivity reviews, blockers, reviews, exhausted runs, budget incidents, Agent errors and first-class decisions into ranked, deduplicated, queueable and dismissible work.",
+      "dependencyDirection": "AttentionService reads many operational/domain tables and user-specific dismissal/triage/queue state, constructs a common projection with source details and decision actions, ranks/filters/pages it, and exposes it through board-only routes; it does not own the underlying approval, run, Issue or Agent lifecycle.",
+      "keyDataModels": "Attention source kind/id/dedup/dismissal key, subject/project/workspace/detail, whyNow/entryRule/exitRule/decisionVerbs/rank, approval/interaction/review/blocker/run/budget/Agent status, unblock owner/transition, queue membership/retention, user dismissal/snooze, decideBy/attribution, cursor/snapshot/counts/shelf and decision origin/expiry.",
+      "lifecycle": "Only active human-action sources enter; internal harness, Agent-addressed active work, transient/recovered failures and revision-requested approvals are suppressed. Paused/terminated Agent addressees return work to the board. Newer successful runs remove old failure alerts. Pending interactions are enriched with project, plan, images and action-specific detail; only the newest same-Issue/same-kind confirmation shows. Dismissals are invalidated by newer source activity, snoozes reappear after expiry, blockers collapse into cycle-safe weighted terminal causes, and queues/triage/retention/ranking produce paged or complete snapshots.",
+      "testAssessment": "Twenty-four high-value scenarios exercise ten source families, real joins and ranking, human/Agent routing, recovery suppression, enrichment, dedup, graph cycles, snooze/dismissal invalidation, queue snapshots over 100 rows, paging/filter validation, UTC-week ordering, board-only HTTP access and uniform aging. This is a strong behavioral reference. Missing are query plans/load tests across large tenants, snapshot consistency under concurrent updates, authorization by responsible human/department/project, risk/non-dismissible escalation policy, stable cursor mutation semantics, timezone/locale choices, per-source exhaustive state matrices, information redaction, immutable decision evidence and E2E proof that projected verbs execute the exact displayed revision.",
+      "designRationale": "Reduce board overload by presenting only decisions that currently require a human, explain why each item entered and how it exits, collapse duplicate operational signals, rank by urgency/impact and retain user-controlled queues and triage without changing source-of-truth workflows.",
+      "companyOsProblem": "Agent Boss is a Company OS differentiator: one accountable human needs a trustworthy action queue across several Agents, approvals, data risks, evidence, failures and organizational dependencies, with no important responsibility silently hidden.",
+      "companyOsFit": "ADAPT this as the leading reference for an AttentionProjection read model: common source envelope, explicit entry/exit/why-now/action verbs, cycle-safe blocker impact, recovered-failure suppression, source-version-aware dismissal and paged snapshots. Rebuild from Company OS events/projections, partition by accountable human/position/data contract, attach risk/SLA/evidence/action digest, make high-risk items non-dismissible or escalation-bound, and verify every verb against the displayed source revision.",
+      "responsibilityConflict": "The feed is Company-wide for any admitted board user rather than routed by accountable role. Agent-attributed triage can snooze human decisions; complete snapshots deliberately bypass safety limits; same-Issue/same-kind logic hides older still-pending confirmations; and generic dismiss/snooze can suppress approvals without a risk policy. Projection details do not bind the responsible human, exact permission/data grants or immutable evidence revision.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/attention-service.test.ts:1-1945",
+        "36ec79c196fcb149c331657a0eb5fa710ae074a9 feat: add attention queue and Decisions surface (#9380)",
+        "30c49c83276d1c3c6a48e4e67ac1b618de1ae256 feat(decisions): add queues and prioritized attention feed (#10651)",
+        "0a09e4d975e1e1cd7de65fbd1ca730b9cd9f97ea feat(decisions): add desk workflow and retention (#10672)",
+        "148a5b11f5ffd101d9586d3222f553f99e3ad85f Route blocked transitions to explicit unblock owners (#10112)",
+        "678728f650bf2a03f325922db32efb038dbb6ac9 feat: maintained in_review review-path contract + stalled-review actions (#10675)"
+      ]
     },
     {
       "id": "application:server/__tests__/auth-routes",
