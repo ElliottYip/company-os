@@ -2248,6 +2248,43 @@
         "Focused Vitest passed 5/5 in this file as part of a 7/7 two-file run."
       ],
       "completionRequirements": ["Read lines 1-133 exactly once and assess multi-profile context storage, origin/company/credential separation, precedence, permissions, atomicity, corruption/concurrency and managed/self-hosted relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/data-dir",
+      "path": "cli/src/__tests__/data-dir.test.ts",
+      "lineCount": 79,
+      "sha256": "d0185c8e2ca7344c3fad7fdf43a91a49f1c4b734ea472ba0e66a979ca118cdc1",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 79 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four pure tests cover tilde/absolute data-root resolution, per-instance config defaults, shared context path, preservation of pre-existing config/context environment values and commands without those options.",
+        "Per-instance config directories plus a shared profile context are useful managed/self-hosted isolation primitives, but instance IDs use only a safe dev_1 fixture; traversal, separators, dot names, Unicode/case collisions and length validation are not tested.",
+        "No directory creation, canonicalization, ownership/mode, symlink, writable/free-space, cross-device or multiple-process collision behavior is exercised. Environment-versus-flag precedence is ambiguous because pre-existing env paths remain even when flag paths are supplied to this helper.",
+        "Focused Vitest passed 4/4 in the initial two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-79 exactly once and assess data-directory resolution/isolation, environment/tilde/symlink/path trust, permissions, multi-instance collision and self-hosted lifecycle relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/doctor",
+      "path": "cli/src/__tests__/doctor.test.ts",
+      "lineCount": 102,
+      "sha256": "9adffd22c8dbff4824dffff1971669ba5a1da8a1cf1c6914370a2ea0ad04be80",
+      "linkedEvidence": { "history": ["73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 102 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The single integration-style test runs doctor with repair:true and yes:true against a temporary local-trusted config, then asserts zero failures/warnings and presence of PAPERCLIP_AGENT_JWT_SECRET after repair.",
+        "It validates the important behavior that repairable checks are rerun rather than leaving stale failure status, but does not identify which checks ran or assert filesystem/database/storage/server/backup/Secret permissions individually.",
+        "No dry-run/decline, partial repair, repair exception/rollback, structured check codes, Secret-safe output, strict production/authenticated profile, external database/S3, network or Connector diagnostics are covered.",
+        "The temporary config/runtime root is not removed. The test asserts a signing Secret exists in process.env but not its entropy, persistence permissions, rotation/revocation or absence from logs.",
+        "Initial sandbox run failed only because the port-availability check produced a listen EPERM warning; escalated loopback rerun passed 1/1 with 12 checks after JWT and Secret-adapter repairs."
+      ],
+      "completionRequirements": ["Read lines 1-102 exactly once and assess diagnostics coverage, Secret-safe output, deployment/auth/storage/database/runtime checks, remediation safety, structured codes and production relevance."]
     }
   ]
 }

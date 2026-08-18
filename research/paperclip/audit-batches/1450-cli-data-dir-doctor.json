@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/data-dir",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests deriving PAPERCLIP_HOME, per-instance config and shared context paths from data-dir/instance options while preserving explicit environment paths.",
+      "dependencyDirection": "Calls the data-dir environment helper only; no directories, configs or processes are created.",
+      "keyDataModels": "Data root, instance ID, config/context option support and PAPERCLIP_HOME/CONFIG/CONTEXT/INSTANCE_ID variables.",
+      "lifecycle": "Resolves tilde/absolute roots, assigns default instance paths and conditionally applies command-supported defaults.",
+      "testAssessment": "Focused Vitest passed 4/4. Basic isolation layout is covered; instance/path adversaries, canonicalization, permissions, symlinks, capacity and process collisions are absent, and environment-versus-flag precedence is unclear at this helper boundary.",
+      "designRationale": "Keep multiple local instances under one product home while sharing CLI profile context.",
+      "companyOsProblem": "Company OS self-hosted/FDE environments need explicit per-customer and per-profile data lifecycle boundaries without path collision or leakage.",
+      "companyOsFit": "ADAPT the per-instance layout, but use validated opaque instance IDs, canonical roots, explicit flag precedence, strict modes/ownership and symlink/mount/capacity checks; separate tenant data from operator context and expose lifecycle/backup ownership.",
+      "responsibilityConflict": "Path isolation alone does not authorize which human or Connector may access a customer's data root; filesystem grants must map to data contracts and accountable operators.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/data-dir.test.ts:1-79", "full source SHA-256 d0185c8e2ca7344c3fad7fdf43a91a49f1c4b734ea472ba0e66a979ca118cdc1", "2026-08-18 focused Vitest: 4 passed"]
+    },
+    {
+      "id": "application:cli/__tests__/doctor",
+      "auditStatus": "COMPLETE",
+      "function": "Integration-style test ensuring Doctor repairs JWT and local-encrypted Secret prerequisites, reruns repaired checks and reports no stale failures.",
+      "dependencyDirection": "Runs production Doctor and config store against temporary local resources; it probes filesystem and loopback port but not a live database or external provider.",
+      "keyDataModels": "Structured summary counts, local-trusted deployment, JWT Secret, Secret master-key file, storage/database/log paths, server port and optional runtime checks.",
+      "lifecycle": "Loads config, detects missing prerequisites, repairs them, reruns checks and aggregates pass/warn/fail summary.",
+      "testAssessment": "Sandbox run failed on listen EPERM; escalated rerun passed 1/1 and showed 12 passing checks. Rerun-after-repair is strong, while production/authenticated profiles, external services, partial failure/rollback, stable codes, Secret entropy/permissions/redaction and cleanup are absent.",
+      "designRationale": "Give local operators one self-repairing readiness workflow instead of surfacing stale pre-repair failures.",
+      "companyOsProblem": "Company OS needs deploy-profile-aware diagnostics for identity, database, storage, execution nodes, Connectors, Secrets and data egress before enterprise activation.",
+      "companyOsFit": "ADAPT the check/repair/rerun state machine and structured summary. Split checks by managed/self-hosted/hybrid profile, keep repairs explicit and transactional, add stable codes/redacted evidence, permissions/entropy/rotation, real service probes and no-change/dry-run output.",
+      "responsibilityConflict": "--yes repair mutates signing and Secret infrastructure without identified accountable approval or exact change evidence; enterprise remediation must bind operator identity, scope and result.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/doctor.test.ts:1-102", "full source SHA-256 9adffd22c8dbff4824dffff1971669ba5a1da8a1cf1c6914370a2ea0ad04be80", "2026-08-18 sandbox Vitest: failed on listen EPERM warning", "2026-08-18 escalated Vitest: 1 passed with 12 checks"]
+    }
+  ]
+}
