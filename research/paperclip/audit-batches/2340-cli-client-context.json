@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/client/context",
+      "auditStatus": "COMPLETE",
+      "function": "Implements Paperclip CLI's version-2 multi-profile context file: auto-discovers .paperclip/context.json from the working directory up through ancestors, normalizes profile metadata, reads/writes JSON, upserts fields, changes current profile and resolves a selected profile.",
+      "dependencyDirection": "CLI commands/client -> context profiles -> filesystem, process cwd/environment and config-home path. The file can supply API base, company/persona/Agent binding and the name of an environment variable containing an API key; actual credential loading/transmission belongs to downstream client/http and is deferred to that unit.",
+      "keyDataModels": "ClientContext{version:2,currentProfile,profiles}; profile{apiBase,companyId,persona(board|agent),agentId,agentName,apiKeyEnvVarName,tokenName,tokenId,tokenCreatedAt}. Values are trimmed strings without URL/ID/timestamp/relationship validation. Persona and IDs are configuration claims, not verified principals or authority.",
+      "lifecycle": "Resolve explicit path -> PAPERCLIP_CONTEXT -> nearest ancestor .paperclip/context.json -> global default. Missing file yields default. Existing JSON is parsed and leniently normalized, with version forced to 2 and missing selected profiles created in memory. Writes normalize and replace the whole JSON file; upsert supports empty-string deletion for most fields; selecting an absent profile creates it.",
+      "testAssessment": "The previously completed application:cli/__tests__/context assessment was reused without rereading: focused Vitest passed 5/5 in a combined 7-test run, covering defaults, profile upsert/current selection, migration and invalid-value normalization. Missing coverage includes untrusted ancestor discovery, trusted-origin prompts, API-base validation, environment-variable allowlisting, persona/company/Agent consistency, stale binding cleanup, symlinks/owner/mode, atomicity/locking, corruption recovery, concurrency and fixture cleanup.",
+      "designRationale": "Named profiles and project-local context improve CLI ergonomics across companies, Agents and deployments; storing only an environment-variable name rather than a Secret value is directionally sound. Lenient normalization gives forward/backward tolerance. Automatic ancestor discovery mirrors familiar developer tools but becomes dangerous when context controls network and credential selection.",
+      "companyOsProblem": "Company OS needs safe operator/Connector contexts spanning managed-cloud and self-hosted instances, with explicit company, human/Agent principal, endpoint and credential-reference binding that cannot be silently changed by an untrusted workspace.",
+      "companyOsFit": "Reimplement as a signed/versioned CLI ContextProfile adapter with canonical HTTPS/allowed local endpoints, opaque credential references, issuer/audience/company/principal identifiers and last-verified metadata. Global/user-owned profiles should be canonical; project hints may select a profile but must not inject endpoints or credential environment names without explicit trust. Writes need atomic locking, owner-only policy, symlink defenses and schema migration with unknown-version rejection.",
+      "responsibilityConflict": "persona, companyId and agentId are locally asserted strings and can be inconsistent; they do not establish the accountable human, delegated Agent role or authority. Silently selecting/creating a profile can route work under the wrong company or persona. Company OS must revalidate these bindings against Identity/Organization ports and record the effective principal/company on every action.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/client/context.ts (215 lines; SHA-256 fcbc66af786b7f616a9fda2084c84c9dcbabaca558089a479e9d0fb8c5599a6f)",
+        "git history/blame: 168 current lines from 73eb23734f25c570d88665e672f80d740797c632; 47 from 70b1a9109d756818fb448beafa67af27babb52de improving CLI API parity",
+        "Existing application:cli/__tests__/context reused without source reread: SHA-256 6b5cabd93da7f419a1c7be75669c6de068724e5d79cd99f2fd90fe4f072b49d7; focused Vitest 5/5 passed",
+        "Downstream credential-use claim is intentionally deferred: application:cli/client/http remains PENDING and must verify whether apiKeyEnvVarName plus apiBase can cause credential exfiltration"
+      ],
+      "securityFindings": "Critical configuration-poisoning surface: merely running in or below an untrusted directory can auto-select its .paperclip/context.json, which controls apiBase and apiKeyEnvVarName; downstream exfiltration impact awaits client/http audit. API bases have no scheme/origin/TLS validation and IDs/persona are unverified. Reads/writes follow symlinks; write mode 0600 only applies on creation, with no chmod/owner/allowed-root checks, atomic rename, lock or fsync. Parse errors reveal paths and raw parser details. Version is silently coerced to 2, so future/incompatible schemas can be misinterpreted. Whole-file read-modify-write loses concurrent updates."
+    }
+  ]
+}
