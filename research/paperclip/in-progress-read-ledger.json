@@ -6561,6 +6561,36 @@
       "completionRequirements": [
         "Read all four fixture files (371 lines total) exactly once and assess worker protocol, invocation/company scope, delayed/terminated behavior, log/stream data handling, fixture determinism and whether they adequately exercise Company OS plugin/Connector isolation without representing Demo fixtures as real Agents."
       ]
+    },
+    {
+      "id": "application:server/__tests__/gemini-local-adapter",
+      "path": "server/src/__tests__/gemini-local-adapter.test.ts",
+      "lineCount": 203,
+      "sha256": "b3200c7038b86bd04c326973a8fc4145e91ae611f2e6d0e9546262339efbbe1a",
+      "linkedEvidence": {
+        "history": [
+          "b8fb81dee929f94b7590f33055f55ad472521376 fix(gemini-local): treat token-overflow as a fresh-session signal (#4932)",
+          "ea7f53fd7dc2a438dac45b4447fb06de238373f7 Handle Gemini CLI v0.38 stream-json wire format across parser, UI, and CLI formatter (#5273)",
+          "15eac43b43f78cfe890823378a00824828e272d9 Retry max-turn exhausted heartbeats (#5096)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 203 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Eight pure tests span server JSONL parsing, structured question extraction, unrecoverable-session and turn-limit classification, UI event parsing and CLI formatting for the Gemini CLI v0.38 wire shape.",
+        "The server parser extracts vendor session ID/model, assistant summary, token counters, USD cost and terminal error text. These are adapter-local concerns; vendor session identifiers must remain opaque adapter state and raw provider error/model output must not become Company OS core contracts.",
+        "Structured question extraction provides prompt and keyed choices and is directionally useful for Connector pause/input flows, but the test does not bind the question to Work/Attempt, risk, accountable responder, expiry, idempotency or an Approval action digest.",
+        "Turn exhaustion prefers structured status/stopReason fields or the documented exit code 53 and deliberately ignores unstructured error text, reducing false retries. In contrast, unrecoverable session detection explicitly matches English phrases such as unknown session id and checkpoint latest not found, which is brittle across vendor versions/locales.",
+        "UI and CLI consume the same v0.38 events but have independent render paths. The CLI prints assistant/error text and token/cost details; no test covers Secret/PII redaction, terminal escape/control characters, multiline/log injection, output bounds or whether initialization reveals session/model details.",
+        "Coverage includes only selected successful v0.38 shapes plus one error. Malformed/partial JSONL, unknown/new versions, duplicate/out-of-order results, numeric overflow/negative usage, NaN cost, multiple questions, cancellation/timeout, streaming backpressure and exit/result disagreement are absent.",
+        "Focused Vitest passed 8/8 without credentials, model calls, network, filesystem or database."
+      ],
+      "completionRequirements": [
+        "Read lines 1-203 exactly once and assess Gemini-local configuration validation, session/retry classification, parser compatibility, command/credential boundaries, vendor leakage and test quality against Company OS equal Connector and secret-free control-plane contracts."
+      ]
     }
   ]
 }

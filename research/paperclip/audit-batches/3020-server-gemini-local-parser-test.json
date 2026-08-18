@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/gemini-local-adapter",
+      "auditStatus": "COMPLETE",
+      "function": "Cross-surface contract tests for parsing and presenting Gemini CLI v0.38 stream-json events, structured questions, session failure and turn-limit results.",
+      "dependencyDirection": "Vitest -> @paperclipai/adapter-gemini-local server/UI/CLI exports; no Paperclip database/service, Gemini process, credential, network or real model is exercised.",
+      "keyDataModels": "Vendor JSONL system/message/result/error event, opaque session/model, assistant summary/question, token usage/USD cost, error text, stop reason/exit code and normalized UI/CLI event.",
+      "lifecycle": "Parse vendor stream lines -> extract adapter-local continuation/usage/result/question/error -> classify retry/fresh-session signals -> render normalized UI or CLI output.",
+      "testAssessment": "Focused Vitest passed 8/8 hermetically. It pins a useful v0.38 compatibility slice but omits malformed/evolving streams, output redaction/bounds, cancellation/backpressure and most failure disagreements.",
+      "designRationale": "Centralize known Gemini wire-shape handling, use structured stop signals rather than error-text guesses for turn limits and keep server/UI/CLI interpretations aligned during a vendor CLI format change.",
+      "companyOsProblem": "Company OS needs equal vendor Connectors that normalize progress, usage, input requests and terminal causes while keeping private sessions, vendor wording and model-specific retry quirks outside core/application contracts.",
+      "companyOsFit": "ADAPT only inside a Gemini Connector package. Preserve v0.38 fixtures and structured turn-limit handling, but expose versioned ConnectorEvent/Usage/OperatorInputRequest/TerminalCause codes; keep continuation handles private, redact/bound all display/log output and add compatibility fixtures per supported CLI version.",
+      "responsibilityConflict": "A structured vendor question is not a Company OS Approval, and the parsed session/error/summary lacks Work, responsible human, permission/data grant, evidence digest and result provenance. Raw vendor strings must never determine responsibility transitions.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/gemini-local-adapter.test.ts:1-203 (SHA-256 b3200c7038b86bd04c326973a8fc4145e91ae611f2e6d0e9546262339efbbe1a)",
+        "git history: b8fb81dee929f94b7590f33055f55ad472521376, ea7f53fd7dc2a438dac45b4447fb06de238373f7, 15eac43b43f78cfe890823378a00824828e272d9, 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 8/8 passed"
+      ],
+      "securityFindings": "HIGH raw-output risk: provider error/assistant strings flow to UI/CLI with no tested redaction, control-character or length guard. HIGH contract brittleness: unrecoverable sessions depend on English phrase matching. HIGH private-state boundary: vendor session ID is parsed alongside normalized output and must not leak into core/public events. MEDIUM compatibility gap: only selected v0.38 events are tested. MEDIUM accounting integrity: token/cost values are accepted without validity, currency or authoritative-source checks."
+    }
+  ]
+}
