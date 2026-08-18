@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/quota-windows-service",
+      "auditStatus": "COMPLETE",
+      "function": "Unit test aggregating quota-window reports from all registered server adapters while timing out a provider that never resolves.",
+      "dependencyDirection": "Global Adapter registry exposes optional quota pollers; an aggregation service executes them and returns provider-specific success or timeout projections.",
+      "keyDataModels": "Adapter type, provider/source/ok/error, quota window label/usedPercent/resetsAt/valueLabel/detail and fixed 20-second timeout.",
+      "lifecycle": "A responsive Codex poll returns its window; a never-resolving Claude poll becomes a synthetic Anthropic failure after 20 seconds without preventing aggregate completion.",
+      "testAssessment": "Fake timers prove one hung provider cannot block forever. Missing are cancellation/AbortSignal of the underlying call, exceptions/malformed values, parallel timing, provider identity from capability declarations, configurable deadlines, stable error codes, stale-cache fallback, partial telemetry and resource-leak tests.",
+      "designRationale": "Keep multi-provider quota UI available when one local vendor CLI hangs.",
+      "companyOsProblem": "Agent Boss needs nonblocking, vendor-neutral cost/quota health but cannot confuse display estimates with enforceable Company budgets.",
+      "companyOsFit": "ADAPT bounded parallel capability polling with cancellation, stable health codes and observed-at/staleness. Keep provider quota telemetry separate from Company BudgetPolicy enforcement and cost evidence.",
+      "responsibilityConflict": "A timeout string and vendor estimate do not authorize spending or prove cost. The hung operation is not cancelled, so it may continue using resources after the control plane reports failure.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/quota-windows-service.test.ts:1-56", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/project-list-metrics",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests building Project-indexed task-count and positive-budget maps for list projections.",
+      "dependencyDirection": "Aggregated database rows enter a pure projection helper; null Project task rows are dropped and positive budget policies become display metadata.",
+      "keyDataModels": "Project/scope ID, task count, budget amount cents, calendar-month/lifetime window and two Maps.",
+      "lifecycle": "Counts map by Project, null IDs are ignored; positive budgets surface with window kind, while zero and negative values disappear as if unset.",
+      "testAssessment": "Basic mapping branches are covered, but the test claiming string coercion passes a runtime number cast through TypeScript and therefore does not test string input. Missing are NaN/overflow/decimal/currency, duplicate rows, zero-as-hard-stop semantics, explicit unlimited/unset states and policy version/effective dates.",
+      "designRationale": "Provide compact Project-list metrics and avoid displaying nonsensical nonpositive configured budgets.",
+      "companyOsProblem": "Company OS must distinguish absent, unlimited, hard-zero, exhausted and invalid budgets because they change whether Agent work may execute.",
+      "companyOsFit": "Reject omission semantics. Define an explicit BudgetPolicy state machine with currency/window/source/version and preserve zero as a valid hard stop; invalid negative values fail validation. UI projection consumes policy state rather than inferring it from positivity.",
+      "responsibilityConflict": "Dropping zero can visually and operationally erase an intentional no-spend decision. Projection lacks who set the budget, when it became effective and which Work/cost owner it controls.",
+      "decision": "REJECT",
+      "evidence": ["server/src/__tests__/project-list-metrics.test.ts:1-51", "eaef47f4 Information Architecture + project/agent visual refresh (experimental) (#7543)"]
+    },
+    {
+      "id": "application:server/__tests__/issues-list-query-parsing",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres HTTP regression tests normalizing single, CSV, repeated and mixed Issue status query parameters.",
+      "dependencyDirection": "Board-authenticated Express query shapes enter Issue routes, normalize to status filters and execute against real Company-scoped database rows.",
+      "keyDataModels": "Company/Issue status and query string/array/CSV shapes.",
+      "lifecycle": "Single and combined filters return matching statuses; absent filter returns all seeded statuses.",
+      "testAssessment": "Real route/database behavior covers Express parser shape variation well. Missing are invalid/empty/duplicate/oversized values, whitespace/case/encoding, authorization negatives, pagination interaction and stable schema-generated client behavior.",
+      "designRationale": "Prevent repeated query keys from crashing the list route and support common client encoding styles.",
+      "companyOsProblem": "Company OS APIs need stable structured filtering across Web/FDE clients.",
+      "companyOsFit": "REFERENCE robust multi-value parsing; prefer generated API schemas, bounded arrays and structured validation errors rather than permissive route-local coercion.",
+      "responsibilityConflict": "Filtering is presentation behavior and must not substitute for Company authorization or evidence access policy.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/issues-list-query-parsing.test.ts:1-59", "2ebc236b fix(server): accept parentIssueId alias in GET /issues (#4032)", "e1e2cef9 fix(issues): accept array-form ?status= filter and stop crashing on repeated keys (#4628) (#4890)"]
+    },
+    {
+      "id": "application:server/__tests__/plugin-execution-workspace-bridge",
+      "auditStatus": "COMPLETE",
+      "function": "Plugin SDK host-client tests allowing execution-workspace metadata reads only when the plugin declares the corresponding capability.",
+      "dependencyDirection": "Plugin ID/capabilities and host services build RPC handlers; plugin request plus invocation Company scope is forwarded to executionWorkspaces service or rejected with a stable capability-denied code.",
+      "keyDataModels": "Plugin ID, execution.workspaces.read capability, workspace/company/project/path/cwd/repo/ref/branch/provider metadata and invocationScope Company ID.",
+      "lifecycle": "A capable plugin reads workspace metadata through the host; an undeclared capability is denied before service invocation.",
+      "testAssessment": "Positive routing and fail-before-service denial are covered. Missing are mismatched request/invocation Company IDs, workspace ownership, path/metadata minimization, per-plugin grants beyond manifest declaration, revocation, invocation identity, audit, rate limits and malicious host-service responses.",
+      "designRationale": "Expose narrow host capabilities to plugins through RPC instead of direct server/database access.",
+      "companyOsProblem": "Company OS needs a canonical Plugin/Connector host boundary with least privilege and tenant-scoped invocation context.",
+      "companyOsFit": "ADAPT capability-gated host services and stable denial codes. Treat manifest declaration as a request, not authority: resolve it against installed-package trust, Company grant, Work/data contract and invocation scope; return opaque workspace handles instead of raw host paths where possible.",
+      "responsibilityConflict": "A declared capability alone authorizes access in the test, and absolute cwd/path leaks host topology. No accountable human grant, data scope or access evidence is bound to the invocation.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/plugin-execution-workspace-bridge.test.ts:1-60", "5071c4c7 [codex] Add workspace diff viewer plugin (#6071)", "c6d4ee10 test: align current-master regression expectations (#9577)"]
+    },
+    {
+      "id": "application:server/__tests__/paperclip-env",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests selecting and formatting the Paperclip API URL injected into local Agent environments.",
+      "dependencyDirection": "Ambient runtime/API/listen Host and Port environment variables plus Agent/Company identity enter an Adapter utility that returns Paperclip-specific process environment.",
+      "keyDataModels": "PAPERCLIP_RUNTIME_API_URL/API_URL/LISTEN_HOST/LISTEN_PORT, HOST/PORT and generated API URL.",
+      "lifecycle": "Explicit runtime URL wins, then general API URL, then listen host/port; wildcard bind becomes localhost and IPv6 is bracketed.",
+      "testAssessment": "Precedence, wildcard fallback and IPv6 formatting are covered. Missing are URL validation/schemes/credentials, malformed ports, external versus container reachability, trusted origin/SSRF, scoped bridge token injection/redaction and deployment-profile separation.",
+      "designRationale": "Give Agent subprocesses a reachable callback endpoint across local, SSH and LAN arrangements.",
+      "companyOsProblem": "Connector nodes need a scoped callback/queue endpoint without ambient vendor URLs or control-plane credentials becoming core runtime assumptions.",
+      "companyOsFit": "REFERENCE address precedence only. Company OS execution receives an explicit ConnectorRuntimeContext with validated endpoint, short-lived audience-scoped token and network policy from the deployment adapter; never infer identity/security boundaries from ambient environment variables.",
+      "responsibilityConflict": "The chosen URL is not bound to a deployment/Work attestation and may redirect Agent-originated data to an unintended endpoint if environment is altered.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/paperclip-env.test.ts:1-76", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)", "e4995bbb Add SSH environment support (#4358)", "367d4cab Fix SSH callback URL selection for LAN and private networks (#4799)"]
+    }
+  ]
+}
