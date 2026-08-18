@@ -4746,6 +4746,30 @@
       ]
     },
     {
+      "id": "application:cli/commands/worktree-merge-history-lib",
+      "path": "cli/src/commands/worktree-merge-history-lib.ts",
+      "lineCount": 764,
+      "sha256": "10b75e6781a172ff7151df56328a52183a3f20e255e8c5c5dd1f89801a8542ab",
+      "linkedEvidence": {
+        "history": [
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 764 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Registered before source reading to preserve exact-once progress.",
+        "Lines 1-400 define strongly typed plans directly from database row types, explicit identity-clearing adjustments, deterministic sorting and existing-record drift reporting. Parent-depth sorting tolerates cycles by assigning fallback depth rather than rejecting them, and scope parsing silently ignores unknown tokens when at least one valid token remains.",
+        "Lines 401-764 complete reference mapping, issue/comment/document/revision/attachment planning and counts. Missing Agent links are cleared, but human IDs are never target-validated; workspaces retain executable setup/cleanup fields; same-ID document merges are source-winning without a base revision; attachment collision checks are incomplete.",
+        "Decision: ADAPT the deterministic pure plan/action/adjustment pattern over Company OS transfer DTOs with strict identity, responsibility, executable-field and conflict policies."
+      ],
+      "completionRequirements": [
+        "Read lines 1-764 exactly once and assess merge identity, conflicts, provenance, responsibility preservation, determinism, idempotency, cycles, schema evolution and focused test evidence."
+      ]
+    },
+    {
       "id": "application:cli/commands/worktree-lib",
       "path": "cli/src/commands/worktree-lib.ts",
       "lineCount": 294,

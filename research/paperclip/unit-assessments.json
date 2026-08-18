@@ -2160,18 +2160,23 @@
     },
     {
       "id": "application:cli/commands/worktree-merge-history-lib",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "A deterministic in-memory planner for importing issues, comments, projects/workspaces, documents/revisions and attachments between Paperclip worktree databases. It preserves stable IDs where possible, reports drift/skips and explicitly clears missing Agent/project/goal references.",
+      "dependencyDirection": "merge planner -> direct @paperclipai/db table inference types. The algorithm is otherwise pure, but is tightly coupled to Paperclip schema rows rather than a versioned portable transfer contract.",
+      "keyDataModels": "WorktreeMergePlan; planned insert/skip/merge variants; import adjustments; issue/comment/document/revision/attachment/project/workspace database rows; target identity/reference sets; provisional issue/revision numbers.",
+      "lifecycle": "Index target/source rows -> deterministically sort parents, timestamps and IDs -> classify stable-ID collisions and drift -> clear or map unavailable Agent/project/workspace/goal references -> renumber conflicting document revisions -> calculate counts/adjustments -> return a preview consumed by the imperative apply command.",
+      "testAssessment": "The completed focused merge-history suite passed 8/8 and covers deterministic issue/comment/document/attachment planning, drift, project mapping/import and adjustment counts. It does not cover cyclic/dangling parents, unknown scope tokens, missing human identities, source/target tenant mismatch, same-ID semantic conflicts, workspace command safety, document three-way conflicts, attachment asset/object collisions, schema evolution, large inputs or property-based idempotency.",
+      "designRationale": "Separating a pure deterministic plan from side-effectful apply makes destructive transfer explainable and testable. Stable IDs allow repeat imports to skip known records; explicit adjustment counts surface lost Agent relationships; deterministic revision renumbering avoids simple numeric collisions.",
+      "companyOsProblem": "Company OS needs explainable, repeatable migration/FDE template and environment promotion plans that preserve evidence provenance and responsibility while resolving identities, Connectors, data grants and executable workspace behavior explicitly.",
+      "companyOsFit": "ADAPT the pure plan/apply separation, discriminated actions, deterministic ordering, stable-ID collision reporting and explicit adjustment ledger. Re-express it over Company OS versioned transfer DTOs, not database rows. Add three-way/base revisions, signed source/target snapshot digests, strict tenant and human/Agent identity mapping, responsibility/evidence dispositions, executable-field quarantine, fail-closed schema evolution and property/idempotency tests.",
+      "responsibilityConflict": "Missing Agent attribution is silently nullified while human IDs are preserved without verifying that the same accountable principal exists in the target. Existing same-ID issues are skipped despite drift, and existing documents can be source-overwritten without an explicit conflict decision. The plan has no responsibility contract, approver, reason, evidence or data-authorization mapping.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/commands/worktree-merge-history-lib.ts:1-764 (full source SHA-256 10b75e6781a172ff7151df56328a52183a3f20e255e8c5c5dd1f89801a8542ab)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632",
+        "Existing completed application:cli/__tests__/worktree-merge-history assessment reused: focused Vitest 8/8 passed"
+      ],
+      "securityFindings": "HIGH: createdBy/updatedBy/assignee user IDs are copied without confirming target-principal existence or equivalence, while missing Agent IDs are cleared; this can create dangling or falsely attributed human responsibility. HIGH: imported project workspaces carry cwd, repository, setupCommand, cleanupCommand and remote metadata without executable-field quarantine. HIGH: existing documents with matching UUID can be source-overwritten/merged without a base revision or explicit conflict policy; existing issues with drift are simply skipped, producing asymmetric silent divergence. MEDIUM: issue parent IDs are not validated against the target/import set and cycles are tolerated rather than rejected; target FK behavior becomes the accidental guard. MEDIUM: an input such as issues,unknown silently accepts issues because unknown scope tokens are discarded. MEDIUM: attachment planning checks attachment ID only, not asset ID/object-key/hash collisions. Direct database row types make future schema additions easy to omit silently. Positive properties include deterministic tie-breaks, explicit missing-reference adjustments, stable-ID deduplication, parent-first intent and isolated pure planning."
     },
     {
       "id": "application:cli/config/data-dir",
