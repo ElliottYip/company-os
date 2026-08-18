@@ -3753,10 +3753,15 @@
       "sha256": "01110092d63f084cdf01c0e8bab410e5188adb86308e0c7dd0a896582bbaa5ee",
       "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
       "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
+      "completedRanges": [{ "start": 1, "end": 400 }],
       "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "nextLine": 401,
+      "notes": [
+        "Lines 1-100 establish a 3,017-line embedded-Postgres/real-filesystem integration suite, isolate PAPERCLIP_HOME and instance ID, clean Company/Agent/Skill/Project/Folder/User fixtures, and begin a list-projection test. The suite is entirely skipped when embedded PostgreSQL support fails.",
+        "Lines 101-200 prove a 250KB markdown body is omitted from list results while identifiers, source locator, attachment count and editability remain. This guards response size but still intentionally exposes absolute local source paths. The next test seeds User/Agent/unattributed/versionless editor identities.",
+        "Lines 201-300 verify lastEditor is opt-in, selects the latest version author, distinguishes User/Agent and represents unattributed/versionless Skills as null. This is a useful bounded projection, but no accountable-human role or edit authorization/evidence is asserted. The suite then begins a missing-company refresh test.",
+        "Lines 301-400 assert missing-company 404, unchanged bundled refresh does not retouch timestamps, bundled releases seed idempotently and a pinned champion snapshot has exact file hashes and materializes byte-for-byte. This is strong reproducibility coverage for shipped assets, though it is tied to Paperclip-specific release IDs/content and does not test signatures or tampering/crash recovery."
+      ],
       "completionRequirements": ["Read lines 1-3017 exactly once, run the focused suite in an isolated Paperclip home, and map coverage for import/upsert/conflicts, source/provenance/inventory, local and remote safety, versions/fork/rename/edit/delete, audit/update/reset/materialization, Agent reassignment, transactions/crash recovery, concurrency, secrets, approvals and destructive lifecycle behavior found in the completed service audit."]
     }
   ]
