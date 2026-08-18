@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/agent-adapter-validation-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for validating Agent Adapter types and applying Codex-local credential/home isolation defaults during Agent create and update.",
+      "dependencyDirection": "Agent routes validate the requested type against the active server Adapter registry, transform Adapter config, invoke SecretService/env-binding and instructions helpers, then pass normalized configuration to AgentService persistence.",
+      "keyDataModels": "Agent Adapter type/config, environment map, OPENAI_API_KEY, CODEX_HOME, dynamically registered Adapter and per-Company/per-Agent isolated Codex home path.",
+      "lifecycle": "A dynamically registered external Adapter type can create an Agent, while an unregistered arbitrary string is rejected. Keyless Codex Agents do not receive an injected API key or home on create/update. Supplying a per-Agent OpenAI key automatically selects an isolated Company/Agent Codex home. Callers may also explicitly point a Codex Agent at the host user's shared ~/.codex home.",
+      "testAssessment": "Seven focused route cases cover dynamic/unknown types and the main keyless/keyed create/update home behaviors. Missing are proof that plaintext keys are converted to SecretRef before persistence/logging, path traversal/symlink/ownership/mode checks, cross-Company home reuse, concurrent Agent creation, key removal/rotation, non-OpenAI secrets, shared-home authorization warnings, managed-cloud prohibition, audit receipts and actual filesystem/runtime isolation. Extensive mocks mean database and SecretService guarantees are not exercised.",
+      "designRationale": "Keep Adapter validation extensible while preventing an Agent-specific API key from contaminating or reading the host user's Codex login by default; retain a convenience path for local users who intentionally want to reuse their existing Codex authentication.",
+      "companyOsProblem": "Company OS must let many vendor-neutral Connectors coexist without inheriting a developer's personal credentials, configuration, sessions or filesystem state, and must keep enterprise secrets and execution identities isolated by tenant and Connector instance.",
+      "companyOsFit": "ADAPT registry-backed type validation and automatic per-Connector credential-home isolation. Persist only SecretRef bindings, enforce execution-node-owned private directories and verify permissions. REJECT host ~/.codex sharing as a production/default feature; if retained for single-user local development, gate it behind a deployment-profile policy, explicit high-risk acknowledgement, no enterprise data and a visible non-production status.",
+      "responsibilityConflict": "Sharing the host Codex home can cause an Agent to act with a real person's login, private sessions and ambient authority while the control plane attributes work to a different responsible user. The tests accept plaintext OPENAI_API_KEY in route configuration and mock away persistence normalization, so they do not prove credential custody, redaction or accountable approval.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-adapter-validation-routes.test.ts:1-426",
+        "5320a44088da138948c0c76dd999a89a2e99bdcf Guard codex_local agents from shared OpenAI key (#8272)",
+        "d1e6662ed857b9b183d22f6907ae28960be0475e fix(server): let codex_local agents inherit host Codex login by default (#8425)",
+        "7a329fb8bb9f74cdd75f3f7789c43fab0b2e7581 Harden API route authorization boundaries (#4122)"
+      ]
+    }
+  ]
+}
