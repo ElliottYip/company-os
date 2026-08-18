@@ -7118,18 +7118,24 @@
     },
     {
       "id": "application:server/__tests__/inbox-agent-policy-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres route tests for a human user's Agent-inbox policy, self-service allowlisting, administrator overrides and same-company membership/Agent validation.",
+      "dependencyDirection": "Supertest/Express -> inbox policy routes -> real Drizzle/PostgreSQL membership, permission, Agent, policy and activity tables; authentication middleware and actual inbox actions are outside this unit.",
+      "keyDataModels": "Human user/company membership, Agent, principal permission grant, open/allowlist/disabled inbox policy, allowed Agent IDs and policy-update activity.",
+      "lifecycle": "Read implicit policy -> user or authorized administrator validates target/Agents -> persist policy -> append update audit -> later inbox routes consume the policy.",
+      "testAssessment": "All 5 tests skipped in both sandboxed and approved unsandboxed runs due unavailable embedded PostgreSQL. The source covers basic ownership/admin/tenant validation but not policy consumption, concurrency, revocation, granular delegation or full identity paths.",
+      "designRationale": "Let Agents safely tidy user inboxes with a simple user-controlled mode, while company permission administrators can support users and allowlists cannot reference another company's Agents.",
+      "companyOsProblem": "Company OS must preserve human control of private work, approval and responsibility queues through explicit least-privilege delegation rather than assuming every company Agent may act until opted out.",
+      "companyOsFit": "REIMPLEMENT as default-deny HumanWorkspaceDelegation/DataAuthorization: exact human principal, eligible Agent/Connector, allowed actions and object classes, purpose, expiry, revocation/version, accountable manager and optional approval. Administrator overrides require reason, step-up policy, user notification and immutable evidence; in-flight actions bind the policy version.",
+      "responsibilityConflict": "The open default and coarse policy allow an unspecified population of Agents to affect a human inbox with no purpose, Work/Run, accountable human or action digest. An administrator can change another user's delegation without tested notice or consent evidence.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/inbox-agent-policy-routes.test.ts:1-230 (SHA-256 df7eb149d290948127b76f37654e64381450552b900cfc82ebd1e596f462ee69)",
+        "git history: 59fb27ff794ce60b81b859922112f3d658376918",
+        "2026-08-19 sandboxed focused Vitest: 5/5 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 5/5 skipped"
+      ],
+      "securityFindings": "CRITICAL insecure default: absent policy means open Agent access. CRITICAL granularity gap: read/archive/dismiss/approve/data-disclosure actions are not separately scoped. HIGH administrator-override gap: no reason, step-up, user notice or separation-of-duty test. HIGH lifecycle gap: no expiry, revocation/version or in-flight binding. HIGH Agent eligibility gap: active status, capability, manager and Connector health are untested. MEDIUM concurrency gap: no ETag/CAS. MEDIUM verification gap: all database tests skipped locally."
     },
     {
       "id": "application:server/__tests__/inbox-archive-routes",

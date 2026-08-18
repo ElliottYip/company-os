@@ -6745,6 +6745,34 @@
       "completionRequirements": [
         "Read lines 1-180 exactly once and assess Agent hire hook authentication, company/role/manager responsibility, approval and idempotency, bootstrap authority, Secret/config handling and test quality against Company OS human-accountable organization lifecycle."
       ]
+    },
+    {
+      "id": "application:server/__tests__/inbox-agent-policy-routes",
+      "path": "server/src/__tests__/inbox-agent-policy-routes.test.ts",
+      "lineCount": 230,
+      "sha256": "df7eb149d290948127b76f37654e64381450552b900cfc82ebd1e596f462ee69",
+      "linkedEvidence": {
+        "history": [
+          "59fb27ff794ce60b81b859922112f3d658376918 feat(inbox): let agents safely tidy user inboxes (#9724)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 230 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five embedded-Postgres route tests cover implicit open policy, self-service allowlist update/audit, administrator update permission, active target membership and same-company Agent validation.",
+        "A missing policy materializes in the response as mode open with no allowlist and materialized=false. This is opt-out Agent access to a human inbox rather than deny-by-default delegation, a direct conflict for Company OS human messages, approvals and responsibility records.",
+        "Users can update their own mode/allowlist. The audit records user, prior/new mode and full Agent IDs. It does not include policy version, purpose/actions, expiry, consent text, client/session, responsible manager or evidence that the affected user understood the consequences.",
+        "Another user with users:manage_permissions may set a target active member's policy, while a non-privileged operator receives stable inbox_agent_policy_admin_required and inactive/missing targets return 404. User notification, reason, step-up authentication, separation of duties and an immutable administrator-change receipt are not asserted.",
+        "Agent IDs are only accepted in allowlist mode and must belong to the company. Duplicate IDs, inactive/terminated Agents, Connector health, role/capability, accountable manager, maximum list size and policy changes during an in-flight inbox action are absent.",
+        "The route harness injects board actors directly. Cross-company route IDs, Agent callers, instance admins, stale memberships, concurrent updates/ETags, read-admin endpoint, deletion/reset and database constraints are not covered.",
+        "The policy model is coarse open/allowlist/disabled. It cannot independently delegate read, summarize, archive, dismiss, approve or disclose actions; it has no purpose, data classification, time window, Work/Run binding or per-action evidence requirement.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 5 tests because embedded PostgreSQL support was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-230 exactly once and assess Agent access to human inboxes, ownership/delegation, archive/dismiss authority, tenant isolation, audit and stable error semantics, policy bypasses and test quality against Company OS accountable-human workspace boundaries."
+      ]
     }
   ]
 }
