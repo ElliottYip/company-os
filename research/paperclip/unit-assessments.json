@@ -568,18 +568,34 @@
     },
     {
       "id": "application:cli/__tests__/issue-subresources",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI contract tests covering Issue CRUD and its comments, approvals, read/archive markers, recovery, documents/revisions, work products, interactions, tree control/holds, attachments, labels and feedback-vote subresources.",
+      "dependencyDirection": "The Vitest suite instantiates Commander commands through registerIssueCommands, supplies a local API base and bearer token, stubs global fetch and filesystem fixtures, and asserts the client-facing HTTP method/path/body/header mapping.",
+      "keyDataModels": "Company/Issue/comment/approval/work-product/interaction/hold/attachment/label opaque UUIDs; document keys and revisions; recovery outcomes; interaction answers/option ids; tree-hold payloads; feedback targets/votes; run-id attribution header.",
+      "lifecycle": "Parse CLI options; dispatch Issue/subresource HTTP requests; upload a local file as multipart with inferred content type and Agent Run attribution; inspect recorded fetch calls and selected request bodies.",
+      "testAssessment": "Focused Vitest passed 5/5 tests on 2026-08-19 and CLI no-emit TypeScript passed. Coverage is broad API-parity smoke testing, including a regression for X-Paperclip-Run-Id and MIME inference. It mostly asserts methods and paths, with little request-body validation and no server responses, errors, authorization, concurrency, idempotency, audit persistence or destructive-action semantics.",
+      "designRationale": "Expose nearly all Issue-centered server capabilities through a scriptable CLI and use one compact suite to detect missing or incorrectly routed client commands.",
+      "companyOsProblem": "Company OS needs a stable automation/API surface around Work that can manage collaboration, approval, evidence/artifacts, recovery and hierarchy control without bypassing accountable-human, data and execution policy.",
+      "companyOsFit": "ADAPT the capability-parity matrix and explicit Run-attribution regression style. Redesign resources around Company OS Work, responsibility contracts, approval-bound action digests, evidence and stable error codes; generate or contract-test clients from the independent API rather than copying Paperclip command names and endpoint topology.",
+      "responsibilityConflict": "A Run id header proves operational attribution only. The tested mutations do not bind requester, accountable human, delegated authority, exact action/config/data digest, approver, evidence and result; approval link/unlink and destructive/recovery commands can therefore appear equivalent to responsibility governance when they are not.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/issue-subresources.test.ts:1-262",
+        "SHA-256 5419a8f877b4b79b92e677b39908aef1923edb462d2a17444a5d144c479e0b35",
+        "8b85fdfa3cc855cda7620b56eaa4f85be0e26cd3 fix(cli): send X-Paperclip-Run-Id so agents can mutate their issues via the CLI (#7642)",
+        "4d5322c82115348d1852e1c70979dc386a07edec [codex] Add checkbox confirmation issue interactions (#7649)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 5 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "The fixed bearer token and UUID fixtures prove client wiring only; tenant membership, resource authorization, role/capability checks and token audience are not exercised.",
+        "Most state-changing request bodies are not asserted, so omission or corruption of approval reasons, recovery data, revision identifiers and destructive confirmations could escape this suite.",
+        "Update/delete/restore/link/unlink/release operations have no tested expected revision, idempotency key, action digest or durable audit receipt.",
+        "Attachment tests prove MIME inference from a filename and Run-id forwarding but not size/content validation, malware scanning, path safety, data classification, export policy or server-side media verification.",
+        "Interaction acceptance allows selected client keys or option ids, but the suite does not test mutually exclusive/invalid fields, stale interaction versions or authorized responder identity.",
+        "The CLI `--yes` confirmation is tested only for Issue deletion; many consequential mutations have no human confirmation or risk/approval contract at this layer."
+      ]
     },
     {
       "id": "application:cli/__tests__/managed-install-check",
