@@ -1662,18 +1662,24 @@
     },
     {
       "id": "application:cli/checks/storage-check",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Diagnoses Paperclip storage configuration. local_disk resolves and creates the base directory, then checks W_OK; the alternative branch requires non-empty S3 bucket and region but deliberately skips reachability and returns a warning.",
+      "dependencyDirection": "CLI doctor leaf -> Paperclip storage config and runtime-path alias -> direct local filesystem operations. The S3 branch performs string checks only and does not call the storage provider abstraction, AWS SDK or service. It is coupled to local_disk/S3 configuration shapes but not to artifact domain models.",
+      "keyDataModels": "Storage provider, local baseDir, S3 bucket and region, and free-form CheckResult. No object namespace/prefix, tenant, artifact/evidence class, digest, encryption key, retention/legal hold, quota, replication, lifecycle, endpoint/account or stable diagnostic code is represented.",
+      "lifecycle": "Local: resolve path -> recursively create when absent -> synchronously test W_OK -> pass/fail. S3: trim bucket/region -> fail missing values -> otherwise always warn that reachability was skipped. There is no test-object put/get/delete round trip, capacity/latency check, cleanup, timeout, credential validation or data-integrity verification.",
+      "testAssessment": "No focused storageCheck test was found. CLI TypeScript checking passes. The earlier completed local storage-provider test assessment proved actual disk I/O in the server provider and was reused without rereading, but it does not exercise this doctor wrapper or cover traversal/symlinks, ranges, streaming, digests, atomicity, concurrency, permissions, quotas, encryption, retention or S3 parity. This check's mkdir failures, read-only/full storage, custom paths and S3 invalid/policy cases remain untested.",
+      "designRationale": "The check avoids making a potentially billable/destructive S3 request during a generic doctor run and catches common local setup errors cheaply. That conservative S3 behavior is preferable to implicit cloud writes, but directory writability and non-empty strings are configuration hints rather than storage readiness.",
+      "companyOsProblem": "Company OS must store artifacts and responsibility evidence across managed cloud and local enterprise profiles with tenant isolation, authorization, integrity, provenance, retention, legal hold, encryption, quota, backup/restore and verifiable lifecycle semantics.",
+      "companyOsFit": "Reimplement via an Event/Data/Audit storage capability contract. Static checks should validate structured provider policy without network or mutation; an explicit authorized self-test may perform a bounded namespaced write/read/digest/delete round trip with cost and cleanup evidence. Operational artifacts and immutable responsibility evidence require distinct classes and guarantees even when they share a physical provider.",
+      "responsibilityConflict": "A writable directory does not prove that evidence is immutable, attributable or retained. Silent directory creation lacks an accountable operator/action record. S3 bucket presence also says nothing about which human, Agent, tenant or Connector may read/write objects, so neither result can satisfy the Company OS responsibility chain.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/checks/storage-check.ts (51 lines; SHA-256 2b0c0d41c4e58701e955604a05fd1c84f6c64f98e96090a393a6246c058944a0)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Repository search found no storageCheck-focused test",
+        "Existing completed application:server/__tests__/storage-local-provider assessment reused from research/paperclip/audit-batches/980-storage-and-work-product-lifecycle.json; it covers real local I/O but not this doctor wrapper or S3"
+      ],
+      "securityFindings": "Local baseDir is recursively created before the try/catch without allowed-root, symlink, owner, mode or parent-directory checks; creation errors escape. W_OK does not prove safe object creation, atomic writes, service-user access, capacity, quota, mount durability or actual provider behavior. The full path is disclosed. S3 validates only non-empty bucket/region and does not check endpoint/account ownership, credentials, least privilege, TLS, public-access block, encryption/KMS, versioning, object lock, tenant prefix policy, residency or reachability. Bucket and region are exposed in output."
     },
     {
       "id": "application:cli/client/board-auth",
