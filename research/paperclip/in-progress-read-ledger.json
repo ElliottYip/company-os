@@ -3917,6 +3917,19 @@
         "Focused Vitest completed in the sandbox: 1 file and all 5 tests passed."
       ],
       "completionRequirements": ["Read lines 1-235 exactly once, run the focused suite, and assess catalog root/package resolution, manifest and per-file integrity, traversal/symlink handling, package/publisher/license provenance, fallback behavior, ambiguity, caching/version drift, failure modes and Company OS capability-package supply-chain fit."]
+    },
+    {
+      "id": "application:server/services/skills-catalog",
+      "path": "server/src/services/skills-catalog.ts",
+      "lineCount": 355,
+      "sha256": "fff360dc948f5b7212d98ece9a7d4ac6a89d40f827e993f5333786b3b31df411",
+      "linkedEvidence": { "history": ["5e086cb828dac27a3fd16bf22e71597382458c85 fix(server): resolve published skills catalog package root and fallback (#8327)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-355 exactly once and trace manifest/package resolution, schema validation, cache and failure recovery, reference ambiguity, local and GitHub path construction, traversal/symlink containment, network and resource limits, per-file/content hash verification, binary handling, provenance/license/signature gaps and Company OS reuse decision. Link the completed 5/5 focused test evidence without rereading its source."]
     }
   ]
 }
