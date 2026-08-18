@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-probe",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for probing local, SSH, built-in sandbox, plugin sandbox-provider and plugin environment drivers, with an optional fresh runtime-lease path for a stronger sandbox check.",
+      "dependencyDirection": "Vitest -> environment-probe service -> mocked SSH helper, plugin worker probe and environment-runtime lease service; no real network/provider, Secret store, database, command execution, audit or node-attestation verifier is exercised.",
+      "keyDataModels": "Environment driver/config/status, structured probe result/summary/details, company/instance context, custom-image flag and ephemeral sandbox run lease with provider metadata and cleanup status.",
+      "lifecycle": "Select driver -> return synthetic local/fake readiness or call SSH/plugin probe -> optionally force a fresh non-reused archived sandbox lease -> report connection metadata/error -> release the acquired lease.",
+      "testAssessment": "Focused Vitest passed 7/7. It verifies driver routing, one SSH failure shape and intended fresh-lease arguments/release. It does not distinguish readiness assurance levels, run an actual sandbox command, validate plugin result schemas, or cover acquisition/probe/release failures, cancellation/timeouts, cleanup recovery, redaction, concurrency, tenant scope and attestation.",
+      "designRationale": "Offer fast configuration checks by default while allowing an operator route to pay for a real disposable sandbox allocation when validating a saved environment and custom image.",
+      "companyOsProblem": "Company OS needs truthful, low-risk health/enrollment/conformance signals for execution nodes and Connectors, ranging from configuration checks to real capability exercises, without exposing tenant credentials or claiming more assurance than tested.",
+      "companyOsFit": "ADAPT the tiered cheap-versus-ephemeral probe and forced non-reuse cleanup. Define explicit CONFIGURED/REACHABLE/QUALIFIED/EXECUTED assurance levels, preserve tenant/deployment principals, run a bounded conformance action, require structured redacted results, guarantee cleanup through a durable lease reconciler and emit signed evidence with capability/image/policy digests.",
+      "responsibilityConflict": "A green probe currently does not identify who requested it, which tenant may use the node, what permissions/data were exercised or who accepts the result. Hard-coded instance scope and synthetic readiness cannot support accountable deployment enrollment.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-probe.test.ts:1-348 (SHA-256 f3faf7d2f3bd0864bdff988af2eab80a399f1a58f6c257259c49a6daa04c5fb3)",
+        "git history: 17dde9d3f2a96adeae1576966d34a31866d0b1ff, 547463d3a2a0fdf899dc59524eff71a24a6f315c, 5bd0f578fd3f44aac910aab774443980696f4f97, 70679a33216bae9247b1b6bddc5fcaad1c04e829, e4995bbb1cc36454fc0fa3142ad9c7030c397ff0",
+        "2026-08-19 focused Vitest: 7/7 passed"
+      ],
+      "securityFindings": "HIGH assurance ambiguity: local/fake success and lease acquisition can be presented as ready without a verified bounded execution. HIGH tenant-scope gap: plugin probes use hard-coded instance context. HIGH error/metadata disclosure gap: SSH and plugin detail payloads lack tested classification/redaction. HIGH cleanup gap: acquisition/probe/release failure and leaked lease recovery are untested. MEDIUM responsibility gap: no requesting/accepting human, policy digest or signed evidence."
+    }
+  ]
+}

@@ -6027,6 +6027,36 @@
       "completionRequirements": [
         "Read lines 1-184 exactly once and assess live SSH credential resolution, Secret scoping, host-key policy, remote probe/execution behavior, redaction, failure handling and test quality against Company OS local execution nodes."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-probe",
+      "path": "server/src/__tests__/environment-probe.test.ts",
+      "lineCount": 348,
+      "sha256": "f3faf7d2f3bd0864bdff988af2eab80a399f1a58f6c257259c49a6daa04c5fb3",
+      "linkedEvidence": {
+        "history": [
+          "17dde9d3f2a96adeae1576966d34a31866d0b1ff fix(sandbox): keep custom-image snapshots applied to config tests, probes, and saves (#9385)",
+          "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)",
+          "5bd0f578fd3f44aac910aab774443980696f4f97 Generalize sandbox provider core for plugin-only providers (#4449)",
+          "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)",
+          "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 348 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Seven pure tests cover local optimistic readiness, SSH workspace verification/failure shaping, fake sandbox readiness, plugin sandbox/plugin-driver probes and an optional real ephemeral runtime-lease probe.",
+        "Local environments are reported immediately available without checking filesystem/toolchain/capabilities or execution policy. Fake sandbox similarly returns a synthetic success. These results are configuration-level readiness, not proof that an Agent can execute safely, and need explicit assurance-level labels.",
+        "SSH success returns host, port, username, workspace and cwd; failure returns raw stderr-derived text and numeric code. These may help operators but require role-aware disclosure and structured redacted codes because remote errors can contain paths, usernames, commands or credential/provider details.",
+        "Plugin environment and sandbox-provider probes are invoked with companyId hard-coded to instance despite company-shaped fixtures. This matches Paperclip's instance-scoped environments but erases tenant responsibility/data context and is unsuitable for managed-cloud Company OS without an explicit deployment-owner principal and tenant grant.",
+        "The stronger sandbox probe acquires a fresh ephemeral lease with reuseLease forced false and archiveOnRelease true, applies the custom image only when requested and releases it as successful. This is a useful isolation pattern, but no test covers acquisition/probe failure, release failure, timeout/cancel, leaked lease cleanup, provider mismatch or whether a minimal executable command actually ran.",
+        "Focused Vitest passed 7/7. Plugin results/metadata and errors are mocked and unconstrained; capability schema, Secret/data egress, rate limits, concurrent probes, unhealthy/inactive state, signed node identity and audit/evidence are absent."
+      ],
+      "completionRequirements": [
+        "Read lines 1-348 exactly once and assess local/SSH/sandbox probe semantics, custom-image application, capability discovery, credential exposure, cleanup, timeout/error reporting and test quality against Company OS execution-node health and enrollment checks."
+      ]
     }
   ]
 }
