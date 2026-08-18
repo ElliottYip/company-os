@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/documents",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests extracting a trimmed legacy plan body from custom plan tags embedded in Issue descriptions.",
+      "dependencyDirection": "Unstructured legacy Issue text flows into a document migration helper and yields nullable Markdown body.",
+      "keyDataModels": "Issue description string, plan tag block and extracted Markdown.",
+      "lifecycle": "No or whitespace-only block yields null; one populated block is trimmed and returned.",
+      "testAssessment": "Basic absent/populated/empty cases are covered. Missing are multiple/nested/malformed/case-varied tags, very large input, code fences containing tags, Unicode and migration idempotency/provenance.",
+      "designRationale": "Recover structured plan content from a former inline storage representation.",
+      "companyOsProblem": "Company OS will need explicit, reversible migrations when Work/evidence/document schemas evolve.",
+      "companyOsFit": "REFERENCE the compatibility-reader approach only; use versioned serializers, provenance and migration receipts rather than HTML-like delimiters in core data.",
+      "responsibilityConflict": "Extracted prose has no author, version or evidence digest, so it cannot independently establish an approved plan.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/documents.test.ts:1-29", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/project-shortname-resolution",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests deriving a unique display name by comparing normalized Project shortnames and appending increasing numeric suffixes.",
+      "dependencyDirection": "A proposed Project name and in-memory list of existing IDs/names enter a pure naming helper; an optional excluded ID supports updates.",
+      "keyDataModels": "Project ID/name, normalized shortname, numeric suffix and excluded Project ID.",
+      "lifecycle": "Unused or non-normalizable names remain unchanged; collisions produce Name 2, Name 3, while the updated Project can be excluded.",
+      "testAssessment": "Core collision cases are clear. Missing are database races/unique constraints, locale/Unicode/case normalization, existing numeric suffixes, length limits, reserved names and large-list complexity.",
+      "designRationale": "Preserve human-friendly names while generating routable unique short identifiers.",
+      "companyOsProblem": "Company OS organizations/projects/workspaces need stable opaque IDs plus optional human slugs that can change safely.",
+      "companyOsFit": "REFERENCE the UX behavior; make opaque ID canonical and enforce slug uniqueness transactionally per organization with explicit locale-neutral normalization and conflict retry.",
+      "responsibilityConflict": "Automatic renaming is presentation behavior and must not alter the stable identity used in responsibility or evidence records.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/project-shortname-resolution.test.ts:1-45", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/issues-checkout-wakeup",
+      "auditStatus": "COMPLETE",
+      "function": "Unit policy tests deciding whether Issue checkout should wake an Agent assignee or suppress a redundant self-wakeup inside an active Run.",
+      "dependencyDirection": "Actor type/Agent, checkout Agent and Run identity enter a pure route policy and produce a scheduler wake boolean.",
+      "keyDataModels": "Board/Agent actor type, actorAgentId, checkoutAgentId, checkoutRunId and wake decision.",
+      "lifecycle": "Board checkout wakes; an Agent checking itself out in an identified active Run does not; missing Run identity or acting for a different Agent wakes.",
+      "testAssessment": "The four truth-table branches are covered. Missing are authorization, stale/completed Run IDs, duplicate wake idempotency, concurrent checkout, Agent aliasing, cancellation and scheduler delivery evidence.",
+      "designRationale": "Avoid recursive or duplicate heartbeat scheduling when the executing Agent itself claims its Work.",
+      "companyOsProblem": "Company OS Connector execution needs idempotent wake/resume semantics that distinguish an active attempt from a new external assignment.",
+      "companyOsFit": "ADAPT as one rule inside a versioned Work scheduler state machine using attempt IDs and an outbox; do not infer execution state from actor equality alone.",
+      "responsibilityConflict": "Wake suppression says nothing about who authorized checkout or whether the active Run owns the Work contract and current lease.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/issues-checkout-wakeup.test.ts:1-48", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"]
+    },
+    {
+      "id": "application:server/__tests__/static-index-html",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP regression proving SPA fallback rereads index.html so deployments do not serve stale hashed asset references.",
+      "dependencyDirection": "Every fallback request synchronously reads a Web build directory through a branding helper and returns no-cache HTML.",
+      "keyDataModels": "Static index path, hashed asset URL, HTML response and Cache-Control.",
+      "lifecycle": "After index.html changes on disk, the next deep-link request receives the new asset hash rather than a cached old document.",
+      "testAssessment": "The stale-deploy regression is covered, but missing are missing/partial files, atomic deployment swaps, sync-I/O performance, cache validators, CSP/security headers, brand injection escaping and immutable asset caching.",
+      "designRationale": "Keep a long-lived server process aligned with newly replaced frontend artifacts.",
+      "companyOsProblem": "Company OS independent Web deployments need safe rolling upgrades and cache coherence across managed and self-hosted profiles.",
+      "companyOsFit": "REFERENCE the no-stale-index invariant; use atomic versioned releases, immutable assets, no-cache index with ETag and deployment smoke tests rather than synchronous disk reads per request.",
+      "responsibilityConflict": "This is delivery plumbing and provides no release provenance or accountable promotion record by itself.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": ["server/src/__tests__/static-index-html.test.ts:1-49", "ece8a51e [codex] Bundle local branch fixes from PAP-10032 (#6604)"]
+    },
+    {
+      "id": "application:server/__tests__/mcp-http",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for MCP HTTP request headers and parsing buffered JSON or SSE-framed JSON-RPC responses.",
+      "dependencyDirection": "Caller headers flow through a protocol helper that forces MCP Accept semantics; untrusted response body/content type flows into a parser returning an unvalidated object.",
+      "keyDataModels": "Content-Type/Accept/Authorization headers, JSON-RPC id/result, SSE event/data frames and content type.",
+      "lifecycle": "Requests advertise JSON and SSE despite caller Accept overrides. Responses parse plain JSON or collect multiline SSE data, skip non-RPC events and return a JSON-RPC-like message; missing data throws.",
+      "testAssessment": "Useful compatibility tests cover JSON, SSE, ping skipping, multiline data and empty streams. Missing are streaming/backpressure, body/event/line limits, timeout/cancel, malformed UTF-8/JSON/SSE, multiple responses, request-ID correlation, jsonrpc/error schema validation, content-type spoofing, header injection and Authorization redaction.",
+      "designRationale": "Interoperate with MCP servers that use either immediate JSON or SSE transport while preserving required protocol negotiation.",
+      "companyOsProblem": "Company OS Connectors may use MCP internally, but the control plane requires bounded, vendor-neutral tool events and cannot trust raw protocol payloads.",
+      "companyOsFit": "ADAPT inside an MCP-specific Data/Tool Connector with a streaming parser, strict limits, schema and request-ID validation, cancellation, redaction and normalized evidence envelopes. Do not expose MCP types in core/application.",
+      "responsibilityConflict": "A syntactically parsed JSON-RPC response is not execution evidence; it lacks tool permission, data scope, responsible Work/approval digest and runtime attestation.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/mcp-http.test.ts:1-50", "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"]
+    }
+  ]
+}
