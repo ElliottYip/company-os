@@ -16,10 +16,11 @@ export class OfficeDomRenderer implements OfficeRendererPort {
 
   async render(scene: OfficeScene): Promise<void> {
     this.#element.replaceChildren();
-    this.#element.setAttribute("aria-label", "演示公司办公室状态");
+    this.#element.dataset.renderer = "pre-3d-structural-preview";
+    this.#element.setAttribute("aria-label", "Pre-3D 办公室结构与占位状态预览");
 
     for (const module of scene.modules) {
-      if (!["DEPARTMENT", "MEETING_ROOM", "PANTRY", "RECEPTION"].includes(module.kind)) {
+      if (module.kind === "CORRIDOR") {
         continue;
       }
       const room = document.createElement("section");
@@ -28,6 +29,11 @@ export class OfficeDomRenderer implements OfficeRendererPort {
       room.innerHTML = `<h3>${module.label}</h3><span>${module.capacity} 席</span>`;
       this.#element.append(room);
     }
+
+    const previewLabel = document.createElement("p");
+    previewLabel.className = "office-preview-label";
+    previewLabel.textContent = "PRE-3D STRUCTURAL PREVIEW · 非最终 3D 效果";
+    this.#element.prepend(previewLabel);
 
     scene.entities.forEach((entity, index) => {
       const room = this.#element.querySelector<HTMLElement>(
@@ -57,4 +63,3 @@ export class OfficeDomRenderer implements OfficeRendererPort {
     });
   }
 }
-
