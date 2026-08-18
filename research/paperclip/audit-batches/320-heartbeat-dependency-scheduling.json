@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-dependency-scheduling",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration specification for blocker-aware wake admission, deferred dependency-resolution events, per-Agent concurrency queues, stale queued-run cancellation, and Issue-subtree pause handling.",
+      "dependencyDirection": "The suite drives heartbeatService over Issue relations, tree holds, wake requests, run/execution-lock projections and Agent runtime configuration; dependency and hold policy are evaluated inside the scheduling service before a mocked adapter is invoked.",
+      "keyDataModels": "Issue blocks relation and parent tree, IssueTreeHold mode/status/release policy, Agent heartbeat maxConcurrentRuns, AgentWakeupRequest queued/skipped/deferred states and idempotency key, HeartbeatRun queued/running/cancelled/result/error fields, Issue execution lock, and interaction context annotations.",
+      "lifecycle": "A normal assignment to blocked Work is skipped without creating a Run, while a comment interaction may execute with unresolved-blocker context; completing a blocker permits a resolution wake, or defers it if the same Work already runs; excess Agent work remains queued; queued runs are revalidated and cancelled with their stale execution lock cleared when blockers persist; an active ancestor pause suppresses ordinary wakes at least 17 levels deep but permits a persisted human comment interaction, including under a legacy full_pause note.",
+      "testAssessment": "Six integration cases cover blocker admission, interaction bypass, same-Work resolution deferral with idempotency, maxConcurrentRuns=1, dequeue-time dependency revalidation, execution-lock cleanup, deep tree-hold propagation and rejection of an Agent-forged comment wake. Missing are multiple/partially resolved blockers, cycles and cross-Company relations, dependency deletion/rewrite races, distributed scheduler concurrency and fairness, priority/starvation, queue expiry/cancellation, crash atomicity, lease fencing, hold release/revocation, authorization to create relations or holds, comment edits/deletion, and proof that an allowed interaction is technically restricted from tools/data mutations. The tests manually create a relation table, weakening migration/schema fidelity.",
+      "designRationale": "Treat dependency and pause state as admission policy rather than prompt advice, re-check mutable blockers immediately before queued execution, preserve liveness when resolution occurs during a run, and keep human communication reachable even while automated work is paused.",
+      "companyOsProblem": "Company OS needs a durable Work dependency graph, resource-aware scheduling and emergency pause controls that prevent unsafe execution without cutting off accountable-human communication or losing resumable intent.",
+      "companyOsFit": "ADAPT the admission/dequeue double-check, idempotent deferred resolution, fenced per-principal concurrency limit, stale-run terminal receipt, lock cleanup and ancestor-hold projection. Separate CommunicationCapability from ExecutionCapability: a human message during a hold may update the mailbox or request review, but must not start a mutation-capable Agent runtime unless a distinct policy authorizes it. Define typed hold modes, dependency graph invariants, accountable owner, expiry/release authority, permission/data snapshots and event/outbox transitions; use a scheduler lease rather than process-local liveness.",
+      "responsibilityConflict": "responsibleUserId is present in most fixtures but never participates in blocker, hold, resume or cancellation authority. Caller-supplied wake context helps route work, while an allowed user comment starts the same adapter execution path even under pause/full_pause without a demonstrated read-only sandbox or tool/data restriction. Relations and holds lack tested creator authorization and responsibility-contract binding, and clearing mutable Issue locks is not an immutable cancellation/decision receipt.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-dependency-scheduling.test.ts:1-1111",
+        "1266954a4ee33ecca3589d47e4356fa1bdeaac5d Make heartbeat scheduling blocker-aware (#4157)",
+        "f98c348e2b3011b2fdc905c7a41f73d4f1998ac3 Add issue subtree pause, cancel, and restore controls (#4332)",
+        "7bfaaadcb80a2138cf71c5581e08ce8f8bd5ab1c Add dependency wake reconciliation backstop (#8943)",
+        "d54ff52fc33dd58fc723222a4ef141397f202876 test(heartbeat): await execution drain before cleanup (#10023)"
+      ]
+    }
+  ]
+}
