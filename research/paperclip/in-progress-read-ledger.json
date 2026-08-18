@@ -5314,6 +5314,33 @@
       "completionRequirements": [
         "Read lines 1-1525 exactly once and assess process/ACP execution, configuration precedence, auth materialization, runtime events, sessions, retries, cancellation, timeout, idempotency, capabilities, evidence, failure classification and test quality against Company OS Connector SDK and responsibility contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/company-branding-route",
+      "path": "server/src/__tests__/company-branding-route.test.ts",
+      "lineCount": 360,
+      "sha256": "3f55ba82fa6457b20c730107e474ffbea16881c94d205d3b9a2e66a7595130fd",
+      "linkedEvidence": {
+        "history": [
+          "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+          "93fdb9c2186318b958f3fa3bdc7bd26bd3339689 [codex] Harden same-company CEO authorization (#8276)",
+          "4693d770aab4ec8342833cfed78dd4ac43c49f7a Add company artifacts page (#7621)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 360 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Nine mocked Express/Supertest tests cover Agent role gating, strict branding-body validation, CEO-Agent and board positive paths, a restricted general-settings shape for CEO Agents and full settings for board actors.",
+        "Authorization is deliberately checked before body validation for rejected Agents, reducing schema/oracle leakage and avoiding service side effects. The Agent branding event includes company, Agent, run, action and submitted values—useful attribution fields but not an atomic or immutable responsibility record.",
+        "The suite treats an Agent with role=ceo as organizational authority and explicitly lets it change both branding and the company name. This conflicts with Company OS accountable-human semantics even though lifecycle, budget, consent and issue-prefix fields remain board-only.",
+        "All services are mocked. Board company membership/role enforcement, cross-company CEO denial, logo Asset ownership/content safety, update/log transactionality and actual database state are not proven. The board positive cases do not assert any audit activity.",
+        "Sandboxed Vitest failed 9/9 only because Supertest could not listen. Approved unsandboxed rerun passed 9/9. Missing cases include optimistic concurrency/idempotency, same-value/no-op behavior, malformed color/UUID limits, deleted/quarantined/cross-tenant Asset IDs, CSRF/rate limit, stable error codes and before/after evidence."
+      ],
+      "completionRequirements": [
+        "Read lines 1-360 exactly once and assess branding asset upload/read/delete authorization, tenancy, storage lifecycle, content validation, caching, portability, error semantics and test quality against Company OS independent brand/asset boundaries."
+      ]
     }
   ]
 }

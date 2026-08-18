@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-branding-route",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked route tests for company branding and settings mutations by board actors, CEO Agents and non-CEO Agents.",
+      "dependencyDirection": "Supertest/Express -> real company/authz/error routes -> fully mocked company, Agent, access, budget, portability, artifact, feedback and activity services; no database, Asset store or Identity provider.",
+      "keyDataModels": "Board or Agent actor, Agent role/company/run, company branding fields (brandColor/logoAssetId/logoUrl), general company settings and activity details.",
+      "lifecycle": "Actor submits branding or general settings patch -> Agent role is checked before body validation -> accepted fields reach companyService.update -> selected Agent branding changes emit company.branding_updated activity.",
+      "testAssessment": "Sandboxed focused Vitest failed 9/9 only because Supertest listen was denied. Approved unsandboxed rerun passed 9/9. The suite proves route composition under mocks and useful pre-validation denial, but not real membership, tenant/Asset ownership, persistence, atomic audit, concurrency or content safety.",
+      "designRationale": "Let a designated CEO Agent maintain low-risk company presentation while reserving lifecycle, budget, data-sharing consent and issue namespace changes for human board actors.",
+      "companyOsProblem": "Company OS needs independently branded organizations and Assets while ensuring organization identity, legal/financial/data-governance settings and even delegated presentation changes remain attributable to an accountable human and exact authority contract.",
+      "companyOsFit": "REIMPLEMENT in Company OS organization/Asset application services. Preserve strict command schemas, authorization-before-validation for unauthorized callers and actor/run attribution. Replace CEO-Agent authority with an Agent proposal or narrowly delegated task requiring an accountable-human owner; validate tenant-owned approved Assets and persist change plus immutable evidence atomically with version/idempotency guards.",
+      "responsibilityConflict": "An Agent role named ceo is treated as authority to change company branding and name. Role labels cannot substitute for a legal human principal, approval scope or responsibility contract; the tested activity records submitted values but no accountable human, prior state, command digest, approval or durable outcome.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/company-branding-route.test.ts:1-360 (SHA-256 3f55ba82fa6457b20c730107e474ffbea16881c94d205d3b9a2e66a7595130fd)",
+        "git history includes 916c13501f80c7d1d659b89e4a06dc47366aa80f, 93fdb9c2186318b958f3fa3bdc7bd26bd3339689 and 4693d770aab4ec8342833cfed78dd4ac43c49f7a",
+        "2026-08-19 sandboxed focused Vitest: 9/9 failed from Supertest listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "HIGH authority-model conflict: CEO Agent status grants direct organization name/branding mutation without an accountable human or exact delegated approval. HIGH evidence gap: only one Agent branding path asserts best-effort activity; board changes and general Agent updates lack tested immutable before/after evidence and transactionality. MEDIUM Asset-boundary gap: arbitrary logoAssetId reaches a mocked service with no tested tenant ownership, type/size/scan/quarantine/deletion checks. Missing negative tests include cross-company CEO, unaffiliated/low-role board users, stale versions, duplicate requests, CSRF/rate limiting and stable machine error codes."
+    }
+  ]
+}
