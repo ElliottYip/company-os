@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/agent-instructions-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for Agent instruction-bundle metadata/file reads and writes plus preservation/replacement of instruction and Skill-sync configuration during Adapter updates.",
+      "dependencyDirection": "Agent routes resolve the target Agent and AccessService decision, delegate filesystem operations to AgentInstructionsService, normalize Secret-backed Adapter config and persist compatibility fields through AgentService; Adapter lookup controls update validity.",
+      "keyDataModels": "Agent actor/target, agent_config:read decision and suggest grant, instruction bundle/file, managed compatibility paths, Adapter type/config, paperclipSkillSync desired Skills and replaceAdapterConfig flag.",
+      "lifecycle": "Board users read bundle metadata and write files. An Agent can read its own instructions; peer reads require configure/suggest authority. File writes return and persist healed compatibility config. Same-Adapter patches merge to retain instruction metadata. Adapter switching carries managed instruction and company Skill selections, even with replacement, while explicit same-Adapter replacement removes instruction fields.",
+      "testAssessment": "Nine route cases cover metadata, own/peer read authorization, file write persistence, Adapter switch, Skill-selection preservation, merge and explicit replacement. Missing are denied write/delete/update cases, cross-Company resources, low-trust/skill-test actors, path/content validation, version conflicts, Secret/PII redaction, reviewer versus editor separation, immutable artifact history, activity audit, failed filesystem-versus-database transaction rollback and production AccessService integration because services are mocked.",
+      "designRationale": "Expose a unified editing API while preserving Agent behavior-affecting configuration through common Adapter changes and allowing a coaching/suggestion Agent to inspect peer instructions without broad Agent-administration authority.",
+      "companyOsProblem": "Company OS needs an independent Web workflow for reviewing and publishing versioned Agent instructions across Connectors without losing policy on provider changes or granting reviewers excessive read/write capability.",
+      "companyOsFit": "ADAPT the own/peer scope distinction, narrow agent_config:read action, merge-versus-replace semantics and provider-switch preservation. Read/write versioned InstructionBundle Artifacts through a port; separate view, propose, review and publish permissions, apply field/content classification, optimistic versions, approval and immutable provenance. Keep Skill selections in provider-neutral policy rather than nested Adapter config.",
+      "responsibilityConflict": "A suggest grant can expose the full peer instruction source, which may reveal business logic or embedded sensitive data, and no test proves that suggestion cannot mutate. Writes are not tied to an author/reviewer publication record or ResponsibilityContract version, so a filesystem change can silently redefine future Agent behavior.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-instructions-routes.test.ts:1-569",
+        "eb2cb916be3271e3e7ab5f643ad3ca3eb7c34d01 fix(agents): preserve skill selection when switching adapter type (#8975)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 [codex] Add agent permissions and controls plan (#6386)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/agent-live-run-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for compact Issue active-run polling, live status/log polling, bounded Company live-run lists with optional recent padding and backward-compatible manual heartbeat wakeup payloads.",
+      "dependencyDirection": "Agent routes resolve Issue/Agent and query HeartbeatService summaries or narrow log access metadata, decorate/redact live status, query bounded run rows directly for Company projections and forward manual invoke fields to HeartbeatService.wakeup.",
+      "keyDataModels": "Issue execution/assignee run, compact Run summary, ephemeral status/tool/snippet/event time, log store/ref/offset, liveness/output-silence fields, list limit/minCount and wake reason/payload/requesting actor/context snapshot.",
+      "lifecycle": "Issue polling returns a compact matching run and ignores a stale foreign-Issue execution pointer by falling back to the assignee's matching run. Ephemeral status fields can be added. Log polling resolves only access metadata before reading a bounded chunk. Company lists default/cap at 50 and query recent completed runs only when minCount is requested. Legacy invoke forwards supplied scope/fresh-session fields or preserves the original minimal empty-body shape.",
+      "testAssessment": "Ten route cases cover compact redaction, stale-pointer recovery, live status, narrow log lookup, caps/defaults, optional padding and two invoke shapes. Missing are real authorization/cross-tenant denial, redaction effectiveness because the registry mock returns input, log limit/offset validation, snippet/tool data classification, cursor pagination, N+1 cost of per-run output-silence decoration, concurrent status changes, WebSocket/event delivery, wake idempotency/replay, risk approval, Work/contract binding and stable structured error behavior.",
+      "designRationale": "Keep high-frequency UI polling lightweight and compatible with older clients while surfacing enough transient execution detail to explain what an Agent is doing and avoiding accidental inclusion of full run context/results.",
+      "companyOsProblem": "Company OS needs safe real-time Agent Boss projections and event streams that show progress/blocking without exposing private reasoning, Secrets or raw enterprise data, and must start work through an idempotent accountable command.",
+      "companyOsFit": "ADAPT compact allowlisted projections, exact Issue/run matching, bounded list queries and narrow log metadata access. Classify/redact every ephemeral field, use cursor/event sequence with policy-versioned projections and separate raw-log permission. REJECT the legacy heartbeat invoke shape as canonical: WorkExecution start must require idempotency key, Goal/Work, Connector instance, ResponsibilityContract, permission/data-policy digests and risk/approval context.",
+      "responsibilityConflict": "currentStatusMessage, lastAssistantSnippet, tool name and raw log chunks can leak source data or private reasoning without shown field policy. Manual wakeup names a requester but not the accountable human/approved Work or idempotency receipt; empty-body retries can create duplicate effects and arbitrary payload fields are not an authorization contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-live-run-routes.test.ts:1-655",
+        "c48feee190f0f79c4988a082cd0344640ac8ab79 Improve live agent feedback during sandboxed runs (#8915)",
+        "e273d621fc7919b9d758d469458840a0def56133 [PAP-3154] Stop padding /live-runs by default (#4963)",
+        "83e7ecc58e6206c368a1356c30656611b3903d85 Preserve scope on manual heartbeat invokes (#5323)"
+      ]
+    }
+  ]
+}
