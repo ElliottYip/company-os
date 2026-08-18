@@ -734,6 +734,333 @@
       "sourceReadComplete": true,
       "nextLine": null,
       "completionRequirements": ["Read lines 1-176 exactly once and verify provenance, freshness, coverage, scaling assumptions, and false-negative behavior." ]
+    },
+    {
+      "id": "application:server/services/tool-gateway",
+      "path": "server/src/services/tool-gateway.ts",
+      "lineCount": 6316,
+      "sha256": "b7e7682e6b3db4ce2039cbf10909b8b8a3b86d6eff8aca93013aec443df0a774",
+      "linkedEvidence": {
+        "history": [
+          "f6ab82d4 feat(interactions): add interaction withdrawal and terminal-issue expiry (#10251)",
+          "7e00f671 feat(connections): add v3 schema core (#9958)",
+          "b07b2994 feat: stamp responsible users on activity logs (#9731)",
+          "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+        ],
+        "focusedTest": "2026-08-18: Vitest discovered both Tool Gateway suites but skipped all 66 embedded-PostgreSQL tests because embedded PostgreSQL support was unavailable; no behavioral test pass is claimed."
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 800,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The 6,316-line service is another very broad orchestration boundary spanning gateway authentication, sessions/tokens, rate limits, profiles/policies, approvals, secrets, remote HTTP, local subprocesses, plugins, Paperclip self-tools, audit and UI-facing previews.",
+            "Gateway and session tokens use random 256-bit suffixes and are persisted by SHA-256 hash; session TTL and Tool timeouts are bounded, while named gateway tokens may be long-lived according to separately stored policy.",
+            "Caller metadata headers are length- and CR/LF-sanitized, sensitive passthrough names are blocked and audited endpoints omit query/fragment, which are useful secret-exposure defenses; endpoint paths can still contain embedded credentials or sensitive ids.",
+            "Unknown Tool names default to read risk in inferToolRisk. Catalog flags improve classification, but any missing/misclassified catalog metadata can still fail open at this layer.",
+            "The stable serialization/hash helper has no explicit rejection for undefined, bigint, cycles, non-finite numbers or Unicode normalization; exact approval/idempotency binding must therefore be checked against validated inputs and the separately audited content guard.",
+            "The prosumer approval preview interpolates argument keys and string values directly into Markdown without escaping. Its identifier filter recognizes separator-delimited id/key/token/hash names but misses camelCase fields such as noteId, so it can leak identifiers and permit Markdown presentation manipulation in a human decision surface.",
+            "Built-in fixtures, Paperclip self-tools, local stdio templates, provider-specific Google Sheets environment keys and virtual search/run tools live in the same service, making this unsuitable as a vendor-neutral Company OS core module.",
+            "Protocol rate limiting begins with a database upsert design rather than the count-then-act pattern observed in the token broker; the remaining query/result semantics and all execution paths still require review."
+          ]
+        },
+        {
+          "start": 801,
+          "end": 1600,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Protocol rate-limit consumption is an atomic INSERT...ON CONFLICT count increment, a strong reusable pattern, although expired-counter pruning performs a global delete from a request path and later enforcement/audit ordering still need review.",
+            "Connected Tool discovery applies explicit company, status, health, quarantine, transport and application filters. Per-connection discovery nevertheless loads every eligible company Tool and filters in memory, creating unnecessary tenant-scale work.",
+            "Plugin Tools receive the same fail-open name heuristic and cannot supply a first-class risk declaration in this path.",
+            "Run-context resolution strongly binds company, Agent, active run, snapshot issue/project and referenced tenant objects. It does not bind a versioned accountable human or ResponsibilityContract in this range.",
+            "The 'last changed by' access hint can attribute only createdByAgentId on policies/bindings and returns null for human or profile/entry edits. It can therefore present incomplete or misleading provenance on a governance UI.",
+            "writeAudit writes tool_access_audit_events and the general activity log sequentially without a transaction/outbox. Failure of the second write returns an error after the dedicated audit is committed; several distinct actions are also collapsed into generic policy_decision/call_failed classifications.",
+            "Session validation reads revocation/expiry/run state and then updates lastUsedAt by id only. A concurrent revocation after the read can still yield a usable session for one call because the final update is not a guarded claim.",
+            "An invalid token containing a real session UUID triggers a durable auth-failure audit for that session, creating an unauthenticated audit-amplification path unless an outer limiter always intervenes.",
+            "Interaction lifecycle reflection is read-modify-write without version/CAS protection and can overwrite concurrent interaction result changes.",
+            "Approval setup updates Invocation, ActionRequest, signed arguments, interaction and events through separate writes; the shown missing-context and missing-signing-secret paths already demonstrate partial-state transitions rather than one atomic approval command."
+          ]
+        },
+        {
+          "start": 1601,
+          "end": 2400,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Destructive Tools create a formal approvals row while ordinary writes use only the issue interaction confirmation path; the formal-risk threshold is hard-coded to destructive instead of a company/data/action policy decision.",
+            "Formal approval, issue link, interaction, ActionRequest update, ToolCallEvent and two audit streams are sequential independent writes. Any intermediate failure can leave orphan approval/interaction state or a parked invocation without its complete responsibility evidence.",
+            "The technical approval Markdown embeds a JSON summary in a code fence and the prosumer preview embeds raw fields; adversarial backticks/Markdown can alter presentation even if the stored canonical hash remains intact.",
+            "Tool listing and on-demand search load all connected Tools and perform one asynchronous policy decision per Tool on every request. This is an unbounded N+1-style policy projection with no pagination, cache/version key or database-side filtering.",
+            "The Paperclip self get_issue_context Tool checks only Agent session presence and company ownership of the requested issue. It does not require the issue to be the run's issue, assigned to the Agent, or otherwise authorized, so a Tool-enabled Agent can request arbitrary known issue ids within its company.",
+            "Remote endpoint parsing and public-network validation are applied before execution, and header precedence correctly lets managed credentials override metadata/static/caller values while dropping reserved and sensitive caller headers.",
+            "Static headers are allowed from connection config without the sensitive-header prohibition applied to caller passthrough. Operators can therefore store Authorization/API-key-like values directly in ordinary JSON config and forward them, bypassing the Secret reference/audit boundary.",
+            "Optional metadata headers export company, Agent, issue, project, run and session identifiers to the remote provider; this is configurable but not visibly authorized through a Company OS-style data egress contract.",
+            "Credential resolution records system access and marks connection health on failure, but connection health writes are separate side effects that can race with concurrent successful calls."
+          ]
+        },
+        {
+          "start": 2401,
+          "end": 3200,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Approval snapshots bind application/connection/catalog identity and status, configuration hashes, credential-reference hashes and exact resolved Secret versions. This is a strong reusable stale-approval defense, though later execution must prove it is compared immediately before dispatch.",
+            "Local stdio inherits only a small OS environment allowlist, which limits ambient Secret leakage. Template env values are nevertheless read directly from ordinary connection config rather than Secret references, allowing credentials such as service-account JSON to reside in non-secret configuration.",
+            "The local stdio stdout accumulator is unbounded until a newline arrives; a malicious or broken child can exhaust memory. SIGTERM is followed by an unbounded wait for process exit, so a child that ignores the signal can defeat the advertised timeout.",
+            "Local JSON-RPC parsing matches numeric ids but does not visibly validate jsonrpc version, response shape or duplicate responses; returned error objects are attached to gateway error details and require downstream redaction review.",
+            "Remote HTTP uses manual redirect rejection, AbortController timeout and a 1 MB declared/actual body check. The actual-size check occurs only after response.text() buffers the full body, so an absent/false Content-Length can still cause memory pressure beyond the limit.",
+            "Individual call failures and successes update shared connection health through independent last-writer-wins writes; concurrent calls can make health oscillate or allow an older result to overwrite newer state.",
+            "Remote elicitation converts provider-controlled messages/schema into human interaction content and stores the requested schema in event metadata. Length/count caps help presentation, but no data-classification or prompt-injection boundary is applied before the external content enters the human/Agent workflow.",
+            "Elicitation reuses Invocation status awaiting_approval and policy decision defer_runtime, conflating missing Tool input with governance approval in operational state projections.",
+            "The generic runWithTimeout races a timer against a promise but does not cancel the underlying operation. A timed-out builtin/plugin execution can continue and perform a side effect after the caller and audit path record timeout."
+          ]
+        },
+        {
+          "start": 3201,
+          "end": 4000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Named gateway tokens validate hash, gateway status, revocation, expiry and heartbeat-run company/Agent/active context, then apply atomic token- and gateway-level protocol limits. This is a strong layered bearer boundary.",
+            "Token lastUsedAt is updated before protocol rate limiting and without a guarded revoked/expiry predicate. A concurrent revocation can still permit one request, and throttled requests appear as successful token use.",
+            "Non-run named gateway sessions are attributed as system even when the gateway is Agent-scoped; there is no accountable-human subject or current membership/responsibility validation in the session identity.",
+            "Null-expiry named tokens are projected with a synthetic expiry ten years in the future, underscoring that long-lived bearer credentials are a supported operating mode rather than an exceptional short-lived runtime proof.",
+            "Authentication failures are durably audited only after the failure limiter is exceeded; lower-volume invalid/revoked/expired attempts leave no audit event in this function.",
+            "Test Tool execution marks the invocation executing and writes an allow audit before dispatch, then performs the external side effect before success event/audit persistence. Any later validation or database/audit failure can report failure after the side effect occurred, and retry can duplicate it.",
+            "The execution catch returns decision=allowed even with an error object, conflating authorization decision with execution outcome in the API contract.",
+            "Critical correctness bug: runApprovedTestInvocation always reflects the interaction lifecycle as executed after awaiting runTestToolInvocation, but runTestToolInvocation catches execution failures and returns an error instead of throwing. Approved test calls that fail can therefore be shown as executed in the human interaction while the Invocation is failed/timed_out.",
+            "Result prompt-injection validation happens after the external action. Blocking a malicious result protects downstream context but cannot undo the side effect; the audit must distinguish executed-with-quarantined-result from execution failure.",
+            "The gateway still lacks an atomic execution claim/outbox or provider idempotency proof that closes the side-effect/persistence gap."
+          ]
+        },
+      {
+        "start": 4001,
+        "end": 4800,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Approved Agent actions use an atomic approved-to-executing claim and wait/replay behavior, verify signed canonical arguments, compare live remote target/Secret-version snapshots and check issue openness twice before dispatch. These are strong single-execution and stale-target patterns.",
+          "The execution helper contains a stuck-state branch: after winning the executing claim, a legacy signed payload with executionOnApprove not true throws without a terminal update. Current public callers guard executionOnApprove before invoking the helper and the linked regression test keeps legacy requests approved, so this appears defensive/unreachable in audited paths rather than a demonstrated production bug; any new caller could expose it.",
+            "Issue-closed expiry updates the ActionRequest and interaction but not the Invocation approval/status, leaving split lifecycle state.",
+            "Approval execution does not re-evaluate current Tool policy, Profile binding, Agent authority, accountable human or ResponsibilityContract. The signed snapshot excludes those governance versions, so permission/policy revocation after approval does not prevent dispatch.",
+            "Execution events are attributed to the original Agent session, not the approving human, and the approver identity is not carried into the call event shown here. This breaks the direct human-decision-to-side-effect responsibility link.",
+            "Success/failure persistence across Invocation, ActionRequest, interaction and ToolCallEvent remains nontransactional after the external side effect.",
+            "Matching/replay keys use company, issue, Agent, Tool name and argument hash but omit run, connection/catalog identity, policy/contract version and explicit idempotency key. A prior approved/executed request can be reused across a later run on the same issue; only remote Tools receive the snapshot defense.",
+            "Approved requests are not rejected when their expiresAt has passed; expiry handling applies only while status is pending.",
+            "Named gateway creation, Profile binding and audit are separate writes. Updating a gateway to a new Profile inserts the new binding but never removes the old gateway/Profile binding, potentially retaining or combining stale authority.",
+          "Named bearer token create/revoke methods shown here have no audit write and revoke accepts no actor, despite changing persistent execution authority. Null expiry is accepted at service level and raw token is returned once."
+        ]
+      },
+      {
+        "start": 4801,
+        "end": 5200,
+        "readAt": "2026-08-18",
+        "notes": [
+          "Ephemeral session creation inserts the bearer authority and writes its audit record as separate operations. An audit failure can return an error after leaving a live session token persisted, while the caller may not retain the returned token needed to revoke it.",
+          "Discovery audit records the complete list of visible Tool names on every listing. This aids traceability but creates potentially large and sensitive audit payloads without an evident cap or classification step.",
+          "listPluginToolsForAgent filters through policy but strips providerType and risk from the returned descriptors. Downstream consumers therefore cannot independently display or validate the exact risk classification used by the decision engine.",
+          "The management test-call path generates a fresh random idempotency key for every request, so a client retry cannot identify or safely deduplicate the same intended external side effect.",
+          "Test-call argument inspection runs in redact/ignore mode and uses the resulting summary for human approval, while policy and execution still receive the original parameters. This avoids automatic prompt-injection blocking but makes the quality of the redacted approval representation critical.",
+          "Approval requests produced by test calls receive signed canonical arguments and a one-hour expiry, but creation still spans policy invocation/action rows, snapshot/secret resolution, ActionRequest update, event and audit writes without a transaction or compensating state machine.",
+          "getTestCallStatus correctly constrains ActionRequest, Invocation, company, connection and test-origin marker before returning status, preventing it from becoming an arbitrary cross-connection request oracle.",
+          "approveActionRequest accepts both pending and already-approved states before the remaining resume logic. The subsequent range must confirm expiry enforcement, atomic claim behavior, actor authorization and idempotent replay for this public approval entry point."
+        ]
+      },
+      {
+        "start": 5201,
+        "end": 5600,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The direct approveActionRequest path validates the signature and optional formal-approval status, then atomically changes pending to approved. It does not check ActionRequest.expiresAt before approval, so an expired request can be approved and, for test calls or executionOnApprove Agent calls, dispatched immediately.",
+          "The approval service records either an Agent id or user id supplied by its caller but performs no actor membership, role, separation-of-duties or accountable-human authorization check itself. Correctness is therefore dependent on every route/caller enforcing the right decision authority.",
+          "If a request is already approved, approveActionRequest can trigger executeApprovedAgentInvocation again; the inner approved-to-executing claim limits duplicate dispatch, but approval and execution remain coupled to a read-time branch rather than an explicit durable command/outbox.",
+          "declineActionRequest atomically rejects a pending request and updates Invocation.approvalState, but this range emits no ToolCallEvent/audit and does not reflect the rejection onto the linked interaction, yielding an incomplete human-decision evidence chain compared with approval.",
+          "Virtual search_tools bypasses the ordinary policy service and records a hard-coded allow decision. It may only expose already-filtered discovery, but its authority and data-return policy are encoded in bespoke control flow rather than the canonical policy boundary.",
+          "The main executeTool resume path strongly scopes an approved request to company, current issue, Agent, run, originating requester, linked interaction and exact Tool, and unlike the direct approval path explicitly expires both pending and approved requests before use.",
+          "An accepted issue interaction can promote a pending ActionRequest to approved and copy resolver identity into the decision record. This service does not independently verify that the resolver is an authorized human for the exact risk/action/data scope.",
+          "Expiry and interaction-driven approval update ActionRequest/interactions/events through separate writes and still do not consistently synchronize Invocation approval/status, leaving recoverable but real projection divergence risks."
+        ]
+      },
+      {
+        "start": 5601,
+        "end": 6000,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The explicit resume route revalidates signed arguments and the live remote approval snapshot, then atomically consumes approved to executed before dispatch. The label executed therefore means execution claimed, not side effect completed, and a process crash can strand the request while preventing retry.",
+          "Consuming an approval writes resolvedByAgentId to the executing session Agent even though the row already carries the human/Agent decision fields. This mixes executor and resolver semantics on the same record and complicates direct responsibility projection.",
+          "A fresh call flows through the policy service, durable Invocation/idempotency recording and an explicit require-approval branch. Policy idempotent replay returns only the stored resultSummary rather than the original result, so replay response semantics differ from first execution unless callers expect a summary projection.",
+          "After a request is approved, the execution path does not call the policy service again; signature and remote-target freshness are enforced, but revoked Profile/policy/Agent/data authority remains outside the resume invariant.",
+          "Result content validation occurs after dispatch and a blocked result is persisted as a failed Invocation with a deny policyDecision in the event/audit. This protects consumers but semantically mislabels an executed external side effect as denied/failed, which can trigger unsafe retries.",
+          "Invocation, interaction, ToolCallEvent and dual audits are updated sequentially on both success and failure. A crash after the provider action or any persistence failure leaves no atomic evidence that distinguishes not-run, ran-with-missing-record and safely retryable states.",
+          "Runtime capacity and timeout failures are grouped as deferred, but the timeout wrapper cannot prove cancellation for plugin/builtin work. A deferred classification can therefore coexist with a still-running side effect.",
+          "Stable structured reason codes are consistently emitted alongside English messages in these paths, an API practice Company OS can adopt without coupling functionality to UI language."
+        ]
+      },
+      {
+        "start": 6001,
+        "end": 6316,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The direct plugin route validates Agent actors against company/Agent/run and resolves the run context, but no equivalent user-actor authorization is visible inside the service. Human access control must be guaranteed entirely by the calling route.",
+          "Plugin execution repeats the policy/invocation/audit pipeline and supports approval creation, but unlike the main gateway path it calls pluginToolDispatcher.executeTool without runWithTimeout. A hung plugin can hold the request indefinitely despite Tool timeout conventions elsewhere.",
+          "The plugin path has the same side-effect-before-validation/evidence gap and the same semantic error of recording blocked post-execution content as a denied/failed call. It also returns resultSummary on idempotent replay rather than the original typed result.",
+          "Session revocation is company-scoped and can additionally enforce Agent/run scope; it records actor metadata when supplied. The actor is optional and the service does not itself authorize a human revoker, so provenance and authority depend on caller discipline.",
+          "Expired sessions are hard-deleted in bulk with no cleanup audit or retained tombstone in this service. Even if Invocation events remain, deleting execution-authority records can weaken forensic reconstruction unless retention is owned elsewhere.",
+          "Runtime slot list/stop/restart are exposed through the gateway service and delegate scoping to the supervisor. This further confirms that the service combines product policy, external execution, operational control and administrative lifecycle in one ownership boundary.",
+          "Across the full source, the best reusable ideas are hashed bearer tokens, tenant/run binding, atomic rate/claim updates, signed canonical arguments, live Secret/target snapshot comparison, structured reason codes and content summaries. Company OS should not copy this monolith or its Paperclip-specific types and self-tools.",
+          "The dominant Company OS gaps are accountable-human and ResponsibilityContract binding, data-egress authorization, transactional evidence/outbox semantics, provider idempotency/cancellation proofs, uniform expiry/revocation checks and separation of approval decision from execution state."
+        ]
+      }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-6316 exactly once against the pinned SHA-256.",
+        "Trace authentication, tenant and run binding, profile/policy decisions, approval pause/resume, action signatures, credentials, external dispatch, idempotency, rate limits, evidence, audit and failure recovery end to end.",
+        "Read both first-party Gateway test suites and relevant history, then execute focused tests before a canonical judgment."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/tool-gateway-service",
+      "path": "server/src/__tests__/tool-gateway-service.test.ts",
+      "lineCount": 1036,
+      "sha256": "651200f045f4ede19fc620f39a2194bc0ff8e57eb3ad8aac362723a01870d31e",
+      "linkedEvidence": {
+        "history": [
+          "f6ab82d4 feat(interactions): add interaction withdrawal and terminal-issue expiry (#10251)",
+          "7e00f671 feat(connections): add v3 schema core (#9958)",
+          "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+        ],
+        "focusedTest": "2026-08-18: this suite was discovered but all database-backed cases were skipped; it contributed source-review evidence only in the current environment."
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 520,
+          "readAt": "2026-08-18",
+          "notes": [
+            "This is a real embedded-Postgres service suite with per-test database cleanup, not a mocked unit-only harness; it exercises persisted Invocation, ActionRequest, interaction, event and audit state.",
+            "Tests strongly cover signed reviewed arguments, tamper resistance, same-run scoping, single execution under a concurrent identical-argument race and rejection after issue closure.",
+            "The approval-preview assertion checks that raw JSON and Tool/risk jargon are absent and Body is readable, but it does not assert that camelCase identifiers such as noteId are redacted or that Markdown metacharacters are escaped.",
+            "The direct review-queue approval happy path proves self-execution and replay but does not test expired requests, revoked policy/Profile/Agent authority, approver role/separation of duties or persistence failure after side effect.",
+            "The cross-run test is an important tenant/work-context invariant. The concurrent race validates one approved_action_executed event, but does not simulate process death between the executing claim and provider completion.",
+            "The legacy-signature test expects a pre-execute-on-approve request to remain approved and its Invocation awaiting_approval. Because current public callers guard executionOnApprove before invoking the execution helper, the helper's internal stuck-executing branch appears defensive/unreachable in these tested paths rather than a demonstrated production bug."
+          ]
+        },
+        {
+          "start": 521,
+          "end": 1036,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The suite verifies fail-closed cancellation when signing is unavailable or invalid, missing-task recovery guidance, rejection idempotency, fresh approval after stale pending requests and a second formal board gate for destructive Tools.",
+            "The stale-request test covers matching a later executeTool call, not direct approveActionRequest on an already expired request; the source-level expiry gap in that public method remains untested.",
+            "The decline test asserts ActionRequest and Invocation approval state but does not assert linked interaction lifecycle, ToolCallEvent or audit evidence, matching the missing rejection evidence writes observed in source.",
+            "Formal destructive approval verifies status and argument integrity but obtains approval through direct database mutation; it does not exercise approver authorization, role, quorum, separation of duties or revocation between decision and execution.",
+            "Remote MCP elicitation tests durable question projection and missing-issue failure, while explicitly expecting Invocation awaiting_approval and defer_runtime. This codifies the lifecycle conflation between provider input elicitation and governance approval.",
+            "The malicious-result test proves payload redaction and downstream blocking, but expects the already-dispatched plugin call to be recorded as failed/denied and does not preserve an executed-with-quarantined-output fact. It therefore confirms rather than resolves the retry/evidence ambiguity.",
+            "Sensitive argument tests deliberately pass original credentials to the plugin while verifying redacted persistence. They do not impose a Company OS data-authorization/export contract or prove the plugin process is entitled to that Secret.",
+            "There are no service tests here for direct human actor authorization, policy/Profile revocation after approval, crash recovery/outbox, provider idempotency, cancellation, plugin timeout, session revocation race or hard-delete retention."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-1036 exactly once against the pinned SHA-256.",
+        "Map service-level tests to the authentication, policy, approval, execution, failure and evidence invariants found in the implementation."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/tool-gateway",
+      "path": "server/src/__tests__/tool-gateway.test.ts",
+      "lineCount": 3941,
+      "sha256": "367fc7e1406566c2c43d26e459e9b0e2c640e9397aa7b7f320cc6f45f1db8167",
+      "linkedEvidence": {
+        "history": [
+          "cca2806e test(tool-gateway): make idle-down slot test deterministic via injected clock (#10226)",
+          "7e00f671 feat(connections): add v3 schema core (#9958)",
+          "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+        ],
+        "focusedTest": "2026-08-18: this suite was discovered but all database-backed cases were skipped; it contributed source-review evidence only in the current environment."
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 800,
+          "readAt": "2026-08-18",
+          "notes": [
+            "This acceptance suite uses embedded Postgres, Express/Supertest, real local HTTP servers and subprocess-capable fixtures, providing substantially stronger system evidence than isolated mocks.",
+            "Fixture construction spans Profiles, bindings, catalog, remote/local transports, Secrets, principals and durable execution records, but actors are still mostly bare ids rather than versioned accountable-human responsibility subjects.",
+            "Named gateway tests verify opaque public ids, hashed bearer flow, Tool discovery filtering, per-token method scope, policy denial before upstream dispatch and revocation. Tokens carry labels/notes but no required owner principal or accountable human in the asserted contract.",
+            "The audit assertion for a denied Tool checks only call_completed rows and payload absence, not the dedicated denied record; its confidentiality value is narrow even though the source writes a denial audit.",
+            "Authentication throttling is persisted, shared by design and avoids raw bearer leakage while keeping prefix/correlation metadata. Only the threshold-crossing failure is asserted as audited, consistent with low-volume failures remaining invisible.",
+            "Archived gateway listing and expired limiter pruning receive direct coverage. No test in this range checks that Profile changes remove stale gateway bindings or that token create/revoke carries a human actor and audit record."
+          ]
+        },
+        {
+          "start": 801,
+          "end": 1600,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Persisted authentication and protocol rate limits are tested across separate service instances and across initialize/list/call scopes, with structured redacted audit evidence. This is a strong distributed-control pattern worth adapting.",
+            "No-Profile fail-closed behavior, company isolation, catalog-entry/connection selectors, collision-safe names and exclusion of disabled/unhealthy/quarantined sources receive explicit acceptance coverage.",
+            "Remote and local transports are exercised end to end, including local runtime-slot persistence and a minimal inherited environment allowlist.",
+            "The local environment test intentionally sources ALLOWED_TOKEN plaintext from ordinary connectionConfig.env and merely redacts it from the returned result. It demonstrates ambient-environment isolation but also codifies the Secret-boundary bypass identified in source.",
+            "Public authenticated deployment blocks a link-local metadata endpoint before fetch, providing direct SSRF evidence for a critical deployment profile.",
+            "Managed Secret resolution into an Authorization header is exercised with redacted Invocation/events/audits and complete Tool/catalog provenance. The test proves storage/log hygiene, not an explicit data-use/egress authorization contract or human responsibility binding.",
+            "Run and issue linkage is consistently asserted for execution evidence, but the evidence subjects remain company/Agent/run/issue; accountable human, ResponsibilityContract and authorization-version fields are absent."
+          ]
+        },
+        {
+          "start": 1601,
+          "end": 2400,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Header-policy tests robustly prove managed credentials win over caller input, reserved/auth-bearing passthrough headers are dropped and raw caller/credential values do not persist. They do not test sensitive staticHeaders, the plaintext-config bypass found in source.",
+            "Metadata forwarding of Agent and issue ids is explicitly expected and audited, but there is no data-classification/export authorization assertion for sending these tenant identifiers to an external provider.",
+            "Virtual search/run coverage proves hidden on-demand catalog access still applies the target Tool policy and records target metadata. search_tools itself remains a bespoke hard-coded allow path rather than a policy-controlled read capability.",
+            "MCP Streamable HTTP/SSE interoperability and an SDK-backed demo server are tested end to end, valuable protocol-compatibility evidence.",
+            "The broad remote-MCP scenario covers default denial, approval pause/resume, signed original arguments, redacted provider output, rejection, rate limiting, tenant isolation and rich request/response execution metadata.",
+            "The approval fixture marks the issue interaction accepted by resolvedByAgentId equal to the executing Agent, and rejection calls the service with that Agent as decision actor. The tests therefore permit Agent self-approval semantics at this layer rather than enforcing an accountable human.",
+            "Approved execution evidence captures dispatch, endpoint, request id and HTTP response metadata, a useful run-proof pattern, but it still does not prove provider idempotency or atomically link the approver, current authority contract and completed side effect.",
+            "The test verifies rejected requests block explicit reuse but does not assert rejection event/audit/interaction lifecycle completeness."
+          ]
+        },
+        {
+          "start": 2401,
+          "end": 3200,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Approval freshness is directly tested for both remote endpoint/config drift and rotation of a latest-version credential; dispatch is blocked and raw Secret versions remain absent from persisted evidence. This is one of the strongest reusable designs in the module.",
+            "Controlled remote failures cover HTTP status, invalid JSON, malformed MCP result, declared oversize response and AbortController timeout with structured execution metadata. The oversize test supplies Content-Length and does not exercise an unbounded chunked/no-length body that source buffers before checking.",
+            "Hashed sessions are verified across service instances, query-string tokens are rejected, and authenticated revocation is tenant/run scoped with redacted dual-audit records.",
+            "Route-level authorization denies viewers from approve/decline and denies Agent actors from raw audit/runtime administration. This partially answers the service's caller-dependence, but it does not show a risk-specific approver permission, accountable-human assignment or separation of duties; any non-viewer board role appears eligible for ordinary approvals unless constrained elsewhere.",
+            "Runtime control and audit read require explicit permission grants for an operator and audit pagination/filtering begins server-side, useful management-plane patterns.",
+            "No concurrency test races session use against revocation, and no retention test covers cleanupExpiredSessions deleting expired authority records."
+          ]
+        },
+        {
+          "start": 3201,
+          "end": 3941,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Audit APIs are tested for server-side pagination, filters and humanized Agent/app/Tool projections, while durable sessions and run-bound named tokens fail closed once the heartbeat run is inactive and preserve run/issue/project attribution.",
+            "Expired, revoked and tampered ephemeral sessions produce redacted rejection audits; explicit cleanup then hard-deletes expired sessions, with no assertion for a retained authority tombstone or forensic linkage after deletion.",
+            "Runtime-supervisor tests cover deterministic lazy start/reuse/idle reap, explicit stop/restart, host capacity deferral, public-host fail-closed deployment, restart-storm suppression and stuck-slot recovery. These are mature operational concerns Company OS must include even if implemented differently.",
+            "The public hosted profile explicitly blocks local stdio without a trusted runtime host, aligning with managed-cloud versus customer-local execution separation.",
+            "Approval discovery copy and durable issue-thread pause behavior are asserted, but responsibility evidence still stops at requestedByAgentId and the assigned issue; no accountable human or contract version is required.",
+            "Plugin discovery/execution is proven to share Profile policy and run context, but there is no test for hung-plugin timeout/cancellation, user-actor authorization, explicit plugin risk declaration or data-egress rights.",
+            "Cross-company caller-supplied issue context is rejected. There is no corresponding same-company least-privilege test for the Paperclip self get_issue_context Tool, leaving the source-observed arbitrary same-company issue read gap unchallenged.",
+            "Across 3,941 lines, the suite is broad and integration-heavy, but its systematic omissions match Company OS's differentiators: human responsibility authority, versioned permission/data contracts, transactional/outbox recovery, exactly-once external effects and audit retention."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-3941 exactly once against the pinned SHA-256.",
+        "Map integration coverage to tenant/run binding, approval pause/resume, token lifecycle, retries, concurrency and evidence consistency."
+      ]
     }
   ]
 }
