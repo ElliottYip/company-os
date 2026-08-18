@@ -592,6 +592,35 @@
         "Trace migration ordering, journaling, transaction boundaries, drift reconciliation, failure recovery, bootstrap, locking, and concurrent startup behavior.",
         "Review focused client and migration-safety tests before contributing to package:db completion."
       ]
+    },
+    {
+      "id": "evidence:package:db/check-migration-safety",
+      "path": "packages/db/src/check-migration-safety.ts",
+      "lineCount": 1052,
+      "sha256": "32526568ea596d361ae798f72c894d02a524a323eee999cdf430af84eb6c5386",
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 400,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The migration safety checker currently defines only four rule families, all centered on mutation/index behavior for known-large tables; it does not yet claim to cover destructive DDL, tenant/credential semantics, foreign-key locks, NOT NULL rewrites, irreversible changes, or mixed-version compatibility.",
+            "Findings use deterministic content-derived ids and a baseline/new/stale model, which is a useful review workflow for introducing safety gates into an existing migration history.",
+            "The SQL splitter handles explicit Drizzle breakpoints, quotes, dollar-quoted blocks, nested block comments, and semicolons more carefully than simple regex-only tooling.",
+            "Any rule or all rules can be suppressed through an inline comment carrying a nonempty reason; this provides accountable escape hatches only if code review validates the reason, because there is no issue id, approver, expiry, or scope beyond the containing statement.",
+            "Index parsing intentionally ignores expression columns when deciding whether a plain-column access path exists, reducing false assurance for batched ORDER BY operations.",
+            "The implementation is a targeted large-table performance guard, not a general migration safety system; remaining lines and tests must be checked before judging parser reliability and false-negative surface."
+          ]
+        }
+      ],
+      "sourceReadComplete": false,
+      "nextLine": 401,
+      "completionRequirements": [
+        "Read lines 1-1052 exactly once against the pinned SHA-256.",
+        "Determine which destructive, locking, data-loss, mixed-version, naming, and journal-drift hazards are actually detected and which are omitted.",
+        "Read its complete 492-line focused test before assigning test quality or reuse judgment."
+      ]
     }
   ]
 }
