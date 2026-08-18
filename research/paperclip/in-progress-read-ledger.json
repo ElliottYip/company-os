@@ -4408,6 +4408,36 @@
         "Focused Vitest passed 6/6 progress/rename helper cases on 2026-08-19. Formal decision: REFERENCE ONLY; Company OS requires structured event ids, sequence/fencing, stable codes and evidence references."
       ],
       "completionRequirements": ["Read exactly once, run focused test, and assess structured progress, untrusted content, stable codes, ordering/time, evidence semantics and accessibility behavior."]
+    },
+    {
+      "id": "application:ui/pages/AgentDetail",
+      "paths": [{ "path": "ui/src/pages/AgentDetail.tsx", "lineCount": 4360, "sha256": "dc042ddc3bb6cacf848f47ab22e3d203927594ad345198e25c94080172c0a10a" }],
+      "linkedEvidence": {
+        "history": [
+          "19be4cf9278b70bc151063778a94bf38bfd5c903 refactor(a11y): add scope=col to the agent costs table headers (#1789)",
+          "b67c512f8228f0bd5ddcc4cfd92676ba1ab31cf7 feat(ui): live run label → run detail, running row → task detail (#11034)",
+          "d84c5eae7a2b658b31424455088a1b8d549fc585 feat(ui): hide task priority from the UI (keep data model) (#11024)",
+          "1fa36be353f961563dc5cb576d0e3a321556b833 fix(ui): use HTTP-safe clipboard copy everywhere (#10875)",
+          "3dec88ce90f46e80a8f5af84d5b0fa320427d8b9 feat(agents): warn when an agent's escalation path routes to a paused manager (#10657)",
+          "71231dfa38681c10cb2a453485ea402a5258ca8b feat(audit): agent audit UI — company page + per-agent tab (#9744)",
+          "4c8d92f086c41159a03673fe0fe7b82056e5ae3f fix(ui): leave agent detail after termination (#10451)",
+          "1f1f54523876481ab0011c3fdd0b842753cd511a feat: add built-in summarizer and summary slots (#9713)"
+        ],
+        "supportingAudit": "research/paperclip/audit-batches/1940-ui-agent-detail-supporting-tests.json"
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/AgentDetail.tsx", "completedRanges": [{ "start": 1, "end": 500 }] }],
+      "sourceReadComplete": false,
+      "nextFile": "ui/src/pages/AgentDetail.tsx:501",
+      "notes": [
+        "The three dedicated supporting test units were read, executed and formally archived before this 4,360-line implementation. The main file is now read in exact 100-line ranges with immediate ledger updates.",
+        "Lines 1-100 reveal an extreme page dependency surface: twelve API domains, multiple contexts, adapter-specific configuration/transcript/capability hooks, instructions/assets/tools/Skills, budgets/trust, audit, built-ins, charts, WebSocket/live-log helpers and many UI primitives. This is an application monolith; Agent identity, execution, governance, observability and presentation boundaries are all composed directly in one React module, making wholesale reuse inappropriate.",
+        "Lines 101-200 import organization-chain health and responsible-user denial types, then define status presentation and best-effort redaction for secrets, JWT-looking strings, commands and home paths. Redaction is client-side regex/shape based and cannot be a security boundary: unknown secret keys, non-JWT tokens or nested/custom formats can escape, while false positives are possible. Company OS must redact/classify server-side before projection and retain protected originals under explicit audit authority.",
+        "Lines 201-300 format sorted environment values, define hard-coded run-source labels, implement scroll-container discovery/autoscroll and parse legacy/current tab aliases. Environment display returns sentinel English strings and still processes arbitrary nested values client-side. Source/status/view enums are presentation mappings rather than stable localized codes, while scroll and route compatibility logic are legitimate Web-only concerns.",
+        "Lines 301-400 normalize legacy/camel token usage and derive provider/model/cost, convert free-text heartbeat progress to synthetic logs, and begin an invocation inspector containing adapter type, cwd, command, prompt, context and env. Client redaction is applied to command text but cwd is displayed raw in this segment, and exposing prompts/context/env creates a high-sensitivity projection that needs server-side authorization and field-level disclosure policy.",
+        "Lines 401-500 render command notes, prompt, context and environment in expandable preformatted blocks, relying on path/secret redaction but retaining original inference/output sensitivity. Stored logs are parsed line-by-line from JSONL, malformed rows silently disappear, missing timestamps become the viewer's current time and unknown streams become stdout, which damages evidentiary fidelity. Workspace phase labels are hard-coded UI mappings."
+      ],
+      "completionRequirements": ["Read all 4,360 lines exactly once, run available focused supporting tests and no-emit UI typecheck, then assess Agent identity/lifecycle, organization and accountable-human semantics, run/work/evidence projection, configuration/instructions/tools/Skills, budgets/costs, audit, permissions, pause/resume/terminate/duplicate/invoke actions, auth/tenant, Connector neutrality, concurrency, stable errors, accessibility/mobile behavior and decomposition/reuse judgment."]
     }
   ]
 }
