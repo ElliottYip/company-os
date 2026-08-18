@@ -3461,6 +3461,61 @@
         "The final API returns presentation-rich groups/artifacts but no canonical evidence ID, content digest, producing run/action, approval decision, responsible human, data authorization, integrity state or provenance warning. It is a gallery projection, not Company OS's evidence chain."
       ],
       "completionRequirements": ["Read lines 1-773 exactly once and trace all artifact source branches, joins/tenancy, provenance, content access, filtering/sorting/pagination/counts, authorization boundary, performance and Company OS evidence fit."]
+    },
+    {
+      "id": "application:ui/api/artifacts",
+      "path": "ui/src/api/artifacts unit",
+      "lineCount": 195,
+      "files": [
+        { "path": "ui/src/api/artifacts.test.ts", "lineCount": 110, "sha256": "6dd4d96932c8af93aa7c82c456fdba2978f16f125fc1ce0336beacdd9eaab7bd", "completedRanges": [{ "start": 1, "end": 110 }] },
+        { "path": "ui/src/api/artifacts.ts", "lineCount": 85, "sha256": "a9342477e37b1d34d9790532d8f2c7f791be31314f800997c3b07e25e8cbd513", "completedRanges": [{ "start": 1, "end": 85 }] }
+      ],
+      "linkedEvidence": { "history": ["d8e1004551f159d185570ae789710db998acac80 PAP-10440: group artifacts by task stacks (#7654)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 195 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The 110-line API test covers company-scoped endpoint construction, omission/default rules, URLSearchParams encoding for filters/group/cursor, grouped envelopes and a legacy bare-array compatibility normalization.",
+        "It does not test companyId path encoding, abort signals, HTTP/stable-code errors, malformed response validation, credential/auth headers, starred mode, unsafe backend paths or removal strategy for the legacy shape.",
+        "The 85-line client is thin and uses URLSearchParams for query values, but interpolates companyId into the path without encoding, offers no AbortSignal, stable error mapping or runtime response validation, and imports server-facing shared DTOs directly.",
+        "ListArtifactsParams omits the backend's starred mode even though service tests define it. The docstring says Agent-produced outputs while the service's starred contract includes human documents, showing API/domain drift.",
+        "Bare-array normalization silently preserves an unspecified legacy contract forever and can mask partial/malformed responses rather than fail with a versioned compatibility signal.",
+        "Focused UI Vitest passed 8/8 API client tests. Passing assertions prove serialization/compatibility behavior but not response trust, authorization or error semantics."
+      ],
+      "completionRequirements": ["Read both files completely exactly once and assess API query serialization, identity/auth assumptions, error/cancellation contract, cursor/group/star semantics and tests."]
+    },
+    {
+      "id": "application:ui/components/artifacts",
+      "path": "ui/src/components/artifacts unit",
+      "lineCount": 694,
+      "files": [
+        { "path": "ui/src/components/artifacts/ArtifactCard.test.tsx", "lineCount": 245, "sha256": "c8d713d6df36992c5d8c6eaade41b612cc048e74dbf8b8da2887699a3142bd5d", "completedRanges": [{ "start": 1, "end": 245 }] },
+        { "path": "ui/src/components/artifacts/ArtifactGroupCard.test.tsx", "lineCount": 121, "sha256": "c840538d4890c59ea1dbabaf31eea4ad84df7432cbfe419a0df6ccdceb30c634", "completedRanges": [{ "start": 1, "end": 121 }] },
+        { "path": "ui/src/components/artifacts/ArtifactCard.tsx", "lineCount": 239, "sha256": "1b77cc2bc23645cb1517ee3f18427c4509bd5c4d13e39346fc1d4a52be7a22e3", "completedRanges": [{ "start": 1, "end": 239 }] },
+        { "path": "ui/src/components/artifacts/ArtifactGroupCard.tsx", "lineCount": 89, "sha256": "c98c2b55aebb3a0765a489a3b3dd02689665f30cb2ebb5b0067e947ac41b7e32", "completedRanges": [{ "start": 1, "end": 89 }] }
+      ],
+      "linkedEvidence": { "history": ["c90e66bdd6a8cdd8de44c1190dd816fed00318e8 feat(ui): design-system component convergence — Card/Badge adoption, multiplicative radius ladder, unified list surfaces (#9240)", "d8e1004551f159d185570ae789710db998acac80 PAP-10440: group artifacts by task stacks (#7654)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 694 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "ArtifactCard test lines 1-200 cover image/video/document/empty previews, issue-anchor links, absolute edited dates, video metadata seek and a 3-second fallback. Tests use SSR markup plus jsdom event behavior.",
+        "Many assertions bind Tailwind class strings and English date copy rather than semantic accessibility/responsiveness. This segment does not test unsafe URLs, image/video errors, alt/focus/keyboard, reduced motion, mobile sizing or evidence provenance.",
+        "Lines 201-245 verify action omission when paths are absent and fixed title-row layout. They do not test rel/referrer/download behavior when paths exist, creator/responsible-human labels, integrity warnings or permission-denied action states.",
+        "ArtifactGroupCard's 121-line test covers decorative stack layers, singular/plural English count, destination, task subject, first image and empty placeholder. It omits semantic heading/link names, keyboard/focus, alt text, unsafe/missing media, truncation/integrity badges, responsive layout and large counts.",
+        "ArtifactCard lines 1-200 implement fixed aspect previews, lazy images, video metadata seeking with timer cleanup, plain React text rendering and accessible labels on secondary actions. Media errors fail to placeholders without crashing.",
+        "All artifact href/content/open/download strings are trusted as browser URLs. No same-origin/allowed-scheme/capability check prevents a forged work-product metadata path from becoming navigation, download or network media input.",
+        "Every video uses preload=metadata and seeks a frame without viewport admission; a grid can issue many concurrent authenticated range requests. There is no reduced-data preference, IntersectionObserver, poster pipeline or resource budget.",
+        "Placeholder labels, action titles and media taxonomy are English display literals. The card exposes no provenance-integrity, approval, data classification, responsible-human or permission status.",
+        "Lines 201-239 place Open and Download <a> elements inside the outer card Link <a>. Nested interactive anchors are invalid HTML and create ambiguous focus/click/accessibility behavior; stopPropagation does not repair semantics.",
+        "Secondary actions are visually hidden until hover/focus-within, which is fragile on touch. The outer link's accessible name also absorbs inner action labels and metadata. Creator display supports Agent only and silently omits human/unverified provenance.",
+        "ArtifactGroupCard's 89 lines provide a clear single-link stack with decorative layers, preview, count badge, task identifier/title and date. Unlike ArtifactCard it has no nested interactive elements.",
+        "It renders backend count as authoritative with no truncation/integrity indication even though the audited service caps grouping before aggregation. English plural/date strings are hardcoded, and preview media inherits untrusted URL/resource-loading issues from ArtifactPreview.",
+        "Focused UI Vitest passed all 15 component tests, but React emitted an explicit runtime warning that <a> cannot be nested inside <a> and this will cause a hydration error. The green suite therefore demonstrates a missing console/error quality gate rather than disproving the defect."
+      ],
+      "completionRequirements": ["Read all four files completely exactly once and assess content URL safety, XSS/rendering, accessibility/keyboard, responsive behavior, identity/provenance presentation, loading/error handling and test quality."]
     }
   ]
 }

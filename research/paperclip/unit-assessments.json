@@ -15202,18 +15202,28 @@
     },
     {
       "id": "application:ui/api/artifacts",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Typed browser client and compatibility tests for listing flat/grouped company artifact projections.",
+      "dependencyDirection": "The UI imports Paperclip shared server DTOs directly, serializes query parameters into a company path, delegates auth/error behavior to the generic API client and normalizes one legacy response shape.",
+      "keyDataModels": "Artifact kind/project/search/group/limit/cursor query and artifact/group/selected-group response envelope.",
+      "lifecycle": "Build URLSearchParams, GET the company endpoint, convert a bare array or partial envelope into the expected response.",
+      "testAssessment": "Focused UI Vitest passed 8/8. Tests cover parameter omission/encoding, grouped envelopes and legacy arrays. They omit company path encoding, starred mode, abort/cancellation, stable error codes, runtime decoding, auth/data authority, malformed payloads and compatibility deprecation telemetry.",
+      "designRationale": "Keep the artifact page thin by sharing DTOs and tolerating a simpler backend rollout shape.",
+      "companyOsProblem": "Company OS Web needs a stable independent Evidence API adapter that can evolve separately from storage/search implementations and bind verified user/Agent authority.",
+      "companyOsFit": "REIMPLEMENT as a Company OS Web adapter over the independent versioned Evidence API. Generate or validate transport DTOs at runtime, encode path IDs, support AbortSignal and stable error codes, pass purpose/visibility inputs through authenticated context, and make compatibility modes explicit/observable/removable. ADAPT URLSearchParams omission/encoding tests.",
+      "responsibilityConflict": "The client has no representation of requesting Principal, accountable human, data contract, approval or evidence integrity, and its own comment incorrectly describes all results as Agent-produced despite human starred documents.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/api/artifacts.ts:1-85; full SHA-256 a9342477e37b1d34d9790532d8f2c7f791be31314f800997c3b07e25e8cbd513",
+        "ui/src/api/artifacts.test.ts:1-110; full SHA-256 6dd4d96932c8af93aa7c82c456fdba2978f16f125fc1ce0336beacdd9eaab7bd",
+        "d8e1004551f159d185570ae789710db998acac80 PAP-10440: group artifacts by task stacks (#7654)",
+        "2026-08-19 focused verbose UI Vitest: 8/8 API tests passed"
+      ],
+      "securityFindings": [
+        "companyId is interpolated into the URL path without encoding and response data is trusted without runtime schema validation.",
+        "The client exposes no cancellation/deadline or stable error mapping for potentially expensive evidence queries.",
+        "Silent bare-array compatibility can hide backend/schema drift and drops any missing pagination/truncation semantics."
+      ]
     },
     {
       "id": "application:ui/api/assets",
@@ -16414,18 +16424,31 @@
     },
     {
       "id": "application:ui/components/artifacts",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Generic card and task-stack UI for artifact image/video/text previews, file actions, task navigation, counts and dates.",
+      "dependencyDirection": "React components consume backend-shaped artifact DTOs and paths directly, reuse the Paperclip router/design primitives and embed English copy, media loading and layout behavior.",
+      "keyDataModels": "Artifact media/source/path/title/creator/update projection and grouped issue/count/preview projection.",
+      "lifecycle": "Render media or placeholder; seek video thumbnail; navigate whole card; optionally open/download; render grouped preview and decorative stack count.",
+      "testAssessment": "Focused UI Vitest passed 15/15 component tests, while React emitted a runtime warning that nested anchors are invalid and will cause hydration errors. Tests cover visual variants, video seek fallback, action omission and group stack basics, but rely heavily on class/English-string assertions and omit console-error gating, unsafe URLs, accessibility, keyboard/touch, responsive layouts, reduced-data behavior, media failures, truncation/integrity and responsibility states.",
+      "designRationale": "Create a consistent, compact gallery with fixed aspect ratios and resilient previews across heterogeneous outputs.",
+      "companyOsProblem": "Company OS needs a warm clay-style evidence experience integrated with Agent Boss, office entities, approval and responsibility—not a generic SaaS output-card grid.",
+      "companyOsFit": "REFERENCE ONLY. Retain the ideas of fixed preview geometry, bounded plain-text excerpts, lazy images, media fallbacks and stack previews. Design new Company OS components around sanitized asset capabilities, separate valid interactive elements, touch/keyboard/mobile access, reduced-data admission and visible producer/responsible-human/approval/data/integrity states. Do not copy the branded/generic card implementation.",
+      "responsibilityConflict": "Cards can display only createdByAgent; human creators, accountable owners, approval decisions, evidence digest/integrity, data authority and invalid provenance are invisible. Incomplete backend group counts are presented as authoritative.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "ui/src/components/artifacts/ArtifactCard.tsx:1-239; full SHA-256 1b77cc2bc23645cb1517ee3f18427c4509bd5c4d13e39346fc1d4a52be7a22e3",
+        "ui/src/components/artifacts/ArtifactCard.test.tsx:1-245; full SHA-256 c8d713d6df36992c5d8c6eaade41b612cc048e74dbf8b8da2887699a3142bd5d",
+        "ui/src/components/artifacts/ArtifactGroupCard.tsx:1-89; full SHA-256 c98c2b55aebb3a0765a489a3b3dd02689665f30cb2ebb5b0067e947ac41b7e32",
+        "ui/src/components/artifacts/ArtifactGroupCard.test.tsx:1-121; full SHA-256 c840538d4890c59ea1dbabaf31eea4ad84df7432cbfe419a0df6ccdceb30c634",
+        "c90e66bdd6a8cdd8de44c1190dd816fed00318e8 feat(ui): design-system component convergence — Card/Badge adoption, multiplicative radius ladder, unified list surfaces (#9240)",
+        "2026-08-19 focused verbose UI Vitest: 15/15 passed, with explicit React nested-anchor hydration warning"
+      ],
+      "securityFindings": [
+        "Backend-provided href/contentPath/openPath/downloadPath values become navigation, media and download URLs without allowed-scheme/same-origin/capability validation.",
+        "ArtifactCard nests Open/Download anchor elements inside the whole-card anchor; React reports invalid HTML and a hydration-error risk, and focus/click semantics are ambiguous.",
+        "Every visible video requests metadata and seeks a frame without viewport, reduced-data, concurrency or request-budget admission.",
+        "Media errors and invalid provenance silently become generic placeholders, hiding evidence-integrity failures from reviewers."
+      ]
     },
     {
       "id": "application:ui/components/ArtifactsPanel",
