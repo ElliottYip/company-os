@@ -3942,11 +3942,16 @@
       "lineCount": 281,
       "sha256": "49c5ef91320395be1f02172b7fa4adddb9dfb85e257b6c101e23a99f2ac16c97",
       "linkedEvidence": { "history": ["0096b56a1c4e69c077320c0194c804cdaea7615d [codex] Add LLM Wiki plugin host support (#5597)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 281 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 set up an embedded-Postgres host-service integration suite with a minimal event bus stub and a Plugin manifest declaring apiVersion/version/author/capability/worker plus an inline managed Skill reference file. The manifest has author text but no publisher identity, signature, package digest or license. The Skill has no explicit entrypoint/SKILL.md, trust level, content hashes, data/tool/egress scopes or approval requirements. Event emission is a no-op, so durable event semantics are outside this suite.",
+        "Lines 101-200 verify stable Plugin resource keys/bindings, creation of generated SKILL.md plus references, idempotent resolution, preservation of operator edits during reconcile, explicit reset to manifest defaults and no-op binding timestamps. Preserving local edits and explicit reset are strong reconciliation semantics, but reset has no actor/approval/action digest, generated content lacks asserted hashes/provenance version, and sourceType='catalog' conflates Plugin-managed ownership with catalog origin.",
+        "Lines 201-281 verify relinking a canonical orphaned Skill without overwriting edits, reporting file-level default drift, clearing drift after reset and injecting a canonical managed key into manifest Markdown. This is a useful ownership/reconciliation model. Missing coverage includes cross-company/resource-key collisions, Plugin upgrade/downgrade/uninstall, deleted/renamed Skills, concurrent reconcile/reset, transaction/activity/event failures, malicious paths/content, executable scripts, license/signature and Agent assignment impact.",
+        "Focused Vitest was run outside the sandbox with an isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the file and all 6 tests were skipped; 0 tests executed and no runtime pass is claimed."
+      ],
       "completionRequirements": ["Read lines 1-281 exactly once, run the focused suite, and assess Plugin-owned Skill discovery/install/update/removal, ownership and tenant boundaries, idempotency/reconciliation, version/hash/provenance/license, executable capability admission, failure recovery, uninstall cleanup, Agent assignment impact and Company OS Plugin/Connector fit."]
     }
   ]
