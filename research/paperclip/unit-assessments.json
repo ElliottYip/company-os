@@ -2687,18 +2687,21 @@
     },
     {
       "id": "application:server/__tests__/auth-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Express route tests for returning the authenticated board user's persisted profile and updating display name/avatar for session or local-implicit identities.",
+      "dependencyDirection": "Actor middleware supplies the trusted user id; auth routes read or update the users table and return a Paperclip-shaped synthetic session projection plus persisted user profile through the shared error handler.",
+      "keyDataModels": "Board actor userId/source, user id/name/email/image, synthetic session id/userId, external HTTPS avatar URL, product asset-content path, null/omitted image update and validation error.",
+      "lifecycle": "A signed-in board actor reads its current database profile. A profile PATCH updates name and optionally clears or replaces image; omitted image preserves the old value. HTTPS URLs and Paperclip asset-content paths are accepted, while a non-URL string is rejected.",
+      "testAssessment": "Five route cases cover persisted session projection, local/session profile mutation, partial update semantics, internal asset paths and one invalid avatar. Database behavior is stubbed. Missing are unauthenticated/Agent access, row-not-found or cross-user updates, concurrent/versioned edits, name/image length and Unicode controls, non-HTTPS/data/file/javascript URLs, external-image privacy policy, internal asset ownership/tenant access, stable error code and audit event.",
+      "designRationale": "Give the board UI a provider-independent current-user projection and editable human profile while supporting both externally hosted and product-managed avatar images.",
+      "companyOsProblem": "Company OS needs a stable IdentityPort projection for real employees whose display profile is separate from authentication identity, organization authority and accountable-human certification.",
+      "companyOsFit": "ADAPT the provider-neutral profile projection and partial-update semantics. Use opaque session subject rather than exposing a fabricated session identifier as authority; validate managed asset ownership, proxy or explicitly opt in external images to avoid tracking, add optimistic version and immutable profile-change audit, and keep IdP-bound legal identity fields non-editable through this endpoint.",
+      "responsibilityConflict": "Display name and avatar can change without an audit receipt and are not distinguished from verified legal/employee identity. If responsibility records render only mutable profile fields, historical approver identity can be visually rewritten; evidence must pin opaque principal id plus identity snapshot/version.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/auth-routes.test.ts:1-164",
+        "9a8d2199492654930ba0864dd5c0757163998649 [codex] Stabilize tests and local maintenance assets (#4423)"
+      ]
     },
     {
       "id": "application:server/__tests__/auth-session-route",
@@ -2802,18 +2805,22 @@
     },
     {
       "id": "application:server/__tests__/better-auth",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure configuration tests for Better Auth cookie namespace isolation, secure-cookie selection, authentication rate limiting and trusted-origin derivation across deployment modes, exposure profiles, URLs, hostnames and resolved ports.",
+      "dependencyDirection": "Deployment/bootstrap configuration and environment variables enter helper functions that build Better Auth advanced, rate-limit and trusted-origin options; the external Better Auth library derives concrete cookie names and enforces the resulting settings.",
+      "keyDataModels": "Instance id and cookie prefix, deployment mode/exposure, auth base-URL mode, explicit/resolved public URL, secure-cookie boolean, rate-limit override, allowed hostname, configured/listen port and HTTP/HTTPS trusted origin.",
+      "lifecycle": "Startup scopes cookies per instance, disables Secure for local HTTP/private auto-origin cases, retains it for HTTPS/public cases, enables auth rate limiting by default but accepts an explicit off override, and expands allowed hostnames into HTTP/HTTPS origin variants including the resolved non-default port.",
+      "testAssessment": "Seventeen focused cases cover cookie naming, local/public/private URL combinations, default and overridden rate limiting, case-normalized hostnames and port resolution. Missing are SameSite/HttpOnly/domain/path/max-age, prefix sanitization/collision and cookie tossing, malformed/credentialed/IDNA/IPv6 origins, wildcard or proxy headers, CSRF flows, session rotation/revocation, distributed rate-limit storage/keying/bypass and a guard prohibiting rate-limit disablement on public profiles.",
+      "designRationale": "Allow multiple local/worktree instances and mixed HTTP/HTTPS deployments without cookie collisions or broken sign-in, while supplying safe-ish auth defaults and host-derived origin trust.",
+      "companyOsProblem": "Company OS needs replaceable OIDC/SSO/local Identity adapters whose browser session policy is explicit per managed-cloud and self-hosted profile and cannot silently weaken due to URL autodetection.",
+      "companyOsFit": "ADAPT the instance namespace, canonical-origin and resolved-listen-port test matrix at the Web adapter boundary. Enforce profile invariants: public production requires HTTPS Secure cookies and non-disableable distributed rate limiting; trusted origins must use explicitly configured schemes rather than automatically trusting both HTTP and HTTPS for every hostname. Keep Better Auth optional behind IdentityPort.",
+      "responsibilityConflict": "Cookie/session configuration authenticates a browser but does not prove Company role or accountable authority. Explicitly disabling rate limiting is allowed even for public exposure, and auto-derived origins trust both schemes; operator configuration can therefore weaken identity assurance without a governed change record.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/better-auth.test.ts:1-215",
+        "b2496c80672f15481f7af48952b0d6d68ec208de fix(auth): trust allowed hostname port variants on detected listen port (#4554)",
+        "9aea3e3d35fe47a745857b91c392da5b3fc0ae17 [codex] Add resource membership controls (#6677)"
+      ]
     },
     {
       "id": "application:server/__tests__/board-chat-route-feature-flag",
