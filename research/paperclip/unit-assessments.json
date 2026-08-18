@@ -11498,18 +11498,34 @@
     },
     {
       "id": "application:server/services/company-portability",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Paperclip's complete company package export, import, preview and legacy-migration service, including organization, Agent, skill, project, workspace, routine, issue, evidence-like work product, attachment, asset, secret and presentation artifacts.",
+      "dependencyDirection": "A 6,179-line service is a convergence point for database tables, most domain services, storage, secrets, filesystem and Git subprocesses, arbitrary GitHub fetching, provider-specific adapter normalization, route-layer org-chart rendering and package presentation. Serialization, policy, execution admission and mutation do not form separable inward-facing boundaries.",
+      "keyDataModels": "Schema-v6 portable company package, manifest and selected file map, content-addressed blobs and embedded assets, environment input declarations, collision mode and name overrides, import preview/entity plans, company/Agent/skill/project/workspace/routine/issue child records, and a partial import result.",
+      "lifecycle": "Resolve inline/local/GitHub input; normalize and parse a presentation-oriented package; construct export or preview plans; mutate company and consent; materialize secrets and assets; create or replace skills, Agents, permissions, projects, workspaces, routines and issues; flush child evidence records; perform secret-only best-effort compensation on failure.",
+      "testAssessment": "The focused service suite passed 78/78 tests in one file on 2026-08-18, and the separately audited route contract passed 38/38. The batching integration test was explicitly skipped because its embedded PostgreSQL fixture could not start and was not claimed as passed. Coverage locks many useful behaviors, including hash verification, large YAML rendering, safe-mode rejection and paused monitors, but also explicitly locks dangerous semantics such as export-all when a skill selector matches nothing, copied memberships, additive permissions, non-revalidated overrides and authorship loss. It lacks adversarial selector UUID, include.skills=false, normalized-path collision, custom-YAML prototype, bounded-resource, concurrent preview/apply, failure-saga and full rollback/reconciliation tests.",
+      "designRationale": "Offer a human-readable, portable Cloud/self-hosted company bundle with broad entity coverage, backward compatibility, warnings, content-addressed binary data, collision handling and a safer Agent-oriented import mode.",
+      "companyOsProblem": "Company OS also needs durable organization portability, but migration is a governed high-risk action that must preserve accountable humans, responsibility contracts, evidence provenance, consent and data-authority semantics across managed-cloud and self-hosted deployments.",
+      "companyOsFit": "REIMPLEMENT as a versioned typed manifest with a canonical complete file inventory and digest, explicit per-version migrations, immutable reviewed plan digest, target revision/lease, capability- and data-classification admission, stable error/warning codes, durable saga/outbox checkpoints, resumable repair and compensations, source-principal provenance, re-consent/rebinding workflows and Connector-owned runtime conversion. ADAPT only content rehashing, cross-company asset ownership checks, prebuffered batch writes, blocking-cycle filtering, warnings for dropped references, imported monitors remaining unarmed, inbox suppression and default automation pausing, backed by compatibility fixtures.",
+      "responsibilityConflict": "The importer can synthesize a board actor, copy memberships and prior consent, reattribute human comments to the importer or system, add rather than replace permissions, activate partially imported executable routines, and return no canonical identities/digest for imported issues, documents or evidence. Route-level activity occurs after mutation and cannot prove the complete action/evidence/result chain.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-portability.ts:1-6179",
+        "full source SHA-256 5edef5e6a98e2ffbeac5f384a347257c7b38b15b946b075f7c53a905d93dce2b",
+        "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+        "2026-08-18 focused verbose Vitest: server/src/__tests__/company-portability.test.ts, 1 file / 78 tests passed",
+        "existing COMPLETE application:server/routes/companies-portability contract: 38/38 focused route tests passed; reused without rereading",
+        "existing COMPLETE application:server/__tests__/company-import-batching: embedded PostgreSQL fixture failure caused explicit skip; no passing claim"
+      ],
+      "securityFindings": [
+        "Explicit Agent/project/issue selectors that all miss or are skipped become an empty selection interpreted as export all; UUID issue IDs are misrouted by a hyphen heuristic, so data-minimizing intent can become a full export.",
+        "Skill selection has the same empty-means-all behavior, skill export is not consistently guarded by include.skills, and import processes skills whenever Agents or skills are included, leaking or mutating an unrequested domain.",
+        "The hand-written tolerant YAML parser permits duplicate last-wins keys, raw object keys and ordinary-object assignment without reserved-key protection; normalized file-path collisions also resolve by silent last-write-wins.",
+        "Remote repository files, local Git operations, storage streams, binary decoding, attachments and the complete export/import graph are substantially memory-resident and lack a coherent file/count/aggregate-byte, timeout, host allowlist and snapshot boundary.",
+        "Migration can carry executable workspace commands and provider runtime settings, including an injected Codex flag, through heuristic blacklist-based safe modes rather than versioned default-deny capability admission.",
+        "Company, consent, assets, skills, Agents, permissions, instruction bundles, projects, workspaces, routines, issues and stored objects are committed through many independent calls. Only newly created secrets receive best-effort cleanup, so failures leave broad partial state without a durable saga or reconciliation record.",
+        "Membership, consent, authority and comment authorship are transferred or rewritten without destination-specific human acceptance and source-principal evidence, conflicting with Company OS accountability and data-governance invariants."
+      ]
     },
     {
       "id": "application:server/services/company-search",
