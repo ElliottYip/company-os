@@ -22,11 +22,27 @@
             "Class-3 static lease credentials require an explicit allowlist key and config path and return structured error details, while several other boundary failures in this range expose only English message text.",
             "The range is dominated by schemas, conversion projections, and lifecycle helpers; no final correctness, security, reuse, or ownership decision is valid until the remaining ranges and tests are reviewed."
           ]
+        },
+        {
+          "start": 1001,
+          "end": 2000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Tool-profile summaries and new-tool review projections are implemented in-memory over full profile, catalog, binding, and agent arrays; later callers must be checked for pagination and tenant-size bounds.",
+            "Risk classification combines annotations, explicit Notion tool lists, and verb heuristics, but an unrecognized or renamed mutation defaults to read, creating a fail-open classification risk unless catalog quarantine or review always intercepts it.",
+            "Remote MCP and OAuth helpers validate every manual redirect against the public-endpoint guard in authenticated public deployments, and local stdio enablement requires a trusted runtime host in that deployment profile.",
+            "The connection-token broker rate limit counts successful issuances and then proceeds without an atomic reservation, so concurrent mints can exceed the configured hourly limit.",
+            "Broker authorization requires an exact, condition-free connection_token.mint include in the narrowest active profiles; exclusions are evaluated only within each profile, so cross-profile include/exclude semantics require test confirmation.",
+            "The broker derives responsibleUserId from the run context snapshot; this range does not revalidate that accountable human against current organization membership or responsibility contracts.",
+            "Generic and Pages token exchange send a vault-resolved parent token to a configured exchange URL using direct fetch rather than the guarded remote fetch helper; configuration authority and later validation must be traced because this can become a credential-egress boundary.",
+            "The RFC 8693 branch labels a base64url-encoded JSON actor_token as a JWT without signing it, and the response path shown here does not re-check returned scope or cap an explicit upstream expiresAt to the requested TTL.",
+            "These are preliminary findings from this range only; final severity and reuse judgment remain invalid until invocation paths, mutations, tests, migrations, and the rest of the file are reviewed."
+          ]
         }
       ],
-      "nextLine": 1001,
+      "nextLine": 2001,
       "completionRequirements": [
-        "Read lines 1001-7771 without overlap or gaps against the pinned SHA-256.",
+        "Read every source line through 7771 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Review the corresponding first-party tests and relevant file history.",
         "Only then write the canonical unit assessment and change auditStatus to COMPLETE."
       ]
