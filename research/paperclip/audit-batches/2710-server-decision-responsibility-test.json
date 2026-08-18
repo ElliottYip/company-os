@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/decisions-service",
+      "auditStatus": "COMPLETE",
+      "function": "Comprehensive intended PostgreSQL tests for signed Agent-proposed/human-decided effects, dual-authority intersection, target snapshots, idempotency, recovery, expiry, attention and decision statistics.",
+      "dependencyDirection": "Vitest -> decision/attention/retention services -> real Paperclip database schema and embedded PostgreSQL when supported, plus an injected origin-Agent wake callback; no HTTP Identity/session/MFA, external effect publisher or KMS.",
+      "keyDataModels": "Decision spec/options/effects/idempotency/signature/expiry/status, origin Agent/Run/responsible human, deciding user, target and secondary snapshots, effect execution receipts, retention manifest, attention item and activity evidence.",
+      "lifecycle": "Authorized Agent proposes signed exact effects -> human sees open decision -> service rechecks origin and decider authority plus target snapshots -> wins one concurrent decision -> claims/executes effects -> records receipts/activity -> wakes origin Agent; sweeps recover crashes and expire stale/finished targets.",
+      "testAssessment": "The 34-test design is unusually strong and covers concurrency, tamper detection, strict/lenient scope, authorization intersection, recovery and bounded work. However every test skipped in both sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable, so none of these runtime properties is verified on this host. External effects, key rotation, step-up identity and atomic multi-effect semantics remain absent.",
+      "designRationale": "Turn Agent recommendations into signed, reviewable and recoverable human decisions whose effects cannot expand beyond the proposal and current intersection of proposer/decider authority.",
+      "companyOsProblem": "Company OS requires first-class responsibility contracts and high-risk approval publication that bind goal, proposer, Agent/Run, accountable human, exact action/targets/data/tool grants, evidence, result and lifecycle under concurrency and failure.",
+      "companyOsFit": "ADAPT as the current leading reference candidate for decision/approval execution mechanics, pending service/schema audit and executable database verification. Preserve signed versioned manifests, origin/decider authority intersection, target snapshots, idempotent claims, durable receipts and recovery. Extend with risk tiers, step-up/MFA and separation of duties, exact Work/Contract/Agent/data/tool/evidence/result digests, key IDs/rotation/KMS, explicit atomic effect groups/compensation and external publication outbox semantics.",
+      "responsibilityConflict": "It models origin and deciding humans well, but the decision remains attached primarily to Issue effects rather than a complete Work responsibility contract. A normal member may decide when capability intersection allows; no risk-matched accountable role, two-person rule or human authentication freshness is tested. Server HMAC proves record integrity, not human intent by itself.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/decisions-service.test.ts:1-655 (SHA-256 0f5548e2d0e9dd1cd4ff722f761b5674fd61f6b4e18fe22a00589a9c30a3e045)",
+        "git history includes ef33c1d9edc061e9c4d1d033e7a1a929974f0573, 678728f650bf2a03f325922db32efb038dbb6ac9, 6008482aabed04bcccc08e62e7d9c3cc96733700, 0a09e4d975e1e1cd7de65fbd1ca730b9cd9f97ea, 92c3d9f0d9fb11a9d06ca43fc09e8e25b9e64b08 and 9c1f8e788732c2cff971d8f2b0c69499bde0fac7",
+        "2026-08-19 sandboxed and approved unsandboxed focused Vitest: all 34 embedded-PostgreSQL tests skipped"
+      ],
+      "securityFindings": "CRITICAL verification gap: all 34 security/concurrency/recovery tests skipped. HIGH human-intent gap: server HMAC plus board session is not step-up/MFA or a human-signed assertion; no authentication freshness or separation-of-duties test exists. HIGH key-lifecycle gap: auto-generated symmetric key and hard failure after key removal lack key ID/version, rotation overlap, multi-node/KMS, backup/restore and compromise recovery. HIGH effect-atomicity gap: later effects continue after failure without explicit independence/atomic group; external side-effect exactly-once is untested. Missing bindings include data/tool grants, evidence/result digests, Connector attestation and complete Work/Responsibility contract."
+    }
+  ]
+}

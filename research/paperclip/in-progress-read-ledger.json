@@ -5606,6 +5606,41 @@
       "completionRequirements": [
         "Read lines 1-240 exactly once and assess dashboard projections, tenant filtering, run/task status semantics, aggregation correctness, query scale, freshness and test quality against Company OS Agent Boss/responsibility projections."
       ]
+    },
+    {
+      "id": "application:server/__tests__/decisions-service",
+      "path": "server/src/__tests__/decisions-service.test.ts",
+      "lineCount": 655,
+      "sha256": "0f5548e2d0e9dd1cd4ff722f761b5674fd61f6b4e18fe22a00589a9c30a3e045",
+      "linkedEvidence": {
+        "history": [
+          "ef33c1d9edc061e9c4d1d033e7a1a929974f0573 fix(decisions): retire completed-target decisions and link targets from the card (#10892)",
+          "678728f650bf2a03f325922db32efb038dbb6ac9 feat: maintained in_review review-path contract + stalled-review actions (#10675)",
+          "6008482aabed04bcccc08e62e7d9c3cc96733700 fix(decisions): remove clock race from sweep-expiry tests (#10701)",
+          "0a09e4d975e1e1cd7de65fbd1ca730b9cd9f97ea feat(decisions): add desk workflow and retention (#10672)",
+          "92c3d9f0d9fb11a9d06ca43fc09e8e25b9e64b08 fix(server): stop requiring PAPERCLIP_DECISION_SIGNING_SECRET at startup (#10594)",
+          "9c1f8e788732c2cff971d8f2b0c69499bde0fac7 feat(decisions): add first-class propose mode (#10010)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        { "start": 1, "end": 330 },
+        { "start": 331, "end": 655 }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-330 define 34 intended real-PostgreSQL tests and cover concurrent create idempotency, exactly-once decide/replay, double-decide contention, signed versioned archive manifests, strict/lenient target snapshots, origin/decider authority intersection, blocker direction and bounded cyclic descendant traversal.",
+        "The model contains two distinct human roles—origin responsible user and deciding user—and rechecks both sides' current membership/capability at execution. Activity links the decider, origin human and effect execution. This is the strongest Paperclip responsibility-adjacent test evidence seen so far.",
+        "Signed target snapshots and lenient cancellation never expand beyond reviewed descendants, which closely matches Company OS exact action/digest requirements. However signing is server HMAC, not proof of the human's own signature/session freshness, MFA or separation-of-duties policy.",
+        "Lines 331-655 cover decider/origin revocation, signing-key failure/autogeneration, partial multi-effect execution, claimed-effect crash recovery, bounded sweep recovery, continuation delivery retry, Agent cancellation, attention-feed bounds/N+1 behavior, TTL/target lifecycle expiry, statistics and tamper-resistant dismissal.",
+        "Partial execution deliberately continues later effects after an earlier failure without an explicit atomic group or dependency graph. This is suitable only for declared-independent effects; high-risk multi-effect approvals need atomicity/compensation semantics. External/non-database effects and crash-after-side-effect-before-receipt are not exercised.",
+        "Signing-key removal invalidates open decisions and an auto-generated local key is allowed, but tests omit key ID/version/rotation overlap, multi-node distribution, backup/restore and HSM/KMS. User decisions rely on board session identity rather than a separately bound step-up assertion.",
+        "All 34 tests were skipped in both sandboxed and approved unsandboxed runs because embedded PostgreSQL support was unavailable. The suite is exceptionally broad design evidence but provides no executed behavior evidence on this host."
+      ],
+      "completionRequirements": [
+        "Read lines 1-655 exactly once and assess decision proposal/approval semantics, accountable human, exact action/target/digest binding, signing, expiry, concurrency/idempotency, target lifecycle, retention/audit and test quality against Company OS responsibility contracts."
+      ]
     }
   ]
 }
