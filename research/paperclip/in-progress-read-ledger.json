@@ -4,6 +4,75 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/routes/cloud",
+      "path": "server/src/routes/cloud.ts",
+      "lineCount": 118,
+      "sha256": "0e193c6e4eb1e0e61ef55cac0a8b039e763a57e626e3287488e3e22bb39f4faf",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 118 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The route correctly derives identity from the trusted cloud_tenant actor, never forwards client authorization/query identity, requires full server-side context and uses a 10-second abort with stable upstream/not-configured codes.",
+        "cloudOrigin accepts any parseable absolute URL without HTTPS/host allowlist/private-network validation, then receives the tenant bearer token. Configuration compromise or mistake can exfiltrate the server token or create SSRF; validation should fail at immutable startup, not per request.",
+        "The upstream payload is unknown/unbounded and cached without schema/content-type/size validation. The per-router Map has no entry cap; every request scans all entries, enabling memory and O(n) cleanup growth across many valid actor IDs.",
+        "No circuit breaker, retry/backoff, token rotation cache invalidation or response provenance exists. The Paperclip Cloud API, headers and portfolio DTO are tightly vendor coupled and unsuitable for Company OS core/application."
+      ],
+      "completionRequirements": ["Read lines 1-118 exactly once and trace cloud upstream URL/token/actor derivation, caching, response/error handling, SSRF/secret boundaries and vendor coupling."]
+    },
+    {
+      "id": "application:server/services/cloud-instance",
+      "path": "server/src/services/cloud-instance.ts",
+      "lineCount": 52,
+      "sha256": "9551e3ef6a74825a38af67e8d6463f62a05cd08647ded265ba8dc49b901c9129",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 52 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Cloud-managed mode is inferred from a nonblank tenant token or mere presence of PAPERCLIP_MANAGED_CONFIG; the union intentionally preserves restrictive legacy floors.",
+        "The predicate and context read a mutable ambient environment by default. An empty managed-config value switches product semantics, while stack IDs/slug/host/origin are only trimmed, not structurally validated or frozen at startup.",
+        "Paperclip-specific deployment and provisioner concepts live in a server adapter helper, but consumers receive a broad boolean/context rather than a validated immutable DeploymentProfile/capability contract."
+      ],
+      "completionRequirements": ["Read lines 1-52 exactly once and assess managed-profile inference, metadata validation, runtime mutability and adapter/core ownership using existing cloud-instance test evidence without rereading it."]
+    },
+    {
+      "id": "application:server/__tests__/cloud-routes",
+      "path": "server/src/__tests__/cloud-routes.test.ts",
+      "lineCount": 149,
+      "sha256": "96054e835d6363311ea03e4303e1397b4aec2ba459b426f1a3962bede130a35b",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 149 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Five tests prove server-derived actor identity replaces client query/header/bearer inputs, successful portfolios cache 30 seconds per actor, self-hosted returns 404 and non-cloud-tenant actors are denied.",
+        "Upstream timeout/error/non-JSON/oversize/schema, cloud origin validation/SSRF, token leakage/rotation, cache bounds/invalidation, stack/account-group isolation and response sanitization are absent.",
+        "Approved unsandboxed focused Vitest with PAPERCLIP_HOME isolated under /private/tmp passed all 5 route tests."
+      ],
+      "completionRequirements": ["Read lines 1-149 exactly once and assess cloud route exposure, metadata redaction, platform floors and test quality."]
+    },
+    {
+      "id": "application:server/__tests__/company-cloud-floor",
+      "path": "server/src/__tests__/company-cloud-floor.test.ts",
+      "lineCount": 124,
+      "sha256": "4949866937b2d42e14e49215c4ff02d0fb2531575b3a726af3118a51c7b28b1d",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 124 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Three tests prove cloud-managed company creation is denied before body validation/service mutation and self-hosted local implicit creation remains available with owner membership.",
+        "Only tenant-token signal is exercised despite setup clearing managed-config too. Session/Agent actors, existing-company count/races, malformed ambient profile, authorization/audit, idempotency and deletion/import/restore lifecycle floors are absent.",
+        "Approved unsandboxed focused Vitest with PAPERCLIP_HOME isolated under /private/tmp passed all 3 company-floor tests."
+      ],
+      "completionRequirements": ["Read lines 1-124 exactly once and assess restrictive platform floors for tenant/company lifecycle, actor distinctions and test quality."]
+    },
+    {
       "id": "application:server/__tests__/dev-server-status",
       "path": "server/src/__tests__/dev-server-status.test.ts",
       "lineCount": 103,

@@ -3443,18 +3443,22 @@
     },
     {
       "id": "application:server/__tests__/cloud-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Tests for managed-cloud portfolio proxy identity derivation, cache isolation and self-hosted/non-tenant denial.",
+      "dependencyDirection": "Fake actor/runtime environment and injected fetch exercise the real cloud proxy route through Express/Supertest.",
+      "keyDataModels": "Cloud-tenant actor user, stack ID, tenant bearer token, upstream portfolio, per-actor cache and platform errors.",
+      "lifecycle": "Authorize trusted tenant actor, derive headers server-side, fetch/cache portfolio and deny self-hosted or session actors.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 5/5 with isolated PAPERCLIP_HOME. Strong spoofing and cache-partition tests exist; origin/SSRF/token, upstream schema/size/error and cache-bound cases are missing.",
+      "designRationale": "Prevent clients from selecting another cloud identity or forwarding their own bearer token through the tenant proxy.",
+      "companyOsProblem": "Company OS managed adapters must bind upstream calls to verified human identity and tenant context without accepting client-controlled delegation headers.",
+      "companyOsFit": "ADAPT the server-derived identity and per-principal cache isolation tests for every cloud/enterprise adapter. Add validated destinations, bounded typed responses, token rotation, failure/circuit and tenant-stack isolation cases.",
+      "responsibilityConflict": "The tests prove identity routing but not whether the human may view/switch the returned companies or how that cross-stack action is audited and attributed.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/cloud-routes.test.ts:1-149",
+        "full source SHA-256 96054e835d6363311ea03e4303e1397b4aec2ba459b426f1a3962bede130a35b",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 5/5 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/codex-auth-reconciliation",
@@ -3637,18 +3641,22 @@
     },
     {
       "id": "application:server/__tests__/company-cloud-floor",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Tests that managed-cloud tenants cannot create a second company while self-hosted local setup can create its first company/owner membership.",
+      "dependencyDirection": "Ambient cloud signal and fake actor drive the real companies route with mocked company/access/budget/activity services.",
+      "keyDataModels": "Cloud/local board actor, managed floor code, company creation, default responsible user and owner membership.",
+      "lifecycle": "Apply platform floor before validation/mutation or create the local company and ownership relationship.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 3/3. It omits legacy managed-config, actor variants, count/concurrency, other company lifecycle paths, idempotency and responsibility/audit evidence.",
+      "designRationale": "Keep cloud tenant/company lifecycle platform-owned while preserving independent self-hosted onboarding.",
+      "companyOsProblem": "Company OS requires explicit canonical ownership for organization lifecycle in each deployment profile without forking business code.",
+      "companyOsFit": "ADAPT the fail-before-validation/mutation floor and cross-profile tests. Replace ambient detection with immutable profile capabilities and require verified human identity/organization contract before assigning responsible ownership.",
+      "responsibilityConflict": "Self-hosted local_implicit identity is directly made default responsible owner; a local technical session is not necessarily a verified accountable human.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-cloud-floor.test.ts:1-124",
+        "full source SHA-256 4949866937b2d42e14e49215c4ff02d0fb2531575b3a726af3118a51c7b28b1d",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 3/3 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/company-portability",
@@ -10081,18 +10089,23 @@
     },
     {
       "id": "application:server/routes/cloud",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Paperclip Cloud portfolio reverse proxy with trusted actor headers, server token and a short in-memory per-user cache.",
+      "dependencyDirection": "Paperclip Cloud environment/actor becomes an authenticated request to a vendor control-plane URL; opaque upstream JSON is returned and cached.",
+      "keyDataModels": "CloudStackContext, cloud_tenant actor, tenant bearer token, stack/user headers, opaque portfolio and cache entry.",
+      "lifecycle": "Validate broad context/actor, clean expired cache, build URL, fetch with timeout, map errors, cache and return upstream payload.",
+      "testAssessment": "Focused route tests pass, but destination trust, response contracts, cache bounds and resiliency are important untested source-level gaps.",
+      "designRationale": "Expose a user's Cloud stack portfolio without letting browser credentials or spoofed identity cross the server boundary.",
+      "companyOsProblem": "Company OS Web may consume managed-cloud organization portfolios or enterprise directories through stable provider adapters.",
+      "companyOsFit": "REFERENCE_ONLY because the route/DTO/headers are Paperclip-specific. Implement a typed OrganizationDirectoryPort adapter with startup-validated HTTPS allowlist, egress firewall, secret audience, bounded schema, cache cap, circuit breaker and provenance.",
+      "responsibilityConflict": "The proxy proves actor identity transport but has no explicit authorization decision, responsibility scope or evidence for portfolio access and later stack switching.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/routes/cloud.ts:1-118",
+        "full source SHA-256 0e193c6e4eb1e0e61ef55cac0a8b039e763a57e626e3287488e3e22bb39f4faf",
+        "5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)",
+        "2026-08-18 focused cloud route Vitest: 5/5 passed"
+      ]
     },
     {
       "id": "application:server/routes/companies",
@@ -11330,18 +11343,23 @@
     },
     {
       "id": "application:server/services/cloud-instance",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Paperclip-specific managed-cloud predicate and optional provisioner stack-context extraction from environment variables.",
+      "dependencyDirection": "Ambient runtime environment becomes a broad managed boolean and Paperclip Cloud metadata consumed by routes and platform floors.",
+      "keyDataModels": "Tenant server token signal, legacy managed-config presence and nullable stack ID/slug/account group/host/cloud origin.",
+      "lifecycle": "Infer managed mode on every call, preserve restrictive legacy/new signal union and expose trimmed optional metadata.",
+      "testAssessment": "The already-completed cloud-instance test unit covers signal union/normalization. Source confirms missing immutable profile and structural metadata validation; it was not reread.",
+      "designRationale": "Migrate cloud detection without accidentally disabling any existing restrictive floor during rollout.",
+      "companyOsProblem": "Company OS must run managed-cloud and self-hosted/local enterprise from one codebase while keeping identity, data lifecycle and platform ownership explicit and vendor neutral.",
+      "companyOsFit": "REFERENCE_ONLY. Preserve the monotonic restriction migration rule, but construct and validate an immutable DeploymentProfile at composition startup; expose capability/ownership ports to application code and keep provider metadata in a cloud adapter.",
+      "responsibilityConflict": "An empty ambient value can alter platform ownership and responsibility semantics without a signed deployment decision, operator identity or audit record.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/services/cloud-instance.ts:1-52",
+        "full source SHA-256 9551e3ef6a74825a38af67e8d6463f62a05cd08647ded265ba8dc49b901c9129",
+        "existing completed application:server/__tests__/cloud-instance evidence reused without rereading",
+        "5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"
+      ]
     },
     {
       "id": "application:server/services/codex-auth-reconciliation",
