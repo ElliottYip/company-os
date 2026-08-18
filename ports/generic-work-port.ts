@@ -51,7 +51,7 @@ export interface GenericWorkFailure {
     | "NOT_FOUND"
     | "CONFLICT"
     | "RATE_LIMITED"
-    | "UPSTREAM_UNAVAILABLE"
+    | "INFRASTRUCTURE_UNAVAILABLE"
     | "UNKNOWN";
   readonly retryable: boolean;
   readonly details?: Readonly<Record<string, string | number | boolean | null>>;
@@ -78,10 +78,11 @@ export interface CancelGenericRunCommand {
 }
 
 /**
- * Anti-corruption boundary for the single generic work substrate.
+ * Company OS-owned boundary for canonical work records and run events.
  *
  * Company OS core owns responsibility, data authorization, and exact approval
- * semantics. Implementations own generic task/run persistence and scheduling.
+ * semantics. Replaceable Company OS adapters own persistence and scheduling;
+ * no external product is the canonical owner of these records.
  */
 export interface GenericWorkPort {
   createWork(command: CreateGenericWorkCommand): Promise<GenericWorkResult<GenericWorkRecord>>;

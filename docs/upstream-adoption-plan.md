@@ -1,4 +1,8 @@
-# Paperclip adoption and migration plan
+# Historical Paperclip adoption plan — superseded
+
+Status: Superseded by ADR 0008 on 2026-08-18. This document is retained only as
+decision history. None of its integration, cutover, compatibility, upgrade, or
+runtime instructions are active.
 
 ## Recommended shape
 

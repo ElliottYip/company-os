@@ -4,13 +4,13 @@
 
 The Company OS-owned Web exposes four projections over the same deterministic
 application state: Office, Work and Approvals, Responsibility, and Connectors.
-The customer shell does not import or embed Paperclip pages. Stable section and
+The customer shell does not import or embed competitor pages. Stable section and
 event codes are independent of display copy.
 
 `CompanyOSApplicationClient` is the Web anti-corruption boundary. The default
 composition is the deterministic Demo client; formal managed-cloud and
 self-hosted clients can implement the same projection/command contract without
-changing the shell or exposing Paperclip DTOs. The Raft host contract still
+changing the shell or exposing competitor DTOs. The Raft host contract still
 contains only a mount element, base path, and navigation callback.
 
 The verified browser flow is:

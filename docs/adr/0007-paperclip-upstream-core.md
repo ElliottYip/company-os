@@ -1,5 +1,8 @@
 # ADR 0007: Paperclip as the single generic work substrate
 
+Status: Superseded by ADR 0008 on 2026-08-18. This file is retained as a
+historical decision record and does not describe the current architecture.
+
 Status: Accepted with production-admission gates  
 Date: 2026-08-18
 

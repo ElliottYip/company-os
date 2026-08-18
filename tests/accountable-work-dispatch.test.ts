@@ -53,7 +53,7 @@ const responsibilities: ResponsibilityContractPort = {
 
 function draft() {
   return {
-    id: "work-paperclip",
+    id: "work-accountable",
     companyId: "demo-company",
     title: "Prepare accountable brief",
     goal: "Produce evidence and pause before publishing the approved brief.",
@@ -67,7 +67,7 @@ function draft() {
   };
 }
 
-test("formal work reaches the generic substrate only after human responsibility checks", async () => {
+test("formal work reaches the Company OS work system only after human responsibility checks", async () => {
   const calls: unknown[] = [];
   const genericWork: GenericWorkPort = {
     async createWork(input) {
@@ -113,7 +113,7 @@ test("formal work reaches the generic substrate only after human responsibility 
   ]);
 });
 
-test("identity mismatch and disallowed responsibility fail before an upstream call", async () => {
+test("identity mismatch and disallowed responsibility fail before a work-system call", async () => {
   let calls = 0;
   const genericWork = {
     async createWork() { calls += 1; throw new Error("must not run"); },
@@ -134,7 +134,7 @@ test("identity mismatch and disallowed responsibility fail before an upstream ca
   assert.equal(calls, 0);
 });
 
-test("upstream failure records only a stable code and stays retryable by idempotency key", async () => {
+test("infrastructure failure records only a stable code and stays retryable by idempotency key", async () => {
   const events = new InMemoryEventStore();
   const service = new DispatchAccountableWork({
     identity: identity(),
@@ -146,8 +146,8 @@ test("upstream failure records only a stable code and stays retryable by idempot
     genericWork: {
       async createWork() {
         return { ok: false, error: {
-          code: "UPSTREAM_HTTP_503",
-          category: "UPSTREAM_UNAVAILABLE",
+          code: "WORK_STORE_UNAVAILABLE",
+          category: "INFRASTRUCTURE_UNAVAILABLE",
           retryable: true,
         } };
       },
@@ -158,9 +158,9 @@ test("upstream failure records only a stable code and stays retryable by idempot
   });
   await assert.rejects(
     service.execute({ draft: draft(), genericGoalId: null }),
-    /GENERIC_WORK_DISPATCH_FAILED:UPSTREAM_HTTP_503/,
+    /GENERIC_WORK_DISPATCH_FAILED:WORK_STORE_UNAVAILABLE/,
   );
   const stored = JSON.stringify(await events.read("demo-company"));
-  assert.match(stored, /UPSTREAM_HTTP_503/);
+  assert.match(stored, /WORK_STORE_UNAVAILABLE/);
   assert.doesNotMatch(stored, /sessionToken|credential-secret|English failure message|stack trace/i);
 });

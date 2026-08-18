@@ -1,5 +1,8 @@
 # Paperclip compatibility tests
 
+Status: Retired research fixture. This directory is excluded from Company OS
+product tests and exists only to preserve the superseded integration spike.
+
 This directory is the executable admission seam between Company OS and the one
 generic work-substrate upstream. It must never import Paperclip server internals.
 

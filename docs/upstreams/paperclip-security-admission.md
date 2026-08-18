@@ -1,5 +1,9 @@
 # Paperclip production security admission
 
+Status: Historical security evidence from the former adoption investigation.
+Company OS no longer has a Paperclip production-admission process under ADR
+0008; these findings remain relevant to competitive review only.
+
 Pin: `v2026.817.0` / `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`  
 Audit date: 2026-08-18  
 Verdict: architecture **ADOPT**, production **BLOCKED**

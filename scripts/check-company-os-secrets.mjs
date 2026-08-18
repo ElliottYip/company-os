@@ -23,7 +23,13 @@ const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclud
 
 const findings = [];
 for (const path of files) {
-  const source = await readFile(path, "utf8");
+  let source;
+  try {
+    source = await readFile(path, "utf8");
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") continue;
+    throw error;
+  }
   for (const [pattern, label] of patterns) {
     if (pattern.test(source)) findings.push(`${path}: ${label}`);
   }

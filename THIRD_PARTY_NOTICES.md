@@ -19,8 +19,9 @@ HumanLayer Agent Control Plane and awaithumans were inspected in temporary audit
 checkouts. No source file, package, runtime image, name, logo or visual asset from
 those candidates is currently distributed by this repository.
 
-Before Paperclip is admitted, its unmodified MIT copyright and permission notice
-must accompany every distributed copy or substantial portion. Apache-2.0
-candidates would additionally require license/NOTICE preservation and change
-marking if code were ever incorporated; ADR 0007 currently forbids that.
-
+If a future module-level decision incorporates Paperclip code, its unmodified
+MIT copyright and permission notice must accompany every distributed copy or
+substantial portion. Apache-2.0 candidates would additionally require
+license/NOTICE preservation and change marking. ADR 0008 requires per-file
+provenance before any selective reuse; no audited competitor code is currently
+incorporated.

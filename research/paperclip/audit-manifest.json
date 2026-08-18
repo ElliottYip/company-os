@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "project": "Paperclip",
+  "repository": "https://github.com/paperclipai/paperclip",
+  "tag": "v2026.817.0",
+  "commit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2025 Paperclip AI",
+  "wholeProjectDecision": "REFERENCE ONLY",
+  "runtimeDependency": false,
+  "automaticCompatibility": false,
+  "auditSource": "work/upstream-audit/paperclip",
+  "modules": [
+    { "id": "domain-model", "decision": "PENDING", "evidence": [] },
+    { "id": "database-and-migrations", "decision": "PENDING", "evidence": [] },
+    { "id": "task-execution-and-agent-runtime", "decision": "PENDING", "evidence": [] },
+    { "id": "api-and-events", "decision": "PENDING", "evidence": [] },
+    { "id": "plugin-sdk-and-adapters", "decision": "PENDING", "evidence": [] },
+    { "id": "identity-permissions-and-tenancy", "decision": "PENDING", "evidence": [] },
+    { "id": "approvals-audit-and-secrets", "decision": "PENDING", "evidence": [] },
+    { "id": "testing-security-and-maintenance", "decision": "PENDING", "evidence": [] },
+    { "id": "web-and-deployment", "decision": "PENDING", "evidence": [] }
+  ],
+  "copiedCode": []
+}

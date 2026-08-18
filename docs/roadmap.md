@@ -4,12 +4,13 @@ Dates and the 3–10 management ratio remain pilot hypotheses, not commitments.
 
 ## Current delivery order
 
-### 0. Upstream admission and Paperclip bridge
+### 0. Independent product reset and competitive audit
 
-Paperclip is the single generic work-substrate upstream under ADR 0007. Freeze
-duplicate Task/Goal/Run/Budget/Artifact/Heartbeat development. Clear dependency,
-migration, isolated-test and compatibility gates before production admission;
-then integrate through published Plugin/API contracts and `GenericWorkPort`.
+ADR 0008 makes Company OS the canonical owner of the complete product stack.
+Remove Paperclip from runtime/build/deployment assumptions and enforce operation
+with no Paperclip installation. Audit its fixed-SHA source as a competitor and
+record per-module `ADOPT-CODE`, `ADAPT`, `REFERENCE ONLY`, or `REJECT` decisions;
+do not create automatic compatibility or upgrade obligations.
 
 ### A. Constitution and boundaries
 
@@ -38,10 +39,10 @@ from production identity, models, tools, data, and secrets.
 Organizations, principals, roles, human accountability, reporting lines, tasks,
 risk/autonomy, approvals, evidence, and responsibility projections. Validate
 rather than promise a 3–10 agent management span.
-Generic work records come from the admitted Paperclip adapter; responsibility
-and accountable-human records remain authoritative Company OS data.
+Work, responsibility, and accountable-human records are authoritative Company
+OS data.
 The application dispatch boundary enforces enterprise-human identity and a
-revisioned responsibility contract before issuing an idempotent Paperclip
+revisioned responsibility contract before issuing an idempotent Company OS work
 command; fixtures cannot write formal contracts.
 
 ### F. Model and data boundary

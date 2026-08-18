@@ -1,5 +1,9 @@
 # Paperclip headless contract audit
 
+Status: Historical competitive code evidence. ADR 0008 removed Paperclip from
+the Company OS runtime; the adapter and compatibility claims below are not an
+active integration contract.
+
 Audit pin: `v2026.817.0` / `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`  
 Decision: backend **ADOPT**; customer React UI **DO NOT ADOPT**  
 Corrected governing document: 264 lines, SHA-256

@@ -1,7 +1,7 @@
 # Company OS future locale boundary
 
-Localization is not part of the current Paperclip adoption goal. The customer
-Web is owned by Company OS, Paperclip page copy is not imported or translated,
+Localization remains a separate delivery goal from the current product-base
+work. The customer Web is owned by Company OS; competitor page copy is not imported or translated,
 and existing Chinese Demo copy is only a seeded product asset. A future active
 goal will retain English and add switchable Chinese with its own plan, tests,
 and delivery gates.

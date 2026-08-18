@@ -1,5 +1,8 @@
 # Paperclip patch ledger
 
+Status: Closed historical ledger. Company OS carries no Paperclip runtime and
+does not maintain an upstream patch or compatibility train under ADR 0008.
+
 Pinned baseline: `v2026.817.0` /
 `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`  
 Last reviewed: 2026-08-18
@@ -29,4 +32,3 @@ purpose and removal/upstreaming status because they affect upstream risk.
 | ID | Area | Reason | Upstream issue/PR | Owner | Replay | Tests | Expiry | Delete when |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | _none_ | | | | | | | | |
-

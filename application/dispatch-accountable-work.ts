@@ -60,7 +60,7 @@ export class DispatchAccountableWork {
       companyId: draft.companyId,
       action: "work:dispatch",
       resourceId: work.id,
-      reason: "Dispatch accountable work to the generic work substrate",
+      reason: "Dispatch accountable work to the Company OS work system",
     });
     if (receipt.principalId !== identity.actorId) throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
 

@@ -5,7 +5,7 @@ implementation, 0.5 = usable but requires a Company OS extension, 0 = absent or
 architecturally incompatible. Marketing claims do not count without code/schema/
 test evidence.
 
-## Paperclip 70% gate
+## Paperclip competitive baseline
 
 Pinned source: `v2026.817.0` /
 `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`.
@@ -32,21 +32,22 @@ Pinned source: `v2026.817.0` /
 | Migration/backup/rollback | 0.5 | extensive migration and backup tooling; data rollback needs rehearsal |
 | Local/cloud deployment | 0.5 | local trusted and authenticated modes; Company OS profiles remain external |
 | Tests/release gates | 1 | large focused suite, migration/security/release/smoke gates |
-| **Total** | **17.5/20 (87.5%)** | **Adoption threshold passed** |
+| **Total** | **17.5/20 (87.5%)** | **Strong competitor coverage; not an adoption decision** |
 
-Functional coverage does not override the separate security and upgrade gates.
+Functional coverage is research input only and does not create runtime,
+compatibility, schema, or upgrade obligations.
 
 ## Candidate decisions
 
 | Candidate | Pinned tag / full SHA | Decision | Rationale |
 | --- | --- | --- | --- |
-| Paperclip | `v2026.817.0` / `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c` | **ADOPT** | Single generic work substrate; production gated |
+| Paperclip | `v2026.817.0` / `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c` | **REFERENCE ONLY** | whole-product competitor audit; module-level selective reuse requires provenance |
 | SapienX AgentOS | `agentos-v0.7.6` / `910e848229139d9e7bf8b585cc70b99b1699ab97` | **REFERENCE ONLY** | useful onboarding patterns, but control plane directly imports OpenClaw domains |
 | OpenWorker | no tag / `91a2419654a4bb8f7479a7b56693984330625e47` | **REJECT** | no repository LICENSE at pin, three test files, one-shot schema and immature recovery/migrations |
-| Operant | `v0.6.0` / `ac7f7b7ce3bd1d4d881fa104466c193f5eceece2` | **REFERENCE ONLY** | strong per-human principal/OAuth/audit ideas, but Slack/Teams/OpenClaw-shaped owner model overlaps Paperclip |
+| Operant | `v0.6.0` / `ac7f7b7ce3bd1d4d881fa104466c193f5eceece2` | **REFERENCE ONLY** | strong per-human principal/OAuth/audit ideas, but Slack/Teams/OpenClaw-shaped owner model conflicts with Company OS ownership |
 | Preloop | `v0.14.0` / `346112533b1430abef950cb6344eed1eda70a60f` | **REFERENCE ONLY** | broad gateway/policy implementation, but adopting it would create a second approval/model/data control plane |
 | AgentGate | `v0.15.0` / `b1e541a0bda1f6c6b3e94a209578d631a8c0f9c3` | **REFERENCE ONLY** | focused approval SDK patterns; duplicate approval/audit owner |
-| JamJet | HEAD pin / `6a484a646132a18645746e8ca3838368dc90cfc3` | **REFERENCE ONLY** | excellent fencing, event replay and receipt tests; adopting runtime would duplicate Paperclip execution |
+| JamJet | HEAD pin / `6a484a646132a18645746e8ca3838368dc90cfc3` | **REFERENCE ONLY** | excellent fencing, event replay and receipt tests; adopting runtime would duplicate Company OS execution ownership |
 | Agent Room | `v0.1.0` / `9faaae7f1bef15e25648560f27ac25eea3383b42` | **REFERENCE ONLY** | strong outbox/append-only/security patterns; early control plane and overlapping event store |
 | HumanLayer ACP | `v0.5.1` / `bc703d36579edb973da1ca2a748381cdb4eb8b55` | **REJECT** | stale Kubernetes CRD control plane coupled to ContactChannel approval semantics |
 | awaithumans | `v0.1.11` / `05b73dbf8c9df7e79c3c585a95a897b0aeb775b1` | **REFERENCE ONLY** | good typed wait/idempotency/channel tests; too narrow and would duplicate approval ownership |
@@ -54,4 +55,3 @@ Functional coverage does not override the separate security and upgrade gates.
 `REFERENCE ONLY` means no source or runtime dependency. A cited pattern must be
 re-expressed behind an existing Company OS port and must not import the upstream
 domain model.
-

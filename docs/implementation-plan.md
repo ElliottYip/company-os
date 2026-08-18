@@ -1,14 +1,15 @@
 # Phase-one implementation plan
 
-## Architecture gate — upstream core selection
+## Architecture gate — independent open-source product
 
-- ADR 0007 selects pinned Paperclip as the only generic work substrate.
-- Do not add production Task/Goal/Run/Budget/Artifact/Heartbeat implementations
-  to the current scaffold.
-- First clear dependency, isolated upstream test, migration/rollback and Company
-  OS bridge contract gates in `docs/upstream-adoption-plan.md`.
-- Existing neutral core, responsibility, data, Connector, Demo and Office work
-  remains valid and must not be rewritten around Paperclip internals.
+- ADR 0008 makes Company OS the canonical owner of Task, Goal, Run, Budget,
+  Artifact, Heartbeat, persistence, API, event, Web, and deployment behavior.
+- `npm run check:independence` must pass without Paperclip installed, reachable,
+  or referenced by a product runtime root.
+- Paperclip is a fixed-SHA competitive audit subject only. Module-level reuse
+  requires code evidence, an explicit decision, and copied-code provenance.
+- Existing neutral core, responsibility, data, Connector, Demo, Web, and Office
+  work remains valid and must not be rewritten around competitor internals.
 
 ## Slice 0 — provenance and specification
 
@@ -60,7 +61,8 @@
 - **Uncommitted visual provenance:** record exact hashes and status; retain the
   Apache license; flag legal confirmation before external redistribution.
 - **Vendor leakage:** scan import graph and forbidden vocabulary in inward layers.
-- **Two-codebase drift:** profiles compose ports only; no domain/application fork.
+- **Competitor drift:** no compatibility promise; periodically reassess useful
+  capabilities and implement them on Company OS terms.
 - **Demo mistaken for live:** fixture identifiers and visible labels are required
   by both tests and UI copy.
 - **Premature 3D scope:** exclude all scene and 3D directories and dependencies.

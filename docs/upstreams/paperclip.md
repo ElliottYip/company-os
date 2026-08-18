@@ -4,7 +4,8 @@
 - Audit pin: tag `v2026.817.0`, commit `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`
 - Compared HEAD: `b446ff59bfd4c22ce8042f0a8a5daad5c7adc02c`
 - License: MIT, copyright Paperclip AI; notice required with distributed copies
-- Decision: **ADOPT** as the single generic work substrate, subject to ADR 0007
+- Decision: **REFERENCE ONLY** as a whole product under ADR 0008; module-level
+  decisions require the complete competitive audit and provenance manifest
 
 ## Code evidence
 
@@ -26,15 +27,15 @@ Headless evidence: `server/src/app.ts` defines `UiMode = "none" | "static" |
 "vite-dev"`; `server/src/index.ts` chooses `none` when `serveUi` is false;
 `server/src/config.ts` maps `SERVE_UI=false`; API routes are registered before
 optional static/Vite UI middleware; the startup banner labels this mode
-`headless-api`. Company OS therefore does not need Paperclip pages or their
-English copy. This finding is required to retain **ADOPT** status.
+`headless-api`. This remains competitive architecture evidence, not an
+integration or adoption requirement.
 
 The deeper client/API/event/error review is recorded in
 `paperclip-headless-contract-audit.md`. OpenAPI exactly covers non-experimental
 mounted routes, while stable machine-readable error codes are only partial and
 durable replay belongs to per-run event sequence endpoints rather than the
-process-local company WebSocket. These are compatibility gates, not reasons to
-adopt the upstream React UI or to start localization work.
+process-local company WebSocket. These are competitor findings, not Company OS
+compatibility gates.
 
 ## Verification and risks
 
@@ -52,8 +53,8 @@ adopt the upstream React UI or to start localization work.
   track master and avoid a fork.
 - Root lock configuration patches `embedded-postgres` and `acpx`, increasing the
   upstream-specific maintenance surface.
-- Company OS patch ledger: zero upstream-core patches at audit time. The 4–6
-  week version train and conflict budget are in `paperclip-patch-ledger.md`.
+- Company OS carries no Paperclip runtime patch. There is no version train or
+  compatibility promise; later releases enter periodic competitive radar only.
 
-Allowed reuse and prohibited brand/private-API reuse are defined in
-`docs/upstream-adoption-plan.md`.
+Allowed selective reuse and prohibited brand/private-API reuse are defined by
+ADR 0008 and `research/paperclip/audit-manifest.json`.
