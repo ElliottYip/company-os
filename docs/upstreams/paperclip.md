@@ -29,6 +29,13 @@ optional static/Vite UI middleware; the startup banner labels this mode
 `headless-api`. Company OS therefore does not need Paperclip pages or their
 English copy. This finding is required to retain **ADOPT** status.
 
+The deeper client/API/event/error review is recorded in
+`paperclip-headless-contract-audit.md`. OpenAPI exactly covers non-experimental
+mounted routes, while stable machine-readable error codes are only partial and
+durable replay belongs to per-run event sequence endpoints rather than the
+process-local company WebSocket. These are compatibility gates, not reasons to
+adopt the upstream React UI or to start localization work.
+
 ## Verification and risks
 
 - Lockfile install completed with pnpm 9.15.4 and lifecycle scripts disabled.

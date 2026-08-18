@@ -3,8 +3,9 @@
 ## Recommended shape
 
 Paperclip is a separately versioned, API-only generic-work service/Plugin Host.
-Company OS is the accountability/data/experience service and independent Chinese
-Web app. A narrow bridge uses Paperclip's official Plugin SDK and HTTP/event APIs.
+Company OS is the accountability/data/experience service and independent Web
+app. A narrow bridge uses Paperclip's official Plugin SDK and HTTP/event APIs.
+Localization is deliberately outside this adoption goal.
 
 ```text
 Company OS Web
@@ -24,10 +25,10 @@ as the normal customer surface.
 - **Truly headless:** yes. `createApp` accepts `uiMode: "none"`; startup maps
   `SERVE_UI=false` to that mode, registers `/api` routes independently, and the
   startup banner explicitly reports `headless-api`.
-- **Avoid repeat localization:** yes. Company OS consumes API, event and
+- **Avoid forced repeat localization:** yes. Company OS consumes API, event and
   projection contracts only. No Paperclip page component or business copy is a
-  customer dependency. Missing Company OS translations are governed by Company
-  OS keys and terminology, not by upstream page diffs.
+  customer dependency. Neither Paperclip nor Company OS translation coverage is
+  a current admission requirement.
 - **Long-term patch surface:** target zero upstream core patches. The current
   ledger is zero. One temporary infrastructure-only patch is the maximum before
   an ADR review; three consecutive train conflicts in one area force boundary
@@ -49,6 +50,11 @@ as the normal customer surface.
 6. **Cutover:** designate the Paperclip adapter as production `GenericWorkPort`;
    remove any duplicate production implementation only after backup and rollback
    rehearsal. Do not delete Company OS differentiated models.
+
+Current locale work is limited to contract hygiene: stable machine codes,
+structured arguments, copy-independent tests, and preservation of original
+user/Agent/evidence/log text. A separate future active goal will add switchable
+English and Chinese coverage.
 
 ## Allowed reuse
 

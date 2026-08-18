@@ -1,7 +1,10 @@
-# Company OS Chinese terminology contract
+# Company OS future locale boundary
 
-The customer Web is owned and localized by Company OS. Paperclip page copy is
-not imported or translated.
+Localization is not part of the current Paperclip adoption goal. The customer
+Web is owned by Company OS, Paperclip page copy is not imported or translated,
+and existing Chinese Demo copy is only a seeded product asset. A future active
+goal will retain English and add switchable Chinese with its own plan, tests,
+and delivery gates.
 
 | Message key concept | Required Simplified Chinese | Avoid in customer copy |
 | --- | --- | --- |
@@ -16,11 +19,15 @@ not imported or translated.
 | `demo.fixtureAgent` | 模拟 Agent | 真实 Agent |
 | `organization.department` | 部门 | 群组（表达正式部门时） |
 
-Rules:
+Current boundary rules:
 
-- Missing Company OS keys may fall back to English copy, never to a raw key.
 - Demo copy must call every simulated executor “模拟 Agent”.
 - Private reasoning, credentials and vendor sessions are never localization
   inputs.
-- A new customer-visible concept must update this table and the i18n guard.
-
+- Functional tests must use stable roles, test IDs, codes, and structured state
+  rather than depend on exact English or Chinese prose.
+- Domain persistence stores stable codes/parameters and original content, not
+  language-specific display sentences.
+- User input, Agent output, evidence, and logs retain their source text.
+- Missing-key fallback and bilingual coverage become requirements only when the
+  separate localization goal starts.

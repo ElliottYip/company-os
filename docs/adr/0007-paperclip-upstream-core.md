@@ -30,7 +30,7 @@ Adopt Paperclip as the **only upstream owner of the generic work substrate**:
 
 Company OS will run Paperclip in its explicit API-only mode (`SERVE_UI=false` /
 `uiMode: "none"`) and extend it through the published Plugin SDK and HTTP/event
-APIs, with an external Company OS service and independently built Chinese Web.
+APIs, with an external Company OS service and independently built customer Web.
 It will not copy Paperclip domain source files, pages or page text into Company
 OS and will not create a permanent fork. A narrow bridge plugin may project
 opaque Paperclip IDs and events, but it is not a security boundary: Paperclip
@@ -71,7 +71,15 @@ The pinned tag must not be deployed until all gates pass:
 5. The bridge uses only published Plugin/API contracts. Any required core patch
    triggers ADR reconsideration.
 6. Company OS customer flows run with Paperclip UI disabled and require no
-   translation or patching of Paperclip pages.
+   translation or patching of Paperclip pages. Localization is not an adoption
+   gate and is delivered under a future, separate goal.
+
+The current base goal only preserves a language-neutral contract boundary:
+stable codes and structured parameters, copy-independent functional tests, no
+display copy in domain persistence, and original-language retention for user
+input, Agent output, evidence, and logs. It does not require a Paperclip or
+Company OS translation rollout. A future localization goal must keep English
+and add switchable Chinese rather than replace source text.
 
 The 2026-08-18 audit of the pinned lockfile reported 99 production dependency
 advisories: 1 critical, 35 high, 53 moderate and 10 low. This is a release
@@ -143,8 +151,11 @@ cursor.
   production system.
 - Add a Paperclip bridge package only after the admission gates have executable
   contract tests.
-- Do not create an upstream-page localization backlog. New upstream capability
+- Do not create localization work in this adoption change or an upstream-page
+  translation backlog. New upstream capability
   enters the Company OS Web only when a Company OS product slice needs a new
   projection or command.
+- Use the audited `GenericWorkPort` anti-corruption boundary and the contract
+  findings in `docs/upstreams/paperclip-headless-contract-audit.md`.
 - Resume Pre-3D work on Demo, Agent Boss, data governance and Office contracts
   against Company OS ports while the generic substrate is integrated.
