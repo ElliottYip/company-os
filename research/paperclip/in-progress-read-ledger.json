@@ -612,15 +612,128 @@
             "Index parsing intentionally ignores expression columns when deciding whether a plain-column access path exists, reducing false assurance for batched ORDER BY operations.",
             "The implementation is a targeted large-table performance guard, not a general migration safety system; remaining lines and tests must be checked before judging parser reliability and false-negative surface."
           ]
+        },
+        {
+          "start": 401,
+          "end": 750,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Predicate and index analysis normalizes quoting, aliases, sort modifiers, conjunctive partial-index predicates, and expression columns with considerably more care than a naive grep-based guard.",
+            "Mutation discovery targets UPDATE and DELETE only; INSERT...SELECT backfills, ALTER TABLE rewrites, CREATE TABLE AS, TRUNCATE, DROP, type changes, constraint validation and trigger-driven mutations are outside this parser path.",
+            "The checker treats the presence of LIMIT/FETCH plus any DML as a batched mutation and detects DO-loop patterns, but correctness depends on later correlation between the limiting subquery, target table, ordering columns and support indexes.",
+            "Selective-WHERE recognition is syntactic and accepts a broad family of comparisons, IN, EXISTS, LIKE and null checks; it cannot estimate selectivity or distinguish a predicate matching nearly every row without table statistics.",
+            "The parser deliberately tracks parentheses, comments, quotes and qualified references to reduce false positives, but remains a hand-built SQL recognizer whose supported grammar and exclusions must be treated as a bounded lint contract, not semantic proof."
+          ]
+        },
+        {
+          "start": 751,
+          "end": 1052,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Support indexes are collected from the entire migration before mutations are analyzed, so an index declared after a large-table mutation can suppress a finding even though it did not support that mutation at execution time.",
+            "When any explicit table-size estimates are supplied, tables absent from that estimate map are treated as not large instead of falling back to the known-large catalog, allowing partial telemetry input to create false negatives.",
+            "The checker recommends CREATE INDEX CONCURRENTLY for known-large tables, but the already-read manual migration runner wraps every migration in BEGIN/COMMIT. PostgreSQL forbids CREATE INDEX CONCURRENTLY inside a transaction, creating a direct contradiction between the safety remediation and the production runner.",
+            "For batched mutations without ORDER BY, any overlap between a predicate column and any same-migration index column/predicate is accepted; this is weaker than proving the index supports the actual filter and batch progression.",
+            "The baseline mechanism fails only on new findings. Stale baseline ids are explicitly ignored, so removed/changed historical statements leave dead suppressions without failing CI.",
+            "The command scans every SQL migration and emits stable, reviewable evidence. As a narrow large-table lint it is useful, but it is not a canonical migration safety owner and cannot substantiate claims about upgrade, rollback, data integrity, authorization, or zero-downtime readiness.",
+            "The complete implementation merits ADAPT for parser/test patterns only, with the rule model expanded and the transaction/concurrent-index contradiction resolved before Company OS use."
+          ]
         }
       ],
-      "sourceReadComplete": false,
-      "nextLine": 401,
+      "sourceReadComplete": true,
+      "nextLine": null,
       "completionRequirements": [
         "Read lines 1-1052 exactly once against the pinned SHA-256.",
         "Determine which destructive, locking, data-loss, mixed-version, naming, and journal-drift hazards are actually detected and which are omitted.",
         "Read its complete 492-line focused test before assigning test quality or reuse judgment."
-      ]
+      ],
+      "linkedEvidence": {
+        "history": ["22001bbd feat(db): add migration safety lint"],
+        "execution": "2026-08-18: repository migration-safety command exited 0 and reported 20 historical findings covered by baseline plus 1 stale baseline id ignored; this proves the four-rule lint state only.",
+        "numberingExecution": "2026-08-18: repository migration-numbering command exited 0 with no output."
+      }
+    },
+    {
+      "id": "evidence:package:db/tests/check-migration-safety",
+      "path": "packages/db/src/check-migration-safety.test.ts",
+      "lineCount": 492,
+      "sha256": "43cfd5b4d7ebc05db9e4fe9d66042976c1673baa116081a2104b901f21c90ff6",
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 492,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The tests provide strong adversarial coverage for comments, string and dollar-quoted literals, nested CTE WHERE clauses, joined-table-only predicates, aliases, expression indexes, partial-index predicate mismatch, ORDER BY prefix mismatch, LIMIT and FETCH variants.",
+            "Tests confirm the intended large-table threshold and distinguish explicit large and small estimate buckets, but never pass a partial estimate map that omits a known-large table, so the implementation's false-negative fallback defect is uncovered.",
+            "The positive support-index fixture creates its concurrent index before the mutation, but no test places the index after the mutation; therefore the whole-migration precollection ordering defect is not caught.",
+            "No test verifies that the recommended CREATE INDEX CONCURRENTLY migration can execute through the transaction-wrapping production migration runner, leaving the direct remediation/runtime contradiction untested.",
+            "No tests cover stale baselines, malformed or overly broad suppressions, INSERT...SELECT, ALTER rewrites, DROP/TRUNCATE, constraint validation, irreversible operations, foreign-key lock hazards, or authorization/data-scope changes.",
+            "Within its stated four-rule scope the test quality is good and behavior-focused, but the suite should not be presented as comprehensive migration safety evidence."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-492 exactly once against the pinned SHA-256.",
+        "Map positive, negative, parser-adversarial, estimate, baseline, ordering, and transaction-compatibility coverage to the implementation findings.",
+        "Execute the focused test and the repository migration-safety command without modifying upstream source."
+      ],
+      "linkedEvidence": {
+        "history": ["22001bbd feat(db): add migration safety lint"],
+        "focusedTest": "2026-08-18: direct repository Vitest run passed all 25 tests in 107ms."
+      }
+    },
+    {
+      "id": "evidence:package:db/migration-safety-baseline",
+      "path": "packages/db/src/migration-safety-baseline.ts",
+      "lineCount": 157,
+      "sha256": "bf78f57929143139b80eecb4e25510cb566e933bcff6099cfc818438b9802ae0",
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 157,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The baseline contains 21 accepted findings: overwhelmingly non-concurrent indexes on historical large-table migrations plus one full-table-mutation finding for migration 0132.",
+            "Reasons are mostly generic 'predates the guard' statements; entries have no approver, approval date, issue link, expiry, deployment impact, mitigation, or verification evidence.",
+            "The 0132 full-table exception references PAP-1505 and keyset batching, offering materially better provenance than the other entries, but the baseline still acts as a permanent global acceptance rather than a time-bounded waiver.",
+            "The live scanner reported only 20 matched findings and ignored one stale id, so this file currently contains known dead baseline state without a failing cleanup gate.",
+            "This is useful as an incremental-adoption mechanism but not sufficient evidence that historical migrations are safe to replay on a large production database."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-157 exactly once and classify every accepted historical finding and stale entry." ]
+    },
+    {
+      "id": "evidence:package:db/table-size-estimates",
+      "path": "packages/db/src/table-size-estimates.ts",
+      "lineCount": 176,
+      "sha256": "749b617c4819820e3e41a5b99b5c8c42170c1b4f2f1c74163a53ac538276967d",
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 176,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Size estimates come from a single default local development embedded-Postgres snapshot collected 2026-07-06, multiplied uniformly by an unexplained factor of 250; they are not measurements from managed-cloud or enterprise deployments.",
+            "Only tables with at least 4,000 local rows become 'large' under the 250x factor and 1,000,000-row threshold, yielding a small fixed set dominated by wakeups, activity, references, heartbeat events and comments.",
+            "Unknown tables and every table absent from the snapshot default to small. Newly added tables, customer-specific hot tables, and all Tool Access tables omitted from this snapshot therefore receive no large-table protection regardless of actual production growth.",
+            "Tables with zero local rows remain permanently classified small under this static file, even if their production cardinality or write rate is high.",
+            "There is no refresh command, freshness threshold, production telemetry merge, per-deployment override, row-width/index-size/lock-cost dimension, or CI stale-data failure in this module.",
+            "The model is transparent and deterministic but only a heuristic seed; Company OS would need deployment-aware telemetry with conservative unknown defaults before adopting it as a migration gate."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-176 exactly once and verify provenance, freshness, coverage, scaling assumptions, and false-negative behavior." ]
     }
   ]
 }
