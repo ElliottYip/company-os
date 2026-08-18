@@ -703,18 +703,32 @@
     },
     {
       "id": "application:cli/__tests__/operations-parity",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI API-parity smoke tests for cost/finance/budget operations and organization, execution workspace, environment and project-workspace management.",
+      "dependencyDirection": "The Vitest suite registers cost and workspace Commander modules, injects API base/bearer token, stubs global fetch and asserts HTTP method/path mappings against server routes.",
+      "keyDataModels": "Company, Agent, Issue, budget incident, execution workspace, environment and environment lease, project/project workspace; cost and finance events, budget policies, runtime services and runtime commands.",
+      "lifecycle": "Parse scripted CLI commands; query cost/org/workspace/environment state; create or mutate budgets, events, environments and project workspaces; probe deployment capability/configuration; restart services, execute runtime commands and resolve incidents.",
+      "testAssessment": "Focused Vitest passed 2/2 tests on 2026-08-19 and CLI no-emit TypeScript passed. It provides broad route-parity coverage across 35 operations, but asserts no payloads, response schemas, errors, authorization, idempotency, concurrency, lifecycle state machines or resulting events/audit records.",
+      "designRationale": "Expose server operational coverage to automation and guard against API surface regressions with a compact path/method matrix rather than duplicating full server behavior tests in the CLI.",
+      "companyOsProblem": "Company OS needs governed cost attribution, budget incidents and an explicit local/remote execution-node lifecycle, including capability probing, leases, close readiness, runtime services and project workspace commands across managed-cloud and self-hosted profiles.",
+      "companyOsFit": "ADAPT the parity-matrix technique and treat environment capability, leases and workspace close-readiness as important requirements discovered by the audit. Re-abstract them into Company OS Data/Execution Node and Connector contracts with stable lifecycle codes, tenancy, responsible-human authority, idempotency and evidence; do not copy Paperclip endpoint ownership or empty generic payload patterns.",
+      "responsibilityConflict": "The tested operational commands are actor-blind beyond bearer authentication. Budget changes/incidents, environment deletion/probing, service restart and runtime commands are consequential actions but are not bound here to goal, responsible human, risk, permission/data scope, approval digest, evidence or result.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/operations-parity.test.ts:1-136",
+        "SHA-256 433e87c0f1a5b9e590501590b4c61457d1f7e7d1708881544deabef4ab64f081",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 2 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "A fixed bearer token and IDs prove routing only; tenant membership, per-resource capability, token audience and cross-company rejection are untested.",
+        "Generic `--payload-json {}` is accepted throughout the smoke suite, so schema validation, unknown-field rejection, secret handling and command/data injection boundaries receive no coverage.",
+        "Environment probe, runtime restart/command, deletion and budget-incident resolution have no tested approval, confirmation, idempotency key, expected revision or audit receipt.",
+        "Environment leases and workspace close-readiness are queried but no expiry, fencing, stale-holder, force-close, concurrent-command or recovery behavior is covered.",
+        "Cost and finance event creation lacks tested provenance, deduplication, currency/unit normalization, immutable source identity and correction/reversal semantics.",
+        "Organization SVG is an alternate serialized projection; the suite does not test escaping, content type, authorization or untrusted-label handling."
+      ]
     },
     {
       "id": "application:cli/__tests__/pipelines",
