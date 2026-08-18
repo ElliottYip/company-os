@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/plugin-tool-dispatcher",
+      "auditStatus": "COMPLETE",
+      "function": "Singleton facade that loads manifest Tools for ready plugins, listens to plugin lifecycle events, projects Agent descriptors and delegates execution to the in-memory Plugin Tool Registry.",
+      "dependencyDirection": "Depends on Paperclip plugin database records, lifecycle manager, worker manager, global registry, plugin SDK types and logger. Tool Gateway and other internal callers consume it.",
+      "keyDataModels": "Plugin database UUID, pluginKey, manifest Tool declaration, Agent Tool descriptor and ToolRunContext/ToolResult.",
+      "lifecycle": "Loads ready plugins at startup, asynchronously registers an enabled plugin from the database, unregisters on disable/unload, retains entries during teardown and forwards discovery/execution.",
+      "testAssessment": "The only focused suite passes 6 tests for UUID worker routing, missing-id failure, repeated registration and simulated worker bounce. Its claimed lifecycle test bypasses initialize, database lookup and event emission, so enable/disable ordering, partial startup, stale teardown and reconciliation are untested.",
+      "designRationale": "Centralize plugin Tool discovery/routing and repair the distinction between stable manifest key and UUID-keyed worker identity.",
+      "companyOsProblem": "Company OS needs a tenant-scoped, versioned Connector capability registry with health/attestation, lifecycle reconciliation and explicit execution contracts across equal vendors.",
+      "companyOsFit": "REFERENCE the separation between stable external key and opaque runtime identity, namespaced discovery and lifecycle-driven registration idea. Implement a durable/versioned capability projection with generation checks, tenant scope, reconciliation and Company OS Connector capability fields.",
+      "responsibilityConflict": "The global descriptor omits risk, data scope, approval/cancel/idempotency, health and attestation. Fire-and-forget enable can re-register after disable, errors are log-only, and the facade contains no human/contract/data authority or evidence semantics.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["server/src/services/plugin-tool-dispatcher.ts:1-455", "server/src/__tests__/plugin-tool-dispatcher-pluginDbId.test.ts:1-313", "62863126 fix(plugin-tool-dispatcher): propagate pluginDbId so worker.isRunning resolves (#5671)"]
+    },
+    {
+      "id": "application:server/services/plugin-tool-registry",
+      "auditStatus": "COMPLETE",
+      "function": "Global in-memory namespaced Tool index and worker RPC router derived from plugin manifests.",
+      "dependencyDirection": "Depends on Paperclip manifest and plugin-SDK execution types plus the worker manager; dispatcher owns it and exposes an escape hatch to callers.",
+      "keyDataModels": "RegisteredTool indexed by pluginKey:toolName, plugin database UUID, parameter JSON Schema, ToolRunContext and ToolResult.",
+      "lifecycle": "Replaces a plugin's registrations, lists/resolves entries, checks worker liveness and forwards executeTool RPC to the UUID-keyed worker.",
+      "testAssessment": "UUID routing receives focused regression coverage, but no dedicated tests cover claimed schema validation, duplicate declarations, staged replacement, mutable references, tenant/run authority, worker-generation races, result validation, timeouts or errors.",
+      "designRationale": "Provide low-complexity O(1) Tool lookup and idempotent manifest-derived registration without database persistence.",
+      "companyOsProblem": "Company OS needs canonical Connector capability ownership and dispatch that stays correct under upgrade, disable, multi-tenant concurrency and untrusted Connector inputs/outputs.",
+      "companyOsFit": "REFERENCE deterministic namespacing and two-index lookup only. Replace with immutable/versioned capability snapshots, staged validate-and-swap, tenant scope, worker generation/fencing and Connector execution contracts.",
+      "responsibilityConflict": "Despite documentation, parameters are never schema-validated; arbitrary input and caller-supplied run context are forwarded. Returned live entries are mutable, availability has a check/use race, and there is no timeout, cancellation, idempotency, data egress, approval, attestation or evidence boundary.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["server/src/services/plugin-tool-registry.ts:1-461", "server/src/__tests__/plugin-tool-dispatcher-pluginDbId.test.ts:1-313", "62863126 fix(plugin-tool-dispatcher): propagate pluginDbId so worker.isRunning resolves (#5671)"]
+    },
+    {
+      "id": "application:server/__tests__/plugin-tool-dispatcher-pluginDbId",
+      "auditStatus": "COMPLETE",
+      "function": "Focused regression tests for propagating plugin database UUID through Dispatcher/Registry into worker liveness and RPC routing.",
+      "dependencyDirection": "Uses mocked worker/lifecycle collaborators and the production Dispatcher/Registry; no real database, lifecycle service or worker process participates.",
+      "keyDataModels": "Manifest pluginKey, plugin database UUID, namespaced Tool and mocked ToolRunContext.",
+      "lifecycle": "Registers, executes, unregisters/re-registers and toggles mocked worker availability.",
+      "testAssessment": "All 6 tests passed locally. They correctly protect one historical identity-plumbing defect, but the lifecycle section is not an actual lifecycle-event test and createDbStub is unused. Broad Dispatcher/Registry claims remain uncovered.",
+      "designRationale": "Prevent regression from UUID-keyed worker lookup back to manifest-key lookup.",
+      "companyOsProblem": "Company OS compatibility tests must bind stable Connector identity, installation identity and runtime generation without confusing them.",
+      "companyOsFit": "ADAPT the identity-distinction regression as one Connector compatibility case, then add real enable/disable races, upgrade generations, reconciliation, schema/result validation and tenant/authority tests.",
+      "responsibilityConflict": "Fixtures cast through unknown and carry no accountable human, permissions, data contract, execution attestation or evidence semantics.",
+      "decision": "ADAPT",
+      "evidence": ["server/src/__tests__/plugin-tool-dispatcher-pluginDbId.test.ts:1-313", "62863126 fix(plugin-tool-dispatcher): propagate pluginDbId so worker.isRunning resolves (#5671)"]
+    }
+  ]
+}

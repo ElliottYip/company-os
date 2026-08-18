@@ -1166,6 +1166,84 @@
         "Trace slot claims, tenant/host capacity, process identity, timeout/idle/restart/stuck recovery, audit evidence and deployment exposure controls.",
         "Map already-read acceptance coverage and history before a canonical decision."
       ]
+    },
+    {
+      "id": "application:server/services/plugin-tool-dispatcher",
+      "path": "server/src/services/plugin-tool-dispatcher.ts",
+      "lineCount": 455,
+      "sha256": "75de7da75c6bc4337c69c7c3d424d1bc009ee4ea7b8711febea9e9ca6b0ff53f",
+      "linkedEvidence": { "history": ["62863126 fix(plugin-tool-dispatcher): propagate pluginDbId so worker.isRunning resolves (#5671)", "70b1a910 Improve CLI API parity coverage (#6626)", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 455,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The dispatcher is a thin singleton facade over a global in-memory registry and worker manager. It contains no company, organization, permission, data-contract or accountable-human filtering; Company OS cannot treat its Agent-facing list as an authorized Connector capability projection without the separate Gateway policy layer.",
+          "Plugin identity has two forms: lifecycle payload/database UUID and manifest pluginKey. A prior defect required propagating pluginDbId because workers are keyed by UUID, while registration/unregistration is keyed by pluginKey; the public unregisterPluginTools parameter is documented as pluginId but passed directly as a registry key, preserving semantic ambiguity.",
+          "Enabled lifecycle registration is fire-and-forget. If a plugin is disabled/unloaded before the asynchronous database lookup completes, the late completion can register its Tools after unregistration, exposing disabled capabilities until another reconciliation.",
+          "initialize lists every ready plugin and registers sequentially without pagination, snapshot/version or failure isolation; one invalid manifest/registration error can abort startup after a partially populated in-memory registry.",
+          "teardown intentionally retains registrations for in-flight calls but has no draining generation or rejection of new calls. After listener removal, callers retaining the dispatcher can continue discovering/executing stale Tools, and reinitialization depends on registry overwrite behavior.",
+          "Lifecycle failures are only logged and not represented as durable health/reconciliation state, so operators cannot distinguish a ready plugin whose Tools failed registration from a healthy one.",
+          "The Agent descriptor exposes only schema and plugin DB id; it omits declared risk, version, capability proof, health, data categories, approval/cancellation/idempotency support and Connector attestation required by Company OS.",
+          "Execution delegates entirely to the registry and logs identifiers/result flags only. Timeout, cancellation, isolation, idempotency and evidence are absent here and must not be assumed from this facade."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-455 exactly once and trace plugin discovery, identity, run binding, worker lifecycle, input/output trust and failure semantics."]
+    },
+    {
+      "id": "application:server/services/plugin-tool-registry",
+      "path": "server/src/services/plugin-tool-registry.ts",
+      "lineCount": 461,
+      "sha256": "b8e807fe37b002acd786d2b15d2fa9fb88cd7e2f9e4cd023bfa5a5c35ed334b6",
+      "linkedEvidence": { "history": ["62863126 fix(plugin-tool-dispatcher): propagate pluginDbId so worker.isRunning resolves (#5671)", "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 461,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The registry is a simple global in-memory two-map index with useful deterministic namespacing and O(1) lookup, but it has no tenant, plugin-version, health generation, permission or deployment scope.",
+          "The module documentation claims parameter validation, yet executeTool never validates parameters against parametersSchema; it forwards arbitrary input and caller-supplied ToolRunContext directly to the worker. Correctness and authorization depend entirely on upstream callers and plugin code.",
+          "Manifest declarations are assumed prevalidated. Registration removes the old plugin set before adding the new one, with no staged validation/swap; malformed declarations, duplicate names or unexpected runtime errors can leave a partial/reduced registry.",
+          "Duplicate Tool names within one manifest overwrite byNamespace while the Set remains one entry, but logs/counts report the manifest array length. There is no collision/error signal or version hash for the effective capability set.",
+          "listTools/getTool return live RegisteredTool objects and nested schema references. Callers can mutate parametersSchema or entry fields and corrupt subsequent discovery/execution because no clone/freeze boundary exists.",
+          "Worker availability is a time-of-check before workerManager.call with no lease/generation binding. A restart between the two can route against a different worker generation or fail without an idempotency/cancellation contract.",
+          "Execution has no timeout, cancellation, retry/idempotency key, capability attestation, structured stable error, result validation, evidence receipt or data-egress contract at this boundary.",
+          "The run context is forwarded as trusted routing data without proving company/Agent/run/project ownership. Gateway callers currently validate it, but the registry is public through an escape hatch and cannot safely serve as a canonical Company OS Connector SDK host.",
+          "Tool descriptions/schemas originate from plugin manifests and flow toward Agent prompts without content trust classification or injection review here."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-461 exactly once and trace manifest validation, namespacing, ownership, collisions, registration lifecycle and concurrency."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-tool-dispatcher-pluginDbId",
+      "path": "server/src/__tests__/plugin-tool-dispatcher-pluginDbId.test.ts",
+      "lineCount": 313,
+      "sha256": "b67d5650f9ad726916d04d4f6446b6d453cf818bc72e5f4014fd9f6224f2723f",
+      "linkedEvidence": { "history": ["62863126 fix(plugin-tool-dispatcher): propagate pluginDbId so worker.isRunning resolves (#5671)"], "focusedTest": "2026-08-18: direct Vitest run passed all 6 tests in 4ms; coverage is limited to UUID routing and does not prove lifecycle-event behavior." },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 313,
+        "readAt": "2026-08-18",
+        "notes": [
+          "All six tests narrowly verify the plugin database UUID is retained for worker isRunning/call routing, including empty-id rejection, idempotent registration and a simulated worker bounce.",
+          "The file's claimed lifecycle-event coverage is misleading: the plugin.enabled test never initializes the dispatcher, emits an event or uses registerFromDb. It directly invokes dispatcher.getRegistry().registerPlugin and calls that equivalent, so it cannot catch the fire-and-forget enable/disable race or database lookup failures.",
+          "createDbStub is defined but unused, further confirming initialize/registerFromDb is not exercised.",
+          "The worker manager is a pure mock; worker restart generation, in-flight calls, timeout, cancellation, RPC errors and process/container isolation are not tested.",
+          "No test validates parameters against JSON Schema, manifest duplicate/collision handling, live-object mutation, registration rollback, tenant/run authorization, disabled-plugin late registration, Tool/result content trust or structured error contracts.",
+          "The test fixture casts both manifest and worker manager through unknown, reducing compile-time contract evidence and allowing the mocked call result to ignore the real ToolResult shape.",
+          "This is a useful regression for one historical identity-plumbing bug but insufficient evidence for the dispatcher's broader lifecycle or a production-grade Company OS Connector host."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-313 exactly once and map regression coverage to dispatcher/registry identity and lifecycle invariants."]
     }
   ]
 }
