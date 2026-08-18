@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/home-paths",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for product-home expansion, instance ID/default and per-instance config-path layout.",
+      "dependencyDirection": "Calls home/path helpers and environment variables only; no config or filesystem authorization runs beyond one temporary directory.",
+      "keyDataModels": "PAPERCLIP_HOME, PAPERCLIP_INSTANCE_ID and instances/<id>/config.json.",
+      "lifecycle": "Resolves default/explicit home and instance values, expands tilde and rejects a slash-containing instance ID.",
+      "testAssessment": "Focused Vitest passed 4/4. Basic nesting and one invalid-ID case work; canonical roots, cross-platform separators/reserved names/collisions, symlinks/mounts, permissions and full path lifecycle are untested.",
+      "designRationale": "Give each local instance an isolated configuration namespace under one product home.",
+      "companyOsProblem": "Company OS self-hosted and FDE deployments require stable, portable, collision-resistant data/config namespaces per customer and environment.",
+      "companyOsFit": "ADAPT the per-instance namespace and strict ID resolver, expanding tests to opaque generated IDs, all platform separators/reserved names, Unicode/case collisions, canonical approved roots, symlink/mount/mode ownership and migration/backup boundaries.",
+      "responsibilityConflict": "Filesystem namespace selection is not an authorization grant; access must still derive from human/Connector identity and data contracts.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/home-paths.test.ts:1-46", "full source SHA-256 17f58341ee4c3a919d18ced1cf4ac0af1787401d3ff2c6d006caa7d8747847df", "2026-08-18 focused Vitest: 4 passed via existing local binary"]
+    }
+  ]
+}

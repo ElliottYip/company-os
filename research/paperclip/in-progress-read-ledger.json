@@ -2343,6 +2343,24 @@
         "Focused Vitest passed 5/5 in this file as part of an 11/11 three-file run."
       ],
       "completionRequirements": ["Read lines 1-107 exactly once and assess HTTP client URL/origin trust, auth header/redaction, body/content handling, errors/codes, timeout/retry/cancel, redirects, size limits and observability safety."]
+    },
+    {
+      "id": "application:cli/__tests__/home-paths",
+      "path": "cli/src/__tests__/home-paths.test.ts",
+      "lineCount": 46,
+      "sha256": "17f58341ee4c3a919d18ced1cf4ac0af1787401d3ff2c6d006caa7d8747847df",
+      "linkedEvidence": { "history": ["0096b56a [codex] Add LLM Wiki plugin host support (#5597)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 46 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four tests cover default/explicit instance layout, PAPERCLIP_HOME tilde expansion, explicit instance ID and rejection of one slash-containing ID.",
+        "The safe nested instances/<id>/config.json layout and rejection signal improve on the shallower data-dir test, but only bad/id is adversarial; backslash, dot/dotdot, absolute, Unicode/case collisions, reserved names and length are not covered.",
+        "PAPERCLIP_HOME canonicalization, symlink/mount/ownership/mode and config/context/auth/Secret path co-location or migration are not exercised. The first test creates a temporary directory without removing it.",
+        "Focused Vitest passed 4/4 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-46 exactly once and assess product-home/config/context/auth path precedence, environment isolation, multi-instance safety, canonicalization and migration relevance."]
     }
   ]
 }
