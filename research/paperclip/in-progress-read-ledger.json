@@ -1061,6 +1061,57 @@
         "Read lines 1-3941 exactly once against the pinned SHA-256.",
         "Map integration coverage to tenant/run binding, approval pause/resume, token lifecycle, retries, concurrency and evidence consistency."
       ]
+    },
+    {
+      "id": "application:server/routes/tool-gateway",
+      "path": "server/src/routes/tool-gateway.ts",
+      "lineCount": 830,
+      "sha256": "36171e52e6660c6741806cf6f752a9b2e31d535108504fe88400189c3a801b04",
+      "linkedEvidence": {
+        "history": [
+          "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+        ],
+        "focusedTest": "The already-read tool-gateway.test.ts acceptance suite covers selected route permissions, protocol operations, revocation and audit pagination; local Vitest discovered but skipped all embedded-PostgreSQL tests."
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 430,
+          "readAt": "2026-08-18",
+          "notes": [
+            "The route combines unauthenticated public MCP endpoints, named-gateway administration, ephemeral runtime sessions, approval, audit and runtime controls; protocol and management contracts are coupled in one Express file.",
+            "MCP bearer tokens are header-only and ToolGatewayHttpError exposes stable reasonCode plus details, but missing-token, invalid-method and generic HttpError paths use English strings without a uniform stable code.",
+            "Protocol input is cast from req.body without schema, JSON-RPC version, id-type, batch, params-shape or local size validation. tools/call serializes arbitrary result data into one text item and can throw on non-JSON values.",
+            "Named gateway create/update/token operations correctly require the explicit tools:admin permission and validate shared schemas. Token revocation does not pass the authenticated actor to the service, matching the missing revoke-audit attribution observed in source.",
+            "Public gateway discovery GET endpoints reveal transport and endpoint for any supplied public id without proving the gateway exists; this may be intentional documentation behavior but is not an authenticated resource read.",
+            "Critical route-authority gap: POST /tool-gateway/sessions uses only assertBoardOrAgent plus company access. A board viewer can supply an Agent and active run id and receive a live bearer session for that Agent because neither read-only membership nor tasks:assign/tools permission is checked here; the service validates run binding but trusts the caller's authority to mint it.",
+            "Agent session creation pins company/Agent from its authenticated actor and prefers actor runId, a sound confused-deputy defense. Board callers can also supply issue/project overrides; service consistency checks reduce spoofing but do not replace authorization to impersonate the Agent run."
+          ]
+        },
+        {
+          "start": 431,
+          "end": 830,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Critical companion authority gap: board session revocation also requires only company access, so a viewer can revoke any known company gateway session. Agent revocation is correctly constrained to its own Agent/run scope.",
+            "Ordinary approve/decline routes reject viewers but grant every other active board membership decision authority. They have no dedicated approval permission, risk/data/action scope, accountable-human assignment, separation of duties or ResponsibilityContract check.",
+            "The direct tools/call route validates only a nonempty Tool string. parameters, timeoutMs, approvedActionRequestId and idempotencyKey lack route schemas and explicit size/format bounds; type filtering silently discards malformed optional fields rather than returning stable validation codes.",
+            "Runtime listing/control and audit reading use dedicated tools:manage_runtime and tools:view_audit permissions, showing the codebase already has a stronger permission pattern that session mint/revoke and approvals do not apply.",
+            "Audit pagination is deterministic and tenant-scoped, with bounded page size and server-side enrichment. Search first loads every matching Agent/application/connection id and expands ids into OR clauses, so a broad term in a large tenant can create unbounded memory, SQL size and parameter work.",
+            "Unknown outcome query values silently disable outcome filtering instead of returning validation failure. Search length is unbounded, while app/Agent UUID, window and cursor receive validation.",
+            "The API returns raw activity rows and details alongside enriched names to users with audit permission; field-level sensitivity classification/redaction depends entirely on upstream writers and is not re-applied at this read boundary.",
+            "Across the route, several errors remain English-only and response shapes vary between MCP, gateway, HttpError and ad hoc validation paths, so independent Web/mobile clients cannot rely on one stable structured error contract."
+          ]
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-830 exactly once against the pinned SHA-256.",
+        "Verify protocol and management authentication, tenant hiding, approval authority, input bounds, actor attribution and stable error contracts against the service findings.",
+        "Map the already-read Tool Gateway acceptance tests and route history before a canonical decision."
+      ]
     }
   ]
 }

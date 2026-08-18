@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/routes/tool-gateway",
+      "auditStatus": "COMPLETE",
+      "function": "Express routes for public MCP protocol access, named-gateway/token administration, ephemeral session mint/revoke, direct Tool calls, approval decisions, runtime controls and audit search/projection.",
+      "dependencyDirection": "Depends on Paperclip authz/access helpers, shared Tool schemas, Tool Gateway service, database activity/Agent/application/connection/Invocation tables and UI-oriented humanization. It exposes a Paperclip-specific mixed protocol/management API.",
+      "keyDataModels": "Board or Agent actor, company membership/permission, gateway/token/session, ActionRequest, RuntimeSlot, activity/audit event and enriched Agent/application/connection/Tool projection.",
+      "lifecycle": "Authenticates public bearer MCP requests or management actors, validates selected commands, delegates gateway execution/approval/runtime mutations and performs a paginated tenant-scoped audit query with display enrichment.",
+      "testAssessment": "The linked 3,941-line acceptance suite exercises public MCP calls, viewer approval denial, Agent runtime/audit denial, explicit runtime/audit permissions, company/run revocation scope and audit pagination. It does not test viewer session mint/revoke, qualified approval authority, malformed/oversized protocol bodies, invalid outcome filters, broad-search scale or stable error-shape completeness. Local execution discovered but skipped all database tests, so no pass is claimed.",
+      "designRationale": "Give Paperclip's board UI, Agent runtime and external MCP clients one HTTP surface over the large Tool Gateway service while reusing existing company membership and permission helpers.",
+      "companyOsProblem": "Company OS needs separately versioned Connector protocol and management APIs with explicit authority for session issuance, approval, runtime and evidence access, plus stable codes and bounded query/command contracts for independent Web/mobile clients.",
+      "companyOsFit": "REFERENCE header-only bearer handling, tools:admin/manage_runtime/view_audit permissions, tenant-hiding queries, Agent run pinning, deterministic cursor pagination and structured ToolGateway reason codes. Define separate protocol and management surfaces with schema/size limits, purpose-specific session and approval permissions, ResponsibilityContract checks, redacted evidence projections and one stable error envelope.",
+      "responsibilityConflict": "A board viewer can mint a live Agent-run bearer session and revoke known sessions because those routes require only company access. Every non-viewer member can approve or reject any company Tool action without risk/data scope, accountable-human assignment or separation of duties. Raw audit details are returned without read-time classification, and mixed English/ad hoc error shapes are not a stable client contract.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/routes/tool-gateway.ts:1-830",
+        "server/src/__tests__/tool-gateway.test.ts:1-3941",
+        "server/src/services/tool-gateway.ts:1-6316",
+        "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+      ]
+    }
+  ]
+}
