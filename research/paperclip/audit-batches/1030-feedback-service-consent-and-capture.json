@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/feedback-service",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres and real-filesystem integration suite for per-vote feedback consent, local/shared trace persistence, sanitized diagnostic bundle construction, Claude/OpenCode session capture, target eligibility and export success/failure state transitions.",
+      "dependencyDirection": "Company/Agent/Issue/comment/document/run/cost/skill rows plus vendor runtime files enter feedbackService; it writes Vote/Export/InstanceSettings consent state and optionally sends a reconstructed bundle through an injected share client.",
+      "keyDataModels": "Feedback vote/target/reason, Company consent actor/time/terms, global sharing preference, local_only/pending/sent/failed export, schema/bundle/payload versions and digest, Issue/Agent/Run/Skill/Instructions context, raw adapter files, attempt/failure/export timestamps.",
+      "lifecycle": "A vote upserts per user/target; no-sharing stores a local-only minimal trace, explicit sharing enables Company/global metadata and constructs a pending bundle; historical local votes remain local; flush captures vendor artifacts, uploads, marks sent or persists failed state and can target one trace.",
+      "testAssessment": "This is strong end-to-end service evidence using real migrations, relational data and files. It proves non-retroactive sharing, per-vote sharing, stable consent version, local bundle omission, representative secret/PII redaction, document targets, human-output rejection and persisted export outcomes. Gaps: unsupported hosts silently skip the whole suite; omission of allowSharing is asserted as durable not_allowed rather than an untouched prompt state; no revoke/terms upgrade/actor authorization, concurrent flush claim, retry-to-success/backoff/max attempts, cancellation, retention/deletion, partial/unavailable capture or payload-size boundary. Raw Claude/OpenCode file tests assert paths/counts but never assert secret/path removal from every transmitted file body.",
+      "designRationale": "Collect reproducible, context-rich diagnostics only for an explicitly shared AI-output vote while retaining non-shared product feedback locally and surviving remote sink failure.",
+      "companyOsProblem": "Enterprise diagnostic export needs granular consent, exact field provenance, bounded vendor-runtime capture, durable delivery and revocation/retention semantics without broad filesystem scraping.",
+      "companyOsFit": "ADAPT per-vote opt-in, non-retroactivity, local-only minimal records, versioned consent and durable delivery state. Replace broad bundle assembly with a typed DataExportManifest reviewed against Company policy; treat prompt/deny/allow distinctly, require authorized accountable human, scan and test every exported byte, atomically claim rows, back off with limits/dead-letter and support revocation/retention/legal hold.",
+      "responsibilityConflict": "One consented vote can export Issue text, neighboring comments, model/cost data, Skill locators, instructions and raw vendor session/tool files beyond the voted output. The tests do not prove field-level authorization or full-byte redaction. Global preference and Company consent can be mutated by one vote, while no role/authority or revocation evidence is exercised; repeated failed rows are eligible for frequent retries without accountable escalation.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/feedback-service.test.ts:1-1155",
+        "server/src/services/feedback.ts:1343-1450",
+        "server/src/services/feedback.ts:1774-1878",
+        "server/src/services/feedback.ts:1928-2090",
+        "2dbaf4a7 External object references across issue surfaces (#8512)",
+        "5a0c1979 [codex] Add runtime lifecycle recovery and live issue visibility (#4419)",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    }
+  ]
+}
