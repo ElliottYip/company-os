@@ -7320,6 +7320,46 @@
       "completionRequirements": [
         "Read lines 1-280 exactly once and assess comment actor attribution, Agent/Run binding, spoof prevention, cross-Work authority, audit receipt integrity, content privacy and test quality against Company OS responsibility evidence."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-comment-cancel-routes",
+      "path": "server/src/__tests__/issue-comment-cancel-routes.test.ts",
+      "lineCount": 441,
+      "sha256": "f2dd8d475cc51bf8c0ad25e7888b76656496b49945b4b9f8d538cc411c2a6896",
+      "linkedEvidence": { "history": [
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "a090c09ee567d6c6775a5fb0fa0710b190d5d00e decision training snapshot foundation (#9702)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f external object references (#8512)",
+        "9aa065a38c71bd6a34d35249b1f1502ba46f5654 atomic deleted-comment cleanup",
+        "7f70759e6155003b12621d4d57bfdc6db759511c redact deleted comments",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 441 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Read lines 1-220 exactly once. The route harness models comment removal/tombstoning plus cleanup across annotations, decision-training snapshots, Issue references, external objects, pending interactions and activity, indicating deletion has many derived-data consumers.",
+        "The fixture Work is in_progress with assigned Agent and executionRunId, while the comment is human-authored. Remaining lines must determine whether cancel means deleting a queued comment, cancelling a Run, or both, and whether cleanup is atomic versus best-effort.",
+        "All services and database are mocked; the harness cannot by itself prove data erasure, retention, transactionality or cross-store cleanup. Actors can be injected as board or other types for later authorization cases.",
+        "Read lines 221-441 exactly once. mode=cancel removes an author-owned queued comment physically, returns its original body and logs issue.comment_cancelled with queue target Run; missing Run, pre-Run comment timestamp or different author returns 409/403 before removal.",
+        "Queued status appears derived from comment time relative to the active Run rather than a durable delivery/consumption state. The test does not cover simultaneous Agent consumption and cancellation, duplicate cancel, Run replacement or clock skew.",
+        "Normal author deletion uses a tombstone: body becomes empty, metadata null and deleted actor/time fields remain. Response and deletion activity exclude original body/metadata, a strong data-minimization pattern.",
+        "The afterTombstone callback passes one tx token through reference sync, annotation cleanup, annotation-source deletion, external-object sync and decision-training scrubbing. This expresses atomic cleanup intent, though mocks do not prove rollback and the Safely-named external sync may swallow failure.",
+        "Deletion activity retains IDs of removed derived comments and resolved threads but no content. It does not assert a content digest, legal-hold override, retention basis, privacy-request ID or evidence-preservation policy.",
+        "Only human author self-service is tested. Agent-authored/on-behalf comments, moderator/compliance deletion, cross-company reads, inactive membership and delegated responsible-human authority are absent. English errors are not stable codes.",
+        "Sandboxed focused Vitest failed 6/6 on TCP bind; approved unsandboxed rerun passed 6/6."
+      ],
+      "completionRequirements": [
+        "Read lines 1-441 exactly once and assess comment deletion/cancellation semantics, Run targeting, human/Agent authority, atomic cleanup, redaction, audit/evidence preservation and test quality against Company OS responsibility records."
+      ]
     }
   ]
 }

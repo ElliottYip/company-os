@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-comment-cancel-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Mocked route tests distinguishing withdrawal of a queued comment from privacy-preserving tombstone deletion of an already-normal comment, including derived annotation/reference/training cleanup.",
+    "dependencyDirection": "Supertest -> Issue routes -> mocked Issue/Run/access/activity plus annotation, reference, external-object and decision-training services; one tx token is propagated through tombstone cleanup callbacks.",
+    "keyDataModels": "Issue/current Run, human-authored comment timestamps, tombstone deletion attribution, cancellation receipt and derived annotation/reference/training records.",
+    "lifecycle": "Author requests cancel or delete -> classify queued by active Run/time -> physically remove unconsumed queued comment or tombstone normal comment -> scrub derived copies/references -> record content-free activity receipt.",
+    "testAssessment": "Sandboxed run failed 6/6 on TCP bind; approved unsandboxed run passed 6/6. Behavior and privacy intent are clear, but all services/transactions are mocked and race, rollback, Agent authors, legal hold and durable consumption state are absent.",
+    "designRationale": "Let a human retract input before an Agent consumes it, while deleting later comments without erasing the fact, actor and consequences of deletion or leaving sensitive copies in derived systems.",
+    "companyOsProblem": "Company OS must reconcile user deletion rights with immutable organizational responsibility and evidence, and must know whether an instruction was delivered/consumed before allowing irreversible withdrawal.",
+    "companyOsFit": "ADAPT separate WithdrawQueuedInstruction and TombstoneComment commands, author-only default, content-free deletion receipts, derived-copy scrub registry and single transaction boundary. Replace timestamp inference with durable delivery/claim state and CAS, add idempotency, legal-hold/retention policy, evidence digest or exempted proof, compliance authority, Agent/on-behalf attribution and verified cross-store erasure jobs.",
+    "responsibilityConflict": "Physical removal based on a time heuristic may erase an instruction an Agent already consumed, while ordinary deletion may remove evidence without legal-hold evaluation. Cleanup success is not proven atomic despite a shared tx token.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-comment-cancel-routes.test.ts:1-441 (SHA-256 f2dd8d475cc51bf8c0ad25e7888b76656496b49945b4b9f8d538cc411c2a6896)",
+      "git history: 13 commits from ded813ad6fae2c0b2c9009e04f59b117ecae0151 through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+      "2026-08-19 sandboxed focused Vitest: 0/6 passed due TCP listen EPERM",
+      "2026-08-19 approved unsandboxed focused Vitest: 6/6 passed"
+    ],
+    "securityFindings": "HIGH cancellation-race gap: queued/consumed state is inferred from Run presence/timestamps without CAS. HIGH erasure-governance gap: legal hold, retention basis and evidence exemption are absent. HIGH atomicity gap: mocks do not prove all derived cleanup rolls back together; safe sync may swallow errors. MEDIUM identity gap: Agent/on-behalf and compliance actors are untested. MEDIUM replay gap: repeated cancel/delete is absent. MEDIUM error-contract gap: English strings are asserted instead of stable codes."
+  }]
+}
