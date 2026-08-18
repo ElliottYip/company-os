@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/worktree-merge-history",
+      "auditStatus": "COMPLETE",
+      "function": "Pure planning tests for reconciling history from a nested database worktree into a target company: Work, comments, Projects/workspaces, documents/revisions and attachments with preview identifiers, mappings and recorded adjustments.",
+      "dependencyDirection": "The Vitest suite imports a pure merge planner/scope parser and supplies database-shaped records as in-memory fixtures. It verifies plans/counts only; no database transaction, asset copy, filesystem/Git operation or authorization is executed.",
+      "keyDataModels": "Issue/Work identity and status/assignee/project/goal/execution links; comment authors; Project and local/remote workspace metadata; linked documents and numbered revisions; attachment asset/provider/object key/hash/author; project mapping/import overrides and adjustment counters.",
+      "lifecycle": "Select merge scopes; deduplicate preserved UUIDs; assign new display identifiers; clear/map/import missing references and coerce invalid in-progress Work; merge comments; map/import Projects/workspaces; merge document histories and renumber conflicts; import attachments while clearing unresolved links; produce counts and adjustment plan.",
+      "testAssessment": "Focused Vitest passed 8/8 tests on 2026-08-19 and CLI no-emit TypeScript passed. It thoroughly specifies several deterministic merge cases and adjustment counts, but omits apply/rollback, conflict policies for changed same-UUID records, cycles, tenant mismatch, concurrent target writes, asset-byte integrity, workspace path safety, huge histories, responsibility preservation and property/idempotency tests.",
+      "designRationale": "Allow parallel local/nested worktree databases to contribute useful operational history back to a main instance without duplicating preserved entities or failing entirely when target references differ.",
+      "companyOsProblem": "Hybrid/self-hosted Company OS must reconcile offline/local execution-node events and FDE configuration branches into an authoritative control plane without losing identity, responsibility, evidence, ordering or tenant boundaries.",
+      "companyOsFit": "ADAPT pure previewable deterministic planning, explicit mapping/import choices, adjustment accounting and preserved opaque source IDs. Redesign synchronization around immutable source event/evidence IDs, replica/node identity, causal/version vectors or server revisions, signed manifests and durable apply receipts. Preserve unresolved/deleted principal tombstones and original document revision identity instead of erasing responsibility or rewriting history semantics.",
+      "responsibilityConflict": "Clearing missing author/assignee Agent references destroys who performed or owned historical actions. Importing Work without its responsible human/contract/data/approval chain and renumbering revisions can make the merged record look locally authoritative when provenance is incomplete.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/worktree-merge-history.test.ts:1-492",
+        "SHA-256 b42addb374880646d1817ea255bb614ef68a7a381254d0b31f30467239afc873",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "2026-08-19 focused Vitest: 1 file and 8 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Missing Agent authors are deliberately cleared from comments/attachments; this prevents dangling foreign keys but erases attribution and is unacceptable for responsibility/evidence without a preserved source-principal tombstone.",
+        "Document revision conflicts are renumbered in the target; original revision number, branch/node identity, parentage and content digest need preservation to prevent history ambiguity or substitution.",
+        "Source Project workspaces include absolute cwd, repository URL and setup/cleanup-capable metadata; importing them can leak topology or enable unsafe execution unless sanitized/rebound per target node.",
+        "Attachment plans rely on objectKey/provider/hash metadata fixtures but do not verify bytes, source authorization, malware/content policy, cross-tenant storage namespace or copy atomicity.",
+        "Same-UUID changed entities appear treated as existing/deduplicated in covered cases; divergent content conflict detection and malicious UUID collision are untested.",
+        "Preview issue identifiers depend on a counter start, but concurrent target inserts and apply-time reservation/fencing are not tested.",
+        "Company id is supplied to the planner; all source rows' tenant consistency and target authorization are not tested.",
+        "No size/depth/cycle limits or streaming strategy are tested for large graphs/histories, creating memory and denial-of-service risk."
+      ]
+    }
+  ]
+}
