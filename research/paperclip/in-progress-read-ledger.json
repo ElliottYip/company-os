@@ -6119,6 +6119,38 @@
       "completionRequirements": [
         "Read lines 1-601 exactly once and assess run orchestration, environment selection, lease/workspace acquisition, remote command provisioning, in-place realization, cleanup/failure compensation, idempotency/concurrency and test quality against Company OS Connector work execution."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-runtime",
+      "path": "server/src/__tests__/environment-runtime.test.ts",
+      "lineCount": 3036,
+      "sha256": "790e761a4c6ea6197b3e1bfc3d118d51cc172cf8293f0862f3b9bee7cb8b5705",
+      "linkedEvidence": {
+        "history": [
+          "6b7e0814a08b228a2d9c685e46fa8ef0e3569c11 feat(acp): stream Daytona sandbox agent output and remove the host output poll (#11049)",
+          "9ace548fd21536f83ca5dd8181bf978bc2a723ea feat(observability): rename sandbox provider spans and add run-time wrapper spans (#10999)",
+          "cfed36ea6b8b0f561435f729f0afcd9cd5585c4b feat(plugin-daytona): persistent session model with plain command dispatch (#10941)",
+          "53bcf3897f05bb279a33e6289a12d3f0cc2d16c3 feat: sync @-mentioned projects into remote sandboxes (confined sandbox transport, flag ON) (#10564)",
+          "7083c275c8fde73516066563ec2314529d70bc1a refactor(sandbox): retire the dead noProfile flag from the exec path (#10461)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 3036 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in eight non-overlapping ranges. Thirty tests comprise two pure reusable-lease selection cases and twenty-eight embedded-Postgres/SSH/plugin lifecycle cases; sandboxed and approved unsandboxed runs passed 2/2 pure tests while all 28 integration cases were skipped.",
+        "The intended driver registry spans local, SSH, built-in/plugin sandbox and generic plugin environments. Lease metadata captures acquisition-time driver/plugin/config/provider context, so execute/release/destroy can remain correct after the environment row changes; this is a strong lifecycle-decoupling pattern.",
+        "Reusable sandbox eligibility is scoped by provider opt-in plus company, environment, execution workspace, Agent, adapter and versioned runtime/lease fingerprints. Config or Secret-version drift destroys/expirs old leases, stale resume falls back through destroy to acquire, a lease held by another running Run is preserved and non-opt-in providers remain ephemeral.",
+        "Cleanup has explicit expired/pending_cleanup and success/failed states, and an offline plugin destroy can later be retried. Tests do not cover concurrent claim races, database locks/unique constraints, worker crash after provider destruction, repeated destroy idempotency, automatic retry scheduling/backoff or a provider returning partial/ambiguous results; one full-lifecycle case even expects destroyRunLease status failed after an undefined provider response.",
+        "Secret-ref fields are resolved before every provider acquire/execute/release call, while persisted lease metadata replaces returned raw apiKey with its Secret ID. This prevents the test's known values from persisting, but grants the plugin raw Secret bytes throughout the lifecycle with no tested audience-bound lease, redaction of arbitrary provider metadata, zeroization, rotation during an active call or least-privilege method scope.",
+        "Session semantics are coupled to tracing context: explicit bypassSession is forwarded, and a context-less command implicitly bypasses the provider persistent session so setup spans retain a run parent. Observability context must not be an authorization/isolation input; Company OS needs an explicit execution phase/session policy independent of whether tracing is enabled or propagated.",
+        "Workspace realization automatically carries referenced/mentioned project local paths into additional sources for both plugin and built-in sandboxes. This fixes functionality but can turn a textual mention into cross-project data transfer; Company OS must require an explicit DataAuthorization contract, destination/egress policy and evidence digest for every source.",
+        "Plugin-controlled bridgeRequestTimeoutMs extends RPC deadlines, commands/env/stdin and workspace paths are forwarded, and provider metadata supplies cwd/IDs. Resource bounds, cancellation, schema limits, command/data policy, output redaction, provider attestation and hostile plugin behavior are not covered. Release tracing-parent preservation is careful but should be correlation-only."
+      ],
+      "completionRequirements": [
+        "Read lines 1-3036 exactly once and assess runtime driver abstraction, lease acquisition/reuse/release, workspace sync, command/session streaming, cancellation/timeouts, observability, provider/plugin failures, cleanup/recovery, Secret/data boundaries and tests against Company OS execution-node runtime."
+      ]
     }
   ]
 }

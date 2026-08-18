@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-runtime",
+      "auditStatus": "COMPLETE",
+      "function": "Large runtime integration suite for driver registration, run-lease acquire/resume/release/destroy, reusable sandbox identity and cleanup, plugin RPC lifecycle, Secret resolution, workspace realization, command/session forwarding and trace-parent continuity.",
+      "dependencyDirection": "Vitest -> environment runtime/config/environment/Secret services -> Drizzle/Postgres, optional SSH fixture and mocked plugin workers, with adapter-utils timing; actual third-party sandbox providers and hostile plugins are not exercised.",
+      "keyDataModels": "Environment/runtime driver, run lease and cleanup state, execution workspace/Run/Agent scope, plugin manifest/capabilities, provider lease/config/metadata, Secret version/ref, versioned session/workspace/lease fingerprints, realization additional sources and runtime trace parent.",
+      "lifecycle": "Resolve driver and Secrets -> wait for plugin if needed -> acquire or safely resume a scoped lease -> realize one or more project sources -> execute with optional persistent session/streaming -> release by Run using acquisition-time metadata -> retain eligible reusable lease or destroy/mark pending cleanup -> retry stale cleanup.",
+      "testAssessment": "Both sandboxed and approved unsandboxed focused runs passed only 2 pure tests; all 28 embedded-Postgres/SSH/plugin integration tests skipped. Source intent is broad and sophisticated, but local evidence does not execute its database state machine, Secret resolution, plugin RPC lifecycle or cleanup recovery. Concurrency, cancellation, hostile metadata, idempotency and policy controls remain weak or absent.",
+      "designRationale": "Provide one extensible lifecycle seam for heterogeneous execution environments while making cleanup robust to later configuration drift, safely reusing expensive sandboxes only under a tightly matched identity and preserving observability across asynchronous teardown.",
+      "companyOsProblem": "Company OS needs a vendor-neutral execution-node runtime with exact tenant/Agent/Work/data/config identity, safe reuse, failure recovery and portable plugin/Connector lifecycle across cloud and local enterprise nodes.",
+      "companyOsFit": "ADAPT acquisition-time immutable lease descriptors, provider opt-in reuse, multi-dimensional versioned fingerprints and pending-cleanup recovery. Replace trace-derived session semantics with explicit phase policy; use atomic lease claims/idempotency, bounded provider deadlines, audience-scoped Secret handles, classified metadata, DataAuthorization for every source, cancellation/resource/egress controls and signed runtime/evidence attestations.",
+      "responsibilityConflict": "Run/Agent IDs are scope keys but do not establish goal owner, accountable human, approval or data contract. Referenced projects can be transferred implicitly, raw Secrets reach plugins, and tracing context influences session behavior; none is bound to a human-approved responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-runtime.test.ts:1-3036 (SHA-256 790e761a4c6ea6197b3e1bfc3d118d51cc172cf8293f0862f3b9bee7cb8b5705)",
+        "git history: 6b7e0814a08b228a2d9c685e46fa8ef0e3569c11, 9ace548fd21536f83ca5dd8181bf978bc2a723ea, cfed36ea6b8b0f561435f729f0afcd9cd5585c4b, 53bcf3897f05bb279a33e6289a12d3f0cc2d16c3, 7083c275c8fde73516066563ec2314529d70bc1a",
+        "2026-08-19 sandboxed focused Vitest: 2/2 pure tests passed; 28 integration tests skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 2/2 pure tests passed; 28 integration tests skipped"
+      ],
+      "securityFindings": "CRITICAL data-authorization gap: mentioned project paths become sandbox sources without a tested explicit grant. CRITICAL semantic coupling: trace-parent presence changes persistent-session behavior. HIGH raw-Secret plugin exposure and provider-metadata classification gap. HIGH unverified state-machine gap: 28 integration tests skip locally. HIGH concurrency/idempotency/recovery gap around reusable lease claims and partial provider cleanup. HIGH command/env/stdin/path and provider-controlled timeout policy gap. HIGH responsibility/attestation gap across the entire runtime lifecycle."
+    }
+  ]
+}
