@@ -6773,6 +6773,37 @@
       "completionRequirements": [
         "Read lines 1-230 exactly once and assess Agent access to human inboxes, ownership/delegation, archive/dismiss authority, tenant isolation, audit and stable error semantics, policy bypasses and test quality against Company OS accountable-human workspace boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/inbox-archive-routes",
+      "path": "server/src/__tests__/inbox-archive-routes.test.ts",
+      "lineCount": 491,
+      "sha256": "7badf56325eaa5dba972349f3a6cf51dfe0e106a380c824ee6ed3ada97b5a058",
+      "linkedEvidence": {
+        "history": [
+          "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)",
+          "95d33e1788361b59fe08491b6a81e1890f7f5a0d fix(inbox): archive tasks completed by human users (#10668)",
+          "59fb27ff794ce60b81b859922112f3d658376918 feat(inbox): let agents safely tidy user inboxes (#9724)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 491 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Seven embedded-Postgres route tests cover board idempotency, done-triggered archival/transaction rollback, Agent non-implicit versus explicit archival, attribution/resurfacing, typed policy denials and scoped cross-user grant override.",
+        "Archive/unarchive is a per-user projection, not Work deletion. Board operations are idempotent, return the resolved user and keep one row. A new comment later than the archive resurfaces Work in list/detail projections and hides stale archive attribution, a strong inbox lifecycle pattern.",
+        "When a board user moves Work to done, that user's inbox is silently archived with source/resolution audit. A database constraint forcing the archive audit to fail produces HTTP 500 and rolls back both Work completion and archive; no live activity event is emitted. This is strong transaction/evidence coupling.",
+        "An Agent moving Work to done does not automatically archive the responsible human's inbox, preserving a useful distinction between business-state mutation and another person's personal projection. The Agent may explicitly archive under delegation and the row/audit bind Agent, Run, responsible user and resolution source.",
+        "Unresolved on-behalf-of human, disabled policy, missing allowlist entry and low-trust Agent return stable typed denials. An allowlisted normal-trust Agent succeeds. The tests do not cover stale/terminal Run, forged responsibleUserId, inactive memberships, policy revocation during the request or exact Work checkout ownership.",
+        "A critical precedence rule lets an Agent with company membership plus inbox:manage scoped to target user archive and unarchive that user's inbox even when the target policy is explicitly disabled; the audit calls this policyMode grant_override. This makes an administrative Agent grant stronger than a human's recorded refusal without tested approval/notice.",
+        "Cross-user audit contains target, explicit resolution and Agent/Run, but not grant ID/version/grantor, reason, responsible human, action digest, expiry, target consent or evidence of separation of duties. Who issued the Agent grant and whether it remains valid are outside the unit.",
+        "Concurrency/version behavior, archive-versus-new-comment race, duplicate Agent calls, live-event transactional outbox, retention, bulk actions and whether resurfacing compares all relevant activity types are absent.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 7 tests because embedded PostgreSQL support was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-491 exactly once and assess human/Agent archive authority, cross-Work side-effect containment, completion ownership, policy consumption, idempotency/concurrency, tenant privacy, audit receipts and test quality against Company OS human workspace delegation and responsibility chain."
+      ]
     }
   ]
 }

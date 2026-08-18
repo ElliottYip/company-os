@@ -7139,18 +7139,24 @@
     },
     {
       "id": "application:server/__tests__/inbox-archive-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres route tests for per-human Work inbox archive/unarchive, completion-triggered archive, transactional audit, Agent delegation/attribution and activity-based resurfacing.",
+      "dependencyDirection": "Supertest/Express issue routes -> real policy/access/issue/archive/activity/live-event services -> Drizzle/PostgreSQL; actor authentication and grant issuance are outside the unit.",
+      "keyDataModels": "Work, per-user InboxArchive, human/Agent actor and on-behalf-of membership, heartbeat Run/responsible user, delegation policy, scoped Agent permission grant, activity and live event.",
+      "lifecycle": "Resolve target human -> evaluate policy/trust/scoped grant -> idempotently archive/unarchive with actor/Run attribution -> filter archived projection -> resurface after newer activity; board done mutation archives transactionally with audit.",
+      "testAssessment": "All 7 tests skipped in sandboxed and approved unsandboxed runs due unavailable embedded PostgreSQL. Source cases demonstrate sophisticated projection/transaction semantics but do not execute locally and omit policy/grant version races, grant issuance provenance and outbox durability.",
+      "designRationale": "Keep inbox tidying personal and reversible, avoid letting an Agent's business completion silently hide a human's item, preserve attribution and automatically bring Work back when new activity makes the archive stale.",
+      "companyOsProblem": "Company OS needs human-owned responsibility/approval queues whose presentation state is reversible and auditable, while delegated Agent assistance remains subordinate to explicit human refusal and exact action authorization.",
+      "companyOsFit": "REIMPLEMENT authority precedence while ADAPTing per-user projection, idempotency, done/audit transaction, Agent-vs-human completion distinction, stable denials and activity-based resurfacing. Human disabled must be a hard deny unless a separately governed emergency legal policy with reason, notice and human approval applies; bind delegation/grant versions and use transactional outbox events.",
+      "responsibilityConflict": "A scoped Agent grant overrides the target human's disabled policy and records only grant_override, not the grantor, accountable approver, reason or policy basis. Agent/Run attribution is useful but incomplete without ResponsibilityContract, exact action digest and immutable delegation evidence.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/inbox-archive-routes.test.ts:1-491 (SHA-256 7badf56325eaa5dba972349f3a6cf51dfe0e106a380c824ee6ed3ada97b5a058)",
+        "git history: f91a6e27c0feb7f92dcde981c9a741b869484e83, 95d33e1788361b59fe08491b6a81e1890f7f5a0d, 59fb27ff794ce60b81b859922112f3d658376918",
+        "2026-08-19 sandboxed focused Vitest: 7/7 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 7/7 skipped"
+      ],
+      "securityFindings": "CRITICAL consent override: Agent inbox:manage grant supersedes a human disabled policy. HIGH grant provenance gap: grantor/version/reason/expiry and accountable approval are not in the receipt. HIGH race gap: policy/grant revocation, new activity and repeated archive concurrency are untested. HIGH identity gap: actor/on-behalf-of construction is injected and stale/forged Run responsibility is not challenged. MEDIUM event gap: live event durability/outbox is not proven. MEDIUM verification gap: all database tests skipped locally."
     },
     {
       "id": "application:server/__tests__/inbox-dismissals",
