@@ -2,9 +2,9 @@
 
 ## Recommended shape
 
-Paperclip is a separately versioned generic-work service. Company OS is the
-accountability/data/experience service and independent Web app. A narrow bridge
-uses Paperclip's official Plugin SDK and HTTP/event APIs.
+Paperclip is a separately versioned, API-only generic-work service/Plugin Host.
+Company OS is the accountability/data/experience service and independent Chinese
+Web app. A narrow bridge uses Paperclip's official Plugin SDK and HTTP/event APIs.
 
 ```text
 Company OS Web
@@ -16,6 +16,22 @@ Company OS Web
 
 The bridge maps opaque IDs and sanitized events. It never reads Paperclip tables,
 stores provider sessions or credentials, or grants authority based on plugin UI.
+Paperclip runs with `SERVE_UI=false`. Its UI is not localized, branded or exposed
+as the normal customer surface.
+
+## Headless and localization verdict
+
+- **Truly headless:** yes. `createApp` accepts `uiMode: "none"`; startup maps
+  `SERVE_UI=false` to that mode, registers `/api` routes independently, and the
+  startup banner explicitly reports `headless-api`.
+- **Avoid repeat localization:** yes. Company OS consumes API, event and
+  projection contracts only. No Paperclip page component or business copy is a
+  customer dependency. Missing Company OS translations are governed by Company
+  OS keys and terminology, not by upstream page diffs.
+- **Long-term patch surface:** target zero upstream core patches. The current
+  ledger is zero. One temporary infrastructure-only patch is the maximum before
+  an ADR review; three consecutive train conflicts in one area force boundary
+  redesign or downgrade to `REFERENCE ONLY`.
 
 ## Staged adoption
 
@@ -44,6 +60,7 @@ stores provider sessions or credentials, or grants authority based on plugin UI.
 ## Prohibited reuse
 
 - Paperclip name, logo, screenshots or brand assets.
+- Paperclip Page Components, route shells, business-copy catalogs or page state.
 - Copy-pasted schema/services/UI components without history and notice.
 - Private server imports, direct table access or assumptions about JSON columns.
 - Paperclip session tokens as Company OS authorization.
@@ -67,6 +84,10 @@ It does not reduce the differentiated Company OS scope.
   schema compatibility is proven. Otherwise restore the paired backup.
 - Keep the bridge compatible with current and previous admitted stable versions
   during one release window.
+- Run a 4–6 week version train; use a fast lane only for security, severe data
+  integrity or critical Connector fixes.
+- Test the Company OS Web against both the admitted and candidate Paperclip
+  contract fixtures before promotion.
 
 ## Exit/replace
 
@@ -75,3 +96,8 @@ Paperclip-owned records, import them into a replacement adapter, replay events,
 compare Company OS projections and cut over. Responsibility and data contracts
 remain in Company OS and are not migrated out of their canonical store.
 
+Connector registrations, capability declarations, Company OS identities and
+runtime attestations stay behind Company OS ports. At exit, rebind Connector
+runtime endpoints, preserve Company OS opaque IDs, import/export Paperclip-owned
+generic work records, replay sanitized events from a recorded cursor, and never
+transfer raw vendor sessions or credentials.

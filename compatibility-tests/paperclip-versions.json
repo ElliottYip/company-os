@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "admitted": {
+    "tag": "v2026.817.0",
+    "commit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+    "uiMode": "none",
+    "serveUi": false
+  },
+  "candidate": null,
+  "trainCadenceWeeks": {
+    "minimum": 4,
+    "maximum": 6
+  },
+  "fastLaneReasons": [
+    "security",
+    "severe-data-integrity",
+    "critical-connector"
+  ]
+}

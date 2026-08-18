@@ -28,12 +28,15 @@ Adopt Paperclip as the **only upstream owner of the generic work substrate**:
 - its database schema, migrations, API, CLI and operational release machinery
   for those capabilities.
 
-Company OS will extend it through the published Plugin SDK and HTTP/event APIs,
-with an external Company OS service and Web application. It will not copy
-Paperclip domain source files into Company OS and will not create a permanent
-fork. A narrow bridge plugin may project opaque Paperclip IDs and events, but it
-is not a security boundary: Paperclip documents that plugin UI is trusted,
-same-origin code and can call ordinary host APIs.
+Company OS will run Paperclip in its explicit API-only mode (`SERVE_UI=false` /
+`uiMode: "none"`) and extend it through the published Plugin SDK and HTTP/event
+APIs, with an external Company OS service and independently built Chinese Web.
+It will not copy Paperclip domain source files, pages or page text into Company
+OS and will not create a permanent fork. A narrow bridge plugin may project
+opaque Paperclip IDs and events, but it is not a security boundary: Paperclip
+documents that plugin UI is trusted, same-origin code and can call ordinary host
+APIs. Paperclip's English UI may be enabled only on a separately protected
+internal diagnostic/advanced-operations surface.
 
 Paperclip is **not** the owner of Company OS differentiation:
 
@@ -67,6 +70,8 @@ The pinned tag must not be deployed until all gates pass:
    and data rollback/recovery on a disposable database.
 5. The bridge uses only published Plugin/API contracts. Any required core patch
    triggers ADR reconsideration.
+6. Company OS customer flows run with Paperclip UI disabled and require no
+   translation or patching of Paperclip pages.
 
 The 2026-08-18 audit of the pinned lockfile reported 99 production dependency
 advisories: 1 critical, 35 high, 53 moderate and 10 low. This is a release
@@ -94,6 +99,8 @@ categories without replacing this ADR.
 ## Upstream synchronization
 
 - Consume stable tags only, pinned to a complete SHA.
+- Use a 4–6 week stable-version train. Security, severe data-integrity and
+  critical Connector fixes use a separately approved fast lane.
 - Use one traceable mechanism: a separately versioned upstream checkout/image
   plus a checked-in lock manifest and bridge compatibility suite. Do not vendor
   selected source files.
@@ -101,7 +108,8 @@ categories without replacing this ADR.
 - Re-run license, dependency, migration, contract, backup/restore and E2E gates.
 - Keep Company OS bridge commits replayable and prohibit changes under the
   upstream checkout.
-- Upgrade at a controlled cadence, with an emergency security lane.
+- Generate API/schema/event/plugin diffs, run current and candidate-version
+  compatibility suites, and update `docs/upstreams/paperclip-patch-ledger.md`.
 
 ## Exit strategy
 
@@ -109,7 +117,11 @@ Company OS ports and opaque external IDs are the anti-corruption boundary. To
 replace Paperclip, implement a new generic-work adapter, dual-write only in a
 bounded migration window, compare projections, freeze dispatch, export generic
 work records and switch the adapter. Company OS responsibility, data and Office
-records remain authoritative and require no domain rewrite.
+records remain authoritative and require no domain rewrite. Connector identities
+and capability contracts remain Company OS records; vendor sessions and secrets
+are not migrated through the control plane. Rebind each Connector to the new
+runtime adapter and replay sanitized progress/evidence events from the cutover
+cursor.
 
 ## Alternatives
 
@@ -131,6 +143,8 @@ records remain authoritative and require no domain rewrite.
   production system.
 - Add a Paperclip bridge package only after the admission gates have executable
   contract tests.
+- Do not create an upstream-page localization backlog. New upstream capability
+  enters the Company OS Web only when a Company OS product slice needs a new
+  projection or command.
 - Resume Pre-3D work on Demo, Agent Boss, data governance and Office contracts
   against Company OS ports while the generic substrate is integrated.
-

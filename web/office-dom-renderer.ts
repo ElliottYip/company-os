@@ -1,5 +1,6 @@
 import type { OfficeScene } from "../core/office.ts";
 import type { OfficeRendererPort } from "../ports/office-renderer-port.ts";
+import { t } from "./i18n/zh-CN.ts";
 
 const fishByIndex = [
   new URL("./assets/fish/raft-fish-bumble.png", import.meta.url).href,
@@ -17,7 +18,7 @@ export class OfficeDomRenderer implements OfficeRendererPort {
   async render(scene: OfficeScene): Promise<void> {
     this.#element.replaceChildren();
     this.#element.dataset.renderer = "pre-3d-structural-preview";
-    this.#element.setAttribute("aria-label", "Pre-3D 办公室结构与占位状态预览");
+    this.#element.setAttribute("aria-label", t("office.previewAria"));
 
     for (const module of scene.modules) {
       if (module.kind === "CORRIDOR") {
@@ -32,7 +33,7 @@ export class OfficeDomRenderer implements OfficeRendererPort {
 
     const previewLabel = document.createElement("p");
     previewLabel.className = "office-preview-label";
-    previewLabel.textContent = "PRE-3D STRUCTURAL PREVIEW · 非最终 3D 效果";
+    previewLabel.textContent = t("office.previewLabel");
     this.#element.prepend(previewLabel);
 
     scene.entities.forEach((entity, index) => {
@@ -45,7 +46,7 @@ export class OfficeDomRenderer implements OfficeRendererPort {
       person.setAttribute("role", "img");
       person.setAttribute(
         "aria-label",
-        `${entity.kind === "AGENT" ? "演示 Agent" : "真人负责人"}，状态 ${entity.state}`,
+        `${entity.kind === "AGENT" ? t("office.fixtureAgent") : t("office.accountableHuman")}，状态 ${entity.state}`,
       );
       if (entity.kind === "AGENT") {
         const image = document.createElement("img");

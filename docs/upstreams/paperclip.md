@@ -22,6 +22,13 @@ slots. Its specification retains approval, auth, issue checkout and budget
 invariants in Paperclip core. Plugin UI is same-origin trusted code, not a
 sandbox or security boundary.
 
+Headless evidence: `server/src/app.ts` defines `UiMode = "none" | "static" |
+"vite-dev"`; `server/src/index.ts` chooses `none` when `serveUi` is false;
+`server/src/config.ts` maps `SERVE_UI=false`; API routes are registered before
+optional static/Vite UI middleware; the startup banner labels this mode
+`headless-api`. Company OS therefore does not need Paperclip pages or their
+English copy. This finding is required to retain **ADOPT** status.
+
 ## Verification and risks
 
 - Lockfile install completed with pnpm 9.15.4 and lifecycle scripts disabled.
@@ -36,7 +43,8 @@ sandbox or security boundary.
   track master and avoid a fork.
 - Root lock configuration patches `embedded-postgres` and `acpx`, increasing the
   upstream-specific maintenance surface.
+- Company OS patch ledger: zero upstream-core patches at audit time. The 4–6
+  week version train and conflict budget are in `paperclip-patch-ledger.md`.
 
 Allowed reuse and prohibited brand/private-API reuse are defined in
 `docs/upstream-adoption-plan.md`.
-

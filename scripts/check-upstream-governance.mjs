@@ -11,6 +11,10 @@ const required = [
   "docs/adr/0007-paperclip-upstream-core.md",
   "docs/upstream-capability-matrix.md",
   "docs/upstream-adoption-plan.md",
+  "docs/i18n-terminology.md",
+  "docs/upstreams/paperclip-patch-ledger.md",
+  "compatibility-tests/README.md",
+  "compatibility-tests/paperclip-versions.json",
   "THIRD_PARTY_NOTICES.md",
   ...projects.map((project) => `docs/upstreams/${project}.md`),
 ];
@@ -22,6 +26,26 @@ for (const path of required) {
   } catch {
     errors.push(`missing governance file: ${path}`);
   }
+}
+
+try {
+  const manifest = JSON.parse(
+    await readFile(join(root, "compatibility-tests", "paperclip-versions.json"), "utf8"),
+  );
+  if (!/^v\d{4}\.\d+\.\d+$/.test(manifest.admitted?.tag ?? "")) {
+    errors.push("Paperclip admitted version must be a stable tag");
+  }
+  if (!/^[0-9a-f]{40}$/.test(manifest.admitted?.commit ?? "")) {
+    errors.push("Paperclip admitted version must use a full commit SHA");
+  }
+  if (manifest.admitted?.uiMode !== "none" || manifest.admitted?.serveUi !== false) {
+    errors.push("Paperclip must remain API-only for the Company OS customer surface");
+  }
+  if (manifest.trainCadenceWeeks?.minimum !== 4 || manifest.trainCadenceWeeks?.maximum !== 6) {
+    errors.push("Paperclip regular upgrade train must remain 4–6 weeks");
+  }
+} catch {
+  errors.push("Paperclip compatibility manifest is missing or invalid JSON");
 }
 
 for (const project of projects) {
@@ -58,6 +82,9 @@ for (const directory of ["core", "application", "ports", "web"]) {
     if (/paperclip(?:ai)?\/(?:paperclip|ui)|paperclip-logo|paperclip-wordmark/i.test(source)) {
       errors.push(`${relative(root, path)} contains prohibited Paperclip brand/source coupling`);
     }
+    if (/人类用户|审核机器人|提示词合同|思维链|模型真相|智能等级/.test(source)) {
+      errors.push(`${relative(root, path)} violates the Company OS Chinese terminology contract`);
+    }
   }
 }
 
@@ -68,4 +95,3 @@ if (errors.length) {
 } else {
   console.log("Upstream pins, decisions, notices, and no-direct-import rules are present.");
 }
-
