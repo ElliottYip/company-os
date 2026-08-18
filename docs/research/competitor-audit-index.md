@@ -15,7 +15,7 @@ not mean the repository audit is complete.
 - 49,389 tracked paths classified.
 - 2,637 auditable units generated.
 - Paperclip: 103 complete units, 1,457 pending units.
-- All non-Paperclip repository units are currently pending.
+- Agent Compiler: all 6 units complete. Other non-Paperclip units are pending.
 - BeanOS Blueprint: public architecture evidence only; no proven codebase.
 - Ten commercial products: public product-boundary research only.
 
@@ -29,7 +29,7 @@ not mean the repository audit is complete.
 | Provision | `535cdbd651a47bff3ef583b4450fe337326c89ad` | — | MIT | 1,023 | 71 | pending |
 | OpenSpawn | `30a70886e7e13a2f750c07fb9e464cb5743ded19` | — | MIT | 1,288 | 109 | pending |
 | Org Studio | `30cfffb52c1da347285472b01680c445907d0555` | `v0.4.1` | MIT | 659 | 39 | pending |
-| Agent Compiler | `81f1e81ba5d82ed38408bba09e0c104209c1d9cc` | — | no license grant | 9 | 6 | pending; copying prohibited |
+| Agent Compiler | `81f1e81ba5d82ed38408bba09e0c104209c1d9cc` | — | no license grant | 9 | 6 | complete; code REJECT, design REFERENCE ONLY, copying prohibited |
 | SynthOrg | `55cb552b98433df6fcc53c27c97daebbe39f3908` | `v0.9.4-dev.138` | BUSL-1.1; Apache-2.0 change 2029-07-08 | 10,481 | 46 | pending; source-available, copying prohibited |
 | DeepSeek Harness | `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca` | `dsh-v0.1.0-rc.7` | MIT | 7,466 | 330 | pending |
 | Cordis | `8cc9e33fab69e2d0476d126baaf2acb24e6a6ab4` | — | MIT | 112 | 33 | pending |
