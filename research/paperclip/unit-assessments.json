@@ -5403,18 +5403,23 @@
     },
     {
       "id": "application:server/__tests__/environment-custom-image-terminal-ws",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Loopback integration tests for an authenticated WebSocket-to-SSH terminal bridge used during custom execution-image setup.",
+      "dependencyDirection": "Vitest/ws client -> Node HTTP/WebSocket upgrade bridge -> real in-memory terminal session and connection registries -> mocked custom-image service and fake SSH connector/shell; no browser identity session, database or provider network is exercised.",
+      "keyDataModels": "Setup-session ID and expiry, opaque terminal-session ID/token with connect/session expiries, refreshed SSH username/host/port, terminal auth/input/output/resize/error/ready frames and active connection registry entry.",
+      "lifecycle": "Upgrade on a scoped path -> receive token in first frame -> validate and consume temporary credential -> refresh current setup/provider state -> parse restricted SSH payload and verify host key during connect -> bridge bounded session I/O -> close at setup expiry, error, client disconnect, revocation hook or server shutdown.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 8/8. The suite proves pre-refresh credential rejection, refreshed payload use, URL token hygiene by contract with the route test, terminal I/O/resize, delayed-connect handling, redacted errors and several cleanup paths. It omits host-key verdict behavior, Origin/subprotocol/auth timeout, malformed/large/high-rate frames, backpressure, concurrent/replayed clients, active revocation and distributed registry behavior.",
+      "designRationale": "Expose short-lived interactive setup without handing long-lived provider credentials to the browser or keeping stale connection material after terminal admission.",
+      "companyOsProblem": "Company OS may need governed human break-glass/setup access to local or cloud execution nodes while preserving credential secrecy, revocability and a responsibility-grade action record.",
+      "companyOsFit": "ADAPT the first-frame token, refresh-before-connect, restricted connection shape, separate admission/session expiries and deterministic teardown. Add origin/audience/device binding, single-use atomic consumption across nodes, mandatory host-key policy, active revocation, bounded/backpressured frames, structured error codes and command/session evidence linked to approved accountable-human maintenance work.",
+      "responsibilityConflict": "The bridge authenticates possession of a terminal token but does not establish the human, approved maintenance purpose, allowed commands/data, evidence retention or accountable owner. Interactive shell access must be a separately approved high-risk capability, not implied by environment administration.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-custom-image-terminal-ws.test.ts:1-565 (SHA-256 99d2e0027c0bbc11e587b594277ed980ebcef3a4d87985cdb068388259b2cfcd)",
+        "git history: bcac517f3b9255f7daaec7ca46f703906de2284b",
+        "2026-08-19 approved unsandboxed focused Vitest: 8/8 passed"
+      ],
+      "securityFindings": "HIGH host-authentication evidence gap: a verifier callback is passed but no trust-source or rejection behavior is tested. HIGH interactive-control gap: no Origin/auth timeout, frame limits, rate limiting/backpressure or active cancellation test. HIGH responsibility gap: bearer possession opens a shell without a tested approval/work/data-policy binding or session evidence contract. MEDIUM availability/consistency gap: in-memory admission and connection registries are not tested across workers or restarts."
     },
     {
       "id": "application:server/__tests__/environment-custom-images-service",

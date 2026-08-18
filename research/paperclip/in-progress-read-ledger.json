@@ -5887,6 +5887,32 @@
       "completionRequirements": [
         "Read lines 1-641 exactly once and assess custom image route authorization, environment/instance tenancy, setup credentials, build lifecycle, terminal exposure, validation, error contracts and test quality against Company OS execution-node images."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-custom-image-terminal-ws",
+      "path": "server/src/__tests__/environment-custom-image-terminal-ws.test.ts",
+      "lineCount": 565,
+      "sha256": "99d2e0027c0bbc11e587b594277ed980ebcef3a4d87985cdb068388259b2cfcd",
+      "linkedEvidence": {
+        "history": [
+          "bcac517f3b9255f7daaec7ca46f703906de2284b Add browser SSH terminal for custom image setup (#8911)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 565 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Eight loopback WebSocket tests cover invalid/expired token rejection, refreshed SSH payload validation, bidirectional terminal I/O and resize, connect-versus-session expiry, pending-connect resize coalescing, redacted errors and teardown on client, shell or server closure.",
+        "Authentication uses terminalSessionId in the URL and sends the bearer token in the first WebSocket frame, avoiding URL token leakage. Invalid/expired credentials are rejected before provider refresh, and unsupported refreshed payloads consume the terminal credential before any SSH connection.",
+        "The bridge discards originally minted SSH details and refreshes the live provider payload immediately before connect. It supplies a host-key verification callback to the SSH connector, but no test exercises callback acceptance/rejection, trusted-key source, TOFU/change handling or DNS/host substitution.",
+        "Input/output and resize frames work, and only the latest resize is applied after a delayed SSH connection. The suite does not test authentication deadline, Origin/subprotocol checks, frame/data size and resize bounds, rate limits, backpressure, output buffering, binary/invalid JSON, concurrent clients or terminal escape/audit policy.",
+        "An established terminal intentionally survives connect-token expiry and closes at setup expiry. That separates admission from session lifetime, but cancellation/revocation during an established session, clock jumps, refresh-state drift and multi-process store/registry consistency are not covered here.",
+        "Approved unsandboxed focused Vitest passed 8/8. Logs include setup and opaque terminal session IDs but not credentials; correlation, retention and immutable responsibility evidence remain outside the test."
+      ],
+      "completionRequirements": [
+        "Read lines 1-565 exactly once and assess WebSocket upgrade authorization, terminal-token lifecycle, SSH host trust, I/O controls, teardown, concurrency, secret exposure and test quality against Company OS governed human setup access."
+      ]
     }
   ]
 }
