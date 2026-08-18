@@ -4,6 +4,45 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/__tests__/companies-route-cross-company-authz",
+      "path": "server/src/__tests__/companies-route-cross-company-authz.test.ts",
+      "lineCount": 357,
+      "sha256": "05bfe9c57ce625915a6e5a20a31433d602cafa828fd4fbf756fed27b217d4449",
+      "linkedEvidence": { "history": ["916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 357 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The table-driven suite denies ten cross-company CEO Agent operations before service/activity side effects and covers board non-member/viewer/member/local-implicit/instance-admin access.",
+        "It deliberately allows a same-company CEO Agent to update branding, export full company data and apply imports; only archive/delete are board-only. It also deliberately allows any active board member—not only owner/admin—to archive, delete, export and apply imports.",
+        "Instance admin without target membership is correctly denied, while local_implicit instance admin bypasses membership. Tests omit accountable-human/approval/data-contract requirements, concurrency/idempotency, transaction rollback and audit completeness."
+      ],
+      "completionRequirements": ["Read lines 1-357 exactly once and assess cross-company list/get/update/delete, actor/member/admin authorization, responsibility ownership and test quality."]
+    },
+    {
+      "id": "application:server/routes/companies",
+      "path": "server/src/routes/companies.ts",
+      "lineCount": 1027,
+      "sha256": "d7b733d199ac37f61b5c3072b4c86a63ab2abe881cfee1cf49c37a1d6b74870b",
+      "linkedEvidence": { "history": ["5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1027 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-520 centralize company reads, timeline, portability export/fidelity and import orchestration. Board access is membership-based; same-company Agents are admitted only by the free-form role string ceo, with no accountable-human, approval or data-export contract.",
+        "Import accepts JSON or in-memory multipart/bare ZIP. The configurable upload ceiling can reach 1 GiB while decompression permits at least four times that ceiling; the request is fully buffered and parsed before async handoff, creating material memory/decompression denial-of-service exposure.",
+        "Async jobs are process-memory records, disappear on restart and may return 202 before target authorization/body validation. The client is told to treat a later 404 as soft success after observing running, so completion is ambiguous. Cloud actors lack the local duplicate-import guard; import mutation and activity logging are not shown as one transaction.",
+        "Lines 521-700 expose same-company safe export/import to the CEO Agent and every active board member. Replace/cross-company targeting is blocked, but there is no human approval, export classification, evidence digest or owner/admin role requirement; import mutation precedes separately fallible activity logging.",
+        "Company creation is cloud-disabled and instance-admin/local-implicit only, but creation, owner membership, default grants, activity and budget policy are sequential operations without an enclosing transaction. The default accountable principal falls back to the synthetic local-board value, conflating convenience identity with a verifiable human.",
+        "Lines 701-850 show company update/branding mutations followed by separate activity writes. Archive and hard delete require only an active board membership, not owner/admin, step-up authentication, approval, retention/legal-hold policy or deletion evidence.",
+        "Import job records retain full board results in process memory and key board jobs by user ID (or local-board); cloud job identity also trusts selected middleware-populated headers. Error state stores only a message and the lifecycle has no durable claim, idempotency key, cancellation, timeout, progress, result digest or restart recovery.",
+        "Lines 851-1027 confirm deduplication is only an in-process per-actor scan and a SHA-256 of JSON serialization, not a durable idempotency contract. Terminal responses duplicate raw English error messages across error/message/reason, and successful board jobs retain the entire import result until timer cleanup without explicit data minimization or stable error codes."
+      ],
+      "completionRequirements": ["Read lines 1-1027 exactly once and trace company CRUD, membership/responsible human, budgets, deletion, portability/import/export, data limits, approvals/audit and transaction boundaries."]
+    },
+    {
       "id": "application:server/routes/cloud",
       "path": "server/src/routes/cloud.ts",
       "lineCount": 118,

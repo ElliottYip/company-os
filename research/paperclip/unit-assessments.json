@@ -3561,18 +3561,23 @@
     },
     {
       "id": "application:server/__tests__/companies-route-cross-company-authz",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Table-driven authorization regression tests for company reads, settings, branding, lifecycle, export and import across Agent and board identities.",
+      "dependencyDirection": "Express/Supertest requests with fake actors exercise the real companies router while injected services and activity logging expose whether denied calls reach side effects.",
+      "keyDataModels": "Company membership, board roles, local_implicit and instance-admin actors, same-company CEO Agent, portability preview/apply and lifecycle operations.",
+      "lifecycle": "Reject cross-company CEO Agent access; allow selected same-company CEO Agent operations; distinguish non-member, viewer, active member, local implicit admin and non-member instance admin.",
+      "testAssessment": "Approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME passed 12/12. The denial matrix is useful and proves rejected calls stop before mocked service/activity side effects. It intentionally treats every active board member as authorized for archive, hard delete, export and import, and permits a CEO Agent to export/apply imports; no accountable-human approval, data contract, concurrency/idempotency, transaction rollback or audit-completeness cases exist.",
+      "designRationale": "Prevent company ID substitution and cross-company CEO escalation while preserving broad within-company board collaboration and an Agent-safe portability path.",
+      "companyOsProblem": "Company OS needs systematic negative authorization coverage across human, Agent, tenant and deployment-profile actors, but high-risk organization/data lifecycle actions must bind an accountable human, precise authority, approval and evidence.",
+      "companyOsFit": "REIMPLEMENT the operation-by-actor denial matrix and fail-before-side-effect assertions against Company OS commands. Replace Paperclip's positive cases with explicit owner/admin/data-steward roles, verified human responsibility, risk-class approval, export authorization and immutable action/data digests.",
+      "responsibilityConflict": "The suite codifies that an Agent can export and import company state without a matched human approval and that any active member can archive or permanently delete the company. Membership alone cannot establish legal, data-governance or organizational responsibility.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/companies-route-cross-company-authz.test.ts:1-357",
+        "full source SHA-256 05bfe9c57ce625915a6e5a20a31433d602cafa828fd4fbf756fed27b217d4449",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 12/12 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/companies-route-path-guard",
@@ -10109,18 +10114,30 @@
     },
     {
       "id": "application:server/routes/companies",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Monolithic company HTTP router covering listing, statistics, timeline, settings and branding, archive/hard delete, feedback traces, artifacts and full company portability preview/export/import with an in-memory async job facade.",
+      "dependencyDirection": "HTTP actors and Paperclip Cloud environment flow directly into access, company, activity, portability, agent, budget, artifact and feedback services plus database queries; route-local helpers own ZIP parsing, job state, deduplication and response projection.",
+      "keyDataModels": "Company and membership, synthetic local-board principal, default responsible user, free-form CEO Agent role, portability bundle/ZIP, import target/collision strategy, process-memory ImportJobRecord and activity entries.",
+      "lifecycle": "Authorize company actor, parse fully buffered JSON/ZIP, preview/export/import; create company then membership/grants/activity/budget sequentially; mutate settings/branding then log; archive/delete; run optional import jobs in process memory and expire terminal records after one hour.",
+      "testAssessment": "The focused authorization suite passed 12/12 and proves its intended access semantics. Source review found no route-level tests here for durable import recovery, stable errors, ZIP/memory exhaustion, human approval, lifecycle transaction rollback, deletion retention/legal hold, data classification or audit completeness.",
+      "designRationale": "Offer one pragmatic board API for organization administration and portable Cloud/self-hosted transfer, plus a narrowly reduced Agent-safe import mode and lightweight async UX without introducing a durable job subsystem.",
+      "companyOsProblem": "Company OS needs independent organization commands, human/Agent responsibility policy, governed export/import, durable migration jobs and evidence-rich audit across managed-cloud and self-hosted deployments.",
+      "companyOsFit": "REIMPLEMENT as bounded application commands and projections behind Organization, Identity, Authorization, Data Export, Durable Job, Event Store, Audit/Evidence and Approval ports. Retain the useful fail-closed ZIP parsing ideas, explicit safe-mode collision restrictions and cross-company tests, but do not copy this router or its Paperclip DTO/service coupling.",
+      "responsibilityConflict": "A free-form same-company ceo Agent can export/import; any active member can archive, hard-delete, export and import. The local-board synthetic principal can become default responsible owner. None of these high-risk actions requires a verified accountable human, purpose/data contract, exact approval binding or evidence/result digest.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/routes/companies.ts:1-1027",
+        "full source SHA-256 d7b733d199ac37f61b5c3072b4c86a63ab2abe881cfee1cf49c37a1d6b74870b",
+        "5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)",
+        "2026-08-18 approved unsandboxed focused companies authorization Vitest: 12/12 passed"
+      ],
+      "securityFindings": [
+        "multer.memoryStorage buffers ZIP uploads and the configurable limit can reach 1 GiB; decompression permits at least four times the upload limit, creating material memory and decompression denial-of-service exposure.",
+        "Async import returns 202 before deferred target authorization/body validation, stores jobs only in memory, loses them on restart and documents a later 404 as soft success after running was observed; completion and responsibility evidence are therefore ambiguous.",
+        "Local duplicate suppression is a per-actor Map scan plus hash of JSON serialization, not durable idempotency; Cloud tenant imports do not receive the same guard.",
+        "Company creation, membership, grants, activity and budget policy—and import plus activity—are sequential side effects without a visible enclosing transaction or outbox, allowing partial success and misleading failure state.",
+        "Terminal error responses repeat a raw English message in error, message and reason rather than exposing a stable structured code/parameters contract."
+      ]
     },
     {
       "id": "application:server/routes/company-import-paths",
