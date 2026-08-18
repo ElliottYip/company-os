@@ -5913,6 +5913,34 @@
       "completionRequirements": [
         "Read lines 1-565 exactly once and assess WebSocket upgrade authorization, terminal-token lifecycle, SSH host trust, I/O controls, teardown, concurrency, secret exposure and test quality against Company OS governed human setup access."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-custom-images-service",
+      "path": "server/src/__tests__/environment-custom-images-service.test.ts",
+      "lineCount": 868,
+      "sha256": "b7eaf47a794a59b1775fbf7bcf41108c6931984988bf5c832f83ffd40cb21d3a",
+      "linkedEvidence": {
+        "history": [
+          "17dde9d3f2a96adeae1576966d34a31866d0b1ff fix(sandbox): keep custom-image snapshots applied to config tests, probes, and saves (#9385)",
+          "b4815bf964a7cfd18bc5bd8f380323831205557d Scope environment custom images to instance environments (#8850)",
+          "8d9f9fd24086a3ae8ee7edc83f8368084be81277 Add reusable sandbox custom images (#8794)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 868 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in four non-overlapping ranges. Fifteen tests comprise twelve embedded-Postgres lifecycle/reconciliation cases and three pure fingerprint/matching cases; both sandboxed and approved unsandboxed runs passed the three pure tests while all twelve database tests were skipped.",
+        "The intended lifecycle is comprehensive: start/refresh/capture/promote/replace/rollback, reuse stored provider-company context, revoke locally before provider deletion, reject provider drift, cancel/timeout cleanup and reject a template from another environment. Actor attribution supports user or Agent fields but tests only a user and do not prove exclusivity, existence, authority or accountable-human linkage.",
+        "Provider-declared templateConfigBinding and templateIdentityPaths separate boot-source identity from runtime-only settings. Captures survive resource/timeout/lease edits, detach on base image/provider endpoint/binding changes and can be re-linked to a new non-identity fingerprint. This is a strong extensibility pattern but its trust rests on plugin manifests declaring every identity/security-relevant path correctly.",
+        "Runtime application is context-dependent: ordinary heartbeat/issue resolution applies an active matching template, while an ad-hoc Test probe uses the base image unless applyCustomImageTemplate is explicitly set. The recent fix and regression test expose a caller-completeness hazard; Company OS should make an explicit resolved execution-profile projection canonical for every probe/save/run path.",
+        "Credential paths are excluded so raw-to-Secret-reference rewriting and rotation do not detach a captured image. That is operationally useful only if credentials cannot affect image contents; interactive setup could bake credentials or data into the snapshot, which fingerprints, SBOM/signature/provenance and egress policy must address separately.",
+        "Provider lease/template refs and source refs are modeled as ordinary persisted strings, while fixtures label several as secret. The suite does not prove encryption/classification, retention, provider failure compensation, atomic single-active-template constraints, concurrent finish/rollback/cleanup, idempotency or crash recovery across database and plugin calls."
+      ],
+      "completionRequirements": [
+        "Read lines 1-868 exactly once and assess custom image setup/capture/promotion/rollback lifecycle, tenancy, provider leases, Secrets, fingerprints, cleanup, idempotency/concurrency, failure recovery and test quality against Company OS governed execution images."
+      ]
     }
   ]
 }

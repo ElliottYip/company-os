@@ -5423,18 +5423,24 @@
     },
     {
       "id": "application:server/__tests__/environment-custom-images-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed and pure tests for interactive custom-image setup, capture/promotion/replacement/rollback/disable, expiry cleanup, runtime template binding, base-config fingerprints and save-time reconciliation.",
+      "dependencyDirection": "Vitest -> custom-image/environment runtime services -> Drizzle/Postgres and mocked plugin worker; pure fingerprint helpers run independently, while actual sandbox provider, Secret resolver and execution node are not exercised.",
+      "keyDataModels": "Environment, plugin manifest/driver declaration, setup session/provider lease/connection summary, custom-image template/source fingerprint/status/lineage, runtime config binding, identity/excluded paths and user/Agent creator attribution.",
+      "lifecycle": "Create expiring interactive provider session -> refresh provider state -> capture immutable provider template -> promote and supersede prior active template -> apply only when provider/base identity matches -> re-link non-identity config changes or detach identity changes -> rollback/revoke/delete -> time out abandoned sessions.",
+      "testAssessment": "Both sandboxed and approved unsandboxed focused runs passed 3 pure tests and skipped all 12 embedded-Postgres tests. The source specifies broad lifecycle and reconciliation intent, but local evidence does not execute its database/plugin state transitions. Missing adversarial coverage includes concurrent promotion/rollback/cleanup, provider timeout/crash/partial success, database constraint conflicts, replay/idempotency, cross-company Secret context, actor integrity and stored-reference classification.",
+      "designRationale": "Preserve expensive reusable images across harmless runtime-setting edits while preventing a capture from masking an explicitly changed base image, provider endpoint or binding field; encapsulate provider differences in manifest-declared identity and binding metadata.",
+      "companyOsProblem": "Company OS needs governed, portable execution-image versions whose exact provenance and applicability remain stable across Connector runs, configuration edits, managed/local nodes and provider replacement.",
+      "companyOsFit": "ADAPT provider-declared template binding and identity paths plus explicit capture state/reconciliation. Make a single resolved execution-profile projection canonical for test/save/run; require schema-reviewed identity declarations, content digest, source/base digest, SBOM/signature/scanner policy, Secret/data contamination checks, transactional outbox/saga recovery, single-active constraints and responsibility/approval evidence.",
+      "responsibilityConflict": "A user or Agent can be recorded as creator, but template promotion/rollback/deletion is not bound to an accountable human, approved change purpose, data/tool scope or acceptance evidence. A captured image can embody durable code/data side effects beyond the setup session, so attribution alone is insufficient.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-custom-images-service.test.ts:1-868 (SHA-256 b7eaf47a794a59b1775fbf7bcf41108c6931984988bf5c832f83ffd40cb21d3a)",
+        "git history: 17dde9d3f2a96adeae1576966d34a31866d0b1ff, b4815bf964a7cfd18bc5bd8f380323831205557d, 8d9f9fd24086a3ae8ee7edc83f8368084be81277",
+        "2026-08-19 sandboxed focused Vitest: 3/3 pure tests passed; 12 embedded-Postgres tests skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 3/3 pure tests passed; 12 embedded-Postgres tests skipped"
+      ],
+      "securityFindings": "HIGH unverified state-machine gap: all twelve database lifecycle tests skip on this host. HIGH supply-chain gap: capture identity lacks tested image digest, SBOM/signature/scanner/provenance and contamination controls. HIGH responsibility gap: durable promotion/rollback/delete lacks approval and accountable-human binding. HIGH secret/data classification gap: provider lease/template/source references are persisted as ordinary strings and credential exclusion assumes credentials cannot affect captured content. MEDIUM manifest-trust/caller gap: plugin-declared identity paths and applyCustomImageTemplate callers determine whether the correct image executes."
     },
     {
       "id": "application:server/__tests__/environment-execution-target",
