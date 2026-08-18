@@ -4570,10 +4570,11 @@
         { "path": "cli/src/commands/client/plugin.ts", "completedRanges": [{ "start": 1, "end": 998 }] },
         { "path": "cli/src/commands/client/project.ts", "completedRanges": [{ "start": 1, "end": 228 }] },
         { "path": "cli/src/commands/client/prompt.ts", "completedRanges": [{ "start": 1, "end": 276 }] },
-        { "path": "cli/src/commands/client/routine-api.ts", "completedRanges": [{ "start": 1, "end": 154 }] }
+        { "path": "cli/src/commands/client/routine-api.ts", "completedRanges": [{ "start": 1, "end": 154 }] },
+        { "path": "cli/src/commands/client/run.ts", "completedRanges": [{ "start": 1, "end": 321 }] }
       ],
       "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/run.ts",
+      "nextFile": "cli/src/commands/client/secrets.ts",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4685,7 +4686,11 @@
         "routine-api.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It exposes Routine CRUD-like operations, revisions/restore, Run history/manual execution and public triggers with create/update/delete/Secret rotation/fire.",
         "This capability set surfaces an important unplanned Company OS problem: scheduled/event automation needs versioned definitions, trigger identity, Secret rotation, Run linkage and public ingress. But this CLI reduces all mutations to generic JSON, with no visible schemas, revision preconditions, idempotency/replay protection, risk classification, accountable-human approval or evidence chain.",
         "Revision restore and trigger deletion are unconfirmed; manual run and public trigger fire expose no idempotency key. Trigger payloads travel in argv, and Secret rotation prints the raw service result, so safe redaction/one-time Secret handling is not assured. Public fire still goes through the general credential/configured-origin client, blurring public ingress from authenticated control-plane operations.",
-        "Run limit is passed as an unvalidated string and list is otherwise unpaginated. Decision: REFERENCE ONLY for the automation lifecycle map pending schema/service/security audit; Company OS should model routines as versioned executable contracts through Connector, Approval and Evidence ports rather than reuse this generic command surface. Next file is run.ts."
+        "Run limit is passed as an unvalidated string and list is otherwise unpaginated. Decision: REFERENCE ONLY for the automation lifecycle map pending schema/service/security audit; Company OS should model routines as versioned executable contracts through Connector, Approval and Evidence ports rather than reuse this generic command surface.",
+        "run.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It provides Company/live Run projections, cancel, sequence-cursor events, byte-offset logs, linked Issues, workspace operations/logs and watchdog decisions.",
+        "Sequence-based event pagination and byte-offset log reads are useful durable-observability patterns. However numeric limits/offsets/minCount are passed as unvalidated strings, log reads have no client default maximum, and event/log text is printed raw. Agent/tool output can therefore inject terminal controls or expose Secrets, PII and proprietary data through scrollback/automation.",
+        "workspace-operations prints raw command and cwd, leaking execution details and local topology. Run cancellation has no confirmation, reason, revision or accountable-human approval. watchdog-decision accepts free-form decision values without shared schema validation here and carries no verified actor/evidence binding; snooze constraints are left to the service.",
+        "HeartbeatRun is a Paperclip-specific runtime shape, and this CLI does not expose Connector capability/version, short-lived runtime attestation, permission/data grants, approval pause/resume proof, artifact/evidence digests or result responsibility. Decision: NARROW/REFERENCE event cursor, bounded log and linked-operation ideas, while Company OS owns a vendor-neutral Run/Evidence projection. Next file is secrets.ts."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
