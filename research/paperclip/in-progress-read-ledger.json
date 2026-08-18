@@ -6294,6 +6294,32 @@
       "completionRequirements": [
         "Read lines 1-124 exactly once and assess HTTP error shape, stable codes, validation details, redaction/logging, internal error leakage and test quality against Company OS API/localization/security contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/execution-lock-orphan-cleanup",
+      "path": "server/src/__tests__/execution-lock-orphan-cleanup.test.ts",
+      "lineCount": 461,
+      "sha256": "bfb4d35d4a4af9dd88b238372bfc28180c7b9093e9debeff89d52471710cd3a6",
+      "linkedEvidence": {
+        "history": [
+          "d2ef767712e4a0aa931b2d011f5e9abb6a5fff68 fix(heartbeat): clear orphan execution locks on every issue when a run finalizes (#4318)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 461 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in three non-overlapping ranges. Six embedded-Postgres regression tests model a finalized heartbeat Run referenced by two or more issue execution/checkout locks, missing context issue identity, cross-company pathological references, retry pointer preservation and unrelated Run isolation.",
+        "The regression captures a real multi-row orphan-lock failure: finalizing one Run must clear every matching executionRunId and checkoutRunId within its company, not only contextSnapshot.issueId or the first match. The higher-fan-out case also expects a bulk operation rather than per-row cleanup.",
+        "Tenant scoping is explicitly tested: a company-B issue pathologically carrying company-A's Run ID survives company-A cleanup. The test comments acknowledge that the foreign key allows this invalid cross-company relationship, so application predicates are defense in depth rather than a database-enforced ownership invariant.",
+        "Checkout and execution pointers are correctly separated for retries: cleanup clears checkoutRunId tied to the finalizing Run while preserving executionRunId, agent key and timestamp already transferred to a distinct in-flight retry Run. Unrelated locks in the same company are also preserved.",
+        "The suite calls cancelRun as a representative finalization path and does not independently prove complete/failed/timed-out/crash/reaper paths, transaction atomicity with Run final status, concurrent acquisition versus cleanup, repeated finalization idempotency, stale-writer fencing, promotion behavior, wakeup ordering or cleanup after database interruption.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 6 tests because embedded PostgreSQL support was unavailable. An initial sandboxed attempt also failed before collection because the logger tried to create ~/.paperclip; setting a task-specific PAPERCLIP_HOME removed that unrelated write but did not enable the database tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-461 exactly once and assess orphan execution-lock discovery, terminal-run cleanup, issue/run ownership, race and idempotency behavior, tenant isolation, failure recovery and test quality against Company OS durable execution semantics."
+      ]
     }
   ]
 }

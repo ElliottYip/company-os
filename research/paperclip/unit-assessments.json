@@ -5688,18 +5688,25 @@
     },
     {
       "id": "application:server/__tests__/execution-lock-orphan-cleanup",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres regression tests for releasing every issue execution/checkout lock owned by a finalized heartbeat Run while retaining retry and unrelated Run ownership.",
+      "dependencyDirection": "Vitest -> heartbeat service cancelRun -> Drizzle/PostgreSQL heartbeat Runs and issue lock columns; no route, runtime driver, worker crash, distributed coordinator or external Agent is exercised.",
+      "keyDataModels": "Company, Agent, heartbeat Run with contextSnapshot.issueId, issue executionRunId/executionAgentNameKey/executionLockedAt and checkoutRunId, plus activity/event/wakeup cleanup fixtures.",
+      "lifecycle": "Seed queued/running Runs and issue lock shapes -> finalize one Run through cancelRun -> bulk-clear all matching locks scoped by company -> preserve pointers already moved to a retry or unrelated Run.",
+      "testAssessment": "The six tests are precise regressions for multi-row orphan cleanup, higher fan-out, missing context identity, cross-company isolation, retry preservation and unrelated Run safety. Sandboxed and approved unsandboxed focused Vitest both skipped 6/6 because embedded PostgreSQL support was unavailable, so none of the asserted database behavior was executed locally.",
+      "designRationale": "A Run can be attached to several issues through legacy wakeup fallback; finalization must therefore resolve ownership by the actual Run foreign-key columns rather than a single context issue, while separate checkout and execution columns protect an already-started retry.",
+      "companyOsProblem": "Company OS needs durable, tenant-safe Work execution leases that recover from worker/Run termination without stranding work or erasing a successor Run, and the evidence chain must distinguish original execution, retry and cleanup authority.",
+      "companyOsFit": "ADAPT the regression scenarios and bulk, owner-conditional cleanup invariant. Implement a first-class WorkLease/Attempt model with company-scoped relational integrity, compare-and-set transitions, fencing token or generation, expiry/heartbeat, terminal-reason evidence and transactional/outbox finalization; do not reproduce several mutable lock columns on Work as the canonical contract.",
+      "responsibilityConflict": "The test protects operational ownership but represents it as issue columns plus agent-name text, without accountable human, ResponsibilityContract, Approval binding, DataAuthorization, cleanup actor/reason or immutable evidence. A cross-company Run reference is schema-valid even though cleanup is scoped, which is too weak for Company OS responsibility integrity.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/execution-lock-orphan-cleanup.test.ts:1-461 (SHA-256 bfb4d35d4a4af9dd88b238372bfc28180c7b9093e9debeff89d52471710cd3a6)",
+        "git history: d2ef767712e4a0aa931b2d011f5e9abb6a5fff68",
+        "2026-08-19 sandboxed focused Vitest: collection failed before tests because logger attempted a forbidden default-home write",
+        "2026-08-19 sandboxed focused Vitest with task-specific PAPERCLIP_HOME: 6/6 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest with task-specific PAPERCLIP_HOME: 6/6 skipped"
+      ],
+      "securityFindings": "HIGH ownership-integrity gap: schema permits an issue in one company to reference a Run in another and relies on cleanup predicates to avoid cross-tenant mutation. HIGH concurrency gap: no CAS/fencing or cleanup-versus-acquire race is tested. HIGH recovery gap: only cancelRun is exercised, not crash, timeout, kill/reaper or partial-transaction recovery. MEDIUM audit gap: cleanup actor, cause and affected leases are not asserted as durable evidence. MEDIUM test portability gap: all database cases skipped on the audit host."
     },
     {
       "id": "application:server/__tests__/execution-workspace-policy",
