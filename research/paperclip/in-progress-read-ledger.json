@@ -5475,6 +5475,57 @@
       "completionRequirements": [
         "Read lines 1-111 exactly once and assess real-database enforcement of cross-work mutation containment, actor/run/work binding, tenant isolation, schema interaction and failure coverage."
       ]
+    },
+    {
+      "id": "application:server/__tests__/cursor-local-adapter",
+      "path": "server/src/__tests__/cursor-local-adapter.test.ts",
+      "lineCount": 405,
+      "sha256": "c7c4992d008cbb52ce8e2fca086349752afa9ac61a44173dfa8dff13a4ee6236",
+      "linkedEvidence": {
+        "history": [
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 405 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Nine parser/formatter tests cover raw and stdout-prefixed Cursor JSONL, session/summary/token/cost/error extraction, stale-session strings, assistant/thinking/user/tool/result projections and CLI formatting.",
+        "The fixtures demonstrate broader tool-event normalization than the Codex parser, including nested shell/read tool shapes and call IDs. Vendor event names/session IDs remain directly coupled to the adapter surface and must not enter Company OS core/application.",
+        "Raw thinking, user text, shell commands, working paths, command stdout, file contents, upstream errors and model/session IDs are intentionally projected to UI/CLI. The test command contains an authorization header variable and proves no classification/redaction/truncation or data-egress handling.",
+        "Cost is a floating USD number without rate-card/provenance/precision semantics. Missing coverage includes malformed/partial/oversized JSONL, unknown versions/events, duplicate/out-of-order calls, cancellation/timeout, secret-bearing content, ANSI/control injection, output bounds and evidence/work/approval binding.",
+        "Focused Vitest passed all parser/environment files together: 15/15 total; this file contributes 9 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-405 exactly once and assess Cursor event parsing/projection, vendor/session leakage, progress/evidence semantics, output safety, error mapping and test quality against Company OS Connector SDK."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/cursor-local-adapter-environment",
+      "path": "server/src/__tests__/cursor-local-adapter-environment.test.ts",
+      "lineCount": 302,
+      "sha256": "4f523bf784fce22df6904911c55a0d511624f51960c3e1ba4e49b73b428dedc3",
+      "linkedEvidence": {
+        "history": [
+          "f9cf1d2f6a28593c977b5151774a747718689b26 Add cursor sandbox support and fix SSH workspace sync (#4803)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 302 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Six real-process/filesystem tests cover cwd creation, default and explicit trust-bypass arguments, remote sandbox executable/PATH resolution, native Cursor auth discovery and missing-auth diagnostics.",
+        "Critical product behavior is explicit: the environment hello probe automatically adds --yolo by default, disabling trust checks during a nominal diagnostic. Supplying --yolo explicitly is also accepted. This is incompatible with Company OS safe-by-default execution.",
+        "The diagnostic creates missing absolute workspaces, again mixing read-only health inspection with mutation. Remote default command is rewritten to ~/.local/bin/cursor-agent and ~/.local/bin is prepended to PATH without tested binary provenance, ownership or integrity.",
+        "Native auth is accepted from cli-config.json authInfo and the user's email is copied into diagnostic detail, creating privacy/log exposure. Tests omit file owner/mode/symlink, token validity/audience/expiry, API-key redaction, command allowlisting/signature, probe timeout/failure/output limits and actual remote isolation.",
+        "Focused Vitest for parser plus environment passed 15/15; this file contributes 6 tests. Execution success does not mitigate the unsafe trust-bypass contract."
+      ],
+      "completionRequirements": [
+        "Read lines 1-302 exactly once and assess Cursor environment diagnostics, local/remote execution targets, command/auth/workspace validation, mutation, isolation, attestation and test quality against Company OS Connector execution-node boundaries."
+      ]
     }
   ]
 }

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/cursor-local-adapter",
+      "auditStatus": "COMPLETE",
+      "function": "Cross-surface parser/formatter tests for Cursor JSONL sessions, usage/cost, assistant/thinking/user/tool/result events and stale-session detection.",
+      "dependencyDirection": "One server test imports vendor-specific server, UI and CLI entry points from @paperclipai/adapter-cursor-local; static fixtures are parsed without process, persistence, authorization or Connector event storage.",
+      "keyDataModels": "Cursor session/model, assistant/user/thinking content, nested tool calls/results, token usage, floating USD cost, result subtype and vendor error strings mapped to Paperclip display events.",
+      "lifecycle": "Cursor emits raw or stdout-prefixed JSON lines -> server parser derives result/session/cost -> UI maps lines to display events -> CLI prints raw operational fields.",
+      "testAssessment": "The combined adapter/environment run passed 15/15; this parser file contributes 9 tests. Fixtures cover several vendor shapes well but omit streaming/framing failures, schema drift, resource limits, ordering/idempotency, cancellation and all redaction/classification/evidence boundaries.",
+      "designRationale": "Normalize Cursor's heterogeneous nested JSONL into consistent Paperclip runtime and operator projections while retaining session, cost and tool detail for debugging.",
+      "companyOsProblem": "Company OS needs vendor-private protocol adapters that emit one versioned Connector envelope with opaque external session handles, stable error codes, classified evidence references and exact work/authority attribution.",
+      "companyOsFit": "ADAPT the fixture breadth, stdout-prefix tolerance, tool call/result correlation and structured usage/cost extraction inside a Cursor-specific Connector package. Add version negotiation, bounds, redaction/classification, decimal cost provenance, event idempotency and work/contract/approval/evidence digests; never expose Cursor types to core/application.",
+      "responsibilityConflict": "Raw thinking, user text, commands, paths, stdout and file contents are projected without the initiating human, granted data/tool scope, approval or evidence-retention class. Session plus Agent summary is insufficient responsibility proof.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/cursor-local-adapter.test.ts:1-405 (SHA-256 c7c4992d008cbb52ce8e2fca086349752afa9ac61a44173dfa8dff13a4ee6236)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 combined focused Vitest: 15/15 passed"
+      ],
+      "securityFindings": "HIGH data-exposure concern: raw reasoning, user input, shell commands, working paths, command output, read-file content, upstream errors and session/model metadata flow to UI/CLI without redaction/classification/truncation tests. MEDIUM accounting concern: floating total_cost_usd lacks decimal precision and pricing provenance. Missing adversarial coverage includes secrets in command/output/path/file/error, ANSI/control injection, malformed/deep/huge JSON, partial chunks, duplicate/out-of-order tool events and stable error normalization."
+    },
+    {
+      "id": "application:server/__tests__/cursor-local-adapter-environment",
+      "auditStatus": "COMPLETE",
+      "function": "Real-process/filesystem environment diagnostic tests for Cursor workspace creation, trust-bypass probe arguments, remote executable resolution and credential-presence checks.",
+      "dependencyDirection": "Vitest -> Cursor adapter testEnvironment -> adapter-utils process runner, temporary filesystem and a local runner standing in for a remote sandbox; no Secret service, policy engine, authorization, signed binary registry or real remote provider.",
+      "keyDataModels": "Company/adapter/config, command/cwd/extraArgs/env, local/remote execution target, CURSOR_API_KEY/CURSOR_HOME cli-config authInfo and structured diagnostic checks.",
+      "lifecycle": "Diagnostic may create cwd -> resolves/spawns Cursor command locally or through runner -> automatically adds trust-bypass flag -> examines API-key/native auth -> returns health checks/status.",
+      "testAssessment": "All 6 environment tests passed as part of a 15-test combined run. They prove the intended behavior, including automatic --yolo, but omit adversarial filesystem/command/auth cases, safe failure, real sandbox isolation, timeout/output controls and attestation. Passing tests confirm rather than reduce the central safety conflict.",
+      "designRationale": "Make Cursor's noninteractive hello probe work without interactive workspace-trust prompts and locate its common remote installation/authentication conventions automatically.",
+      "companyOsProblem": "Company OS needs non-destructive, safe-by-default Connector diagnostics and short-lived execution-node attestations without silently weakening vendor trust or approval controls.",
+      "companyOsFit": "REJECT this diagnostic contract. Reimplement separate diagnose and explicitly authorized provision/probe commands; never auto-add --yolo or equivalent bypass. Require declared capabilities, sandbox policy, trusted executable provenance, scoped Secret leases, path ownership, timeout/output limits, PII-safe stable codes and a signed short-lived attestation.",
+      "responsibilityConflict": "A health check silently expands execution authority by bypassing trust, creates filesystem state and may expose the external account email. None of these effects is bound to an accountable human, approval, exact command digest or responsibility record.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/cursor-local-adapter-environment.test.ts:1-302 (SHA-256 4f523bf784fce22df6904911c55a0d511624f51960c3e1ba4e49b73b428dedc3)",
+        "git history: f9cf1d2f6a28593c977b5151774a747718689b26 and 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 combined focused Vitest: 15/15 passed"
+      ],
+      "securityFindings": "CRITICAL trust-boundary violation: testEnvironment auto-adds --yolo to a diagnostic command, deliberately disabling workspace trust by default. HIGH mutation-boundary violation: diagnosis creates arbitrary configured absolute cwd. HIGH supply-chain risk: remote default resolution prefers ~/.local/bin/cursor-agent and prepends that directory to PATH without provenance/owner/hash/signature checks. HIGH privacy/credential gap: native-auth discovery puts email into diagnostic detail and does not verify cli-config type/owner/mode/token validity; API keys are plain env fixture values. Missing tests cover malicious PATH/binary, symlink traversal, unauthorized workspace, probe side effects, network/tool activity, timeout/cancel/output bounds, redaction and attestation."
+    }
+  ]
+}
