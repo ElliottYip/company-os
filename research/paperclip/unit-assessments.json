@@ -3341,18 +3341,23 @@
     },
     {
       "id": "application:server/__tests__/codex-local-skill-sync",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests projecting desired Codex skills for ephemeral next-run injection, proving sync does not persist them into CODEX_HOME and normalizing a legacy flat skill reference.",
+      "dependencyDirection": "Agent/Company adapter configuration supplies CODEX_HOME and desired skill references; the Codex adapter returns canonical configured entries while deferring materialization to an isolated execution home.",
+      "keyDataModels": "Agent/company/adapter identity, CODEX_HOME, canonical repository/name/key, legacy flat key, ephemeral mode and configured state.",
+      "lifecycle": "List marks the canonical skill configured for next-run CODEX_HOME/skills injection; sync leaves the durable configured home untouched; legacy paperclip normalizes to the canonical key.",
+      "testAssessment": "Tests cover non-persistence, configured projection and backward-compatible key normalization. Missing are the materialization/cleanup path, isolated-home ownership, collision and traversal cases, immutable package provenance, policy approval, failed/cancelled run cleanup, version migration and runtime activation proof.",
+      "designRationale": "Avoid polluting a user's durable Codex home by injecting selected skills only into the isolated home prepared for an execution.",
+      "companyOsProblem": "Codex and other Connectors need consistent ephemeral capability leases without vendor-specific state becoming the control plane's source of truth.",
+      "companyOsFit": "ADAPT non-persistence and canonical-key migration tests. The Company OS owner remains a vendor-neutral SkillPackageManager and capability lease; Codex-specific code only materializes an approved digest into an isolated runtime and returns activation/cleanup attestations.",
+      "responsibilityConflict": "Configured state lacks responsible-human approval, Work/contract/data scope and executable digest. The test proves absence from one durable path, not destruction of every temporary copy or non-use after lease expiry.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/codex-local-skill-sync.test.ts:1-98",
+        "33353ce6 feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)",
+        "641eb449 [codex] Harden create-agent skill governance (#4422)",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/companies-route-cross-company-authz",
@@ -4773,18 +4778,22 @@
     },
     {
       "id": "application:server/__tests__/grok-local-skill-sync",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests projecting desired Grok skills as ephemeral workspace-mounted configuration and reporting unavailable desired skills without persistent installation.",
+      "dependencyDirection": "Agent/Company adapter configuration and available runtime skills enter the Grok adapter; it emits a normalized snapshot describing next-run workspace injection rather than mutating a user home.",
+      "keyDataModels": "Agent/company/adapter identity, desired and available skill keys, ephemeral mode, configured/missing state, external_unknown origin, warning and null target path.",
+      "lifecycle": "Available desired skills are marked configured for copying into executionWorkspace/.claude/skills on the next run; unavailable keys remain missing with a warning and no persistent target.",
+      "testAssessment": "The tests distinguish configured ephemeral state from unavailable state and assert no persistent target. Missing are actual next-run injection, cleanup after success/failure/cancel, workspace isolation, traversal/symlink handling, package digest/version/license/signature, duplicate names, size limits, policy denial and runtime activation evidence.",
+      "designRationale": "Fit Grok's runtime skill discovery by staging selected skills per execution instead of installing them into a durable host directory.",
+      "companyOsProblem": "Connector executions need lease-scoped tools that are materialized only for an authorized Work attempt and destroyed with verifiable cleanup.",
+      "companyOsFit": "ADAPT the ephemeral lifecycle as the preferred enterprise default, but implement it under the canonical Connector-node SkillPackageManager with immutable package identity, Work/data-policy binding, sandboxed materialization, cleanup receipt and runtime attestation.",
+      "responsibilityConflict": "Configured means only that a key is scheduled for copying; it does not prove who approved it, what code digest ran, which data it could access, that cleanup occurred or that the Agent actually loaded it.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/grok-local-skill-sync.test.ts:1-56",
+        "33353ce6 feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)",
+        "9eac727c [codex] Add skills CLI and catalog management (#6782)"
+      ]
     },
     {
       "id": "application:server/__tests__/health",
@@ -7162,18 +7171,22 @@
     },
     {
       "id": "application:server/__tests__/opencode-local-skill-sync",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem integration test listing a desired Paperclip skill as missing and persistently installing it as a symbolic link into the Claude/OpenCode shared user skill home.",
+      "dependencyDirection": "Agent/Company adapter configuration supplies HOME and desired skill keys; the OpenCode adapter inspects and mutates HOME/.claude/skills, linking a Paperclip-owned source into a vendor-shared runtime directory.",
+      "keyDataModels": "Agent/company/adapter identity, HOME, desired skill key, persistent mode, warning, missing/installed state and target symlink path.",
+      "lifecycle": "List reports the desired skill missing and warns that OpenCode shares Claude's skill home; sync creates a persistent symlink and reports installed state.",
+      "testAssessment": "The happy path verifies the surprising shared-home destination and actual symlink materialization. Missing are host-owner consent, path/symlink escapes, existing-file conflicts, permissions, concurrent sync, uninstall/rollback/update, immutable version/hash/license/signature, source disappearance, tenant isolation and proof that the runtime loaded the skill.",
+      "designRationale": "Make Paperclip skills visible to OpenCode through the vendor's currently shared Claude-compatible discovery directory without copying contents.",
+      "companyOsProblem": "Company OS needs one vendor-neutral skill/package lifecycle even when different Agent products share or reinterpret persistent host directories.",
+      "companyOsFit": "REFERENCE only. A Connector-node SkillPackageManager must be the canonical owner of signed install plans, explicit host consent, collision policy, rollback and activation attestations; an OpenCode driver may declare that its target is shared with Claude but must not independently own mutation policy.",
+      "responsibilityConflict": "Caller-controlled HOME is persistently mutated without an accountable host owner, approved package digest, data/tool grant or rollback receipt. A symlink and installed label do not prove authorization for any Work contract.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/opencode-local-skill-sync.test.ts:1-51",
+        "33353ce6 feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/paperclip-env",
