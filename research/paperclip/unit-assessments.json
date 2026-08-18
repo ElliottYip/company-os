@@ -4151,18 +4151,24 @@
     },
     {
       "id": "application:server/__tests__/codex-auth-reconciliation",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem regression tests for reconciling managed Codex homes with shared subscription auth or per-Agent API-key auth during server startup.",
+      "dependencyDirection": "Vitest -> startup reconciliation service -> stubbed Drizzle-shaped database plus real temporary filesystem; importing the service also initializes the server logger and filesystem path globals.",
+      "keyDataModels": "Agent id/company id, adapterConfig.env.CODEX_HOME, plaintext or secret-reference OPENAI_API_KEY, shared Codex auth.json, managed per-Agent auth.json and reconciliation counters.",
+      "lifecycle": "Server boot scans configured Agents -> classifies managed/external/unconfigured homes -> symlinks missing managed homes to shared auth or writes a plain API key -> later boots treat existing auth as already seeded.",
+      "testAssessment": "All 6 focused tests passed after redirecting PAPERCLIP_HOME to /tmp. The first sandbox run loaded zero tests because import-time logger initialization attempted to create ~/.paperclip logs. Coverage is useful for basic filesystem outcomes but uses a stub DB and omits tenant credential scope, rotation/revocation, permissions for plain-key writes, atomicity, concurrency and adversarial filesystem cases.",
+      "designRationale": "Repair stranded isolated Codex homes automatically after upgrades and preserve previously materialized secret-backed API-key auth rather than silently replacing it with shared subscription auth.",
+      "companyOsProblem": "Company OS needs Connector credential binding and startup reconciliation that preserve principal, tenant, audience, purpose, expiry and revocation boundaries while keeping secrets out of control-plane configuration.",
+      "companyOsFit": "REIMPLEMENT behind Secret/Data/Connector ports. Retain only the explicit classification, no-op idempotency and fail-closed missing-source test ideas. Use opaque credential references, per-Connector scoped leases, atomic materialization in a local execution node, rotation/revocation reconciliation and secret-free control-plane evidence; never share a vendor auth file across companies or Agents.",
+      "responsibilityConflict": "A shared auth.json symlink makes multiple Agents and companies act through the same external credential identity, weakening attribution and data authorization. Preserved regular files can outlive the approval or Secret binding that originally authorized them, and no accountable human or credential-use contract is recorded.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/codex-auth-reconciliation.test.ts:1-206 (SHA-256 a4734f3d406c1ecefdab8c5eed32897b5364c1d2cb616bb8241bc76a5b9359b3)",
+        "git history: b79f744a8d2694a0c8853c0367ec8b8664de0049 and 67ca8287e8214faa80399f507c9ab965f62882b9",
+        "2026-08-19 focused Vitest with temporary PAPERCLIP_HOME: 6/6 passed",
+        "2026-08-19 initial sandbox run: suite import failed before test collection because logger created ~/.paperclip/instances/default/logs"
+      ],
+      "securityFindings": "CRITICAL architecture conflict: all managed Agent homes can symlink to one shared Codex auth.json, crossing company/Agent credential and attribution boundaries. HIGH: a preexisting regular-file credential is accepted as already seeded without proving current Secret binding, rotation, revocation, expiry, owner or audience. HIGH: plaintext API keys are represented in adapter configuration and materialized locally; this test does not verify restrictive mode on that write path, atomic rename/fsync, log redaction or deletion. Missing cases include hostile preexisting symlinks/hardlinks, source replacement races, path traversal/ownership, concurrent reconciliation, partial writes, stale shared auth, credential downgrade/upgrade, cross-company negative assertions and audit evidence. Import-time logger writes also make the suite environment-dependent."
     },
     {
       "id": "application:server/__tests__/codex-local-adapter",

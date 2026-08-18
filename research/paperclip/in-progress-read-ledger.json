@@ -5201,6 +5201,33 @@
       "completionRequirements": [
         "Read lines 1-846 exactly once and trace pipeline definitions, Runs, steps, approvals, variables/Secrets, retries, cancellation, idempotency, concurrency, evidence, tenant/actor binding, output safety and tests against Company OS responsibility semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/codex-auth-reconciliation",
+      "path": "server/src/__tests__/codex-auth-reconciliation.test.ts",
+      "lineCount": 206,
+      "sha256": "a4734f3d406c1ecefdab8c5eed32897b5364c1d2cb616bb8241bc76a5b9359b3",
+      "linkedEvidence": {
+        "history": [
+          "b79f744a8d2694a0c8853c0367ec8b8664de0049 Fix Codex auth merge host-unusable fail closed (#9276)",
+          "67ca8287e8214faa80399f507c9ab965f62882b9 fix(codex-local): seed managed auth into isolated homes (#8403)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 206 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Six filesystem-focused tests use a stub database and real temporary directories to cover startup seeding, repeat-boot idempotency, missing shared auth, external/unconfigured homes, secret-reference placeholders, preserved resolved-key files and plaintext API-key writes.",
+        "The intended startup repair is operationally useful, but shared auth.json is symlinked into every managed Agent home across companies. That collapses credential tenancy and principal/audience scope even though filesystem homes are separated.",
+        "Secret-bound credentials already materialized as regular files are treated as permanently already seeded, so this suite does not prove revocation, rotation, expiry, ownership or reconciliation against the current Secret record.",
+        "Plaintext OPENAI_API_KEY values live in Agent adapterConfig fixtures and are written to auth.json; the suite does not assert file mode for this path, source permission/ownership, atomic replacement, symlink-race resistance, concurrent startup behavior or redaction.",
+        "External CODEX_HOME is correctly classified without mutation, missing source auth does not create a false success, and a secret-reference object is not stringified into credential material. These are useful fail-closed regression cases.",
+        "Focused Vitest initially loaded zero tests because module initialization tried to create ~/.paperclip logs outside the sandbox. With PAPERCLIP_HOME and instance redirected to /tmp, all 6 tests passed. Import-time global filesystem effects reduce hermeticity."
+      ],
+      "completionRequirements": [
+        "Read lines 1-206 exactly once and assess credential reconciliation, source/target ownership, failure modes, secret handling, idempotency, concurrency, portability and test quality against Company OS Connector and Identity boundaries."
+      ]
     }
   ]
 }
