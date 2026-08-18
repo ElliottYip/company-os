@@ -4790,18 +4790,26 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-model-profile",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for requesting the single built-in cheap model profile, resolving adapter and Agent runtime patches, merging Issue-level adapter overrides, normalizing wake context and classifying model-not-found as non-retryable configuration failure.",
+      "dependencyDirection": "Heartbeat reads the shared global profile-key enum, asks the adapter registry for profile definitions, merges adapter-private configuration bags with Agent runtime and Issue overrides, and records request/application/fallback metadata in Run context/result.",
+      "keyDataModels": "Global ModelProfileKey=cheap, adapter profile definition/label/source/config bag, Agent runtime profile enabled/configured state, Issue or wake-context request source, applied/fallback metadata, merged adapter config and configuration error code.",
+      "lifecycle": "Issue override wins over wake context; an advertised adapter profile is enabled by default unless Agent runtime disables it, and Agent profile fields shallow-override adapter defaults; final Issue adapter config shallow-overrides both; unsupported profiles silently use primary config with a fallback reason; wake payload is copied to context; model_not_found avoids generic retry.",
+      "testAssessment": "Six concise cases cover Codex preserving its primary model when cheap has no model patch, merge precedence, Agent customization, unsupported fallback, wake normalization and non-retryable model-not-found. Missing are authorization to choose/override models, typed capability and safety constraints, provider/model availability drift, data residency/export, regional endpoint, price/version/budget, context/tool limits, fallback consent, risk-class restrictions, approval-policy protection, secret/provider isolation, immutable selection evidence, dynamic profiles, concurrent config changes and end-to-end provider execution. The global domain currently permits only cheap and uses arbitrary adapter-private config objects.",
+      "designRationale": "Offer a small cost-oriented execution hint without hardcoding a replacement model for adapters that cannot safely provide one, preserve explicit Work overrides and avoid retry loops for missing configuration.",
+      "companyOsProblem": "Company OS needs vendor-neutral, policy-governed model selection across Chinese, global and enterprise-hosted providers, with explainable fallback, cost control and data/security constraints independent of adapter-specific configuration.",
+      "companyOsFit": "REFERENCE ONLY. Preserve the useful ideas of explicit request source, applied-versus-requested receipt and non-retryable configuration errors, but replace cheap and shallow config merging with ModelRequirement, ProviderCapability, ModelDeployment, SelectionPolicy and SelectionDecision contracts. Resolve through ModelProviderPort using Company/Work/risk/data-residency/budget/tool/context requirements; protect safety and approval policy from Work-level overrides; require explicit fallback policy and record provider/model/version/pricing/policy digests. Adapter-private fields remain inside the adapter translation layer.",
+      "responsibilityConflict": "Neither responsible human nor authorization policy participates in model selection. A wake payload or Issue can request a profile, Issue adapter config has highest precedence over fields such as approvalPolicy, and unsupported requests silently fall back to primary. The Run receipt lacks data authorization, risk, cost contract, policy version and accountable approver, so it cannot explain whether the selected model was legally or organizationally permitted.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-model-profile.test.ts:1-157",
+        "server/src/services/heartbeat.ts:1809-1814",
+        "server/src/services/heartbeat.ts:3426-3565",
+        "server/src/adapters/registry.ts:639-646",
+        "packages/shared/src/constants.ts:95-96",
+        "a3de1d764daebd16887875227aac5687916f9490 Add cheap model profiles for local adapters (#4881)",
+        "1426494ab86efdb44f891f5633a0f294e8cfc5bc fix(agents): disable cheap model profiles by default (#10019)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-plugin-environment",
