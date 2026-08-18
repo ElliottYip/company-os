@@ -5366,6 +5366,32 @@
       "completionRequirements": [
         "Read lines 1-132 exactly once and assess human-directory authorization, tenant visibility, identity fields, role/membership semantics, privacy, pagination and test quality against Company OS Organization/Principal boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/config-file",
+      "path": "server/src/__tests__/config-file.test.ts",
+      "lineCount": 114,
+      "sha256": "931505e991ebcb6f5d5fe63587222ac007420688e8c39874175252c10c73d66d",
+      "linkedEvidence": {
+        "history": [
+          "35132af1610c7a0435830e2d7cd834536514ffd4 fix(config): preserve extensions and guard invalid repairs (#11005)",
+          "68ba7ccae6c9247e96d81e4eb7e38be827149377 Fail loudly on invalid config files (#9041)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 114 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five focused tests cover absent files, malformed JSON, field-specific schema failure, a valid versioned configuration and preservation/warning of an unknown likely misspelling.",
+        "The $meta version/updatedAt/source envelope and path/field-specific diagnostics are useful provenance and operability patterns. Valid source is constrained to configure, making the supported writer explicit but leaving manual/GitOps ownership questions unresolved.",
+        "Unknown keys are preserved for forward extensions, but a likely typo such as server.ports is accepted while server.port silently defaults to 3100. A warning-only contract can launch with an unintended bind/port and is unsafe for known-key misspellings or security-sensitive namespaces.",
+        "The suite exercises synchronous reads only. It does not cover file size/depth, duplicate-key behavior, symlinks/permissions/ownership, TOCTOU, secret values/redaction, atomic writes/fsync/backup, concurrent readers/writers, schema migrations, rollback or managed-cloud versus self-hosted profile validation.",
+        "Focused Vitest passed 5/5. Error and warning contracts depend on English strings and expose the absolute configuration path rather than stable codes plus structured parameters."
+      ],
+      "completionRequirements": [
+        "Read lines 1-114 exactly once and assess configuration schema evolution, unknown-field preservation, validation/repair, write atomicity, deployment-profile ownership, secret handling and test quality against Company OS managed-cloud/self-hosted boundaries."
+      ]
     }
   ]
 }

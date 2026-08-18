@@ -4823,18 +4823,23 @@
     },
     {
       "id": "application:server/__tests__/config-file",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Focused tests for reading and validating the versioned Paperclip JSON configuration file while preserving unknown extension keys.",
+      "dependencyDirection": "Vitest -> server config-file reader -> synchronous local filesystem and process-global PAPERCLIP_CONFIG; no deployment service, Secret port, database or configuration writer.",
+      "keyDataModels": "Config metadata version/updatedAt/source, database mode, logging mode, server settings and arbitrary unknown extension keys.",
+      "lifecycle": "Resolve config path from environment -> read/parse JSON if present -> schema-validate known fields/defaults -> warn on likely unknown-key typo -> return known plus preserved extension data.",
+      "testAssessment": "Focused Vitest passed 5/5. The tests catch invalid JSON and known-field errors and intentionally protect extension preservation, but cover only synchronous reads. They omit security-sensitive file handling, resource limits, migrations, atomic writes, rollback, concurrency, secret policy and deployment-profile invariants.",
+      "designRationale": "Fail loudly for corrupted or invalid known configuration while retaining future/plugin extension fields so older binaries do not destructively strip them during read-rewrite workflows.",
+      "companyOsProblem": "Company OS needs one codebase with explicit managed-cloud and self-hosted profiles, independently versioned configuration, adapter extension namespaces, secret references, safe upgrades/rollback and stable diagnostic codes.",
+      "companyOsFit": "ADAPT the version/provenance envelope, strict known-field validation and namespaced extension preservation. Treat near-miss known/security keys as errors, not warnings; validate deployment-profile invariants separately, store only opaque Secret references, expose structured error codes, and use atomic locked writes with backup/migration/rollback tests.",
+      "responsibilityConflict": "Configuration changes can alter database, logging, bind and deployment behavior but this read contract records no accountable change actor, approval, digest, rollout or resulting attestation. Preserved unknown keys also lack an owning plugin/capability identity.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/config-file.test.ts:1-114 (SHA-256 931505e991ebcb6f5d5fe63587222ac007420688e8c39874175252c10c73d66d)",
+        "git history: 35132af1610c7a0435830e2d7cd834536514ffd4 and 68ba7ccae6c9247e96d81e4eb7e38be827149377",
+        "2026-08-19 focused Vitest: 5/5 passed"
+      ],
+      "securityFindings": "HIGH fail-open typo concern: server.ports is preserved with a warning while server.port defaults, so a security/availability-relevant intended setting may not take effect. HIGH file-trust gap: no tests cover symlinks, owner/mode, path containment, TOCTOU, oversized/deep JSON or secret-bearing values. MEDIUM lifecycle gap: no atomic write, fsync, lock, backup, migration, rollback or concurrent update coverage. Errors expose absolute paths and English messages rather than stable machine codes."
     },
     {
       "id": "application:server/__tests__/costs-service",
