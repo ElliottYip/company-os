@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/body-limits",
+      "auditStatus": "COMPLETE",
+      "function": "Configuration tests for global JSON, portable JSON and compressed Company-import upload ceilings, including operator override parsing and arithmetic-safe clamping.",
+      "dependencyDirection": "Environment configuration initializes HTTP parser/import constants; global and import-specific routes consume the limits before archive parsing, with no domain or tenant context in this unit.",
+      "keyDataModels": "10 MiB JSON ceiling, 64 MiB portable JSON ceiling, 1 GiB default ZIP upload, operator byte override and 64 GiB maximum clamp chosen so four-times derived guard math remains a safe integer.",
+      "lifecycle": "Startup uses fixed JSON limits and a one-GiB compressed import default. A positive integer environment override replaces it up to 64 GiB; invalid, fractional or nonpositive values fall back to default.",
+      "testAssessment": "Six deterministic cases cover defaults, real-world larger portable payloads, override acceptance/fallback and numeric-overflow protection. Missing are route-level streaming enforcement, Content-Length absent/lying/chunked requests, compressed/uncompressed ratio and entry-count limits, disk/memory quota, concurrent uploads, tenant/operator quotas, slowloris/timeouts, multipart overhead, cleanup on abort and validation that very large configured values are operationally safe.",
+      "designRationale": "Accommodate large real Company export packages and operator-specific deployments while preventing invalid configuration and JavaScript numeric overflow in derived archive guards.",
+      "companyOsProblem": "Company OS imports may contain sensitive organization, evidence and configuration data; availability and storage budgets must be enforced by profile, tenant and import plan rather than a single process-wide byte constant.",
+      "companyOsFit": "REIMPLEMENT as streaming staged import with small compressed ingress quota, independent uncompressed bytes/entry/depth/path/ratio limits, tenant reservation, rate/concurrency/time ceilings, quarantine storage and cleanup. Retain strict override parsing and safe arithmetic, but require explicit deployment policy for multi-gigabyte imports and emit capacity/audit events.",
+      "responsibilityConflict": "A one-GiB default and configurable 64-GiB compressed upload can exhaust shared control-plane resources before Company-level authorization or accountability is considered. Byte ceilings alone do not constrain ZIP bombs or ensure imported responsibility records and assets are validated atomically.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/body-limits.test.ts:1-55",
+        "5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)",
+        "c91a06232625d1939858fcdfbdc0c9b3a64a8296 [codex] Runtime control-plane fixes (#6380)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/board-chat-route-feature-flag",
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for an experimental local-only Conference Room board chat that persists conversation through an Issue, spawns a local assistant subprocess, streams output, terminates it on client disconnect and classifies only concierge-authored comments as assistant history.",
+      "dependencyDirection": "Experimental instance setting and deployment mode gate the route; board request and Issue/comment history feed a node child_process, whose output streams to the client and whose replies persist as a synthetic board-concierge user. Client connection lifecycle controls subprocess termination.",
+      "keyDataModels": "Feature flag, local_trusted/authenticated mode, Company/message request, standing Issue/comments, synthetic board-concierge author, human/Agent history role, subprocess stdin/stdout/stderr/exit and SSE disconnect.",
+      "lifecycle": "Disabled or non-local deployments fail before persistence. Enabled local requests validate Company/message, load/create board Issue history and spawn a process. Client abort sends SIGTERM and close releases the slot. Only comments with no Agent author and exact concierge user id become assistant turns, preventing Agent comments from impersonating prior assistant output.",
+      "testAssessment": "Five focused cases cover flag/mode ordering, structured disabled codes, missing-body admission, disconnect cleanup and history-role spoof resistance. Authorization is mocked to unconditional success. Missing are real actor/Company isolation, exact command/argument safety, environment/Secret exposure, input length/content, concurrency/queue bounds, child-process tree and forced-kill timeout, crash/restart, stderr/redaction, output framing/backpressure, persistence consistency, model identity/version, prompt injection and evidence that synthetic concierge output is never represented as a real Agent or human.",
+      "designRationale": "Experiment with a conversational board entry point using existing Issue history while containing an immature local subprocess feature behind both a flag and deployment-mode gate.",
+      "companyOsProblem": "Company OS may need an Agent Boss conversational entry, but every assistant must be a declared Connector/Agent runtime with capability, identity, evidence, cancellation and responsibility—not an implicit local child process hidden behind a UI route.",
+      "companyOsFit": "REJECT this runtime pattern for Company OS production. REFERENCE ONLY the early feature/mode gate, disconnect cancellation and non-impersonating history classification. Implement future chat through Connector SDK and AgentExecutionPort with explicit Demo versus real labeling, bounded streaming, durable Run/evidence, accountable requester and policy checks.",
+      "responsibilityConflict": "Replies persist under a synthetic user id and a locally spawned process is not modeled as an Agent/Connector principal with permissions, model/provider identity, execution attestation or accountable human. Route-level process spawning also bypasses the planned customer-local execution boundary.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/board-chat-route-feature-flag.test.ts:1-158",
+        "6f9801a46baf7c45a0091776e4a9b60c92938db5 feat(ui): NUX rework behind enableConferenceRoomChat experimental flag — capsule onboarding, conference-room chat, unified composer (#8000)"
+      ]
+    }
+  ]
+}
