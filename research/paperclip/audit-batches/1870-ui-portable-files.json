@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/lib/portable-files",
+      "auditStatus": "COMPLETE",
+      "function": "Small UI helper that distinguishes text/binary portability entries, infers image MIME from a short extension map, creates base64 data URLs and classifies image previews.",
+      "dependencyDirection": "UI-only code depends on the shared file-entry type and browser data-URL semantics. It has no core/domain ownership.",
+      "keyDataModels": "CompanyPortabilityFileEntry, extension-to-MIME map, nullable text/content-type/data-URL results.",
+      "lifecycle": "Prefer declared contentType; otherwise infer from filename extension; interpolate declared base64 into a data URL; classify image/* for preview.",
+      "testAssessment": "No direct focused tests were found. Invalid base64, conflicting extension/MIME, mixed-case/compound paths, SVG behavior, oversized content and malicious declared MIME are untested.",
+      "designRationale": "Give the import/export UI a minimal way to preview text and common image files without a server round trip.",
+      "companyOsProblem": "Company OS Web needs safe previews for untrusted migration artifacts and evidence without letting package metadata decide executable/renderable content semantics.",
+      "companyOsFit": "REIMPLEMENT in the independent Web adapter using server-verified MIME/digest/size metadata, an allowlisted safe raster preview path, bounded Blob/object-URL lifecycle and explicit download for unsupported content. Do not copy the data-URL interpolation helper.",
+      "responsibilityConflict": "A preview can visually misrepresent evidence when declared MIME or extension disagrees with bytes; no verified digest/source context is shown alongside the rendered artifact.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/lib/portable-files.ts:1-41",
+        "full source SHA-256 7ad3c845c9041a070fdeba2ed64d67069b376c50085f521fe2c26326f059a880",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "symbol search found no direct focused test owner"
+      ],
+      "securityFindings": [
+        "The package-supplied contentType is trusted ahead of filename and actual bytes.",
+        "Any declared image/* becomes previewable, including SVG, without a safe raster-only allowlist or sanitization contract.",
+        "Large base64 strings are duplicated into data URLs, creating browser memory amplification and no revocation lifecycle.",
+        "Base64 validity, decoded size and digest are not checked in this UI boundary.",
+        "Preview classification is presentation-only and must not be treated as evidence-type verification."
+      ]
+    }
+  ]
+}

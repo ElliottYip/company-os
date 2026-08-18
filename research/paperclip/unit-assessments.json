@@ -20924,18 +20924,30 @@
     },
     {
       "id": "application:ui/lib/import-job-watch",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Stores an accepted async company-import job handle in browser sessionStorage, recovers one job by company prefix after reload and throttles status polling while a tab is hidden.",
+      "dependencyDirection": "Browser-only bookkeeping has no domain dependency and relies directly on sessionStorage/document/timers. It assumes server semantics such as one live job per user and in-memory job expiry.",
+      "keyDataModels": "StoredImportJob with jobId and pauseAutomations; composite storage key from company ID and package name.",
+      "lifecycle": "Persist job handle; scan and repair malformed session entries; resume first matching job after reload; clear terminal/unknown jobs externally; wait three seconds repeatedly while hidden.",
+      "testAssessment": "No direct focused unit tests were found. CompanyImport page tests mock waitForNextImportJobPoll, so malformed storage, key collisions, multiple entries, hidden-tab waits, cancellation and cross-user/session cases are not owned here.",
+      "designRationale": "Let browser polling survive transient connection loss or page reload without making the import operation itself depend on the tab.",
+      "companyOsProblem": "Company OS needs durable, resumable high-risk operations with stable job/event APIs across managed-cloud and self-hosted deployments, while the Web stores only a non-authoritative cursor.",
+      "companyOsFit": "ADAPT the tiny reload-resume UX pattern, but use opaque server-issued operation handles scoped to deployment/tenant/user, durable server persistence, expiry/version fields, AbortSignal-aware waiting and realtime-with-poll fallback. Never trust pause or authority state from sessionStorage.",
+      "responsibilityConflict": "The stored handle contains no initiating human, reviewed plan/package digest, target company revision, approval identity or result evidence; pauseAutomations can be client-tampered and must not become authority input.",
+      "decision": "ADAPT",
+      "evidence": [
+        "ui/src/lib/import-job-watch.ts:1-98",
+        "full source SHA-256 78121bf6ea52d7ff3acfea44d8c78f2e37e28e08decbdcc8ab927278b73069f1",
+        "276ae3a75d1661b360f1ff30506942a6d0d0647c Harden company import: durable UI, async jobs, integrity guard, batched inserts (#10523)",
+        "symbol search: CompanyImport tests mock the polling wait; no direct focused test owner"
+      ],
+      "securityFindings": [
+        "sessionStorage is user-controlled; jobId and pauseAutomations are only shape-checked and cannot be authoritative.",
+        "Keys concatenate companyId/packageName with colons without encoding, permitting ambiguous collisions if package names contain delimiters.",
+        "Recovery returns the first matching entry and assumes one live job per user; stale/multiple jobs have no deterministic newest/version/expiry selection.",
+        "Handles are not scoped to deployment origin, authenticated user or job digest in their stored shape.",
+        "Polling wait has no AbortSignal and hidden tabs can remain in an unbounded loop until visible."
+      ]
     },
     {
       "id": "application:ui/lib/import-preflight",
@@ -21884,18 +21896,30 @@
     },
     {
       "id": "application:ui/lib/portable-files",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Small UI helper that distinguishes text/binary portability entries, infers image MIME from a short extension map, creates base64 data URLs and classifies image previews.",
+      "dependencyDirection": "UI-only code depends on the shared file-entry type and browser data-URL semantics. It has no core/domain ownership.",
+      "keyDataModels": "CompanyPortabilityFileEntry, extension-to-MIME map, nullable text/content-type/data-URL results.",
+      "lifecycle": "Prefer declared contentType; otherwise infer from filename extension; interpolate declared base64 into a data URL; classify image/* for preview.",
+      "testAssessment": "No direct focused tests were found. Invalid base64, conflicting extension/MIME, mixed-case/compound paths, SVG behavior, oversized content and malicious declared MIME are untested.",
+      "designRationale": "Give the import/export UI a minimal way to preview text and common image files without a server round trip.",
+      "companyOsProblem": "Company OS Web needs safe previews for untrusted migration artifacts and evidence without letting package metadata decide executable/renderable content semantics.",
+      "companyOsFit": "REIMPLEMENT in the independent Web adapter using server-verified MIME/digest/size metadata, an allowlisted safe raster preview path, bounded Blob/object-URL lifecycle and explicit download for unsupported content. Do not copy the data-URL interpolation helper.",
+      "responsibilityConflict": "A preview can visually misrepresent evidence when declared MIME or extension disagrees with bytes; no verified digest/source context is shown alongside the rendered artifact.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/lib/portable-files.ts:1-41",
+        "full source SHA-256 7ad3c845c9041a070fdeba2ed64d67069b376c50085f521fe2c26326f059a880",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "symbol search found no direct focused test owner"
+      ],
+      "securityFindings": [
+        "The package-supplied contentType is trusted ahead of filename and actual bytes.",
+        "Any declared image/* becomes previewable, including SVG, without a safe raster-only allowlist or sanitization contract.",
+        "Large base64 strings are duplicated into data URLs, creating browser memory amplification and no revocation lifecycle.",
+        "Base64 validity, decoded size and digest are not checked in this UI boundary.",
+        "Preview classification is presentation-only and must not be treated as evidence-type verification."
+      ]
     },
     {
       "id": "application:ui/lib/prefetchIssueComments",

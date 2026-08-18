@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/lib/import-job-watch",
+      "auditStatus": "COMPLETE",
+      "function": "Stores an accepted async company-import job handle in browser sessionStorage, recovers one job by company prefix after reload and throttles status polling while a tab is hidden.",
+      "dependencyDirection": "Browser-only bookkeeping has no domain dependency and relies directly on sessionStorage/document/timers. It assumes server semantics such as one live job per user and in-memory job expiry.",
+      "keyDataModels": "StoredImportJob with jobId and pauseAutomations; composite storage key from company ID and package name.",
+      "lifecycle": "Persist job handle; scan and repair malformed session entries; resume first matching job after reload; clear terminal/unknown jobs externally; wait three seconds repeatedly while hidden.",
+      "testAssessment": "No direct focused unit tests were found. CompanyImport page tests mock waitForNextImportJobPoll, so malformed storage, key collisions, multiple entries, hidden-tab waits, cancellation and cross-user/session cases are not owned here.",
+      "designRationale": "Let browser polling survive transient connection loss or page reload without making the import operation itself depend on the tab.",
+      "companyOsProblem": "Company OS needs durable, resumable high-risk operations with stable job/event APIs across managed-cloud and self-hosted deployments, while the Web stores only a non-authoritative cursor.",
+      "companyOsFit": "ADAPT the tiny reload-resume UX pattern, but use opaque server-issued operation handles scoped to deployment/tenant/user, durable server persistence, expiry/version fields, AbortSignal-aware waiting and realtime-with-poll fallback. Never trust pause or authority state from sessionStorage.",
+      "responsibilityConflict": "The stored handle contains no initiating human, reviewed plan/package digest, target company revision, approval identity or result evidence; pauseAutomations can be client-tampered and must not become authority input.",
+      "decision": "ADAPT",
+      "evidence": [
+        "ui/src/lib/import-job-watch.ts:1-98",
+        "full source SHA-256 78121bf6ea52d7ff3acfea44d8c78f2e37e28e08decbdcc8ab927278b73069f1",
+        "276ae3a75d1661b360f1ff30506942a6d0d0647c Harden company import: durable UI, async jobs, integrity guard, batched inserts (#10523)",
+        "symbol search: CompanyImport tests mock the polling wait; no direct focused test owner"
+      ],
+      "securityFindings": [
+        "sessionStorage is user-controlled; jobId and pauseAutomations are only shape-checked and cannot be authoritative.",
+        "Keys concatenate companyId/packageName with colons without encoding, permitting ambiguous collisions if package names contain delimiters.",
+        "Recovery returns the first matching entry and assumes one live job per user; stale/multiple jobs have no deterministic newest/version/expiry selection.",
+        "Handles are not scoped to deployment origin, authenticated user or job digest in their stored shape.",
+        "Polling wait has no AbortSignal and hidden tabs can remain in an unbounded loop until visible."
+      ]
+    }
+  ]
+}

@@ -4124,6 +4124,36 @@
         "The 81-line implementation uses UTF-8 JSON-aware entry/key estimation plus a generous fixed envelope, a hard-coded 56 MiB inline limit and regex-based blob removal. This is good UX estimation but not canonical admission. Removing all blobs is mislabeled as dropping attachments even when blobs back embedded evidence; limits are not negotiated with self-hosted operators. Focused Vitest passed 9/9 on 2026-08-19. Formal decision: ADAPT only as Web UX with server-owned limits and explicit structured loss review."
       ],
       "completionRequirements": ["Read both files exactly once, run the focused test and assess client-side archive preflight limits, error codes, trust boundary and whether UI logic improperly owns security policy."]
+    },
+    {
+      "id": "application:ui/lib/import-job-watch",
+      "path": "ui/src/lib/import-job-watch.ts",
+      "lineCount": 98,
+      "sha256": "78121bf6ea52d7ff3acfea44d8c78f2e37e28e08decbdcc8ab927278b73069f1",
+      "linkedEvidence": { "history": ["276ae3a75d1661b360f1ff30506942a6d0d0647c Harden company import: durable UI, async jobs, integrity guard, batched inserts (#10523)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 98 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-98 implement browser-only reload recovery using sessionStorage plus a hidden-tab polling delay. Storage failures degrade gracefully and malformed entries are removed, but stored values are merely shape-checked, composite keys are delimiter-ambiguous, the first matching job wins, and no user/deployment/expiry/version/digest is stored. Server jobs are explicitly memory-only, so this is not durable execution. No direct focused tests exist; the page suite mocks the wait helper. Formal decision: ADAPT only the non-authoritative UX cursor around a durable server operation/event contract."
+      ],
+      "completionRequirements": ["Read lines 1-98 exactly once and assess async job polling lifecycle, cancellation, timeout, auth/error semantics, reload durability and responsibility/result presentation."]
+    },
+    {
+      "id": "application:ui/lib/portable-files",
+      "path": "ui/src/lib/portable-files.ts",
+      "lineCount": 41,
+      "sha256": "7ad3c845c9041a070fdeba2ed64d67069b376c50085f521fe2c26326f059a880",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 41 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-41 expose text entries, trust declared MIME before a six-extension image map, interpolate binary base64 into data URLs and classify any image/* as previewable. No direct tests exist. Actual bytes/digest/decoded size are never checked, SVG and arbitrary declared image MIME are admitted, and data URLs duplicate potentially large payloads. Formal decision: REIMPLEMENT as bounded, verified raster preview/download logic in Company OS Web."
+      ],
+      "completionRequirements": ["Read lines 1-41 exactly once and assess browser download naming, MIME/object-URL lifecycle, binary handling and whether file export belongs in the independent Web adapter only."]
     }
   ]
 }
