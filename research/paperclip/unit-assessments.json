@@ -8009,18 +8009,24 @@
     },
     {
       "id": "application:server/__tests__/issue-list-assignee-filter-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL Issue-list tests spanning null/UUID Agent filters, compact recovery/liveness projections, private ETags, per-user bounded caching, request coalescing/storm telemetry and tenant-safe live-descendant counts.",
+      "dependencyDirection": "Vitest/Supertest -> Issue list routes, recovery/handoff services and compatibility grants -> Drizzle -> PostgreSQL Companies, memberships, grants, Agents, Issues, Runs and activity; an in-process response cache/coalescer sits above the service computation.",
+      "keyDataModels": "Company/user membership and grants; Issue assignee/status/parent/hidden fields; Agent/Run state and context; recovery action; successful-run handoff state; compact projection; ETag/cache key; live descendant count; request-storm diagnostic event.",
+      "lifecycle": "Authorize tenant member -> validate list filters -> query/project Issues plus recovery/Run/descendant state -> compute private ETag -> coalesce identical in-flight requests and cache short responses per user -> return 304/hit/miss metadata; valid-path resolution appends a handoff-resolved receipt.",
+      "testAssessment": "All 15 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage is broad and production-relevant, including real grants/storage, cache isolation, cycles and cross-company/hidden exclusion. Missing are role/grant-change invalidation, tenant-key collision, response-field authorization, pagination races, dual human/Agent filters, deep/wide graph limits, stale Run reconciliation, cache timing/eviction concurrency and accountable-human projections.",
+      "designRationale": "Make high-frequency board/inbox polling cheap and operationally diagnosable while surfacing enough recovery and descendant activity to avoid false alarms or invisible offscreen work.",
+      "companyOsProblem": "Agent Boss needs low-latency, tenant-safe workload projections for humans and Agents, including responsibility, approvals, evidence freshness, blockers and live execution, without leaking detail fields or allowing cache entries to outlive permission changes.",
+      "companyOsFit": "ADAPT per-principal private ETags/cache keys, bounded request coalescing, telemetry without query values, cycle-safe tenant-scoped descendant aggregation and explicit recovery receipts. Build role/policy-versioned projection keys with authorization-change invalidation; define minimal AgentBossWorkRow schemas by purpose/data class; include accountable human, approval/evidence/data-authority state and projection version; move large graph aggregation to durable read models rather than request-time recursion.",
+      "responsibilityConflict": "The current compact projection centers Agent assignment and liveness but lacks the accountable human, responsibility contract and approval/evidence state. It also returns description and billingCode, so a cached list can expose more business data than a minimal operational view requires, especially if grants change during cache lifetime.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-list-assignee-filter-routes.test.ts:1-1011 (SHA-256 93657593d086ee539a13319a460cdf3693af9c9c8f1175d3e1f6f717d7906db0)",
+        "git history: 5 commits from c2b41bb7cde7bceb9a55dcf251f0bdb60fdd89eb through 3fbab2e6dbe9e8215d7ce50f1b9e4c3826d6462f recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 15/15 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 15/15 skipped"
+      ],
+      "securityFindings": "HIGH verification gap: all real-database tests skipped. HIGH cache-authorization gap: per-user separation is tested, but role/grant/policy-version invalidation is not. HIGH data-minimization gap: compact rows include description and billingCode. MEDIUM graph/resource gap: no deep/wide fan-out or query-cost bound. MEDIUM liveness-integrity gap: stale/mismatched Run reconciliation is absent. MEDIUM workload gap: human assignee/accountable-human and approval/data authority projections are missing. POSITIVE: Company/hidden filtering, cycle termination, private ETags, bounded cache and query-value-free diagnostics are strong controls."
     },
     {
       "id": "application:server/__tests__/issue-liveness",

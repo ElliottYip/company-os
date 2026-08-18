@@ -7689,6 +7689,35 @@
       "completionRequirements": [
         "Read lines 1-126 exactly once and assess opaque/internal versus human-readable identifiers, tenant lookup scoping, enumeration/non-disclosure, normalization and Company OS stable ID/external identity requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-list-assignee-filter-routes",
+      "path": "server/src/__tests__/issue-list-assignee-filter-routes.test.ts",
+      "lineCount": 1011,
+      "sha256": "93657593d086ee539a13319a460cdf3693af9c9c8f1175d3e1f6f717d7906db0",
+      "linkedEvidence": { "history": [
+        "c2b41bb7cde7bceb9a55dcf251f0bdb60fdd89eb quiet missing-disposition warnings during live continuation (#10899)",
+        "6ec059ab4eb36faa3ad62c915095916c80829c1b suppress stale handoff alarms during live continuation (#9695)",
+        "176645187ce78a064e1650cc4f3325d198a4b020 request-storm polling and Issue-list coalescing (#9190)",
+        "2f94a66ba123b77ed9bd381e003d5e6bc8025d42 live descendant status in inbox rows (#8876)",
+        "3fbab2e6dbe9e8215d7ce50f1b9e4c3826d6462f orphan-sweep null-assignee filter regression (#8018)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-1011"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-520 exercise real PostgreSQL for unassigned filtering, compact rows, active recovery/handoff chips, live continuation detection, valid-path resolution receipts, private ETags and request coalescing. Despite the compact/detail distinction, description and billingCode remain in list rows.",
+        "Lines 521-780 prove per-user cache-key separation, short server-cache hits and bounds, storm telemetry that logs query keys/referer path but not values, UUID/null assignee validation and exact Agent filtering.",
+        "Lines 781-1011 add opt-in live-descendant counts that exclude hidden and cross-company descendants, include queued/running offscreen descendants and terminate safely on parent cycles.",
+        "Strong patterns are company membership grants, per-principal private caching, bounded/coalesced polling, value-minimized storm telemetry, cycle-safe tenant-scoped descendant projection and explicit recovery receipts. Gaps include role/grant/policy-version cache partition or invalidation, list-row data minimization, pagination/ordering consistency, Agent/user dual-assignee semantics, large/deep graph cost, stale Run reconciliation and accountable-human workload projections.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 15 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1011 exactly once and assess assignee/null filters, tenant/authorization scoping, list projections, live descendant/continuation state, alarm suppression, query/poll coalescing and Company OS Agent Boss workload/accountability views."
+      ]
     }
   ]
 }
