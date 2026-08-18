@@ -4573,7 +4573,8 @@
         { "path": "cli/src/commands/client/routine-api.ts", "completedRanges": [{ "start": 1, "end": 154 }] },
         { "path": "cli/src/commands/client/run.ts", "completedRanges": [{ "start": 1, "end": 321 }] },
         { "path": "cli/src/commands/client/secrets.ts", "completedRanges": [{ "start": 1, "end": 726 }] },
-        { "path": "cli/src/commands/client/skill.ts", "completedRanges": [{ "start": 1, "end": 150 }] }
+        { "path": "cli/src/commands/client/skill.ts", "completedRanges": [{ "start": 1, "end": 150 }] },
+        { "path": "cli/src/commands/client/skills.ts", "completedRanges": [{ "start": 1, "end": 600 }] }
       ],
       "sourceReadComplete": false,
       "nextFile": "cli/src/commands/client/skills.ts",
@@ -4702,7 +4703,11 @@
         "skill.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It exposes Company Skill list/read/file/create/import/project-scan/file-update/update-status/install-update/delete through a compact API wrapper.",
         "Importing Skills, scanning project workspaces and installing updates are executable-instruction supply-chain operations, yet generic JSON and empty POSTs expose no source commit/digest/signature, license, trust tier, reviewer, capability/tool/data grants, prompt-injection analysis, compatibility plan or accountable-human approval.",
         "Skill-relative file reads rely on the service to reject traversal. File update has no base revision/digest; install-update does not select or pin an exact version and has no rollback preview; delete has no confirmation. List/import/scan results have no pagination or bounded workspace scope visible here.",
-        "Decision: REFERENCE ONLY for lifecycle vocabulary. Company OS must treat Skills as versioned, provenance-bearing executable policy artifacts governed by Connector/Data/Approval boundaries, not ordinary mutable files. The larger skills.ts is a distinct next file and has not yet been read."
+        "Decision: REFERENCE ONLY for lifecycle vocabulary. Company OS must treat Skills as versioned, provenance-bearing executable policy artifacts governed by Connector/Data/Approval boundaries, not ordinary mutable files.",
+        "skills.ts exact range 1-600 provides a richer catalog/library/runtime lifecycle distinct from skill.ts: browse/search/inspect before install, install without Agent attachment, local/source import, project scan, update check/install, non-executing byte audit, pinned-origin reset/remove, and desired-skill runtime sync.",
+        "Several design choices are strong candidates: separate discovery from installation and Agent assignment; audit bytes without executing; distinguish soft findings from hard stops; preserve a pinned origin for reset; expose desired versus runtime snapshots; and require confirmation for reset/remove/clear.",
+        "Risk remains substantial: import accepts local/GitHub/skills.sh/arbitrary URL sources with no CLI preview or displayed commit/digest/license/trust grant; project scanning can report imported/updated content without a preceding confirmation; update --all with --force can bulk-discard local modifications/soft holds; and body files are read whole without size/data classification controls.",
+        "Agent sync supports destructive replace with any non-empty list but does not use the confirmation applied to clear. The interface assigns executable Skills directly to an Agent without visible per-Skill tool/data/network/Secret capabilities, accountable approver, rollout cohort, runtime attestation or evidence. skills.ts remains partial; next exact range is 601-1024."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
