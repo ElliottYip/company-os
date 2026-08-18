@@ -34,7 +34,12 @@ for (const group of ["dependencies", "devDependencies", "optionalDependencies", 
   }
 }
 for (const [name, command] of Object.entries(packageJson.scripts ?? {})) {
-  if (/paperclip/i.test(String(command))) errors.push(`package.json script ${name} invokes Paperclip`);
+  // Research commands inspect pinned upstream source and are deliberately kept
+  // outside every product/runtime root. They may name an audited competitor;
+  // lifecycle, verification, build and deployment commands may not.
+  if (!name.startsWith("research:") && /paperclip/i.test(String(command))) {
+    errors.push(`package.json script ${name} invokes Paperclip`);
+  }
 }
 
 const tsconfig = await readFile(join(root, "tsconfig.json"), "utf8");
