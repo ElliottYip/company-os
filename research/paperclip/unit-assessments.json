@@ -1327,18 +1327,34 @@
     },
     {
       "id": "application:cli/adapters/process",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Minimal CLI adapter registration for type `process`; trims and prints non-empty process stdout unchanged.",
+      "dependencyDirection": "The adapter depends on shared CLIAdapterModule and console, is registered centrally and has no process spawning, lifecycle, parser, capability declaration or focused tests. Its formatter duplicates the HTTP adapter behavior exactly apart from names/type.",
+      "keyDataModels": "Adapter type string `process`, raw stdout string and ignored debug flag.",
+      "lifecycle": "Receive process stdout text; trim it; drop empty text; print all remaining content verbatim.",
+      "testAssessment": "No focused tests were found for this 11-line unit. CLI no-emit TypeScript passed on 2026-08-19. Source behavior is trivial but all safety and structured-event behavior is absent rather than verified.",
+      "designRationale": "Offer a generic local-process fallback when provider output needs no specialized CLI formatting.",
+      "companyOsProblem": "Local enterprise Connectors may execute processes, but Company OS requires capability-declared, sandboxed, cancellable, timed and attested execution with structured progress/evidence rather than stdout-defined semantics.",
+      "companyOsFit": "REJECT as a Connector/runtime/evidence reference. If retained as internal diagnostics, put it behind execution-node authorization, server-side redaction/classification, bounded output and explicit untrusted/raw labels. Consolidate duplicate raw formatting instead of treating transport names as separate business abstractions.",
+      "responsibilityConflict": "Verbatim process output lacks Work/contract, accountable human, approved action, permissions/data, runtime identity and evidence digest; it cannot establish responsibility or safe result provenance.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/adapters/process/format-event.ts:1-4",
+        "SHA-256 5f0daeba330480b2f713d5294071f6fb8338a0fbc5637264197da57e5977b5e5",
+        "cli/src/adapters/process/index.ts:1-7",
+        "SHA-256 1c35616dd8469517b5b585fbfe966064238142e790f6250d461ccea1c1ab6e2e",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed",
+        "2026-08-19 no focused tests found by repository reference search"
+      ],
+      "securityFindings": [
+        "Arbitrary subprocess output is printed without Secret/token/path/private-session redaction, data classification or access policy.",
+        "Terminal escape/control sequences and log-forging content are not neutralized.",
+        "No output size/rate/backpressure/truncation policy exists at this presentation boundary.",
+        "The ignored debug flag cannot select privileged versus customer-safe projections.",
+        "No structured event version, sequence, timestamp, source, severity, evidence digest or completeness signal exists.",
+        "Exact duplication with the HTTP formatter creates drift risk without adding isolation or behavior."
+      ]
     },
     {
       "id": "application:cli/adapters/registry",
