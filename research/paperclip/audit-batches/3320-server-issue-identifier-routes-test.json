@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-identifier-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Embedded-PostgreSQL route test for case-insensitive read/update lookup by a company's alphanumeric human-readable Issue identifier under cloud-tenant membership grants.",
+    "dependencyDirection": "Vitest/Supertest -> Issue routes and compatibility grant seeding -> Drizzle -> PostgreSQL Company, membership and Issue records.",
+    "keyDataModels": "Opaque Issue UUID; Company UUID/prefix; numeric Issue number; display identifier; cloud user membership/role/status and derived grants; actor company scope.",
+    "lifecycle": "Create company and owner membership/grants -> store Issue UUID plus display identifier -> resolve lowercase/uppercase display alias inside actor company scope -> authorize read/update -> persist mutation by opaque record ID.",
+    "testAssessment": "The sole test skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Its intended positive path usefully exercises real grants and storage, but no negative tenant-collision, inactive-role, ambiguity, prefix migration, alias history, input hardening, enumeration or concurrency behavior is covered.",
+    "designRationale": "Provide memorable tenant-specific Issue references without making cloud users instance administrators or replacing the underlying stable UUID.",
+    "companyOsProblem": "Company OS needs stable opaque IDs across deployments/connectors plus convenient company-scoped human aliases that cannot leak, collide across tenants or become the identity contract when prefixes and organization structures change.",
+    "companyOsFit": "ADAPT the dual opaque-ID/display-alias model, case normalization and membership-scoped lookup. Add an immutable Alias registry with tenant namespace, canonical normalization/confusable checks, prefix-version history, unique constraints, authorization-safe 404, rate limits and explicit external-identity mappings; APIs/events/connectors continue to use opaque IDs canonically.",
+    "responsibilityConflict": "A mutable human identifier cannot be the durable subject of approval/evidence records. The test does not prove that resolution happens only within an authorized tenant or remains unambiguous after prefix changes, so Company OS must bind responsibility to opaque IDs and record aliases only as contemporaneous labels.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-identifier-routes.test.ts:1-126 (SHA-256 09d19e9979be8d6eaefaa21f9253e0649a876182a9f8391915cb955906bbf403)",
+      "git history: 606e74d11f77808880da39a9753d81e12d33d8c3 and d6bee62f02de058a4f12ac9a10dedf8c58c4b1d5 recorded in read ledger",
+      "2026-08-19 sandboxed focused Vitest: 1/1 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 1/1 skipped"
+    ],
+    "securityFindings": "HIGH verification gap: the only real-database test skipped. HIGH tenant-enumeration gap: cross-company collision and non-disclosure are untested. MEDIUM alias-integrity gap: prefix rename/history and ambiguous aliases are absent. MEDIUM input-hardening gap: Unicode/confusable/oversized identifiers and rate limits are untested. MEDIUM role gap: only an active owner is covered. POSITIVE: opaque UUID identity remains separate and cloud tenant access is membership-grant based rather than instance-admin based."
+  }]
+}

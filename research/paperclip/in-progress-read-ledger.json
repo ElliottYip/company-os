@@ -7665,6 +7665,30 @@
       "completionRequirements": [
         "Read lines 1-277 exactly once and assess feedback/vote identity, consent, data sharing, tenant isolation, Issue visibility, privacy lifecycle, auditability and Company OS training/evaluation governance."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-identifier-routes",
+      "path": "server/src/__tests__/issue-identifier-routes.test.ts",
+      "lineCount": 126,
+      "sha256": "09d19e9979be8d6eaefaa21f9253e0649a876182a9f8391915cb955906bbf403",
+      "linkedEvidence": { "history": [
+        "606e74d11f77808880da39a9753d81e12d33d8c3 company-scoped cloud tenants, never instance-admin (#7525)",
+        "d6bee62f02de058a4f12ac9a10dedf8c58c4b1d5 cloud tenant Issue identifier routes (#5196)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-126"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-126 use real PostgreSQL and company membership/default grants to prove a non-instance-admin cloud tenant owner can case-insensitively read/update an alphanumeric human identifier while the stored Issue retains an opaque UUID.",
+        "The single positive test does not cover duplicate prefixes across companies, cross-company lookup/non-disclosure, inactive membership, lower roles, prefix renames, alias history, Unicode/confusable input, enumeration/rate limits, ambiguity, stale aliases or authorization-before-resolution ordering.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped the sole test because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-126 exactly once and assess opaque/internal versus human-readable identifiers, tenant lookup scoping, enumeration/non-disclosure, normalization and Company OS stable ID/external identity requirements."
+      ]
     }
   ]
 }
