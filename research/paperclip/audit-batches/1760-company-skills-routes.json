@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/routes/company-skills",
+      "auditStatus": "COMPLETE",
+      "function": "Single Express Router exposing global Skill catalog reads and company-scoped Skill store, versions, files, comments, forks, rename, import/catalog/workspace discovery, audit/update/reset/delete and Skill test-input/template/run APIs, while composing access, source-aware policy, activity/telemetry, Issue and heartbeat services.",
+      "dependencyDirection": "Transport code depends directly on shared validation/telemetry/policy types and six server services. It constructs authorization resources, orchestrates Skill/Issue/heartbeat sagas and emits activity, so policy, application workflow, audit projection and HTTP concerns converge in one 1,410-line module.",
+      "keyDataModels": "Actor and access decision; SkillPolicy principal/action/resource/decision; CompanySkill/catalog provenance; file/version/fork/comment; test input/template/run; Issue assignment scope; heartbeat wake/cancel; activity/telemetry projection; origin hashes, drift and audit verdict.",
+      "lifecycle": "Authenticate and bind company; canonicalize stored/import sources; selectively ignore platform denials then evaluate Company Skill policy; validate HTTP input; call Skill services; for test runs create/cancel/hide Issues and wake/cancel heartbeat runtime; append activity and telemetry; return service DTOs directly.",
+      "testAssessment": "The implementation is covered by the previously audited route-contract suite, which passed all 53 tests outside the network sandbox, and by a real import-authz vertical integration test that was skipped because embedded PostgreSQL failed after five attempts. Strong tested/implemented patterns include authentication before sensitive parsing, company-bound Agent rejection, normalized-source policy matching, secret-safe remote URL errors, managed-root imports, actor/run/key attribution, detailed provenance/drift activity and layered tasks:assign for test runs. Coverage remains weak for cross-company opaque IDs across every endpoint, concurrency/idempotency, route-service partial failure, stable codes, resource/path limits, secret-redacted DTOs and responsibility/approval publication.",
+      "designRationale": "Centralize the full Skills Studio HTTP surface and use Company Skill policy as the primary governance layer, treating selected missing-grant/consent access denials as legacy rather than platform invariants, while retaining company boundary and low-trust restrictions.",
+      "companyOsProblem": "Company OS requires a versioned independent API with conjunctive authorization, explicit deny precedence, action/risk-specific commands, responsible-human and approval binding, exact resource/data/capability scope, stable codes, optimistic concurrency/idempotency and transactionally durable responsibility events across control-plane and Connector-node sagas.",
+      "companyOsFit": "REIMPLEMENT. Adapt the canonicalize-before-policy pattern, managed-root boundary, distinct install/update/reset/remove/test action vocabulary, layered task-assignment check, actor/run/key attribution, telemetry minimization, no-op activity suppression and before/after provenance fields. Do not copy the route module, DTO coupling, open-default override rules, route-owned sagas or separate best-effort activity writes.",
+      "responsibilityConflict": "The code deliberately ignores deny_no_grant, deny_missing_consent and deny_missing_grant before an optional Skill policy, enabling board users and Agents to self-extend capabilities under the open default. Board policy identity can be synthetic while activity identity is null. Most destructive/capability mutations lack responsible-human, approval, action digest and actor at the service boundary; activity is appended after mutation and can diverge.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/routes/company-skills.ts:1-1410",
+        "full source SHA-256 51f6542ff22f88087308f7f39f34f1be20ae051be4fd2bcc7f8f3d00444e6d6a",
+        "717684ad8f5f33fd3b6e8cf7a96aa7062d8ff29b Add project folder browsing to skill imports (#9930)",
+        "linked company-skills-routes.test.ts focused run: 53/53 passed outside network sandbox",
+        "linked company-skills-import-authz-routes.test.ts focused run: 1 skipped after embedded PostgreSQL failed five times; 0 passed"
+      ],
+      "securityFindings": [
+        "Critical: selected access-layer denials are explicitly ignored, allowing the optional Skill policy/open default to authorize a denied principal.",
+        "Catalog file reads are authentication-only and forward caller ref/path; company Skill/file/run reads rely mostly on broad company access and return service DTOs directly.",
+        "Many mutations omit actor at the service boundary; board actors without User IDs receive a synthetic policy identity but null audit attribution.",
+        "Skill/Issue/heartbeat and mutation/activity workflows are non-atomic route-managed sagas without durable outbox, idempotency key, optimistic concurrency or tested recovery.",
+        "Import activity stores raw source locators, potentially including sensitive local paths; test-run DTOs may expose raw Agent config and prompts.",
+        "Force update/reset is a boolean rather than an approved action digest; sharing and Agent capability reassignment lack risk-matched approval.",
+        "Before/after evidence is assembled with separate reads, creating TOCTOU risk and no authoritative command/result receipt.",
+        "Many errors are English-only and lack stable code/structured parameters; pagination and explicit response-size limits are not visible."
+      ]
+    }
+  ]
+}
