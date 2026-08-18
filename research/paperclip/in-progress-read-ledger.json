@@ -2209,6 +2209,45 @@
         "Focused Vitest passed 1/1 as part of a 7/7 three-file run."
       ],
       "completionRequirements": ["Read lines 1-83 exactly once and assess invalid-config repair safety, backup/rollback, lossy transforms, extension preservation, validation-before-write, operator confirmation and failure recovery."]
+    },
+    {
+      "id": "application:cli/__tests__/connect",
+      "path": "cli/src/__tests__/connect.test.ts",
+      "lineCount": 197,
+      "sha256": "b9ce4be1c8440994871f271c20f77d317dab9dad5402cca5b9985cfd3dbc8cca",
+      "linkedEvidence": { "history": ["70b1a910 Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 197 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Two interactive tests cover board and Agent personas: health check, company/Agent selection, board login request metadata, new API-key creation and versioned profile metadata writes.",
+        "Context stores token ID/name and persona/company/Agent metadata rather than raw returned token, a good separation signal, but the test does not assert where/how the new bearer token is persisted, its file/keychain permissions, redaction or retrieval.",
+        "The fixture explicitly uses plain HTTP and creates a board key with expiresAt null. TLS/origin trust, audience/scope, expiry/rotation/revocation, challenge/PKCE behavior and cross-company authorization are not covered because loginBoardCli is mocked.",
+        "If key creation succeeds but context or credential persistence fails, no compensating revoke/rollback is tested; retries/idempotency can create orphan or duplicate keys. Temporary context directories are not cleaned.",
+        "Agent-key issuance is performed through a board persona selecting an Agent, but no accountable-human responsibility, exact grant digest, Agent owner approval or evidence chain is asserted.",
+        "Focused Vitest passed 2/2 in this file as part of a 7/7 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-197 exactly once and assess deployment connection/profile setup, authentication source, TLS/origin/redirect trust, token persistence/redaction, company selection and failure/rollback behavior."]
+    },
+    {
+      "id": "application:cli/__tests__/context",
+      "path": "cli/src/__tests__/context.test.ts",
+      "lineCount": 133,
+      "sha256": "6b5cabd93da7f419a1c7be75669c6de068724e5d79cd99f2fd90fe4f072b49d7",
+      "linkedEvidence": { "history": ["70b1a910 Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 133 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Five tests cover missing-file defaults, profile upsert/current selection, undefined-as-preserve patches, version 1 to 2 read migration and whitespace normalization to an empty safe profile.",
+        "Profiles store API origin, company/persona/Agent metadata and only an environment-variable name for a key—not the raw Secret—supporting multi-deployment context separation in principle.",
+        "Plain HTTP origins are accepted and only simple local examples are used. Origin canonicalization/TLS, audience-company consistency, persona transition cleanup, explicit field clearing, duplicate profile names and stale Agent/company bindings are untested.",
+        "No file mode/ownership, atomicity/fsync, symlink, concurrent writer, corruption backup, schema-forward extension preservation or migration persistence/rollback is asserted. Temporary context directories are never removed.",
+        "Focused Vitest passed 5/5 in this file as part of a 7/7 two-file run."
+      ],
+      "completionRequirements": ["Read lines 1-133 exactly once and assess multi-profile context storage, origin/company/credential separation, precedence, permissions, atomicity, corruption/concurrency and managed/self-hosted relevance."]
     }
   ]
 }
