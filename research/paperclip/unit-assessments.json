@@ -5284,18 +5284,23 @@
     },
     {
       "id": "application:server/__tests__/document-annotations-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Intended PostgreSQL tests for revision-safe annotation creation, linked-comment cleanup, bounded review context and same-issue confirmation/wake projection.",
+      "dependencyDirection": "Vitest -> document annotation/document/plan-review/heartbeat services -> real Paperclip DB schema and embedded PostgreSQL when supported; no route authorization, Identity, legal retention or renderer.",
+      "keyDataModels": "Document/revision, annotation thread/comment/anchor snapshot, issue comment link, issue interaction target/result, review context limits and structured wake annotation deltas.",
+      "lifecycle": "Create thread against exact revision -> persist anchored review comments -> build bounded Agent context -> confirmations bind to same document revision -> later source-comment deletion removes linked comments and may resolve empty thread.",
+      "testAssessment": "All 11 tests skipped in sandboxed and approved unsandboxed runs, so none of the database concurrency/atomicity claims is executed evidence here. The intended transaction race, context bounds and cross-issue rejection are strong; anchor remap, tenancy, content safety, idempotency and retention semantics remain untested.",
+      "designRationale": "Keep review anchors consistent under concurrent document edits, prevent stale/cross-task feedback injection and send bounded exact revision feedback to Agents.",
+      "companyOsProblem": "Company OS needs immutable evidence review where human/Agent annotations remain tied to exact evidence revisions and responsibility decisions while context delivered to Agents is bounded, classified and tenant-safe.",
+      "companyOsFit": "ADAPT the transactional revision guard, exact confirmation target, cross-issue fail-closed behavior and bounded context accounting. Replace physical deletion with tombstone/legal-hold retention; add content hashes, author identity/responsibility, tenant checks, anchor-remap ambiguity handling, sanitization/classification and idempotent versioned resolve/reopen commands. Only include review content in Connector prompts under explicit data/tool policy.",
+      "responsibilityConflict": "Physically deleting linked annotation comments erases review evidence and authorship from the responsibility chain. Confirmation context binds a revision well but does not bind the full Work/Agent/permissions/data/approval/evidence/result contract or an accountable human eligibility decision.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/document-annotations-service.test.ts:1-803 (SHA-256 33d020dbacf53b72b9bc527edb43a24d24a55306f657ea7a855beeda9d6699f5)",
+        "git history includes e68188c438ae14bbd4e3542571ef38b27d55d2b1, 9aa065a38c71bd6a34d35249b1f1502ba46f5654, 1afa337841806e6037947bdb99951fae97c172f0, 17fa6fe0fe2c850f6cd22a270b3c032f6f02f371 and b7545823bec49b4a73c3813d8fb634f68fc84b48",
+        "2026-08-19 sandboxed and approved unsandboxed focused Vitest: all 11 embedded-PostgreSQL tests skipped"
+      ],
+      "securityFindings": "CRITICAL verification gap: all 11 persistence/concurrency tests skipped. HIGH evidence-destruction conflict: cleanup physically deletes annotation comments when a linked issue comment is deleted, with no tombstone/legal hold/retention certificate. HIGH prompt/data risk: annotation bodies enter wake payloads; tests cover length truncation but not classification, redaction, prompt injection or data-export policy. HIGH tenant/identity gap: cross-issue cases exist, but cross-company IDs, author membership and resolver authority are not tested. Missing anchor-remap ambiguity, Unicode selector, XSS/markdown, idempotency and concurrent resolve/reopen cases."
     },
     {
       "id": "application:server/__tests__/documents",

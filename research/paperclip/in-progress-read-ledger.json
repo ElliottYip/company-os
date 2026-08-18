@@ -5746,6 +5746,39 @@
       "completionRequirements": [
         "Read lines 1-406 exactly once and assess annotation route actors, tenant/document access, Agent wake boundaries, author/responsibility attribution, validation, errors, side effects and test quality against Company OS evidence/review collaboration."
       ]
+    },
+    {
+      "id": "application:server/__tests__/document-annotations-service",
+      "path": "server/src/__tests__/document-annotations-service.test.ts",
+      "lineCount": 803,
+      "sha256": "33d020dbacf53b72b9bc527edb43a24d24a55306f657ea7a855beeda9d6699f5",
+      "linkedEvidence": {
+        "history": [
+          "e68188c438ae14bbd4e3542571ef38b27d55d2b1 fix: upstream deployed document-comment, routine-annotation, workspace & board-polling fixes (#8536)",
+          "9aa065a38c71bd6a34d35249b1f1502ba46f5654 Make deleted-comment cleanup atomic",
+          "1afa337841806e6037947bdb99951fae97c172f0 Address Greptile deleted-comment feedback",
+          "17fa6fe0fe2c850f6cd22a270b3c032f6f02f371 Add deleted comment regression coverage",
+          "b7545823bec49b4a73c3813d8fb634f68fc84b48 [codex] Add document annotations and comments (#6733)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        { "start": 1, "end": 400 },
+        { "start": 401, "end": 803 }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-400 define 11 intended embedded-PostgreSQL tests. A carefully orchestrated transaction race proves annotation creation waits for a concurrent document write then fails 409 against the now-current revision, leaving no thread—excellent evidence-integrity intent.",
+        "Linked issue-comment deletion physically deletes annotation comments and resolves now-empty threads atomically; already-deleted sources cannot be linked and already-resolved threads are not double-reported. Physical deletion conflicts with Company OS immutable responsibility/evidence retention even if application referential cleanup is correct.",
+        "Plan review context includes only open threads, truncates long bodies with explicit totals/flags and preserves author plus anchor state/confidence/quote context. This is a strong bounded-context pattern for Agent wakes, but content remains untrusted prompt material and no data classification/redaction is tested.",
+        "Lines 401-803 bind accepted/rejected confirmation context to the exact same-issue document/revision, exclude cross-issue interaction/comment IDs and include same-issue annotation deltas for both planning and standard work modes. Empty rejection reason normalizes to null.",
+        "No anchor remapping/fuzzy ambiguity test appears despite anchor snapshot tables, and tenant-crossing IDs, selector bounds/Unicode normalization, content sanitization, author membership, resolution races, idempotency and legal hold are absent.",
+        "All 11 tests were skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL support was unavailable. The concurrency and atomic-cleanup properties are therefore design intent, not executed evidence here."
+      ],
+      "completionRequirements": [
+        "Read lines 1-803 exactly once and assess annotation anchor creation/remap, revision identity, author/resolve lifecycle, deletion/cleanup, transactions, concurrency, tenant isolation, content bounds and test quality against Company OS evidence integrity."
+      ]
     }
   ]
 }
