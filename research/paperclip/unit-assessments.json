@@ -4671,18 +4671,22 @@
     },
     {
       "id": "application:server/__tests__/folders-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL integration tests for Folder service CRUD, item filing, hierarchy invariants, reserved/system nodes, legacy-name healing, squatted-slug repair and concurrent system-folder creation/deletion.",
+      "dependencyDirection": "Tests exercise the service against real Drizzle schema and migrations through an ephemeral PostgreSQL database rather than mocks; they also import the shared slug schema for one boundary-validation assertion.",
+      "keyDataModels": "Company fixtures with defaultResponsibleUserId, Routine, CompanySkill and Folder rows including parentId/systemKey/path/depth, plus PostgreSQL advisory lock behavior.",
+      "lifecycle": "Each test seeds a Company, drives public service operations, inspects returned projections and database rows, then clears dependent tables. Concurrency cases race duplicate ensure operations and deliberately hold the same advisory lock while inserting a child before a queued delete rechecks state.",
+      "testAssessment": "ADAPT. The suite is high-value because it verifies actual unique/FK/transaction behavior and hostile legacy slug occupation, not just happy-path mocks. Company OS should retain equivalent invariant and concurrency tests, but add cross-tenant reads/writes, cross-kind/cross-tenant parent corruption, authorization, stable error codes, audit/outbox atomicity, item-move/delete races, bounded large-tree behavior and deployment-profile database compatibility. The slug-schema assertion belongs with transport/schema tests rather than this service suite.",
+      "designRationale": "Use production-like PostgreSQL behavior to prove that idempotency and hierarchy safety survive concurrent requests and legacy data rather than assuming application prechecks are sufficient.",
+      "companyOsProblem": "Company OS needs focused integration tests proving tenant boundaries and responsibility-safe projection mutations across managed-cloud and self-hosted storage profiles.",
+      "companyOsFit": "ADAPT the fixture pattern and adversarial concurrency scenarios, parameterized over Company OS Store adapters where feasible, with PostgreSQL-specific locking tests kept in the PostgreSQL adapter suite.",
+      "responsibilityConflict": "Fixtures satisfy Company responsibility requirements with a string defaultResponsibleUserId only; tests do not establish an authenticated HumanPrincipal, authorization decision, approval or evidence record for hierarchy changes.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/folders-service.test.ts:1-447",
+        "packages/db/src/nested-skill-folders-migration.test.ts:1-123",
+        "52aea902 feat: organize skills with nested folders and My Skills (#9633)"
+      ]
     },
     {
       "id": "application:server/__tests__/forbidden-tokens",
@@ -11727,18 +11731,24 @@
     },
     {
       "id": "application:server/services/folders",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Tenant-scoped Routine/Company Skill folder hierarchy service covering canonical path projection, counts, create/update/move/delete, item filing, protected system roots, personal/project folders, bundled categories and cleanup.",
+      "dependencyDirection": "The application service depends directly on Drizzle/PostgreSQL tables, shared transport-shaped input/output types and HTTP error factories; Folder routes and Skill/Routine workflows consume it. It does not belong in a responsibility-domain core.",
+      "keyDataModels": "Folder with opaque UUID, Company, kind, parentId, name/slug/systemKey/color/position and derived path/depth/itemCount; Routine and CompanySkill carry nullable folderId. Database partial unique indexes protect root and sibling slugs plus Company/kind/systemKey, while the self-reference is only parentId and does not enforce matching Company or kind.",
+      "lifecycle": "Most hierarchy mutations acquire a Company-wide PostgreSQL transaction advisory lock, re-read state under that lock, validate reserved roots/cycles/depth/sibling slug, mutate and rebuild derived views. Item moves are tenant-scoped but do not use the hierarchy lock. Folder deletion rejects children and relies on set-null foreign keys for filed items. Ensure helpers repair squatted reserved slugs and idempotently create system containers/children.",
+      "testAssessment": "Behavior is carefully implemented and the embedded-Postgres suite exercises normal CRUD, paths, depth/cycles, system-folder protection, squatting repair and real lock contention. Risks remain: PostgreSQL advisory locks make the implementation database-specific and Company-wide serialization is coarse; DB constraints do not guarantee parent Company/kind; list/path building and repeated isBundledFolder traversal load whole trees without pagination; service methods trust upstream schema validation; moveItem is outside the lock; no service test proves cross-Company isolation, cross-kind parent corruption resistance, deletion/item-move races, rollback behavior or large-tree bounds. Errors are English messages rather than stable codes.",
+      "designRationale": "Keep folders as mutable presentation organization while reserving deterministic roots for bundled, personal and project Skills; compute paths rather than persisting denormalized descendants; serialize hierarchy repair/mutation to make application validations race-safe.",
+      "companyOsProblem": "Company OS needs optional tenant-scoped hierarchical projections for FDE templates, Connector capabilities and office/workspace navigation, but folders must never become the authority for accountable ownership, permissions, evidence or responsibility.",
+      "companyOsFit": "ADAPT the invariants and tests: opaque IDs, scoped sibling uniqueness, derived paths, non-destructive deletion, protected system nodes, deterministic/idempotent ensure helpers and explicit cycle/depth checks. Re-express behind Company OS storage/transaction ports, add composite tenant/kind parent integrity or deferred constraint validation, stable error codes, bounded traversal and authorization/audit events. Do not copy Paperclip Routine/Skill coupling, PostgreSQL lock key, shared userId systemKey semantics or HTTP errors into Core.",
+      "responsibilityConflict": "A personal folder is keyed directly by an arbitrary userId and system folders encode project/user identity in presentation metadata; neither establishes a HumanPrincipal, accountable owner or authority. Folder mutation has no intrinsic authorization or evidence emission, so treating this hierarchy as an organization/permission tree would bypass Company OS responsibility contracts.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/folders.ts:1-619",
+        "packages/db/src/schema/folders.ts:15-54",
+        "packages/db/src/migrations/0174_folders.sql:1-46",
+        "packages/db/src/migrations/0175_nested_skill_folders.sql:1-232",
+        "52aea902 feat: organize skills with nested folders and My Skills (#9633)"
+      ]
     },
     {
       "id": "application:server/services/git-credentials",
