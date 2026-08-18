@@ -2216,18 +2216,23 @@
     },
     {
       "id": "application:server/__tests__/agent-cross-tenant-authz-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for cross-Company Agent lifecycle/key isolation and the guarded human action that clears an Agent error only when its organization chain is healthy.",
+      "dependencyDirection": "Agent routes first resolve the target Agent, apply resource-hiding Company access checks and action permission decisions, then call AgentService/HeartbeatService; key revocation additionally resolves and matches the key's Agent. Error recovery reads organization-chain health and appends an ActivityLog event after mutation.",
+      "keyDataModels": "Board/Agent actor, Company-scoped Agent, Agent API key and owning Agent id, Agent status/pause state, organization-chain health/reason/guidance and error-cleared audit action.",
+      "lifecycle": "An outsider receives the same Agent-not-found 404 for pause, error clear, key list/create/revoke and no protected mutation runs. A key belonging to another Agent is also hidden and not revoked. Agent principals cannot clear errors. A Board user can clear an error Agent and emits a distinct audit action, but invalid reporting chains and non-error state return 409 without mutation or success audit.",
+      "testAssessment": "Five route cases cover multiple cross-tenant operations, key-to-Agent ownership, principal type, successful recovery audit and two conflict conditions. Missing are real authz middleware/service integration because the authorization module is replaced, explicit permission variants, local_implicit blast radius, anonymous/instance-admin behavior, concurrent status changes, idempotency, active-run cancellation, key list content leakage, audit-write transaction failure, repair evidence and responsibility acceptance after recovery.",
+      "designRationale": "Close resource-existence oracles before sensitive Agent/key operations and prevent operational recovery from bypassing an invalid human/Agent reporting chain, while making successful manual recovery visible in audit history.",
+      "companyOsProblem": "Company OS must hide tenant resources, bind every credential to the exact Agent/Connector instance and require a valid accountable-human chain before a failed Agent can resume effectful work.",
+      "companyOsFit": "ADAPT the indistinguishable 404 pattern, deny-before-side-effect order, key ownership check, human-only recovery and organization-chain gate. Model recovery as a versioned command with expected Agent state, remediation reason/evidence, responsible human, optional risk-based approval, active-run disposition and immutable decision/result receipt. Verify the same matrix through the production IdentityPort/authorization adapter rather than mocked route helpers.",
+      "responsibilityConflict": "The clear-error action proves only that a Board actor clicked recovery while the current org chain was syntactically valid. It does not show that the underlying failure was repaired, that the accountable human accepted resumed risk, or that permissions/data contracts and outstanding runs were revalidated. local_implicit access bypasses ordinary Company membership in the test helper.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-cross-tenant-authz-routes.test.ts:1-535",
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "2d1b531a49a94e1f74f3a4c7bfdb24c5ea209fa1 [codex] Add clear-error agent action (#7695)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 [codex] Add agent permissions and controls plan (#6386)"
+      ]
     },
     {
       "id": "application:server/__tests__/agent-instructions-routes",
