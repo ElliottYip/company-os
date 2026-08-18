@@ -5016,18 +5016,22 @@
     },
     {
       "id": "application:server/__tests__/health",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Health endpoint tests for DB reachability, build/cloud metadata, backup warnings/redaction, authenticated detail and initial-admin bootstrap state.",
+      "dependencyDirection": "Express/Supertest calls the real health router with fake DB queries, runtime environment and temporary backup/failure files.",
+      "keyDataModels": "Health status/version/commit/serverInfo/cloud projection, database backup warning, deployment mode/exposure, bootstrap status/invite and actor type.",
+      "lifecycle": "Probe health as local, anonymous authenticated or authenticated board caller; classify DB failure, backup degradation and bootstrap readiness.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 15/15 with PAPERCLIP_HOME isolated under /private/tmp. Redaction and DB 503 cases are strong; Agent detail, dev restart authorization, timeouts/load, corrupt backups, readiness semantics, cleanup and schema compatibility are absent.",
+      "designRationale": "Serve deployment probes and operator diagnostics from one route while reducing anonymous metadata leakage in authenticated/public mode.",
+      "companyOsProblem": "Company OS needs distinct, stable liveness/readiness/degraded/operator diagnostics across managed-cloud and self-hosted profiles without exposing responsibility or infrastructure data.",
+      "companyOsFit": "ADAPT the anonymous redaction and stable backup warning-code tests. Add separate endpoint contracts, Agent-vs-human permission cases, bounded dependency probes, corruption/restore evidence, rate behavior and mutating-control denial tests.",
+      "responsibilityConflict": "The tests equate any authenticated board/Agent with full operational visibility and do not bind remediation or restart authority to an accountable human.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/health.test.ts:1-547",
+        "full source SHA-256 5ee55dbd437c5081bccc2c49e9c8d9e1c7d2af321c66306a1f942761b1ec2cd0",
+        "2026-08-18 approved unsandboxed focused Vitest with isolated PAPERCLIP_HOME: 15/15 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/health-dev-server-token",
@@ -10323,18 +10327,23 @@
     },
     {
       "id": "application:server/routes/health",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Combined health/diagnostics router plus a file-mediated dev-server restart control endpoint.",
+      "dependencyDirection": "Public/actor request context drives database probes and projections; filesystem backup/dev status and instance settings feed diagnostics; POST writes a restart request.",
+      "keyDataModels": "Actor/deployment exposure, DB/bootstrap state, server/git/cloud metadata, backup health warnings, active runs/dev-server state and restart request.",
+      "lifecycle": "Authorize detail level, probe dependencies, compute bootstrap/dev/backup projections, redact or expose full response; separately accept and persist a restart request.",
+      "testAssessment": "The reviewed health suite passes but leaves Agent overexposure, control authorization, unbounded dependency work and readiness/degraded behavior unproven; separate pending dev-server tests will be audited independently.",
+      "designRationale": "Give load balancers, Cloud orchestration, developers and authenticated operators one convenient introspection surface.",
+      "companyOsProblem": "Company OS needs low-cost public probes, protected diagnostics and accountable control actions for cloud/local control and execution planes.",
+      "companyOsFit": "REFERENCE_ONLY. Split pure constant-time liveness, bounded readiness, permissioned operator diagnostics and separately authorized/audited restart commands. Agents must receive only capability-scoped projections, not board-equivalent infrastructure details.",
+      "responsibilityConflict": "Any board actor can request dev-server restart and any authenticated Agent receives full operational details. Neither visibility nor process mutation is linked to a responsible human, approval, work/action digest or evidence.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/routes/health.ts:1-284",
+        "full source SHA-256 9bfc08b73aa75532788eb947bdf9472ee7b6689baab6ffb1f2dd2d768db8506f",
+        "5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)",
+        "existing completed application:server/index.ts assessment covers composition/scheduled backup startup without rereading source"
+      ]
     },
     {
       "id": "application:server/routes/inbox-agent-policy",

@@ -4,6 +4,43 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/__tests__/health",
+      "path": "server/src/__tests__/health.test.ts",
+      "lineCount": 547,
+      "sha256": "5ee55dbd437c5081bccc2c49e9c8d9e1c7d2af321c66306a1f942761b1ec2cd0",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 547 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Fifteen health route tests cover basic/version/git metadata, database failure 503, cloud public metadata, backup stale/failure warnings, anonymous redaction, authenticated detail and bootstrap status.",
+        "Anonymous authenticated-mode tests explicitly require redacted backup warning messages and omit paths/serverInfo, while local_trusted returns full source metadata and raw backup paths/messages.",
+        "Backup fixtures are not removed. No tests cover backup corruption/zero size/future mtime/symlink, DB probe timeout, health abuse/rate limiting, Agent actor detail, malformed runtime environment or stable schema compatibility.",
+        "Approved unsandboxed focused Vitest with PAPERCLIP_HOME isolated under /private/tmp passed 15/15."
+      ],
+      "completionRequirements": ["Read lines 1-547 exactly once and assess public/internal health redaction, backup warnings, deployment/auth state, liveness/readiness semantics and test quality."]
+    },
+    {
+      "id": "application:server/routes/health",
+      "path": "server/src/routes/health.ts",
+      "lineCount": 284,
+      "sha256": "9bfc08b73aa75532788eb947bdf9472ee7b6689baab6ffb1f2dd2d768db8506f",
+      "linkedEvidence": { "history": ["5858ccb981717b6589b66e7f0cc69abe3e5fc439 feat: make in-app features cloud-aware (#10850)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 284 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The router exposes liveness/readiness-like GET health plus a mutating dev-server restart endpoint. It probes DB, bootstrap roles/invites, optional dev-run state and synchronous backup health, with public cloud/commit metadata and redacted anonymous authenticated responses.",
+        "Authenticated Agent actors receive the same full details as board users, including serverInfo, absolute backup paths and raw failure marker text. This is broader than least privilege and is not covered by the reviewed health tests.",
+        "Every public health request can cause DB role/invite/settings/run-count queries and synchronous unbounded filesystem scanning; no timeout, cache or rate control exists. Secondary query/inspection failures are not normalized, and status remains ok for backup warning, bootstrap_pending or authReady false, so liveness/readiness/degraded semantics are conflated.",
+        "POST /dev-server/restart allows any board actor in authenticated mode and any caller in local_trusted when a persisted supervisor file exists; it lacks admin/permission, CSRF, approval, environment-mode assertion, idempotency and audit evidence despite mutating process state.",
+        "Anonymous backup path/message redaction and timing-safe dev status token comparison are good, but public commit/cloud metadata and full-detail policy must be explicit deployment contracts."
+      ],
+      "completionRequirements": ["Read lines 1-284 exactly once and trace public/internal health authorization, data redaction, readiness dependencies, backup health projection and stable contracts."]
+    },
+    {
       "id": "application:cli/commands/db-backup",
       "path": "cli/src/commands/db-backup.ts",
       "lineCount": 102,
