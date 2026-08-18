@@ -4277,6 +4277,39 @@
         "Focused jsdom Vitest passed 15/15 tests on 2026-08-19. Formal decision: REIMPLEMENT as a durable, digest-bound, accountable import-plan/job and separate governed activation workflow; adapt only default-paused quarantine, package browsing, explicit conflict review, multipart upload and reload-watch interaction concepts."
       ],
       "completionRequirements": ["Read both files exactly once, run focused tests and assess package parsing/preflight, preview-to-apply digest binding, auth/tenant/approval semantics, secrets and Connector rebinding, async job durability/cancellation, automation quarantine, data-loss UX, errors, large uploads, accessibility/mobile behavior and responsibility provenance."]
+    },
+    {
+      "id": "application:ui/pages/AdapterManager",
+      "paths": [
+        { "path": "ui/src/pages/AdapterManager.tsx", "lineCount": 692, "sha256": "9d85b9b48d6bf8ce6a88bb59ff1ad733c4f6410efa8c33b29a6310f3420b2dca" }
+      ],
+      "linkedEvidence": {
+        "history": [
+          "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+          "c90e66bdd6a8cdd8de44c1190dd816fed00318e8 feat(ui): design-system component convergence — Card/Badge adoption, multiplicative radius ladder, unified list surfaces (#9240)",
+          "c07e650cd790ebb6ccfda40c715243e84f9263b1 feat(ui): single-source design tokens, visual regression suite, and theme retune (#9134)",
+          "bf982c8c835b0435c0af465287c670e2dcf203c4 Normalize adapter display labels (#8913)",
+          "76c88e585513dd19bce916ad555a8fee42ff7ded [codex] Move instance settings under company settings (#7680)"
+        ],
+        "references": ["ui/src/App.tsx", "doc/design/COMPONENT-INVENTORY.md"],
+        "focusedTests": []
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/AdapterManager.tsx", "completedRanges": [{ "start": 1, "end": 692 }] }],
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "notes": [
+        "Repository inventory assigns one 692-line first-party source file to this unit. No dedicated test file or other direct implementation owner was found by symbol search; App routing and the design-system component inventory reference the page.",
+        "Lines 1-100 describe adapters as manifest-less ServerAdapterModule registrations for model discovery/execution, then import company context, adapter APIs, dynamic parser/schema cache invalidation and management UI. AdapterRow displays source, version and built-in override provenance. The model is implementation-module centric and lacks visible Connector capability, identity binding, health, attestation, approval pause/resume, timeout or evidence contracts required by Company OS.",
+        "Lines 101-200 provide reinstall/reload/visibility/remove icon actions and fetch npm latest metadata directly from the browser with a five-second timeout. Reinstall explicitly pulls latest rather than a pinned version or verified digest, creating supply-chain and reproducibility risk. The browser contacts the public npm registry, leaking package-use metadata and failing in offline/self-hosted environments; failures silently become unknown.",
+        "Lines 201-300 confirm reinstall hot-swaps the latest package for all existing Agents on their next run, with no compatibility test, canary, approval, rollback or per-Agent version binding shown. The page is placed under instance settings but obtains company context only for breadcrumbs; adapter list/install APIs are instance-global. Installation accepts package name, optional version and local-path flag, so authority, filesystem scope and deployment-profile controls are critical server responsibilities not visible here.",
+        "Lines 301-400 define install/remove/hide/override-pause/reload/reinstall mutations, invalidate client parser/schema caches after hot-swap and display raw server errors. A single isMutating flag serializes all UI actions but cannot provide server concurrency or rollout fencing. The client synthesizes overridden built-in rows because the API collapses effective and installed inventory, indicating the projection lacks explicit installation, activation and precedence records.",
+        "Lines 401-500 expose Alpha installation of arbitrary npm packages or host filesystem paths that export createServerAdapter(). Version is optional and defaults visually to latest; local paths accept Linux/WSL/Windows forms and a path chooser. This is a powerful code-execution boundary presented as ordinary instance settings, with no displayed signature/hash, publisher trust, sandbox, permissions, data egress, tenant impact, license or responsible-human approval.",
+        "Lines 501-600 install immediately, warn only that APIs/storage may change, and render external adapters. Hiding a normal adapter changes menu visibility, while the same power control pauses an override; overloaded semantics increase operator error risk. Hot reload/reinstall/remove remain available per row, but mutation pending flags are global and do not identify which adapter is changing or expose health/rollback/runtime-drain status.",
+        "Lines 601-692 synthesize a capability-empty built-in row for overridden types and provide destructive removal/reinstall confirmations. The virtual row reports loaded=true and zero models despite not representing an actual effective module, so health/inventory semantics are lossy. Removal deletes stored npm packages and cannot be undone, yet there is no dependency impact list, active-run drain, Agent rebinding, retained provenance, rollback artifact or approval/evidence receipt.",
+        "No focused behavioral test was found. The standard pnpm-filter command stopped before compilation because pnpm requested an interactive modules-directory purge; no dependency mutation was allowed in the read-only source. A direct no-emit, non-incremental TypeScript check against ui/tsconfig.json passed on 2026-08-19. Formal decision: REIMPLEMENT as a governed Connector catalog/deployment lifecycle; adapt only installed/effective source, version and override visibility."
+      ],
+      "completionRequirements": ["Read the file exactly once and assess adapter discovery/configuration boundaries, vendor leakage, engine selection, secrets handling, capability/health semantics, auth/tenant scope, stable codes, responsive/accessibility behavior and whether any focused or indirect verification owns the behavior."]
     }
   ]
 }

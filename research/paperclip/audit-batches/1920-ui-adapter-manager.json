@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/pages/AdapterManager",
+      "auditStatus": "COMPLETE",
+      "function": "Paperclip's instance-level Adapter management page: list built-in/external runtime modules, install from npm or local paths, hide or pause overrides, hot-reload, reinstall latest and destructively remove stored packages.",
+      "dependencyDirection": "A single 692-line React page depends on instance-global Adapter APIs, company context only for navigation, dynamic UI parser/schema caches, direct npm-registry fetches and host-path selection. It mixes supply-chain operations, effective-runtime projection and presentation without a domain-level Connector contract.",
+      "keyDataModels": "AdapterInfo type/source/package/version/model count/loaded/disabled/capabilities, built-in override precedence, optional install version/local-path mode, mutation state, reinstall target and client-synthesized virtual built-in rows.",
+      "lifecycle": "List effective adapters; install arbitrary npm/local code; optionally override a built-in type; hide or pause; hot-reload and invalidate client parser/schema caches; reinstall npm latest; remove registration and package files from disk.",
+      "testAssessment": "No dedicated focused test was found by repository/symbol search; App routing and the component inventory reference the page. Existing TypeScript was verified with `./node_modules/.bin/tsc -p ui/tsconfig.json --noEmit --incremental false --pretty false` on 2026-08-19. The normal pnpm-filter typecheck did not run because pnpm requested an interactive modules-directory purge, and the read-only audit did not permit dependency mutation. No behavior test proves authorization, supply-chain verification, rollback, active-run draining, accessibility/mobile flows or failure recovery.",
+      "designRationale": "Provide a lightweight runtime-extension mechanism simpler than plugins: a package exports createServerAdapter(), registers model discovery/execution and can override or extend built-ins without restarting the whole application.",
+      "companyOsProblem": "Company OS needs vendor-neutral Connector administration with explicit capabilities, identity binding, health, runtime attestation, version pinning, secret/data boundaries, approval pause/resume, staged rollout, rollback and managed-cloud versus self-hosted policy—not arbitrary instance-global module hot-swaps.",
+      "companyOsFit": "REIMPLEMENT in Company OS Web over a versioned ConnectorCatalog/Deployment API. Adapt only source/version/override visibility and separate installed-versus-effective inventory. Installation must be server-governed, pinned by digest, license/provenance scanned, sandboxed or externally isolated, policy-approved and deployed through compatibility test, canary, drain and rollback states. Do not copy the page or its ServerAdapterModule assumptions.",
+      "responsibilityConflict": "Installing, globally replacing, hot-swapping or deleting execution code affects every dependent Agent yet requires no accountable human, purpose, impact set, risk classification, approval digest or immutable receipt. Existing Agents silently use a new latest version on the next run, and destructive removal has no dependency/rebinding or execution-drain workflow.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/pages/AdapterManager.tsx:1-692",
+        "source SHA-256 9d85b9b48d6bf8ce6a88bb59ff1ad733c4f6410efa8c33b29a6310f3420b2dca",
+        "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+        "c90e66bdd6a8cdd8de44c1190dd816fed00318e8 feat(ui): design-system component convergence — Card/Badge adoption, multiplicative radius ladder, unified list surfaces (#9240)",
+        "c07e650cd790ebb6ccfda40c715243e84f9263b1 feat(ui): single-source design tokens, visual regression suite, and theme retune (#9134)",
+        "bf982c8c835b0435c0af465287c670e2dcf203c4 Normalize adapter display labels (#8913)",
+        "76c88e585513dd19bce916ad555a8fee42ff7ded [codex] Move instance settings under company settings (#7680)",
+        "2026-08-19 no-emit UI TypeScript verification passed"
+      ],
+      "securityFindings": [
+        "The UI permits installing arbitrary npm packages or host filesystem paths as executable server modules without displaying signature, digest, publisher trust, license, sandbox, requested permissions or data-egress impact.",
+        "Optional version input and reinstall-latest make deployments non-reproducible; hot-swap affects existing Agents on their next run without per-Agent version binding, compatibility proof, canary or rollback.",
+        "Latest-version lookup is a direct browser request to the public npm registry, leaks package-use metadata, fails offline and silently reduces errors to unavailable.",
+        "Local-path installation exposes a host filesystem/code-execution boundary and accepts cross-platform paths without visible allowlist, canonicalization, ownership or deployment-profile constraints.",
+        "Instance-global APIs are shown under company-derived navigation, which can obscure tenant/instance authority and impact scope.",
+        "Hide, override-pause and loaded/effective semantics are overloaded; the client synthesizes virtual built-in rows with loaded=true, zero models and empty capabilities, so inventory/health truth is lossy.",
+        "Reload/reinstall invalidate only browser parser/schema caches; no visible distributed cache/version fencing, active-run drain or Connector attestation prevents mixed-version execution.",
+        "Destructive removal deletes stored packages and cannot be undone, but shows no dependent Agents/runs, migration target, package retention, rollback artifact or approval evidence.",
+        "Mutation errors are raw strings and operations lack stable action/job codes, durable status, cancellation and operator-visible recovery.",
+        "The page has no dedicated behavioral tests despite controlling executable supply-chain and destructive lifecycle operations."
+      ]
+    }
+  ]
+}
