@@ -4508,6 +4508,69 @@
         "Focused execution in the default sandbox produced 31 passed, 8 failed and 4 skipped: six failures were caused by denied local socket probes exhausting the port search to 65536, while two were macOS /var versus /private/var path identity assertions. An elevated rerun removed all six port-related failures and produced 37 passed, 2 failed and 4 skipped; the two remaining failures are the realpath/logical-path mismatch. Embedded PostgreSQL could not start after five attempts even outside the sandbox, so its four tests remain explicitly unverified. CLI no-emit TypeScript passed."
       ],
       "completionRequirements": ["Read all 1,675 lines exactly once, run the focused test and CLI no-emit typecheck, record skipped embedded-PostgreSQL cases explicitly, inspect relevant history, then assess configuration/Secret/database copying, execution quarantine, scheduled Routine safety, Git hooks and subprocesses, port/instance isolation, workspace path rebinding, repair/reseed lifecycle, concurrency, rollback and Company OS hybrid/self-hosted relevance."]
+    },
+    {
+      "id": "application:cli/commands/client",
+      "paths": [
+        { "path": "cli/src/commands/client/access.ts", "lineCount": 519, "sha256": "3b30fb884413c745b8515b480972787696731c60b10dd4d7aa0aabbd3df060b7" },
+        { "path": "cli/src/commands/client/activity.ts", "lineCount": 110, "sha256": "e4203456a76cdfbd738ddceb4119c68b733d77c3c186e173bb759aa53c57976d" },
+        { "path": "cli/src/commands/client/adapter.ts", "lineCount": 223, "sha256": "6c9073a155d4e9a041e2881aa1af4bfe13b2f0f01f8c078223496c45e479b000" },
+        { "path": "cli/src/commands/client/agent.ts", "lineCount": 878, "sha256": "edb7135c035c9a3d182ebb68845c3cec86b38524c2df6d88fbf07d2c32808301" },
+        { "path": "cli/src/commands/client/approval.ts", "lineCount": 260, "sha256": "4be2dce0278b5b9d5a20de29891c5401582c8ef3c8799b18210fb1788b575fc0" },
+        { "path": "cli/src/commands/client/asset.ts", "lineCount": 147, "sha256": "80201f652b31392f7a105e96ecbea5d64184eec1eb0146bdcec818cf58476b75" },
+        { "path": "cli/src/commands/client/auth.ts", "lineCount": 203, "sha256": "123d57d4dfe11a2f78ff147e88b505df8ec8b4e24d364f4d72b22784c41f70f8" },
+        { "path": "cli/src/commands/client/common.ts", "lineCount": 298, "sha256": "e8f56a3d354bb2ffe69c8141ba867889026da2bef59d5bc8c71dc1295a8b9f5f" },
+        { "path": "cli/src/commands/client/company.ts", "lineCount": 1805, "sha256": "0424709649d485c63448aa8466f3a7c61ad952cc1b2822aba72be7bf7146b362" },
+        { "path": "cli/src/commands/client/connect.ts", "lineCount": 265, "sha256": "ea33d5d3e30a4582cbcc904e9ed11ea10da60d9ba76d2c82a0f6e1aec56717c2" },
+        { "path": "cli/src/commands/client/context.ts", "lineCount": 158, "sha256": "0850a1de0fd8214e585defc28707df51f1c6a215d9c5e79a2f0e2a7a309c650a" },
+        { "path": "cli/src/commands/client/cost.ts", "lineCount": 167, "sha256": "f9a7b8d903d6fef281092e6c1f9ca34ff5247cc5ebe472ef6df6c56561bfa80e" },
+        { "path": "cli/src/commands/client/dashboard.ts", "lineCount": 35, "sha256": "150db81aae8fbfb76a2855a0ba068c9fb9674fbe6bd7529689f07f9f38fdf2da" },
+        { "path": "cli/src/commands/client/feedback.ts", "lineCount": 676, "sha256": "8526853f1494089499020c0f33130dd9542ff641b8925fbb98b6c236eebdc00f" },
+        { "path": "cli/src/commands/client/goal.ts", "lineCount": 177, "sha256": "ee9274e22dec2f29d55cea741080257696e166f87f0557a608110082161d2840" },
+        { "path": "cli/src/commands/client/issue.ts", "lineCount": 1450, "sha256": "a0df703653d5a92c7573010f5e4f532d67d094c2002f05e80f3c10601f5bc435" },
+        { "path": "cli/src/commands/client/plugin.ts", "lineCount": 998, "sha256": "996f9c9852017f9349f06ee6e7bd8b1af0c0c6c43995e702e5611b64d51bac59" },
+        { "path": "cli/src/commands/client/project.ts", "lineCount": 228, "sha256": "79e0d3f8a9e579ed47b8e825d35fdaca66231dbaef2d8f92f799673e1dd04b46" },
+        { "path": "cli/src/commands/client/prompt.ts", "lineCount": 276, "sha256": "87b5d70f36203193deccf4853a6a4ba34004a72363b4089c2ee583babc460019" },
+        { "path": "cli/src/commands/client/routine-api.ts", "lineCount": 154, "sha256": "a514006661f6e4bf321a7db331d55a418166977a9290ddb02ca9c8212d49702f" },
+        { "path": "cli/src/commands/client/run.ts", "lineCount": 321, "sha256": "c5d9454b15469e90cc8ce2fde58fa4dff4deada84bd8334523511ff584f5e12f" },
+        { "path": "cli/src/commands/client/secrets.ts", "lineCount": 726, "sha256": "bf46bc79e2a294a276fbce188b22e7053684e166c80de8bc0d89af857af670a4" },
+        { "path": "cli/src/commands/client/skill.ts", "lineCount": 150, "sha256": "c9d348a64757152b8750a8969b3116bbfeaa8bd35cb360569dc4feb3f7be8eed" },
+        { "path": "cli/src/commands/client/skills.ts", "lineCount": 1024, "sha256": "8d2a5169f63f27d4104d362d9d038625e9f6fc4fc6b1dde4880ccacca5aa7d79" },
+        { "path": "cli/src/commands/client/teams.ts", "lineCount": 720, "sha256": "0eff2ec04962e03f5607965ea1c0603bcfeedeea109b194b95f3aaabc1cdebee" },
+        { "path": "cli/src/commands/client/token.ts", "lineCount": 244, "sha256": "78cd6669db80bd68a0990ce596a9b3d68848dae07ae0d3ee6fd59193e1e20206" },
+        { "path": "cli/src/commands/client/workspace.ts", "lineCount": 327, "sha256": "32101ea0443bd02d7709f6bd06394766f11a325804e507f858ef27edb67f348a" },
+        { "path": "cli/src/commands/client/zip.ts", "lineCount": 10, "sha256": "e683f289096763fd4fca38a345b3aa4cb3380a5f965f426c0e8fe6cf6f5d7c3b" }
+      ],
+      "linkedEvidence": {
+        "supportingAudits": [
+          "research/paperclip/audit-batches/1390-cli-common-boundaries.json",
+          "research/paperclip/audit-batches/2030-cli-prompt-handoff-tests.json",
+          "research/paperclip/audit-batches/2070-cli-secrets-tests.json",
+          "research/paperclip/audit-batches/2350-cli-http-client.json"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [
+        { "path": "cli/src/commands/client/common.ts", "completedRanges": [{ "start": 1, "end": 298 }] }
+      ],
+      "sourceReadComplete": false,
+      "nextFile": "cli/src/commands/client/access.ts",
+      "notes": [
+        "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
+        "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
+        "The confirmed credential-exfiltration chain is complete: ancestor-discovered context controls apiBase and apiKeyEnvVarName; common.ts reads process.env[profile.apiKeyEnvVarName]; PaperclipApiClient attaches the value as a Bearer token to apiBase. Explicit --api-key is also exposed in argv and therefore process listings/shell history, while buildCliCommandLabel can persist it in an auth challenge.",
+        "common.ts lines 101-200 only trim trailing slashes from API origins, so scheme/TLS/userinfo/host are unrestricted. apiPath correctly rejects empty dynamic segments and percent-encodes them. MIME inference is extension-only and explicitly coupled to a server allowlist, making upload admission drift-prone and incapable of content sniffing or polyglot protection.",
+        "Credential precedence is explicit flag -> PAPERCLIP_API_KEY -> profile-named arbitrary environment variable -> plaintext stored board credential. There is no issuer/audience/company/expiry check before transmission. Interactive recovery gates on 401 or two English 403 messages, while the lower HTTP client will replay the original request after recovery; non-idempotent mutation safety remains absent.",
+        "common.ts lines 201-298 print arbitrary server objects and scalar fields directly. JSON output and inline rendering have no sensitivity classification; error handling prints server error.message and JSON-stringified details before process.exit, which can leak Secrets/PII and makes English text a client contract. Inline strings collapse whitespace/truncate for display, so output is not evidentiary fidelity.",
+        "inferApiBaseFromConfig trusts PAPERCLIP_SERVER_HOST and constructs plaintext HTTP without URL validation; malformed hosts, delimiters or credentials can alter the destination. It swallows config errors and falls back to localhost:3100, which favors usability but can silently target the wrong instance. Company OS needs an explicit verified endpoint/profile rather than inference for privileged operations.",
+        "The existing common test unit was not reread: its focused Vitest passed 10/10 and covers precedence, company requirement, dynamic path encoding and MIME mapping. It does not cover ancestor poisoning, arbitrary env-variable credential selection, origin/TLS/audience binding, interactive replay, output redaction, malformed context/config or storage hardening."
+      ],
+      "completionRequirements": [
+        "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
+        "Reuse rather than reread completed focused tests; execute only missing focused verification where it adds evidence.",
+        "Trace endpoint and credential selection, board/Agent persona, Company/Run binding, every mutation/approval/Secret/data export path, idempotency/concurrency, output redaction, pagination/performance and stable errors.",
+        "Inspect relevant per-file history and reconcile final reuse/Fork judgment only after all source files are covered."
+      ]
     }
   ]
 }
