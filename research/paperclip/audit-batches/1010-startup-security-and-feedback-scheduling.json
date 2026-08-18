@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/server-startup-feedback-export",
+      "auditStatus": "COMPLETE",
+      "function": "Large mocked startup integration suite covering decision-signing key generation/hardening, feedback service wiring, scheduler suppression, public-database refusal, detected-port auth origins and runtime API URL propagation.",
+      "dependencyDirection": "Process environment and loaded deployment config enter the server composition root; mocked database/auth/services/server/filesystem dependencies expose startup decisions and returned runtime URLs.",
+      "keyDataModels": "Deployment mode/exposure/bind/auth/database/storage/feedback config, decision-signing and JWT secrets, persisted key file/mode/symlink, scheduler suppression, service wiring, listen port, trusted origins and runtime API candidates.",
+      "lifecycle": "Startup validates or generates signing material, repairs permissions/refuses a symlink, rejects unsafe authenticated-public database configurations, constructs services/app, starts selected maintenance loops and derives runtime/auth endpoints after port detection.",
+      "testAssessment": "Strong security cases verify persisted signing-key directory/file modes, preservation of an existing key, symlink refusal and minimum explicit-secret length; public deployments fail before DB creation. Feedback coverage only proves the service object is passed to createApp, not that authorized pending rows flush correctly. The 725-line file mixes unrelated concerns and relies heavily on mocks, one captured interval callback and microtask timing; it lacks overlapping flush, graceful drain, retry/backoff, multi-instance coordination and no-egress-without-consent assertions.",
+      "designRationale": "Exercise the real composition root without binding tests to live databases, sockets, auth providers or long-running schedulers, while preserving startup regressions accumulated across product areas.",
+      "companyOsProblem": "Both deployment profiles need fail-closed startup security and explicit background-worker lifecycles, especially for irreversible data export and approval signing.",
+      "companyOsFit": "ADAPT signing-key no-follow/permission tests, preflight deployment refusal and detected-endpoint ordering. Split startup contracts by subsystem; make DataEgressWorker opt-in, lease/claim durable outbox rows atomically, prevent overlapping local runs, coordinate multiple replicas, use bounded backoff and await or checkpoint in-flight work during shutdown.",
+      "responsibilityConflict": "Wiring a feedback service is not proof of authorized export. The app's immediate flush, 5-second interval and route-triggered flush can overlap because no in-flight guard is visible; rows are marked sent only after upload and the client lacks idempotency, so one consented trace can be transmitted more than once. Signing-key possession also proves server integrity, not human approval authority.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/server-startup-feedback-export.test.ts:1-725",
+        "server/src/app.ts:643-674",
+        "server/src/app.ts:733-742",
+        "server/src/routes/issues.ts:11748-11765",
+        "server/src/services/feedback.ts:1820-1878",
+        "e43f187c feat(secrets): add human-approved secret proposals (#9934)",
+        "92c3d9f0 fix(server): stop requiring PAPERCLIP_DECISION_SIGNING_SECRET at startup (#10594)",
+        "390627b4 [codex] Suppress worktree heartbeat scheduling (#9163)",
+        "b2496c80 fix(auth): trust allowed hostname port variants on detected listen port (#4554)"
+      ]
+    }
+  ]
+}
