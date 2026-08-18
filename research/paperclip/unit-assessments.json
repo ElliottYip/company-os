@@ -5087,18 +5087,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-workspace-busy",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "An 866-line unit/integration suite for shared-project-workspace concurrency policy, detecting a live holder, deferring contending Runs through scheduled retries, or allowing concurrent execution with injected coordination prose.",
+      "dependencyDirection": "Heartbeat execution resolves Instance policy, Agent environment driver, ProjectWorkspace and Issue workspace settings; it reads live Runs/lastOutputAt, writes cancelled and scheduled retry Runs/wakeups/Issue locks, and passes coordination text into the adapter context.",
+      "keyDataModels": "ProjectWorkspace identity/CWD; Issue sharedWorkspaceConcurrency auto/serialize/allow and isolated mode; holder Run/Issue; workspace_busy result evidence; scheduled retry attempt/reason; environment driver and instance execution mode.",
+      "lifecycle": "Classify a shared workspace holder by workspace identity and recent Run activity; auto mode permits local concurrency but serializes sandbox/Kubernetes, serialize always waits, allow always proceeds; cancellation schedules a jittered retry and transfers the assignee's execution lock; promotion revalidates reassignment; retry after holder completion; ignore isolated/different/stale holders; continue deferring for an unbounded number of attempts while a holder appears live.",
+      "testAssessment": "Fourteen substantive cases plus delay-window tests cover policy modes, environment resolution, assignee/non-assignee retries, lock preservation, workspace identity, stale holder threshold, reassignment and repeated deferrals. Missing are simultaneous first-acquire races, database uniqueness/fencing, holder cancellation/lease proof, crash/restart, filesystem/git conflict outcomes, bounded total wait/attempts, starvation/fairness, human override authorization and destructive-action risk. The tests explicitly establish that retries continue beyond ten attempts despite the bounded naming.",
+      "designRationale": "Avoid concurrent mutation of a shared workspace when the selected execution environment cannot safely coordinate, while preserving throughput for explicitly allowed/local collaborative workflows.",
+      "companyOsProblem": "Company OS must prevent two Agents or humans from mutating the same enterprise resource/workspace under conflicting Work, data and approval contracts, across local and managed execution nodes.",
+      "companyOsFit": "ADAPT only the explicit concurrency-policy and retry observability concepts. Require an atomic ResourceLeasePort acquisition with fencing token, holder Work/contract identity, expiry/renewal and cancellation proof before replacement. Default serialize for mutable resources; concurrent mode must require a declared merge/transaction protocol and risk policy, not prompt prose. Bound total wait/attempts and escalate to the accountable human with structured evidence.",
+      "responsibilityConflict": "Local auto mode authorizes simultaneous mutation merely by injecting English coordination instructions. A silent holder is ignored without revoking its authority, and a non-assignee retry may execute without an explicit responsibility/approval contract. Repeated deferrals can continue indefinitely, hiding stalled responsibility rather than escalating it.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-workspace-busy.test.ts:1-866",
+        "8b83d69e3cf8575ed7102dcfc906fb4ee06ab287 Serialize shared-workspace Issue Runs with busy deferrals (#10699)",
+        "ba396c608c5d5115561093b5cd0c75852c716c8c Configure shared workspace concurrency (#10759)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-workspace-finalize-branch",
