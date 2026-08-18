@@ -1,0 +1,1280 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "symphony",
+    "repository": "https://github.com/openai/symphony",
+    "branch": "main",
+    "tag": null,
+    "commit": "8001b52e3062495a16e520e4ceaf8f9de868c4d0",
+    "actualCommit": "8001b52e3062495a16e520e4ceaf8f9de868c4d0",
+    "license": "Apache-2.0",
+    "licenseFile": "LICENSE",
+    "trackedPathCount": 130,
+    "commitCountAtPin": 44,
+    "latestCommit": "2026-08-12T11:19:47-07:00\tAlex Kotliarskyi\tScrub GitHub and GitLab authentication token aliases (#119)"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.codex",
+      "pathCount": 9,
+      "classifications": {
+        "documentation-or-instruction": 7,
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "area:.github",
+      "pathCount": 7,
+      "classifications": {
+        "asset-or-binary": 3,
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "id": "area:docs",
+      "pathCount": 2,
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "id": "area:elixir",
+      "pathCount": 108,
+      "classifications": {
+        "configuration-or-metadata": 59,
+        "documentation-or-instruction": 5,
+        "first-party-source": 1,
+        "asset-or-binary": 1,
+        "test-eval-or-fixture": 42
+      }
+    },
+    {
+      "id": "area:LICENSE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:NOTICE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:SPEC.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 4,
+      "unitIds": [
+        "area:LICENSE",
+        "area:NOTICE",
+        "area:README.md",
+        "area:SPEC.md"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2,
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".codex",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".codex/skills/commit",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".codex/skills/debug",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".codex/skills/land",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".codex/skills/linear",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".codex/skills/pull",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".codex/skills/push",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".codex/skills/release",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.codex"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".github",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": ".github/media",
+      "pathCount": 3,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "asset-or-binary": 3
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 3,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "docs",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "elixir",
+      "pathCount": 10,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 7,
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "elixir/config",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "elixir/docs",
+      "pathCount": 2,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "elixir/lib",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "elixir/lib/mix/tasks",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir",
+      "pathCount": 16,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 16
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web",
+      "pathCount": 7,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 7
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/components",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/controllers",
+      "pathCount": 2,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/live",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/asana",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/codex",
+      "pathCount": 2,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/config",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/github",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/gitlab",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/jira",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/linear",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/tracker",
+      "pathCount": 2,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "elixir/priv/static",
+      "pathCount": 2,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "asset-or-binary": 1
+      }
+    },
+    {
+      "path": "elixir/test",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "elixir/test/fixtures",
+      "pathCount": 1,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots",
+      "pathCount": 10,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 10
+      }
+    },
+    {
+      "path": "elixir/test/mix/tasks",
+      "pathCount": 3,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 3
+      }
+    },
+    {
+      "path": "elixir/test/support",
+      "pathCount": 2,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "elixir/test/support/live_e2e_docker",
+      "pathCount": 4,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 4
+      }
+    },
+    {
+      "path": "elixir/test/symphony_elixir",
+      "pathCount": 21,
+      "unitIds": [
+        "area:elixir"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 21
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".codex/skills/commit/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/skills/debug/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/skills/land/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/skills/land/land_watch.py",
+      "unitId": "area:.codex",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": ".codex/skills/linear/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/skills/pull/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/skills/push/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/skills/release/SKILL.md",
+      "unitId": "area:.codex",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".codex/worktree_init.sh",
+      "unitId": "area:.codex",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": ".github/media/elixir-screenshot.png",
+      "unitId": "area:.github",
+      "classification": "asset-or-binary",
+      "extension": ".png"
+    },
+    {
+      "path": ".github/media/symphony-demo-poster.jpg",
+      "unitId": "area:.github",
+      "classification": "asset-or-binary",
+      "extension": ".jpg"
+    },
+    {
+      "path": ".github/media/symphony-demo.mp4",
+      "unitId": "area:.github",
+      "classification": "asset-or-binary",
+      "extension": ".mp4"
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "unitId": "area:.github",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": ".github/workflows/burrito-release.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".github/workflows/make-all.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".github/workflows/pr-description-lint.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "LICENSE",
+      "unitId": "area:LICENSE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "NOTICE",
+      "unitId": "area:NOTICE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "SPEC.md",
+      "unitId": "area:SPEC.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/symphony-smoke-board-review.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/symphony-smoke-test-one.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/.formatter.exs",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/.gitattributes",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "elixir/.gitignore",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "elixir/AGENTS.md",
+      "unitId": "area:elixir",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/Makefile",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "elixir/README.md",
+      "unitId": "area:elixir",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/WORKFLOW.md",
+      "unitId": "area:elixir",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/config/config.exs",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/docs/logging.md",
+      "unitId": "area:elixir",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/docs/token_accounting.md",
+      "unitId": "area:elixir",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/lib/mix/tasks/pr_body.check.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/mix/tasks/specs.check.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/mix/tasks/workspace.before_remove.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/agent_runner.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/agent_runtime_supervisor.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/asana/adapter.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/asana/agent_tool.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/asana/client.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/cli.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/codex/app_server.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/codex/dynamic_tool.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/config.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/config/schema.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/github/adapter.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/github/agent_tool.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/github/client.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/gitlab/adapter.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/gitlab/agent_tool.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/gitlab/client.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/http_server.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/jira/adapter.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/jira/agent_tool.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/jira/client.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/linear/adapter.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/linear/agent_tool.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/linear/client.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/log_file.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/orchestrator.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/path_safety.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/prompt_builder.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/specs_check.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/ssh.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/status_dashboard.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/tracker.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/tracker/issue.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/tracker/memory.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/workflow.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/workflow_store.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir/workspace.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/components/layouts.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/controllers/observability_api_controller.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/controllers/static_asset_controller.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/endpoint.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/error_html.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/error_json.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/live/dashboard_live.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/observability_pubsub.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/presenter.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/router.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/lib/symphony_elixir_web/static_assets.ex",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".ex"
+    },
+    {
+      "path": "elixir/mise.toml",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".toml"
+    },
+    {
+      "path": "elixir/mix.exs",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/mix.lock",
+      "unitId": "area:elixir",
+      "classification": "configuration-or-metadata",
+      "extension": ".lock"
+    },
+    {
+      "path": "elixir/priv/static/dashboard.css",
+      "unitId": "area:elixir",
+      "classification": "first-party-source",
+      "extension": ".css"
+    },
+    {
+      "path": "elixir/priv/static/favicon.png",
+      "unitId": "area:elixir",
+      "classification": "asset-or-binary",
+      "extension": ".png"
+    },
+    {
+      "path": "elixir/test/fixtures/startup_workflow.md",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/backoff_queue.evidence.md",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/backoff_queue.snapshot.txt",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".txt"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/credits_unlimited.evidence.md",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/credits_unlimited.snapshot.txt",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".txt"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/idle.evidence.md",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/idle.snapshot.txt",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".txt"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/idle_with_dashboard_url.evidence.md",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/idle_with_dashboard_url.snapshot.txt",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".txt"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/super_busy.evidence.md",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".md"
+    },
+    {
+      "path": "elixir/test/fixtures/status_dashboard_snapshots/super_busy.snapshot.txt",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".txt"
+    },
+    {
+      "path": "elixir/test/mix/tasks/pr_body_check_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/mix/tasks/specs_check_task_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/mix/tasks/workspace_before_remove_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/support/live_e2e_docker/Dockerfile",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": null
+    },
+    {
+      "path": "elixir/test/support/live_e2e_docker/docker-compose.yml",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yml"
+    },
+    {
+      "path": "elixir/test/support/live_e2e_docker/live_worker_entrypoint.sh",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "elixir/test/support/live_e2e_docker/symphony-live-worker.conf",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".conf"
+    },
+    {
+      "path": "elixir/test/support/snapshot_support.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/support/test_support.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/app_server_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/asana_adapter_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/asana_live_e2e_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/cli_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/core_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/dynamic_tool_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/extensions_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/github_adapter_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/github_live_e2e_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/gitlab_adapter_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/gitlab_live_e2e_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/jira_adapter_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/jira_live_e2e_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/live_e2e_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/log_file_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/observability_pubsub_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/orchestrator_status_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/specs_check_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/ssh_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/status_dashboard_snapshot_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/symphony_elixir/workspace_and_config_test.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    },
+    {
+      "path": "elixir/test/test_helper.exs",
+      "unitId": "area:elixir",
+      "classification": "test-eval-or-fixture",
+      "extension": ".exs"
+    }
+  ]
+}

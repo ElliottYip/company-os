@@ -4,13 +4,23 @@ Dates and the 3–10 management ratio remain pilot hypotheses, not commitments.
 
 ## Current delivery order
 
-### 0. Independent product reset and competitive audit
+### 0. Independent product reset and evidence-led competitive audit
 
 ADR 0008 makes Company OS the canonical owner of the complete product stack.
 Remove Paperclip from runtime/build/deployment assumptions and enforce operation
 with no Paperclip installation. Audit its fixed-SHA source as a competitor and
 record per-module `ADOPT-CODE`, `ADAPT`, `REFERENCE ONLY`, or `REJECT` decisions;
 do not create automatic compatibility or upgrade obligations.
+
+ADR 0009 expands this into a development gate. Commercial research covers
+Workday Agent System of Record, Microsoft Agent 365, ServiceNow AI Control
+Tower, Salesforce Agentforce, Relevance AI Workforce, Sintra, Lindy,
+Artisan/11x and OpenAI Presence. Tier-1 code audits cover AgentSpace, StaffDeck,
+Paperclip and Provision; Tier-2 covers Symphony, AgentArea, HumanLayer ACP,
+Agent Room, OpenWorker, Agent Control and Mesa. Every production capability
+receives one best reference source plus a separate reuse decision, license
+boundary and `GO/NARROW/PARTNER/STOP` judgment. Overlapping generic Agent
+management implementation remains frozen until the zero-gap audit closes.
 
 ### A. Constitution and boundaries
 

@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "effectiveDate": "2026-08-18",
+  "commercial": [
+    { "id": "workday-agent-system-of-record", "name": "Workday Agent System of Record", "status": "PENDING" },
+    { "id": "microsoft-agent-365", "name": "Microsoft Agent 365", "status": "PENDING" },
+    { "id": "servicenow-ai-control-tower", "name": "ServiceNow AI Control Tower", "status": "PENDING" },
+    { "id": "salesforce-agentforce", "name": "Salesforce Agentforce", "status": "PENDING" },
+    { "id": "relevance-ai-workforce", "name": "Relevance AI Workforce", "status": "PENDING" },
+    { "id": "sintra", "name": "Sintra", "status": "PENDING" },
+    { "id": "lindy", "name": "Lindy", "status": "PENDING" },
+    { "id": "artisan", "name": "Artisan", "status": "PENDING" },
+    { "id": "11x", "name": "11x", "status": "PENDING" },
+    { "id": "openai-presence", "name": "OpenAI Presence", "status": "PENDING" }
+  ],
+  "openSource": [
+    {
+      "id": "agentspace",
+      "name": "AgentSpace",
+      "tier": 1,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/HKUDS/AgentSpace",
+      "localPath": "work/upstream-audit/agentspace",
+      "branch": "main",
+      "tag": null,
+      "commit": "0f9da1b125def4d5a0d05b34bf7c5cec0686bbf2",
+      "license": "Apache-2.0",
+      "licenseFile": "LICENSE",
+      "identityEvidence": ["official repository README", "repository owner HKUDS"]
+    },
+    {
+      "id": "staffdeck",
+      "name": "StaffDeck",
+      "tier": 1,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/OpenBMB/StaffDeck",
+      "localPath": "work/upstream-audit/staffdeck",
+      "branch": "main",
+      "tag": "v0.4.1",
+      "commit": "b18aebb9523cb32363b18806d258b0cf28e8781d",
+      "license": "AGPL-3.0-only",
+      "licenseFile": "LICENSE",
+      "identityEvidence": ["official OpenBMB repository", "StaffDeck website and README"]
+    },
+    {
+      "id": "paperclip",
+      "name": "Paperclip",
+      "tier": 1,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/paperclipai/paperclip",
+      "localPath": "work/upstream-audit/paperclip",
+      "branch": null,
+      "tag": "v2026.817.0",
+      "commit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+      "license": "MIT",
+      "licenseFile": "LICENSE",
+      "identityEvidence": ["official paperclipai repository and release tag"]
+    },
+    {
+      "id": "provision",
+      "name": "Provision",
+      "tier": 1,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/provision-org/provision-core",
+      "localPath": "work/upstream-audit/provision",
+      "branch": "main",
+      "tag": null,
+      "commit": "535cdbd651a47bff3ef583b4450fe337326c89ad",
+      "license": "MIT",
+      "licenseFile": "LICENSE",
+      "identityEvidence": ["Provision official website links to provision-org/provision-core"]
+    },
+    {
+      "id": "symphony", "name": "Symphony", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/openai/symphony",
+      "localPath": "work/upstream-audit/symphony", "branch": "main",
+      "tag": null, "commit": "8001b52e3062495a16e520e4ceaf8f9de868c4d0",
+      "license": "Apache-2.0", "licenseFile": "LICENSE",
+      "identityEvidence": ["OpenAI official repository and product announcement"]
+    },
+    {
+      "id": "agentarea", "name": "AgentArea", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/agentarea/agentarea",
+      "localPath": "work/upstream-audit/agentarea", "branch": "main",
+      "tag": null, "commit": "66f66dd1e5bb96eba8de469744736eddd3d93142",
+      "license": "Apache-2.0", "licenseFile": "LICENSE.md",
+      "identityEvidence": ["AgentArea official website and docs link to repository"]
+    },
+    {
+      "id": "humanlayer-acp", "name": "HumanLayer ACP", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/humanlayer/agentcontrolplane",
+      "localPath": "work/upstream-audit/agentcontrolplane", "branch": "v0.5.1",
+      "tag": "v0.5.1", "commit": "bc703d36579edb973da1ca2a748381cdb4eb8b55",
+      "license": "Apache-2.0", "licenseFile": "LICENSE",
+      "identityEvidence": ["HumanLayer-owned Agent Control Plane repository"]
+    },
+    {
+      "id": "agent-room", "name": "Agent Room", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/msitarzewski/agent-room",
+      "localPath": "work/upstream-audit/agent-room", "branch": null,
+      "tag": "v0.1.0", "commit": "9faaae7f1bef15e25648560f27ac25eea3383b42",
+      "license": "Apache-2.0", "licenseFile": "LICENSE",
+      "identityEvidence": ["repository product statement identifies the human control plane in scope"]
+    },
+    {
+      "id": "openworker", "name": "OpenWorker", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/openworker-io/openworker",
+      "localPath": "work/upstream-audit/openworker", "branch": "main",
+      "tag": null, "commit": "91a2419654a4bb8f7479a7b56693984330625e47",
+      "license": "MIT-claimed-in-README-no-license-text", "licenseFile": null,
+      "identityEvidence": ["repository describes the AI Employment Framework named by the research baseline"],
+      "copyRestriction": "No code copying unless the copyright holder adds an unambiguous full license grant and required notice text."
+    },
+    {
+      "id": "agent-control", "name": "Agent Control", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/agentcontrol/agent-control",
+      "localPath": "work/upstream-audit/agent-control", "branch": "main",
+      "tag": "v8.5.0", "commit": "541f872e79b109524ed029db038118d3beb8b033",
+      "license": "Apache-2.0", "licenseFile": "LICENSE",
+      "identityEvidence": ["official Agent Control website and Galileo announcement link to repository"]
+    },
+    {
+      "id": "mesa", "name": "Mesa", "tier": 2,
+      "identityStatus": "CONFIRMED",
+      "repository": "https://github.com/msoedov/mesa",
+      "localPath": "work/upstream-audit/mesa", "branch": "main",
+      "tag": null, "commit": "1bd047c3d8727ad685b374f0947850a123db2a5b",
+      "license": "MIT", "licenseFile": "LICENSE",
+      "identityEvidence": ["repository is the zero-human company product, not the unrelated agent-based simulation library"]
+    }
+  ]
+}

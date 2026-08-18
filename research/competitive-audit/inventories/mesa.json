@@ -1,0 +1,1629 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "mesa",
+    "repository": "https://github.com/msoedov/mesa",
+    "branch": "main",
+    "tag": null,
+    "commit": "1bd047c3d8727ad685b374f0947850a123db2a5b",
+    "actualCommit": "1bd047c3d8727ad685b374f0947850a123db2a5b",
+    "license": "MIT",
+    "licenseFile": "LICENSE",
+    "trackedPathCount": 197,
+    "commitCountAtPin": 170,
+    "latestCommit": "2026-05-23T19:26:53+07:00\tWin\ttest: add coverage for archetypes, telegram, and static packages (#34)"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.dockerignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitattributes",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.github",
+      "pathCount": 2,
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitleaks.toml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.goreleaser.yml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:artifact-docs",
+      "pathCount": 32,
+      "classifications": {
+        "documentation-or-instruction": 28,
+        "first-party-source": 4
+      }
+    },
+    {
+      "id": "area:cmd",
+      "pathCount": 10,
+      "classifications": {
+        "first-party-source": 3,
+        "configuration-or-metadata": 7
+      }
+    },
+    {
+      "id": "area:CONTRIBUTING.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:docker",
+      "pathCount": 4,
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:docs",
+      "pathCount": 2,
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "id": "area:go.mod",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:go.sum",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:internal",
+      "pathCount": 132,
+      "classifications": {
+        "documentation-or-instruction": 23,
+        "first-party-source": 109
+      }
+    },
+    {
+      "id": "area:LICENSE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:Makefile",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:static",
+      "pathCount": 4,
+      "classifications": {
+        "asset-or-binary": 2,
+        "first-party-source": 2
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 11,
+      "unitIds": [
+        "area:.dockerignore",
+        "area:.gitattributes",
+        "area:.gitignore",
+        "area:.gitleaks.toml",
+        "area:.goreleaser.yml",
+        "area:CONTRIBUTING.md",
+        "area:LICENSE",
+        "area:Makefile",
+        "area:README.md",
+        "area:go.mod",
+        "area:go.sum"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 9,
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "artifact-docs",
+      "pathCount": 3,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "artifact-docs/architecture",
+      "pathCount": 3,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "artifact-docs/audits",
+      "pathCount": 2,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "artifact-docs/board-policy",
+      "pathCount": 1,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "artifact-docs/decisions",
+      "pathCount": 10,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 10
+      }
+    },
+    {
+      "path": "artifact-docs/design",
+      "pathCount": 7,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4,
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "artifact-docs/marketing",
+      "pathCount": 1,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "artifact-docs/policies/accepted",
+      "pathCount": 5,
+      "unitIds": [
+        "area:artifact-docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 5
+      }
+    },
+    {
+      "path": "cmd/mesa",
+      "pathCount": 3,
+      "unitIds": [
+        "area:cmd"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "cmd/mesa/templates",
+      "pathCount": 7,
+      "unitIds": [
+        "area:cmd"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 7
+      }
+    },
+    {
+      "path": "docker",
+      "pathCount": 4,
+      "unitIds": [
+        "area:docker"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "docs",
+      "pathCount": 2,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "internal/archetypes",
+      "pathCount": 25,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 23,
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/db",
+      "pathCount": 10,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 10
+      }
+    },
+    {
+      "path": "internal/db/migrations",
+      "pathCount": 29,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 29
+      }
+    },
+    {
+      "path": "internal/discord",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/evaluator",
+      "pathCount": 4,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "internal/handlers",
+      "pathCount": 22,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 22
+      }
+    },
+    {
+      "path": "internal/models",
+      "pathCount": 3,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "internal/scheduler",
+      "pathCount": 10,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 10
+      }
+    },
+    {
+      "path": "internal/telegram",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/templates",
+      "pathCount": 21,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 21
+      }
+    },
+    {
+      "path": "internal/validator",
+      "pathCount": 4,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "static",
+      "pathCount": 4,
+      "unitIds": [
+        "area:static"
+      ],
+      "classifications": {
+        "asset-or-binary": 2,
+        "first-party-source": 2
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".dockerignore",
+      "unitId": "area:.dockerignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".gitattributes",
+      "unitId": "area:.gitattributes",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".gitleaks.toml",
+      "unitId": "area:.gitleaks.toml",
+      "classification": "configuration-or-metadata",
+      "extension": ".toml"
+    },
+    {
+      "path": ".goreleaser.yml",
+      "unitId": "area:.goreleaser.yml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "unitId": "area:CONTRIBUTING.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "LICENSE",
+      "unitId": "area:LICENSE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "Makefile",
+      "unitId": "area:Makefile",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/architecture/SO-31-supermemory-stats-panel.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/architecture/SO-73-pr-review-status.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/architecture/agent-feature-flags.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/audits/audit-05f3fb5b.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/audits/audit-9541c09f.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/board-policy/no-commit.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/api-key-blocker.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/api-key-concurrency-issue.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/api-key-rotation-2026-04-07.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/api-key-rotation.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/archetype-patches-65ff2dbb.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/ceo-self-review-loop.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/model-migration-to-gemini-3.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/model-migration-to-gpt-4o-SO-91.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/secret-scanning-tool-selection-SO-47.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/decisions/strategic-alignment-SO-90.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/design/SO-107-strategic-alignment.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/design/brand-system.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/design/confirmation-patterns.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/design/layout-widths.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/design/mockup-dashboard.html",
+      "unitId": "area:artifact-docs",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "artifact-docs/design/mockup-strategy.html",
+      "unitId": "area:artifact-docs",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "artifact-docs/design/mockup-workblock-forms.html",
+      "unitId": "area:artifact-docs",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "artifact-docs/gates.sh",
+      "unitId": "area:artifact-docs",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "artifact-docs/issue-lifecycle.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/marketing/linkedin-series-agent-orchestration.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/policies/accepted/acceptance-criteria-completeness.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/policies/accepted/bug-fix-protocol.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/policies/accepted/chrome-mcp-testing.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/policies/accepted/incremental-delivery.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/policies/accepted/security-first.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "artifact-docs/security-model.md",
+      "unitId": "area:artifact-docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "cmd/mesa/favicon_test.go",
+      "unitId": "area:cmd",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "cmd/mesa/main.go",
+      "unitId": "area:cmd",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "cmd/mesa/main_test.go",
+      "unitId": "area:cmd",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "cmd/mesa/templates/agency.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "cmd/mesa/templates/dev-team.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "cmd/mesa/templates/enterprise.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "cmd/mesa/templates/media.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "cmd/mesa/templates/saas.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "cmd/mesa/templates/smm.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "cmd/mesa/templates/startup.json",
+      "unitId": "area:cmd",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "docker/.dockerignore",
+      "unitId": "area:docker",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "docker/Dockerfile",
+      "unitId": "area:docker",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "docker/docker-compose.yml",
+      "unitId": "area:docker",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "docker/docker-entrypoint.sh",
+      "unitId": "area:docker",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "docs/architecture.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/audit.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "go.mod",
+      "unitId": "area:go.mod",
+      "classification": "configuration-or-metadata",
+      "extension": ".mod"
+    },
+    {
+      "path": "go.sum",
+      "unitId": "area:go.sum",
+      "classification": "configuration-or-metadata",
+      "extension": ".sum"
+    },
+    {
+      "path": "internal/archetypes/admin.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/annoyed-customer.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/archetypes.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/archetypes/archetypes_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/archetypes/architect.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/auditor.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/backend.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/ceo.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/design-partner.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/designer.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/devops.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/finance.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/frontend.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/fullstack.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/hr.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/legal.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/marketing.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/operations.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/other.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/pr.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/product.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/qa.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/sales.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/social-media.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/archetypes/support.md",
+      "unitId": "area:internal",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "internal/db/apex_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/db.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/db_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/migrations/001_init.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/002_work_blocks.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/003_audit.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/004_board_policies.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/005_settings.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/006_crons.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/007_runner_support.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/008_work_block_acceptance.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/009_audit_runner.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/010_fix_o3_model.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/011_issue_type.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/012_issue_stages.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/013_apex_blocks.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/014_update_gemini_codex_models.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/015_default_models.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/016_increase_default_agent_timeout.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/017_supermemory_events.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/018_session_scoped_api_keys.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/019_feature_flags.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/020_discord_webhook.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/021_performance_indexes.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/022_webhook_events.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/023_wiki_pages.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/024_wiki_fts.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/025_agent_disable_flags.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/026_agent_disallowed_tools.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/027_comment_kind.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/028_runs_failure_reason.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/migrations/029_run_evaluations.sql",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "internal/db/queries.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/retry.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/retry_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/supermemory_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/time.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/time_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/db/wiki_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/discord/webhook.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/discord/webhook_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/evaluator/evaluate.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/evaluator/judge.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/evaluator/signature.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/evaluator/signature_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/activity.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/apex_handlers_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/api.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/context.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/dashboard_auth.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/dashboard_auth_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/github_pr.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/github_pr_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/handlers_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/noop_pages_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/run_detail_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/similarity.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/similarity_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/sse.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/stages_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/strategy_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/ui.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/version_check.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/webhook.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/webhook_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/wiki_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/handlers/work_blocks_ui_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/models/models.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/models/models_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/models/version.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/copilot.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/doctor.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/doctor_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/dry_run.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/dry_run_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/noop.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/noop_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/opencode.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/scheduler.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/scheduler/scheduler_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/telegram/bot.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/telegram/bot_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/templates/activity.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/agent_detail.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/agents.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/auth.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/crons.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/dashboard.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/issue_detail.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/issues.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/not_found.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/observability.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/partials.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/policies.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/run_detail.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/settings.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/strategy.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/templates.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/templates/templates_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/templates/wiki.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/wiki_search.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/work_block_detail.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/templates/work_blocks.html",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "internal/validator/ac_validator.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/validator/ac_validator_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/validator/stages_validator.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/validator/stages_validator_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "static/demo.gif",
+      "unitId": "area:static",
+      "classification": "asset-or-binary",
+      "extension": ".gif"
+    },
+    {
+      "path": "static/favicon.svg",
+      "unitId": "area:static",
+      "classification": "asset-or-binary",
+      "extension": ".svg"
+    },
+    {
+      "path": "static/static.go",
+      "unitId": "area:static",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "static/static_test.go",
+      "unitId": "area:static",
+      "classification": "first-party-source",
+      "extension": ".go"
+    }
+  ]
+}

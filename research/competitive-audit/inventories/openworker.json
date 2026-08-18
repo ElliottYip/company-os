@@ -1,0 +1,1273 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "openworker",
+    "repository": "https://github.com/openworker-io/openworker",
+    "branch": "main",
+    "tag": null,
+    "commit": "91a2419654a4bb8f7479a7b56693984330625e47",
+    "actualCommit": "91a2419654a4bb8f7479a7b56693984330625e47",
+    "license": "MIT-claimed-in-README-no-license-text",
+    "licenseFile": null,
+    "trackedPathCount": 122,
+    "commitCountAtPin": 1,
+    "latestCommit": "2026-07-06T23:57:49-04:00\tShahzad Badar\tfeat: verification + decision loop — output gated by defined standard"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.DS_Store",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.env.example",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.github",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:api",
+      "pathCount": 4,
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "id": "area:CLAUDE_DASHBOARD_V2.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:CLAUDE.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:cli",
+      "pathCount": 2,
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "area:connectors",
+      "pathCount": 15,
+      "classifications": {
+        "first-party-source": 15
+      }
+    },
+    {
+      "id": "area:connectors.yaml.example",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:core",
+      "pathCount": 12,
+      "classifications": {
+        "first-party-source": 12
+      }
+    },
+    {
+      "id": "area:dashboard",
+      "pathCount": 21,
+      "classifications": {
+        "configuration-or-metadata": 4,
+        "documentation-or-instruction": 1,
+        "first-party-source": 15,
+        "lockfile": 1
+      }
+    },
+    {
+      "id": "area:database",
+      "pathCount": 3,
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "id": "area:demo.py",
+      "pathCount": 1,
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:docker-compose.yml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:docs",
+      "pathCount": 3,
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "id": "area:FABLE5_SPRINT.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:requirements.txt",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:runtime",
+      "pathCount": 8,
+      "classifications": {
+        "first-party-source": 8
+      }
+    },
+    {
+      "id": "area:sandbox",
+      "pathCount": 3,
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "id": "area:skills",
+      "pathCount": 16,
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "documentation-or-instruction": 15
+      }
+    },
+    {
+      "id": "area:spec",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:STATUS.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:tests",
+      "pathCount": 11,
+      "classifications": {
+        "test-eval-or-fixture": 11
+      }
+    },
+    {
+      "id": "area:tui",
+      "pathCount": 4,
+      "classifications": {
+        "first-party-source": 3,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:workers",
+      "pathCount": 6,
+      "classifications": {
+        "configuration-or-metadata": 6
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 12,
+      "unitIds": [
+        "area:.DS_Store",
+        "area:.env.example",
+        "area:.gitignore",
+        "area:CLAUDE.md",
+        "area:CLAUDE_DASHBOARD_V2.md",
+        "area:FABLE5_SPRINT.md",
+        "area:README.md",
+        "area:STATUS.md",
+        "area:connectors.yaml.example",
+        "area:demo.py",
+        "area:docker-compose.yml",
+        "area:requirements.txt"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 6,
+        "documentation-or-instruction": 5,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "api",
+      "pathCount": 4,
+      "unitIds": [
+        "area:api"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "cli",
+      "pathCount": 2,
+      "unitIds": [
+        "area:cli"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "connectors",
+      "pathCount": 3,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "connectors/providers",
+      "pathCount": 1,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "connectors/providers/documents",
+      "pathCount": 2,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "connectors/providers/github",
+      "pathCount": 2,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "connectors/providers/jira",
+      "pathCount": 2,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "connectors/providers/messaging",
+      "pathCount": 2,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "connectors/providers/web_search",
+      "pathCount": 3,
+      "unitIds": [
+        "area:connectors"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "core",
+      "pathCount": 12,
+      "unitIds": [
+        "area:core"
+      ],
+      "classifications": {
+        "first-party-source": 12
+      }
+    },
+    {
+      "path": "dashboard",
+      "pathCount": 8,
+      "unitIds": [
+        "area:dashboard"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 4,
+        "documentation-or-instruction": 1,
+        "first-party-source": 2,
+        "lockfile": 1
+      }
+    },
+    {
+      "path": "dashboard/src",
+      "pathCount": 5,
+      "unitIds": [
+        "area:dashboard"
+      ],
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "dashboard/src/components",
+      "pathCount": 1,
+      "unitIds": [
+        "area:dashboard"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "dashboard/src/pages",
+      "pathCount": 7,
+      "unitIds": [
+        "area:dashboard"
+      ],
+      "classifications": {
+        "first-party-source": 7
+      }
+    },
+    {
+      "path": "database",
+      "pathCount": 3,
+      "unitIds": [
+        "area:database"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "docs",
+      "pathCount": 3,
+      "unitIds": [
+        "area:docs"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 3
+      }
+    },
+    {
+      "path": "runtime",
+      "pathCount": 8,
+      "unitIds": [
+        "area:runtime"
+      ],
+      "classifications": {
+        "first-party-source": 8
+      }
+    },
+    {
+      "path": "sandbox",
+      "pathCount": 2,
+      "unitIds": [
+        "area:sandbox"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "sandbox/egress-proxy",
+      "pathCount": 1,
+      "unitIds": [
+        "area:sandbox"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "skills",
+      "pathCount": 1,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "skills/base",
+      "pathCount": 9,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 9
+      }
+    },
+    {
+      "path": "skills/roles",
+      "pathCount": 6,
+      "unitIds": [
+        "area:skills"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 6
+      }
+    },
+    {
+      "path": "spec",
+      "pathCount": 1,
+      "unitIds": [
+        "area:spec"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "tests",
+      "pathCount": 10,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 10
+      }
+    },
+    {
+      "path": "tests/fixtures",
+      "pathCount": 1,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "tui",
+      "pathCount": 4,
+      "unitIds": [
+        "area:tui"
+      ],
+      "classifications": {
+        "first-party-source": 3,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "workers",
+      "pathCount": 6,
+      "unitIds": [
+        "area:workers"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 6
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".DS_Store",
+      "unitId": "area:.DS_Store",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".env.example",
+      "unitId": "area:.env.example",
+      "classification": "configuration-or-metadata",
+      "extension": ".example"
+    },
+    {
+      "path": ".github/workflows/test.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "CLAUDE.md",
+      "unitId": "area:CLAUDE.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CLAUDE_DASHBOARD_V2.md",
+      "unitId": "area:CLAUDE_DASHBOARD_V2.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "FABLE5_SPRINT.md",
+      "unitId": "area:FABLE5_SPRINT.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "STATUS.md",
+      "unitId": "area:STATUS.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "api/__init__.py",
+      "unitId": "area:api",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "api/dashboard.py",
+      "unitId": "area:api",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "api/server.py",
+      "unitId": "area:api",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "api/state.py",
+      "unitId": "area:api",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "cli/__init__.py",
+      "unitId": "area:cli",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "cli/main.py",
+      "unitId": "area:cli",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors.yaml.example",
+      "unitId": "area:connectors.yaml.example",
+      "classification": "configuration-or-metadata",
+      "extension": ".example"
+    },
+    {
+      "path": "connectors/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/base.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/documents/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/documents/local_file.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/github/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/github/github_api.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/jira/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/jira/jira_api.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/messaging/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/messaging/slack_bot.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/web_search/__init__.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/web_search/brave.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/providers/web_search/duckduckgo.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "connectors/registry.py",
+      "unitId": "area:connectors",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/__init__.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/agent_harness.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/audit_logger.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/constants.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/env.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/input_validator.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/model_resolver.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/output_filter.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/pending_store.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/permission_engine.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/task_state.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "core/tool_access_request.py",
+      "unitId": "area:core",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "dashboard/.gitignore",
+      "unitId": "area:dashboard",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "dashboard/README.md",
+      "unitId": "area:dashboard",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "dashboard/index.html",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "dashboard/package-lock.json",
+      "unitId": "area:dashboard",
+      "classification": "lockfile",
+      "extension": ".json"
+    },
+    {
+      "path": "dashboard/package.json",
+      "unitId": "area:dashboard",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "dashboard/src/App.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/api.ts",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "dashboard/src/components/ui.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/index.css",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".css"
+    },
+    {
+      "path": "dashboard/src/main.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/Approvals.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/Cost.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/GitHubConnector.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/Onboarding.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/RunView.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/Settings.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/pages/Workers.tsx",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "dashboard/src/types.ts",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "dashboard/tsconfig.json",
+      "unitId": "area:dashboard",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "dashboard/tsconfig.tsbuildinfo",
+      "unitId": "area:dashboard",
+      "classification": "configuration-or-metadata",
+      "extension": ".tsbuildinfo"
+    },
+    {
+      "path": "dashboard/vite.config.ts",
+      "unitId": "area:dashboard",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "database/__init__.py",
+      "unitId": "area:database",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "database/init.py",
+      "unitId": "area:database",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "database/schema.sql",
+      "unitId": "area:database",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "demo.py",
+      "unitId": "area:demo.py",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "docker-compose.yml",
+      "unitId": "area:docker-compose.yml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "docs/CLAUDE.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/CLAUDE_EXTENSION.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "docs/OVERNIGHT_SESSION.md",
+      "unitId": "area:docs",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "requirements.txt",
+      "unitId": "area:requirements.txt",
+      "classification": "configuration-or-metadata",
+      "extension": ".txt"
+    },
+    {
+      "path": "runtime/__init__.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/approval_router.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/memory_manager.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/reflection.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/scheduler.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/task_runner.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/tool_executor.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "runtime/verifier.py",
+      "unitId": "area:runtime",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "sandbox/Dockerfile.worker",
+      "unitId": "area:sandbox",
+      "classification": "configuration-or-metadata",
+      "extension": ".worker"
+    },
+    {
+      "path": "sandbox/egress-proxy/squid.conf",
+      "unitId": "area:sandbox",
+      "classification": "configuration-or-metadata",
+      "extension": ".conf"
+    },
+    {
+      "path": "sandbox/seccomp-profile.json",
+      "unitId": "area:sandbox",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "skills/.DS_Store",
+      "unitId": "area:skills",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "skills/base/calendar.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/document_reader.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/email.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/escalation.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/messaging.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/policy_rag.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/task_logger.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/video_calls.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/base/web_search.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/roles/code_reviewer.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/roles/customer_support.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/roles/developer.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/roles/idea_advisor.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/roles/marketer.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "skills/roles/tester.md",
+      "unitId": "area:skills",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "spec/WORKER_SPEC.md",
+      "unitId": "area:spec",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "tests/__init__.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/fixtures/worker.test.yaml",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".yaml"
+    },
+    {
+      "path": "tests/test_api_approvals.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_api_cost_settings.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_harness.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_input_validator.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_output_filter.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_permission_engine.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_reflection.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_scheduler.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tests/test_verifier.py",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".py"
+    },
+    {
+      "path": "tui/__init__.py",
+      "unitId": "area:tui",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "tui/__main__.py",
+      "unitId": "area:tui",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "tui/app.py",
+      "unitId": "area:tui",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "tui/styles.tcss",
+      "unitId": "area:tui",
+      "classification": "configuration-or-metadata",
+      "extension": ".tcss"
+    },
+    {
+      "path": "workers/worker.aryan.yaml",
+      "unitId": "area:workers",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "workers/worker.codera-qa.yaml",
+      "unitId": "area:workers",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "workers/worker.codera-review.yaml",
+      "unitId": "area:workers",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "workers/worker.layla.yaml",
+      "unitId": "area:workers",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "workers/worker.maya.yaml",
+      "unitId": "area:workers",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "workers/worker.myagent.yaml",
+      "unitId": "area:workers",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    }
+  ]
+}

@@ -1,0 +1,2229 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "agent-room",
+    "repository": "https://github.com/msitarzewski/agent-room",
+    "branch": null,
+    "tag": "v0.1.0",
+    "commit": "9faaae7f1bef15e25648560f27ac25eea3383b42",
+    "actualCommit": "9faaae7f1bef15e25648560f27ac25eea3383b42",
+    "license": "Apache-2.0",
+    "licenseFile": "LICENSE",
+    "trackedPathCount": 207,
+    "commitCountAtPin": 1,
+    "latestCommit": "2026-07-28T21:04:18-05:00\tMichael Sitarzewski\tSupport detached signatures with Cosign 3 (#4)"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.dockerignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.editorconfig",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.github",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitleaks.toml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.semgrep.yml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:AGENTS.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:api",
+      "pathCount": 2,
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "id": "area:boot.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:CLAUDE.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:cmd",
+      "pathCount": 2,
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "id": "area:CONTRIBUTING.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:db",
+      "pathCount": 4,
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "id": "area:deploy",
+      "pathCount": 27,
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "configuration-or-metadata": 10,
+        "first-party-source": 16
+      }
+    },
+    {
+      "id": "area:go.mod",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:go.sum",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:internal",
+      "pathCount": 50,
+      "classifications": {
+        "first-party-source": 47,
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "id": "area:LICENSE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:memory-bank",
+      "pathCount": 17,
+      "classifications": {
+        "documentation-or-instruction": 17
+      }
+    },
+    {
+      "id": "area:NOTICE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:SECURITY.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:sqlc.yaml",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:tests",
+      "pathCount": 25,
+      "classifications": {
+        "test-eval-or-fixture": 25
+      }
+    },
+    {
+      "id": "area:third_party",
+      "pathCount": 20,
+      "classifications": {
+        "vendored-third-party": 20
+      }
+    },
+    {
+      "id": "area:THIRD_PARTY_NOTICES.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:web",
+      "pathCount": 42,
+      "classifications": {
+        "first-party-source": 26,
+        "lockfile": 1,
+        "configuration-or-metadata": 5,
+        "asset-or-binary": 1,
+        "test-eval-or-fixture": 9
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 17,
+      "unitIds": [
+        "area:.dockerignore",
+        "area:.editorconfig",
+        "area:.gitignore",
+        "area:.gitleaks.toml",
+        "area:.semgrep.yml",
+        "area:AGENTS.md",
+        "area:CLAUDE.md",
+        "area:CONTRIBUTING.md",
+        "area:LICENSE",
+        "area:NOTICE",
+        "area:README.md",
+        "area:SECURITY.md",
+        "area:THIRD_PARTY_NOTICES.md",
+        "area:boot.md",
+        "area:go.mod",
+        "area:go.sum",
+        "area:sqlc.yaml"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 10,
+        "documentation-or-instruction": 7
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "api/arp",
+      "pathCount": 1,
+      "unitIds": [
+        "area:api"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "api/openapi",
+      "pathCount": 1,
+      "unitIds": [
+        "area:api"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "cmd/agentroomctl",
+      "pathCount": 1,
+      "unitIds": [
+        "area:cmd"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "cmd/agentroomd",
+      "pathCount": 1,
+      "unitIds": [
+        "area:cmd"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "db",
+      "pathCount": 2,
+      "unitIds": [
+        "area:db"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "db/migrations",
+      "pathCount": 1,
+      "unitIds": [
+        "area:db"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "db/queries",
+      "pathCount": 1,
+      "unitIds": [
+        "area:db"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "deploy",
+      "pathCount": 15,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1,
+        "first-party-source": 14
+      }
+    },
+    {
+      "path": "deploy/apparmor",
+      "pathCount": 2,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "deploy/caddy",
+      "pathCount": 2,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "deploy/compose",
+      "pathCount": 2,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "deploy/config",
+      "pathCount": 1,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "deploy/lib",
+      "pathCount": 1,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "deploy/pgbackrest",
+      "pathCount": 2,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "deploy/systemd",
+      "pathCount": 2,
+      "unitIds": [
+        "area:deploy"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "internal/adapters",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/adapters/claude",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/adapters/claude/testdata",
+      "pathCount": 1,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "internal/adapters/codex",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/adapters/codex/testdata",
+      "pathCount": 1,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "internal/adapters/hermes",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/adapters/hermes/testdata",
+      "pathCount": 1,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "internal/app",
+      "pathCount": 3,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "internal/artifacts",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/auth",
+      "pathCount": 3,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "internal/config",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/domain",
+      "pathCount": 4,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "internal/httpapi",
+      "pathCount": 5,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 5
+      }
+    },
+    {
+      "path": "internal/notify",
+      "pathCount": 3,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "internal/postgres",
+      "pathCount": 6,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "internal/postgres/sqlcgen",
+      "pathCount": 4,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "internal/realtime",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/runner",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "internal/version",
+      "pathCount": 1,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "internal/webui",
+      "pathCount": 2,
+      "unitIds": [
+        "area:internal"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "memory-bank",
+      "pathCount": 13,
+      "unitIds": [
+        "area:memory-bank"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 13
+      }
+    },
+    {
+      "path": "memory-bank/tasks/2026-07",
+      "pathCount": 4,
+      "unitIds": [
+        "area:memory-bank"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 4
+      }
+    },
+    {
+      "path": "tests/api",
+      "pathCount": 1,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "tests/completeness",
+      "pathCount": 1,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "tests/security",
+      "pathCount": 21,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 21
+      }
+    },
+    {
+      "path": "tests/security/zap",
+      "pathCount": 2,
+      "unitIds": [
+        "area:tests"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/coder/websocket",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/coreos/go-oidc/v3/oidc",
+      "pathCount": 2,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 2
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/go-jose/go-jose/v4",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/go-jose/go-jose/v4/json",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/google/jsonschema-go/jsonschema",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/pgpassfile",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/pgservicefile",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/pgx/v5",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/puddle/v2",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/modelcontextprotocol/go-sdk",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/segmentio/asm",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/segmentio/encoding",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/github.com/yosida95/uritemplate/v3",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/crypto",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/oauth2",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/sync/semaphore",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/sys/cpu",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/text",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "third_party/web-licenses",
+      "pathCount": 1,
+      "unitIds": [
+        "area:third_party"
+      ],
+      "classifications": {
+        "vendored-third-party": 1
+      }
+    },
+    {
+      "path": "web",
+      "pathCount": 11,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 5,
+        "lockfile": 1,
+        "configuration-or-metadata": 5
+      }
+    },
+    {
+      "path": "web/public",
+      "pathCount": 1,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "asset-or-binary": 1
+      }
+    },
+    {
+      "path": "web/src",
+      "pathCount": 3,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "web/src/api",
+      "pathCount": 2,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "web/src/auth",
+      "pathCount": 1,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "web/src/components",
+      "pathCount": 2,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "web/src/hooks",
+      "pathCount": 1,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "web/src/pages",
+      "pathCount": 11,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 11
+      }
+    },
+    {
+      "path": "web/src/stream",
+      "pathCount": 1,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "web/src/test",
+      "pathCount": 7,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 7
+      }
+    },
+    {
+      "path": "web/tests/browser",
+      "pathCount": 2,
+      "unitIds": [
+        "area:web"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".dockerignore",
+      "unitId": "area:.dockerignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".editorconfig",
+      "unitId": "area:.editorconfig",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".gitleaks.toml",
+      "unitId": "area:.gitleaks.toml",
+      "classification": "configuration-or-metadata",
+      "extension": ".toml"
+    },
+    {
+      "path": ".semgrep.yml",
+      "unitId": "area:.semgrep.yml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "AGENTS.md",
+      "unitId": "area:AGENTS.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CLAUDE.md",
+      "unitId": "area:CLAUDE.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "unitId": "area:CONTRIBUTING.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "LICENSE",
+      "unitId": "area:LICENSE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "NOTICE",
+      "unitId": "area:NOTICE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "SECURITY.md",
+      "unitId": "area:SECURITY.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "unitId": "area:THIRD_PARTY_NOTICES.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "api/arp/event-envelope.schema.json",
+      "unitId": "area:api",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "api/openapi/agent-room.v1.yaml",
+      "unitId": "area:api",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "boot.md",
+      "unitId": "area:boot.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "cmd/agentroomctl/main.go",
+      "unitId": "area:cmd",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "cmd/agentroomd/main.go",
+      "unitId": "area:cmd",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "db/embed.go",
+      "unitId": "area:db",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "db/migrations/0001_foundation.sql",
+      "unitId": "area:db",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "db/queries/resources.sql",
+      "unitId": "area:db",
+      "classification": "first-party-source",
+      "extension": ".sql"
+    },
+    {
+      "path": "db/verify-sqlc.sh",
+      "unitId": "area:db",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/README.md",
+      "unitId": "area:deploy",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "deploy/apparmor/opt.agentroom.agentroomctl",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".agentroomctl"
+    },
+    {
+      "path": "deploy/apparmor/opt.agentroom.agentroomd",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".agentroomd"
+    },
+    {
+      "path": "deploy/artifact-backup.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/artifact-restore.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/backup.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/build-release.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/caddy/Caddyfile.example",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".example"
+    },
+    {
+      "path": "deploy/caddy/verify-caddy.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/compose/compose.yaml",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "deploy/compose/dex-config.yaml",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "deploy/config/agentroom.conf.example",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".example"
+    },
+    {
+      "path": "deploy/configure-instance.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/deploy.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/doctor.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/install-host.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/lib/common.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/migrate.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/package-release.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/pgbackrest/pgbackrest.conf.example",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".example"
+    },
+    {
+      "path": "deploy/pgbackrest/postgresql.conf.snippet",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".snippet"
+    },
+    {
+      "path": "deploy/restore.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/rollback.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/smoke.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "deploy/systemd/agentroom-migrate.service",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".service"
+    },
+    {
+      "path": "deploy/systemd/agentroom.service",
+      "unitId": "area:deploy",
+      "classification": "configuration-or-metadata",
+      "extension": ".service"
+    },
+    {
+      "path": "deploy/verify-artifact.sh",
+      "unitId": "area:deploy",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "go.mod",
+      "unitId": "area:go.mod",
+      "classification": "configuration-or-metadata",
+      "extension": ".mod"
+    },
+    {
+      "path": "go.sum",
+      "unitId": "area:go.sum",
+      "classification": "configuration-or-metadata",
+      "extension": ".sum"
+    },
+    {
+      "path": "internal/adapters/claude/stream.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/claude/stream_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/claude/testdata/claude-2.1.220.jsonl",
+      "unitId": "area:internal",
+      "classification": "configuration-or-metadata",
+      "extension": ".jsonl"
+    },
+    {
+      "path": "internal/adapters/codex/jsonl.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/codex/jsonl_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/codex/testdata/codex-0.145.jsonl",
+      "unitId": "area:internal",
+      "classification": "configuration-or-metadata",
+      "extension": ".jsonl"
+    },
+    {
+      "path": "internal/adapters/hermes/client_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/hermes/hooks.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/hermes/testdata/sessions-v2026.7.20.json",
+      "unitId": "area:internal",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "internal/adapters/normalize.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/adapters/normalize_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/app/ports.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/app/service.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/app/service_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/artifacts/store.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/artifacts/store_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/auth/manager.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/auth/manager_integration_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/auth/password_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/config/config.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/config/config_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/domain/commands.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/domain/commands_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/domain/models.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/domain/situation_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/httpapi/mcp.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/httpapi/ratelimit.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/httpapi/ratelimit_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/httpapi/server.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/httpapi/server_integration_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/notify/systemd.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/notify/systemd_abstract_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/notify/systemd_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/admin.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/migrate.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/outbox.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/projector.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/repository.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/repository_integration_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/sqlcgen/db.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/sqlcgen/models.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/sqlcgen/querier.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/postgres/sqlcgen/resources.sql.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/realtime/hub.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/realtime/hub_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/runner/manager_control_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/runner/manager_unix.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/version/version.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/webui/handler.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "internal/webui/handler_test.go",
+      "unitId": "area:internal",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "memory-bank/activeContext.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/build-deployment.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/database-schema.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/decisions.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/productContext.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/progress.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/projectRules.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/projectbrief.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/quick-start.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/systemPatterns.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/tasks/2026-07/270726_founding-agent-room-release.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/tasks/2026-07/270726_open-source-publication-readiness.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/tasks/2026-07/270726_product-foundation.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/tasks/2026-07/README.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/techContext.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/testing-patterns.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "memory-bank/toc.md",
+      "unitId": "area:memory-bank",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "sqlc.yaml",
+      "unitId": "area:sqlc.yaml",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "tests/api/http_contract_test.go",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "tests/completeness/verify.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/approval_atomicity_test.go",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "tests/security/artifact-backup-restore.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/artifact-fail-closed.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/artifact_store_test.go",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "tests/security/authorized-pen-regression.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/backend-quality.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/completeness-scan.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/compose-postgres18.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/deployment-static.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/http-boundary.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/license-compliance.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/mcp-scope-regression.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/mcp-session-binding-regression.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/public-adapter-denial.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/real-daemon-browser.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/release-provenance-fail-closed.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/reproducible-release.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/runtime_boundary_test.go",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "tests/security/session-boundary-regression.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/source-authorization-contract.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/static-security.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "tests/security/zap/automation.yaml.template",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".template"
+    },
+    {
+      "path": "tests/security/zap/run.sh",
+      "unitId": "area:tests",
+      "classification": "test-eval-or-fixture",
+      "extension": ".sh"
+    },
+    {
+      "path": "third_party/go-licenses/github.com/coder/websocket/LICENSE.txt",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": ".txt"
+    },
+    {
+      "path": "third_party/go-licenses/github.com/coreos/go-oidc/v3/oidc/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/coreos/go-oidc/v3/oidc/NOTICE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/go-jose/go-jose/v4/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/go-jose/go-jose/v4/json/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/google/jsonschema-go/jsonschema/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/pgpassfile/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/pgservicefile/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/pgx/v5/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/jackc/puddle/v2/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/modelcontextprotocol/go-sdk/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/segmentio/asm/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/segmentio/encoding/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/github.com/yosida95/uritemplate/v3/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/crypto/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/oauth2/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/sync/semaphore/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/sys/cpu/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/go-licenses/golang.org/x/text/LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "third_party/web-licenses/react-family-LICENSE",
+      "unitId": "area:third_party",
+      "classification": "vendored-third-party",
+      "extension": null
+    },
+    {
+      "path": "web/eslint.config.js",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".js"
+    },
+    {
+      "path": "web/index.html",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".html"
+    },
+    {
+      "path": "web/package-lock.json",
+      "unitId": "area:web",
+      "classification": "lockfile",
+      "extension": ".json"
+    },
+    {
+      "path": "web/package.json",
+      "unitId": "area:web",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "web/playwright.config.ts",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/public/og.png",
+      "unitId": "area:web",
+      "classification": "asset-or-binary",
+      "extension": ".png"
+    },
+    {
+      "path": "web/src/App.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/api/client.ts",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/api/types.ts",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/auth/AuthContext.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/components/AppShell.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/components/Common.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/hooks/useCollection.ts",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/main.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/ApprovalsPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/AttentionPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/BudgetsPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/ChatPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/EvidencePage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/HealthPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/LoginPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/SessionsPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/TasksPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/TimelinePage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/pages/WorkersPage.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/stream/StreamContext.tsx",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/styles.css",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".css"
+    },
+    {
+      "path": "web/src/test/App.test.tsx",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/test/Common.test.tsx",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".tsx"
+    },
+    {
+      "path": "web/src/test/client.test.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/test/fixtures.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/test/jest-axe.d.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/test/setup.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/src/test/toolchain.test.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/tests/browser/control-room.spec.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/tests/browser/real-daemon.spec.ts",
+      "unitId": "area:web",
+      "classification": "test-eval-or-fixture",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/tsconfig.app.json",
+      "unitId": "area:web",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "web/tsconfig.browser.json",
+      "unitId": "area:web",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "web/tsconfig.json",
+      "unitId": "area:web",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "web/tsconfig.node.json",
+      "unitId": "area:web",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "web/vite.config.ts",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    },
+    {
+      "path": "web/vitest.config.ts",
+      "unitId": "area:web",
+      "classification": "first-party-source",
+      "extension": ".ts"
+    }
+  ]
+}

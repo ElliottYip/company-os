@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "package:mcp-server",
+      "auditStatus": "COMPLETE",
+      "function": "Stdio MCP façade over Paperclip REST APIs, exposing Agent/company/task/goal/approval/document/workspace runtime read and mutation tools.",
+      "dependencyDirection": "Depends on MCP SDK, shared schemas and Zod; reads API URL/token/company/Agent/run identity from environment and delegates authorization to the server.",
+      "keyDataModels": "MCP tool definition, API client config, company/Agent defaults, issue/goal/approval IDs and formatted text/error responses.",
+      "lifecycle": "Read environment credential/context → register dozens of tools → validate input → call REST endpoint → format result/error over stdio.",
+      "testAssessment": "Only one tools test covers a broad mutable surface; API/schema drift, permission denial, cross-tenant identifiers, idempotency and destructive tool semantics need much stronger contract coverage.",
+      "designRationale": "Give coding Agents a standard tool protocol without embedding REST details into every Agent prompt/runtime.",
+      "companyOsProblem": "Company OS needs a Data/Tool Connector boundary and safe Agent-facing control tools.",
+      "companyOsFit": "MCP can be one adapter, never the core Connector contract. Company OS tools must be generated from owned API contracts and expose stable machine errors.",
+      "responsibilityConflict": "The same token surface can create/patch/checkout work, request approvals and control runtime services. Company OS must attenuate each call to an exact capability lease, risk policy and accountable-human contract.",
+      "decision": "ADAPT",
+      "evidence": ["packages/mcp-server/src/config.ts", "packages/mcp-server/src/client.ts", "packages/mcp-server/src/tools.ts:237-586", "packages/mcp-server/src/tools.test.ts"]
+    },
+    {
+      "id": "package:google-sheets-mcp-server",
+      "auditStatus": "COMPLETE",
+      "function": "MCP server for reading and mutating Google Sheets through service-account credentials over stdio or HTTP.",
+      "dependencyDirection": "Depends directly on Google APIs, MCP SDK and Zod; credential JSON/path and HTTP auth are resolved at the process boundary.",
+      "keyDataModels": "Service-account configuration, spreadsheet/range requests, tool responses, HTTP auth config and secret-redaction values.",
+      "lifecycle": "Load/validate credentials → construct Google client → register Sheets tools → receive stdio/HTTP call → execute external API → redact and return result.",
+      "testAssessment": "Five tests cover config, Google client, tools and HTTP server. They are fixture/mocked tests and do not prove enterprise domain allowlists, row-level data contracts, DLP or Google audit reconciliation.",
+      "designRationale": "Provide a concrete external data/tool integration with both local and hosted transports.",
+      "companyOsProblem": "Company OS needs company data connectors, authorization contracts, egress firewall checks, credential leasing and evidence of external reads/writes.",
+      "companyOsFit": "Useful threat-model input, but a standalone MCP credential/config model is insufficient for Company OS data governance.",
+      "responsibilityConflict": "Spreadsheet writes can be business actions. They require data-scope authorization, output classification, exact action approval when risky and immutable evidence, not merely possession of a service account.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["packages/google-sheets-mcp-server/src/config.ts", "packages/google-sheets-mcp-server/src/google-client.ts", "packages/google-sheets-mcp-server/src/tools.ts", "packages/google-sheets-mcp-server/src/http.ts", "packages/google-sheets-mcp-server/src/tools.test.ts"]
+    },
+    {
+      "id": "package:kv-demo-mcp-server",
+      "auditStatus": "COMPLETE",
+      "function": "Deterministic in-memory key/value MCP fixture with stdio startup and basic tools.",
+      "dependencyDirection": "Depends only on MCP SDK and Zod; no Paperclip server or production store.",
+      "keyDataModels": "In-memory key/value entries and MCP tool request/response.",
+      "lifecycle": "Start process → register get/set/list/delete-like fixture tools → mutate process memory → discard state on exit.",
+      "testAssessment": "Three tests cover store/tool/server behavior; it is intentionally not persistence, tenancy or security evidence.",
+      "designRationale": "Provide a small deterministic MCP target for integration and smoke tests.",
+      "companyOsProblem": "Company OS Demo and Connector conformance tests need credential-free deterministic external-system fixtures.",
+      "companyOsFit": "The pattern fits, but it must be labeled fixture/Demo and isolated from formal data or Agent claims.",
+      "responsibilityConflict": "Fixture writes must never be projected as real enterprise actions or evidence.",
+      "decision": "ADAPT",
+      "evidence": ["packages/kv-demo-mcp-server/src/index.ts", "packages/kv-demo-mcp-server/src/store.ts", "packages/kv-demo-mcp-server/src/tools.ts", "packages/kv-demo-mcp-server/src/server.test.ts"]
+    },
+    {
+      "id": "package:skills-catalog",
+      "auditStatus": "COMPLETE",
+      "function": "Builds and validates a catalog of bundled/optional Agent skills, files, assets, sources, trust levels and compatibility metadata.",
+      "dependencyDirection": "Depends on shared frontmatter/schema helpers; generated manifest is consumed by server/UI and release packaging.",
+      "keyDataModels": "CatalogSkill, source reference, file kind, trust level (`markdown_only`, `assets`, `scripts_executables`), compatibility and generated manifest.",
+      "lifecycle": "Scan catalog files → parse frontmatter → validate slugs/source/file graph → hash/package metadata → compare or write deterministic generated manifest → ship catalog.",
+      "testAssessment": "Five tests cover builder, frontmatter, packaged artifacts, release-content contracts and shipped manifest. Runtime skill execution safety remains outside the catalog package.",
+      "designRationale": "Make instructional and executable Agent assets discoverable and release-verifiable with explicit trust classification.",
+      "companyOsProblem": "Company OS FDE templates and later training need versioned, provenance-aware capabilities with trust and compatibility metadata.",
+      "companyOsFit": "Trust-tier and deterministic manifest ideas are valuable; Paperclip skills/content/brand should not be copied wholesale.",
+      "responsibilityConflict": "A skill is guidance or executable material, not authority. Installation and use must be bounded by Agent role, data scope, human owner and signed version.",
+      "decision": "ADAPT",
+      "evidence": ["packages/skills-catalog/src/types.ts", "packages/skills-catalog/src/catalog-builder.ts", "packages/skills-catalog/generated/catalog.json", "packages/skills-catalog/src/packaged-artifacts.test.ts"]
+    },
+    {
+      "id": "package:teams-catalog",
+      "auditStatus": "COMPLETE",
+      "function": "Builds and validates deployable team templates containing Agents, projects, tasks, local/external skills and environment inputs.",
+      "dependencyDirection": "Reads the skills catalog generated manifest and team markdown/frontmatter; generated team manifest is consumed by product onboarding/import paths.",
+      "keyDataModels": "CatalogTeam schema `agentcompanies/v1`, Agent/project/task graph, reportsTo/owner/assignee references, skill requirements, source refs and secret/plain environment inputs.",
+      "lifecycle": "Scan team bundle → parse entity files → validate graph and referenced skills → summarize env inputs/trust → write deterministic catalog manifest → import into a company.",
+      "testAssessment": "Two tests cover builder and shipped catalog. Human roles, responsibility contracts, approval policies, data contracts, template upgrades and rollback are not represented or tested.",
+      "designRationale": "Turn a repeatable Agent organization and workflow into a distributable onboarding artifact.",
+      "companyOsProblem": "This directly anticipates Company OS FDE industry templates, implementation repeatability and template provenance.",
+      "companyOsFit": "The catalog pipeline is a strong reference, but Company OS templates must include humans, departments, accountable roles, responsibility contracts, data authorization, risk/approval policies and migration versions.",
+      "responsibilityConflict": "Current reporting/ownership references are Agent-centric. Importing them as formal organization state would omit accountable humans and may silently grant tools/secrets.",
+      "decision": "ADAPT",
+      "evidence": ["packages/teams-catalog/src/types.ts:1-113", "packages/teams-catalog/src/catalog-builder.ts:31-916", "packages/teams-catalog/catalog", "packages/teams-catalog/src/catalog-builder.test.ts"]
+    }
+  ]
+}

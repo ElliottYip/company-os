@@ -1,0 +1,2080 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-18",
+  "source": {
+    "id": "humanlayer-acp",
+    "repository": "https://github.com/humanlayer/agentcontrolplane",
+    "branch": "v0.5.1",
+    "tag": "v0.5.1",
+    "commit": "bc703d36579edb973da1ca2a748381cdb4eb8b55",
+    "actualCommit": "bc703d36579edb973da1ca2a748381cdb4eb8b55",
+    "license": "Apache-2.0",
+    "licenseFile": "LICENSE",
+    "trackedPathCount": 241,
+    "commitCountAtPin": 1,
+    "latestCommit": "2025-04-17T10:31:04-07:00\tdexhorthy\trelease v0.5.1"
+  },
+  "completionRule": {
+    "noUnassignedTrackedPaths": true,
+    "completeUnitFields": [
+      "function",
+      "dependencyDirection",
+      "keyDataModels",
+      "lifecycle",
+      "testAssessment",
+      "designRationale",
+      "companyOsProblem",
+      "companyOsFit",
+      "responsibilityConflict",
+      "licenseAssessment",
+      "decision",
+      "evidence"
+    ]
+  },
+  "units": [
+    {
+      "id": "area:.github",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.gitignore",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:.vscode",
+      "pathCount": 2,
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "id": "area:acp",
+      "pathCount": 219,
+      "classifications": {
+        "configuration-or-metadata": 88,
+        "first-party-source": 83,
+        "documentation-or-instruction": 35,
+        "test-eval-or-fixture": 13
+      }
+    },
+    {
+      "id": "area:acp-example",
+      "pathCount": 11,
+      "classifications": {
+        "configuration-or-metadata": 9,
+        "documentation-or-instruction": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "id": "area:CLAUDE.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:cli.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:CONTRIBUTING.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:knowledge.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "id": "area:LICENSE",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:Makefile",
+      "pathCount": 1,
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "id": "area:README.md",
+      "pathCount": 1,
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    }
+  ],
+  "directories": [
+    {
+      "path": ".",
+      "pathCount": 8,
+      "unitIds": [
+        "area:.gitignore",
+        "area:CLAUDE.md",
+        "area:CONTRIBUTING.md",
+        "area:LICENSE",
+        "area:Makefile",
+        "area:README.md",
+        "area:cli.md",
+        "area:knowledge.md"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 5
+      }
+    },
+    {
+      "path": ".github/workflows",
+      "pathCount": 1,
+      "unitIds": [
+        "area:.github"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": ".vscode",
+      "pathCount": 2,
+      "unitIds": [
+        "area:.vscode"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "acp",
+      "pathCount": 10,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 8,
+        "documentation-or-instruction": 2
+      }
+    },
+    {
+      "path": "acp-example",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "acp-example/agents",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "acp-example/grafana",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp-example/kind",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp-example/loki",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp-example/otel",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "first-party-source": 1,
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp-example/prometheus",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp-example"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp/.devcontainer",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1,
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "acp/.github/workflows",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "acp/api/v1alpha1",
+      "pathCount": 8,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 8
+      }
+    },
+    {
+      "path": "acp/cmd",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "acp/config",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 1
+      }
+    },
+    {
+      "path": "acp/config/crd",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "acp/config/crd/bases",
+      "pathCount": 7,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 7
+      }
+    },
+    {
+      "path": "acp/config/default",
+      "pathCount": 4,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 4
+      }
+    },
+    {
+      "path": "acp/config/localdev",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "acp/config/manager",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "acp/config/network-policy",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "acp/config/prometheus",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3
+      }
+    },
+    {
+      "path": "acp/config/rbac",
+      "pathCount": 15,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 15
+      }
+    },
+    {
+      "path": "acp/config/release",
+      "pathCount": 22,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 22
+      }
+    },
+    {
+      "path": "acp/config/samples",
+      "pathCount": 10,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 10
+      }
+    },
+    {
+      "path": "acp/docs",
+      "pathCount": 6,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 6
+      }
+    },
+    {
+      "path": "acp/hack",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp/hack/playground",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "acp/internal/adapters",
+      "pathCount": 4,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "acp/internal/controller",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "acp/internal/controller/agent",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "acp/internal/controller/contactchannel",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "acp/internal/controller/llm",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "acp/internal/controller/mcpserver",
+      "pathCount": 3,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 3
+      }
+    },
+    {
+      "path": "acp/internal/controller/task",
+      "pathCount": 4,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "acp/internal/controller/toolcall",
+      "pathCount": 4,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "acp/internal/externalAPI",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "acp/internal/humanlayer",
+      "pathCount": 4,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 3,
+        "test-eval-or-fixture": 1
+      }
+    },
+    {
+      "path": "acp/internal/humanlayerapi",
+      "pathCount": 34,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 3,
+        "documentation-or-instruction": 1,
+        "first-party-source": 30
+      }
+    },
+    {
+      "path": "acp/internal/humanlayerapi/.openapi-generator",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 2
+      }
+    },
+    {
+      "path": "acp/internal/humanlayerapi/api",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "configuration-or-metadata": 1
+      }
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs",
+      "pathCount": 25,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "documentation-or-instruction": 25
+      }
+    },
+    {
+      "path": "acp/internal/llmclient",
+      "pathCount": 6,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 6
+      }
+    },
+    {
+      "path": "acp/internal/mcpmanager",
+      "pathCount": 4,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 4
+      }
+    },
+    {
+      "path": "acp/internal/otel",
+      "pathCount": 1,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 1
+      }
+    },
+    {
+      "path": "acp/internal/server",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "first-party-source": 2
+      }
+    },
+    {
+      "path": "acp/test/e2e",
+      "pathCount": 2,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 2
+      }
+    },
+    {
+      "path": "acp/test/utils",
+      "pathCount": 10,
+      "unitIds": [
+        "area:acp"
+      ],
+      "classifications": {
+        "test-eval-or-fixture": 10
+      }
+    }
+  ],
+  "paths": [
+    {
+      "path": ".github/workflows/go-ci.yml",
+      "unitId": "area:.github",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": ".gitignore",
+      "unitId": "area:.gitignore",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": ".vscode/launch.json",
+      "unitId": "area:.vscode",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "unitId": "area:.vscode",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "CLAUDE.md",
+      "unitId": "area:CLAUDE.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "unitId": "area:CONTRIBUTING.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "LICENSE",
+      "unitId": "area:LICENSE",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "Makefile",
+      "unitId": "area:Makefile",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "README.md",
+      "unitId": "area:README.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp-example/Makefile",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp-example/README.md",
+      "unitId": "area:acp-example",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp-example/agents/crds.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/agents/kubechain-ui.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/agents/operator.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/grafana/values.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/kind/kind-config.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/loki/values.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/otel/otel-test-traces.py",
+      "unitId": "area:acp-example",
+      "classification": "first-party-source",
+      "extension": ".py"
+    },
+    {
+      "path": "acp-example/otel/values.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp-example/prometheus/values.yaml",
+      "unitId": "area:acp-example",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/.devcontainer/devcontainer.json",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".json"
+    },
+    {
+      "path": "acp/.devcontainer/post-install.sh",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "acp/.dockerignore",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/.github/workflows/lint.yml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "acp/.github/workflows/test-e2e.yml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "acp/.github/workflows/test.yml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "acp/.gitignore",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/.golangci.yml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "acp/CHANGELOG.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/Dockerfile",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/Makefile",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/PROJECT",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/README.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/api/v1alpha1/agent_types.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/contactchannel_types.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/groupversion_info.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/llm_types.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/mcpserver_types.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/task_types.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/toolcall_types.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/api/v1alpha1/zz_generated.deepcopy.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/cmd/main.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_agents.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_contactchannels.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_llms.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_mcpservers.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_tasks.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_toolcalls.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/bases/acp.humanlayer.dev_tools.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/crd/kustomizeconfig.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/default/cert_metrics_manager_patch.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/default/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/default/manager_metrics_patch.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/default/metrics_service.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/example-resources.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/config/localdev/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/localdev/service.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/manager/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/manager/manager.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/network-policy/allow-metrics-traffic.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/network-policy/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/prometheus/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/prometheus/monitor.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/prometheus/monitor_tls_patch.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/contactchannel_admin_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/contactchannel_editor_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/contactchannel_viewer_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/leader_election_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/leader_election_role_binding.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/llm_admin_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/llm_editor_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/llm_viewer_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/metrics_auth_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/metrics_auth_role_binding.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/metrics_reader_role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/role.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/role_binding.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/rbac/service_account.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/latest-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/latest.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.0-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.0.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.10-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.10.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.11-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.11.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.12-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.12.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.13-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.13.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.8-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.1.8.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.2.0-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.2.0.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.4.0-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.4.0.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.5.0-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.5.0.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.5.1-crd.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/release/v0.5.1.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_agent.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_claude_agent.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_claude_task.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_contactchannel.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_llm.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_mcpserver.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_mcpserver_with_secrets.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha1_task.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/acp_v1alpha_contactchannel_with_approval.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/config/samples/kustomization.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/docs/README.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/docs/crd-reference.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/docs/debugging-guide.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/docs/kubebuilder-guide.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/docs/llm-providers.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/docs/mcp-server.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/go.mod",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".mod"
+    },
+    {
+      "path": "acp/go.sum",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".sum"
+    },
+    {
+      "path": "acp/hack/boilerplate.go.txt",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".txt"
+    },
+    {
+      "path": "acp/hack/playground/humanlayer_client_play.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/adapters/mcp_adapter.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/adapters/mcp_adapter_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/adapters/openai.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/adapters/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/agent/agent_controller.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/agent/agent_controller_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/agent/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/contactchannel/contactchannel_controller.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/contactchannel/contactchannel_controller_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/contactchannel/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/llm/llm_controller.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/llm/llm_controller_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/llm/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/mcpserver/mcpserver_controller.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/mcpserver/mcpserver_controller_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/mcpserver/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/task/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/task/task_controller.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/task/task_controller_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/task/utils_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/toolcall/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/toolcall/toolcall_controller.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/toolcall/toolcall_controller_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/controller/toolcall/utils_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/externalAPI/main.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayer/client.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayer/hlclient.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayer/mock_hlclient.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayer/test_client.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/.gitignore",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/internal/humanlayerapi/.openapi-generator-ignore",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/internal/humanlayerapi/.openapi-generator/FILES",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/internal/humanlayerapi/.openapi-generator/VERSION",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": null
+    },
+    {
+      "path": "acp/internal/humanlayerapi/.travis.yml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yml"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/README.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/api/openapi.yaml",
+      "unitId": "area:acp",
+      "classification": "configuration-or-metadata",
+      "extension": ".yaml"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/api_default.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/client.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/configuration.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/ContactChannelInput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/ContactChannelOutput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/DefaultAPI.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/EmailContactChannel.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/EmailRecipient.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/Escalation.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/Field.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/FunctionCallInput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/FunctionCallOutput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/FunctionCallSpecInput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/FunctionCallSpecOutput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/FunctionCallStatus.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/HTTPValidationError.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/HumanContactInput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/HumanContactOutput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/HumanContactSpecInput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/HumanContactSpecOutput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/HumanContactStatus.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/ResponseOption.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/SMSContactChannel.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/SlackContactChannelInput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/SlackContactChannelOutput.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/ValidationError.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/ValidationErrorLocInner.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/docs/WhatsAppContactChannel.md",
+      "unitId": "area:acp",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/git_push.sh",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".sh"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_contact_channel_input.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_contact_channel_output.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_email_contact_channel.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_email_recipient.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_escalation.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_field.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_function_call_input.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_function_call_output.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_function_call_spec_input.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_function_call_spec_output.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_function_call_status.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_http_validation_error.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_human_contact_input.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_human_contact_output.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_human_contact_spec_input.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_human_contact_spec_output.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_human_contact_status.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_response_option.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_slack_contact_channel_input.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_slack_contact_channel_output.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_sms_contact_channel.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_validation_error.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_validation_error_loc_inner.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/model_whats_app_contact_channel.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/response.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/humanlayerapi/utils.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/llmclient/factory.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/llmclient/langchaingo_client.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/llmclient/llm_client.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/llmclient/llm_client_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/llmclient/mock_client.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/llmclient/suite_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/mcpmanager/envvar_mock_client.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/mcpmanager/envvar_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/mcpmanager/mcpmanager.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/mcpmanager/mcpmanager_test.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/otel/otel.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/server/runnable.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/internal/server/server.go",
+      "unitId": "area:acp",
+      "classification": "first-party-source",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/e2e/e2e_suite_test.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/e2e/e2e_test.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/agent.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/contactchannel.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/llm.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/mcpmanager.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/mcpserver.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/objects_utils.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/secret.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/task.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/toolcall.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "acp/test/utils/utils.go",
+      "unitId": "area:acp",
+      "classification": "test-eval-or-fixture",
+      "extension": ".go"
+    },
+    {
+      "path": "cli.md",
+      "unitId": "area:cli.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    },
+    {
+      "path": "knowledge.md",
+      "unitId": "area:knowledge.md",
+      "classification": "documentation-or-instruction",
+      "extension": ".md"
+    }
+  ]
+}
