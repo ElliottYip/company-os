@@ -7489,18 +7489,22 @@
     },
     {
       "id": "application:server/__tests__/plugin-environment-driver-seam",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Cross-layer contract tests for environment-driver and external-object manifest declarations, selected capability gates and worker SDK hook dispatch.",
+      "dependencyDirection": "Uses shared schema, server capability validator and plugin SDK protocol/worker host in memory with streams.",
+      "keyDataModels": "Environment driver, lease/setup responses, external object provider/detection/snapshot, companyId and JSON-RPC success/error envelopes.",
+      "lifecycle": "Validates manifests, checks operation requirements, initializes an in-process worker host, dispatches hooks and verifies supported or unimplemented responses.",
+      "testAssessment": "All six cases passed quickly. Coverage is a useful vertical seam but omits authenticated company scope, exhaustive capability parity, execution/cancel/timeout/idempotency, SSRF, egress, malformed payloads and responsibility evidence.",
+      "designRationale": "Keep schema, server authorization vocabulary and SDK runtime hooks synchronized for two plugin extension families.",
+      "companyOsProblem": "Company OS needs this style of compatibility test across Connector SDK, API and runtime, expanded to governed authority and evidence semantics.",
+      "companyOsFit": "ADAPT the vertical seam and METHOD_NOT_IMPLEMENTED contract; generate exhaustive operation-capability cases and add identity/tenant mismatch, digest-bound grant, risk approval, timeout/cancel, attestation and data-egress tests.",
+      "responsibilityConflict": "Worker requests supply companyId as ordinary input and no authenticated principal, accountable human, approval, permission lease or execution evidence is checked.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-environment-driver-seam.test.ts:1-410",
+        "server/src/services/plugin-capability-validator.ts:1-525",
+        "2026-08-18 focused Vitest: 6 passed"
+      ]
     },
     {
       "id": "application:server/__tests__/plugin-execution-workspace-bridge",
@@ -12604,18 +12608,22 @@
     },
     {
       "id": "application:server/services/plugin-capability-validator",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Static manifest feature and worker-to-host operation capability checker using a central string-to-string requirement map, UI/launcher maps and fail-closed unknown-operation behavior.",
+      "dependencyDirection": "Depends on shared manifest/capability/UI types plus server errors/logger; Loader calls install consistency checks and host bridges are expected to call runtime assertions.",
+      "keyDataModels": "PluginCapability strings, operation names, manifest-declared capability set and allowed/missing check result.",
+      "lifecycle": "Checks feature declarations at install, tests declared strings on each operation, rejects unknown operations or missing capabilities and reports human-readable denial messages.",
+      "testAssessment": "Six environment/external-object seam cases passed. They cover selected schema refinements and operation mappings but not exhaustive map/schema/handler parity, excessive grants, unknown-operation API ambiguity, upgrade/removal, scoped grants or denial evidence.",
+      "designRationale": "Make plugin least-privilege intent declarative and centrally auditable while rejecting new host operations until explicitly mapped.",
+      "companyOsProblem": "Company OS needs declared Connector capabilities separated from administrator-approved grants and runtime leases, all narrowed by organization, resource, data purpose/destination, risk, time and Responsibility contract.",
+      "companyOsFit": "REFERENCE the central fail-closed operation registry and feature-consistency tests. Rebuild as CapabilityDeclaration plus ApprovedGrant plus short-lived InvocationAuthority, generate map parity tests from one contract source and emit stable decision codes/evidence.",
+      "responsibilityConflict": "A manifest string is treated as authority; one environment capability grants the full lifecycle and raw provider-key access. There is no accountable approver, exact package digest, company/resource scope, high-risk action binding, purpose, expiry or evidence chain.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/services/plugin-capability-validator.ts:1-525",
+        "server/src/__tests__/plugin-environment-driver-seam.test.ts:1-410",
+        "research/paperclip/audit-batches/030-shared-db-plugin-sdk.json (already-complete package:shared evidence; not reread)"
+      ]
     },
     {
       "id": "application:server/services/plugin-config-validator",

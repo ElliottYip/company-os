@@ -1665,6 +1665,46 @@
         "Self-hosted mode canonicalizes but deliberately allows arbitrary local directories and npm sources; deployment ownership must therefore require explicit operator authority and isolation rather than treating canonicalization as trust."
       ],
       "completionRequirements": ["Read lines 1-108 exactly once and assess canonical/real paths, TOCTOU, allowed roots, deployment profiles, npm sources, error contracts and ownership against both focused suites."]
+    },
+    {
+      "id": "application:server/__tests__/plugin-environment-driver-seam",
+      "path": "server/src/__tests__/plugin-environment-driver-seam.test.ts",
+      "lineCount": 410,
+      "sha256": "d4068355aec20278d362cfaa6d0662ec679e5cf4f9ba190fe85dc9e23bd0a79b",
+      "linkedEvidence": { "history": ["8d9f9fd2 Add reusable sandbox custom images (#8794)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 410 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The suite proves schema feature-to-capability refinements and duplicate provider/driver keys for environment drivers and external object references, then cross-checks selected operation requirements.",
+        "Worker SDK tests prove supported-method discovery, successful hook dispatch and METHOD_NOT_IMPLEMENTED behavior, but they dispatch caller-supplied companyId directly without authenticated host scope, approval, lease attestation or evidence assertions.",
+        "Capability cases are representative rather than exhaustive; they do not enumerate every operation/feature mapping, unknown capability, wildcard/implication behavior, capability removal/upgrade or divergence between shared schema and server map.",
+        "Environment execution inputs include a free command string and provider lease ID, but the test does not implement or verify execution, cancellation, timeout, idempotency, proof or secret/data egress behavior.",
+        "External-object fixtures use sanitized URLs and snapshots but do not test SSRF, URL ownership, tenant mismatch, staleness, malicious output size/content or provenance."
+      ],
+      "completionRequirements": ["Read lines 1-410 exactly once, run focused tests and map environment-driver declaration/capability, manifest, config, runtime registration and rejection coverage to the capability validator."]
+    },
+    {
+      "id": "application:server/services/plugin-capability-validator",
+      "path": "server/src/services/plugin-capability-validator.ts",
+      "lineCount": 525,
+      "sha256": "9c630f8628dea259ede50fdad20250f5f93e733ed9a2e1cd6ecd4e93795c6d88",
+      "linkedEvidence": { "history": ["5a00040c feat(plugin-sdk): interactions/approvals respond + attachment read capabilities for the chat gateway (#10066)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 525 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The validator has a clear fail-closed unknown-operation path and central feature/UI/launcher requirement tables, but treats manifest declaration as effective grant with no separate approved-grant record.",
+        "Capabilities are unscoped strings: no company/resource set, action parameters, purpose, data class/destination, risk, expiry, accountable approver, contract/digest binding or runtime attenuation is represented.",
+        "environment.drivers.register unlocks validation, probe, lease, workspace, arbitrary execution, interactive setup and template lifecycle as one unit; Loader also uses the same bit to forward all configured model-provider keys and Kubernetes discovery variables.",
+        "approvals.respond, issues updates, external objects, HTTP, Secrets and database operations are similarly coarse; underlying handlers must independently enforce actor/company/object scope, so this map cannot be the canonical authorization decision.",
+        "The static operation map can drift from host handlers and shared schema. Unknown operations reject in checkOperation, while getRequiredCapabilities returns an empty array for unknown, an ambiguous API that tests or callers can misread as no capability required.",
+        "Install validation only checks that declared features have required strings; it does not reject unused excessive capabilities, prove operator approval or compare an immutable package digest. Mutable local manifest refresh bypasses it entirely.",
+        "Forbidden responses and logs use English strings without stable denial code/parameters or durable evidence; method implementations rely on this binding and can fail if detached from the returned object."
+      ],
+      "completionRequirements": ["Read lines 1-525 exactly once and trace the capability vocabulary, manifest feature requirements, runtime RPC gates, wildcard/implication semantics, unknown capabilities, upgrade comparison and governance/evidence ownership against direct tests and the already-complete shared-package audit."]
     }
   ]
 }
