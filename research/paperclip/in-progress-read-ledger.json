@@ -7001,6 +7001,50 @@
       "completionRequirements": [
         "Read lines 1-230 exactly once and assess telemetry opt-in/default behavior, exporter/configuration trust, sensitive attributes, failure isolation, span lifecycle and test quality against Company OS enterprise privacy and self-hosted guarantees."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-activity-events-routes",
+      "path": "server/src/__tests__/issue-activity-events-routes.test.ts",
+      "lineCount": 690,
+      "sha256": "5bf9ef8931d2f1c37f222b3bfe696ec7baced472bc84cd17be646acfb59f004a",
+      "linkedEvidence": {
+        "history": [
+          "f91a6e27c0feb7f92dcde981c9a741b869484e83 contain cross-issue agent side effects (#10837)",
+          "ded813ad6fae2c0b2c9009e04f59b117ecae0151 add governed agent addressees (#10252)",
+          "627728bddeeea57fb0b0ceadef741eeb390ef8ea add authoritative issue PATCH receipts (#10478)",
+          "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed test runs (#9241)",
+          "b7545823bec49b4a73c3813d8fb634f68fc84b48 Add document annotations and comments (#6733)",
+          "d734bd43d1c79cc6e33f5a12bffacdb158021a50 Roll up May 17 branch changes (#6210)",
+          "0808b388eec817fda3a798b5ec46e391a463d522 Add source-scoped recovery actions (#5599)",
+          "d0e9cc76f2eb114ed63d398ee0a0185d64bff852 Show workspace changes and stale notices (#5356)",
+          "424e81d087d04abad8f4878572f8fac3b7d10d75 Improve operator workflow QoL (#5291)",
+          "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 Split backend control-plane QoL slice (#4700)",
+          "9a8d2199492654930ba0864dd5c0757163998649 Stabilize tests and local maintenance assets (#4423)",
+          "a95739442027bdec8d291030a91e351dc434f635 Add structured issue-thread interactions (#4244)",
+          "ab9051b595be21dcfab93a4c02ff65548a6341ff Add first-class issue references (#4214)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 690 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Read lines 1-230 exactly once. This opening section constructs a fully mocked issue-route harness around a fixed local board actor and exposes the large orchestration fan-out: access/activity, issue mutation, heartbeat Run control, feedback/data-sharing, routines, skills, references, annotations, approvals/recovery actions, work products and instance settings.",
+        "The fixture issue binds company, creator and Agent assignee but no responsible human. issueUpdateWithReceipt strips actor and dependency fields before applying a patch, then derives authoritative changes from before/after snapshots; later assertions must determine whether identity, policy and dependency mutations retain equivalent evidence.",
+        "The harness defaults permissions false, Run lookups null and relation/wakeup results empty, which is useful for isolated route effects but may hide transaction, tenant, concurrency and downstream failure behavior. Authentication is injected as a same-company human board actor; Agent and cross-company cases must be located in the remaining lines before judgment.",
+        "Read lines 231-460 exactly once. PATCH responses include before/after field receipts, omit no-op fields, canonicalize blocker IDs, return relation summaries and support RFC-style Prefer return=minimal while preserving an additive full response.",
+        "Long title/description receipt values are truncated to 200 characters and only marked updated, which limits payload exposure but is not sufficient evidence of exact content. Company OS responsibility evidence should store a content digest plus separately governed full evidence reference rather than rely on lossy text receipts.",
+        "Blocker changes log added/removed IDs and compact issue summaries, but the assertion waits for activity after the HTTP response; logging is therefore not proven transactionally coupled and can conceptually be lost after successful mutation.",
+        "Read lines 461-690 exactly once. Activity adds readable workspace before/after labels and IDs, resolves a pending successful-Run handoff when status becomes done, and emits explicit added/removed reviewer and approver participants when execution policy changes.",
+        "Handoff resolution is inferred by querying the latest activity row and then logging another activity after status mutation. It binds source/corrective Run IDs but does not assert responsible human, result/evidence digest, exact handoff contract, idempotency or transactionality.",
+        "Reviewer/approver activity records explicit human/Agent participant diffs, a useful responsibility projection, but tests do not cover authority to change the policy, participant existence/company membership, self-approval, separation of duties, policy version or immutable action digest.",
+        "Sandboxed focused Vitest failed 10/10 because Supertest could not bind a temporary TCP port. Approved unsandboxed rerun passed 10/10 while logging uncaught-by-test best-effort external-object sync and sandbox-lease cleanup warnings caused by incomplete mocks.",
+        "A green run despite asynchronous downstream warnings proves route success is intentionally decoupled from several side effects. Company OS must distinguish optional projections/integrations from mandatory responsibility evidence and use a transactional outbox for the latter."
+      ],
+      "completionRequirements": [
+        "Read lines 1-690 exactly once and assess issue activity/event transactionality, tenant and Work containment, human/Agent attribution, replay/idempotency, evidence authority and test quality against Company OS responsibility-chain semantics."
+      ]
     }
   ]
 }

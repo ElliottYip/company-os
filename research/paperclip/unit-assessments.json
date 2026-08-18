@@ -7569,18 +7569,24 @@
     },
     {
       "id": "application:server/__tests__/issue-activity-events-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mocked issue PATCH route tests for authoritative field-change responses and asynchronous activity projections for blockers, workspaces, Run handoffs and execution-policy participants.",
+      "dependencyDirection": "Supertest -> monolithic issue route -> mocked issue/access/activity/heartbeat/routine services plus partially real best-effort integrations; audit calls are observed after HTTP success.",
+      "keyDataModels": "Issue before/after receipt, blocker relations, workspace selection, successful-Run handoff activity and review/approval stage participants typed as human or Agent.",
+      "lifecycle": "Authorize fixed board actor -> mutate Issue -> return full/minimal change receipt -> asynchronously enrich and log projections -> best-effort integration/cleanup side effects may fail after success.",
+      "testAssessment": "Sandboxed run failed 10/10 on prohibited TCP bind; approved unsandboxed run passed 10/10 while emitting external-sync and sandbox-cleanup warnings. Receipt shape is well tested, but authorization, transactionality, idempotency and side-effect failure containment are not.",
+      "designRationale": "Give API clients compact authoritative before/after mutation feedback and produce readable operational activity for relationship, workspace, handoff and policy changes without blocking the main Issue update.",
+      "companyOsProblem": "Company OS needs exact, attributable responsibility evidence for Work, approval and handoff mutations while allowing optional UI/integration projections to fail independently.",
+      "companyOsFit": "ADAPT minimal/full change receipts, no-op omission, canonical relation diffs and explicit human/Agent participant changes. Add content digests and governed evidence references, action-specific authority, policy version, accountable human, idempotency and a transactional outbox for mandatory responsibility records; keep optional integrations separately best-effort.",
+      "responsibilityConflict": "Activity is asserted after a successful response and the green run tolerates downstream warnings, so it cannot prove atomic evidence. Handoff resolution and approver changes lack accountable-human authority, exact contract/action digest and separation-of-duties assertions.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-activity-events-routes.test.ts:1-690 (SHA-256 5bf9ef8931d2f1c37f222b3bfe696ec7baced472bc84cd17be646acfb59f004a)",
+        "git history: 14 commits from f91a6e27c0feb7f92dcde981c9a741b869484e83 through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/10 passed due TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 10/10 passed with best-effort downstream warnings"
+      ],
+      "securityFindings": "HIGH audit-atomicity gap: activity is not proven committed with mutation. HIGH authorization gap: only a fixed same-company human actor is exercised. HIGH approval-governance gap: policy participant changes lack authority/separation/version assertions. HIGH evidence gap: long text is truncated without digest/full evidence reference. MEDIUM side-effect observability gap: integration and lease cleanup warnings do not fail tests. MEDIUM privacy gap: readable workspace titles/IDs enter activity without classification tests."
     },
     {
       "id": "application:server/__tests__/issue-agent-mutation-ownership-routes",
