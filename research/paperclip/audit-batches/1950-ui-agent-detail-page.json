@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:ui/pages/AgentDetail",
+      "auditStatus": "COMPLETE",
+      "function": "A 4,360-line customer-facing Agent control page combining identity and hierarchy, configuration and instructions, permissions, budgets, secrets, Runs and live logs, tool decisions, audit, revisions, built-in operations and responsive navigation.",
+      "dependencyDirection": "The React page directly composes twelve API domains, global company/sidebar/experimental contexts, vendor adapter registries and capabilities, WebSocket transport, configuration and transcript parsers, instructions/assets/tools/Skills, budgets/trust, audit and built-in Agent controls. Presentation depends on application APIs, runtime-specific types and client-local policy in one monolith.",
+      "keyDataModels": "Agent and reporting chain, membership and responsibleUserId, HeartbeatRun/events/logs/workspace operations/context snapshots, Work, budget policy, permissions/trust presets, config revisions, instruction bundles/files/assets, tool decisions, adapter configuration/capabilities, sessions and API keys.",
+      "lifecycle": "Resolve company/Agent; fetch broad operational and governance projections; mutate Agent/config/permissions/budget/instructions/keys; approve or invoke/reset built-ins; monitor/cancel/resume/retry Runs; reconnect live event/log streams; render transcript/failure/event evidence; preserve selected dirty editors and route identity.",
+      "testAssessment": "The three focused supporting suites passed 22/22 tests on 2026-08-19 and the complete UI no-emit TypeScript check passed. Tests give useful coverage for instruction editor selection/save, Run-to-Work navigation and progress/rename helpers, but do not cover most page mutations, tenant authorization, concurrency, approvals, secrets, API keys, WebSocket gap recovery, log integrity/redaction, bulk recovery, responsive accessibility or an end-to-end responsibility chain.",
+      "designRationale": "Provide one operational surface where an administrator can configure an Agent and diagnose its latest and historical activity without navigating across many separate products. Rich client-side composition allows rapid feature addition and vendor-specific diagnostics.",
+      "companyOsProblem": "Company OS needs an Agent Boss surface connecting organization, accountable humans, responsibility contracts, permissions/data grants, risk approval, vendor-neutral execution, evidence/results, costs and safe recovery while remaining independently deployable and responsive.",
+      "companyOsFit": "REIMPLEMENT the page as Company OS-owned projections and bounded workflows. ADAPT only isolated patterns: invalid reporting-chain admission, explicit desired-versus-actual/runtime state, revision visibility, byte-paged logs with visible limits, live-follow behavior, Run-to-Work fallback and responsive list/detail layout. Put identity, Secrets, governance, Connector execution, evidence and presentation behind independent server-owned contracts.",
+      "responsibilityConflict": "The page mostly models Agent operational ownership: responsibleUserId is shown as 'On behalf of', entity approval is one click, and recovery/config/permission/key actions lack the full initiator-accountable human-executor-approver-permission/data-evidence-result chain. Vendor sessions, client redaction and adapter result/transcript parsing can become mistaken for authoritative responsibility evidence.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "ui/src/pages/AgentDetail.tsx:1-4360",
+        "SHA-256 dc042ddc3bb6cacf848f47ab22e3d203927594ad345198e25c94080172c0a10a",
+        "19be4cf9278b70bc151063778a94bf38bfd5c903 refactor(a11y): add scope=col to the agent costs table headers (#1789)",
+        "3dec88ce90f46e80a8f5af84d5b0fa320427d8b9 feat(agents): warn when an agent's escalation path routes to a paused manager (#10657)",
+        "71231dfa38681c10cb2a453485ea402a5258ca8b feat(audit): agent audit UI — company page + per-agent tab (#9744)",
+        "f49a3f99243a11b154b22b88c2f0ede16bf66b48 fix(ui): cap live agent-run transcript buffers to bound tab memory (#9569)",
+        "2026-08-19 focused Vitest: 3 files and 22 tests passed",
+        "2026-08-19 ui/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Secret/path redaction is client-side and inconsistent; raw login stdout/stderr, command/cwd, adapter result JSON and excerpts can expose credentials, host topology, private reasoning or external sessions.",
+        "Configuration, permissions, instruction files, budget, approval, retry/resume/session reset and key revocation lack a consistently visible expected revision, reason, accountable approver, action digest and durable receipt.",
+        "Instruction image upload uses global selectedCompanyId while the page also carries explicit Agent companyId, creating a concrete cross-company scope mismatch risk during route/context lag.",
+        "WebSocket reconnect has no resume cursor or visible gap recovery; polling and malformed-event failures are silently ignored, so the displayed tail cannot prove evidence completeness.",
+        "JSONL parsing silently discards malformed records, invents missing timestamps and coerces unknown streams; string-length fallback may not match byte offsets for Unicode logs.",
+        "API keys have no visible scope, audience, expiry, last-used metadata, rotation policy or responsible-human approval; plaintext remains in component state until dismissal/unmount.",
+        "Vendor authentication and private session manipulation occur inside the generic page, conflicting with a secret-free, vendor-neutral Connector boundary.",
+        "Several full-list fetches and client-side sorts have no visible pagination, and resolving one responsible user fetches the company directory, increasing unnecessary tenant-data exposure and scale risk."
+      ]
+    }
+  ]
+}
