@@ -4,6 +4,65 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:server/__tests__/companies-service",
+      "path": "server/src/__tests__/companies-service.test.ts",
+      "lineCount": 867,
+      "sha256": "c67df6127649209de5ca4b042dabf65ba0b2cd76388cde6f996116b9b9575934",
+      "linkedEvidence": { "history": ["1f1f54523876481ab0011c3fdd0b842753cd511a feat: add built-in summarizer and summary slots (#9713)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 867 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-220 use real embedded Postgres and thorough table cleanup. They cover generated issue-prefix collision retry, automatic creation of a paused Reflection Coach Agent/skill/routine bundle and the beginning of company archive cascade setup.",
+        "Fresh company creation silently provisions first-party Agent resources. The test proves idempotent startup reconciliation but not whether installation is explicitly consented, profile-controlled, transactionally coupled to company creation or attributable to a human decision.",
+        "Lines 221-440 prove archive atomically-looking behavior at the observable level: runnable Agent states become paused with company_archived provenance, active heartbeat run and wakeup request are cancelled, and one activity records actor plus counts. Reactivation restores only archive-paused Agents and preserves manual/pending states.",
+        "The assertions cover state discrimination well but use a free-form test user and English cancellation text; they do not yet bind approval/action digest, exact responsible human, connector cancellation acknowledgement, evidence or failure rollback.",
+        "Lines 441-660 verify update(status=archived) shares the archive cascade, that archive provenance survives an intermediate company paused state, and that archived-to-active emits a reactivation event even when zero Agents restore while ordinary paused-to-active should not. This is a thoughtful lifecycle distinction Company OS should preserve.",
+        "Lines 661-867 add orphan queued-wakeup cancellation, repeat-archive idempotency and paused-to-archived coverage. The suite is strong on database end state and duplicate lifecycle activity, but omits concurrent archive/reactivate races, injected mid-transaction failures, external Connector cancellation/attestation, human authorization/approval, event outbox durability, hard-delete behavior and defaultResponsibleUserId integrity."
+      ],
+      "completionRequirements": ["Read lines 1-867 exactly once and assess company lifecycle, archive/reactivation cascades, responsible-human semantics, side-effect ordering, failure recovery and test quality."]
+    },
+    {
+      "id": "application:server/services/companies",
+      "path": "server/src/services/companies.ts",
+      "lineCount": 508,
+      "sha256": "923b1c5ece751346722724651660f1771ff7d0cfffa3d8084f8dadc8cd9d2f55",
+      "linkedEvidence": { "history": ["ded813ad6fae2c0b2c9009e04f59b117ecae0151 feat(interactions): add governed agent addressees (#10252)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 508 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-180 reveal a very broad service dependency surface across organization, identity grants, Agents/runtime, work, approvals, finance, secrets, skills, documents, routines, assets and activity.",
+        "Archive first pauses Agents and cancels orphan wakeups inside a database transaction, but active run cancellation through heartbeatService and the company.archived activity write occur afterward in finalizeArchive outside that transaction. A failure can leave company/Agent state committed while runs continue or audit evidence is absent; the activity count reflects intended run cancellations rather than acknowledged cancellations.",
+        "Lifecycle cancellation reasons are persisted English display strings, not stable reason codes with structured parameters.",
+        "Lines 181-360 compute monthly spend in a second grouped query, avoiding per-company N+1. Issue prefixes retry unique-constraint collisions up to 9,999 times with progressively repeated A suffixes; it handles wrapped database errors but has no bounded naming policy or idempotency key.",
+        "Company creation inserts the company, then ensures a local environment and auto-provisions bundled Agents in separate service calls without one transaction/compensation. Partial creation is possible. Update does use a transaction for company fields, logo ownership, Agent reactivation and initial archive cascade.",
+        "Lines 361-508 confirm reactivation activity and archive run cancellation/activity happen after commit. A failure returns an error after durable state changed; no outbox/retry reconciler closes the gap. Sequential idempotency exists, but archive reads status without an explicit row lock or compare-and-set, so concurrent callers can both observe non-archived and emit duplicate cascades/evidence.",
+        "Hard delete manually erases activity, approvals/comments, cost/finance events, secrets, work, runs and organization data inside one transaction before deleting the company. This is internally atomic but destroys the responsibility/evidence chain and is fragile as new child tables are added; Company OS requires retention/legal hold, tombstones and separately governed cryptographic erasure instead.",
+        "The service accepts a broad partial database insert shape rather than explicit lifecycle commands. It has no authorization or responsible-human invariant internally and depends completely on callers for these product-critical rules."
+      ],
+      "completionRequirements": ["Read lines 1-508 exactly once and trace CRUD, lifecycle cascades, responsible principals, events/activity, database transactions, idempotency and dependency direction."]
+    },
+    {
+      "id": "application:server/services/company-member-roles",
+      "path": "server/src/services/company-member-roles.ts",
+      "lineCount": 65,
+      "sha256": "45cd72eb296156bc1d24212d586b47b33f6642a33c92a9fcce9da06a743537ef",
+      "linkedEvidence": { "history": ["8b6a06ee254b06cbadbe334e891285e22084caab [codex] Add built-in agents and Reflection Coach bundle (#9206)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 65 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The module defines four fixed human roles and deterministic default grants. Owner/admin/operator/viewer are understandable, and legacy member maps to operator, but unknown or malformed input also defaults to operator rather than denying or requiring repair.",
+        "All grants use null/global scope. There is no department/project/data-domain scoping, deny, expiry, delegation, separation of duties, risk class, approval authority, role version or policy provenance. Owner differs from admin only by users:manage_permissions.",
+        "Critical company lifecycle, portability and data-sharing operations are absent from permission keys and the audited company route checks only active membership, so this role model does not actually govern archive, hard delete, export or import. Company OS may reference the simple role-to-grant projection but must own a versioned policy/authority model tied to accountable humans."
+      ],
+      "completionRequirements": ["Read lines 1-65 exactly once and assess role derivation, privilege stability, extension behavior and coupling to company/Agent responsibility semantics."]
+    },
+    {
       "id": "application:server/__tests__/companies-route-cross-company-authz",
       "path": "server/src/__tests__/companies-route-cross-company-authz.test.ts",
       "lineCount": 357,

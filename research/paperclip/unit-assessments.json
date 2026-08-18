@@ -3601,18 +3601,23 @@
     },
     {
       "id": "application:server/__tests__/companies-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL integration tests for company creation, bundled Agent provisioning, archive/reactivation cascades, run/wakeup cancellation and sequential archive idempotency.",
+      "dependencyDirection": "Real Drizzle schema and embedded PostgreSQL exercise companyService plus environment, heartbeat and built-in Agent collaborators through persisted end-state assertions.",
+      "keyDataModels": "Company status, Agent status/pauseReason, heartbeat run, wakeup request, activity log, bundled Agent marker, company skill, routine and trigger.",
+      "lifecycle": "Create and auto-provision; archive active/idle/error Agents and active work; preserve manual/pending states; reactivate only archive-paused Agents; cancel orphan wakeups; suppress a second sequential archive cascade.",
+      "testAssessment": "The 11 tests are behavior-focused and strong on persisted lifecycle provenance, orphan wakeups and sequential idempotency. The approved isolated run could not start embedded PostgreSQL after five attempts (init exited with code null), so all 11 were explicitly skipped rather than passed. Missing cases include concurrent archive/reactivate, injected mid-transaction/post-commit failures, Connector cancellation acknowledgement, human authorization/approval, outbox recovery, hard delete and default responsible-user integrity.",
+      "designRationale": "Make company lifecycle transitions safe for existing automated work and protect manually paused or pending Agents from accidental reactivation.",
+      "companyOsProblem": "Company OS requires equally precise organization lifecycle semantics, but must also prove responsible-human authority, approval/evidence binding and cancellation completion across external Agent runtimes.",
+      "companyOsFit": "ADAPT the lifecycle state matrix, provenance-specific restoration, orphan-work cancellation and idempotency assertions. Extend them with concurrent command tests, transactional failure injection, durable outbox/reconciliation, Connector acknowledgement, responsibility contract and immutable evidence expectations.",
+      "responsibilityConflict": "The suite treats a free-form actorId as sufficient attribution and never proves that the actor is an authorized accountable human or that cancellation and lifecycle effects are bound to an approved action digest.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/companies-service.test.ts:1-867",
+        "full source SHA-256 c67df6127649209de5ca4b042dabf65ba0b2cd76388cde6f996116b9b9575934",
+        "1f1f54523876481ab0011c3fdd0b842753cd511a feat: add built-in summarizer and summary slots (#9713)",
+        "2026-08-18 approved isolated verbose Vitest: 1 file / 11 tests explicitly skipped because embedded PostgreSQL failed to start after five attempts (init exit code null); no passing claim"
+      ]
     },
     {
       "id": "application:server/__tests__/company-artifacts-service",
@@ -11395,18 +11400,29 @@
     },
     {
       "id": "application:server/services/companies",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Company persistence and lifecycle service spanning CRUD, spend hydration, environment/bundled-Agent provisioning, archive/reactivation cascades, destructive deletion and aggregate statistics.",
+      "dependencyDirection": "A single service directly imports most Paperclip database tables plus environment, heartbeat, built-in Agent and activity services; callers supply authorization and actor correctness.",
+      "keyDataModels": "Company database row and logo, defaultResponsibleUserId, company status, Agent pause provenance, heartbeat/wakeup work, activity records and every child table manually deleted with a company.",
+      "lifecycle": "Allocate issue prefix; insert company then provision environment and built-ins; transactionally update company/Agent/wakeup state; after commit cancel active runs and write activity; hard-delete child records in manual dependency order.",
+      "testAssessment": "Reviewed integration tests specify useful lifecycle behavior but were skipped on this host. Source establishes important uncovered gaps: post-commit cancellation/audit, concurrent transition race, partial creation and destructive evidence deletion.",
+      "designRationale": "Keep common company operations and cascading lifecycle behavior together while avoiding external service work inside the core database transaction.",
+      "companyOsProblem": "Company OS needs an organization aggregate and application commands whose human responsibility, data retention, runtime cancellation and evidence lifecycle remain consistent across databases and Connectors.",
+      "companyOsFit": "REIMPLEMENT as narrow CreateOrganization, TransitionOrganizationStatus and GovernedErase commands. Use explicit input DTOs, verified Principal/Authority and Approval decisions, one transactional event/outbox write, durable Connector cancellation reconciliation, retention/legal-hold policy and evidence-preserving tombstones. Preserve pause provenance and spend aggregation ideas, not this broad service/table coupling.",
+      "responsibilityConflict": "The service contains no authorization invariant and accepts a broad partial database insert shape. A synthetic/system actor is the default. Active run cancellation and responsibility activity occur after the lifecycle transaction, while hard delete erases approvals, activity, cost/finance, runs and other evidence entirely.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/companies.ts:1-508",
+        "full source SHA-256 923b1c5ece751346722724651660f1771ff7d0cfffa3d8084f8dadc8cd9d2f55",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 feat(interactions): add governed agent addressees (#10252)",
+        "existing COMPLETE access-service and invite-join-grants evidence reused without rereading"
+      ],
+      "securityFindings": [
+        "Company creation, local-environment setup and bundled-Agent provisioning are separate commits with no compensation or idempotency token, allowing a partially initialized organization.",
+        "Archive commits company/Agent/wakeup changes before active heartbeat cancellation and activity logging; failures can yield changed state with continuing execution or missing evidence, while callers receive an error.",
+        "Sequential re-archive is idempotent, but status is read without explicit row lock or compare-and-set, so concurrent archive transactions can both perform cascades and emit duplicate responsibility records.",
+        "Hard delete permanently removes approvals, comments, activity, financial events, runs and work without retention, legal hold, evidence export or cryptographic-erasure workflow."
+      ]
     },
     {
       "id": "application:server/services/company-artifacts",
@@ -11440,18 +11456,24 @@
     },
     {
       "id": "application:server/services/company-member-roles",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Normalization of four human company membership roles, role-to-permission defaults and invite-default role extraction.",
+      "dependencyDirection": "Shared role/permission constants flow into server-side grant projection; unknown external invite/default values are normalized locally.",
+      "keyDataModels": "owner/admin/operator/viewer role, legacy member alias, global null-scoped permission grant and defaultsPayload.human.role.",
+      "lifecycle": "Normalize input, map a role to fixed grants and derive the initial invite role; no policy version, expiry or later migration lifecycle exists.",
+      "testAssessment": "No dedicated test unit exists. The already-completed access-service tests exercise grants and were ADAPT; the already-completed invite-join-grants audit was REJECT and is reused without rereading. Source has no fail-closed unknown-role behavior or tests for policy/version drift.",
+      "designRationale": "Provide a small understandable RBAC default and preserve compatibility with the former member role.",
+      "companyOsProblem": "Company OS needs human organizational roles plus scoped authority for data, responsibility, approvals and high-risk Agent actions, including enterprise directory mapping and FDE templates.",
+      "companyOsFit": "REIMPLEMENT a versioned role-template-to-policy projection with explicit deny/unknown handling, scope, expiry, delegation, separation of duties and provenance. Keep simple default templates ergonomic, but make policy decisions canonical and auditable rather than inferring authority from membership labels.",
+      "responsibilityConflict": "Unknown/malformed roles become operator, all grants are company-global, and critical archive/delete/export/import actions are not permission keys at all; the audited company route therefore bypasses role distinctions for the highest-risk operations.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-member-roles.ts:1-65",
+        "full source SHA-256 45cd72eb296156bc1d24212d586b47b33f6642a33c92a9fcce9da06a743537ef",
+        "8b6a06ee254b06cbadbe334e891285e22084caab [codex] Add built-in agents and Reflection Coach bundle (#9206)",
+        "existing COMPLETE application:server/__tests__/access-service decision ADAPT reused without rereading",
+        "existing COMPLETE application:server/__tests__/invite-join-grants decision REJECT reused without rereading"
+      ]
     },
     {
       "id": "application:server/services/company-portability",
