@@ -4746,6 +4746,29 @@
       ]
     },
     {
+      "id": "application:cli/commands/uninstall",
+      "path": "cli/src/commands/uninstall.ts",
+      "lineCount": 90,
+      "sha256": "b1b5fc0f58ac348853e0e7eda721160f7f3dde17e07c349f461313b9a9916a98",
+      "linkedEvidence": {
+        "history": [
+          "fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"
+        ]
+      },
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 90 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once at the pinned SHA. The command separates the managed CLI store from product data, verifies store ownership before recursive deletion, protects other named instances and preserves non-managed shims.",
+        "Service uninstall precedes the store mutation lock, other-instance discovery is outside the lock, and injected userHomeDir is inconsistent with process-global store/RC path resolution, so the overall destructive change is not atomic or fully target-bound.",
+        "Decision: ADAPT the provenance, fail-closed and data-preservation patterns into a journaled Company OS deployment removal plan; do not copy the Paperclip-specific command."
+      ],
+      "completionRequirements": [
+        "Read lines 1-90 exactly once and assess deletion targeting, provenance, concurrency, multi-instance behavior, service lifecycle, data retention, recovery, tests and accountable change evidence."
+      ]
+    },
+    {
       "id": "application:cli/commands/pipelines",
       "path": "cli/src/commands/pipelines.ts",
       "lineCount": 846,

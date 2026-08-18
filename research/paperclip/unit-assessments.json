@@ -2079,18 +2079,23 @@
     },
     {
       "id": "application:cli/commands/uninstall",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Removes a managed Paperclip CLI installation while attempting to preserve instance data, unregister the current background service, avoid disrupting other named instances and refuse deletion of an unverified install store.",
+      "dependencyDirection": "uninstall command -> instance/home configuration, service-manager detection and Paperclip-specific install-store mutation helpers -> host filesystem, shell startup files and launchd/systemd definitions. It is an operator CLI lifecycle command, not a domain or service API.",
+      "keyDataModels": "Paperclip instance ID; platform-specific service definition names; managed install-store paths, shim and ownership marker; shell RC managed path block; service installed/active state.",
+      "lifecycle": "Resolve the current instance -> detect its service manager and scan for other instance definitions -> fail closed for an unverifiable Linux unit -> uninstall the current service -> verify the managed store -> acquire the store lock -> remove the managed shim and shell path blocks -> recursively delete only the CLI store -> report that user data remains.",
+      "testAssessment": "The already-audited managed-install test unit covers successful uninstall with user-data preservation, other-instance refusal, unavailable-systemd refusal, unverified-store refusal and lock contention. Those are useful focused safety cases. It does not prove transactionality across service/store removal, concurrent creation of another instance definition, Darwin manager-unavailable behavior, injected-home consistency, crash recovery, audit evidence or real launchd/systemd integration.",
+      "designRationale": "A provenance marker plus fail-closed checks reduces the chance that a self-update mechanism recursively deletes an operator-owned directory. Preserving the separate product-data home and protecting a shared CLI used by multiple instances support low-friction local upgrades.",
+      "companyOsProblem": "Company OS self-hosted/local-enterprise deployments need safe, reversible component removal and upgrade ceremonies that never confuse program files, configuration, credentials, evidence or business data and that account for multiple profiles/nodes.",
+      "companyOsFit": "ADAPT the verified-ownership marker, no-follow path validation, mutation lock, shared-instance check and explicit data-preservation contract into a Company OS deployment manager. Use a generated removal plan, stable component IDs, precondition generation, drain/fence, transactional journal and recoverable data-retention choices rather than copying this Paperclip-branded command.",
+      "responsibilityConflict": "The destructive operation is authorized only by local process access. It has no accountable human, approved removal plan/digest, reason, affected Connector/runtime inventory, evidence record or retention disposition; service removal and filesystem deletion are not one recoverable change transaction.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/commands/uninstall.ts:1-90 (full source SHA-256 b1b5fc0f58ac348853e0e7eda721160f7f3dde17e07c349f461313b9a9916a98)",
+        "git history: fc5a30805ed3c95ac6598c8660261a018b5b5a7f",
+        "Existing completed cli/src/__tests__/install-command.test.ts evidence reused: successful data-preserving uninstall, other-instance refusal, unavailable-systemd refusal, unverified-store refusal and lock contention"
+      ],
+      "securityFindings": "Positive controls include explicit managed-store ownership verification before recursive deletion, a second verification inside the lock, refusal to remove a shared shim while other instance definitions exist, and preservation of product data. Residual risks: the service is uninstalled before the store lock, so a later lock/verification/delete failure leaves a partial state; the other-instance scan occurs outside the lock and can race; the injected userHomeDir is used for service scanning while resolveInstallStorePaths and RC edits use process-global environment, permitting inconsistent targets in embedding/tests; unsupported service-manager fail-closed logic is Linux-specific; RC edits and recursive store deletion have no durable journal or rollback; there is no plan/preview, confirmation, retention manifest or auditable actor/reason. A local attacker able to mutate service definitions or environment between checks may influence the operation, although install-store ownership guards constrain the deletion root."
     },
     {
       "id": "application:cli/commands/update",
