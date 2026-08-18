@@ -3971,6 +3971,19 @@
         "Lines 301-359 expose only get/reconcile/reset. Reconcile with an already bound Skill silently refreshes defaults metadata without activity; missing reconcile/reset logs Plugin actor and stable keys only after import/binding. Reset always uses replace and is callable without human identity, approval or expected prior digest. There is no detach/uninstall/upgrade/rollback API, deletion/tombstone handling, responsibility evidence, outbox or Connector-node activation boundary. Linked tests were not reread and their 6 cases were skipped after embedded PostgreSQL failed five times."
       ],
       "completionRequirements": ["Read lines 1-359 exactly once and trace Plugin manifest-to-Skill compilation, stable ownership/binding, tenant isolation, reconcile/adopt/reset, drift hashing, transactions/concurrency, upgrade/downgrade/uninstall, path/content safety, executable admission, activity/events, Agent assignment and Company OS Plugin/Connector reuse decision. Link the completed test evidence without rereading it."]
+    },
+    {
+      "id": "application:server/__tests__/company-skill-policy-service",
+      "path": "server/src/__tests__/company-skill-policy-service.test.ts",
+      "lineCount": 282,
+      "sha256": "31638515157224b72e04502be25f959ea0b6559104ca54385ea5945a42dd0233",
+      "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-282 exactly once, run the focused suite, and assess policy precedence/defaults, principal/role/action/source matching, normalization, tenant isolation, revisions/evidence, deny/allow composition, invalid policy handling, concurrency/cache, responsible-human semantics and Company OS authorization-kernel fit."]
     }
   ]
 }
