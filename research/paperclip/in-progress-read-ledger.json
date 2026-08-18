@@ -2285,6 +2285,64 @@
         "Initial sandbox run failed only because the port-availability check produced a listen EPERM warning; escalated loopback rerun passed 1/1 with 12 checks after JWT and Secret-adapter repairs."
       ],
       "completionRequirements": ["Read lines 1-102 exactly once and assess diagnostics coverage, Secret-safe output, deployment/auth/storage/database/runtime checks, remediation safety, structured codes and production relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/env-lab",
+      "path": "cli/src/__tests__/env-lab.test.ts",
+      "lineCount": 24,
+      "sha256": "3f0323e997907787afd2308033ace7ad916c5bebd0e1c8d88e56d547274eed14",
+      "linkedEvidence": { "history": ["e4995bbb Add SSH environment support (#4358)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 24 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Two very shallow tests prove the SSH fixture state path is nested under instances/<id>/env-lab/ssh-fixture and that a missing fixture reports running:false, environment:null and a boolean support flag.",
+        "No fixture start/stop, SSH host-key verification, user/key/password handling, port/process isolation, command/file transfer, timeout, cleanup, crash recovery or concurrent-instance behavior is exercised.",
+        "Instance IDs use safe literals only; traversal/separator/collision validation is not proven. Environment-lab is diagnostic test infrastructure, not evidence of production Connector runtime attestation or isolation.",
+        "Focused Vitest passed 2/2 in this file as part of an 11/11 three-file run."
+      ],
+      "completionRequirements": ["Read lines 1-24 exactly once and assess environment-lab isolation, SSH trust, credential handling, lifecycle/cleanup, capability/evidence semantics and test strength."]
+    },
+    {
+      "id": "application:cli/__tests__/feedback",
+      "path": "cli/src/__tests__/feedback.test.ts",
+      "lineCount": 177,
+      "sha256": "ea4c0bc293e98e8d9bce1541498e9c3658efe8aae4f1b7e15ef4e7eb1516cc83",
+      "linkedEvidence": { "history": ["70b1a910 Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 177 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four tests cover command registration, query encoding, text report summary and a local directory+ZIP export containing votes/traces/manifest.",
+        "The model carries company/user/Agent/issue/project identifiers, free-text reason/excerpt, destination, consent/schema/bundle/payload versions, digest/redaction summaries, retry/failure timestamps and payload snapshot—valuable explicit data-governance surface.",
+        "The query builder forces includePayload=true even with sharedOnly=true. renderFeedbackReport is called with includePayloads:false yet the assertion requires the free-text reason from payloadSnapshot, showing the flag does not fully suppress payload-derived content in the report contract.",
+        "The bundle includes both pending and local_only traces with payloads; local export may be legitimate, but no explicit export consent, field-level redaction, classification, encryption, permissions, overwrite, digest/signature, retention or accountable-human approval is asserted.",
+        "The temporary export directory is never removed. Network upload/destination authentication, tenant denial, rate/size limits and actual redaction are not exercised; payloadDigest and redactionSummary are null in fixtures.",
+        "Focused Vitest passed 4/4 in this file as part of an 11/11 three-file run."
+      ],
+      "completionRequirements": ["Read lines 1-177 exactly once and assess feedback/telemetry data scope, consent, redaction, identity/tenant binding, outbound destination, retention, payload/attachment limits and errors."]
+    },
+    {
+      "id": "application:cli/__tests__/http",
+      "path": "cli/src/__tests__/http.test.ts",
+      "lineCount": 107,
+      "sha256": "6e41422aeedee95d1c5db6c14c3e2463b8e32817b391645e14708d93e1b0b201",
+      "linkedEvidence": { "history": ["230126d8 test(cli): clean API client fetch stubs (#9253)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 107 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Five tests cover bearer/run-ID headers, ignored 404, structured status/message/details errors, connection guidance and one automatic POST retry after interactive authentication recovery.",
+        "The client accepts plain HTTP and a caller-supplied x-paperclip-run-id; this header is correlation metadata, not trustworthy runtime attestation or evidence.",
+        "ApiRequestError exposes free-form message/details without a stable error code. Connection errors embed the full request URL and curl guidance, which can leak sensitive query values if callers place tokens or data in URLs.",
+        "A generic 403 triggers recoverAuth and automatically replays the same POST with a new board token. This conflates authentication expiry with authorization denial, can elevate a limited caller to board authority, and retries non-idempotent effects without an idempotency key or fresh human confirmation.",
+        "Timeout/AbortSignal, redirect/origin containment, TLS, response/body size/content-type validation, retry-after/backoff, 401 versus 403 policy, Secret redaction and observability behavior are untested.",
+        "Focused Vitest passed 5/5 in this file as part of an 11/11 three-file run."
+      ],
+      "completionRequirements": ["Read lines 1-107 exactly once and assess HTTP client URL/origin trust, auth header/redaction, body/content handling, errors/codes, timeout/retry/cancel, redirects, size limits and observability safety."]
     }
   ]
 }

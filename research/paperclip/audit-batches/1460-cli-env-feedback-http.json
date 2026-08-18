@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/env-lab",
+      "auditStatus": "COMPLETE",
+      "function": "Minimal tests for instance-scoped SSH fixture state path and missing-fixture Doctor status.",
+      "dependencyDirection": "Calls env-lab path/status helpers only; no SSH server/client or runtime executes.",
+      "keyDataModels": "Instance ID, SSH fixture state path, supported/running flags and nullable environment descriptor.",
+      "lifecycle": "Resolves a state path and reports a stopped missing fixture.",
+      "testAssessment": "Focused Vitest passed 2/2. It proves path shape and absent-state projection only; SSH trust, credentials, process/network isolation, commands/files, cleanup/recovery and adversarial instance IDs are absent.",
+      "designRationale": "Provide deterministic local SSH-environment fixtures for testing adapters and diagnostics.",
+      "companyOsProblem": "Company OS needs reproducible Connector execution-node conformance tests without confusing fixtures with real Agents or production isolation.",
+      "companyOsFit": "REFERENCE ONLY. Build a vendor-neutral Connector conformance harness with explicit fixture labels, host-key pinning, ephemeral credentials, lifecycle cleanup, capability/pause/resume/cancel/evidence tests and secret-free runtime attestation.",
+      "responsibilityConflict": "Fixture running status is not proof of who authorized work, which Agent/Connector executed it or what evidence was produced.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["cli/src/__tests__/env-lab.test.ts:1-24", "full source SHA-256 3f0323e997907787afd2308033ace7ad916c5bebd0e1c8d88e56d547274eed14", "2026-08-18 focused Vitest: 2 passed in combined 11-test run"]
+    },
+    {
+      "id": "application:cli/__tests__/feedback",
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for feedback trace querying, report rendering and local export bundle/ZIP generation.",
+      "dependencyDirection": "Uses shared FeedbackTrace plus client render/export/ZIP helpers; it does not invoke server consent, redaction or external upload services.",
+      "keyDataModels": "Company/user/Agent/work IDs, vote/reason/excerpt, destination, consent/schema/bundle/payload versions, digest/redaction summaries, payload snapshot, retry/export status and manifest.",
+      "lifecycle": "Builds a filtered payload query, summarizes traces, renders text and writes votes/traces/manifest/ZIP locally.",
+      "testAssessment": "Focused Vitest passed 4/4. The governance-shaped model is valuable, but includePayload is forced, includePayloads:false still renders payload reason, local_only payloads export, and redaction/digest/consent/upload/retention/security are unproven.",
+      "designRationale": "Make feedback sharing inspectable and portable with explicit consent/version/status metadata.",
+      "companyOsProblem": "Company OS must govern enterprise feedback, evidence and product-improvement exports through explicit data contracts and egress controls.",
+      "companyOsFit": "ADAPT the versioned trace/destination/consent/redaction/digest model, but enforce field-level minimization server-side, make includePayloads effective, separate local review from external export, require destination/data-contract approval, encryption/signature/retention and accountable export evidence.",
+      "responsibilityConflict": "The fixture records author IDs and consent version but no human approver for the exact outbound bundle; null digest/redaction cannot bind approval to exported bytes.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/feedback.test.ts:1-177", "full source SHA-256 ea4c0bc293e98e8d9bce1541498e9c3658efe8aae4f1b7e15ef4e7eb1516cc83", "2026-08-18 focused Vitest: 4 passed in combined 11-test run"]
+    },
+    {
+      "id": "application:cli/__tests__/http",
+      "auditStatus": "COMPLETE",
+      "function": "Shared API client tests for bearer/run headers, ignored 404, request/connection errors and interactive auth recovery retry.",
+      "dependencyDirection": "Calls production HTTP client with mocked fetch; no server identity or authorization logic executes.",
+      "keyDataModels": "API base, bearer token, caller run ID, HTTP status/message/details, connection URL/method/cause and recoverAuth callback.",
+      "lifecycle": "Sends JSON, maps errors, presents recovery guidance and replays a failed POST once with a newly recovered board token.",
+      "testAssessment": "Focused Vitest passed 5/5. Basic envelope/errors work, but the suite codifies generic 403 privilege recovery and non-idempotent POST replay; stable codes, timeout/cancel, redirect/TLS/origin, size/type and redaction are missing.",
+      "designRationale": "Centralize CLI API behavior and transparently recover an interactive board session when access fails.",
+      "companyOsProblem": "Company OS clients need reliable, tenant-safe requests without silently changing principal or repeating high-risk effects.",
+      "companyOsFit": "REJECT the generic 403 recover-and-replay contract. Distinguish 401 refresh from authorization denial, never escalate persona automatically, require idempotency/effect digest and renewed human confirmation for mutations, and add trusted origins, timeouts, bounds, stable error codes and redacted diagnostics.",
+      "responsibilityConflict": "Replaying an Agent/limited-principal POST with a board token changes who acts and what authority applies without rebinding the action to accountable human intent or exact effect evidence.",
+      "decision": "REJECT",
+      "evidence": ["cli/src/__tests__/http.test.ts:1-107", "full source SHA-256 6e41422aeedee95d1c5db6c14c3e2463b8e32817b391645e14708d93e1b0b201", "2026-08-18 focused Vitest: 5 passed in combined 11-test run"]
+    }
+  ]
+}
