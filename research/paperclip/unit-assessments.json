@@ -732,18 +732,32 @@
     },
     {
       "id": "application:cli/__tests__/pipelines",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Focused CLI tests for reviewing one pipeline case, bulk review decisions and batch ingestion of dependency-linked cases from JSON files.",
+      "dependencyDirection": "The Vitest suite registers the pipeline Commander module, uses temporary JSON files and a stubbed HTTP client, and asserts request URLs and complete JSON bodies.",
+      "keyDataModels": "Company and case opaque IDs, pipeline key/id, case key/title, blockedByCaseKeys dependency edges, review decision/reason and expectedVersion, plus bulk item arrays.",
+      "lifecycle": "Resolve pipeline by key; ingest a batch of dependency-linked cases; request changes on one case with optimistic version; or read a local decision batch and send it to a company-scoped bulk review endpoint.",
+      "testAssessment": "Focused Vitest passed 3/3 tests on 2026-08-19 and CLI no-emit TypeScript passed. It usefully asserts full bodies for request_changes, expectedVersion and dependency edges, but omits approve/reject alternatives, malformed files, duplicate/cyclic/missing dependencies, partial bulk failure, authorization, idempotency, review evidence and concurrent-version rejection.",
+      "designRationale": "Enable operators and automation to load structured repeatable workflows and review many cases while preserving basic optimistic concurrency and explicit change reasons.",
+      "companyOsProblem": "Company OS FDE delivery and industry templates need configurable repeatable workflows, dependency graphs, human review queues, bulk operations and versioned decisions without hard-coding each customer's process into product code.",
+      "companyOsFit": "ADAPT the dependency-key ingestion and expected-version review contract as a candidate FDE/template mechanism. Reframe a case as governed Work bound to organization, accountable human, policy/data grants, risk and evidence; bulk review must remain individually authorized and produce per-item immutable results. Do not adopt Paperclip pipeline names or schema before the owning server/data units are audited.",
+      "responsibilityConflict": "A reason and expectedVersion improve review integrity, but the tested decision carries no reviewer identity/authority, responsibility-contract id, exact action/evidence digest or signature. Bulk review can amplify an authorization error unless every item is independently policy-checked and recorded.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/pipelines.test.ts:1-126",
+        "SHA-256 28b0c20c2177fc46adafd96b98d878862c0328bf321c56c27cfa3ebbce7f8186",
+        "43b005b704f80aea3ce37cab8136920749c73ee6 Add pipeline workflow primitives and operator UI (#7903)",
+        "2026-08-19 focused Vitest: 1 file and 3 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Local JSON files are treated as untrusted workflow/review input, but this test does not cover file-size limits, schema validation, unknown fields, unsafe values or symlink/path behavior.",
+        "Expected version is tested only as forwarded data; server rejection, retry and prevention of stale approval are not verified.",
+        "Dependency graphs have no tested duplicate key, unknown key, self-edge, cycle, fan-out/size or topological-order constraints.",
+        "Bulk review expects an empty results response and does not verify all-or-nothing versus partial semantics, per-item errors, idempotency or durable receipts.",
+        "Authentication uses one fixed bearer token; tenant scope, reviewer authority and separation between Agent and human decisions are untested.",
+        "Review reasons are free text without tested size/content handling or evidence references."
+      ]
     },
     {
       "id": "application:cli/__tests__/plugin-init",
