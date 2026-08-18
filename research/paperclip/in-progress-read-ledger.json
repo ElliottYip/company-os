@@ -5806,6 +5806,32 @@
       "completionRequirements": [
         "Read lines 1-196 exactly once and assess document revision concurrency, create/update identity, attribution, immutable history, transactionality, tenant isolation, content bounds and test quality against Company OS evidence/document storage."
       ]
+    },
+    {
+      "id": "application:server/__tests__/effective-run-config-fingerprints",
+      "path": "server/src/__tests__/effective-run-config-fingerprints.test.ts",
+      "lineCount": 303,
+      "sha256": "472a9cd8d13ac4b2426c05e2a7bb2a82f2ae560f945e0028371a73ce175350cc",
+      "linkedEvidence": {
+        "history": [
+          "a8f0ebaa8015b15b594e3adc24a2f4e0733d679d Refresh run config before reusing workspaces (#8797)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 303 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Five tests cover versioned deterministic SHA-256 fingerprints, independent session/workspace/lease drift, Secret manifest version metadata, hashed plain env drift and exclusion of generated IDs/tokens/timestamps/session path noise.",
+        "Stable object-key ordering and per-category differences are strong reuse-invalidation patterns. Secret values are removed and provider/binding/version identity is retained; a version change invalidates while a raw value change under the same declared version intentionally does not.",
+        "Correctness therefore depends on every Secret provider monotonically changing version metadata whenever effective bytes change. No test detects a lying/stale provider version or binds a Secret lease audience/expiry; Company OS runtime attestation must verify both.",
+        "Plain env values become unsalted SHA-256 hashes in canonicalJson. Low-entropy values—and undeclared Secrets placed in ordinary env fields—are dictionary-recoverable. Canonical JSON may also retain commands/repository URLs/config fields containing embedded credentials outside the key blacklist.",
+        "Session cwd/run/session IDs and lease IDs/remoteCwd are excluded, while workspace cwd is retained. This separation can be correct only if the caller always places security-relevant workspace identity in the workspace category; no invariant or cross-category completeness test proves it.",
+        "Focused Vitest passed 5/5. Missing cases include adapter/Connector version and executable/image digest, capability/data policy digest, undefined/NaN/cycles/Unicode/array order, schema-v1 evolution and stored canonical data access."
+      ],
+      "completionRequirements": [
+        "Read lines 1-303 exactly once and assess effective Run config canonicalization/fingerprints, Secret handling, workspace reuse invalidation, provider isolation, determinism and test quality against Company OS Connector runtime attestation."
+      ]
     }
   ]
 }

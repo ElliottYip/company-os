@@ -5342,18 +5342,23 @@
     },
     {
       "id": "application:server/__tests__/effective-run-config-fingerprints",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for canonicalizing and independently fingerprinting effective session, workspace and lease configuration while excluding volatile and sensitive values.",
+      "dependencyDirection": "Vitest -> effective-run-config fingerprint service -> deterministic in-memory canonicalization/SHA-256; no database, Secret provider, workspace manager, Connector runtime or attestation verifier.",
+      "keyDataModels": "Versioned category fingerprints/canonical JSON, adapter/workspace/lease config, environment variables and resolved Secret manifest identity/version/provider outcome.",
+      "lifecycle": "Resolve effective Run config and Secret metadata -> canonicalize each category -> hash versioned JSON -> compare with prior workspace/lease/session fingerprints -> invalidate changed reuse categories outside this suite.",
+      "testAssessment": "Focused Vitest passed 5/5. The pure suite strongly proves deterministic ordering, category-specific drift and raw Secret exclusion, but cannot prove callers classify every security-relevant field correctly or Secret providers advance versions. Adversarial canonicalization, version migration and full reuse behavior are absent.",
+      "designRationale": "Refresh only the parts of a reusable execution environment whose effective configuration changed, without persisting raw credentials or invalidating on per-Run noise.",
+      "companyOsProblem": "Company OS needs secret-free, versioned runtime attestations and safe workspace/lease reuse across Connector vendors, managed cloud and local enterprise nodes.",
+      "companyOsFit": "ADAPT as a leading reference for category-specific deterministic fingerprints. Extend the attested input with Connector/protocol/binary/image/Skill/capability/data-policy/approval/Work-contract digests; require monotonic Secret versions and scoped leases; use keyed hashing or omit recoverable low-entropy value hashes; validate category completeness and version migration with compatibility tests.",
+      "responsibilityConflict": "Fingerprints answer whether config changed, not who authorized it or which Work/data/tool/approval contract it served. Volatile Run and lease identity are excluded, so a separate signed runtime attestation must bind the concrete execution to the responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/effective-run-config-fingerprints.test.ts:1-303 (SHA-256 472a9cd8d13ac4b2426c05e2a7bb2a82f2ae560f945e0028371a73ce175350cc)",
+        "git history: a8f0ebaa8015b15b594e3adc24a2f4e0733d679d",
+        "2026-08-19 focused Vitest: 5/5 passed"
+      ],
+      "securityFindings": "HIGH secret-version trust gap: changed Secret bytes under unchanged provider version deliberately produce the same fingerprint. HIGH dictionary-leak risk: ordinary env values are stored as unsalted SHA-256 hashes in canonical JSON, allowing recovery of low-entropy values and undeclared Secrets. HIGH completeness risk: sensitive-field exclusion and category placement are blacklist/caller dependent; repository URLs, commands or novel fields may retain credentials or be omitted from invalidation. Missing bindings include Connector/binary/image/Skill, capabilities/data policy, Work/approval digests and concrete Run/lease attestation."
     },
     {
       "id": "application:server/__tests__/environment-config",
