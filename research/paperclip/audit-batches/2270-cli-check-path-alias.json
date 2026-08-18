@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/checks/path-resolver",
+      "auditStatus": "COMPLETE",
+      "function": "One-line compatibility/import alias that re-exports resolveRuntimeLikePath from the CLI utility module for health-check consumers.",
+      "dependencyDirection": "CLI database/log/storage checks -> checks/path-resolver alias -> CLI utils/path-resolver. It adds no policy or abstraction boundary and reverses no dependency; the underlying resolver remains a separately inventoried, pending audit unit.",
+      "keyDataModels": "None. It re-exports one function and defines no path type, trust level, allowed root, resolution evidence or error contract.",
+      "lifecycle": "Module-load re-export only; all runtime behavior and lifecycle belong to application:cli/utils/path-resolver and are deliberately not inferred here.",
+      "testAssessment": "No focused test references this alias. TypeScript checking passes and is the only useful verification for a one-line re-export. Behavioral path guarantees cannot be credited until the separate underlying utility unit is audited.",
+      "designRationale": "The alias may keep check imports locally grouped or preserve an earlier module path, but the source and history provide no documented contract and it adds an extra navigation layer without enforcing a checks-specific policy.",
+      "companyOsProblem": "Company OS needs explicit safe resolution for config-relative runtime paths in self-hosted profiles, but an untyped re-export does not solve containment, symlink, ownership or deployment-root policy.",
+      "companyOsFit": "Do not reproduce the alias. Define one canonical PathPolicy/RuntimePath resolver owner at the deployment adapter boundary, returning a structured validated path or error. Checks should import that stable port/adapter contract directly; domain and application models should carry opaque storage references rather than filesystem paths.",
+      "responsibilityConflict": "No direct responsibility-model behavior exists. The absence of a policy boundary means callers could mistake a convenience import for validation; privileged path mutations still require an accountable repair command and evidence in Company OS.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/checks/path-resolver.ts (1 line; SHA-256 5f5012469f880fbfa04632cbea75ecc36fddb0120c504bf3a1ab35d34037c5b8)",
+        "git history/blame: the only line attributes to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Underlying cli/src/utils/path-resolver.ts is separately inventoried as application:cli/utils/path-resolver and remains PENDING; it was not read or prematurely credited in this batch",
+        "Repository test/spec search found no resolveRuntimeLikePath-focused coverage under cli/src"
+      ],
+      "securityFindings": "This file performs no validation and must not be treated as a security boundary. An unrestricted re-export cannot communicate whether a path is merely normalized or has passed allowed-root, traversal, symlink, owner/mode and TOCTOU checks. Security judgment on actual resolution is deferred to the canonical utility's separate audit."
+    }
+  ]
+}
