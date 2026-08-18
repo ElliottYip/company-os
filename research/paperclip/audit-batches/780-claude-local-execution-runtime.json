@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/claude-local-execute",
+      "auditStatus": "COMPLETE",
+      "function": "Large integration suite for Claude Local execution across host and sandbox targets: per-Agent MCP injection, instruction/prompt bundle continuity, session resume and repair, remote bridge credentials, CLI feature negotiation, usage/error normalization and retry classification.",
+      "dependencyDirection": "The server-facing adapter execute contract accepts Agent/runtime/config/context/auth and optional execution target/MCP providers, builds vendor CLI arguments and managed filesystem artifacts, invokes a local or remote runner, emits log/meta callbacks and returns normalized session, usage, summary, error, retry and clear-session fields. Claude and Paperclip-specific types remain interwoven inside the adapter package.",
+      "keyDataModels": "Run/Agent/company IDs, runtime sessionId/sessionParams/sessionDisplayId/taskKey/promptBundleKey, adapter command/cwd/env/prompt/instructions/skills/effort, strict MCP server URL/token/config, remote provider/environment/lease/cwd/timeout/runner, bridge URL/key/mode, CLI stream result/subtype/errors/usage, normalized errorCode/errorFamily/retryNotBefore/clearSession/cost/usageBasis and invocation metadata.",
+      "lifecycle": "Fresh runs materialize a stable managed prompt bundle and append instructions; equivalent later runs resume with a delta prompt, while bundle changes or unknown/poisoned sessions fall back to a fresh session. Managed remote runs sanitize config, inject a queue bridge credential, use an explicit tool list and probe cached CLI capabilities. Execution normalizes structured max-turn/quota/transient failures, retains unpriced usage, treats provider success events as authoritative, retries poisoned previous-message sessions once and clears unrecoverable session state.",
+      "testAssessment": "Broad behavior tests cover Agent-scoped strict MCP config, fresh/resumed instruction semantics and accurate metadata, fallback bundle rebuilding, structured-versus-untrusted-text failure classification, resolved invocation paths, sandbox bridge credential substitution, permission arguments, CLI capability cache/failure behavior, remote cwd compatibility, content-addressed prompt continuity/reset, quota and transient errors, provider success despite process exit, and poisoned-session recovery. Important gaps include cancellation/kill/grace-period and timeout behavior, duplicate/idempotent execution, crash/restart and partial callback persistence, stdout/backpressure/size limits, MCP token file permissions/cleanup/redaction/expiry, tool-by-tool policy, command/env/path injection, concurrent bundle writes, session ownership across Agent/Company/environment, signed runtime attestation, exact Work/data/approval/evidence binding, output/result integrity, provider-event schema versions, cost authority and adversarial process behavior after emitting a success event.",
+      "designRationale": "Make a stateful vendor CLI dependable enough for scheduled Agent work by separating stable instructions from per-wake deltas, isolating managed remote configuration, negotiating installed capabilities and aggressively recovering poisoned or missing provider sessions without relying on arbitrary tool-output text.",
+      "companyOsProblem": "Company OS needs a vendor-neutral Connector runtime that can execute, pause/resume/cancel/timeout and recover Work across local enterprise or managed nodes while proving which runtime, instructions, tools, data grants and result were used.",
+      "companyOsFit": "ADAPT the execute result envelope, content-addressed instruction bundle, configuration-drift session rotation, strict per-execution tool-server config, short-lived bridge credential substitution, structured error families, conservative capability probing and poisoned-session recovery as the leading reference for Connector Runtime. Replace vendor sessions with opaque Connector handles; derive a minimal tool allowlist from the Work contract; keep tokens in an ephemeral secret channel; add idempotency keys, durable attempt state, cancel/timeout proofs, signed runtime/config attestation, canonical input/output/evidence digests and approval/data-authority enforcement.",
+      "responsibilityConflict": "The sandbox allowlist still grants broad Bash, Web, Write and scheduling capabilities without demonstrating a Work-specific approved scope. MCP bearer tokens are written into generated config and no test proves restrictive modes, cleanup or redaction. Provider subtype=success overrides a nonzero process exit, so a wrapper failure can be recorded as success without result attestation. Quota reset is inferred from English prose. Remote resume accepts a saved host cwd even when the effective remote cwd differs. None of the tested execution inputs bind an accountable human, responsibility contract, exact approval digest, data authorization or evidence/result acceptance rule.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/claude-local-execute.test.ts:1-1724",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "0713dfa4 fix: validate session ID as UUID before --resume + error diagnostics (DLD-889) (#1742)",
+        "15eac43b [codex] Retry max-turn exhausted heartbeats (#5096)",
+        "778e775c Add secrets provider vaults and remote import (#5429)",
+        "b24c6909 Harden remote sandbox runtime probes, timeouts, and installs (#5685)",
+        "d1a8c873 fix(remote-sandbox): harden host workspace resumes (#5922)",
+        "8ee3987d adapter-claude-local: recover from poisoned previous_message_id 400 (detect + clearSession) (#5972)",
+        "c0743482 fix(claude-local): tolerate sandboxes whose Claude CLI lacks --effort (#8393)",
+        "2e2da3bc fix: isolate remote Claude config from local credentials (#7676)",
+        "555391fe fix: run restart recovery, workspace self-heal, quota-aware retries, failed-run metrics (#9183)",
+        "eedc7dde Make ACP the default engine for local adapters (#9238)",
+        "efcce9cc fix(adapters): record unpriced CLI usage (#9505)",
+        "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+      ]
+    }
+  ]
+}
