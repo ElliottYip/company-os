@@ -850,18 +850,34 @@
     },
     {
       "id": "application:cli/__tests__/routine-plugin-parity",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI route-parity tests spanning Routine revisions/runs/triggers and a broad Plugin surface: tools, health/logs/upgrades, configuration tests, jobs, webhooks, dashboards, bridge data/actions/streams, custom data/actions and local folders.",
+      "dependencyDirection": "The Vitest suite registers Routine and Plugin Commander modules, injects API/company context, stubs fetch and asserts method/path mappings; it does not load a Plugin, execute a real Routine or validate response schemas.",
+      "keyDataModels": "Company/Routine/revision/trigger IDs, public trigger id, Run list limit, Plugin id/config/job/webhook/bridge/data/action keys and company-scoped local-folder source.",
+      "lifecycle": "CRUD/version/restore/run a Routine; create/update/delete/rotate/fire triggers; discover and execute Plugin tools; inspect/upgrade/configure/test Plugins; operate scheduled jobs/webhooks/bridges/data/actions/streams and validate/set local folders.",
+      "testAssessment": "Focused Vitest passed 3/3 tests on 2026-08-19 and CLI no-emit TypeScript passed. It inventories 36 client routes and environment-derived company context, but asserts no payloads, results, authorization, trigger signature, revision concurrency, Plugin compatibility/sandboxing, stream lifecycle, local-folder safety, error codes or audit records.",
+      "designRationale": "Give operators and automation broad parity with Routine and Plugin service capabilities and catch missing client routing as the extension surface grows.",
+      "companyOsProblem": "Company OS needs scheduled/repeatable Work plus a safe extension plane for Connector tools, jobs, webhooks, streams and local enterprise resources across cloud and on-prem nodes.",
+      "companyOsFit": "REFERENCE ONLY at this route-smoke boundary. The capability inventory is valuable for later canonical-source comparison, especially revisions, trigger-secret rotation, config tests and local-folder validation. Do not adopt the very broad Plugin namespace until owning SDK/runtime/security/data units prove capability isolation, tenancy, upgrades and exit portability; Company OS Connector contracts must remain narrower and secret-free.",
+      "responsibilityConflict": "Routine run/fire and Plugin tool/action/job/bridge operations are executable work, yet the tested requests do not bind proposer, accountable human, exact capability/data grant, risk approval, runtime attestation, evidence or result. A public trigger id is not an authorization or responsibility contract.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "cli/src/__tests__/routine-plugin-parity.test.ts:1-143",
+        "SHA-256 971cf01338cacdc8d9bc291045c82ae8f169a413e27660e20761486ce4dbb6ff",
+        "9c8adee48b15aa7d12becd767e461a83a306f552 feat(mcp) [split 5/8]: integrate adapters and deployment runtime (#9560)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 3 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Public trigger fire and trigger-secret rotation have no tested signature, replay, expiry, rate-limit, old-secret grace/revocation or audit semantics.",
+        "Plugin tool/action/job/webhook/bridge execution uses generic JSON payloads with no tested schema, capability token, tenant/resource scope, idempotency, timeout or output classification.",
+        "Plugin config and config:test have no tested secret redaction/storage, write authorization, expected revision or safe connectivity-probe policy.",
+        "Plugin upgrade has no version pin, signature/integrity, compatibility, migration, rollback or approval behavior in this suite.",
+        "Bridge stream duration and reconnect/cursor/backpressure/authorization behavior are not verified.",
+        "Local-folder status/validate/set exposes a high-risk host-filesystem boundary without tested path canonicalization, allowlists, symlink/mount ownership, read/write modes, data classification or human approval.",
+        "Company scope can be inherited from process environment; stale or attacker-controlled environment context and cross-company isolation are untested."
+      ]
     },
     {
       "id": "application:cli/__tests__/routines",
