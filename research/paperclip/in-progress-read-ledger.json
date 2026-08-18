@@ -4230,6 +4230,29 @@
         "Focused jsdom Vitest passed 6/6 tests on 2026-08-19 and emitted two navigation-not-implemented messages from jsdom. Formal decision: REIMPLEMENT over one server-canonical, digest-bound governed export plan/artifact; adapt only file browsing and responsive interaction patterns."
       ],
       "completionRequirements": ["Read both files exactly once, run focused tests and assess auth/tenant gating, preview-to-apply consistency, selection/data-loss UX, package integrity, large-file handling, stable errors, accessibility/mobile behavior and responsibility approval semantics."]
+    },
+    {
+      "id": "application:ui/pages/CompanyImport",
+      "paths": [
+        { "path": "ui/src/pages/CompanyImport.test.tsx", "lineCount": 778, "sha256": "6897fa2e811c6a90834f6fda938f7b2566ef106768800f244a6d403097624ea2" },
+        { "path": "ui/src/pages/CompanyImport.tsx", "lineCount": 1935, "sha256": "effd40cf296571b3761d1d63d1535688d30f32631125557eae8106e2c070f8ea" }
+      ],
+      "linkedEvidence": { "history": ["5ca752dc81cfb01f74282e1b562694079e1d0cf1 fix(server): raise company import zip upload limit to 1 GB and make it operator-configurable (#11184)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedFiles": [{ "path": "ui/src/pages/CompanyImport.test.tsx", "completedRanges": [{ "start": 1, "end": 778 }] }],
+      "sourceReadComplete": false,
+      "nextFile": "ui/src/pages/CompanyImport.tsx:1",
+      "notes": [
+        "Test lines 1-100 create a jsdom/React Query harness with import preview/apply/package/async job APIs, Agent/routine resume operations, auth/sidebar/company contexts and ZIP parsing all mocked. Real sessionStorage bookkeeping is retained while poll delay is eliminated, which usefully exercises reload recovery but not timing/cancellation. Markdown and editor rendering are replaced, so untrusted-content and editing behavior are outside this suite.",
+        "Test lines 101-200 define a minimal preview with one Agent and recurring task, a successful result with paused routine, and an async job that succeeds on first poll. Fixtures omit projects, Skills, secrets, permissions, approvals, evidence, data contracts, digest/revision and accountable humans. Default mocks bias the page toward immediate success and post-import activation rather than durable failure/recovery paths.",
+        "Test lines 201-300 provide DOM interaction helpers and verify async submission, polling, a successful completion screen and manual activation of imported Agents/routines. Imported automations start paused by default, which is a useful quarantine, but activation is a client-orchestrated pair of per-item API calls with no approval, responsibility binding, transactional guarantee or server-side activation plan.",
+        "Test lines 301-400 cover partial activation failure, raw multipart ZIP preview/apply for packages whose expanded form is very large, disabled-preview guidance and the start of in-flight preview UX. Streaming the original compressed File avoids browser-side inline-size limits, but the test uses stub bytes and a mocked archive reader, so it does not prove decompression-bomb, archive traversal, MIME/content validation, upload integrity or server resource controls.",
+        "Test lines 401-500 verify stale preview failures are suppressed after source changes, current failures remain visible, and structural package/target controls stay locked during import. Errors expose raw exception messages and human guidance rather than stable codes; UI locking helps local consistency but does not establish server-side preview/apply revision binding, retry idempotency, cancellation or confirmation of partial writes.",
+        "Test lines 501-600 verify that changing target settings, pause state, file selection or package clears stale failures, and that the completion screen reflects the submitted pause snapshot rather than later UI state. This is careful client state handling, but clearing errors on input mutation may conceal unresolved server-side partial effects; the next test begins 409 adoption of an already-running account job.",
+        "Test lines 601-700 verify adoption of a server-reported duplicate job, durable job failures, terminal 403 handling, retry through transient 503, and a soft-success path when only a compact companyId result remains. The lifecycle distinctions are valuable, but behavior is inferred from HTTP status and message-shaped bodies; retained result expiry weakens complete provenance unless durable summaries independently preserve imported entities, warnings and responsibility evidence.",
+        "Test lines 701-778 distinguish first-poll and running-then-missing 404s as possible restart failures, refresh the company list after success, and resume a stored job watcher from sessionStorage. Reload continuity is useful but scoped to a browser/account-derived storage key; it is not a durable operator-visible job registry, cross-device recovery mechanism or proof that server restart resumes work atomically."
+      ],
+      "completionRequirements": ["Read both files exactly once, run focused tests and assess package parsing/preflight, preview-to-apply digest binding, auth/tenant/approval semantics, secrets and Connector rebinding, async job durability/cancellation, automation quarantine, data-loss UX, errors, large uploads, accessibility/mobile behavior and responsibility provenance."]
     }
   ]
 }
