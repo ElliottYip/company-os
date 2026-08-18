@@ -5,7 +5,8 @@
 - Compared HEAD: `b446ff59bfd4c22ce8042f0a8a5daad5c7adc02c`
 - License: MIT, copyright Paperclip AI; notice required with distributed copies
 - Decision: **REFERENCE ONLY** as a whole product under ADR 0008; module-level
-  decisions require the complete competitive audit and provenance manifest
+  decisions are provisional in `research/paperclip/full-code-audit.md` and the
+  provenance manifest until the whole-repository coverage gate completes
 
 ## Code evidence
 
@@ -58,3 +59,8 @@ compatibility gates.
 
 Allowed selective reuse and prohibited brand/private-API reuse are defined by
 ADR 0008 and `research/paperclip/audit-manifest.json`.
+
+The provisional module results are: domain model `REFERENCE ONLY`; database/migrations,
+task/runtime, API/events, Plugin SDK/adapters, identity/tenancy,
+approval/audit/secrets and test/security practices `ADAPT`; Web/deployment
+direct reuse `REJECT`. No Paperclip code is currently copied.

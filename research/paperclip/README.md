@@ -19,3 +19,12 @@ Any future copied implementation must first receive a module decision in
 destination file, local modifications, and tests in `copiedCode`. Brand assets,
 logos, trademarks, EE/private sources, upstream database schemas, and internal
 types are outside the allowed reuse boundary.
+
+The provisional fixed-SHA module review is in `full-code-audit.md`. It keeps the
+whole product at **REFERENCE ONLY**, records early module decisions, and copies
+no source code. Those module decisions remain open to revision until the
+whole-repository audit closes.
+
+The later whole-repository gate is defined by `repository-audit-protocol.md`.
+`repository-inventory.json` assigns every tracked path to an explicit audit
+unit; the nine-module document remains provisional until every unit is assessed.

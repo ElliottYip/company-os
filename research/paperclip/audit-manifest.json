@@ -9,17 +9,101 @@
   "wholeProjectDecision": "REFERENCE ONLY",
   "runtimeDependency": false,
   "automaticCompatibility": false,
+  "moduleDecisionStatus": "PROVISIONAL_UNTIL_REPOSITORY_COVERAGE_COMPLETE",
   "auditSource": "work/upstream-audit/paperclip",
   "modules": [
-    { "id": "domain-model", "decision": "PENDING", "evidence": [] },
-    { "id": "database-and-migrations", "decision": "PENDING", "evidence": [] },
-    { "id": "task-execution-and-agent-runtime", "decision": "PENDING", "evidence": [] },
-    { "id": "api-and-events", "decision": "PENDING", "evidence": [] },
-    { "id": "plugin-sdk-and-adapters", "decision": "PENDING", "evidence": [] },
-    { "id": "identity-permissions-and-tenancy", "decision": "PENDING", "evidence": [] },
-    { "id": "approvals-audit-and-secrets", "decision": "PENDING", "evidence": [] },
-    { "id": "testing-security-and-maintenance", "decision": "PENDING", "evidence": [] },
-    { "id": "web-and-deployment", "decision": "PENDING", "evidence": [] }
+    {
+      "id": "domain-model",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "packages/db/src/schema/agents.ts:14-45",
+        "packages/db/src/schema/issues.ts",
+        "packages/db/src/schema/heartbeat_runs.ts",
+        "packages/db/src/schema/approvals.ts:5-27"
+      ]
+    },
+    {
+      "id": "database-and-migrations",
+      "decision": "ADAPT",
+      "evidence": [
+        "packages/db/src/check-migration-safety.ts:14-199",
+        "packages/db/src/backup-lib.ts",
+        "server/src/services/plugin-database.ts:170-243",
+        "server/src/services/plugin-database.ts:473-550"
+      ]
+    },
+    {
+      "id": "task-execution-and-agent-runtime",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/issues.ts",
+        "server/src/services/heartbeat.ts",
+        "server/src/services/run-liveness.ts",
+        "server/src/services/agent-start-lock.ts",
+        "server/src/services/task-watchdogs.ts"
+      ]
+    },
+    {
+      "id": "api-and-events",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/routes/openapi.ts",
+        "server/src/errors.ts:1-38",
+        "server/src/services/live-events.ts:1-54",
+        "ui/src/api/client.ts"
+      ]
+    },
+    {
+      "id": "plugin-sdk-and-adapters",
+      "decision": "ADAPT",
+      "evidence": [
+        "packages/plugins/sdk/src/protocol.ts",
+        "packages/plugins/sdk/src/types.ts:198-219",
+        "server/src/services/plugin-capability-validator.ts:389-429",
+        "server/src/services/plugin-manifest-validator.ts:119-160",
+        "server/src/services/plugin-runtime-sandbox.ts:107-160"
+      ]
+    },
+    {
+      "id": "identity-permissions-and-tenancy",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/middleware/auth.ts:165-260",
+        "server/src/services/authorization.ts:273-365",
+        "server/src/services/access.ts"
+      ]
+    },
+    {
+      "id": "approvals-audit-and-secrets",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/approvals.ts:35-85",
+        "server/src/services/issue-approvals.ts:20-40",
+        "server/src/services/activity-log.ts:94-202",
+        "server/src/services/secrets.ts",
+        "server/src/services/run-secret-redaction.ts:35-122"
+      ]
+    },
+    {
+      "id": "testing-security-and-maintenance",
+      "decision": "ADAPT",
+      "evidence": [
+        ".github/workflows/pr.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/commitperclip-review.yml",
+        "packages/db/src/check-migration-safety.ts",
+        "Dockerfile:79-83"
+      ]
+    },
+    {
+      "id": "web-and-deployment",
+      "decision": "REJECT",
+      "evidence": [
+        "ui/src",
+        "Dockerfile:15-147",
+        "docker/docker-compose.yml:1-40"
+      ]
+    }
   ],
   "copiedCode": []
 }

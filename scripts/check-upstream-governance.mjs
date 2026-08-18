@@ -1,6 +1,7 @@
 import { access, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const projects = [
@@ -12,6 +13,9 @@ const required = [
   "docs/upstream-capability-matrix.md",
   "research/paperclip/README.md",
   "research/paperclip/audit-manifest.json",
+  "research/paperclip/repository-audit-protocol.md",
+  "research/paperclip/repository-inventory.json",
+  "research/paperclip/unit-assessments.json",
   "THIRD_PARTY_NOTICES.md",
   ...projects.map((project) => `docs/upstreams/${project}.md`),
 ];
@@ -59,6 +63,15 @@ try {
   }
 } catch {
   errors.push("Paperclip competitive-audit manifest is missing or invalid JSON");
+}
+
+try {
+  execFileSync(process.execPath, [
+    join(root, "research/paperclip/generate-repository-inventory.mjs"),
+    "--check",
+  ], { cwd: root, stdio: "pipe" });
+} catch (error) {
+  errors.push(`Paperclip repository inventory is incomplete or stale: ${error.stderr?.toString().trim() || error.message}`);
 }
 
 if (errors.length) {
