@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/skills",
+      "auditStatus": "COMPLETE",
+      "function": "Comprehensive CLI tests for company Skill lookup/files, catalog browse/search/inspect/install/update/reset/audit and explicit desired-Skill synchronization to an Agent runtime snapshot.",
+      "dependencyDirection": "The Vitest suite registers Skills Commander commands, stubs fetch/output, exercises pure reference resolution and consumes shared-style Skill/catalog/Agent projections. It tests client request/formatting behavior, not catalog provenance, server audit internals or runtime materialization.",
+      "keyDataModels": "Company Skill opaque id/key/slug/source/trust/compatibility/file inventory/editability/attachment count; catalog category/tags/requirements/content and per-file hashes; installed/origin hashes and audit findings; Agent desired/runtime-managed Skill entries and warnings.",
+      "lifecycle": "Resolve unique id/key/normalized slug; list/show/read files; filter and inspect catalog; install/update/reset with force/confirmation; audit installed bytes; synchronize add-mode desired refs to an Agent and return desired-versus-actual runtime state.",
+      "testAssessment": "Focused Vitest passed 13/13 tests on 2026-08-19 and CLI no-emit TypeScript passed. It strongly covers ambiguous slug rejection, slash-safe refs, pipeable file output, catalog filtering, force propagation, audit hash/findings and explicit sync mode. It omits pagination, signed provenance, dependency resolution, compatibility failure, malicious content/runtime execution, concurrent update, rollback, tenant auth and responsibility/evidence effects.",
+      "designRationale": "Treat Skills as versioned company-managed artifacts separate from Agent runtime state, preserve origin/installed hashes, make desired synchronization explicit and provide audit/compatibility metadata before or after installation.",
+      "companyOsProblem": "Company OS needs governed reusable Agent capability packages and FDE templates whose source, license, content integrity, dependencies, data/tool permissions and runtime installation state are independently observable across heterogeneous Connectors.",
+      "companyOsFit": "ADAPT opaque id/key lookup with ambiguity rejection, per-file/content hashes, origin-versus-installed comparison, explicit merge modes and desired-versus-actual runtime projection. Recast executable capability packages under Connector/Plugin governance with signed provenance, license/SBOM, immutable versions, policy/data grants and runtime attestation. Static markdown audit is advisory, never a sandbox or approval substitute.",
+      "responsibilityConflict": "Attaching or syncing a Skill changes what an Agent can do, but the tested workflow does not bind the change to accountable human, role contract, data/tool grant, risk approval, runtime proof or Work evidence. Recommended role tags are not organizational authorization.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/skills.test.ts:1-508",
+        "SHA-256 885517fee1561cc4682a95a3de05f8ac12b5602c6221652c7bf2de26d8904f8c",
+        "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+        "9eac727cf13f6445c76e61190b6f831833759979 [codex] Add skills CLI and catalog management (#6782)",
+        "2026-08-19 focused Vitest: 1 file and 13 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Content/file hashes and audit codes are valuable, but signature, publisher identity, transparency log, license/SBOM and trusted-root verification are not tested.",
+        "`--force` install/update/reset bypass semantics are forwarded without tested policy, human authority, impact preview, expected revision, reason or immutable receipt.",
+        "Audit detects a network reference fixture but static scanning cannot constrain filesystem/network/tool execution, prompt injection or dependency behavior.",
+        "Agent sync sends user-supplied refs and mode but no immutable content version/hash, approval digest, capability/data policy or runtime attestation binding.",
+        "Reading raw Skill files to stdout can expose sensitive embedded content to terminals/pipelines/logs; classification and authorization are untested.",
+        "Slug resolution appears to obtain company collections before resolving; completeness/pagination and large-tenant performance must be guaranteed or replaced by a server-side unique resolver.",
+        "Catalog dependency `requires` exists in fixtures but cycle, conflict, transitive trust, version resolution and uninstall safety are not covered."
+      ]
+    }
+  ]
+}
