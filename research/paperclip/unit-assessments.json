@@ -4520,18 +4520,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-agent-session-message",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for turning Issue briefs or plugin-session messages into bounded, redacted structured wake payloads and adapter prompts.",
+      "dependencyDirection": "Heartbeat payload builder reads optional Issue context and feeds adapter-utils prompt rendering; tests use minimal database stubs.",
+      "keyDataModels": "Wake reason, truncated Issue summary, pluginKey/sessionId/source/text AgentMessage, fallbackFetchNeeded flag.",
+      "lifecycle": "Include up to 12,000 characters of an Issue description and mark fallback fetch; render canonical gateway chat messages; return null for non-renderable timers; redact and bound session message text before prompt materialization.",
+      "testAssessment": "Four focused cases cover truncation, canonical plugin message rendering, empty timer behavior and one credential-shape redaction. Missing are authorization/provenance, company/session binding, adversarial secret forms, Unicode boundaries, prompt injection, data classification/export policy, attachment handling and proof that fallback fetch is permission-scoped.",
+      "designRationale": "Keep adapter wake prompts useful but bounded, and sanitize external session messages before they enter model context.",
+      "companyOsProblem": "Company OS must deliver human/Connector messages and Work briefs without leaking secrets or bypassing data authorization while preserving source attribution.",
+      "companyOsFit": "ADAPT the typed bounded payload and explicit truncation/fetch receipt. Bind every message to principal, Company/Work, channel capability, data classification and original evidence hash; sanitize through Data/Evidence ports, and authorize any fallback fetch separately. Do not let plugin-private session IDs become core identity.",
+      "responsibilityConflict": "The payload carries source/plugin/session labels but no authenticated human or Connector attestation, consent, data contract or prompt-injection policy; simple redaction cannot establish safe disclosure.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-agent-session-message.test.ts:1-107",
+        "caae2778f0737c3690b1b8680735503c69e9058b Deliver plugin Agent session turns and replies (#10137)",
+        "d3c004d1b8536add73478aed292eb119b7d526a7 Fix Issue descriptions in structured wake payloads (#10151)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-archived-company-guard",
@@ -4550,18 +4554,21 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-auto-checkout",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests deciding whether an actionable wake may move an assigned todo Issue into execution checkout.",
+      "dependencyDirection": "Pure Heartbeat policy over wake context, Issue row status/assignee, dependency readiness and structured execution-review state.",
+      "keyDataModels": "Issue todo status, Agent assignment, dependency readiness and current workflow stage/participant.",
+      "lifecycle": "Auto-checkout ordinary dependency-ready assigned work, but do not convert a todo row that actually represents a pending review-stage participant.",
+      "testAssessment": "Two cases capture the key regression but do not cover human participants, other stage types/status contradictions, reassignment races, approval, pause/cancel, atomic checkout or responsibility acceptance.",
+      "designRationale": "Row status alone is insufficient; workflow execution state must prevent a reviewer wake from being mistaken for new implementation work.",
+      "companyOsProblem": "Company OS must distinguish Work ownership, workflow participation and execution authority so review/approval activity cannot accidentally grant an Agent executor rights.",
+      "companyOsFit": "REFERENCE the state-projection consistency check. Company OS should make workflow stage and responsibility contract authoritative, with atomic capability-based checkout and explicit human/Agent role, rather than reconcile a generic todo field at dispatch time.",
+      "responsibilityConflict": "The predicate checks Agent identity and workflow stage but not accountable-human acceptance or an execution/approval/data capability receipt.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-auto-checkout.test.ts:1-38",
+        "f3ca4d24bc4b931882109f9617b488d9fd74bf6b Repair dirty/foreign-branch execution worktrees (#9297)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-comment-wake-batching",
@@ -4595,18 +4602,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-cost-accounting",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests classifying token-bearing usage as reported or unpriced and selecting cache-adjusted provider cost for ledger billing.",
+      "dependencyDirection": "Pure Heartbeat helpers over adapter-reported numeric usage/cost fields.",
+      "keyDataModels": "Input/cached/output token counts, nominal costUsd, cacheAdjustedCostUsd and ledger cost status.",
+      "lifecycle": "Prefer a finite cache-adjusted cost, otherwise use provider cost; mark token usage without cost unpriced and any available billed amount reported.",
+      "testAssessment": "Seven concise cases cover missing/reported/cache-adjusted combinations and NaN. Missing are negative/infinite/overflow values, currency and precision, provider/model/pricing version, estimated versus invoiced reconciliation, retries/deduplication, cache-write charges and signed usage provenance.",
+      "designRationale": "Avoid silently treating substantial CLI token use as free and use the provider's discounted billed amount when available.",
+      "companyOsProblem": "Company OS needs trustworthy cross-provider cost governance and budget reservations without conflating telemetry, estimates and settled charges.",
+      "companyOsFit": "ADAPT the explicit unpriced state, not the numeric helper. Define Money/currency, UsageReceipt provenance, pricing version, estimated/reported/settled states, idempotent attempt key and reconciliation; BudgetPort reserves before execution and settles from verified Connector/provider evidence.",
+      "responsibilityConflict": "Unverified adapter numbers directly influence ledger semantics, with no responsible owner, pricing contract or evidence signature; a reported value is not necessarily a settled enterprise charge.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-cost-accounting.test.ts:1-67",
+        "efcce9cc8e17e2b30f6f2edf30e00a77b0bf19bb Record unpriced CLI usage (#9505)",
+        "ee851fc364087aa36951aaec78afe2be42ce27e3 Expose cache-adjusted Run cost (#10349)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-dependency-scheduling",
@@ -4655,18 +4666,21 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-ledger-billing-code",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests resolving an Issue-scoped billing code and Project into the cost-ledger scope for a Run.",
+      "dependencyDirection": "Heartbeat ledger helper queries the Company-visible Issue referenced by Run context and otherwise falls back to the context Project.",
+      "keyDataModels": "Run context Issue/Project IDs, Issue projectId/billingCode and ledger scope.",
+      "lifecycle": "Use authoritative Issue Project and billing code when visible in the Company; return null Issue/billing code and context Project when absent or cross-Company.",
+      "testAssessment": "Four cases cover present/null/no-Issue/cross-Company lookup and no-query optimization. Missing are billing-code mutation timing, archived/deleted Work, Project/company mismatch, authorization, immutable Run snapshot, invoice export and structured cost-center contracts.",
+      "designRationale": "Attribute execution cost to the Work's current business billing dimension while preserving tenant isolation.",
+      "companyOsProblem": "Company OS must carry cost center/project/customer attribution into immutable execution and settlement evidence for FDE and enterprise finance workflows.",
+      "companyOsFit": "ADAPT by resolving a versioned CostAllocationContract before execution and copying its immutable ID/digest onto the attempt and usage receipts. Do not re-read a mutable Issue billingCode at settlement time.",
+      "responsibilityConflict": "A mutable Issue field is not proof that an accountable budget owner approved the allocation, and null fallback can silently produce unattributed spend.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-ledger-billing-code.test.ts:1-81",
+        "e1e35881afc1bd9d2b0316fdde54dd2139e4ed3f Propagate Issue billing_code at Heartbeat record time (#6821)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-list",
