@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/client/command-label",
+      "auditStatus": "COMPLETE",
+      "function": "Builds a human-facing CLI command label by concatenating every process argument after the executable with spaces and prefixing paperclipai; emits paperclipai alone when there are no arguments.",
+      "dependencyDirection": "CLI process argv -> unescaped display string -> board-auth challenge command field and any other consumers. It has no command schema, redaction policy, structured authorization intent or digest boundary.",
+      "keyDataModels": "Plain string only. Argument names, values, sensitivity, subcommand identity, target company/resource, normalized action and semantic version are not represented separately.",
+      "lifecycle": "Read process.argv.slice(2) at call time -> join with a single space -> return. No parsing, canonicalization, escaping, length bound, control-character filtering, Secret redaction or hashing occurs.",
+      "testAssessment": "Repository search found no focused buildCliCommandLabel test. TypeScript checking passes but cannot prove redaction, ambiguity resistance, control-character handling, length bounds or semantic binding. The earlier board-auth/auth-command tests only prove route/flow wiring and do not validate command-label safety.",
+      "designRationale": "Showing the approving human which CLI invocation requested access improves context with almost no machinery. Raw argv joining is convenient and readable for simple commands, but it is presentation text rather than a trustworthy authorization statement.",
+      "companyOsProblem": "Company OS approvals must explain the intended action to a human while binding approval to an exact normalized action, target, permissions, data, Agent/Connector, work and evidence digest without exposing Secret inputs.",
+      "companyOsFit": "Reject raw command capture. Build a structured ActionIntent from the command parser before execution, mark each argument public/sensitive, normalize resource identifiers and capability, and compute a versioned canonical digest. Render a sanitized localized summary separately; retain original user input only under explicit evidence classification and never treat display text as the approval contract.",
+      "responsibilityConflict": "A joined argv string is ambiguous and can leak or misrepresent the actual action. It cannot reliably answer what an accountable human approved, especially when equivalent quoting differs or hidden defaults/environment values affect behavior. Company OS high-risk approval must bind a canonical action/digest, not this label.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/client/command-label.ts (4 lines; SHA-256 a70248fa10500df3a51f9f99cbe84154dc48197b8622e2f3432fd7a698083807)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Repository search found no buildCliCommandLabel-focused test",
+        "Related completed CLI Secret assessment found rotate accepts a Secret via --value, proving argv may contain sensitive values and making raw capture unsafe"
+      ],
+      "securityFindings": "Critical confidentiality risk: all argv values are copied verbatim into an auth challenge; commands that accept tokens, Secret values, paths or personal data can persist and display them server-side. Arguments can contain spaces, quotes, newlines, control characters or deceptive Unicode, so joining loses boundaries and can spoof approval UI/logs. There is no maximum length, redaction or allowlist. The label has no canonical digest and must never authorize execution."
+    }
+  ]
+}
