@@ -3722,6 +3722,19 @@
         "Lines 6901-6956 expose the service's full API surface: resolution, catalog/list/detail, versioning, social features, fork/rename/edit/delete, test harness lifecycle, imports/scans, audit/update/reset and runtime materialization. The breadth confirms a 6,956-line application god-service spanning at least storage, filesystem, supply chain, policy-adjacent mutation, runtime projection and test orchestration."
       ],
       "completionRequirements": ["Read lines 1-6956 exactly once and trace all local/remote/catalog/generated Skill inputs, path and archive safety, parsing/inventory/digests, database lifecycle/version/collision/merge, policy/identity/approval, Agent runtime sync/test/install/update/remove, secrets/network/process boundaries, audit/evidence, concurrency/rollback, performance and Company OS fit against completed tests."]
+    },
+    {
+      "id": "application:server/__tests__/company-skill-test-runs-service",
+      "path": "server/src/__tests__/company-skill-test-runs-service.test.ts",
+      "lineCount": 753,
+      "sha256": "b754a3044919475440a766e2dfadbf53e9b19650dbea9baf60dc5ceb3f1b922e",
+      "linkedEvidence": { "history": ["b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio: three-pane skill IDE with sandboxed test runs (#9241)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-753 exactly once, run the focused suite in an isolated Paperclip home, and assess version/input/template/config snapshotting, Issue creation/wake/cancel/cleanup, status concurrency, retention, evidence projection, secret handling and whether sandbox claims are enforced or prompt-only."]
     }
   ]
 }
