@@ -791,18 +791,32 @@
     },
     {
       "id": "application:cli/__tests__/project-goal",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI smoke tests for company-scoped Project and Goal create/list/update/delete operations using shared client schemas.",
+      "dependencyDirection": "The Vitest suite registers Project and Goal Commander modules, isolates the CLI context file, stubs fetch and asserts selected request URLs, methods and create payload fields.",
+      "keyDataModels": "Company/Project/Goal opaque IDs, Project name/status/goalIds and Goal title/level/status; authentication and company context are supplied as CLI options.",
+      "lifecycle": "Create a Project linked to Goal IDs; change Project status; list and delete Projects; create a company-level Goal, rename it, list it and delete it.",
+      "testAssessment": "Focused Vitest passed 3/3 tests on 2026-08-19 and CLI no-emit TypeScript passed. It demonstrates client/server schema reuse and basic CRUD routing, but omits get/filter/pagination, hierarchy, ownership, status transitions, duplicate links, concurrency, authorization, deletion constraints, audit/evidence and error behavior.",
+      "designRationale": "Expose foundational planning objects to scripts with the same validation contracts as the service while keeping company scope explicit on collection operations.",
+      "companyOsProblem": "Company OS needs company/department/project goals connected to Work, accountable owners, responsible Agents, permissions/data contracts, approvals, evidence/results and organizational outcomes.",
+      "companyOsFit": "REFERENCE ONLY at this test-unit boundary. Shared schema and explicit company-scoped collections are sensible, but the tested model is generic CRUD and does not establish the Company OS responsibility graph. Keep implementation frozen until the owning server/domain/database units determine whether any validation or lifecycle pattern merits selective reuse.",
+      "responsibilityConflict": "Project.goalIds and Goal level/status do not identify proposer, accountable human, responsible organization, executing Agent, authorized data/tools, approval policy, evidence or measured result. Deletion/update can sever responsibility history unless the server enforces immutable references and lifecycle rules not covered here.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "cli/src/__tests__/project-goal.test.ts:1-161",
+        "SHA-256 9f58abbeeecdb6bb40d30699cd3d3b622abfa20d4d91cd23d3057c96c7d942f2",
+        "9c8adee48b15aa7d12becd767e461a83a306f552 feat(mcp) [split 5/8]: integrate adapters and deployment runtime (#9560)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 3 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "The tests use a fixed bearer token and company/record IDs but do not verify tenant membership, per-object authorization, token audience or cross-company rejection.",
+        "PATCH and DELETE requests have no tested expected revision, idempotency, reason, dependency check or audit receipt.",
+        "Project goalIds are accepted as a flat list without tested existence, same-company scope, duplicate suppression, cycle/hierarchy semantics or authorization to link.",
+        "Goal level/status and Project status are string fixtures; invalid transitions, unknown enums and terminal/deletion semantics are untested.",
+        "The temporary context path is isolated but context-file permissions, symlinks, stale company state and credential persistence are outside coverage."
+      ]
     },
     {
       "id": "application:cli/__tests__/prompt",
