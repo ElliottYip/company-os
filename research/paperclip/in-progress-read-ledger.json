@@ -4485,12 +4485,13 @@
       "sha256": "3d6f444f0f69686ccb53dde1b6a8dd9335a1408282e310cbd1e1a7553f339be8",
       "linkedEvidence": {},
       "auditStatus": "IN_PROGRESS",
-      "completedRanges": [{ "start": 1, "end": 200 }],
+      "completedRanges": [{ "start": 1, "end": 400 }],
       "sourceReadComplete": false,
-      "nextLine": 201,
+      "nextLine": 401,
       "notes": [
         "Lines 1-200 establish a broad worktree test surface spanning Git subprocesses, networking/port reservation, direct database tables, embedded PostgreSQL, configuration/database/storage/Secret copying, routine pausing, execution-state quarantine, workspace cwd rebinding and reseed/init/make/repair commands. This is a deployment and data-lifecycle subsystem, not a simple Git helper.",
-        "The tests deliberately prefer a repository-local .paperclip/config.json over an ambient PAPERCLIP_CONFIG and begin verifying discovery from nested working directories. This reduces accidental cross-worktree targeting, but the boundary still processes host paths/config/Secret keys and must defend against symlinks, untrusted repositories and incorrect root discovery."
+        "The tests deliberately prefer a repository-local .paperclip/config.json over an ambient PAPERCLIP_CONFIG and begin verifying discovery from nested working directories. This reduces accidental cross-worktree targeting, but the boundary still processes host paths/config/Secret keys and must defend against symlinks, untrusted repositories and incorrect root discovery.",
+        "Lines 201-400 validate instance/name sanitization, home-rooted targets, pnpm executable reuse, Git branch/start-point argument construction, URL port rewriting, isolated database/storage/env paths, attachment fallback across storage roots and minimal-versus-full database seeding. Disabling backups and dropping Run/event/session/runtime history for minimal seeds are sensible isolation/performance choices, but importing config-derived executable paths, Git refs and storage objects still needs trust/canonicalization. Returning null for an attachment missing from every store risks silent evidence loss unless the eventual plan reports it as an explicit integrity failure or approved omission."
       ],
       "completionRequirements": ["Read all 1,675 lines exactly once, run the focused test and CLI no-emit typecheck, record skipped embedded-PostgreSQL cases explicitly, inspect relevant history, then assess configuration/Secret/database copying, execution quarantine, scheduled Routine safety, Git hooks and subprocesses, port/instance isolation, workspace path rebinding, repair/reseed lifecycle, concurrency, rollback and Company OS hybrid/self-hosted relevance."]
     }
