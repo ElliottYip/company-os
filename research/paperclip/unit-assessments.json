@@ -1559,18 +1559,24 @@
     },
     {
       "id": "application:cli/checks/managed-install-check",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Provides a Node major-version check and a multi-result diagnostic for Paperclip's managed CLI installation: artifact/manifest presence, active payload containment and current-link target, shim marker, PATH membership, and orphaned retained payloads.",
+      "dependencyDirection": "CLI doctor leaf -> install-store manifest/path contract and CheckResult -> direct filesystem, path, process version and PATH inspection. It is isolated from Paperclip domains and services but tightly coupled to the managed install layout, manifest history, npm/git source directories and shim marker.",
+      "keyDataModels": "InstallStorePaths; install manifest with source/version/payloadPath/previous records; current symlink; shim marker; PATH entries; retained/orphaned payload sets; free-form CheckResult[]. There is no signed artifact identity, digest/SBOM/provenance, installer transaction, service version or structured diagnostic-code model.",
+      "lifecycle": "If no persistent artifacts or install-root entries exist, report optional absence. Otherwise parse the manifest; validate active payload is a directory inside the install root and current symlink resolves to it; search shim text for a marker; compare shim directory against PATH; enumerate npm/git payload directories not named by current/history records. Node runtime passes on major >=20. Checks are synchronous and read-mostly, with no repair execution here.",
+      "testAssessment": "The previously completed managed-install-check test assessment was reused without rereading: focused Vitest passed 4/4 in a combined 9-test run and covers a consistent install, marker-without-manifest failure and harmless CLI residue. It lacks digest/tamper/version mismatch, ownership/mode/symlink attacks, filesystem races, unreadable directories, malicious manifest history, alternate source directories, PATH edge cases, service/runtime parity, rollback and repair outcomes; temporary roots leaked in that run. CLI TypeScript checking passes.",
+      "designRationale": "The implementation recognizes multiple valid installation modes, avoids flagging mere CLI-directory residue, verifies containment before trusting an active payload, and distinguishes broken manifest/store/shim/PATH/retention conditions. This is materially better than a single executable-exists probe and is a useful operational design reference.",
+      "companyOsProblem": "Company OS self-hosted/local-enterprise distributions need diagnosable, atomic and recoverable installs across package, container and appliance profiles, with provenance, current/previous version, data-schema compatibility and service/runtime parity visible to operators.",
+      "companyOsFit": "REFERENCE ONLY for the layered diagnostic shape and current/previous payload model. Company OS needs a deployment-profile-neutral installer contract with signed digest/SBOM/provenance verification, immutable release IDs, explicit transaction/lock state, service and database compatibility, permission policy and structured repair plans. Paperclip-specific directory names, shim marker, manifest and source enums should not be copied.",
+      "responsibilityConflict": "No direct human/Agent domain conflict, but install, update, rollback and pruning are privileged actions. A Company OS diagnostic must identify the operator, expected release and evidence; any repair must be a separate approved command rather than inferred from free-form hints. A passing marker/link check cannot prove trusted code provenance.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "cli/src/checks/managed-install-check.ts (168 lines; SHA-256 18b91b30d2e5ce673fea4bd1045cfb704ae6f9d80977e8936ee66e3f494abcdd)",
+        "git history/blame: all current lines attribute to fc5a30805ed3c95ac6598c8660261a018b5b5a7f (2026-07-31, feat(cli): add managed install, update, and service lifecycle (#10045))",
+        "Existing completed unit application:cli/__tests__/managed-install-check reused without reread: test source SHA-256 77df088f984b6a9cfc42993c48b7acc797801c01d9f6a156f06de5c00d298be0; focused Vitest 4/4 passed",
+        "Related completed supply-chain assessment research/paperclip/audit-batches/1520-cli-install-update-supply-chain.json: install/update are REFERENCE_ONLY because artifact identity and unified rollback transaction remain incomplete"
+      ],
+      "securityFindings": "Positive: the active payload must resolve inside the install root and current must be a symlink resolving to it. Gaps: shim validity is only substring presence, with no executable/mode/owner/digest verification; payloads and manifest history have no content digest, signature, SBOM or publisher identity; synchronous exists/stat/readdir operations have race windows and some exceptions escape; PATH equality does not establish which executable the shell resolves first; orphan scanning trusts fixed npm/git layouts and names rather than verified release records. Node >=20 alone does not prove supported upper version, platform, ABI or dependency integrity."
     },
     {
       "id": "application:cli/checks/path-resolver",
