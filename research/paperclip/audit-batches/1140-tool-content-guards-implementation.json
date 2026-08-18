@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/tool-content-guards",
+      "auditStatus": "COMPLETE",
+      "function": "Tool action canonicalization/hash/HMAC envelope plus sensitive-content summarization and heuristic prompt-injection validation for Tool arguments/results.",
+      "dependencyDirection": "Depends on Node cryptography and shared server redaction helpers; Tool Access/Gateway execution and approval paths consume signatures, decoded arguments, summaries and validation errors. It is a security utility but remains server-specific through environment-secret resolution.",
+      "keyDataModels": "Canonical Tool arguments, versioned HS256 signed envelope bound to Invocation ID/tool name/optional approval snapshot/execute-on-approve flag, dedicated signing secret, redacted summary/hash/findings and content-validation error reason code.",
+      "lifecycle": "Arguments are recursively key-sorted and serialized, optionally signed with a dedicated HMAC key, decoded and timing-safe verified against expected context before JSON parsing into arguments. Content validation summarizes/redacts sensitive values, scans four prompt-injection regex classes and either returns findings/value/summary or throws according to modes.",
+      "testAssessment": "The previously audited 82-line suite proves tamper detection, Invocation/tool binding, dedicated-key requirement, basic redaction and one prompt-injection block. Implementation review finds untested semantic and robustness gaps: sensitiveMode=redact only transforms plain objects; strings and arrays are returned unchanged even when the summary detects/redacts a Secret. promptInjectionMode=redact records findings but does not redact or quarantine the content. Signed blobs and nested payloads are decoded/parsed before verification with no byte/depth limit. Canonicalization has no explicit handling for undefined, bigint, cyclic/non-JSON values, Unicode normalization or numeric edge cases. HMAC envelope lacks key ID/rotation, issued/expiry time, nonce/replay scope, Company/Work/Agent/Connector/action/policy/data binding and result signature. Shared symmetric instance key gives no execution-node identity. Heuristic regex scanning is bypassable and false-positive prone.",
+      "designRationale": "Bind reviewed Tool parameters to one Invocation/tool using a dedicated secret, prevent ordinary authentication secrets from becoming signing keys, and stop obvious Secret/prompt-injection content from silently entering Agent context.",
+      "companyOsProblem": "Company OS needs a canonical ActionEnvelope and ResultEnvelope that preserve exact human-approved bytes and enforce the data egress/ingress firewall at a Connector execution node.",
+      "companyOsFit": "ADAPT the versioned envelope, deterministic canonicalization, domain-separated context binding, dedicated key and timing-safe verification. Use a standard canonical JSON/CBOR profile with strict input limits; bind Company/Work/ResponsibilityContract/Agent/Connector/tool+schema version/action digest/permissions/data contract/approval/policy version/nonce/iat/exp; support key IDs and rotation or node public-key signatures; verify before expensive decode where possible; sign Result/Evidence. Replace misleading redact modes with actual recursive transformation or explicit quarantine/block and layered content-security classifiers.",
+      "responsibilityConflict": "The signed object may include an approval snapshot but does not require or semantically validate accountable human, approval decision, responsibility/data contract or execution expiry. A shared service HMAC proves only key possession, not which Connector node executed the action. Redact modes can return the original sensitive or adversarial bytes, breaking the evidence/data-boundary promise.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/tool-content-guards.ts:1-246",
+        "server/src/__tests__/tool-content-guards.test.ts:1-82 (previously audited; coverage ledger only)",
+        "cfa5e070 feat(mcp) [split 3/8]: add tool access policy core (#9558)"
+      ]
+    }
+  ]
+}
