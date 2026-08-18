@@ -17,6 +17,7 @@ import type {
 } from "../../ports/approval-publication-port.ts";
 import type { OrganizationPrincipalPort } from "../../ports/organization-principal-port.ts";
 import type { ControlPlaneSnapshotDependencies } from "../../application/get-control-plane-snapshot.ts";
+import { DEMO_COMPANY } from "./demo-company.ts";
 
 class DemoExecutionAdapter implements AgentExecutionPort {
   readonly #capabilities: AgentExecutionCapabilities;
@@ -92,36 +93,9 @@ class DemoApprovalAdapter implements ApprovalPublicationPort {
   }
 }
 
-const demoOrganization = {
-  company: {
-    id: "demo-company",
-    name: "珊瑚实验室",
-    purpose: "确定性 Company OS 演示公司",
-    locale: "zh-CN",
-  },
-  departments: [{ id: "operations", name: "运营部", mandate: "安全交付" }],
-  humans: [{
-    id: "demo-boss",
-    name: "林澄",
-    title: "Agent Boss（演示）",
-    departmentId: "operations",
-    avatarId: "clay-human-placeholder",
-  }],
-  agents: [{
-    id: "demo-researcher",
-    name: "市场研究员（演示）",
-    role: "形成带证据的市场简报",
-    departmentId: "operations",
-    accountableHumanId: "demo-boss",
-    runtimeConnectorId: "fixture-codex",
-    avatarId: "fish-bumble",
-    autonomyLevel: 2,
-  }],
-} as const;
-
 const organizationPort: OrganizationPrincipalPort = {
   async getOrganization(companyId) {
-    return companyId === demoOrganization.company.id ? demoOrganization : null;
+    return companyId === DEMO_COMPANY.company.id ? DEMO_COMPANY : null;
   },
   async listPrincipals() {
     return [{ id: "demo-boss", kind: "HUMAN", displayName: "林澄" }];
@@ -165,4 +139,3 @@ export function createDemoPorts(): ControlPlaneSnapshotDependencies {
     mode: "DEMO_FIXTURE",
   };
 }
-

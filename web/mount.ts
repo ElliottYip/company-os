@@ -1,4 +1,6 @@
-import { createDemoRuntime, type DemoState } from "../application/demo-runtime.ts";
+import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
+import { DEMO_COMPANY } from "../adapters/demo/demo-company.ts";
+import type { CompanyWorkState } from "../application/company-operations.ts";
 import { compileOfficeScene } from "../core/office.ts";
 import { createButton } from "./components/button.ts";
 import { OfficeDomRenderer } from "./office-dom-renderer.ts";
@@ -13,42 +15,8 @@ export interface MountedCompanyOS {
   unmount(): void;
 }
 
-const demoOrganization = {
-  company: { id: "demo-company", name: "珊瑚实验室", purpose: "安全演示", locale: "zh-CN" },
-  departments: [{ id: "operations", name: "运营部", mandate: "安全交付" }],
-  humans: [{
-    id: "demo-boss",
-    name: "林澄",
-    title: "Agent Boss（演示）",
-    departmentId: "operations",
-    avatarId: "clay-human-placeholder",
-  }],
-  agents: [
-    {
-      id: "demo-researcher",
-      name: "市场研究员",
-      role: "形成带证据的市场简报",
-      departmentId: "operations",
-      accountableHumanId: "demo-boss",
-      runtimeConnectorId: "fixture-codex",
-      avatarId: "fish-bumble",
-      autonomyLevel: 2,
-    },
-    {
-      id: "demo-operator",
-      name: "运营协作者",
-      role: "模拟运营进度",
-      departmentId: "operations",
-      accountableHumanId: "demo-boss",
-      runtimeConnectorId: "fixture-enterprise",
-      avatarId: "fish-fizz",
-      autonomyLevel: 1,
-    },
-  ],
-} as const;
-
-function statusCopy(state: DemoState): string {
-  const copy: Record<DemoState["phase"], string> = {
+function statusCopy(state: CompanyWorkState): string {
+  const copy: Record<CompanyWorkState["phase"], string> = {
     READY: "等待分配",
     PLANNING: "正在规划",
     SIMULATING_TOOL_ACTIVITY: "模拟执行",
@@ -60,13 +28,13 @@ function statusCopy(state: DemoState): string {
 }
 
 export function mountCompanyOS(host: CompanyOSHostContract): MountedCompanyOS {
-  const runtime = createDemoRuntime();
+  const { runtime } = createDemoComposition();
   const root = document.createElement("main");
   root.className = "company-os";
   host.mountElement.replaceChildren(root);
 
   async function render(): Promise<void> {
-    const state = runtime.snapshot();
+    const state = await runtime.snapshot();
     root.innerHTML = `
       <header class="topbar">
         <div class="brand-mark" aria-hidden="true">C</div>
@@ -122,28 +90,28 @@ export function mountCompanyOS(host: CompanyOSHostContract): MountedCompanyOS {
     const canvas = root.querySelector<HTMLElement>("[data-office-canvas]");
     const actions = root.querySelector<HTMLElement>("[data-task-actions]");
     if (!canvas || !actions) throw new Error("Company OS Web shell failed to mount.");
-    await new OfficeDomRenderer(canvas).render(compileOfficeScene(demoOrganization));
+    await new OfficeDomRenderer(canvas).render(compileOfficeScene(DEMO_COMPANY));
 
     if (state.phase === "READY") {
       actions.append(createButton({ label: "分配模拟任务", tone: "primary", onClick: () => {
-        runtime.assignTask(); void render();
+        void runtime.assignTask().then(render);
       } }));
     } else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) {
       actions.append(createButton({ label: "推进下一事件", tone: "primary", onClick: () => {
-        runtime.advance(); void render();
+        void runtime.advance().then(render);
       } }));
     } else if (state.phase === "AWAITING_APPROVAL") {
       actions.append(
         createButton({ label: "批准模拟动作", tone: "primary", onClick: () => {
-          runtime.decide("APPROVED"); void render();
+          void runtime.decide("APPROVED").then(render);
         } }),
         createButton({ label: "拒绝", tone: "danger", onClick: () => {
-          runtime.decide("REJECTED"); void render();
+          void runtime.decide("REJECTED").then(render);
         } }),
       );
     }
     actions.append(createButton({ label: "一键重置", tone: "quiet", onClick: () => {
-      runtime.reset(); void render();
+      void runtime.reset().then(render);
     } }));
   }
 
@@ -154,4 +122,3 @@ export function mountCompanyOS(host: CompanyOSHostContract): MountedCompanyOS {
     },
   };
 }
-

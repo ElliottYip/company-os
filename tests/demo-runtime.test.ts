@@ -1,15 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createDemoRuntime } from "../application/demo-runtime.ts";
+import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
 
-test("demo runtime deterministically reaches a high-risk approval pause", () => {
-  const runtime = createDemoRuntime();
+test("demo runtime deterministically reaches a high-risk approval pause", async () => {
+  const { runtime } = createDemoComposition();
 
-  runtime.assignTask();
-  runtime.advance();
-  runtime.advance();
-  const state = runtime.advance();
+  await runtime.assignTask();
+  await runtime.advance();
+  await runtime.advance();
+  const state = await runtime.advance();
 
   assert.equal(state.phase, "AWAITING_APPROVAL");
   assert.equal(state.events.length, 4);
@@ -17,14 +17,14 @@ test("demo runtime deterministically reaches a high-risk approval pause", () => 
   assert.equal(state.mode, "DEMO_FIXTURE");
 });
 
-test("approval completes the responsibility chain with evidence and result", () => {
-  const runtime = createDemoRuntime();
-  runtime.assignTask();
-  runtime.advance();
-  runtime.advance();
-  runtime.advance();
+test("approval completes the responsibility chain with evidence and result", async () => {
+  const { runtime } = createDemoComposition();
+  await runtime.assignTask();
+  await runtime.advance();
+  await runtime.advance();
+  await runtime.advance();
 
-  const state = runtime.decide("APPROVED");
+  const state = await runtime.decide("APPROVED");
 
   assert.equal(state.phase, "COMPLETED");
   assert.deepEqual(state.responsibility, {
@@ -40,12 +40,11 @@ test("approval completes the responsibility chain with evidence and result", () 
   });
 });
 
-test("reset returns byte-for-byte deterministic initial state", () => {
-  const runtime = createDemoRuntime();
-  const initial = runtime.snapshot();
-  runtime.assignTask();
-  runtime.advance();
+test("reset returns byte-for-byte deterministic initial state", async () => {
+  const { runtime } = createDemoComposition();
+  const initial = await runtime.snapshot();
+  await runtime.assignTask();
+  await runtime.advance();
 
-  assert.deepEqual(runtime.reset(), initial);
+  assert.deepEqual(await runtime.reset(), initial);
 });
-
