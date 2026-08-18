@@ -910,18 +910,33 @@
     },
     {
       "id": "application:cli/__tests__/run",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for Run listing/detail/cancellation, byte-paged logs, sequence-paged events, linked Issues, workspace operations/logs, watchdog decisions, manual Agent wakeup and Issue-to-Run helpers.",
+      "dependencyDirection": "The Vitest suite composes Run, Agent and Issue Commander modules, stubs fetch/console/stdout and asserts client request paths plus watchdog and wakeup payload fragments.",
+      "keyDataModels": "Company/Agent/Run/Issue/workspace-operation IDs, Run status/invocationSource, log offset/nextOffset/byte limit, sequenced events, workspace phase, watchdog decision/reason and wake source/trigger detail/reason/payload.",
+      "lifecycle": "Filter Runs by company/Agent; inspect/cancel a Run; page logs/events; navigate linked Work and workspace operations; submit a watchdog continue decision; manually wake an Agent with payload; retrieve all/live/active Runs for one Issue.",
+      "testAssessment": "Focused Vitest passed 3/3 tests on 2026-08-19 and CLI no-emit TypeScript passed. It covers useful cursor/byte parameters and exact watchdog/wakeup payload fields, but omits pagination boundaries, malformed logs/events, resume/gap recovery, cancel/watchdog authorization, idempotency, concurrent state changes, evidence integrity, redaction, timeouts and stable error responses.",
+      "designRationale": "Give operators a scriptable end-to-end diagnostic and intervention surface from Work to Run, workspace setup and event/log details, including manual watchdog recovery.",
+      "companyOsProblem": "Agent Boss and incident operators need vendor-neutral execution visibility, bounded replay, safe cancel/pause/resume decisions and links from goals/Work to workspace activity, evidence and accountable intervention.",
+      "companyOsFit": "ADAPT sequence cursors, byte-bounded log retrieval, explicit Work-to-Run helpers and decision reasons. Replace heartbeat/vendor semantics with Connector Run projections carrying stable event ids, resumable cursors, runtime attestation, permissions/data scope and evidence integrity. Every cancel/wakeup/watchdog intervention must bind a human principal, expected Run revision, action digest, risk/approval and durable result.",
+      "responsibilityConflict": "The command surface attributes manual wakeup only through free-text reason/source and watchdog decision, without proving accountable human identity/authority or binding the exact Work/config/data/evidence state. Operational logs/events are not automatically responsibility evidence.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/run.test.ts:1-220",
+        "SHA-256 70e5a0f2e04f47c01aeee68f57dc216347228f83c7a4fb0b27d1d3eac7fcc703",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 3 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Bearer authentication is fixed-success; tenant/resource authorization for Run, Issue, workspace and Agent actions is not tested.",
+        "Cancel, watchdog decision and manual wakeup have no tested expected revision, idempotency key, approval token, capability check or immutable audit receipt.",
+        "Wakeup accepts arbitrary JSON payload text; schema validation, size limits, secret/private-session rejection and data classification are untested.",
+        "Event sequence pagination is routed but gap detection, duplicate handling, cursor expiry and reconnect recovery are not verified.",
+        "Log byte pagination is routed but Unicode byte accuracy, truncation boundaries, retention, integrity digest, redaction and access classification are not covered.",
+        "Workspace logs and Run-linked Issue listings may expose host/data topology; field-level authorization and least-data projections are untested.",
+        "Watchdog `continue` with free-text reason is not bound to the exact suspended action or evidence digest, allowing approval/substitution ambiguity unless enforced by the server."
+      ]
     },
     {
       "id": "application:cli/__tests__/secrets",
