@@ -4843,18 +4843,24 @@
     },
     {
       "id": "application:server/__tests__/costs-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route and database-oriented tests for cost/finance summaries, budget mutation authority, unpriced usage, recursive issue/run attribution and integer-overflow-resistant aggregates.",
+      "dependencyDirection": "Vitest -> real cost routes with mocked services plus cost/finance services with embedded PostgreSQL when available; route actors/services and persistence tests are separated, so no test spans authorization through durable budget/evidence state.",
+      "keyDataModels": "CostEvent provider/biller/billingType/costStatus/model/tokens/cents/time, FinanceEvent kind/currency/direction/estimated, company/Agent budgets and policies, issue tree, heartbeat Run duration and activity-based attribution.",
+      "lifecycle": "Connector/runtime reports usage/cost -> event is stored and spend may update -> operators query company/provider/Agent/project/issue summaries -> human board users change budget/policy -> runtime may later enforce incidents and cancellation outside this suite.",
+      "testAssessment": "Approved unsandboxed Vitest passed 12 route/parser tests while 5 embedded-Postgres tests remained skipped; sandboxed results were 5 passed, 7 Supertest-listen failures and 5 skipped. Intended database coverage is thoughtful—unpriced usage, >int32 sums, recursive costs/runtime—but is not executable evidence in this environment. End-to-end budget enforcement, transactional mutation and ingestion idempotency are absent.",
+      "designRationale": "Separate provider usage from billable spend, preserve unpriced subscription work, support operational cost rollups by organizational/work hierarchy and keep budget changes human-board-only.",
+      "companyOsProblem": "Company OS needs trustworthy multi-provider/model/data/tool cost and usage accounting for Agent Boss decisions, data-export governance, managed/self-hosted deployment and FDE pilots measuring real human-plus-Agent delivery economics.",
+      "companyOsFit": "ADAPT the append-only typed event shape, unpriced-versus-zero distinction, provider/biller separation, recursive work attribution and wide numeric aggregation. Add provider event idempotency, price/rate-card snapshot and later reconciliation, currency-safe ledgers, usage and monetary policies, explicit overhead allocation, immutable responsibility/evidence links and one transactional/versioned budget command with an outbox for runtime enforcement.",
+      "responsibilityConflict": "Cost events are attributed to Agent/project/issue but not to requester, accountable human, data/tool authority, approval or result evidence. Budget mutation updates three observable concerns through separate mocked calls; the suite cannot prove the human decision, policy state, legacy field and audit evidence remain atomic.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/costs-service.test.ts:1-939 (SHA-256 ff264f94cfaed8f5eb4413a0bbb312bfe237b2b173f40c5c5ea4e0aa462de72b)",
+        "git history includes 7f2ed0ad90d7186d108f65400e322bda08dcbfe2, efcce9cc8e17e2b30f6f2edf30e00a77b0bf19bb, dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 and c4269bab59fff7a73ff31797578cc97ece7f160f",
+        "2026-08-19 sandboxed focused Vitest: 5 passed, 7 Supertest listen EPERM failures, 5 embedded-Postgres tests skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 12 passed, 5 embedded-Postgres tests skipped"
+      ],
+      "securityFindings": "HIGH budget-integrity gap: Agent field update, policy upsert and activity evidence are separate mocked calls with no transaction, optimistic version, idempotency or rollback test. HIGH accounting-integrity gap: no provider event identity/deduplication, signed source, rate-card version or reconciliation prevents duplicate/fabricated/stale costs. HIGH currency risk: finance summaries are tested only with USD even though events carry currency; cross-currency arithmetic is not guarded here. MEDIUM visibility risk: skill-test harness costs/runs are excluded from issue-tree rollups and could hide delivery overhead unless separately disclosed. MEDIUM resource/precision gaps include unconstrained date windows, weak limit boundaries, JavaScript safe-integer/rounding limits and live orphan Run duration. Actual DB tests were skipped, weakening persistence evidence."
     },
     {
       "id": "application:server/__tests__/cross-issue-influence-limit",

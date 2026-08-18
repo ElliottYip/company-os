@@ -5392,6 +5392,39 @@
       "completionRequirements": [
         "Read lines 1-114 exactly once and assess configuration schema evolution, unknown-field preservation, validation/repair, write atomicity, deployment-profile ownership, secret handling and test quality against Company OS managed-cloud/self-hosted boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/costs-service",
+      "path": "server/src/__tests__/costs-service.test.ts",
+      "lineCount": 939,
+      "sha256": "ff264f94cfaed8f5eb4413a0bbb312bfe237b2b173f40c5c5ea4e0aa462de72b",
+      "linkedEvidence": {
+        "history": [
+          "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+          "efcce9cc8e17e2b30f6f2edf30e00a77b0bf19bb fix(adapters): record unpriced CLI usage (#9505)",
+          "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+          "c4269bab59fff7a73ff31797578cc97ece7f160f Add workflow interaction cancellation and issue cost summaries (#4862)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        { "start": 1, "end": 320 },
+        { "start": 321, "end": 640 },
+        { "start": 641, "end": 939 }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-320 combine mocked route tests with embedded-Postgres service tests. Date and list-limit parsing, finance/issue summaries and cross-tenant budget denial are covered, but date ordering/range caps and upper limit bounds are not. Company-budget denial returns 403 while hidden Agent denial returns 404, creating inconsistent existence semantics.",
+        "Lines 321-640 correctly deny both target and peer Agents from changing budgets and allow an admin board actor. The positive mutation independently updates the Agent legacy budget field, upserts a policy and writes activity through mocked services; no transaction/rollback/idempotency/version assertion prevents split-brain budget state or missing evidence.",
+        "Unpriced subscription usage retains provider/biller/billingType/costStatus/model/token counts while leaving monthly spend at zero—a valuable distinction. There is no price-snapshot/source version, later reconciliation, usage-limit policy or duplicate provider-event key in this test.",
+        "Large aggregate tests intentionally exceed int32 for cost and tokens, but do not approach JavaScript safe-integer/decimal boundaries. Recursive issue summaries include root/descendants and exclude sibling plus skill-test harness work; silently excluding harness costs can understate real delivery cost unless overhead remains separately visible.",
+        "Lines 641-939 attribute runtime through either contextSnapshot.issueId or activity-log checkout and include live elapsed time based on now. This supports task-tree costing but leaves ambiguous/multiple attribution, orphaned long-running Runs, parallel wall-clock meaning, retries/cancelled work and deterministic snapshot time untested.",
+        "Finance aggregates preserve estimated versus total debit in USD and exceed int32, but mixed currencies, credits/refunds/tax/FX, precision/rounding and immutable invoice provenance are not covered. Sandboxed run: 5 parser tests passed, 7 route tests failed only from listen EPERM, 5 embedded-Postgres tests skipped. Approved unsandboxed run: 12 passed, the same 5 database tests still skipped, so the strongest persistence/overflow claims were not executed in this environment."
+      ],
+      "completionRequirements": [
+        "Read lines 1-939 exactly once and assess cost ingestion, pricing/source attribution, tenant/work/Agent allocation, aggregation, budgets, idempotency, concurrency, precision, lifecycle and test quality against Company OS model/provider/data governance and FDE cost requirements."
+      ]
     }
   ]
 }
