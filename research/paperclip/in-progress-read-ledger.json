@@ -6057,6 +6057,38 @@
       "completionRequirements": [
         "Read lines 1-348 exactly once and assess local/SSH/sandbox probe semantics, custom-image application, capability discovery, credential exposure, cleanup, timeout/error reporting and test quality against Company OS execution-node health and enrollment checks."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-routes",
+      "path": "server/src/__tests__/environment-routes.test.ts",
+      "lineCount": 2724,
+      "sha256": "15c6dd8a47833b8d34bc955c8cbe408015296cab99f8cc4e78bce5bbbabd4862",
+      "linkedEvidence": {
+        "history": [
+          "6b7e0814a08b228a2d9c685e46fa8ef0e3569c11 feat(acp): stream Daytona sandbox agent output and remove the host output poll (#11049)",
+          "90ead239a81215e673446608e7c7c63a5cc4e525 feat(ui/server): name cross-company environment secret refs instead of calling them missing (#10577)",
+          "f51cba33fa22f897dd6923f2e2fa10a7145d505b fix(server): keep environment secret bindings consistent when re-pointing config secrets (#10576)",
+          "9f5af4ea5d33ee0b40b972eb21b6e8e42cd0cf25 fix(server): accept secret_ref binding objects in sandbox provider environment config (#10355)",
+          "c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 2724 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in eight non-overlapping ranges. Sixty-eight HTTP tests cover catalog/detail/capabilities, platform-managed write floors and stale-marker recovery, create/update/delete/blast radius, Secret fields/refs, leases, probes, plugin validation, redacted activity and actor gates.",
+        "Cloud-managed platform rows have a sophisticated write floor: admins cannot mutate/delete live provisioned rows or forge reserved markers; narrowly marker-only patches recover genuinely stale rows; managed-config, environment and persisted execution-mode signals determine ownership. The test also protects credential-shaped config/envVars for those platform rows.",
+        "Credential response protection is conditional, not invariant. Tests explicitly expect tenant-created cloud rows and all self-hosted platform-marked rows to return raw apiKey and envVars to instance admins. Company OS must never expose Secret material through environment DTOs regardless of deployment profile or ownership marker; only references/status may be returned.",
+        "The plugin capability endpoint exposes driver schemas and template capabilities, and secret-ref schema fields are materialized into configured Secret providers before persistence. Picker Secret objects become bare IDs plus an instance-target reference; ephemeral draft probes resolve a selected Secret with actor/run/configPath context and avoid persistence. These are strong patterns, but arbitrary raw draft credentials still transit server/plugin memory.",
+        "Host-owned streamRunLogs/streamAgentSessionOutput fields are removed before provider validation then re-applied after plugin normalization. This prevents plugin loss but reveals mixed ownership inside one config object; Company OS should separate host execution policy from provider driverConfig structurally and version both.",
+        "Instance-admin-only deletion exposes a useful blast-radius projection across defaults, workspaces, issues, projects, bindings, leases and image setup. Yet active runtime use does not make canDelete false in the fixture, and delete subsequently clears selections/bindings across companies and removes referenced Secrets without a tested transaction, drain/cancel phase, shared-Secret check, outbox or compensation.",
+        "Cross-company instance scope is pervasive: catalogs are company-route aliases, descriptors can reveal another company's Secret owner/name, explicit company context re-points instance target refs, and mutation/activity fan out. This may serve one self-hosted enterprise but does not model managed-cloud tenant isolation or explicit deployment-to-tenant grants.",
+        "Approved unsandboxed focused Vitest passed 68/68. Service/transaction behavior is mocked; concurrency, actual rollback, provider/Secret failures after partial writes, audit failure, rate/size limits, CSRF/idempotency, lease draining and structured codes for all errors are not proved."
+      ],
+      "completionRequirements": [
+        "Read lines 1-2724 exactly once and assess the full environment HTTP surface: authority/tenant scope, Secret config and bindings, create/update/delete/probe/leases, plugin schema, custom images, workspace invalidation, audit, errors, concurrency and tests against Company OS deployment/profile governance."
+      ]
     }
   ]
 }

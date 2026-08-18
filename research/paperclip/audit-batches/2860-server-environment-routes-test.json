@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Broad HTTP contract tests for the instance-scoped environment catalog, platform-managed ownership floors, capabilities, lifecycle mutations, Secret configuration/references, lease visibility, probes, custom-image coupling, deletion blast radius and activity redaction.",
+      "dependencyDirection": "Supertest/Vitest -> Express environment routes and error middleware -> mocked access, environment, instance, Secret, plugin, custom-image, probe, workspace, issue/project and activity services; write transactions use an identity-only fake and no database/provider is exercised.",
+      "keyDataModels": "Instance environment/config/envVars/metadata/status, platform ownership markers and execution mode, plugin driver/schema/capabilities, Secret reference and binding owner, run lease, delete blast radius, probe result and redacted activity mutation summary.",
+      "lifecycle": "Authorize board/instance admin -> expose redacted or full catalog -> validate host and plugin config -> materialize/repoint Secret refs in a write transaction -> create/update and log -> probe with inferred/explicit company Secret context -> inspect leases/blast radius -> delete and fan out reference cleanup/activity across companies.",
+      "testAssessment": "Approved unsandboxed focused Vitest passed 68/68. Coverage is unusually broad and includes valuable regression cases for managed-resource marker drift, schema Secret fields and log redaction. Because all stateful collaborators and the transaction are mocked, it does not prove cross-service atomicity, tenant isolation, provider/Secret failure recovery, concurrency, active-lease drain, audit durability or generic output redaction.",
+      "designRationale": "Centralize installation-wide execution infrastructure behind a board-only/admin write surface, protect cloud-provisioned rows from tenant drift, allow plugin-provided drivers and preserve operator visibility into references and deletion impact.",
+      "companyOsProblem": "Company OS needs a stable API for operator-owned execution nodes, tenant-scoped execution profiles, Connector capabilities, Secret/data bindings, health checks and high-risk lifecycle changes across managed-cloud and local enterprise deployments.",
+      "companyOsFit": "REIMPLEMENT the API/domain boundary while adopting the managed-resource write floor, stale-state recovery, Secret-schema materialization, ephemeral resolution context, capability projection and blast-radius concept. Separate deployment nodes from tenant profiles/grants, host policy from driverConfig, and Secret refs from DTO values; require active-use draining, approval/responsibility evidence and transactional outbox/saga cleanup.",
+      "responsibilityConflict": "Instance admin is treated as sufficient authority for changes affecting every company's future execution. Activity attribution exists but no approved change contract, accountable human, affected-tenant acceptance, data-policy digest or immutable completion evidence binds create/update/probe/delete operations.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/environment-routes.test.ts:1-2724 (SHA-256 15c6dd8a47833b8d34bc955c8cbe408015296cab99f8cc4e78bce5bbbabd4862)",
+        "git history: 6b7e0814a08b228a2d9c685e46fa8ef0e3569c11, 90ead239a81215e673446608e7c7c63a5cc4e525, f51cba33fa22f897dd6923f2e2fa10a7145d505b, 9f5af4ea5d33ee0b40b972eb21b6e8e42cd0cf25, c274f10abc0e3c60a47e6ac3f786443b0e197543",
+        "2026-08-19 approved unsandboxed focused Vitest: 68/68 passed"
+      ],
+      "securityFindings": "CRITICAL generic Secret disclosure: tests expect raw credential-shaped config/envVars in admin responses for tenant-created cloud and self-hosted rows. CRITICAL tenant/scope ambiguity: instance resources and Secret refs are managed through company aliases and cross-company fan-out. HIGH destructive consistency gap: active lease counts need not block deletion and multi-service cleanup lacks tested atomicity/saga recovery. HIGH mixed-policy/plugin-config gap: host controls are merged around plugin normalization. HIGH responsibility gap: infrastructure-wide mutations lack approval/accountable-human/affected-tenant contracts. MEDIUM contract gap: many tests still assert English error strings rather than stable codes."
+    }
+  ]
+}
