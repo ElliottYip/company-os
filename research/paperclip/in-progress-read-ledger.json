@@ -5941,6 +5941,37 @@
       "completionRequirements": [
         "Read lines 1-868 exactly once and assess custom image setup/capture/promotion/rollback lifecycle, tenancy, provider leases, Secrets, fingerprints, cleanup, idempotency/concurrency, failure recovery and test quality against Company OS governed execution images."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-execution-target",
+      "path": "server/src/__tests__/environment-execution-target.test.ts",
+      "lineCount": 1373,
+      "sha256": "e4dd3e2db9623c4664d9cd80ed97628fac29816f397527b6d71a05e21c180706",
+      "linkedEvidence": {
+        "history": [
+          "6b7e0814a08b228a2d9c685e46fa8ef0e3569c11 feat(acp): stream Daytona sandbox agent output and remove the host output poll (#11049)",
+          "c647b8cc2ea61f5f6a2010b238629f6627a6be45 feat(acpx-engine): give sandbox.exec spans real parents (#10852)",
+          "2ab797dcbed0031c45c7335a0f497fea2a20bd9a fix(sandbox): reset step store for long-lived bridge work (#10813)",
+          "6a69a3d6b084d768a044708b7d4c47610ed8d9a7 refactor(observability): stop writing detailed per-step timing to the run log (#10776)",
+          "af6b32d82a30dcdf001dd96c406d3981382d5d89 feat(observability): add provider OTel spans - cache-hit flag, plugin tracer, Daytona pack/transfer spans (#10764)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 1373 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in four non-overlapping ranges. Thirty-seven pure tests cover sandbox/SSH target resolution, adapter eligibility, bridge transport, session flags, streamed/final output reconciliation and privacy-bounded OpenTelemetry timing/parenting.",
+        "Sandbox execution consistently uses the provider callback bridge even when leases advertise API or SSH access, reducing transport-specific leakage into adapters. SSH is separately resolved with an ephemeral private key/known-host material in the target. Supported remote-managed adapter names are hard-coded, including vendor products, instead of capability-declared by a Connector.",
+        "Provider lease metadata can select remoteCwd and shellCommand, and runner inputs can force or bypass a persistent session. Tests prove forwarding but not policy/allowlisting, path containment, executable/image digest, actor/Work authorization or prevention of a Connector using bypassSession to escape isolation assumptions.",
+        "Streaming reconciliation emits only a suffix when final buffers extend streamed prefixes; if buffers diverge, it re-emits the entire final buffer to avoid data loss at the cost of duplication. This is a sensible availability tradeoff but lacks chunk sequence IDs, hashes, resumable offsets or an explicit partial/duplicated evidence status.",
+        "Telemetry uses a closed attribute allowlist, clamps commands/providers, excludes args/env/cwd/stdin/stdout/stderr/errors, records finite timing/outcome and carefully avoids stale async step parents. It gives strong privacy regression coverage, while unparented continuation spans can lose direct Work/Run correlation unless linked separately with safe opaque context.",
+        "A successful provider execution followed by a rejected log callback propagates failure to the caller while keeping the exec span outcome successful. Company OS needs separate execution-result and evidence-publication states: it must never retry a non-idempotent action merely because evidence storage failed, and cannot claim responsibility completeness until evidence is durable.",
+        "Focused Vitest passed 37/37. Missing tests include cancellation/AbortSignal and timeout enforcement, hung callbacks/backpressure/output bounds, binary/Unicode split-prefix reconciliation, retry/idempotency, raw Secret lifecycle/zeroization, data-egress filtering, lease/environment mismatch, provider disappearance and structured execution error/attestation contracts."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1373 exactly once and assess execution-target abstraction, workspace transfer, command streaming, provider isolation, observability, cancellation, failure recovery, resource controls, Secret/data boundaries and test quality against Company OS Connector execution nodes."
+      ]
     }
   ]
 }

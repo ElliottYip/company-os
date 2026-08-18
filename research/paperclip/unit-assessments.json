@@ -5444,18 +5444,23 @@
     },
     {
       "id": "application:server/__tests__/environment-execution-target",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for resolving local-adapter execution onto sandbox or SSH targets and wrapping provider execution with session controls, streaming reconciliation and privacy-bounded tracing.",
+      "dependencyDirection": "Vitest -> execution-target service -> mocked runtime-config resolver and environment runtime plus adapter-utils timing context; no database, actual SSH/sandbox provider, Secret store, cancellation controller or durable log/evidence store is exercised.",
+      "keyDataModels": "Local adapter type, environment/lease/runtime target, sandbox provider and remote cwd/shell, SSH spec, runner execution request/result/log chunks, session force/bypass flags and allowlisted sandbox.exec span attributes.",
+      "lifecycle": "Resolve effective environment config -> check adapter eligibility -> create sandbox bridge or SSH target -> execute commands through a runtime runner -> reconcile incremental/final stdout/stderr -> record a privacy-safe span -> return result or propagate execution/evidence-sink failure.",
+      "testAssessment": "Focused Vitest passed 37/37. It is strong on target-shape regressions, output non-loss, telemetry privacy and async span parenting. It does not prove runtime cancellation/timeout, resource/output bounds, retry/idempotency, path/shell/session policy, Secret lifetime, data egress, lease tenancy, provider failures or signed run attestation.",
+      "designRationale": "Give multiple local Agent adapters one remote execution seam while hiding provider transport details, preserving streamed output under fallback polling and collecting useful performance traces without leaking commands, credentials or logs.",
+      "companyOsProblem": "Company OS needs a vendor-neutral, policy-governed execution-node contract that works across local enterprise and managed runtimes and preserves exact action/result/evidence semantics across streaming, retries and failures.",
+      "companyOsFit": "ADAPT the single bridge target, output reconciliation and closed telemetry allowlist. Replace adapter-name checks with Connector capability negotiation; resolve a signed execution profile containing binary/image/config/data/approval digests; enforce path/shell/session/resource/egress policy; add cancellation/idempotency; model execution outcome and evidence-publication outcome independently with resumable sequenced chunks.",
+      "responsibilityConflict": "Target resolution and telemetry do not bind who authorized the command, data/tools used or accountable human. Most critically, successful execution plus failed log delivery is externally rejected but internally traced successful; without separate durable states this can cause unsafe retries and an incomplete responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/environment-execution-target.test.ts:1-1373 (SHA-256 e4dd3e2db9623c4664d9cd80ed97628fac29816f397527b6d71a05e21c180706)",
+        "git history: 6b7e0814a08b228a2d9c685e46fa8ef0e3569c11, c647b8cc2ea61f5f6a2010b238629f6627a6be45, 2ab797dcbed0031c45c7335a0f497fea2a20bd9a, 6a69a3d6b084d768a044708b7d4c47610ed8d9a7, af6b32d82a30dcdf001dd96c406d3981382d5d89",
+        "2026-08-19 focused Vitest: 37/37 passed"
+      ],
+      "securityFindings": "HIGH responsibility/evidence ambiguity: successful side effects plus failed log callback produces a successful exec span and rejected call, risking unsafe retry and incomplete evidence. HIGH policy gap: provider shellCommand, remoteCwd and force/bypass session flags lack tested authorization and containment. HIGH execution-control gap: no cancellation, timeout, resource/output, retry/idempotency or egress tests. MEDIUM abstraction leak: vendor adapter names are hard-coded instead of capability negotiated. MEDIUM Secret/attestation gap: ephemeral SSH credentials and concrete execution identity are not tested for zeroization or signed binding."
     },
     {
       "id": "application:server/__tests__/environment-instance-routes",
