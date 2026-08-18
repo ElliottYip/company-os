@@ -231,12 +231,41 @@
             "Smoke Lab URLs are rejected from the production OAuth pipeline unless the connection is explicitly marked as the fixture, reducing accidental demo/production credential mixing.",
             "The remaining gallery-finish, lifecycle, audit, runtime, CRUD-race, and cleanup tests must be read before final judgment."
           ]
+        },
+        {
+          "start": 5001,
+          "end": 6000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Gallery-finish tests cover idempotent profile/policy replacement, complete review of quarantined actions, Notion-specific mutation classification, cross-company denial, and a real injected late-write failure that proves transaction rollback restores entries, bindings, and policies.",
+            "Reconnect testing proves successful in-place secret rotation without duplicate references but does not test failed health validation, database failure, or recovery of the prior working secret.",
+            "Runtime slot tests cover stop/restart behavior, activity attribution, board routes, tools:manage_runtime permission, and rejection of unsupported remote runtime controls.",
+            "Viewer regression tests broadly protect application, connection, health, catalog, profile, policy, trust-rule, example, and runtime mutation routes while retaining read access where intended.",
+            "Application deletion tests cover friendly linked-connection conflicts, last-connection application archive, multiple-connection preservation, normalized UID uniqueness, and a database-level delete/create race guarded by NO ACTION foreign-key behavior.",
+            "Archive tests do not assert revocation or suspension of grants, profile bindings, catalog entries, or local runtime slots, leaving authority and execution cleanup unverified.",
+            "Run-decision tests exercise one invocation with one action request only and do not expose the implementation's single-value map behavior for multiple requests."
+          ]
+        },
+        {
+          "start": 6001,
+          "end": 6996,
+          "readAt": "2026-08-18",
+          "notes": [
+            "Connection activity tests verify issue and resolver enrichment plus lifecycle event ordering and display-name projection.",
+            "Runtime health tests cover stale slots, capacity/restart signals, degraded active connections, durable audit-write counters, draft/disabled exclusions, and hosted local-stdio restrictions.",
+            "Health-sweep testing uses one connection and does not cover the implementation's cross-company full-table load, database limit omission, starvation, or multi-worker claim behavior.",
+            "Secret-resolution failure tests confirm fail-closed health state and value-free audit records.",
+            "Install synchronization tests cover only adding one agent install and the resulting access extension; they never remove an install, so the stale profile-binding revocation defect is not caught.",
+            "Risk-classification tests cover namespace and camelCase verbs plus annotations and Notion's explicit catalog, but explicitly expect non-Notion move_pages to be read, codifying fail-open handling for an unrecognized mutation verb.",
+            "No test covers broker response scope escalation, actual expiresAt enforcement, concurrent default rate-limit reservations, post-mint audit failure, duplicate grant selection, profile list scale, or callback state loss after downstream failure.",
+            "The complete 6996-line test source is now covered; final unit status still requires history, route authority, database schemas and migrations, and execution of the focused tests."
+          ]
         }
       ],
-      "sourceReadComplete": false,
-      "nextLine": 5001,
+      "sourceReadComplete": true,
+      "nextLine": null,
       "completionRequirements": [
-        "Read every test line through 6996 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
+        "Test lines 1-6996 are fully covered without overlap or gaps against the pinned SHA-256.",
         "Map covered and missing cases to the fully read implementation findings.",
         "Only then contribute test-quality evidence to the canonical unit assessment."
       ]
