@@ -8030,18 +8030,23 @@
     },
     {
       "id": "application:server/__tests__/issue-liveness",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Pure classifier tests for structurally stalled Issue dependency/review graphs, stable incident keys, recovery candidates and healthy action-path suppression.",
+      "dependencyDirection": "Vitest -> pure issue-liveness classifier -> supplied Issue/relation/Agent/Run/wake/interaction/approval/recovery snapshots; no database, scheduler, notification or authorization service is exercised.",
+      "keyDataModels": "Issue status/assignees/execution participant; blocker relation/path; Agent status/reporting chain; active Run and queued wake; pending interaction/approval; open recovery Issue; liveness state/reason/incident key/recovery Issue/recommended candidates.",
+      "lifecycle": "Build tenant graph snapshot -> traverse blocked/review paths -> locate first structurally stalled leaf -> check explicit action paths -> classify cause -> rank recovery Agents from assignee/reporting/root structure -> emit stable incident evidence or suppress when a live path exists.",
+      "testAssessment": "Sandboxed focused Vitest passed 17/17. Coverage is strong for structural causes, candidate selection, tenant scoping, review states and false-positive suppression. Missing are temporal thresholds/SLOs, stale pending-object expiry, repeated failure/backoff, recovery-work liveness, graph cycles/scale, hidden/deleted nodes, human role/availability/certification, authorization and property/fuzz exploration.",
+      "designRationale": "Detect deadlocked Agent work deterministically from persisted control-plane state instead of relying on model judgment or free-form job titles, and avoid duplicate incidents with a stable key.",
+      "companyOsProblem": "Agent Boss needs explainable liveness incidents that identify the blocked responsibility chain, distinguish legitimate waiting from abandonment, route escalation to an accountable human and never let an automated recovery Agent silently expand authority.",
+      "companyOsFit": "ADAPT deterministic cause taxonomy, dependency evidence, stable incident keys, tenant-scoped action paths and explicit reporting-chain candidate selection. Add responsible-human/certification/availability data, SLO and freshness policies, stale-path recursion, graph-version/digest, severity/risk, required approval and data authority; emit a LivenessIncident projection whose recovery proposal cannot execute until the responsibility policy authorizes it.",
+      "responsibilityConflict": "Recovery ownership is primarily recommended to Agents, while any human assignee or pending approval/recovery object suppresses the incident regardless of staleness or authority. The classifier does not prove which human owns resolution or prevent the recommended Agent from taking actions beyond the original contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-liveness.test.ts:1-630 (SHA-256 48714e9e42a8730a94c79070418d16f58316851324dc9d48708d58adf47b70da)",
+        "git history: 7 commits from 678728f650bf2a03f325922db32efb038dbb6ac9 through 1954eb304867fdc3075d53529dd3a8edc5c10a2a recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 17/17 passed"
+      ],
+      "securityFindings": "HIGH human-accountability gap: escalation candidates are Agents and human responsibility/availability is not modeled. HIGH stale-path gap: pending approvals/interactions/recovery items suppress alarms without freshness checks. MEDIUM authority gap: a recovery recommendation is not bound to an allowed-action contract. MEDIUM graph-resilience gap: cycle/depth/width and hostile graph tests are absent. MEDIUM data/visibility gap: hidden/deleted/unauthorized nodes are not covered. MEDIUM temporal gap: no SLO, heartbeat age or repeated failure signal. POSITIVE: deterministic tenant-scoped evidence, explicit hierarchy and stable incident keys avoid free-form role spoofing and duplicate alerts."
     },
     {
       "id": "application:server/__tests__/issue-monitor-scheduler",

@@ -7718,6 +7718,37 @@
       "completionRequirements": [
         "Read lines 1-1011 exactly once and assess assignee/null filters, tenant/authorization scoping, list projections, live descendant/continuation state, alarm suppression, query/poll coalescing and Company OS Agent Boss workload/accountability views."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-liveness",
+      "path": "server/src/__tests__/issue-liveness.test.ts",
+      "lineCount": 630,
+      "sha256": "48714e9e42a8730a94c79070418d16f58316851324dc9d48708d58adf47b70da",
+      "linkedEvidence": { "history": [
+        "678728f650bf2a03f325922db32efb038dbb6ac9 maintained in_review review-path contract/stalled actions (#10675)",
+        "9af96461d53517edaa34153395dd400fc700b0db restore stranded recovery continuations (#9630)",
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 prevent invalid Agent assignments/runs (#7663)",
+        "e400315cbf3cf0a69e5820efd6bafbc81bf8d7ae assigned backlog liveness (#5428)",
+        "82e257c7baa5ff4747829215707721150d14a9a4 cancel stale queued heartbeats on graph changes (#4534)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e runtime lifecycle recovery/live visibility (#4419)",
+        "1954eb304867fdc3075d53529dd3a8edc5c10a2a Issue graph liveness deadlocks (#4209)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-630"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-210 classify blocked chains with unassigned or assigned-backlog leaves, produce stable incident keys and dependency paths, choose recovery Agent candidates from explicit reporting structure/root rather than free-form executive names, and suppress findings for queued wakes, human assignees, active Runs or open recovery work.",
+        "Lines 211-420 detect cancelled blockers, paused/missing/invalid-org-chain assignees, invalid review participants and the first stalled in_review leaf across a multi-level dependency path, preferring the concrete blocker finding and avoiding duplicates.",
+        "Lines 421-630 avoid paused recovery owners, enumerate healthy review action paths (typed participant, human owner, Run, wake, interaction, approval or recovery Issue), reject stale participants after changes_requested, keep a review stall visible even when its blocker runs and ignore cross-company waiting paths.",
+        "Strong patterns are deterministic structural classification, stable incident identity, tenant-scoped action-path checks, explicit org hierarchy and cause-specific dependency evidence. Gaps include accountable-human hierarchy/certification, time/SLO and repeated-failure signals, recovery-path own liveness, stale pending objects, graph-cycle/scale bounds, hidden/deleted Work, authorization/data classification and a guarantee that recommended Agent recovery cannot itself act without human responsibility.",
+        "Sandboxed focused Vitest passed all 17 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-630 exactly once and assess liveness classifications, stale/queued Run cancellation, graph deadlocks, review/approval stalls, recovery ownership, false-positive suppression and Company OS accountable escalation/SLO requirements."
+      ]
     }
   ]
 }
