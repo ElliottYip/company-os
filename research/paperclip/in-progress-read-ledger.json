@@ -4744,6 +4744,25 @@
         "Trace endpoint and credential selection, board/Agent persona, Company/Run binding, every mutation/approval/Secret/data export path, idempotency/concurrency, output redaction, pagination/performance and stable errors.",
         "Inspect relevant per-file history and reconcile final reuse/Fork judgment only after all source files are covered."
       ]
+    },
+    {
+      "id": "application:cli/commands/pipelines",
+      "path": "cli/src/commands/pipelines.ts",
+      "lineCount": 846,
+      "sha256": "f969ff9999c0f273c5b007bf52d14f77d0335109f37d895955f856c5e9f78623",
+      "linkedEvidence": {
+        "history": [
+          "43b005b704f80aea3ce37cab8136920749c73ee6 Add pipeline workflow primitives and operator UI (#7903)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": [
+        "Read lines 1-846 exactly once and trace pipeline definitions, Runs, steps, approvals, variables/Secrets, retries, cancellation, idempotency, concurrency, evidence, tenant/actor binding, output safety and tests against Company OS responsibility semantics."
+      ]
     }
   ]
 }
