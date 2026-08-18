@@ -1879,6 +1879,81 @@
         "Focused Vitest passed 2/2 when invoked through the existing local binary; pnpm exec first attempted dependency reconciliation and aborted non-interactively before running tests, without modifying the read-only upstream worktree."
       ],
       "completionRequirements": ["Read lines 1-140 exactly once and assess CLI/API access-control parity, actor and tenant binding, negative coverage, stable error contracts and relevance to Company OS operator tooling."]
+    },
+    {
+      "id": "application:cli/__tests__/activity-parity",
+      "path": "cli/src/__tests__/activity-parity.test.ts",
+      "lineCount": 53,
+      "sha256": "7d98917052db9c12ec768e1e2dc3fd86ac00f23665caed461a53afc9f848c900",
+      "linkedEvidence": { "history": ["70b1a910 Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 53 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The single test checks only that list, create and issue-activity CLI commands produce three expected HTTP method/URL pairs with a fixed board token and mocked fetch.",
+        "It does not assert Authorization, request payload, actor attribution, company/issue ownership, pagination or time cursor semantics, server denials, stable errors, output/redaction or immutable audit properties.",
+        "The terminology conflates operational activity with responsibility-grade audit evidence; nothing here proves append-only storage, causality, integrity, retention or accountable-human identity.",
+        "Focused Vitest passed 1/1 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-53 exactly once and assess activity-query CLI/API parity, tenant binding, pagination/filter semantics, audit-versus-activity meaning and negative/error coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/admin-asset-skill-parity",
+      "path": "cli/src/__tests__/admin-asset-skill-parity.test.ts",
+      "lineCount": 177,
+      "sha256": "63fabf6ec49650fd1b64d973799542d1c87c8cc2ddddc554bf629183cc6f9b9c",
+      "linkedEvidence": { "history": ["70b1a910 Improve CLI API parity coverage (#6626)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 177 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four tests map 37 company, adapter, asset and skill commands to HTTP methods/URLs; one additional assertion rejects a portable export filename escaping the designated output directory.",
+        "The export path containment check and encoded adapter ID case are useful boundary tests, and asset upload verifies inferred PNG MIME type, but downloaded content integrity, overwrite policy, symlink handling and size/type limits are absent.",
+        "Install/reinstall/delete adapters, import/update/delete skills, company archive/import apply and model environment tests are high-effect operations tested only as route spelling with a fixed board token—no role, tenant, confirmation, provenance, signature, rollback, Secret or evidence behavior is exercised.",
+        "The suite mocks every server response and does not assert most payloads, authorization headers, structured errors, output redaction or lifecycle results; it is not proof of administrative safety or portability correctness.",
+        "Focused Vitest passed 5/5 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-177 exactly once and assess administrative asset/skill CLI parity, authority and tenant scope, destructive effects, payload/Secret handling, output/error coverage and Company OS relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/agent-jwt-env",
+      "path": "cli/src/__tests__/agent-jwt-env.test.ts",
+      "lineCount": 137,
+      "sha256": "7fc67ed1c8d5f05df2e722a62919d5ceca2253de342c7c78811393c29f00c80c",
+      "linkedEvidence": { "history": ["9485ffea fix(config): preserve env files during managed updates (#10980)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 137 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Despite the name, this suite covers one shared Agent JWT signing Secret stored beside CLI config and generic managed .env merging; it does not test JWT claims, issuance, audience, subject, scope, expiry, rotation or revocation.",
+        "It proves explicit-config adjacency, dotenv loading, a doctor presence check, hash-value quoting, CRLF/operator-line preservation, non-overwrite of DATABASE_URL and inode preservation for no-op updates.",
+        "The tests write fixture Secrets with mode 0600 but never assert permissions of newly created or rewritten files, atomicity, symlink resistance, entropy, backup/log exclusion, concurrent writers or failure recovery.",
+        "Temporary directories created by tempConfigPath are not removed, so the focused suite leaves Secret-bearing fixtures under the OS temporary directory until external cleanup.",
+        "Focused Vitest passed 6/6 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-137 exactly once and assess Agent JWT issuance/storage/environment lifecycle, audience/scope/expiry, rotation and revocation, file permissions, update preservation and Secret-leak coverage."]
+    },
+    {
+      "id": "application:cli/__tests__/agent-lifecycle",
+      "path": "cli/src/__tests__/agent-lifecycle.test.ts",
+      "lineCount": 125,
+      "sha256": "18de28457409edf3999fca01657c3dbc6b75086b013ee2b13f23dadb232c61f8",
+      "linkedEvidence": { "history": ["5da382fd feat(skills): require explicit merge modes (#10978)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 125 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Two tests map 26 Agent lifecycle, permission, revision, runtime-session, skill and instruction-file commands to expected HTTP method/URL pairs using a static board token and mocked fetch.",
+        "The surface recognizes useful lifecycle concepts—hire, approve, pause/resume, terminate, config revisions/rollback, runtime reset and explicit skill merge mode—but the tests assert none of their transition preconditions, concurrency or resulting state.",
+        "Permission escalation, approval, termination, deletion, rollback, session reset, instruction path/file mutation and skill replacement lack actor role, tenant, accountable-human intent, confirmation, idempotency, digest, provenance, path confinement and audit-evidence assertions.",
+        "Delete is invoked with --yes, but there is no negative test proving omission prompts or blocks; an arbitrary /tmp/AGENTS.md instruction path is accepted by the CLI test without validating the server-side filesystem boundary.",
+        "Focused Vitest passed 2/2 through the existing local binary."
+      ],
+      "completionRequirements": ["Read lines 1-125 exactly once and assess Agent create/update/archive/restore lifecycle CLI contracts, role/tenant/responsibility semantics, destructive confirmation, adapter/skill configuration, payload validation and error coverage."]
     }
   ]
 }

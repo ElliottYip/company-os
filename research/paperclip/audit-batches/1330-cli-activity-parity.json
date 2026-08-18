@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/activity-parity",
+      "auditStatus": "COMPLETE",
+      "function": "CLI route-shape smoke test for company activity listing/creation and issue activity listing.",
+      "dependencyDirection": "Imports CLI registration and mocks fetch; it does not execute server authorization, activity services, database schema or projections.",
+      "keyDataModels": "Company ID, issue ID, optional Agent filter and three HTTP method/URL pairs.",
+      "lifecycle": "Runs three CLI commands with a static board token and compares captured fetch destinations.",
+      "testAssessment": "Focused Vitest passed 1/1. It proves command-to-route spelling only and omits headers, payloads, pagination/time cursors, tenant/issue ownership, role denials, error/output behavior and audit integrity.",
+      "designRationale": "Provide low-cost drift detection between CLI commands and activity route names.",
+      "companyOsProblem": "Company OS needs operator access to activity projections while keeping responsibility evidence, immutable audit and operational telemetry semantically distinct.",
+      "companyOsFit": "REFERENCE ONLY as a route-contract smoke-test pattern. Company OS should derive CLI clients from a canonical API and separately test append-only evidence, actor/tenant causality, cursors, retention, redaction and authorization.",
+      "responsibilityConflict": "The test treats activity creation as an ordinary POST and never proves who may assert an event, whether actor attribution is trustworthy, or whether the record is immutable evidence rather than mutable feed data.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["cli/src/__tests__/activity-parity.test.ts:1-53", "full source SHA-256 7d98917052db9c12ec768e1e2dc3fd86ac00f23665caed461a53afc9f848c900", "2026-08-18 focused Vitest: 1 passed via existing local binary"]
+    }
+  ]
+}

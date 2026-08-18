@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/agent-jwt-env",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests for adjacent .env storage of the shared Agent JWT Secret and preservation-aware updates of CLI-managed environment entries.",
+      "dependencyDirection": "Calls production CLI env helpers and doctor check against temporary filesystem paths; it does not invoke token signing/verification or server identity services.",
+      "keyDataModels": "PAPERCLIP_AGENT_JWT_SECRET, config-adjacent .env file, managed versus operator-owned environment entries and newline/quoting format.",
+      "lifecycle": "Creates/loads a Secret, checks presence, merges managed values while preserving operator content, and avoids replacing an unchanged file.",
+      "testAssessment": "Focused Vitest passed 6/6. Preservation and dotenv round-trip cases are valuable, but new/rewrite permissions, atomicity, symlinks, concurrent writers, entropy, rotation/revocation and JWT claims are absent; temporary Secret fixtures are not cleaned up.",
+      "designRationale": "Keep local/self-hosted configuration upgrades from overwriting operator-managed environment content while ensuring a signing Secret exists.",
+      "companyOsProblem": "Company OS self-hosted deployment needs non-destructive config evolution and secure identity key lifecycle across upgrades.",
+      "companyOsFit": "ADAPT the byte-preservation, quoting and no-op-write cases for a dedicated config merger. Do not adopt a single adjacent shared Secret as the identity model; use a rotatable key provider with issuer/audience/scope/expiry/revocation contracts and permission, symlink, atomic-write and cleanup tests.",
+      "responsibilityConflict": "A shared signing Secret presence check does not prove which identity issued a token, its audience or authority, and cannot supply the independent product-token and accountable-human semantics required by Company OS.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/agent-jwt-env.test.ts:1-137", "full source SHA-256 7fc67ed1c8d5f05df2e722a62919d5ceca2253de342c7c78811393c29f00c80c", "2026-08-18 focused Vitest: 6 passed via existing local binary"]
+    }
+  ]
+}

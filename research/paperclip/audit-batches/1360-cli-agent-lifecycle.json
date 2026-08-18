@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/agent-lifecycle",
+      "auditStatus": "COMPLETE",
+      "function": "CLI route-shape tests for Agent hiring and state transitions, permissions, configuration history, runtime sessions, skills and instruction bundles.",
+      "dependencyDirection": "Imports only Agent CLI registration and mocks fetch; it does not invoke Agent services, state machines, adapters, filesystem enforcement or audit persistence.",
+      "keyDataModels": "Company/Agent/revision IDs, Agent payload, permission flags, explicit skill merge mode, task session key and instruction path/file.",
+      "lifecycle": "Invokes 26 commands from create/hire through approval, pause/resume, termination/deletion, config rollback, runtime reset and instruction mutation, then compares method/URL pairs.",
+      "testAssessment": "Focused Vitest passed 2/2. The route map is broad, but no state-transition, role/tenant, payload, confirmation, concurrency, idempotency, path, provenance, evidence or stable-error behavior is tested.",
+      "designRationale": "Expose most Agent administration and runtime controls through a scriptable CLI and detect endpoint-name drift.",
+      "companyOsProblem": "Company OS needs a governed Agent lifecycle with accountable human assignment, certification/status, configuration history, safe runtime reset and capability/instruction provenance.",
+      "companyOsFit": "REFERENCE ONLY for capability inventory and explicit skill merge mode. Company OS should specify a responsibility-aware lifecycle state machine and generate operator bindings from it, with transition guards, exact approval/effect digests, tenant/path confinement and durable evidence tests.",
+      "responsibilityConflict": "The CLI vocabulary includes approve and hire but the tests reduce them to unaudited POSTs; no accountable human, responsibility contract, approver authority, exact revision/effect binding or evidence chain is proven.",
+      "decision": "REFERENCE ONLY",
+      "evidence": ["cli/src/__tests__/agent-lifecycle.test.ts:1-125", "full source SHA-256 18de28457409edf3999fca01657c3dbc6b75086b013ee2b13f23dadb232c61f8", "2026-08-18 focused Vitest: 2 passed via existing local binary"]
+    }
+  ]
+}

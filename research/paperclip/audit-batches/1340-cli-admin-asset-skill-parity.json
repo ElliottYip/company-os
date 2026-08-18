@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/admin-asset-skill-parity",
+      "auditStatus": "COMPLETE",
+      "function": "CLI smoke and boundary tests for company portability, adapter administration, asset transfer and company skill lifecycle commands.",
+      "dependencyDirection": "Imports CLI command registration and one export-path resolver, mocks fetch, and uses temporary local files without invoking server services or persistence.",
+      "keyDataModels": "Company/skill/asset IDs, adapter keys, payload JSON, multipart image upload and export output path.",
+      "lifecycle": "Invokes 37 commands, compares method/URL pairs, checks upload MIME inference and rejects a parent-directory export filename.",
+      "testAssessment": "Focused Vitest passed 5/5. Path containment, percent-encoded adapter IDs and upload MIME get useful focused assertions; authorization, tenant denial, symlink/overwrite/content integrity, package/skill provenance, rollback, Secrets, errors and real side effects remain untested.",
+      "designRationale": "Keep a broad administrative CLI aligned with REST routes while guarding one obvious portable-export traversal case.",
+      "companyOsProblem": "Company OS needs safe self-hosted portability and operator automation for Connectors, assets and governed capability packages.",
+      "companyOsFit": "ADAPT the export containment, identifier encoding and multipart-type tests into stronger end-to-end contracts. Generate route parity from the canonical API and add provenance, signature, tenant, approval, idempotency, rollback, overwrite/symlink and evidence assertions.",
+      "responsibilityConflict": "Destructive and supply-chain-sensitive actions are exercised with the same static board token as reads and never bind an accountable human, approved change set, artifact digest or resulting audit evidence.",
+      "decision": "ADAPT",
+      "evidence": ["cli/src/__tests__/admin-asset-skill-parity.test.ts:1-177", "full source SHA-256 63fabf6ec49650fd1b64d973799542d1c87c8cc2ddddc554bf629183cc6f9b9c", "2026-08-18 focused Vitest: 5 passed via existing local binary"]
+    }
+  ]
+}
