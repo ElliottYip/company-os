@@ -2019,18 +2019,23 @@
     },
     {
       "id": "application:cli/commands/routines",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Implements a local emergency-style routines disable-all command. It loads config/env, starts or reuses embedded PostgreSQL or connects to configured PostgreSQL, applies pending migrations, selects every Company Routine, changes non-paused/non-archived rows to paused through a direct database update, reports counts and closes resources.",
+      "dependencyDirection": "Privileged CLI -> config/env and embedded-Postgres runtime -> @paperclipai/db migrations/schema/client and Drizzle -> routines table. It bypasses server application services, authorization, activity/event publication, scheduler coordination, approval and evidence boundaries. A duplicated openConfiguredDb helper is unused by the actual operation.",
+      "keyDataModels": "Company ID; Routine{id,status,updatedAt}; statuses paused/archived/other; embedded PostgreSQL data directory/port/PID/logs; configured connection string; aggregate counts. No operator identity, pause generation, active Run/trigger state, reason, incident, approval or audit event is represented.",
+      "lifecycle": "Resolve config and load adjacent env -> resolve Company -> initialize/reuse embedded database or external connection -> apply migrations -> select all Company Routines -> compute IDs from a stale snapshot -> update those IDs to paused -> return counts -> close database and optionally stop embedded PostgreSQL. The command mutates immediately with no dry run or confirmation.",
+      "testAssessment": "The completed application:cli/__tests__/routines assessment was reused without rereading source: on 2026-08-19 its sole focused Vitest test was explicitly skipped because embedded PostgreSQL was unavailable; CLI no-emit TypeScript passed. The source test specifies Company isolation/status preservation but gives no executed proof and omits transaction failure, concurrent Runs/updates, triggers, audit events, authorization, config tampering and recovery/resume.",
+      "designRationale": "An out-of-band local kill switch is operationally valuable when the API or scheduler is unhealthy. Direct database access can pause definitions even if the Web/service cannot start, and preserving archived/already-paused rows avoids obvious status loss in the uncontended case.",
+      "companyOsProblem": "Company OS requires an emergency stop that can prevent new Agent work and high-risk automation in managed and self-hosted deployments, while truthfully handling active Runs, queued work, triggers, Connector nodes and later controlled recovery.",
+      "companyOsFit": "Reimplement as a durable Company ExecutionFreeze with monotonically increasing generation, reason/incident, accountable operator, scope, event publication and Connector acknowledgements. The normal path goes through application services; an offline recovery tool may write a signed freeze record using a transaction but must not run unrelated migrations or rewrite individual Routine states.",
+      "responsibilityConflict": "The command has database authority but no human identity, authorization, reason, approval or evidence. It changes execution policy outside the responsibility ledger and reports a successful pause without proving schedulers/active Runs/remote Connectors observed it.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/commands/routines.ts (354 lines; SHA-256 6c2c5638040fc4cc94338e0ca921e52930ff0b83887d8c479f8fc3d5374f8a1a)",
+        "git history: ad6effa65c6cb17266ba392e614dc8ea6916ce7b and 73eb23734f25c570d88665e672f80d740797c632",
+        "Completed focused assessment application:cli/__tests__/routines: sole test skipped; CLI typecheck passed; REFERENCE ONLY"
+      ],
+      "securityFindings": "The operation bypasses auth/audit/services and applies pending migrations before an emergency pause. --data-dir is advertised but ignored. Config/env can redirect a privileged database connection. The select-then-update is not transactional and the update predicates only IDs: a Routine archived concurrently after selection can be overwritten back to paused; newly created Routines can escape. All IDs are loaded into memory and one unbounded IN clause may exceed database limits. Active/queued Runs and triggers are not cancelled or fenced. Embedded PostgreSQL uses fixed paperclip credentials, trusts PID existence via process.kill(pid,0) without proving process identity, force-deletes stale postmaster.pid, searches ports without an upper bound and swallows stop/close errors. Direct data directories are not contained here. There is no confirmation, dry run, idempotency record, freeze generation or recovery plan."
     },
     {
       "id": "application:cli/commands/run",
