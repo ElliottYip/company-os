@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/__tests__/helpers",
+      "auditStatus": "COMPLETE",
+      "function": "CLI integration-test helpers that re-export the database package's embedded PostgreSQL harness and build deterministic uncompressed ZIP archives without a third-party ZIP writer.",
+      "dependencyDirection": "The embedded database helper is a thin test-only re-export from @paperclipai/db. The ZIP helper depends only on Uint8Array and TextEncoder and is consumed by import/export and ZIP-codec tests; production feedback code separately contains another ZIP implementation.",
+      "keyDataModels": "EmbeddedPostgresTestSupport/TestDatabase and an in-memory map of relative file paths to UTF-8 strings or bytes, encoded into ZIP local headers, central-directory entries, CRC-32 values and an end record.",
+      "lifecycle": "Tests start isolated embedded PostgreSQL through the database-owned harness, or sort fixture files, encode stored ZIP entries, compute offsets/checksums and return deterministic archive bytes for importer/codec tests.",
+      "testAssessment": "The two focused ZIP consumer suites passed 6/6 tests on 2026-08-19 and CLI no-emit TypeScript passed. The helper itself has no direct boundary/overflow/property tests; embedded PostgreSQL behavior is tested indirectly by larger suites and owned in the database package.",
+      "designRationale": "Keep CLI integration tests close to production database behavior while avoiding native/external ZIP tooling and compression variability for small deterministic fixtures.",
+      "companyOsProblem": "Company OS needs reproducible portability and migration tests against its real supported database profiles, including malformed archive, path safety, size-limit and rollback cases.",
+      "companyOsFit": "ADAPT the database-owned reusable test harness and deterministic fixture-builder pattern, not the exact Paperclip exports or archive code. Company OS should use one canonical ZIP implementation or well-maintained library, add zip-bomb/path/collision/ZIP64 limits and avoid a test implementation drifting from production.",
+      "responsibilityConflict": "These helpers do not model identity or responsibility. Their relevance is evidentiary portability: fixtures must not be mistaken for production data, and import tests must prove provenance, authorization and rollback outside this utility.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/__tests__/helpers/embedded-postgres.ts:1-6",
+        "SHA-256 5bf1911980adc5457afd06e3b56a7e867e2bdad2f96c91862c6fed52c7f5d00f",
+        "cli/src/__tests__/helpers/zip.ts:1-87",
+        "SHA-256 69af4e8bac97f757968b4a759d043fa93972c12f095c07f131d61682d59bb868",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f Replace host-to-host Cloud Sync with full-fidelity company Import/Export (#10507)",
+        "2026-08-19 focused Vitest: 2 files and 6 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "The helper accepts arbitrary root/relative paths and does not reject absolute paths, traversal, duplicate normalized names, control characters or reserved entries; importer security must not rely on fixture construction.",
+        "Lengths, offsets and entry counts are written as classic ZIP 16/32-bit fields without overflow or ZIP64 checks, which is acceptable only for bounded small fixtures.",
+        "No explicit archive-size, per-entry-size or compression-ratio policy is represented; production import must enforce all limits independently.",
+        "A second ZIP builder exists in production feedback code, creating duplicated format logic and a maintenance/divergence risk.",
+        "The embedded database helper is only a re-export, so isolation, teardown, credential handling and unsupported-platform behavior must be assessed in the owning database unit."
+      ]
+    }
+  ]
+}
