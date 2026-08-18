@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-skills-service",
+      "auditStatus": "COMPLETE",
+      "function": "Large embedded-Postgres and real-filesystem integration suite for Company Skill list/detail, bundled releases, versions, social/store metadata, imports, forks, desired-state resolution, missing-source reconciliation, runtime materialization, project scanning and managed rename.",
+      "dependencyDirection": "Tests invoke companySkillService and folderService directly over real database schemas and temporary filesystem trees, with mocked network fetches. Route authorization, policy evaluation, real Connector activation and distributed/multi-process behavior are outside scope.",
+      "keyDataModels": "CompanySkill and content versions, provenance/inventory/source status, bundled release/folder, User/Agent editor, star/comment, sharing/category/folder, fork lineage/reassignment, desired Skill/version, missing-source marker, runtime entry, ProjectWorkspace scan candidate/conflict and managed local directory.",
+      "lifecycle": "Seed Company and source rows; refresh/list/project bounded projections; import/skip/rename/replace packages; version/edit/fork/reassign; retain or prune missing sources; recover/materialize runtime files; preview/import workspace candidates; rename managed Skills and clean old runtime paths.",
+      "testAssessment": "The 56 behavior tests are broad and often high quality: exact bundled snapshot hashes, tenant/folder boundaries, reserved-key and script-package rejection, symlink escape denial, stale-key visibility, cross-company metadata non-leakage, version snapshots, selective scans and Agent key rewrites are explicit. Focused Vitest was run outside the sandbox with a fresh isolated home, but embedded PostgreSQL failed after five attempts and all 56 tests were skipped, so 0 runtime tests passed. Critical gaps remain for multi-process concurrency, filesystem/database crash recovery, target-directory races, content quotas, disguised executables, remote integrity, approval/responsibility, secret handling and cleanup receipts.",
+      "designRationale": "Protect a rich Skills Studio lifecycle with end-to-end database/filesystem regressions while retaining compatibility with legacy rows, stale desired references and local developer workspaces.",
+      "companyOsProblem": "Company OS needs tested capability-package admission, immutable provenance, tenant-safe FDE workspace discovery, transactional publication, leased runtime activation/revocation and responsible human approval across managed-cloud and local Connector nodes.",
+      "companyOsFit": "ADAPT selected test matrices—not Paperclip schemas—for exact package hashes, reserved namespaces, canonical containment/symlink denial, stale desired-state visibility, version binding, same-source idempotence, selective preview/import, tenant metadata non-leakage and byte-for-byte runtime snapshots. Add adversarial concurrency, crash recovery, resource bombs, secret canaries, signature/digest, approval/data-egress and activation receipt tests before Company OS implementation.",
+      "responsibilityConflict": "The suite intentionally fixes destructive read-time pruning, partial SKILL.md-only runtime recovery, unversioned rename and bulk Agent capability-key mutation without accountable human, approval, action digest or immutable activity evidence. It tests User/Agent attribution but not organizational responsibility.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skills-service.test.ts:1-3017",
+        "full source SHA-256 01110092d63f084cdf01c0e8bab410e5188adb86308e0c7dd0a896582bbaa5ee",
+        "5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)",
+        "focused Vitest: 1 file and 56 tests skipped after embedded PostgreSQL failed to start five times; 0 passed"
+      ],
+      "securityFindings": [
+        "Tests explicitly require list() to hard-delete a missing local Skill when no active Agent desires it, with no grace period, tombstone, approval or audit evidence.",
+        "Tests explicitly allow runtime recovery from stored SKILL.md while referenced files are missing, without requiring a degraded attestation or fail-closed readiness state.",
+        "Legacy/direct GitHub rows use floating main refs and tests expect fork/read fetches from main, bypassing normal import commit pinning.",
+        "Package skip checks only database markdown and would not detect pre-decision materialized-directory mutation; concurrent skip/replace and rollback are untested.",
+        "Fork/create/edit/update/reset/rename tests are happy-path oriented and omit filesystem/database failure injection, concurrent same-slug operations and rollback failure.",
+        "Selected symlink errors sanitize messages but tests expect an absolute local path in skipped.path; runtime missingDetail likewise exposes source paths.",
+        "Rename preserves an arbitrary nonexistent pinnedVersionId and performs bulk Agent config mutation without approval or readiness evidence.",
+        "No tests cover package/file count or aggregate byte limits, hard links/TOCTOU, disguised executable formats, publisher signatures, data/tool/egress scope or secret redaction."
+      ]
+    }
+  ]
+}

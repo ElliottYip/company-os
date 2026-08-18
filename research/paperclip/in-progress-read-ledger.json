@@ -3752,10 +3752,10 @@
       "lineCount": 3017,
       "sha256": "01110092d63f084cdf01c0e8bab410e5188adb86308e0c7dd0a896582bbaa5ee",
       "linkedEvidence": { "history": ["5da382fd59222819cff110f85ca738a74fb335d1 feat(skills): require explicit merge modes (#10978)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [{ "start": 1, "end": 2400 }],
-      "sourceReadComplete": false,
-      "nextLine": 2401,
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 3017 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
       "notes": [
         "Lines 1-100 establish a 3,017-line embedded-Postgres/real-filesystem integration suite, isolate PAPERCLIP_HOME and instance ID, clean Company/Agent/Skill/Project/Folder/User fixtures, and begin a list-projection test. The suite is entirely skipped when embedded PostgreSQL support fails.",
         "Lines 101-200 prove a 250KB markdown body is omitted from list results while identifiers, source locator, attachment count and editability remain. This guards response size but still intentionally exposes absolute local source paths. The next test seeds User/Agent/unattributed/versionless editor identities.",
@@ -3780,7 +3780,15 @@
         "Lines 2001-2100 assert GitHub root/slug path derivation and stored-SKILL.md fallback during network failure, again using floating main refs seeded directly, then begin edit-version history. Availability fallback is well specified but source outage/integrity drift is hidden from returned content and no warning/attestation is required.",
         "Lines 2101-2200 prove initial/change-only version snapshots and selected non-standard project Skill browsing/import with symlink exclusion. Version idempotence is good. The browse fixture creates 251 symlinks which are filtered before the cap, so it does not exercise deterministic truncation among more than 250 visible entries; edit DB/filesystem failure and concurrent saves remain untested.",
         "Lines 2201-2300 verify preview discovers Codex/Cursor candidates without persisting project_scan rows and same-source import becomes already_imported rather than conflict. Preview purity and path identity are useful. No test proves previews avoid all filesystem/database reconciliation side effects, remain stable under workspace mutation or handle concurrent scans.",
-        "Lines 2301-2400 assert a project candidate duplicating a bundled slug is already available, not conflicting, and begin selected replacement-slug import for a genuine conflict. Built-in precedence is explicit. The match is slug-based and tests do not address a malicious unrelated Skill choosing a bundled display slug with different canonical identity/content."
+        "Lines 2301-2400 assert a project candidate duplicating a bundled slug is already available, not conflicting, and begin selected replacement-slug import for a genuine conflict. Built-in precedence is explicit. The match is slug-based and tests do not address a malicious unrelated Skill choosing a bundled display slug with different canonical identity/content.",
+        "Lines 2401-2500 complete explicit conflict rename and verify selective import only accepts a rediscovered in-workspace path, reports traversal selection as unmatched and ignores an unselected symlink escape without leaking a symlink warning. Selective least-work behavior is good, though the replacement key remains machine-path-hash derived and no path-swap race is tested.",
+        "Lines 2501-2600 prove cross-company Project/Workspace selections are not scanned and return null foreign metadata rather than leaking names/paths, then begin a selected symlink-escape test. This is strong negative tenant-boundary coverage at the service result layer. Caller authorization to enumerate the in-scope workspace is still outside this suite.",
+        "Lines 2601-2700 reject selected file/directory symlink escapes, sanitize human-readable reasons/warnings and ensure no persistence, then begin project-folder ownership. The test still explicitly expects skipped.path to equal the absolute linkedSkillDir, so path disclosure survives in the structured result even while message text is sanitized.",
+        "Lines 2701-2800 prove re-import refreshes content without moving a User-organized Skill, and validate managed rename directory/key/frontmatter synchronization plus YAML-special quoting. Rename preserves only the original version count—no new immutable version or activity evidence is expected—so a material identity/content mutation is intentionally absent from version history.",
+        "Lines 2801-2900 cover name-only/no-op rename, distinct slug/key conflict branches and begin rejecting non-managed source types. Conflict behavior is clear but only sequential; there is no concurrent target creation/directory collision or rollback failure test for the race-prone filesystem-first implementation.",
+        "Lines 2901-3000 complete non-managed rename rejection and verify rename rewrites selected Agent keys while preserving pinned/loose selection shape. The pinnedVersionId is a random nonexistent ID, so the test explicitly preserves stale/invalid pins without validation; this favors transparent state but requires later readiness failure/remediation evidence. No approval is required for bulk Agent capability mutation.",
+        "Lines 3001-3017 assert rename deletes the stale runtime materialization. The suite ends without testing deletion failure after the database rename commits, rollback failure, concurrent materialization or a structured revocation/cleanup receipt.",
+        "Focused Vitest was run outside the sandbox with a fresh isolated PAPERCLIP_HOME and instance ID. Embedded PostgreSQL failed to start after five attempts, so the single file and all 56 tests were skipped; 0 tests executed and no runtime pass is claimed."
       ],
       "completionRequirements": ["Read lines 1-3017 exactly once, run the focused suite in an isolated Paperclip home, and map coverage for import/upsert/conflicts, source/provenance/inventory, local and remote safety, versions/fork/rename/edit/delete, audit/update/reset/materialization, Agent reassignment, transactions/crash recovery, concurrency, secrets, approvals and destructive lifecycle behavior found in the completed service audit."]
     }
