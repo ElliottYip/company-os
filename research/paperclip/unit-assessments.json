@@ -4675,18 +4675,22 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-issue-rewake-throttle",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration specification for suppressing repeated Issue-bound wakes after consecutive successful runs with no Issue-visible progress, while reopening admission for new human input, failures or scoped progress.",
+      "dependencyDirection": "Heartbeat admission queries recent terminal Runs and activity-log events for the target Issue, then either persists a skipped AgentWakeupRequest with throttle metadata or proceeds to the normal adapter execution path.",
+      "keyDataModels": "Issue-scoped terminal Run history and finish time, no-progress streak, nextAllowedAt cooldown, Wake reason/request actor, ActivityLog actor/run/action/entity provenance, resume intent and Issue-visible progress.",
+      "lifecycle": "Two recent successful no-progress Runs suppress another event-free assignment and record the streak/cooldown; a later user comment activity admits work without first breaking the streak through execution; system comment wakes bypass the throttle, Agent-authored comments and explicit resume remain suppressed unless new human input exists; a failed latest Run or same-Issue run-linked comment admits retry, cross-Issue activity does not; long Runs count by terminal time within the lookback.",
+      "testAssessment": "Eight focused integration cases cover streak threshold, cooldown receipt, new user input, system and Agent comment distinctions, explicit Agent resume, failure recovery, same-versus-cross-Issue progress and long-run lookback semantics. Missing are concurrent admission races, database uniqueness/lease fencing, clock skew, exact window boundaries, queued/running Runs, cancellation/timeouts, repeated failures, high-risk approval events, user/Agent impersonation, edited/deleted comments, authoritative comment existence, progress types beyond comments, Connector evidence, configurable policy and starvation/notification behavior. One test admits a system comment wake with a random commentId and no persisted comment, so it does not prove source authenticity.",
+      "designRationale": "Reduce cost and noise from Agents repeatedly waking on unchanged Work, while treating genuinely new external input, failure recovery and Work-scoped visible output as evidence that another attempt may be useful.",
+      "companyOsProblem": "Company OS needs loop and spend containment that does not suppress accountable-human intervention, approval resolution or new evidence, and must explain why a Work item was throttled and how it can resume.",
+      "companyOsFit": "ADAPT the Work-scoped no-progress streak, explicit cooldown receipt, finish-time window, cross-Work isolation and priority for verified external input. Compute admission from immutable Message/Approval/Evidence cursors and Connector attempt receipts, with typed outcome classes and per-risk policy. A comment is communication, not necessarily progress; require a semantic ProgressReceipt or changed evidence/result projection. Human bypass must reference an authenticated principal and persisted message/decision, while failure retries use separate bounded backoff/circuit-breaker policy. Use atomic compare-and-set or a scheduler lease for distributed admission.",
+      "responsibilityConflict": "responsibleUserId is recorded but not consulted. User versus Agent significance is inferred from mutable activity-log actor labels, a system comment wake can bypass without an authoritative comment, and any Issue-visible comment can count as progress without proving result or responsibility discharge. The skipped wake carries operational metadata but no accountable owner, notification/override decision, permission/data snapshot or evidence digest.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-issue-rewake-throttle.test.ts:1-436",
+        "5dff52631d15d3705cb9ad05912e8f78e137b7f2 fix(heartbeat): throttle redundant issue re-wakes (#9470)",
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-ledger-billing-code",
