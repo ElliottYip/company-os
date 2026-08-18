@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-worktree-suppression",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL tests preventing copied development-worktree state from starting new or persisted queued Agent Runs, with an explicit activation cutoff for later human-initiated execution.",
+      "dependencyDirection": "Heartbeat wake/resume/timer APIs consult runtime environment and instance experimental settings while writing wakeups, Runs, Issues and runtime state; a real process adapter is used for allowed execution.",
+      "keyDataModels": "Worktree/instance environment flags, persisted worktree-execution activation cutoff, WakeupRequest skip reason, queued HeartbeatRun and Issue assignment.",
+      "lifecycle": "Default-deny all scheduling in a worktree instance; leave copied queued Runs inert; suppress timers; when explicitly armed, reject pre-cutoff system wakes but permit a post-activation user wake; preserve ordinary live-plane behavior; restore mode remains unconditionally suppressed.",
+      "testAssessment": "Five integration cases cover new wakes, copied queue replay, timer suppression, activation cutoff/user override, live-plane baseline and restore precedence. Missing are multiple instances, copied credentials/capabilities, cutoff clock skew, revoked activation, authorization of the arming user, audit receipt, queued records created between cutoff and activation, and deployment-profile compatibility.",
+      "designRationale": "A copied database or development worktree must be inert by default so historical queued automation cannot execute against live tools; explicit activation establishes a temporal boundary for new human intent.",
+      "companyOsProblem": "Self-hosted restore, cloning, backup verification, FDE staging and disaster recovery can duplicate executable state and credentials; Company OS must guarantee copied control planes are inert until deliberately activated.",
+      "companyOsFit": "REFERENCE the inert-clone default and activation-epoch idea. Model it as a signed DeploymentActivation receipt through DeploymentControlPort, with instance identity, data/credential rebinding, responsible human, allowed execution profile and monotonic epoch; all queue and Connector leases must be scoped to that epoch. Do not depend on worktree environment variables.",
+      "responsibilityConflict": "The persisted toggle/cutoff does not prove who authorized activation or that identities, secrets, data contracts and Connector endpoints were rebound. A generic user wake can execute after activation without an explicit action/approval contract.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/heartbeat-worktree-suppression.test.ts:1-349",
+        "390627b46eb333309d357004384b220ecf8a65af Suppress worktree heartbeat scheduling (#9163)",
+        "70ce005bef50a59f4dec45386dcd884a6fac0ea7 Ensure worktree execution starts only after activation (#9374)"
+      ]
+    }
+  ]
+}
