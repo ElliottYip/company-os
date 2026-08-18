@@ -2361,6 +2361,68 @@
         "Focused Vitest passed 4/4 through the existing local binary."
       ],
       "completionRequirements": ["Read lines 1-46 exactly once and assess product-home/config/context/auth path precedence, environment isolation, multi-instance safety, canonicalization and migration relevance."]
+    },
+    {
+      "id": "application:cli/__tests__/install-command",
+      "path": "cli/src/__tests__/install-command.test.ts",
+      "lineCount": 376,
+      "sha256": "c8c86418c297c5ced8fb8b3f27db44fe8e5b4fbcebf55839d7cef969294e18ca",
+      "linkedEvidence": { "history": ["fc5a3080 feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 376 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-200 cover npm stable/canary/exact selection, GitHub ref-to-full-SHA resolution, fork override rules, noninteractive consent, SHA-keyed payload reuse, codeload/build/package workflow and explicit NODE_ENV clearing.",
+        "Resolving mutable refs to a full commit SHA before storage and requiring --yes for noninteractive Git installs are good provenance/intent primitives; clearing ambient production mode avoids silently omitting build dependencies.",
+        "Arbitrary forks and branch refs are accepted, curl/tar/corepack/bash/npm execute a large supply-chain surface, and tests mock all content. No HTTPS certificate/publisher allowlist, archive/package digest/signature, lockfile integrity, malware/script sandbox, dependency audit or license policy is proven.",
+        "Cached payload reuse is keyed by only the first 12 SHA characters and validated by executing its CLI/version path, not by rechecking full content digest; a tampered local cache could execute before trust is re-established.",
+        "Lines 201-376 verify dependency-closure ordering, stderr diagnostics, npm registry isolation via temporary userconfig, atomic current shim/manifest provenance, uninstall-before-service ordering, preservation of user data, cross-instance service refusal, fail-closed unsupported service manager, symlink defenses, unverified-store refusal and mutation locking.",
+        "These are strong operational safety tests, especially keeping instance data during uninstall and refusing ambiguous/symlinked roots. However, child-process stderr is propagated verbatim and can leak registry tokens, paths or build Secrets into CLI errors.",
+        "No failed-update atomic rollback from current to previous payload, database migration compatibility/rollback, service restart health gate, payload garbage collection/retention, signature/SBOM/license/vulnerability validation or privileged-user boundary is exercised.",
+        "Focused install-command Vitest passed 16/16."
+      ],
+      "completionRequirements": ["Read lines 1-376 exactly once and assess managed install/update/service lifecycle, package/source verification, privilege boundaries, configuration preservation, atomic switch/rollback, process ownership and failure/security tests."]
+    },
+    {
+      "id": "application:cli/__tests__/install-store",
+      "path": "cli/src/__tests__/install-store.test.ts",
+      "lineCount": 206,
+      "sha256": "e60ea21273b0593afe7fd9f4b2162eafcdd10347897fdaabae1d631699d9e8b8",
+      "linkedEvidence": { "history": ["fc5a3080 feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 206 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Eleven focused tests cover deterministic payload layout, 0600 atomic manifest, crash-safe current symlink flip, two-version rollback retention/pruning, stable shim and shell RC mode preservation, exact marker validation, locking/stale recovery, provenance/current consistency and symlink/hardlink defenses.",
+        "This is high-quality local install-state engineering: fail-closed ownership checks, old-current survival before rename, strict shim recognition and user RC protection are directly reusable patterns.",
+        "Manifest records source/version/channel/path/time/previous but no package/content digest, signature, SBOM, license or migration compatibility. Current/manifest atomicity as a multi-file transaction and post-switch health/automatic rollback are not proven.",
+        "Lock recovery trusts process existence and can face PID reuse/host or network-filesystem semantics; concurrent independent processes, corrupted/truncated manifest, fsync ordering, prune failure/partial deletion and disk-full cases are absent.",
+        "Focused install-store Vitest passed 9/11 and failed 2/11 on Node 24/macOS: atomic-flip cleanup masked the simulated crash with Path is a directory, and the symlink-defense test's own fs.rmSync cleanup also failed on a directory symlink."
+      ],
+      "completionRequirements": ["Read lines 1-206 exactly once and assess install metadata/version/channel persistence, atomicity/concurrency/corruption, permissions/symlinks, provenance/digest, migrations and rollback state."]
+    },
+    {
+      "id": "application:cli/install-store.ts",
+      "path": "cli/src/install-store.ts",
+      "lineCount": 483,
+      "sha256": "a0808e177caabb216b5d5303fc3402605bd0344519dbb1818188924dc2ed77e8",
+      "linkedEvidence": { "history": ["fc5a3080 feat(cli): add managed install, update, and service lifecycle (#10045)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 483 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-250 define a compact managed-install state machine with private directories/marker, exact store verification, hard-link lock token, payload identifier regex, versioned manifest, atomic writers and install-root containment.",
+        "Store and marker checks reject symlinks/hardlinks and wrong ownership/content; uninstall additionally validates manifest payload containment. The lock uses create+hard-link acquisition and token-checked release, a thoughtful cross-process design for local filesystems.",
+        "Lock stale recovery relies only on PID liveness, so PID reuse can strand a lock and a reused PID from an unrelated process blocks progress. Lock file lstat/owner/mode are not verified before reading/removing, and network filesystem hard-link/process semantics are unspecified.",
+        "Manifest validation is shallow and accepts arbitrary repo/ref/version/channel/time/previous records without full path/digest schema. writeInstallManifestAtomic has no file/directory fsync, uses a predictable temp name without wx and does not coordinate current+manifest as one transaction.",
+        "Lines 251-483 confirm payload realpath containment, relative current symlink, two-version manifest retention, pruning, exact shim grammar/quoting, current-manifest provenance and careful shell RC ownership/mode/symlink handling.",
+        "Observed Node 24/macOS failure is implementation-owned: flipCurrentAtomic always calls fs.rmSync(temporaryLink,{force:true}) in finally. When beforeRename throws and the temporary link targets a directory, rmSync throws Path is a directory, masks the original error and leaves cleanup behavior non-portable.",
+        "pruneInstallPayloads deletes every non-dot unretained entry recursively after checking only the source root, with no per-candidate lstat/owner/manifest digest; remove/rollback safety depends on exclusive store ownership. Post-switch health and atomic coordination with manifest/service/database migrations remain absent."
+      ],
+      "completionRequirements": ["Read lines 1-483 exactly once and trace install-store path trust, manifest/current/shim atomicity, locking, symlink/hardlink defenses, pruning, permissions, provenance, failure cleanup and observed Node 24 test failures."]
     }
   ]
 }
