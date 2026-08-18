@@ -59,6 +59,12 @@ ends with a clean commit and the relevant focused tests.
 - [ ] Install exactly the lockfile with `npm ci`; run dependency audit and record
   the result.
 
+Current re-baseline note (2026-08-18): the standalone Company OS verification
+passes 57 tests plus boundary, upstream-governance, type, and Vite build checks
+when the runner permits loopback binding. The HTTP integration tests fail with
+`listen EPERM` only in restricted sandboxes that prohibit all sockets; CI and
+admission runners must allow an isolated loopback ephemeral port.
+
 ### Phase 1 — trust boundaries and application pipeline
 
 - [ ] Define stable application errors, clock/ID sources, operating mode, and
@@ -199,4 +205,3 @@ ends with a clean commit and the relevant focused tests.
 Stop for user direction before using real credentials, paid APIs/models,
 production data, external publication, irreversible identity/authorization
 semantics, destructive migration, or actual 3D production.
-

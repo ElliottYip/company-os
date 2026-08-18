@@ -1,0 +1,80 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { once } from "node:events";
+import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
+import { createCompanyOsHttpService } from "../adapters/http/company-os-http-service.ts";
+
+async function withService(run: (baseUrl: string) => Promise<void>) {
+  const { runtime } = createDemoComposition();
+  const server = createCompanyOsHttpService({
+    runtime,
+    deploymentProfile: "self-hosted",
+    allowedOrigins: ["http://allowed.test"],
+    maxBodyBytes: 128,
+  });
+  server.listen(0, "127.0.0.1");
+  await once(server, "listening");
+  const address = server.address();
+  if (!address || typeof address === "string") throw new Error("TEST_SERVER_ADDRESS_MISSING");
+  try {
+    await run(`http://127.0.0.1:${address.port}`);
+  } finally {
+    server.close();
+    await once(server, "close");
+  }
+}
+
+test("HTTP service exposes bounded Demo, health, and security-header contracts", async () => {
+  await withService(async (baseUrl) => {
+    const health = await fetch(`${baseUrl}/health`);
+    assert.equal(health.status, 200);
+    assert.equal(health.headers.get("x-content-type-options"), "nosniff");
+    assert.equal(health.headers.get("x-frame-options"), "DENY");
+    assert.deepEqual(await health.json(), {
+      status: "ok",
+      service: "company-os",
+      mode: "DEMO_FIXTURE",
+      deploymentProfile: "self-hosted",
+      uptimeSeconds: 0,
+    });
+
+    const assigned = await fetch(`${baseUrl}/api/demo/actions`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ action: "ASSIGN" }),
+    });
+    assert.equal(assigned.status, 200);
+    assert.equal((await assigned.json() as { phase: string }).phase, "PLANNING");
+  });
+});
+
+test("HTTP service fails closed for origin, input, size, and route errors", async () => {
+  await withService(async (baseUrl) => {
+    const forbidden = await fetch(`${baseUrl}/api/demo/actions`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://evil.test" },
+      body: JSON.stringify({ action: "RESET" }),
+    });
+    assert.equal(forbidden.status, 403);
+    assert.equal((await forbidden.json() as { error: { code: string } }).error.code, "ORIGIN_NOT_ALLOWED");
+
+    const invalid = await fetch(`${baseUrl}/api/demo/actions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "EXECUTE_SHELL" }),
+    });
+    assert.equal(invalid.status, 422);
+
+    const oversized = await fetch(`${baseUrl}/api/demo/actions`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "RESET", padding: "x".repeat(256) }),
+    });
+    assert.equal(oversized.status, 413);
+
+    const missing = await fetch(`${baseUrl}/not-found`);
+    assert.equal(missing.status, 404);
+    const text = await missing.text();
+    assert.doesNotMatch(text, /stack|node:internal|\/Users\//i);
+  });
+});

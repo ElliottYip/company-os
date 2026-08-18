@@ -8,6 +8,9 @@
   },
   "scripts": {
     "dev": "vite --config web/vite.config.mjs",
+    "start": "node --experimental-strip-types adapters/http/service-entry.ts",
+    "start:managed-cloud": "COMPANY_OS_PROFILE=managed-cloud node --experimental-strip-types adapters/http/service-entry.ts",
+    "start:self-hosted": "COMPANY_OS_PROFILE=self-hosted node --experimental-strip-types adapters/http/service-entry.ts",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
     "check:boundaries": "node scripts/check-boundaries.mjs",

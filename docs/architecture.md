@@ -28,6 +28,7 @@ these layers.
 | `IdentityPort` | Resolve Company OS identity and authorize intent without exposing host tokens |
 | `OrganizationPrincipalPort` | Load organizations and neutral principals |
 | `EventDataStorePort` | Append/read company events and reset isolated fixture state |
+| `GenericWorkPort` | Anti-corruption boundary to the single generic task/run substrate |
 | `AgentExecutionPort` | Declare capabilities/health and submit, observe, pause, resume, cancel work |
 | `ModelProviderPort` | Resolve a model policy to a referenced output without leaking vendor sessions |
 | `DataConnectorPort` | Enforce data authorization and egress decisions |
@@ -76,6 +77,32 @@ Both profiles compose the same core/application:
 This is composition metadata only. Production adapters are intentionally absent
 from phase one. Unified login never implies shared token audience or permission.
 
+## Paperclip generic-work substrate
+
+Paperclip runs as a separately versioned Headless/Core Service with its customer
+UI disabled. `PaperclipGenericWorkAdapter` is the only code allowed to know its
+REST paths and DTO shapes. It maps Company OS opaque IDs through an injected
+resource map, validates every response, normalizes stable error codes, and
+projects only sanitized run-event attributes.
+
+Company-level WebSocket events are cache hints because the pinned upstream does
+not replay them. Durable evidence and recovery use the heartbeat run-event
+endpoint with `afterSeq`. Paperclip database tables, private server modules,
+React types, sessions, credentials, raw payloads, and private reasoning never
+cross the adapter boundary.
+
+Paperclip remains canonical for generic Task/Goal/Run/Heartbeat/Budget/Artifact
+state. Company OS remains canonical for accountable humans, responsibility,
+data authorization, exact approvals, evidence, Agent Boss, and Office state.
+
+## HTTP service boundary
+
+`adapters/http` provides the independent service entry. The current endpoint is
+explicitly `DEMO_FIXTURE`; it exposes bounded JSON actions, health/readiness,
+stable public error codes, restrictive security headers, origin checks, request
+size/time limits, and graceful shutdown. It does not claim to be a production
+Agent or production identity service.
+
 ## Web and mount ownership
 
 `web/index.html` is the standalone Vite entry. `mountCompanyOS` accepts only a
@@ -98,4 +125,3 @@ Blender, GLB, or Three.js.
   https://www.typescriptlang.org/docs/handbook/project-references.html
 - Node test runner used for focused tests:
   https://nodejs.org/api/test.html
-

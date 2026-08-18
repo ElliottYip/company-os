@@ -51,6 +51,13 @@ as the normal customer surface.
    remove any duplicate production implementation only after backup and rollback
    rehearsal. Do not delete Company OS differentiated models.
 
+Current implementation checkpoint: the neutral `GenericWorkPort`, strict
+Paperclip issue/run-event DTO validation, opaque resource mapping contract,
+stable error normalization, idempotent issue-create command, pagination, run
+cancellation, and durable `afterSeq` event reads exist behind the adapter. They
+are compatibility-spike code until live pinned-version, migration, backup, and
+security admission gates pass; the application has not cut over to them.
+
 Current locale work is limited to contract hygiene: stable machine codes,
 structured arguments, copy-independent tests, and preservation of original
 user/Agent/evidence/log text. A separate future active goal will add switchable

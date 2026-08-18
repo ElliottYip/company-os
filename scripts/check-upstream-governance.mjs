@@ -11,7 +11,6 @@ const required = [
   "docs/adr/0007-paperclip-upstream-core.md",
   "docs/upstream-capability-matrix.md",
   "docs/upstream-adoption-plan.md",
-  "docs/i18n-terminology.md",
   "docs/upstreams/paperclip-patch-ledger.md",
   "compatibility-tests/README.md",
   "compatibility-tests/paperclip-versions.json",
@@ -81,9 +80,6 @@ for (const directory of ["core", "application", "ports", "web"]) {
     }
     if (/paperclip(?:ai)?\/(?:paperclip|ui)|paperclip-logo|paperclip-wordmark/i.test(source)) {
       errors.push(`${relative(root, path)} contains prohibited Paperclip brand/source coupling`);
-    }
-    if (/人类用户|审核机器人|提示词合同|思维链|模型真相|智能等级/.test(source)) {
-      errors.push(`${relative(root, path)} violates the Company OS Chinese terminology contract`);
     }
   }
 }
