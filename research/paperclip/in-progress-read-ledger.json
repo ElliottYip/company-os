@@ -72,9 +72,26 @@
             "OAuth metadata retrieval validates each followed URL through the guarded fetch helper, including advertised authorization-server metadata, which is a reusable defense pattern; actual authorization and token POST paths still require separate verification.",
             "All observations remain provisional until the rest of the OAuth lifecycle, route authorization, schema constraints, and tests are fully reviewed."
           ]
+        },
+        {
+          "start": 4001,
+          "end": 5000,
+          "readAt": "2026-08-18",
+          "notes": [
+            "OAuth metadata and token POSTs use the guarded remote-fetch helper, which rejects redirects for non-GET/HEAD requests; this is a reusable credential-egress defense, although response timeout and size limits remain absent in the shown path.",
+            "Dynamic client registration validates PKCE S256 and public-client compatibility plus strict client-id, secret-length, redirect-uri, grant-type, response-type, auth-method, and timestamp response fields.",
+            "DCR serialization is only an in-process single-flight with a database re-read; multiple service instances can still register separate clients concurrently before either persists its result.",
+            "DCR secret creation or rotation, connection update, and secret-binding synchronization are separate operations, so persistence failure can leave rotated or orphaned secrets and mismatched bindings.",
+            "The refresh lease uses a database JSON compare-and-set and refuses to take over an expired lease, favoring uncertainty safety over availability; it mixes injected now() with Date.now(), which complicates deterministic testing and clock control.",
+            "Critical preliminary concurrency risk: refresh rotates the existing refresh-token and access-token secrets before the guarded connection-row update. Because references use the latest version, a refresh that later loses the lease CAS can still change the effective credential observed by the winning connection state.",
+            "Refresh-token rotation and access-token rotation are also separate writes, so a crash between them can leave only part of the new OAuth credential set effective despite the later connection update never occurring.",
+            "The refresh response accepts provider scope and token type as metadata without visible enforcement against configured requested scopes in this range.",
+            "Gallery connection setup creates secrets and then mutates application, connection, bindings, and runtime state through a manual compensation path that continues beyond this range and must be reviewed before judging atomicity.",
+            "Final findings require the remaining setup rollback, callback lifecycle, secret service semantics, schema constraints, and concurrency tests."
+          ]
         }
       ],
-      "nextLine": 4001,
+      "nextLine": 5001,
       "completionRequirements": [
         "Read every source line through 7771 without overlap or gaps against the pinned SHA-256; resume from nextLine.",
         "Review the corresponding first-party tests and relevant file history.",
