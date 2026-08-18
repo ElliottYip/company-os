@@ -1517,18 +1517,24 @@
     },
     {
       "id": "application:cli/checks/llm-check",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Optionally validates a configured LLM credential by making a live vendor request: Claude sends a one-token messages request to a hard-coded Anthropic model; every other provider value sends the configured key to OpenAI's models endpoint. Missing provider configuration or API key is reported as passing.",
+      "dependencyDirection": "CLI doctor leaf -> PaperclipConfig.llm and global fetch -> hard-coded Anthropic/OpenAI public endpoints. It bypasses Paperclip Agent adapters, any ModelProvider/DataConnector port, Secret reference abstraction, egress policy, tenant policy, proxy policy and runtime capability contract.",
+      "keyDataModels": "Inline llm.provider and plaintext apiKey configuration; free-form CheckResult. Only the literal claude is discriminated; all other values collapse to OpenAI. There is no provider capability descriptor, credential reference/version, model policy, egress authorization, region, endpoint, tenant, quota or stable diagnostic-code model.",
+      "lifecycle": "No llm config -> pass; provider without key -> pass; claude -> POST a fixed prompt/model with the real key and accept any 2xx or HTTP 400 as valid; otherwise -> send any provider key to OpenAI and accept 2xx; HTTP 401 fails; other statuses warn; every network exception warns. No timeout, cancellation, retry budget, rate-limit parsing, response-body disposal policy, cost accounting or evidence record is defined.",
+      "testAssessment": "No focused llmCheck test was found. CLI TypeScript checking passes, but there is no proof for provider dispatch, credential destination, request shape, 400 semantics, timeouts, aborts, redirects, 403/404/429/5xx, network/TLS failures, custom endpoints or secret redaction. The live check was deliberately not executed because the task forbids real vendor credentials and paid API calls.",
+      "designRationale": "A live request can distinguish a syntactically configured key from one accepted by a provider, and treating optional LLM configuration as non-blocking supports installations driven by external Agent adapters. However, direct provider calls in a generic doctor command bypass the control plane's execution and egress boundaries.",
+      "companyOsProblem": "Company OS needs to validate many equal model/Agent connectors without exposing credentials or spending money unexpectedly, while respecting tenant data contracts, approved egress destinations, self-hosted endpoints, regional policy and operator authorization.",
+      "companyOsFit": "Reject this implementation. Company OS should first perform offline structural/Secret-reference checks, then offer an explicit human-authorized connector self-test through the canonical Connector/ModelProvider port. The connector must declare destination and test capability, use short-lived scoped credentials where possible, enforce timeout/redirect/egress policy, emit stable codes, record sanitized cost/evidence and never send a credential to a fallback vendor.",
+      "responsibilityConflict": "The check performs an external action using a real organizational credential without a work item, accountable initiator, approval, data-egress contract or cost record. It can therefore create vendor traffic and spend outside the responsibility chain. Reporting missing credentials as pass also obscures whether an assigned Agent role is actually executable.",
+      "decision": "REJECT",
+      "evidence": [
+        "cli/src/checks/llm-check.ts (82 lines; SHA-256 6cc417909ea54f6667cb719e8bcda5729f50daf04959a63447b9aa5dec1d0da0)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103)); current file has no later history",
+        "Repository-wide test/spec search found no llmCheck-focused coverage",
+        "Live execution intentionally omitted: it requires a real vendor credential and can invoke a paid production API, both outside the audit safety constraints"
+      ],
+      "securityFindings": "Critical: every provider value other than exact claude is treated as OpenAI, so a typo, future provider or custom provider can exfiltrate its credential to api.openai.com. Credentials are read inline from config rather than an opaque Secret reference. The function makes external requests with no timeout/AbortSignal and does not constrain redirects, proxy/DNS destination or egress policy. The Anthropic branch sends a real generation request and hard-coded prompt/model, potentially incurring cost; HTTP 400 is accepted as key-valid without distinguishing request/model/account errors. There is no explicit operator consent, least-privilege scope, audit trail, quota/rate-limit handling or tenant binding."
     },
     {
       "id": "application:cli/checks/log-check",
