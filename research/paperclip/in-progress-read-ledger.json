@@ -3899,6 +3899,19 @@
         "Verification links the already completed route-contract suite (53/53 passed outside the network sandbox) and import-authz integration suite (1 skipped after embedded PostgreSQL failed five times; 0 passed). Those sources were not reread."
       ],
       "completionRequirements": ["Read lines 1-1410 exactly once and trace every route's authentication, company/tenant binding, access and Skill-policy composition, validation and stable error contract, service/activity/event orchestration, transaction/idempotency behavior, source/path/secret handling, Agent test-run lifecycle, responsible-human/approval/evidence semantics and Company OS API reuse decision. Link the already completed focused route and import-authz test evidence rather than rereading those files."]
+    },
+    {
+      "id": "application:server/__tests__/skills-catalog-service",
+      "path": "server/src/__tests__/skills-catalog-service.test.ts",
+      "lineCount": 235,
+      "sha256": "90d8158247b982748857f6d5a113bf322950a01d0cc1bd2eed3cbab2059139d9",
+      "linkedEvidence": { "history": ["5e086cb828dac27a3fd16bf22e71597382458c85 fix(server): resolve published skills catalog package root and fallback (#8327)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [],
+      "sourceReadComplete": false,
+      "nextLine": 1,
+      "notes": [],
+      "completionRequirements": ["Read lines 1-235 exactly once, run the focused suite, and assess catalog root/package resolution, manifest and per-file integrity, traversal/symlink handling, package/publisher/license provenance, fallback behavior, ambiguity, caching/version drift, failure modes and Company OS capability-package supply-chain fit."]
     }
   ]
 }
