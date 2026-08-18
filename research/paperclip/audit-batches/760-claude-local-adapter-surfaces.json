@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/claude-local-adapter",
+      "auditStatus": "COMPLETE",
+      "function": "Vendor-specific tests for Claude Local max-turn classification, stream-json normalization into UI transcript entries and terminal formatting of Agent execution events and usage.",
+      "dependencyDirection": "A server test imports the Claude adapter's server classifier, UI parser and CLI printer directly from one package. Raw Claude stream-json fields flow into Paperclip transcript models and terminal output, including model/session identifiers, thinking, tool inputs/results, token usage and cost.",
+      "keyDataModels": "Claude result subtype/stop_reason/stopReason, raw system/assistant/user/result stream events, session_id, content blocks for text/thinking/tool_use/tool_result, normalized transcript entry kind/timestamp/toolUseId/input/content/error, usage token counters and total_cost_usd.",
+      "lifecycle": "Structured completion fields classify max-turn exhaustion for retry policy; init and message lines are parsed into transcript entries; the CLI prints init, assistant, thinking, tool call/result, final result and usage/cost. Unstructured result text is deliberately not used for control-flow classification.",
+      "testAssessment": "Tests correctly prefer structured stop fields over brittle English text and cover representative init/text/thinking/tool/result/usage mappings across UI and CLI. Missing are malformed or oversized JSON, unknown versions/event types, recursive or binary tool payloads, secret/PII redaction, private-reasoning suppression, session pseudonymization, output limits/backpressure, terminal escape injection, schema compatibility, cancellation/timeout/idempotency and proof that cost is authoritative rather than provider-reported display data.",
+      "designRationale": "Expose one vendor's rich local execution stream consistently to browser and terminal users while retaining structured signals that can drive retry behavior.",
+      "companyOsProblem": "Company OS Connector SDK needs stable vendor-neutral progress, evidence, result, health, timeout and usage events without leaking provider sessions, credentials or private reasoning into the control plane.",
+      "companyOsFit": "REFERENCE the structured-stop-over-message principle and deterministic event-normalization tests. Keep this implementation inside a Claude-specific Connector adapter; map only allowlisted, versioned, size-limited, redacted progress/evidence/result envelopes to Company OS, and expose opaque execution handles instead of raw provider sessions.",
+      "responsibilityConflict": "The tested UI/CLI surfaces raw session_id, thinking content and complete tool inputs/results with no redaction or evidence classification. Those values may reveal private reasoning, credentials, personal/company data or shell details and cannot serve as an approved audit record. Retry classification also proves no binding to Work, responsible human, permission/data contract or runtime attestation.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/claude-local-adapter.test.ts:1-205",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "15eac43b [codex] Retry max-turn exhausted heartbeats (#5096)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/claude-local-skill-sync",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem-backed tests for listing and selecting skills visible to Claude Local without copying them into or mutating the user's persistent Claude home.",
+      "dependencyDirection": "Agent adapter configuration provides desired skill references and may provide HOME; the Claude adapter combines its built-in skill catalog with host-level .claude/skills directories and returns a normalized snapshot. Persistent external skills remain read-only and outside Paperclip ownership.",
+      "keyDataModels": "Agent/company/adapter identity, paperclipSkillSync.desiredSkills, canonical repository/name/key, snapshot mode/supported/warnings/desiredSkills, entry runtimeName/state/origin/location/readOnly/managed/detail and legacy flat references.",
+      "lifecycle": "With no selection, bundled skills are available in ephemeral mode. Explicit selection marks desired built-ins configured without changing persistent home. Legacy names normalize to canonical keys. Host-installed skill directories containing SKILL.md appear as external, unmanaged, read-only capabilities.",
+      "testAssessment": "Focused tests cover default discovery, explicit ephemeral selection, legacy-key normalization and host-skill visibility/ownership. Missing are path traversal/symlink escapes, malformed or adversarial frontmatter, duplicate/case-conflicting names, file size/count limits, concurrent filesystem mutation, permission errors, version/hash/license/signature provenance, revocation/update semantics, tenant isolation and tests proving external skills cannot be selected or executed without explicit policy approval.",
+      "designRationale": "Make local runtime capabilities discoverable while respecting ownership of a developer's existing tool home and avoiding persistent mutations during Agent configuration.",
+      "companyOsProblem": "Company OS needs Connector capability declarations and FDE-approved skill/package assignment without taking ownership of vendor-private runtime directories or confusing discovery with authorization.",
+      "companyOsFit": "REFERENCE the available/configured/external ownership projection and non-mutating discovery. Define capabilities through Connector SDK attestations and signed package identities; keep host scanning entirely inside the local execution node, return only policy-safe metadata, and require a responsible-human data/tool grant before assignment or execution.",
+      "responsibilityConflict": "A caller-provided HOME causes host filesystem discovery, and the resulting skill inventory is not tied to tenant isolation, provenance, an accountable owner or approval. Being visible/available is modeled close to configured state even though neither establishes that the skill is safe, licensed, data-authorized or executable for a particular Work contract.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/claude-local-skill-sync.test.ts:1-109",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "33353ce6 feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)"
+      ]
+    }
+  ]
+}
