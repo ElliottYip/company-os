@@ -3877,10 +3877,14 @@
       "sha256": "51f6542ff22f88087308f7f39f34f1be20ae051be4fd2bcc7f8f3d00444e6d6a",
       "linkedEvidence": { "history": ["717684ad8f5f33fd3b6e8cf7a96aa7062d8ff29b Add project folder browsing to skill imports (#9930)"] },
       "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
+      "completedRanges": [{ "start": 1, "end": 300 }],
       "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
+      "nextLine": 301,
+      "notes": [
+        "Lines 1-100 show one Express module importing all Skill/catalog/test schemas plus access, policy, Skill, Issue, heartbeat, activity and telemetry services. It owns both policy/authorization composition and cross-domain orchestration, so dependency flow is route→many application services rather than a narrow command handler. Denial types have a stable skill_policy_denied code/reason, but broader errors and activity/event contracts remain to inspect; test-run assignment authorization already needs a multi-entity scope structure.",
+        "Lines 101-200 suppress private GitHub telemetry, parse booleans/arrays with English bad-request text, map board actors without User IDs to a synthetic policy id 'board' while mutation attribution may remain null, and build policy resources by loading stored Skills then canonicalizing source type/locator. Import classification treats any HTTP(S) non-git input as external_package and everything else as workspace; destination/network/data sensitivity is absent. Stored-resource lookup before policy must rely on tenant-safe svc.getById.",
+        "Critical lines 201-300 confirm the tested privilege semantics: authentication/company boundary and selected platform restrictions fail closed, but deny_no_grant, deny_missing_consent and deny_missing_grant are explicitly ignored before the optional Company Skill policy. Thus a second layer can authorize what the primary access layer denied. Test-harness orchestration instead requires tasks:assign and reconstructs scope from the stored run/Issue, falling back to run IDs if the Issue is missing or cross-company. Catalog file reads are authentication-only and forward arbitrary ref/path to the catalog service."
+      ],
       "completionRequirements": ["Read lines 1-1410 exactly once and trace every route's authentication, company/tenant binding, access and Skill-policy composition, validation and stable error contract, service/activity/event orchestration, transaction/idempotency behavior, source/path/secret handling, Agent test-run lifecycle, responsible-human/approval/evidence semantics and Company OS API reuse decision. Link the already completed focused route and import-authz test evidence rather than rereading those files."]
     }
   ]
