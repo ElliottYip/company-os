@@ -5553,6 +5553,32 @@
       "completionRequirements": [
         "Read lines 1-446 exactly once and assess Cursor process/remote execution, trust flags, Secrets/env, sessions, prompts, bridge tokens, events, cancellation/timeout/idempotency, evidence and test quality against Company OS Connector execution contracts."
       ]
+    },
+    {
+      "id": "application:server/__tests__/cursor-local-skill-sync",
+      "path": "server/src/__tests__/cursor-local-skill-sync.test.ts",
+      "lineCount": 104,
+      "sha256": "23aadc4ae1397ce5b048ae811d8d26d856aacdccaa5528f90e5a8afd14b92c05",
+      "linkedEvidence": {
+        "history": [
+          "33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe feat(skills): remove bundled paperclip-dev skill and retire required skill attribute (#7029)",
+          "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 104 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Two filesystem tests cover persistent listing/install of one bundled Skill and one company-library runtime Skill into HOME/.cursor/skills as symlinks.",
+        "Although context includes Agent and company IDs, the destination path contains neither; isolation depends entirely on callers providing a unique HOME. The declared mode is persistent, so instruction code survives beyond a Run and can affect later responsibility contexts.",
+        "Runtime Skill sources are arbitrary directories and the tests assert only link existence/state. No immutable digest, signature/license/provenance, publisher, approval, capability/data scope, path containment or content validation is established.",
+        "Missing tests include same-name collision, existing regular file/symlink, replacement/removal/rollback, dangling/changed source, traversal/runtimeName abuse, concurrent sync, cross-company HOME reuse, read-only permissions and cleanup after revocation.",
+        "Focused Vitest passed 2/2. The happy path confirms the global persistent symlink design rather than proving safe Skill lifecycle."
+      ],
+      "completionRequirements": [
+        "Read lines 1-104 exactly once and assess Skill source/destination ownership, provenance, replacement/removal, symlink safety, tenant/Run isolation, concurrency and test quality against Company OS Connector capability/plugin boundaries."
+      ]
     }
   ]
 }

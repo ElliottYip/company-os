@@ -4983,18 +4983,23 @@
     },
     {
       "id": "application:server/__tests__/cursor-local-skill-sync",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests for listing and persistently symlinking bundled or company-library Skills into Cursor's HOME-scoped Skill directory.",
+      "dependencyDirection": "Vitest -> @paperclipai/adapter-cursor-local Skill list/sync -> local filesystem and caller-supplied HOME; no Skill catalog persistence, provenance verifier, authorization, policy engine or execution sandbox.",
+      "keyDataModels": "Agent/company context, desired Skill key, runtime name/source directory, persistent mode and missing/installed entry state.",
+      "lifecycle": "List desired Skills against HOME/.cursor/skills -> sync selected source directories as persistent symlinks -> later Cursor executions discover them globally from that HOME.",
+      "testAssessment": "Focused Vitest passed 2/2. It validates only missing-to-installed happy paths. No collision, replacement, removal, rollback, source mutation, traversal, concurrency, isolation, provenance, revocation or cleanup behavior is tested.",
+      "designRationale": "Reuse Cursor's native Skill discovery and avoid copying content by linking centrally managed bundled/company-library Skills into the user's Cursor home.",
+      "companyOsProblem": "Company OS needs governed Connector capabilities/instructions whose exact immutable version, license, publisher, human approval, tool/data scope and Run usage are provable and revocable.",
+      "companyOsFit": "REJECT the persistent global-symlink lifecycle. Reimplement a content-addressed, signed Skill/Plugin artifact registry and materialize an immutable allowlisted set into a per-Run execution root. Record digest/license/publisher/approval/capability scope in the responsibility chain and implement atomic install/revoke/cleanup with collision and race tests.",
+      "responsibilityConflict": "Agent/company IDs are metadata only; they do not scope the destination. A persistent mutable Skill can silently affect later Agents/Runs without a new accountable-human decision or evidence of the exact instruction version used.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/cursor-local-skill-sync.test.ts:1-104 (SHA-256 23aadc4ae1397ce5b048ae811d8d26d856aacdccaa5528f90e5a8afd14b92c05)",
+        "git history: 33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe and 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "CRITICAL cross-context instruction risk: destination is global HOME/.cursor/skills and lacks company/Agent/Run namespace despite those IDs appearing in context. HIGH supply-chain gap: arbitrary source directories are symlinked without digest/signature/license/provenance/content validation. HIGH revocation gap: persistent links survive Runs and no removal/rollback/cleanup test exists. Missing adversarial cases include path traversal, malicious runtimeName, preexisting symlink/file, source replacement after link, dangling links, concurrent tenants and permission failures."
     },
     {
       "id": "application:server/__tests__/dashboard-service",
