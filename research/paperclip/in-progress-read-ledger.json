@@ -4576,10 +4576,14 @@
         { "path": "cli/src/commands/client/skill.ts", "completedRanges": [{ "start": 1, "end": 150 }] },
         { "path": "cli/src/commands/client/skills.ts", "completedRanges": [{ "start": 1, "end": 1024 }] },
         { "path": "cli/src/commands/client/teams.ts", "completedRanges": [{ "start": 1, "end": 720 }] },
-        { "path": "cli/src/commands/client/token.ts", "completedRanges": [{ "start": 1, "end": 244 }] }
+        { "path": "cli/src/commands/client/token.ts", "completedRanges": [{ "start": 1, "end": 244 }] },
+        { "path": "cli/src/commands/client/workspace.ts", "completedRanges": [{ "start": 1, "end": 327 }] },
+        { "path": "cli/src/commands/client/zip.ts", "completedRanges": [{ "start": 1, "end": 10 }] }
       ],
-      "sourceReadComplete": false,
-      "nextFile": "cli/src/commands/client/workspace.ts",
+      "auditStatus": "COMPLETE",
+      "sourceReadComplete": true,
+      "nextFile": null,
+      "reviewDecision": "NARROW",
       "notes": [
         "Inventory intentionally groups 28 first-party CLI client command files into one 13,148-line unit. The unit remains PENDING/IN_PROGRESS until every file is read exactly once and implementation conclusions are reconciled with already completed focused test units.",
         "common.ts lines 1-100 assemble context/profile, API origin, explicit/environment/profile-environment/stored-board credentials, Company and Run identity into one mutable HTTP client. Interactive board recovery derives requested administrator access by matching English error text, then sends a raw argv command label through the custom browser flow. Identity, tenant and execution context are configuration conveniences rather than verified audience-bound principal contracts.",
@@ -4724,7 +4728,15 @@
         "token.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It manages Agent and board keys, including labels, timestamps, board expiry/TTL and Agent-to-Company resolution checks.",
         "Created Agent and board tokens are returned and printed in plaintext. Agent keys expose no expiry, audience, capability, data scope, device/runtime binding or maximum-use policy. Board --company-id is documented as audit context rather than an authorization scope, so one identity token can remain broadly privileged across Companies.",
         "Board keys may explicitly never expire; conflicting --never-expires/--expires-at/--ttl-days options are not rejected and precedence silently favors never, then absolute expiry. Creation/revocation has no MFA/step-up, accountable-human approval, reason or evidence; revoke has no confirmation. Agent terminal list omits lastUsedAt despite the response type carrying it.",
-        "Company membership verification during Agent resolution is a useful guard, and list metadata supports rotation hygiene. Decision: REJECT this credential ceremony for Company OS. IdentityPort must mint audience- and scope-bound short-lived credentials, keep product permissions independent, use one-time secure delivery, and retain human/device/Connector audit context. Next file is workspace.ts."
+        "Company membership verification during Agent resolution is a useful guard, and list metadata supports rotation hygiene. Decision: REJECT this credential ceremony for Company OS. IdentityPort must mint audience- and scope-bound short-lived credentials, keep product permissions independent, use one-time secure delivery, and retain human/device/Connector audit context.",
+        "workspace.ts was read completely at pinned SHA; its only file history entry is 70b1a9109d756818fb448beafa67af27babb52de. It exposes headless org-chart SVG/PNG, Agent configuration summaries, execution workspaces/close-readiness/operations, environment capabilities/leases/probes and project workspace/runtime actions.",
+        "Environment capability discovery, leases, close-readiness and workspace-operation projections are important lifecycle concepts Company OS had not fully enumerated. They support local-enterprise execution nodes and should feed the Connector capability/attestation model rather than become a Paperclip runtime dependency.",
+        "Runtime service/command actions accept arbitrary action plus JSON with no shared schema, idempotency, revision, risk classification, exact command digest, permission/data grant or accountable-human approval. Shell/runtime target data can appear in argv. Environment and project-workspace deletion have no confirmation or enforced close-readiness ceremony in the CLI.",
+        "Org images use another hand-rolled authenticated fetch, buffer the whole response, trust content/status text, then write arbitrary paths or stdout without byte limit, safe overwrite/no-follow, MIME validation or sanitization. An SVG is active content and must not be treated as a harmless image in Company OS. This transport again duplicates security context outside the common client.",
+        "Decision: REFERENCE ONLY for environment/workspace lifecycle and headless projection categories. Company OS should own vendor-neutral Environment/Workspace ports, capability leases, bounded evidence logs and approval-bound runtime actions; its org/office renderer contract remains independent.",
+        "zip.ts was read completely at pinned SHA. It contains no codec logic; it re-exports binaryContentTypeByExtension, bytesToPortableFileEntry, isBlobStorePath and readZipArchive from @paperclipai/shared/portability-zip to preserve CLI import paths. History is 5ec7ce76e580c1e515fe811f566df928eb1e08dd, 916c13501f80c7d1d659b89e4a06dc47366aa80f and 73eb23734f25c570d88665e672f80d740797c632.",
+        "The stable re-export is a reasonable compatibility pattern, but all archive traversal, collision, compression/resource and content-type safety belongs to the shared codec unit and is not proven here. Decision for zip.ts itself is REFERENCE ONLY.",
+        "All 28 first-party files and 13,148 lines in application:cli/commands/client are now read exactly once with pinned hashes and relevant file history recorded. The unit-level decision is NARROW: retain selected lifecycle/UX ideas and independently implement responsibility-, data- and Connector-safe contracts; do not copy this broad command layer or make Paperclip a runtime dependency."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
