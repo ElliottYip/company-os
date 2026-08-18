@@ -4482,18 +4482,23 @@
     },
     {
       "id": "application:server/__tests__/heartbeat-accepted-plan-workspace-refresh",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres integration specification for refreshing execution isolation after plan acceptance, realizing approved child workspaces from a current base reference, and preventing an accepted-plan continuation or session from crossing Issue ownership boundaries.",
+      "dependencyDirection": "The suite drives heartbeatService and issueService through real Company, Project, Issue, interaction, plan-decomposition, task-session and execution-workspace tables; it invokes local Git/worktree side effects through the Heartbeat path while mocking only the execution adapter.",
+      "keyDataModels": "Issue workMode and responsibleUserId, accepted issue-document revision and thread interaction, IssuePlanDecomposition claim/owner/status, ExecutionWorkspace strategy and sourceIssueId, AgentTaskSession taskKey/session parameters, wake payload/context routing flags, and adapter runtime/context.",
+      "lifecycle": "An accepted confirmation wake can discard a shared planning workspace and stale task session, realize an isolated worktree, and execute in a fresh session; decomposed child Issues retain only workspace strategy until their first run so they resolve the then-current remote base; an in-flight decomposition claim owned by another Issue suppresses continuation and forces a fresh session, while the same Issue may resume its existing accepted-plan session.",
+      "testAssessment": "Five substantial integration cases cover shared-to-isolated refresh, delayed child realization after base movement, cross-Issue claim suppression for planning and standard work, and same-Issue continuation. They exercise a real database and Git repositories, but do not prove transactional behavior across interaction, decomposition, workspace, session and run writes; approval authorization, expiry, revocation or exact action/digest binding; concurrent claim acquisition; crash recovery during worktree creation; remote-base trust and authorization; cleanup/compensation; or rejection/cancellation. Several wake cases use unpersisted interaction IDs or trusted accepted flags in payload/context, so the suite does not establish that execution derives from an authoritative approval record.",
+      "designRationale": "Separate planning from implementation by refreshing execution isolation and session state at the acceptance boundary, delay child workspace realization to avoid freezing an obsolete base commit, and use Issue-scoped decomposition ownership to prevent stale approvals or sessions from contaminating unrelated work.",
+      "companyOsProblem": "Company OS must turn a human-approved plan into bounded execution without carrying stale Agent memory, code/data workspace state or approval authority into another Work item, while preserving a precise responsibility chain and reproducible execution base.",
+      "companyOsFit": "ADAPT the approval-boundary workspace refresh, lazy child realization, Work-scoped session identity and cross-Work continuation guard. Company OS should drive them from an immutable ApprovalDecision bound to action, plan revision/digest, Work, responsibility contract, accountable human, Agent, permissions/data contract and expiry; reserve the claim atomically, materialize through WorkspacePort, record a base/workspace attestation, and publish state changes through a transaction/outbox with compensating cleanup. Wake payload fields are hints, never authority.",
+      "responsibilityConflict": "Paperclip stores a resolvedByUserId on a persisted acceptance fixture, but execution routing can be activated by caller-supplied interactionStatus/workspaceRefreshReason flags and some tests never persist the referenced interaction. The plan claim binds an owner Agent and revision but not the accountable human, exact approved action/digest, permission/data snapshot, runtime attestation or revocation state. Mutable multi-table state and local Git effects can therefore diverge from the approval and evidence chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-accepted-plan-workspace-refresh.test.ts:1-1137",
+        "d9f91576a020812da44833d869426cbe17ae8555 Add accepted-plan decomposition exact-once guards and UI state (#6831)",
+        "38cca22b09d616c91408fb6f7e7f8ecef2d572be fix(server): avoid accepted-plan workspace branch freeze before child realization (#9233)",
+        "d51f42ed648c4711a5e6bc4c41a6d4ff4e6e187b test(server): drain heartbeat runs to quiescence in sibling suite teardown (#10464)"
+      ]
     },
     {
       "id": "application:server/__tests__/heartbeat-active-run-output-watchdog",
