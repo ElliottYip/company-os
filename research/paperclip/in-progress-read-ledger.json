@@ -7449,6 +7449,30 @@
       "completionRequirements": [
         "Read lines 1-3399 exactly once and assess comment-driven reopen/resume/wakeup semantics, terminal Work authority, self/peer Agent behavior, review confirmation, Run/retry cancellation, human responsibility, idempotency/concurrency and audit quality against Company OS explicit execution commands."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-continuation-summary",
+      "path": "server/src/__tests__/issue-continuation-summary.test.ts",
+      "lineCount": 115,
+      "sha256": "ab6214d3c601b9fd681737bd64944be5355b6067b1bab69664ac0fa2e16fb78d",
+      "linkedEvidence": { "history": [
+        "a72731f11823511252d159c6e09d56eb31136691 harden release registry verification against npm lag (#4816)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions in Paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-115"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-115 verify a bounded Markdown handoff derived from Issue description, Run result/error and Agent identity, with objective, acceptance criteria, recent actions, commands, blockers/decisions and next action. The suite also infers whether execution is parked by parsing a natural-language Next Action sentence.",
+        "The bounded, Issue-local checkpoint is useful for adapter/session continuity, but the tests do not prove deterministic truncation priority, source/evidence references, authorization, secret/PII redaction, immutable provenance, multilingual robustness or protection against untrusted Run text altering control semantics.",
+        "Sandboxed focused Vitest passed all 4 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-115 exactly once and assess how continuation summaries encode handoff context, evidence, responsibility, secret exposure, determinism and token/size constraints for Company OS human-Agent continuity."
+      ]
     }
   ]
 }

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-continuation-summary",
+    "auditStatus": "COMPLETE",
+    "function": "Focused tests for bounded Issue-local continuation Markdown that carries objective, acceptance criteria, recent Run actions/errors, commands, blockers/decisions and a next action across adapter session resets.",
+    "dependencyDirection": "Vitest -> issue-continuation-summary pure helpers -> Issue, Run and Agent-shaped inputs; no database, route, adapter or external service is exercised.",
+    "keyDataModels": "Issue identity/description/status/priority; Run identity/status/error/errorCode/result summary/output/finish time; Agent identity/name/adapter type; bounded Markdown body and parsed Next Action.",
+    "lifecycle": "Collect latest Issue/Run/Agent context -> render bounded Markdown checkpoint -> attach it to later wake/context -> parse Next Action prose to decide whether executor work is parked for review.",
+    "testAssessment": "Sandboxed focused Vitest passed 4/4. Tests cover required sections, success/error synthesis, maximum body length and two parking examples, but omit truncation precedence, hostile/untrusted text, secret/PII redaction, localization, provenance, stale checkpoints, multiple Runs, authorization and property/fuzz cases.",
+    "designRationale": "Preserve enough Issue-local state for an Agent to continue after an adapter session reset without depending on a vendor-private session transcript.",
+    "companyOsProblem": "Company OS needs portable, vendor-neutral work checkpoints so humans and replacement Agents can understand what happened, what evidence exists, who remains responsible and what explicit action is next without importing private reasoning or credentials.",
+    "companyOsFit": "ADAPT the bounded Issue-local checkpoint and vendor-session independence. Replace control decisions inferred from Markdown with a typed ContinuationCheckpoint containing source Run, responsible human, goal/contract version, completed actions, evidence references, blockers, next command, required approval, redaction result, creation reason and supersession lineage; render Markdown only as a projection.",
+    "responsibilityConflict": "A natural-language sentence currently determines whether execution is parked, while Run summaries/errors may be untrusted Agent output. Without typed authority, provenance and redaction, prose can accidentally or maliciously change control behavior and cannot establish an accountable handoff.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-continuation-summary.test.ts:1-115 (SHA-256 ab6214d3c601b9fd681737bd64944be5355b6067b1bab69664ac0fa2e16fb78d)",
+      "git history: a72731f11823511252d159c6e09d56eb31136691 and 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+      "2026-08-19 sandboxed focused Vitest: 4/4 passed"
+    ],
+    "securityFindings": "HIGH control/prose coupling: parking is inferred from mutable natural language. HIGH secret/PII gap: Run error/result text enters the summary with no redaction test. MEDIUM provenance gap: rendered text does not itself prove sources, actor or responsible human. MEDIUM truncation gap: only total length is asserted, not preservation of safety-critical sections. MEDIUM injection gap: hostile Markdown/control phrasing is untested. POSITIVE: context is Issue-local, bounded and independent of vendor-private sessions."
+  }]
+}
