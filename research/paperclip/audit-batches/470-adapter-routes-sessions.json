@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/adapter-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for Adapter catalog/capability and configuration-schema projection, legacy tombstones, organization access, hot installation, built-in override pause/removal and session-policy preservation.",
+      "dependencyDirection": "Express routes project the active process registry and Adapter-provided schemas to clients; mutation routes call the plugin store and package loader, register the resulting server module and manage override state against built-ins.",
+      "keyDataModels": "Adapter catalog entry/source/capabilities/ACP prerequisites, versioned ConfigSchema fields, external plugin installation record, active override, retired Adapter tombstone and SessionManagement policy.",
+      "lifecycle": "Clients list normalized capabilities and fetch the active Adapter's schema. Retired types remain as model-less/schema-empty tombstones for stored-row compatibility. An instance admin can hot-install a package or local path, including an implementation with a built-in type; pause restores the built-in and deletion removes the external record while preserving the built-in.",
+      "testAssessment": "Thirteen route tests cover capability projections, several built-in schemas, active override behavior, tombstones, one organization-access denial, hot-install parity and override removal. Missing are signed packages, exact version/integrity/SBOM, local-path traversal and symlink cases, install sandboxing, malicious schema/parser payloads, secret-field redaction, two-person approval, audit/rollback, active-run drain, concurrent mutation, stable error codes and compatibility negotiation.",
+      "designRationale": "Expose enough headless metadata for a generic UI to configure diverse runtimes, preserve old database rows after Adapter retirement and allow operators to extend or recover runtime integrations without restarting the service.",
+      "companyOsProblem": "Company OS needs a vendor-neutral Connector catalog and configuration contract that supports independent Web clients and upgrades without allowing third-party execution code to silently alter enterprise control-plane behavior.",
+      "companyOsFit": "ADAPT the normalized capability/schema projection, explicit tombstones and pause-to-known-good rollback. Separate ConnectorPackage, signed ConnectorVersion and tenant ConnectorInstance; installation must verify provenance, license, digest, SBOM, compatibility and trust policy in an isolated plugin host. Bind an instance to a package explicitly rather than permitting type-name replacement, and never expose secret values through config schemas.",
+      "responsibilityConflict": "An instance admin can introduce or replace executable code globally without demonstrated separation of duties or a responsibility-contract change. Capability booleans say what code can do, not what a tenant authorizes it to do; schema fields can describe credentials but do not establish custody, purpose or data-export approval.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/adapter-routes.test.ts:1-524",
+        "823c2b115a2996914b133ea1c769aecff276df3b feat(adapters): allow external overrides of built-ins (#7394)",
+        "3d15798c22535707cb1a26fb9ab61deecdc0171a fix(adapters/routes): apply resolveExternalAdapterRegistration on hot-install (#4324)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/adapter-routes-authz",
+      "auditStatus": "COMPLETE",
+      "function": "Authorization tests for all Adapter code-management routes and a cloud-managed platform floor that prevents package install/reinstall even for instance administrators.",
+      "dependencyDirection": "Route authorization consumes the instance-level actor before plugin store, child-process installer or package loader calls; deployment mode is inferred from a cloud tenant server-token environment setting and imposes an additional deny policy.",
+      "keyDataModels": "Board actor, Company membership role, instance-admin flag, external Adapter installation record, six mutating operations and structured platform-managed denial detail code.",
+      "lifecycle": "Company viewer/operator/admin members cannot install, disable, pause overrides, delete, reload or reinstall Adapter code. Instance admins can reach all six operations in ordinary self-hosted mode. In cloud-managed mode, install and reinstall remain forbidden and no installer/loader process is invoked.",
+      "testAssessment": "Parameterized tests efficiently cover the full mutation surface, ordinary Company roles, positive instance-admin access and the managed-cloud install floor with side-effect assertions. Missing are anonymous/Agent/API-key actors, stale admin sessions, CSRF, step-up authentication, dual control, permission-specific roles, immutable decision audit, deployment-profile configuration validation, disable/reload platform floors, confused-deputy calls and TOCTOU between authorization and install.",
+      "designRationale": "Treat runtime code installation as host administration rather than tenant administration, and reserve cloud package supply-chain control to the platform operator regardless of tenant-level authority.",
+      "companyOsProblem": "Company OS must keep tenant governance separate from host code authority and enforce non-bypassable deployment-profile security floors across managed-cloud and self-hosted/local enterprise profiles.",
+      "companyOsFit": "ADAPT the host-versus-tenant authority split, deny-before-side-effect discipline and deployment-profile floor. Represent profile policy as signed configuration rather than presence of a token environment variable; require step-up authentication, separation of duties for production installation, signed decision receipts, maintenance windows, rollback and active-run drain. Local enterprise can delegate package trust only through explicit policy.",
+      "responsibilityConflict": "A single instance-admin boolean is too coarse for introducing executable supply-chain code and does not identify requester, approver and accountable operator separately. The cloud floor is strong, but ordinary self-hosted installation has no tested human approval/evidence chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/adapter-routes-authz.test.ts:1-370",
+        "c274f10abc0e3c60a47e6ac3f786443b0e197543 feat(server): computed owner instance-admin elevation for cloud-managed instances, behind platform floors (#10343)",
+        "7a329fb8bb9f74cdd75f3f7789c43fab0b2e7581 Harden API route authorization boundaries (#4122)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/adapter-session-codecs",
+      "auditStatus": "COMPLETE",
+      "function": "Cross-Adapter compatibility tests for normalizing vendor session payloads, preserving ACP resume metadata and detecting textual unknown/unrecoverable-session failures that should trigger fresh-session recovery.",
+      "dependencyDirection": "Each vendor Adapter owns a SessionCodec that translates persisted JSON to its internal resume shape; shared ACPX compatibility metadata passes through codecs, while vendor-specific error classifiers inspect stdout/stderr strings.",
+      "keyDataModels": "Vendor session id, working directory, prompt bundle, ACP runtime/session/agent ids, session key/mode/state directory, config fingerprint, workspace/repository/remote lease references and raw process output.",
+      "lifecycle": "Legacy snake_case and vendor-specific fields normalize to a common local shape. ACP lanes round-trip extended resume metadata. Display IDs prefer a runtime or vendor session id. Codex, OpenCode, Cursor and Gemini classifiers recognize missing-session text so orchestration can abandon resume and start fresh.",
+      "testAssessment": "Thirteen focused cases cover five vendor codecs, ACP compatibility preservation and positive/negative error classification. Missing are malformed/untrusted JSON, schema version migration, tenant and Connector-instance binding, path validation, secret stripping, maximum size, unknown-field policy, encrypted persistence, expired/revoked leases, false-positive multilingual/provider changes and structured error codes from adapters.",
+      "designRationale": "Contain unstable vendor session formats behind Adapter-owned codecs while retaining enough opaque runtime state to resume work and recover automatically when an upstream session disappears.",
+      "companyOsProblem": "Company OS needs resumable multi-vendor execution without storing provider-private sessions, credentials or reasoning in its neutral control-plane contract and without coupling recovery to English error prose.",
+      "companyOsFit": "REFERENCE ONLY for the vendor codecs themselves: they belong inside each Connector and must not enter Company OS Core/Application. Adopt only a versioned opaque SessionRef contract containing connector instance, external opaque id, scope, expiry and attestation digest. Connectors should return structured SESSION_NOT_FOUND/SESSION_UNRECOVERABLE codes and independently migrate encrypted private state.",
+      "responsibilityConflict": "Persisted cwd, repository, state-directory and lease metadata can disclose or revive access outside an approved Work/Data contract if not bound to tenant, Connector instance, authorization version and expiry. Text matching can silently restart a session, risking duplicate effects unless the Work command is idempotent and the restart is audited.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/adapter-session-codecs.test.ts:1-322",
+        "eedc7ddef27e852ab130c8f5c68149ff86bec17f Make ACP the default engine for local adapters (#9238)",
+        "b8fb81dee929f94b7590f33055f55ad472521376 fix(gemini-local): treat token-overflow as a fresh-session signal (#4932)"
+      ]
+    }
+  ]
+}
