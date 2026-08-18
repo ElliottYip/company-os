@@ -4,6 +4,122 @@
   "purpose": "Track exact, non-overlapping read ranges for oversized audit units. Entries in this ledger remain outside COMPLETE coverage until every source line and required history/test evidence has been reviewed.",
   "units": [
     {
+      "id": "application:cli/__tests__/onboard",
+      "path": "cli/src/__tests__/onboard.test.ts",
+      "lineCount": 226,
+      "sha256": "7af797d0d0d97707968317f450cba58e2b4dd6269e6a476236f6bce8e091cc71",
+      "linkedEvidence": {
+        "history": [
+          "35132af1610c7a0435830e2d7cd834536514ffd4 fix(config): preserve extensions and guard invalid repairs (#11005)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 226
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Eight tests cover existing valid/invalid configuration preservation, fail-closed noninteractive defaults, per-instance data paths and tailnet fallback.",
+        "The suite does not clean up its temporary directories and does not test config-write failure, environment-file/master-key permissions, partial creation rollback, authenticated identity bootstrap or malicious filesystem links.",
+        "Sandboxed run passed 4 and failed 4 because four tests resolve the default local encryption key outside their temporary config roots under ~/.paperclip. An approved unsandboxed rerun passed all 8 onboarding tests, but also created/reused that real user-home test key path; test isolation is defective."
+      ],
+      "completionRequirements": [
+        "Read lines 1-226 exactly once and assess onboarding behavior, security defaults, configuration persistence, failure recovery and test quality."
+      ]
+    },
+    {
+      "id": "application:cli/__tests__/onboard-service",
+      "path": "cli/src/__tests__/onboard-service.test.ts",
+      "lineCount": 84,
+      "sha256": "73845b1ee5cb1e5f2478d8e0e988cc75fde24bace2f6332a1cf52fbb72c951ca",
+      "linkedEvidence": {
+        "history": [
+          "fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 84
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Four tests prove unattended service installation requires explicit opt-in, interactive mode asks, and an explicit negative flag suppresses detection and hints.",
+        "Unsupported managers, declined prompts, already-installed services, install/start failure, cleanup and service-definition privilege assertions are absent.",
+        "Focused Vitest passed all 4 service-policy tests in both sandboxed and approved unsandboxed runs."
+      ],
+      "completionRequirements": [
+        "Read lines 1-84 exactly once and assess service-install gating, existing-service handling, error propagation and test quality."
+      ]
+    },
+    {
+      "id": "application:cli/commands/onboard",
+      "path": "cli/src/commands/onboard.ts",
+      "lineCount": 756,
+      "sha256": "6f153176b8d234b9383e60ea4637f6ecf87df4edd102557e1b5a784b772461fa",
+      "linkedEvidence": {
+        "history": [
+          "35132af1610c7a0435830e2d7cd834536514ffd4 fix(config): preserve extensions and guard invalid repairs (#11005)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 756
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The command separates quickstart/advanced paths, ignores deployment environment overrides for unattended trusted-local setup, forces loopback/private for local_trusted, preserves invalid bytes before interactive repair and derives per-instance data paths.",
+        "Existing valid configuration is not rewritten, but rerunning onboarding still creates missing Agent JWT/local secret material and may install a service or start the runtime; preservation is therefore not a side-effect-free operation.",
+        "Fresh setup creates the JWT environment file and local encryption key before writing config. Config-write failure leaves orphan credentials; bootstrap invite/service/start failures occur after durable config and have no transaction, compensating action or resumable phase ledger.",
+        "Advanced setup directly probes a database and vendor model APIs and continues on most failures. The LLM object, including prompt-returned apiKey when present, is inserted into config, while local-encrypted secrets default to strictMode false and telemetry defaults enabled without an explicit consent step in this command.",
+        "Authenticated external-database setup creates a bootstrap CEO invite, encoding a privileged role bootstrap that Company OS must replace with accountable-human identity proof, scoped initial authority and auditable recovery.",
+        "Unattended quickstart safety is strong, but environment-derived URL/host/port/provider inputs, filesystem trust, partial state, real credential validation and service lifecycle need stronger validation and stable machine-readable outcomes."
+      ],
+      "completionRequirements": [
+        "Read lines 1-756 exactly once and trace onboarding state, identity/auth/network/secret defaults, config writes, service setup and rollback behavior."
+      ]
+    },
+    {
+      "id": "application:cli/onboard-service.ts",
+      "path": "cli/src/onboard-service.ts",
+      "lineCount": 77,
+      "sha256": "07e2264645f477930372f626f35224c1428ccdcbdce8f9d740ec33c8922e715a",
+      "linkedEvidence": {
+        "history": [
+          "fc5a30805ed3c95ac6598c8660261a018b5b5a7f feat(cli): add managed install, update, and service lifecycle (#10045)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        {
+          "start": 1,
+          "end": 77
+        }
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Unattended service install is opt-in and an explicit negative flag returns before platform detection; interactive install defaults yes and linger defaults no.",
+        "Unsupported detection after an explicit request only warns and returns false, so the parent onboarding can still report success even though the requested service was not installed.",
+        "Install runs startNow/startOnLogin before optional linger. Install or linger failure propagates without status reconciliation or compensating uninstall; a linger failure can make the caller see failure after the service was already installed and started.",
+        "The policy delegates definition permissions, executable/config path integrity, existing-service idempotency and privilege boundary to ServiceManager."
+      ],
+      "completionRequirements": [
+        "Read lines 1-77 exactly once and assess service-install policy, privilege boundary, lifecycle and failure handling."
+      ]
+    },
+    {
       "id": "application:server/services/tool-access",
       "path": "server/src/services/tool-access.ts",
       "sha256": "4b3f135c0c5cf363e3402ca3ed2151980b1b519dbeb27eba5140ceef8f98204b",
