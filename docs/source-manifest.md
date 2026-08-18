@@ -42,16 +42,19 @@ contracts, documented in ADR 0005.
 
 ## Visual source audit and copies
 
-The three fish assets were untracked in the source worktree at audit time. They
-were user-approved for this Company OS visual layer and copied byte-for-byte.
+The three fish assets and empty office reference were untracked in the source
+worktree at audit time. They were user-approved for this Company OS visual layer
+and copied byte-for-byte.
 The repository's Apache-2.0 license was copied to
-`docs/licenses/RAFT-APACHE-2.0.txt`. No office scene or 3D asset was copied.
+`docs/licenses/RAFT-APACHE-2.0.txt`. The empty office PNG is a composition and
+atmosphere reference, not a runtime background or a substitute for future 3D.
 
 | Source | Source status | SHA-256 | Owned copy | Dependencies |
 |---|---|---|---|---|
 | `web/src/assets/raft-office/characters/raft-fish-bumble.png` | untracked | `1529b8a1f66cbef716e29437ffb7c110b4dee4e04c8ed7a410a72e5e63a3d3ba` | `web/assets/fish/raft-fish-bumble.png` | PNG only |
 | `web/src/assets/raft-office/characters/raft-fish-fizz.png` | untracked | `ac1c32e85264091df04fe97867f554cfa58c2a54fc43c4d9b087c531fa649cdb` | `web/assets/fish/raft-fish-fizz.png` | PNG only |
 | `web/src/assets/raft-office/characters/raft-fish-honey.png` | untracked | `c928cf6df88acd1b875e4f8ab18d521a588f87ea4d608e67a91ddd156b6ae3a9` | `web/assets/fish/raft-fish-honey.png` | PNG only |
+| `web/src/assets/raft-office/scenes/coral-labs-office-empty-v1.png` | untracked | `71160eec6c5ac8370c17ca07bc14627ebd84c0f4993ed126250dc6eff85440bc` | `web/assets/scenes/coral-labs-office-empty-v1.png` | PNG only; reference-only |
 | `LICENSE` | committed | `108cb15997e51b75a8d18b0c1e2c52bd3879d051ab02118973387df1e4aab584` | `docs/licenses/RAFT-APACHE-2.0.txt` | none |
 
 ## Visual references inspected, not copied as code
@@ -69,4 +72,15 @@ The repository's Apache-2.0 license was copied to
   inspected for typography and token context only.
 - `web/src/features/company-os/ui/FishAvatarPicker.tsx` and office catalog files:
   inspected for fish naming/alt-text behavior only; imports and code not copied.
+- `web/src/features/company-os/office-assets/RaftFishAvatar.tsx` (untracked):
+  inspected for asset selection, decorative alt behavior, and shadow treatment;
+  React/Tailwind code was not copied.
+- `web/src/features/company-os/ui/ClayAvatarPicker.tsx`: inspected and rejected as
+  a visual target. Its nested CSS circles and torso blocks cannot represent
+  embodied, riggable people coexisting in an office.
 
+The separately supplied concept image path
+`/Users/elliottye/Desktop/exec-7e0f5b06-5518-4639-94b0-126d28cb7610.png`
+did not exist when audited on 2026-08-18, including a same-name search under
+`Documents` and `.codex`. Its user-specified information architecture is recorded
+in `docs/visual-baseline.md`, but its pixels are not claimed as inspected.
