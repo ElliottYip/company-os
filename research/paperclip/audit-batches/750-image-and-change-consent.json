@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/cloud-image-bundled-plugins",
+      "auditStatus": "COMPLETE",
+      "function": "Cross-file drift tests for the cloud container variant that embeds selected sandbox-provider plugins and auto-installs them at managed-instance boot.",
+      "dependencyDirection": "The test reads the Dockerfile and GitHub workflow as text, then relates their CLOUD_BUNDLED_PLUGINS declarations to first-party plugin source directories, build scripts and the server bundled-plugin catalog; deployment metadata therefore depends on the same static catalog contract as runtime startup reconciliation.",
+      "keyDataModels": "Cloud bundle name list, Docker build target, catalog relativePath, plugin package build script and source manifest path, workflow job/concurrency group.",
+      "lifecycle": "CI builds plugin packages into a dedicated cloud image target; a separate uncoupled publish job emits that variant, while the normal publish explicitly selects production. Per-ref concurrency queues rather than cancels an in-flight publish. Tests fail on list drift, missing source/manifest/build script, absent catalog mapping or target/job policy drift.",
+      "testAssessment": "Useful executable drift guards connect otherwise independent Dockerfile, workflow, source-tree and runtime-catalog declarations and protect production/cloud tag separation plus non-cancelling publication. They do not build or inspect the image, verify the emitted manifest or runtime install, pin/sign artifacts, generate SBOM/provenance, scan vulnerabilities, test multi-architecture parity, confirm immutable tags/digests, exercise rollback or prove that independently published jobs form one compatible release set.",
+      "designRationale": "Prevent a cloud-only capability from silently disappearing because its build list, source package or runtime catalog changed, and prevent stock images from accidentally becoming the cloud variant.",
+      "companyOsProblem": "Company OS needs managed-cloud and self-hosted profiles from one codebase while preserving explicit capability composition, reproducible supply-chain evidence and safe independent deployment.",
+      "companyOsFit": "REFERENCE the cross-layer contract-test pattern and explicit image-profile separation. Company OS should generate profile manifests from one canonical package declaration and verify built-image contents, signatures, SBOM, digest-pinned deployment, compatibility and rollback rather than maintain three hand-synchronized text lists.",
+      "responsibilityConflict": "Independent publish jobs deliberately do not gate each other, so a release can expose mismatched stock and cloud artifacts without a single release attestation or accountable promotion decision. The test establishes availability, not that embedded execution code was reviewed, approved or bound to a deployment digest.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/cloud-image-bundled-plugins.test.ts:1-122",
+        "965a827e feat(docker): publish a cloud image variant with built bundled plugins (#10157)",
+        "db02ca74 ci: keep in-flight docker builds from being cancelled (#10403)",
+        "ca92f727 ci: publish the cloud image in its own parallel job (#10408)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/change-consent-gate",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres tests for a Reflection Coach mutation gate that requires a durable, accepted, displayed-diff confirmation from an earlier run and consumes that confirmation once.",
+      "dependencyDirection": "A service queries Company, Agent, Run, Issue and issue-thread Interaction records from the database; a later Agent run supplies Company/actor/run and target keys, and the gate mutates the accepted Interaction result to record consumption before downstream skill mutation proceeds.",
+      "keyDataModels": "Company default responsible user, Reflection Coach Agent permission, succeeded source Run, review Issue, request_confirmation Interaction with target key/revision and displayed diff, accepted result/resolver/time, consumedByRunId/consumedAt and stable 403 detail code.",
+      "lifecycle": "A Coach run proposes a diff in a review Issue; a human accepts the bound Interaction. The same source run cannot consume it. A later run may atomically claim an unconsumed matching target authorization, after which sequential reuse is rejected. A legacy target-key spelling remains accepted for compatibility.",
+      "testAssessment": "Real-database tests cover absent consent, same-run self-approval prevention, prior-run acceptance, durable consumption metadata, sequential replay rejection and legacy-key compatibility with a structured error code. Missing are concurrent double-consumption, transaction coupling between claim and mutation, rollback after mutation failure, expiry/revocation, actor/human authority and separation-of-duties rules, multiple target atomicity, company isolation adversarial cases, exact action/diff/revision/digest binding and evidence that the executed bytes equal the displayed proposal.",
+      "designRationale": "Turn a conversational confirmation into durable, single-use authorization and prevent the proposing execution from immediately approving and applying its own change.",
+      "companyOsProblem": "Company OS must pause high-risk work, bind a qualified accountable human's decision to one exact action, resume safely and retain a non-replayable responsibility/evidence chain.",
+      "companyOsFit": "ADAPT the durable Interaction, earlier-run separation, single-use consumption receipt and stable error code into the ApprovalPort contract. Require an immutable approval envelope covering action type, canonical payload digest, Work/contract/Agent/human, permissions/data scope, evidence/result expectations, expiry and policy version; consume it transactionally with an idempotent execution intent and support explicit revoke/fail/rollback outcomes.",
+      "responsibilityConflict": "Although the stored target includes revisionId and displayed diff, the tested assertion accepts only targetKeys; it never receives or verifies the revision, mutation payload or digest. Any later mutation against the same key can therefore consume approval for different bytes: approval A may authorize execution B. Consumption is also demonstrated only before an untested downstream mutation, so a crash can burn authorization without proving or recording the approved action's result.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/change-consent-gate.test.ts:1-249",
+        "8b6a06ee [codex] Add built-in agents and Reflection Coach bundle (#9206)"
+      ]
+    }
+  ]
+}
