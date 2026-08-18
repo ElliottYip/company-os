@@ -1244,6 +1244,133 @@
       "sourceReadComplete": true,
       "nextLine": null,
       "completionRequirements": ["Read lines 1-313 exactly once and map regression coverage to dispatcher/registry identity and lifecycle invariants."]
+    },
+    {
+      "id": "application:server/services/plugin-worker-manager",
+      "path": "server/src/services/plugin-worker-manager.ts",
+      "lineCount": 1929,
+      "sha256": "43cce60c233eb5bf1ccbc35cab7c2c0f161780fef130f53aa52239655d209929",
+      "linkedEvidence": {
+        "history": [
+          "6b7e0814 feat(acp): stream Daytona sandbox agent output and remove the host output poll (#11049)",
+          "af6b32d8 feat(observability): add provider OTel spans (#10764)",
+          "5c5366d0 fix(server): honor explicit plugin RPC timeouts (#10460)",
+          "f2f168f6 fix(plugins): seed proactive company scopes before worker setup and events resolver parity (#10113)",
+          "3093c5e6 fix(plugin-worker): resolve a company scope for proactive worker-to-host calls (#10103)",
+          "a1835cfa Harden plugin runtime invocation scope (#6547)",
+          "1bd44c8a Harden Cloudflare sandbox execution (#5967)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 650,
+        "readAt": "2026-08-18",
+        "notes": [
+          "This is the real out-of-process plugin boundary: one long-lived Node child per installed plugin, shared across its configured companies, with bidirectional JSON-RPC, host callbacks, crash recovery and optional streamed execution logs.",
+          "Explicit RPC timeouts bypass the ordinary 15-minute cap and may reach Node's roughly 24.8-day timer maximum. The code assumes callers provide independent inactivity/safety guards; this boundary itself cannot guarantee a bounded call or cancellation for multi-hour executions.",
+          "Incoming line and per-execution log defaults are each 128 MiB, far above a conservative control-plane message budget. More importantly, readline must accumulate a line before handleLine can reject its length, so the documented pre-parse bound does not prevent memory growth from a worker that never emits a newline.",
+          "A single plugin worker multiplexes companies. The presence of crossCompanyBlocked log routing acknowledges that overlapping cross-company executions share one pipe and cannot safely attribute streaming output; dropping later logs avoids misdelivery but does not isolate plugin memory/state or other host calls.",
+          "The host mints invocation ids and stores exact scope/trace parent/log routes rather than trusting worker-supplied company ids, a strong capability-routing pattern that should be traced through message handling before final judgment.",
+          "Proactive calls receive a pre-seeded set of company scopes outside any host-issued invocation. This fixes setup-time workflows but creates durable ambient multi-company authority at worker level, without a task, accountable human, purpose/data contract or per-call capability shown here.",
+          "WorkerStartOptions accepts resolved config, arbitrary environment variables and execArgv; the remaining spawn path must prove allowlisting, Secret isolation and prohibition of dangerous Node flags.",
+          "Crash/backoff state is process-local and no durable worker generation/attestation is present in these definitions. A host restart resets counters and cannot by itself prove which worker generation produced an effect.",
+          "The comments promise process isolation, but a Node child alone is not a sandbox: filesystem, network, host credentials and OS resources depend on the later spawn configuration and deployment wrapper."
+        ]
+      }, {
+        "start": 651,
+        "end": 1300,
+        "readAt": "2026-08-18",
+        "notes": [
+          "Host-issued invocation scope is checked for worker-to-host requests, and proactive resolution only admits an explicitly referenced company in a configured set. This is a useful narrow capability pattern, though the proactive set remains ambient multi-company authority.",
+          "Critical stream authorization gap: a stream notification without an invocation id, with no matching proactive scope, returns an empty context when no other invocation is active. The stream handler rejects only invalidInvocationScope or an explicit scope mismatch, so an idle worker can send streams.open/emit/close for an arbitrary companyId and reach onStreamNotification.",
+          "Open stream channels are keyed only by channel, not company/generation. Same-name channels across companies overwrite each other, and crash cleanup can synthesize a close using worker-supplied company attribution.",
+          "Cross-company execute-log routing deliberately fails closed once overlapping companies exist, but it uses a global latch that permanently drops live logs for every affected route. It protects delivery integrity at the cost of incomplete evidence and confirms the shared-worker isolation limitation.",
+          "Plugin log notifications spread arbitrary worker-controlled metadata and message into the host logger with no field allowlist, size bound below the very large line cap, Secret redaction or prompt/data classification. A plugin can inject sensitive values and high-cardinality fields into production logs.",
+          "Parse errors log the first 200 raw characters of an untrusted worker line, and stderr is logged verbatim plus retained in failure messages. Both paths can persist Secrets or customer data emitted by a plugin.",
+          "Host-handler exception messages are logged and returned verbatim to the worker, potentially disclosing internal identifiers, database/provider details or Secret-bearing error text across the trust boundary.",
+          "The child environment avoids wholesale process.env inheritance and overwrites key host-controlled fields after options.env, which is good. It still exposes host PATH/NODE_PATH and accepts arbitrary execArgv, with no local enforcement of an allowlist, working directory, uid/gid, filesystem/network isolation or OS resource limits.",
+          "Node fork also opens an IPC channel in addition to the documented stdio JSON-RPC path; no message handler is shown here, but the extra channel expands the process interface without an expressed protocol need.",
+          "Crash tracking and restart state are memory-only. Pending calls receive worker-unavailable responses, but no durable execution receipt distinguishes a request that was processed before the crash from one never processed, so automatic caller retry can duplicate plugin effects."
+        ]
+      }, {
+        "start": 1301,
+        "end": 1929,
+        "readAt": "2026-08-18",
+        "notes": [
+          "Critical crash-loop defect: consecutiveCrashes is reset to zero immediately after every successful initialize. A worker that initializes successfully then crashes seconds later always restarts with count one, so exponential backoff and the ten-consecutive-crash cutoff never escalate for the common post-start crash loop.",
+          "RPC timeout only rejects the host promise and removes invocation/log routes; it sends no cancellation to the worker. A timed-out execute can continue mutating external systems, and a caller retry can duplicate the side effect.",
+          "The shutdown sequence races shutdown response against exit, but if the worker responds before exiting it waits only an additional 500ms before SIGTERM, not the documented ten-second drain. A cooperative worker acknowledging shutdown before finishing cleanup can be killed prematurely.",
+          "Initialization failure kills the child, marks the handle crashed and leaves it in the manager map. Auto-restart is suppressed by intentionalStop, while a later startWorker rejects any existing non-stopped handle; recovery requires an explicit stop/remove path rather than a normal retry.",
+          "startInternal sends full manifest, resolved config and database namespace to the child. The manager provides no field-level Secret minimization, per-company config partition or proof that a shared worker cannot retain one tenant's config/data for another tenant's invocation.",
+          "Manager startup locking prevents duplicate in-process spawns for one plugin, but it is memory-local and does not coordinate multiple server processes/hosts. There is no durable worker lease, generation or owner fencing.",
+          "stopWorker/stopAll can race an in-flight startup and do not coordinate through startupLocks; initialization and stop may interleave, producing rejected startup promises or stale lifecycle notifications.",
+          "supportedMethods reported by initialize are stored for diagnostics but not enforced before calls, so capability/version mismatch is discovered only through worker response.",
+          "Worker error/stderr messages are embedded in host-thrown errors and manager logs without Secret redaction. Together with earlier raw plugin log paths, the worker boundary is not safe for production credentials or customer content.",
+          "The strongest reusable pattern is the host-minted invocation capability with company scope and timeout cleanup. Company OS still needs per-installation/per-company isolation, short-lived runtime attestation, cancellation/idempotency/effect receipts, durable leases and a Secret-safe structured protocol."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": [
+        "Read lines 1-1929 exactly once against the pinned SHA-256.",
+        "Trace worker identity, tenant/run invocation scope, local/remote isolation, Secrets/environment, RPC timeouts/cancellation, host callbacks, lifecycle/concurrency, telemetry and cleanup.",
+        "Read the complete 1056-line first-party suite and its fixtures, run focused tests, then issue a canonical decision."
+      ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-worker-manager",
+      "path": "server/src/__tests__/plugin-worker-manager.test.ts",
+      "lineCount": 1056,
+      "sha256": "27bbd53a548a523f18a7cfe03c447268b3f8fcea2d78ce5d76e5e30174568863",
+      "linkedEvidence": {
+        "history": [
+          "6b7e0814 feat(acp): stream Daytona sandbox agent output and remove the host output poll (#11049)",
+          "5c5366d0 fix(server): honor explicit plugin RPC timeouts (#10460)",
+          "f2f168f6 fix(plugins): seed proactive company scopes before worker setup (#10113)",
+          "a1835cfa Harden plugin runtime invocation scope (#6547)",
+          "b24c6909 Harden remote sandbox runtime probes, timeouts, and installs (#5685)"
+        ],
+        "fixtures": [
+          "server/src/__tests__/fixtures/plugin-worker-delayed.cjs",
+          "server/src/__tests__/fixtures/plugin-worker-execute-log.cjs",
+          "server/src/__tests__/fixtures/plugin-worker-invocation-scope.cjs",
+          "server/src/__tests__/fixtures/plugin-worker-terminated.cjs"
+        ],
+        "focusedTest": "2026-08-18: direct Vitest run passed all 37 tests in 890ms using real forked fixture workers."
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{
+        "start": 1,
+        "end": 550,
+        "readAt": "2026-08-18",
+        "notes": [
+          "The suite uses real forked Node worker fixtures for RPC timing and invocation-scope flows, stronger evidence than pure mocks for message routing.",
+          "Timeout tests prove default and explicit host promise timing only; they do not assert a timed-out worker operation is cancelled or that no delayed side effect occurs, leaving the source-level duplicate-effect risk intact.",
+          "Seven pure timeout tests explicitly bless caller overrides up to Node's timer maximum but do not verify the assumed independent inactivity/safety guard at any call site.",
+          "Stderr tests intentionally append raw worker stderr to thrown failure messages and only enforce truncation. They contain no Secret-redaction assertion and therefore codify the confidentiality defect rather than preventing it.",
+          "Invocation tests strongly cover host-minted company scope, omitted/unknown ids during an active invocation and cross-company config/Secret denial through SDK host handlers.",
+          "The active-invocation tests do not cover the idle/no-invocation Stream notification path where the source returns an empty context and forwards arbitrary company ids.",
+          "Fixtures and handlers frequently cast through unknown/never, appropriate for adversarial protocol cases but weaker as type-compatibility proof."
+        ]
+      }, {
+        "start": 551,
+        "end": 1056,
+        "readAt": "2026-08-18",
+        "notes": [
+          "Proactive host-call tests comprehensively cover configured company admission, outside-set denial, revocation, company-scoped state and setup-time events.subscribe filter parity using real workers.",
+          "There are no tests for streams.open/emit/close notifications. The critical idle/no-invocation stream authorization gap and channel collision found in source therefore remain completely uncovered.",
+          "Execute-log tests cover honest ordered delivery, missing/unknown ids, invalid payloads, same-company concurrency, cross-company forged ids, per-call output caps and no-sink behavior.",
+          "The cross-company defense cannot prove exact invocation origin within one company. A malicious shared worker can forge another active same-company invocation id and inject output into its sink; the suite tests honest same-company ids but not this forgery case.",
+          "The oversized-line fixture emits a complete newline-terminated JSON document. It proves rejection before JSON parsing after readline has produced the line, but not memory safety against a worker streaming an arbitrarily long line without a newline.",
+          "No test exercises crash recovery/backoff escalation, the reset-on-initialize defect, initialization-failure recovery, startup/stop races, shutdown drain timing, auto-restart generation, durable effect ambiguity, environment/execArgv isolation or raw log/stderr Secret leakage.",
+          "All four fixtures are small direct NDJSON workers and faithfully exercise the intended paths, but none simulates a hostile filesystem/network process, resource exhaustion, log metadata injection or delayed side effect after host timeout.",
+          "The suite is strong for company-scope regression and streaming-route mechanics, but materially incomplete for lifecycle safety and production isolation."
+        ]
+      }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "completionRequirements": ["Read lines 1-1056 plus all four listed fixtures exactly once and map claimed versus actual worker security/lifecycle coverage."]
     }
   ]
 }
