@@ -5579,6 +5579,33 @@
       "completionRequirements": [
         "Read lines 1-104 exactly once and assess Skill source/destination ownership, provenance, replacement/removal, symlink safety, tenant/Run isolation, concurrency and test quality against Company OS Connector capability/plugin boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/dashboard-service",
+      "path": "server/src/__tests__/dashboard-service.test.ts",
+      "lineCount": 240,
+      "sha256": "c33d7e7ce6c5a58d417471745e6a078718dc4ca07a6c28fd0b0d4ea5402b649e",
+      "linkedEvidence": {
+        "history": [
+          "555391fed77d3a10949b859dc3e84f108dc052d6 fix: run restart recovery, workspace self-heal, quota-aware retries, failed-run metrics (#9183)",
+          "09d0678840336094e70734ba429bc16bb1fd0940 [codex] Harden heartbeat scheduling and runtime controls (#4223)",
+          "4357a3f352b6b6415dfdcb9e6f384da894a9c713 [codex] Harden dashboard run activity charts (#4126)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 240 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. One pure UTC boundary test and two intended embedded-PostgreSQL tests cover a complete 14-day Run histogram, >100 same-day Runs, tenant exclusion, failure/status buckets and recovery-chain classification.",
+        "The test explicitly guards against recent-Run truncation and separates recovered process_lost failures from true provider failures, including chained retries. These are useful Agent Boss operational projection semantics.",
+        "Succeeded retry Runs and recovered failed attempts both remain in total, so total counts attempts rather than business outcomes. The projection does not distinguish unique Work/results, accountable human, approval/data/tool scope, cost or evidence completeness and could overstate productivity.",
+        "Failed and timed_out without codes collapse to unknown; cancelled is other. No schema/version guard defines how new statuses/error families appear. Current-date helpers make buckets runtime-relative and no explicit asOf/freshness/watermark is returned or tested.",
+        "Both database tests were skipped in sandboxed and approved unsandboxed runs; only getUtcMonthStart passed. Query plan/index/scale, late-arriving updates, retry cycles, cross-company retry links and malformed timestamps are untested."
+      ],
+      "completionRequirements": [
+        "Read lines 1-240 exactly once and assess dashboard projections, tenant filtering, run/task status semantics, aggregation correctness, query scale, freshness and test quality against Company OS Agent Boss/responsibility projections."
+      ]
     }
   ]
 }

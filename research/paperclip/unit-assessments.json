@@ -5003,18 +5003,23 @@
     },
     {
       "id": "application:server/__tests__/dashboard-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Tests for UTC monthly boundaries and intended PostgreSQL-backed 14-day Run activity/recovery projections.",
+      "dependencyDirection": "Vitest -> dashboard service -> Paperclip DB schema and embedded PostgreSQL when supported; no API authorization, realtime event stream, responsibility projection or Web layer.",
+      "keyDataModels": "Company, Agent, heartbeat Run status/error/retry links/createdAt and daily succeeded/failed/recovered/other/error-code buckets.",
+      "lifecycle": "Runs and retries accumulate -> summary queries a rolling UTC window -> recovery chains reclassify process-loss failures -> per-day operational buckets are returned.",
+      "testAssessment": "Only the UTC helper test executed and passed; both embedded-PostgreSQL tests skipped in sandboxed and approved unsandboxed runs. Intended fixtures thoughtfully cover tenant isolation, >100 Runs, full-window aggregation and chained recovery, but the database projection is unverified in this environment and lacks performance/freshness/evolution cases.",
+      "designRationale": "Give operators an accurate operational trend instead of a truncated recent-Run sample and distinguish self-healed infrastructure restarts from actionable failures.",
+      "companyOsProblem": "Agent Boss needs trustworthy projections for work outcomes, execution attempts, waiting/blocked/approval states, failures/recovery, cost and responsibility evidence with explicit freshness.",
+      "companyOsFit": "ADAPT the complete-window, tenant-negative and retry-chain test patterns. Build Company OS projections from canonical work/execution/evidence events; separate attempt counts from unique work outcomes, expose asOf/watermark/version, retain stable error families and include accountable human, approval, data/tool grant, cost and evidence-completeness dimensions.",
+      "responsibilityConflict": "The dashboard counts Run attempts and recovery mechanics but cannot answer who requested or owned the Work, who approved risk, which permissions/data were used or whether a successful Run produced accepted evidence/result. It is operational telemetry, not the responsibility system of record.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/dashboard-service.test.ts:1-240 (SHA-256 c33d7e7ce6c5a58d417471745e6a078718dc4ca07a6c28fd0b0d4ea5402b649e)",
+        "git history: 555391fed77d3a10949b859dc3e84f108dc052d6, 09d0678840336094e70734ba429bc16bb1fd0940 and 4357a3f352b6b6415dfdcb9e6f384da894a9c713",
+        "2026-08-19 sandboxed and approved unsandboxed focused Vitest: 1 passed, 2 embedded-PostgreSQL tests skipped"
+      ],
+      "securityFindings": "CRITICAL verification gap: the only tenant-isolation and recovery-classification database tests did not execute. HIGH semantic risk: totals mix failed attempts, recovered attempts and successful retries rather than unique accountable outcomes. MEDIUM stability risk: unknown/new statuses fall into coarse buckets without a versioned projection contract; no asOf/watermark exposes staleness. Missing tests include cross-tenant retry links, retry cycles, late events, clock skew, pagination/query plans/indexes and authorization."
     },
     {
       "id": "application:server/__tests__/db-errors",
