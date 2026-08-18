@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/company-skill-import-boundary",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres and real-filesystem integration test allowing local Company-skill imports only from configured workspace roots while rejecting out-of-tree paths, symlink escapes and non-HTTPS URL schemes.",
+      "dependencyDirection": "Company/project/workspace rows define approved roots; an untrusted import source enters companySkillService, is canonicalized with realpath, checked against Company-scoped roots and then parsed/persisted as a Company skill.",
+      "keyDataModels": "Company, Project, primary ProjectWorkspace cwd, local skill directory/SKILL.md, symbolic link and structured validation or boundary-denied error codes.",
+      "lifecycle": "An in-workspace .agents/skills directory imports successfully; a real outside directory and an in-workspace symlink resolving outside are denied with 403; ftp/http sources are rejected with 422.",
+      "testAssessment": "The test uses a real database and filesystem and strongly covers canonical path containment plus stable reason codes. Missing are a symlink-swap TOCTOU race between validation and recursive read, nested file symlinks, workspace-root mutation/revocation, case/Unicode/platform paths, permission failures, quotas, malicious SKILL.md content, HTTPS SSRF/download integrity, transaction rollback and actor/approval/audit evidence.",
+      "designRationale": "Permit useful local imports from Company-configured workspaces without turning an arbitrary server filesystem path into an import capability.",
+      "companyOsProblem": "FDE operators need controlled import from customer workspaces while self-hosted deployments must prevent filesystem escape, package substitution and cross-tenant ingestion.",
+      "companyOsFit": "ADAPT canonical Company-scoped root enforcement and stable error codes. Strengthen it by opening/copying through a sandboxed Connector node into immutable quarantine content, revalidating every entry without following links, hashing the package, scanning/license-checking it and binding approval plus provenance before publication.",
+      "responsibilityConflict": "Workspace membership alone does not authorize importing executable instructions. The service call has no accountable human, data/tool contract or approval evidence, and realpath validation followed by later path-based reading leaves a substitution window.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/company-skill-import-boundary.test.ts:1-86",
+        "server/src/services/company-skills.ts:2869-2913",
+        "server/src/services/company-skills.ts:6040-6082",
+        "89ce36d7 feat(skills): open-by-default company skill policy and core UX (#9564)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/codex-local-skill-injection",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests reconciling Codex runtime skill symlinks: repairing links to another Paperclip checkout, injecting missing requested skills, preserving custom or other live links and pruning broken links attributed to unavailable Paperclip skills.",
+      "dependencyDirection": "A prepared skills home and requested key/runtime-name/source entries enter the Codex adapter reconciler; it classifies existing links using checkout/path heuristics, mutates symlinks and writes human-readable runtime logs.",
+      "keyDataModels": "Canonical skill key, runtime name, source directory, current/old Paperclip checkout shape, custom external skill, live/broken symlink and injection/repair/removal log messages.",
+      "lifecycle": "Before Codex starts, requested Paperclip links are created or repointed from an old live checkout; custom collisions and unrelated live Paperclip links are preserved; stale broken Paperclip links are removed.",
+      "testAssessment": "The suite carefully protects custom collisions and exercises live, stale and cross-checkout link reconciliation. Missing are explicit ownership manifests, immutable digests, traversal/runtime-name validation, concurrent reconcilers, atomic replacement/crash recovery, permissions, required-skill failure behavior, cleanup after run, Windows behavior and proof of Codex activation.",
+      "designRationale": "Repair stale development-checkout links without overwriting user-owned skills or deleting still-valid skills that share an execution home.",
+      "companyOsProblem": "Connector nodes need safe reconciliation of leased capability packages without mistaking a pathname or repository layout for ownership.",
+      "companyOsFit": "ADAPT the conservative preserve/repair/prune test matrix, but replace checkout heuristics with a signed installation manifest containing owner, package digest, lease, target and prior state; use atomic operations and emit structured activation/cleanup receipts.",
+      "responsibilityConflict": "Path shape is used as an ownership proxy and cleanup is not tied to a Work lease. Repair/removal logs do not identify the approving human, package digest, policy grant or evidence chain and cannot prove temporary copies were destroyed.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/codex-local-skill-injection.test.ts:1-192",
+        "641eb449 [codex] Harden create-agent skill governance (#4422)",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/cursor-local-skill-injection",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem tests linking every source-directory child into Cursor's skill home, preserving existing targets and logging individual link failures while continuing.",
+      "dependencyDirection": "A source directory, target skill home and optional link implementation enter the Cursor adapter reconciler; directory entries become symlinks and failures are converted to log text instead of rejecting startup.",
+      "keyDataModels": "Source/target paths, directory entry name, symlink, preserved existing directory and per-skill success/failure log.",
+      "lifecycle": "Missing directory entries are linked, non-directory files are ignored, existing targets remain untouched, and one failed link does not prevent other links or throw to the caller.",
+      "testAssessment": "Happy-path materialization, collision preservation and partial-failure continuation are explicit. Missing are approved selection rather than all directories, package identity and provenance, runtime-name/path validation, symlink-source handling, atomicity/concurrency, required versus optional capability semantics, cleanup/revocation, structured error codes and runtime activation evidence.",
+      "designRationale": "Keep Cursor startup resilient and avoid overwriting user-managed entries when convenience skill injection is partially unavailable.",
+      "companyOsProblem": "Company OS must distinguish optional convenience capabilities from tools required by an approved Work plan; silently missing a required tool invalidates execution readiness.",
+      "companyOsFit": "NARROW: preserve existing user targets and allow best-effort continuation only for explicitly optional packages. Required capability injection must fail closed with a stable code before Agent execution, and all packages must flow through the canonical signed SkillPackageManager rather than directory-wide discovery.",
+      "responsibilityConflict": "The adapter can continue after a requested link fails, so the actual runtime capability set may differ from the approved plan. Free-form logs are not an attestation and no human grant, digest, Work binding or cleanup proof exists.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/cursor-local-skill-injection.test.ts:1-103",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    }
+  ]
+}
