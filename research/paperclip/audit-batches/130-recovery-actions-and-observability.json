@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/issue-recovery-actions",
+      "auditStatus": "COMPLETE",
+      "function": "Persistence service for one active recovery action per company/source issue. It exposes active lookups, source-scoped upsert with attempt accumulation, and guarded terminal resolution, while preserving recovery owner, return owner, cause, fingerprint, evidence, wake/monitor policy and outcome.",
+      "dependencyDirection": "The service imports shared recovery types but is implemented directly against the Paperclip Drizzle database and issue_recovery_actions table. An in-process promise queue serializes upserts per company/source issue; PostgreSQL partial unique indexes are the cross-process correctness backstop.",
+      "keyDataModels": "IssueRecoveryAction with sourceIssueId, optional recoveryIssueId, kind, active/escalated/resolved/cancelled status, ownerType, ownerAgentId/ownerUserId, previous and return Agent owners, free-form cause/fingerprint/evidence/nextAction, wakePolicy, monitorPolicy, attempts, timeout, outcome and resolution note.",
+      "lifecycle": "Read the current active or escalated action; update it and increment attempts when present; otherwise insert; retry up to three times on compare-and-update loss or the two named PostgreSQL uniqueness conflicts. Resolution updates every matching active row selected by company/source plus optional action/kind/cause/fingerprint filters.",
+      "testAssessment": "A focused fake-DB race test proves that an action resolved after the initial read is not reactivated. The 2,110-line embedded-Postgres/API suite exercises source and tenant scoping, repeated upsert, typed fingerprint dedupe, no nested recovery, active projections, wake payloads, hand-back, stale folding, peer-Agent rejection, named-owner resolution, blockers, false positives, provider quota and recovery cause routing. Gaps remain for two-process races, crash/fault injection, retries exhausted, malformed JSON evidence/policies, human owner semantics, delete/retention, outbox atomicity and property-based state transitions.",
+      "designRationale": "Model recovery as a durable first-class action attached to the original work instead of recursively creating recovery work, and make active uniqueness survive process concurrency through database constraints.",
+      "companyOsProblem": "Company OS needs first-class, source-scoped incidents/recovery cases with stable identity, bounded attempts, exact responsible human, executor, permission/data/approval contract digests, evidence references and a durable resolution receipt.",
+      "companyOsFit": "ADAPT the partial-unique active case, compare-and-update anti-reactivation guard, typed cause/fingerprint, attempt history and explicit return-owner concept. Implement a Company OS RecoveryCase aggregate and store port with optimistic versioning/outbox; use opaque Principal IDs for human and Agent owners, append-only attempts and typed policies rather than Paperclip table rows and free-form JSON.",
+      "responsibilityConflict": "The default owner is an Agent or an abstract board, ownerUserId is not part of the default selection rule, and previous/return ownership is Agent-only. A named Agent may resolve board-owned work. The record does not bind an accountable human, authority scope, data contract, approval digest or immutable evidence manifest; updating the same row also overwrites earlier evidence and policy.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/issue-recovery-actions.ts",
+        "packages/db/src/schema/issue_recovery_actions.ts",
+        "packages/db/src/migrations/0084_issue_recovery_actions.sql",
+        "server/src/__tests__/issue-recovery-actions.test.ts",
+        "0808b388 Add source-scoped recovery actions (#5599)",
+        "f17202b5 Add execution workspace branch reconciliation route (#9170)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/issue-recovery-actions",
+      "auditStatus": "COMPLETE",
+      "function": "End-to-end recovery contract suite spanning the recovery action persistence service, Recovery orchestration, Issue HTTP routes, wake projections, database constraints, permissions and stale-action folding.",
+      "dependencyDirection": "Tests assemble Express routes and a real embedded PostgreSQL database, importing DB schema, Recovery, Heartbeat wake payload construction and Issue route internals. They validate a cross-module vertical slice rather than an isolated package boundary.",
+      "keyDataModels": "Company, Agent reporting line, Issue and relation, HeartbeatRun, IssueRecoveryAction, IssueComment presentation/metadata, AgentWakeupRequest, execution policy/state, inbox archive and activity log.",
+      "lifecycle": "Seed a company, manager Agent, worker Agent and source Issue; create or reconcile failures; inspect recovery action, issue, wake and audit projections; resolve or mutate the source; verify authorization, return assignment, blocker requirements and terminal folding.",
+      "testAssessment": "Broad behavior coverage with approximately forty named cases plus a five-case routing table, including a targeted lost-update race and real partial-index behavior. Tests are high-value but slow and highly coupled to a large fixture and route implementation. Assertions sometimes depend on English error/notice text and internal Paperclip JSON shapes; they do not prove accountable-human authority, structured Connector receipts, data authorization, multi-node wake idempotency, transaction crash safety or API error-code stability.",
+      "designRationale": "Protect recovery as an end-to-end invariant because persistence, Issue status, wake scheduling, permissions, comments and audit projections can otherwise drift independently.",
+      "companyOsProblem": "Company OS requires compatibility tests that prove one responsibility-bound recovery case remains coherent across API, event/outbox, task projection, Connector pause/resume and audit evidence.",
+      "companyOsFit": "REFERENCE the vertical-slice testing strategy and port its scenario catalog into Company OS terminology. Split canonical aggregate/state-machine tests from adapter integration and public API compatibility tests; bind assertions to stable codes and structured receipts, not English copy or Paperclip route internals.",
+      "responsibilityConflict": "The suite treats board or manager Agent authority as sufficient and explicitly permits a recovery-owner Agent to close work. It does not require the accountable human or approval/data contract that Company OS treats as central.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/issue-recovery-actions.test.ts:1-2110",
+        "server/src/services/issue-recovery-actions.ts",
+        "server/src/routes/issues.ts",
+        "packages/db/src/migrations/0084_issue_recovery_actions.sql"
+      ]
+    },
+    {
+      "id": "application:server/services/recovery-observability",
+      "auditStatus": "COMPLETE",
+      "function": "Company-scoped recovery report that computes weekly recovery actions per Heartbeat run, threshold alerts, cause/error-code groups, takeover versus self-recovery and hand-back outcomes, and per-cause routing counters.",
+      "dependencyDirection": "Pure handoff classification and rate-alert functions sit beside a Drizzle/PostgreSQL report service. The report queries Heartbeat runs, recovery actions and source Issues directly, using raw SQL for weekly/cause aggregation and TypeScript for low-volume handoff derivation.",
+      "keyDataModels": "WeeklyRecoveryRate, RecoveryRateAlert, RecoveryCauseGroup, RecoveryHandoffSummary, RecoveryCauseRouting and RecoveryObservabilityReport derived from HeartbeatRun, IssueRecoveryAction evidence and final Issue assignment/status.",
+      "lifecycle": "Clamp the requested window to 1-104 Monday-anchored UTC weeks; query run and action counts; fill missing weekly buckets; evaluate a configurable alert; group causes and latestRunErrorCode; join actions to final Issues; classify active, self-recovered, handed-back, owner-completed, board-owned or other; return ratios and routing totals.",
+      "testAssessment": "Twelve tests cover threshold crossing, quiet/latest cases, six handoff classifications, embedded-Postgres rate aggregation, routing ratios and the allocation cap. The suite does not test tenant leakage adversarially, query plans/large volume, zero-denominator interpretation, mutable final assignment changing history, action-to-run cardinality, incomplete current week semantics, timezone boundaries, human ownership, alert delivery or metric version compatibility.",
+      "designRationale": "Make recovery regressions measurable and expose whether managers are permanently taking over work rather than restoring the intended execution path.",
+      "companyOsProblem": "Company OS needs responsibility and autonomy safety metrics: intervention rate, retry/escalation/approval outcomes, time to accountable-human response, evidence completeness, authority/data-scope violations and whether work returned to the intended executor.",
+      "companyOsFit": "ADAPT the normalized recovery-rate, bounded reporting window, pure classifier and explicit routing taxonomy. Build metrics from immutable domain events/receipts with versioned definitions and human/Agent principal dimensions; separate operational recovery health from organizational effectiveness and never infer historical responsibility solely from mutable current assignment.",
+      "responsibilityConflict": "The metric's product goal is manager Agent takeover and its owner taxonomy is Agent versus board. Historical handoff is inferred from the Issue's current assignee, so later reassignment can rewrite the apparent outcome. Recovery actions divided by runs can also exceed one-to-one and should not be described as a failure probability without a stable event definition.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/services/recovery-observability.ts",
+        "server/src/__tests__/recovery-observability.test.ts",
+        "3124dd0f feat(server): recovery observability report and rate alert (#9644)",
+        "678728f6 feat: maintained in_review review-path contract + stalled-review actions (#10675)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/recovery-observability",
+      "auditStatus": "COMPLETE",
+      "function": "Pure and embedded-Postgres verification for weekly recovery alerts, recovery handoff classification, per-cause routing and report-window bounds.",
+      "dependencyDirection": "Tests call pure exported classifiers directly and seed the Paperclip database for report-level integration checks across companies, Agents, Issues, Heartbeat runs and recovery actions.",
+      "keyDataModels": "Synthetic weekly rates plus persisted Company, Agent, Issue, HeartbeatRun and IssueRecoveryAction rows with cause, error code, status, outcome, recovery owner and return owner.",
+      "lifecycle": "Evaluate synthetic rate/classification cases, then seed two weeks of runs and action outcomes in embedded PostgreSQL and assert rate alerts, handoff ratios, routing groups and maximum-window behavior.",
+      "testAssessment": "Good deterministic coverage of the intended formulas and the 2% regression scenario, with a real database for SQL behavior. It lacks property tests, exact UTC boundary cases, multiple companies, mutable assignment regression, high-cardinality performance, human principals, immutable event snapshots and alert delivery integration.",
+      "designRationale": "Keep formula semantics executable and regression-test the operational incident that motivated the dashboard.",
+      "companyOsProblem": "Company OS needs executable metric specifications so safety and responsibility dashboards cannot silently change meaning across releases.",
+      "companyOsFit": "REFERENCE the separation between pure metric semantics and database integration. Company OS should add metric-version fixtures, human/Agent responsibility cases, immutable-event replay and language-independent structured outputs.",
+      "responsibilityConflict": "Fixtures model only manager and worker Agents; board is an owner category but no accountable human actor or authority receipt participates in the outcome.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/recovery-observability.test.ts:1-398",
+        "server/src/services/recovery-observability.ts"
+      ]
+    }
+  ]
+}
