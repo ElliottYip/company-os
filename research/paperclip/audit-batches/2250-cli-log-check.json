@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/checks/log-check",
+      "auditStatus": "COMPLETE",
+      "function": "Resolves the configured runtime log directory, recursively creates it if absent, then uses a synchronous W_OK access check to report the directory as writable or not writable.",
+      "dependencyDirection": "CLI doctor leaf -> PaperclipConfig.logging and runtime-like path resolver -> direct Node filesystem operations. The check mutates the host filesystem and emits the absolute/resolved path, but does not exercise Paperclip's logger, log writer, rotation or telemetry pipeline.",
+      "keyDataModels": "Configured logDir and free-form CheckResult only. There is no log sink, retention/rotation, sensitivity/redaction, tenant, capacity, file ownership/mode, support-bundle or audit-evidence model.",
+      "lifecycle": "Resolve path -> if absent recursively mkdir -> synchronously check W_OK -> pass with path, or catch access failure and fail. Directory creation occurs outside the try/catch, so mkdir errors escape the check. The probe creates no test file and performs no cleanup, free-space, inode, quota, rotation or logger round-trip verification.",
+      "testAssessment": "No focused logCheck test was found. The already-audited CLI doctor integration test was reused without rereading: its elevated run passed 1/1 with 12 checks, but it covers only a temporary local happy path and does not isolate this result. Missing coverage includes mkdir failure, custom/config-relative paths, symlinks, permission/mode/owner policy, access-versus-real-write mismatch, read-only/full filesystems, concurrent calls, path disclosure and cleanup.",
+      "designRationale": "A cheap preflight catches a common local-installation failure and automatically creates a conventional runtime directory. Synchronous filesystem calls keep an interactive doctor simple, but the implementation conflates repair with diagnosis and W_OK with end-to-end logging readiness.",
+      "companyOsProblem": "Company OS self-hosted deployments need safe diagnostics for operational logs and immutable responsibility/audit evidence across local files, containers and managed sinks, including retention, capacity, redaction, tenant isolation and support export.",
+      "companyOsFit": "Do not copy the implementation. Keep a provider-neutral log-sink diagnostic contract, with a read-only static policy check and a separately authorized write/round-trip probe. File adapters must enforce allowed roots, symlink/owner/mode policy, capacity thresholds, rotation/retention and redaction; cloud sinks need equivalent bounded capability checks. Audit/evidence storage must remain distinct from disposable operational logs.",
+      "responsibilityConflict": "Silently creating a directory is a host mutation without an accountable actor, approval or evidence of the exact change. A writable operational log directory also says nothing about the integrity, immutability or retention of Company OS responsibility evidence and must never satisfy that requirement.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/checks/log-check.ts (30 lines; SHA-256 388e02c2cc20075d5575f6086c1d7d002407b242aaea86ef4edb16c0ced5537e)",
+        "git history/blame: all current lines attribute to 73eb23734f25c570d88665e672f80d740797c632 (2026-04-20, docs: use structured agent mentions in paperclip skill (#4103))",
+        "Repository search found no logCheck-focused test",
+        "Existing completed assessment application:cli/__tests__/doctor reused without source reread: escalated Vitest passed 1/1 with 12 checks; production/authenticated and failure-path coverage absent"
+      ],
+      "securityFindings": "The configured path is recursively created without an allowed-root, ownership, mode or symlink check, and mkdir failures are uncaught. accessSync(W_OK) does not prove safe file creation, append, fsync, rotation, quota or that the actual service identity can write when doctor runs as another user. Full resolved paths are exposed in messages. No checks cover world-readable logs, Secret/PII redaction, tamper resistance, retention, disk exhaustion or tenant separation. Diagnosis and repair must be separated, and operational logs must not be treated as authoritative responsibility evidence."
+    }
+  ]
+}
