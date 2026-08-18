@@ -3863,18 +3863,21 @@
     },
     {
       "id": "application:server/__tests__/db-errors",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for recognizing PostgreSQL unique-constraint violations across postgres.js, node-postgres and Drizzle wrapper shapes.",
+      "dependencyDirection": "Unknown thrown values and an optional expected constraint name flow into a database-neutral route helper that walks cause links and inspects driver codes/fields/messages.",
+      "keyDataModels": "SQLSTATE 23505, constraint/constraint_name, driver message and recursive cause.",
+      "lifecycle": "The helper matches direct or wrapped unique violations, optionally narrows to one constraint, falls back to driver text when structured names are absent and terminates cyclic cause chains.",
+      "testAssessment": "Good compatibility and adversarial coverage includes multiple drivers, wrapping, other constraints/codes, nulls and self-referential causes. Missing are deep-chain bounds, aggregate errors, localized/truncated messages, spoofed plain objects and preservation of the original error/evidence.",
+      "designRationale": "Map expected database races to stable application conflicts despite ORM/driver error-shape variation.",
+      "companyOsProblem": "Company OS needs deterministic idempotency/conflict outcomes across cloud and local database adapters without leaking vendor errors into application contracts.",
+      "companyOsFit": "ADAPT behind DataStorePort with stable conflict codes and structured adapter mapping; use message parsing only as a last-resort telemetry signal, not an authorization or correctness guarantee.",
+      "responsibilityConflict": "A uniqueness conflict identifies a race, not which command or responsible actor won; application events must still record the authoritative winner and rejected intent.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/db-errors.test.ts:1-51",
+        "6a4e2e1b fix(routes): return 409 for routine checkout conflicts (#3790)"
+      ]
     },
     {
       "id": "application:server/__tests__/decision-queues-routes",
@@ -4505,18 +4508,21 @@
     },
     {
       "id": "application:server/__tests__/feedback-flush-controller",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests distinguishing a wrapped database ECONNREFUSED from ordinary feedback-export failures without trusting top-level message text.",
+      "dependencyDirection": "Application flush-control logic inspects structured nested error codes to decide whether database unavailability should alter feedback export behavior.",
+      "keyDataModels": "Error/cause chain, ECONNREFUSED code and ordinary upstream failure.",
+      "lifecycle": "A driver connection-refused cause is classified as database unavailable; upload failures and user-controlled text mentioning the same token are not.",
+      "testAssessment": "The negative untrusted-message case is valuable. Coverage is narrow: no nested depth/cycles, timeout/reset/DNS/TLS errors, SQLSTATE shutdown codes, pool errors, retry policy, cancellation or flush durability/loss assertions.",
+      "designRationale": "Avoid misclassifying telemetry/export content as control-plane database failure while shutting down or recovering.",
+      "companyOsProblem": "Company OS audit/evidence export must distinguish durable-store outages from sink failures and never lose responsibility records because optional telemetry failed.",
+      "companyOsFit": "ADAPT structured adapter error families, but keep audit evidence in a durable outbox with independent retry/dead-letter health; optional feedback must never own core lifecycle control.",
+      "responsibilityConflict": "Classification alone does not prove whether feedback/evidence was persisted, retried or lost, nor who is accountable for a degraded audit sink.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/feedback-flush-controller.test.ts:1-24",
+        "c91a0623 [codex] Runtime control-plane fixes (#6380)"
+      ]
     },
     {
       "id": "application:server/__tests__/feedback-service",
@@ -6668,18 +6674,21 @@
     },
     {
       "id": "application:server/__tests__/issue-tree-control-service-unit",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit guard proving Issue subtree control rejects a root outside the requested Company before descendant traversal.",
+      "dependencyDirection": "Company and root Issue IDs enter a service; one root lookup establishes tenant ownership before any recursive pause/cancel/restore traversal.",
+      "keyDataModels": "Company ID, root Issue ID, pause mode and 404 service error.",
+      "lifecycle": "A missing root in the Company scope returns not found after one query and performs no descendant traversal.",
+      "testAssessment": "The fail-closed ordering is valuable but only one empty-select negative path is covered. Missing are positive trees, cycles/depth/size limits, mixed-Company corrupt descendants, concurrent mutation, partial pause/cancel/restore, authorization, transactions and evidence events.",
+      "designRationale": "Prevent cross-tenant graph traversal and information disclosure before performing potentially large recursive control operations.",
+      "companyOsProblem": "Company OS needs organization-scoped Work graph controls whose pause/cancel effects are bounded, atomic or recoverable and attributable to an authorized human.",
+      "companyOsFit": "ADAPT tenant-root validation before traversal and not-found concealment; add policy authorization, bounded graph snapshots, plan/digest approval, idempotent execution and per-node outcome evidence.",
+      "responsibilityConflict": "The service guard proves tenant scope only; it does not bind a destructive subtree action to an accountable actor, approved target set or recovery plan.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-tree-control-service-unit.test.ts:1-26",
+        "f98c348e [codex] Add issue subtree pause, cancel, and restore controls (#4332)"
+      ]
     },
     {
       "id": "application:server/__tests__/issue-update-comment-wakeup-routes",
@@ -8267,18 +8276,21 @@
     },
     {
       "id": "application:server/__tests__/server-package-build-script",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Static test asserting the server package build-script string contains shell commands that copy onboarding and built-in Agent assets into dist.",
+      "dependencyDirection": "The test reads package.json directly and treats fragments of the npm build script as the deployment-asset contract.",
+      "keyDataModels": "Package build script and source/dist onboarding-assets and built-ins directory paths.",
+      "lifecycle": "A source build is expected to create two distribution directories and recursively copy both static asset trees.",
+      "testAssessment": "It catches accidental deletion of three exact command fragments but never runs the build, enumerates required files, verifies hashes/modes/symlinks, checks stale destination files or exercises packaged/container artifacts. Exact shell text is brittle and platform-specific.",
+      "designRationale": "Protect runtime-dependent non-TypeScript assets from disappearing during packaging.",
+      "companyOsProblem": "Company OS releases must include signed Connector/template/brand assets reproducibly across managed and self-hosted profiles.",
+      "companyOsFit": "REFERENCE the need for an asset completeness guard, but generate a manifest with hashes/licenses and verify the actual built package/container rather than matching shell text.",
+      "responsibilityConflict": "Copying files proves neither provenance nor that the shipped assets match an approved release digest.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/server-package-build-script.test.ts:1-18",
+        "d166069b Preserve built-in agent assets in server builds (#9339)"
+      ]
     },
     {
       "id": "application:server/__tests__/server-startup-feedback-export",
