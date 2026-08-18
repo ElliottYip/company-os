@@ -3523,7 +3523,26 @@
       "lineCount": 201,
       "sha256": "7f3496354ec7b42f42986506f0a8578a01bd6934734242c6ec974ea57fafa514",
       "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
+      "completedRanges": [{ "start": 1, "end": 201 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "All 201 lines use a real Express route and embedded PostgreSQL. Tests cover Agent read/self-evaluation, unauthenticated and cross-company stable errors, board-only replace/reset/simulation, expectedRevision conflict, denial evaluation, mutation activity and validation of unknown actions/secret-bearing locators.",
+        "Board is a synthetic local_implicit instance admin with no company membership, so tests do not cover ordinary accountable-human membership roles, enterprise identity, separation of duties or approval for policy changes.",
+        "Reset is expected to return revision 0 and DELETE carries no expectedRevision, permitting ABA/stale-client races after a prior materialized policy is removed. Activity assertions check action/entity only, not actor authority, old/new digest, reason, approval or full decision evidence.",
+        "No route tests cover oversized/deep rule sets, duplicate rule IDs/priorities, locator userinfo/fragments/IPv6, concurrent resets, replay/idempotency, human self-evaluation, Agent lifecycle or output-data/tool-capability decisions.",
+        "Focused run: all 3 route tests were explicitly skipped by the embedded-PostgreSQL support gate; none passed and no route behavior is claimed on this host."
+      ],
+      "completionRequirements": ["Read lines 1-201 exactly once and assess route principal/authz, read/write policy, denial codes, validation, audit evidence and test gaps."]
+    },
+    {
+      "id": "application:server/__tests__/company-skill-policy-service",
+      "path": "server/src/__tests__/company-skill-policy-service.test.ts",
+      "lineCount": 282,
+      "sha256": "31638515157224b72e04502be25f959ea0b6559104ca54385ea5945a42dd0233",
+      "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 282 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -3535,25 +3554,6 @@
         "Missing cases include concurrent expectedRevision races, duplicate priorities/IDs, deny-overrides versus first-match ambiguity, human principals, Agent lifecycle/role changes, source digest/signature, capability/data classifications, policy expiry/delegation, separation of duties and high-risk approval binding.",
         "Focused run: all 7 service tests were explicitly skipped by the embedded-PostgreSQL support gate; none passed and no database behavior is claimed on this host."
       ],
-      "completionRequirements": ["Read lines 1-201 exactly once and assess route principal/authz, read/write policy, denial codes, validation, audit evidence and test gaps."]
-    },
-    {
-      "id": "application:server/__tests__/company-skill-policy-service",
-      "path": "server/src/__tests__/company-skill-policy-service.test.ts",
-      "lineCount": 282,
-      "sha256": "31638515157224b72e04502be25f959ea0b6559104ca54385ea5945a42dd0233",
-      "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [{ "start": 1, "end": 201 }],
-      "sourceReadComplete": true,
-      "nextLine": null,
-      "notes": [
-        "All 201 lines use a real Express route and embedded PostgreSQL. Tests cover Agent read/self-evaluation, unauthenticated and cross-company stable errors, board-only replace/reset/simulation, expectedRevision conflict, denial evaluation, mutation activity and validation of unknown actions/secret-bearing locators.",
-        "Board is a synthetic local_implicit instance admin with no company membership, so tests do not cover ordinary accountable-human membership roles, enterprise identity, separation of duties or approval for policy changes.",
-        "Reset is expected to return revision 0 and DELETE carries no expectedRevision, permitting ABA/stale-client races after a prior materialized policy is removed. Activity assertions check action/entity only, not actor authority, old/new digest, reason, approval or full decision evidence.",
-        "No route tests cover oversized/deep rule sets, duplicate rule IDs/priorities, locator userinfo/fragments/IPv6, concurrent resets, replay/idempotency, human self-evaluation, Agent lifecycle or output-data/tool-capability decisions.",
-        "Focused run: all 3 route tests were explicitly skipped by the embedded-PostgreSQL support gate; none passed and no route behavior is claimed on this host."
-      ],
       "completionRequirements": ["Read lines 1-282 exactly once and assess policy defaults, hierarchy/precedence, persistence/concurrency, principal and scope semantics, decisions/reasons and regression quality."]
     },
     {
@@ -3562,7 +3562,7 @@
       "lineCount": 137,
       "sha256": "cf25bcc64777dfb92c0519db5534d73a6eef0d09c6e83d6dba637451c7f7fc2e",
       "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 137 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -3581,7 +3581,7 @@
       "lineCount": 292,
       "sha256": "f69d74b2ab2787aa37db3e23675ff1f44dde75fdf65eb58aa16b17ff1df6098f",
       "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "IN_PROGRESS",
+      "auditStatus": "COMPLETE",
       "completedRanges": [{ "start": 1, "end": 292 }],
       "sourceReadComplete": true,
       "nextLine": null,
@@ -3971,19 +3971,6 @@
         "Lines 301-359 expose only get/reconcile/reset. Reconcile with an already bound Skill silently refreshes defaults metadata without activity; missing reconcile/reset logs Plugin actor and stable keys only after import/binding. Reset always uses replace and is callable without human identity, approval or expected prior digest. There is no detach/uninstall/upgrade/rollback API, deletion/tombstone handling, responsibility evidence, outbox or Connector-node activation boundary. Linked tests were not reread and their 6 cases were skipped after embedded PostgreSQL failed five times."
       ],
       "completionRequirements": ["Read lines 1-359 exactly once and trace Plugin manifest-to-Skill compilation, stable ownership/binding, tenant isolation, reconcile/adopt/reset, drift hashing, transactions/concurrency, upgrade/downgrade/uninstall, path/content safety, executable admission, activity/events, Agent assignment and Company OS Plugin/Connector reuse decision. Link the completed test evidence without rereading it."]
-    },
-    {
-      "id": "application:server/__tests__/company-skill-policy-service",
-      "path": "server/src/__tests__/company-skill-policy-service.test.ts",
-      "lineCount": 282,
-      "sha256": "31638515157224b72e04502be25f959ea0b6559104ca54385ea5945a42dd0233",
-      "linkedEvidence": { "history": ["89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)"] },
-      "auditStatus": "IN_PROGRESS",
-      "completedRanges": [],
-      "sourceReadComplete": false,
-      "nextLine": 1,
-      "notes": [],
-      "completionRequirements": ["Read lines 1-282 exactly once, run the focused suite, and assess policy precedence/defaults, principal/role/action/source matching, normalization, tenant isolation, revisions/evidence, deny/allow composition, invalid policy handling, concurrency/cache, responsible-human semantics and Company OS authorization-kernel fit."]
     }
   ]
 }
