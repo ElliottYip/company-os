@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/build-commit",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for parsing and resolving the full source commit embedded into a deployment when Git metadata is unavailable.",
+      "dependencyDirection": "Build environment or a stamped marker file enters a server helper; a valid full hexadecimal SHA is normalized and exposed as deployment metadata, with environment taking precedence over file.",
+      "keyDataModels": "Forty-character Git commit SHA, environment override, build marker path/file and null invalid state.",
+      "lifecycle": "Startup first parses an explicit environment value and otherwise reads the image marker. Full mixed-case SHA is lowercased; truncated/malformed values return null.",
+      "testAssessment": "Four concise cases cover normalization, malformed/truncated denial, precedence and marker fallback. Missing are file read errors, invalid environment followed by valid file behavior, SHA-256 repositories, dirty state, repository identity, signature/SBOM/provenance validation and proof the environment value matches the executable image.",
+      "designRationale": "Preserve exact source traceability in packaged images and installations where .git is intentionally absent.",
+      "companyOsProblem": "Company OS needs every control-plane and customer-local execution node to report verifiable software provenance so responsibility evidence can identify the code that made or executed a decision.",
+      "companyOsFit": "ADAPT full immutable source revision stamping and environment/file fallback as informational metadata. Add product/repository identity, build digest, SBOM, dependency lock digest, deployment profile, database schema revision and signed supply-chain attestation; never treat a caller-controlled environment SHA as proof.",
+      "responsibilityConflict": "A syntactically valid SHA can be injected through the environment and is not cryptographically bound to the running artifact. It is useful observability but insufficient runtime attestation for an approval or evidence chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/build-commit.test.ts:1-42",
+        "16b95eece54ef95d9eb5ebfdac952f2bba51f269 fix(server): preserve source SHA without Git metadata (#9638)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/build-version",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for resolving a human-readable stamped build version from environment or image marker with null fallback.",
+      "dependencyDirection": "Build environment/file marker flows into a server metadata helper; nonempty single-token text is returned, with explicit environment taking precedence and missing files producing null.",
+      "keyDataModels": "Git-describe or release/canary version string, environment override, build-version marker and null unknown version.",
+      "lifecycle": "Startup trims a stamped version, rejects empty or whitespace-bearing values, prefers environment and otherwise reads the marker; absent or unreadable source yields null.",
+      "testAssessment": "Six cases cover git-describe/release strings, malformed whitespace, precedence, marker and absence. The parser accepts any non-whitespace token and does not enforce SemVer/calendar-version grammar, maximum length, allowed characters, consistency with commit or signed release metadata.",
+      "designRationale": "Show the actual image/release version rather than a placeholder package version and remain functional in source or incomplete build environments.",
+      "companyOsProblem": "Company OS managed and self-hosted operators need a stable support/upgrade identity and compatibility matrix independent of source checkout details.",
+      "companyOsFit": "REFERENCE ONLY for fallback mechanics. Define a structured BuildIdentity with validated product version, protocol/schema compatibility ranges, source revision and artifact digest; keep display labels separate from machine upgrade contracts.",
+      "responsibilityConflict": "An arbitrary environment token can become the displayed version and null is tolerated, so this cannot prove which policy or Connector implementation executed accountable work.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/build-version.test.ts:1-58",
+        "d1b9448b57a8cfb0e8dbede9bbbc8874a9f66ad7 fix(server): stamp the real build version into images instead of the package.json placeholder (#10257)"
+      ]
+    }
+  ]
+}
