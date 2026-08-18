@@ -3964,33 +3964,39 @@
     },
     {
       "id": "application:server/__tests__/dev-runner-output",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for bounded subprocess-output capture and maximum-size JSON HTTP response parsing in development orchestration.",
+      "dependencyDirection": "Arbitrary string/Buffer chunks append to a bounded tail buffer, while Fetch Response bytes enter a size-limited JSON parser.",
+      "keyDataModels": "Byte limit, captured tail text, totalBytes/truncated and parsed JSON response.",
+      "lifecycle": "Small output is retained exactly; oversized output keeps only a marked tail and total count. JSON within limit parses, while oversized input rejects before parsing completes.",
+      "testAssessment": "Core limit semantics and mixed string/Buffer append are covered. Missing are split multibyte UTF-8, zero/negative limits, huge single chunks, streaming cancellation/backpressure, misleading Content-Length, invalid JSON/content type and secret redaction.",
+      "designRationale": "Prevent verbose child processes or health endpoints from exhausting orchestrator memory while retaining useful diagnostics.",
+      "companyOsProblem": "Connector execution and evidence ingestion need hard byte/event limits without losing a verifiable reference to truncated content.",
+      "companyOsFit": "ADAPT bounded streaming primitives inside Connector nodes; add UTF-8-safe truncation, cancellation/backpressure, per-stream limits, redaction, full-content hash/object-store evidence reference and structured truncation metadata.",
+      "responsibilityConflict": "A retained tail is diagnostic context, not complete evidence. Company OS must never present truncated output as the full Agent result without an explicit completeness flag and hash/reference.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/dev-runner-output.test.ts:1-45",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/dev-runner-paths",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests filtering filesystem changes that should restart the development server.",
+      "dependencyDirection": "Repository-relative paths enter a development script predicate; generated worktrees/reports/tests/config are ignored while runtime source remains restart-relevant.",
+      "keyDataModels": "Repository path patterns for generated state, reports, test/spec directories/config and runtime source.",
+      "lifecycle": "File watcher events are classified into ignored or restart-triggering paths.",
+      "testAssessment": "Representative exclusions and inclusions are covered. Missing are Windows separators/case, rename/symlink paths, generated runtime assets, new test naming conventions and end-to-end watcher behavior.",
+      "designRationale": "Reduce noisy development restarts caused by tests, diagnostics and Agent worktree activity.",
+      "companyOsProblem": "This affects contributor ergonomics and upstream maintenance, not the product runtime.",
+      "companyOsFit": "REFERENCE the focused watcher predicate if Company OS adopts a similar monorepo dev runner; do not copy Paperclip-specific paths into production architecture.",
+      "responsibilityConflict": "None directly; ignored changes can only weaken local verification if developers assume the server restarted.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/dev-runner-paths.test.ts:1-28",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
     },
     {
       "id": "application:server/__tests__/dev-runner-snapshot",
@@ -4039,18 +4045,22 @@
     },
     {
       "id": "application:server/__tests__/dev-watch-ignore",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem test resolving development-watch ignore paths for symlinked UI dependencies/build output and sibling Paperclip worktrees.",
+      "dependencyDirection": "A server root inside a generated worktree is mapped to logical UI paths, real symlink targets, shared worktree roots and global dependency/cache globs.",
+      "keyDataModels": "Server/worktree/shared UI roots, symlink and real paths, recursive glob patterns for node_modules/Vite/dist/worktrees.",
+      "lifecycle": "Watcher setup enumerates both visible symlinks and canonical targets so dependency caches, build output and sibling worktrees cannot trigger restart storms.",
+      "testAssessment": "A realistic temporary symlink tree covers logical/real paths and recursive globs. Missing are broken links, permissions, non-worktree roots, platform-specific junctions/case, path escape and an end-to-end proof that relevant source remains watched.",
+      "designRationale": "Avoid feedback loops and resource spikes in a multi-worktree development environment with shared UI directories.",
+      "companyOsProblem": "Useful only for contributor workflow if Company OS later uses shared worktrees/FDE development tooling.",
+      "companyOsFit": "REFERENCE the canonical-path plus logical-path ignore strategy; keep it isolated from product runtime and derive repository-specific paths dynamically.",
+      "responsibilityConflict": "None in production; overly broad ignores can hide local source changes and weaken the developer's verification evidence.",
+      "decision": "REFERENCE_ONLY",
+      "evidence": [
+        "server/src/__tests__/dev-watch-ignore.test.ts:1-45",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "34fe57a0 fix(server): ignore sibling worktrees in dev watch (#11074)"
+      ]
     },
     {
       "id": "application:server/__tests__/docker-entrypoint",
@@ -4727,18 +4737,21 @@
     },
     {
       "id": "application:server/__tests__/google-sheets-gallery",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests deciding whether a Google Sheets tool-gallery entry is available by extracting a service-account robot email from instance environment JSON or a filesystem path.",
+      "dependencyDirection": "Ambient process environment or a configured host file is parsed by tool-access service code and reduced to an availability/reason/robotEmail projection.",
+      "keyDataModels": "GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON, JSON_PATH, client_email/private_key and available/robotEmail/reason.",
+      "lifecycle": "Inline JSON wins or a JSON file is read; a client email makes the integration available, while absent configuration fails closed with an English reason.",
+      "testAssessment": "Tests cover inline, file and missing configuration. Missing are malformed/oversized JSON, file permission/symlink/path attacks, precedence, secret redaction, credential validity/expiry, per-Company isolation, vault references, authorization, Sheets scope, data egress and stable error codes independent of English prose.",
+      "designRationale": "Show a ready-to-use gallery capability when an operator preconfigures one instance-wide service account.",
+      "companyOsProblem": "Company OS needs Company-scoped Data Connectors, explicit data authorization contracts and egress controls rather than ambient global credentials.",
+      "companyOsFit": "Reject instance-environment ownership as the production model. Google Sheets becomes a DataConnector adapter using SecretPort handles, immutable credential versions, Company/data-set scopes, consented Robot identity, health attestation and export policy; the gallery consumes only a safe capability projection.",
+      "responsibilityConflict": "An instance environment silently makes a credential available to the product without proving which Company/data owner authorized it, which Sheets are allowed or who is responsible for exports. Robot email discovery is not a data contract.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/google-sheets-gallery.test.ts:1-42",
+        "931eec3f feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)"
+      ]
     },
     {
       "id": "application:server/__tests__/grok-local-skill-sync",
