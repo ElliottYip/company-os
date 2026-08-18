@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/services/company-export-readme",
+      "auditStatus": "COMPLETE",
+      "function": "Render a branded Markdown README and Mermaid Agent reporting chart for exported company packages.",
+      "dependencyDirection": "A presentation helper imports the shared portability manifest and directly embeds product branding, CLI instructions, URLs, role labels, package counts and wall-clock time.",
+      "keyDataModels": "Portable Agents/reporting slugs, projects, skills/source locators and issues summarized into Mermaid, Markdown tables/lists and install instructions.",
+      "lifecycle": "Render Agent nodes and reporting edges; build branded inventory sections; append import command, documentation link and current export date.",
+      "testAssessment": "No dedicated unit exists. Broader portability tests do not cover Mermaid ID collisions, grammar/newline injection, Markdown table/link escaping, credential-bearing source locators, deterministic output, localization or human-responsibility completeness.",
+      "designRationale": "Make a portable package understandable and shareable in GitHub or a local folder without opening Paperclip first.",
+      "companyOsProblem": "Company OS should also generate a human-readable package summary, but it must be deterministic, safe, Chinese/English-capable and centered on the complete human-Agent responsibility/data/evidence graph.",
+      "companyOsFit": "REIMPLEMENT as a projection renderer over a signed canonical manifest. Use collision-free opaque Mermaid IDs, context-aware Markdown/Mermaid escaping, allowlisted/redacted links, injected deterministic export time, stable localization keys and explicit sections for accountable humans, departments, responsibility contracts, approvals, data authorizations, evidence and semantic-loss warnings. ADAPT only the idea of a readable summary alongside the machine manifest.",
+      "responsibilityConflict": "The chart models only Agents and reporting relationships, presenting an 'Agent Company' without accountable humans, authority, approvals, data contracts or evidence. This conflicts directly with Company OS's legal/organizational responsibility premise.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/services/company-export-readme.ts:1-172",
+        "full source SHA-256 e86c42799dd93c5953600c0df4268308dbfd83e44d6c8dfaf17a083edac214f1",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)",
+        "no dedicated test unit; existing COMPLETE portability evidence reused without rereading"
+      ],
+      "securityFindings": [
+        "Distinct slugs can collapse to the same Mermaid node ID after character replacement, merging identities and misrepresenting reporting relationships.",
+        "Mermaid escaping omits line breaks and other grammar controls, while most Markdown contexts receive no escaping at all; package-controlled text can rewrite the rendered document structure.",
+        "Arbitrary skill sourceLocator values become clickable links and may disclose URL credentials or unsafe/untrusted destinations.",
+        "Wall-clock output prevents reproducible package bytes and complicates canonical digest/signature verification."
+      ]
+    }
+  ]
+}

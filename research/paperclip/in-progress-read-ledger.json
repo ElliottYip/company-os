@@ -3389,6 +3389,25 @@
         "Focused route Vitest passed 3/3 in the prior verified run. Missing cases include cross-company/unauthenticated/Agent/inactive identities, limiter separation and key collisions, whether invalid queries consume quota, stable machine error codes, distributed replicas and authority beyond company membership."
       ],
       "completionRequirements": ["Read lines 1-121 exactly once and assess deny-before-work, actor/company scope, query validation, stable error/headers and distributed limiter test gaps."]
+    },
+    {
+      "id": "application:server/services/company-export-readme",
+      "path": "server/src/services/company-export-readme.ts",
+      "lineCount": 172,
+      "sha256": "e86c42799dd93c5953600c0df4268308dbfd83e44d6c8dfaf17a083edac214f1",
+      "linkedEvidence": { "history": ["73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 172 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "The renderer is a small presentation helper over the full portability manifest, but hardcodes Paperclip/Agent Company branding, English roles/headings, pnpm CLI syntax, public URLs and current wall-clock date. Output is non-reproducible and not a vendor-neutral migration contract.",
+        "Mermaid label escaping handles quotes and angle brackets but not ampersands, line breaks or other grammar controls. Sanitized node IDs can collide (for example a-b and a_b), causing merged nodes or incorrect reporting edges; no collision map or test exists.",
+        "Company/project/Agent/skill text and sourceLocator are interpolated into Markdown headings, blockquotes, lists, tables and links without context-specific escaping. Pipes/newlines/formatting can rewrite the document, and arbitrary source URLs including credential-bearing locators can be exposed as clickable README content.",
+        "The generated org chart contains Agents only and calls them the company: accountable humans, departments, responsibility contracts, permissions, approvals, data contracts and evidence are absent. Counts also omit routines and other manifest domains, so it is not an authoritative inventory.",
+        "There is no dedicated test file; the already-audited portability suite only exercises broader package flows and does not prove adversarial escaping, ID collisions, deterministic output, localization or responsibility completeness."
+      ],
+      "completionRequirements": ["Read lines 1-172 exactly once and assess presentation/domain coupling, escaping/injection, portability accuracy, i18n, responsibility semantics, drift and test coverage."]
     }
   ]
 }
