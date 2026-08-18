@@ -4559,7 +4559,7 @@
         { "path": "cli/src/commands/client/approval.ts", "completedRanges": [{ "start": 1, "end": 260 }] },
         { "path": "cli/src/commands/client/asset.ts", "completedRanges": [{ "start": 1, "end": 147 }] },
         { "path": "cli/src/commands/client/auth.ts", "completedRanges": [{ "start": 1, "end": 203 }] },
-        { "path": "cli/src/commands/client/company.ts", "completedRanges": [{ "start": 1, "end": 400 }] }
+        { "path": "cli/src/commands/client/company.ts", "completedRanges": [{ "start": 1, "end": 800 }] }
       ],
       "sourceReadComplete": false,
       "nextFile": "cli/src/commands/client/company.ts",
@@ -4604,7 +4604,11 @@
         "Portable path normalization only replaces backslashes. Directory/entity selection trusts prefix relationships, does not reject traversal, absolute/control/Unicode-collision forms here, and always includes the discovered .paperclip.yaml extension file even when entity selections are empty. The selected-files set is deterministic but not proof of dependency closure, least-data scope or preview/apply digest equality.",
         "The selection catalog derives ownership from manifest paths and uses selectedAgentSlugs.size===0 as include all, an ambiguous empty-set semantic that can turn failed/cleared selection into broad inclusion depending on caller state. Company/logo/README and entity directories are presentation-driven rather than a signed canonical entity/file inventory.",
         "buildDefaultImportAdapterOverrides silently converts every selected process Agent to claude_local and contains a TODO calling this temporary until the import TUI supports adapter selection. Portability therefore changes execution vendor/trust semantics without Connector compatibility, human approval, credentials/data policy or runtime proof. Company OS must require explicit Connector rebinding plans and keep imported Agents disabled until acceptance.",
-        "Related Company CLI tests were indexed but not reread: delete 9/9, export-force 5/5, import URL 11/11, ZIP 1/1 and main Company 18/18 passed; import/export E2E remained skipped after embedded PostgreSQL startup failed. company.ts remains partially read; next exact range is 401-800."
+        "Related Company CLI tests were indexed but not reread: delete 9/9, export-force 5/5, import URL 11/11, ZIP 1/1 and main Company 18/18 passed; import/export E2E remained skipped after embedded PostgreSQL startup failed.",
+        "company.ts exact range 401-800 implements interactive file selection and preview/result rendering. Cancel exits the process; confirmation only checks selectedFiles.length>0, but the always-added extension path can satisfy that even when every Company/entity group is deselected. Selection is not bound to a manifest/package digest and does not prove dependency closure or preview/apply identity.",
+        "Preview renders Company/Agent/Project/Task/Skill counts, environment-input count, action counts and at most six examples. It omits human identities/memberships, permissions, approval/responsibility contracts, routines/executable triggers, Connector rebinding, Secret/data authorization, evidence/history loss, costs and exact file/content digests; a human can therefore approve a materially incomplete risk summary.",
+        "Source URLs/local paths, entity labels, plan reasons, warnings, errors and result messages are printed directly without terminal-control/ANSI, credential-bearing URL, path or PII sanitization. Server/package-controlled text can spoof terminal presentation or leak sensitive locators. Large warning/error arrays are unbounded, while entity examples are truncated without a machine-bound acknowledgement of hidden changes.",
+        "Non-interactive or JSON apply correctly requires explicit --yes unless dry-run, a useful safety default, but the confirmation is a boolean rather than a digest of source, target, selected files, collision strategy, adapter overrides, data/permission changes and preview revision. Dashboard URL construction inherits unvalidated apiBase. company.ts remains partial; next exact range is 801-1200."
       ],
       "completionRequirements": [
         "Read all 28 listed implementation files exactly once and record completedFiles/ranges after each read.",
