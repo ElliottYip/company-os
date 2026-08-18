@@ -4746,6 +4746,21 @@
       ]
     },
     {
+      "id": "application:server/__tests__/cleanup-removal-service",
+      "path": "server/src/__tests__/cleanup-removal-service.test.ts",
+      "lineCount": 282,
+      "sha256": "79b1138327fb3a39e73b91c6356196500221bd0f7ff8d6b0b610a13e6486679b",
+      "linkedEvidence": { "history": ["931eec3fbf83dc425b5381ba5823125162cd13e7 feat(mcp) [split 4/8]: wire gateway runtime and Smoke Lab (#9559)", "e43b392a7931730c75f15b2c5deab212802d99c4 Add local Cloud Upstream sync (#6548)", "8f1cd0474fa022363521191faf6bd44c71ec19b3 Improve transient recovery and Codex model refresh (#4383)", "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"] },
+      "auditStatus": "COMPLETE", "completedRanges": [{ "start": 1, "end": 282 }], "sourceReadComplete": true, "nextLine": null,
+      "notes": [
+        "Full test source read once at the pinned SHA.",
+        "Tests specify deletion of Agent/company operational rows together with ActivityLog, execution decisions, comments and document revisions; this directly conflicts with Company OS responsibility/evidence retention.",
+        "A deliberately company-mismatched heartbeat event is deleted by shared run ID, exposing an inconsistent-tenant cleanup contract.",
+        "Focused Vitest skipped all four tests because embedded PostgreSQL was unavailable. Decision: REJECT the semantics and reimplement policy-driven retention disposition."
+      ],
+      "completionRequirements": ["Read lines 1-282 exactly once; assess cleanup target ownership, traversal/symlink safety, protected roots, dry-run/idempotency, concurrency, authorization/audit and focused execution evidence."]
+    },
+    {
       "id": "application:server/__tests__/cases-routes",
       "path": "server/src/__tests__/cases-routes.test.ts",
       "lineCount": 904,

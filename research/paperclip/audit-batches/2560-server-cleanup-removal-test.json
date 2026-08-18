@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/cleanup-removal-service",
+      "auditStatus": "COMPLETE",
+      "function": "Four real-database tests specifying destructive Agent and Company removal order across Runs, events, issues, comments, activity, execution decisions, documents/revisions, read state, Skills, Routines and principals.",
+      "dependencyDirection": "Vitest -> agent/company services -> real Drizzle schema on embedded PostgreSQL; no route authorization, storage, Connector or external-system boundary is exercised.",
+      "keyDataModels": "Company, Agent, Issue, Run/Event, ActivityLog, IssueExecutionDecision, comment/read state, document/revision, Skill and Routine.",
+      "lifecycle": "Seed a connected company graph -> call service remove directly -> expect dependent operational, collaboration and audit/evidence rows deleted before Agent/Company deletion.",
+      "testAssessment": "Source defines four focused referential-cleanup cases. The 2026-08-19 sandboxed focused Vitest run skipped the file and all four tests because embedded PostgreSQL was unavailable; the immediately preceding approved unsandboxed Cases run proved the same host limitation, so no redundant reread/rerun or pass claim is made.",
+      "designRationale": "Explicit deletion order avoids foreign-key failures in a densely connected schema and makes destructive cleanup deterministic.",
+      "companyOsProblem": "Company OS needs lawful offboarding, tenant deletion and right-to-erasure workflows while preserving or pseudonymizing responsibility/evidence under explicit retention, legal-hold and data-owner policy.",
+      "companyOsFit": "REJECT the cascading evidence-deletion semantics. Reimplement a staged RetentionDisposition plan: freeze execution, enumerate data classes, require accountable approval, export/hold where required, revoke credentials, tombstone principals, pseudonymize personal fields, cryptographically erase eligible Secrets/data and record an immutable deletion certificate. Hard delete only after policy gates and recovery windows.",
+      "responsibilityConflict": "The tested contract deletes ActivityLog, Agent-authored comments, issue execution decisions and document revisions—the exact records needed to answer who acted, approved and produced evidence. Company removal therefore erases responsibility instead of closing it with a durable disposition record.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/cleanup-removal-service.test.ts:1-282 (SHA-256 79b1138327fb3a39e73b91c6356196500221bd0f7ff8d6b0b610a13e6486679b)",
+        "git history: 931eec3fbf83dc425b5381ba5823125162cd13e7, e43b392a7931730c75f15b2c5deab212802d99c4, 8f1cd0474fa022363521191faf6bd44c71ec19b3 and 73eb23734f25c570d88665e672f80d740797c632",
+        "2026-08-19 focused Vitest: 1 file/4 tests skipped because embedded PostgreSQL unsupported"
+      ],
+      "securityFindings": "CRITICAL governance conflict: removal intentionally destroys audit/activity, execution decisions, authored comments and revision history with no tombstone, retention reason, legal hold or deletion certificate. One test inserts a heartbeat event scoped to another company but sharing the deleted run ID and expects it removed, proving run-ID cleanup can cross the event's declared tenant boundary when inconsistent data exists; the schema/service should prevent or quarantine such mismatches rather than normalize them by cross-company deletion. Missing coverage includes authorization/MFA/approval, preview/digest, active-run fencing, concurrent writes, transaction/crash rollback, idempotent retry, storage/blob/Secret/backup/search/log deletion, Connector/external revocation, recovery window and evidence that unrelated tenant rows always survive."
+    }
+  ]
+}
