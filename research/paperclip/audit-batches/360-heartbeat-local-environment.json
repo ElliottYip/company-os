@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/heartbeat-local-environment",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres end-to-end tests for automatically provisioning the default Local execution environment, leasing it to a Heartbeat Run, releasing the lease, and injecting Paperclip control-plane identity variables into a process adapter.",
+      "dependencyDirection": "heartbeatService selects/creates an Environment, records an EnvironmentLease, launches the process adapter on the server host, injects run-scoped environment variables and a generated API credential, then updates Run context and releases the lease.",
+      "keyDataModels": "Instance-scoped Local Environment, Run-bound EnvironmentLease status/provider/releasedAt, Run context environment projection, process command/arguments, Agent/Company/Run identifiers, API URL and PAPERCLIP_API_KEY generated from a server JWT secret.",
+      "lifecycle": "An on-demand process Run creates or reuses one default Local environment, acquires a lease, executes an arbitrary configured host process, records environment/lease identifiers in context, releases the lease at terminal success, and exposes Agent, Company, Run, API URL and an API key in the child process environment.",
+      "testAssessment": "Two end-to-end cases prove happy-path Local environment creation, lease release and expected process environment injection. Missing are concurrent/exclusive lease behavior, crash/kill/timeout/cancellation, orphan detection and expiry, server restart, failed acquisition/release, host filesystem/network/process isolation, command authorization, environment inheritance and secret leakage, token claims/audience/scope/TTL/revocation/rotation, per-Work permission and data contracts, remote execution attestation, cleanup of the created temp directory, and non-local drivers. Credential presence is asserted, but its least privilege is not.",
+      "designRationale": "Give every Run an explicit execution-environment lifecycle even for simple local development, expose enough identity for the Agent to call back into the control plane, and retain a lease record for cleanup and observability.",
+      "companyOsProblem": "Company OS needs interchangeable local/customer/cloud execution nodes with fenced leases, short-lived runtime identity and auditable capability/data boundaries, without assuming the control plane may execute arbitrary commands on its own host.",
+      "companyOsFit": "ADAPT the explicit EnvironmentPort, acquire/renew/release lease lifecycle and Run-bound environment attestation. Treat host-local process execution as an opt-in development adapter, never the production default. Issue a one-time, short-TTL, audience-bound RuntimeCapability token containing exact Work/attempt/Connector/tool/data scopes and proof key; keep the signing secret outside child environments, support revocation and renewal, redact all process output, and require sandbox/network/filesystem policy plus crash-safe lease fencing. Self-hosted execution nodes should attest independently to a cloud control plane.",
+      "responsibilityConflict": "The fixture has responsibleUserId but no human authorization or responsibility contract controls the host command or credential issuance. A generic API key is injected into an arbitrary process and the test does not prove least privilege, while a successful process exit is treated as sufficient lifecycle success without result/evidence validation. Local lease state provides observability, not runtime isolation or legal/business accountability.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/heartbeat-local-environment.test.ts:1-217",
+        "13551b2bac6e75fe879f9152ade60030467215cb Add local environment lifecycle (#4297)",
+        "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)"
+      ]
+    }
+  ]
+}
