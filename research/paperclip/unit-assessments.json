@@ -5751,18 +5751,24 @@
     },
     {
       "id": "application:server/__tests__/execution-workspaces-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Large service-level suite for workspace config, delivery proof, close readiness, safe terminal reaping, branch reconciliation/quarantine recovery, runtime-service projection, reuse summaries and bounded company overview.",
+      "dependencyDirection": "Vitest -> execution-workspace/issue/runtime services -> Drizzle/PostgreSQL + real temporary Git repositories/worktrees + local processes; pull-request detail lookup is injected, while authorization routes and external hosting APIs are outside this unit.",
+      "keyDataModels": "ExecutionWorkspace, ProjectWorkspace, Work/issue tree and execution state, heartbeat Run, WorkProduct/PR, RecoveryAction, comment/reference mention, runtime service, delivery/readiness state, Git inspection/fingerprint/rescue ref and persisted command/environment/runtime config.",
+      "lifecycle": "Resolve config and delivery -> inspect Git/Work/Run/runtime state -> expose bounded readiness/overview -> reconcile safe branch drift or quarantine dirty work -> resolve recovery and restore Work workflow -> sweep only terminal delivered inactive workspaces with revalidation and Git locks -> archive/remove runtime-created assets.",
+      "testAssessment": "The suite contains 43 detailed cases with strong negative, race, recovery and scale scenarios. Sandboxed and approved unsandboxed focused Vitest each passed 8 pure tests and skipped all 35 embedded-Postgres cases, so database/Git/runtime integration claims remain source-inspected but unexecuted on this host.",
+      "designRationale": "Treat a workspace as recoverable operational state rather than a directory: prove delivery precisely, avoid deleting uncertain or newer work, separate shared session archival from infrastructure deletion, fingerprint incoherence, preserve dirty work in rescue refs and serialize repair against lifecycle/runtime changes.",
+      "companyOsProblem": "Company OS needs a vendor-neutral execution workspace/artifact lifecycle that can prove result delivery, preserve evidence, recover safely from drift and cleanup without losing company data, while tying every repair/destructive action to a human responsibility and authorization chain.",
+      "companyOsFit": "ADAPT this as the leading reference for code-workspace safety: delivery evidence matching, dirty/newer-work vetoes, pre/post revalidation, Git locking, non-destructive rescue, claimant/runtime race gates, bounded projections and large-volume regression. Place it behind WorkspacePort/ArtifactEvidencePort, generalize delivery beyond GitHub/code, use company-scoped relational integrity and bind every cleanup/repair to an approved ActionGrant and immutable evidence/outbox.",
+      "responsibilityConflict": "Recovery actors are generic board users and operational comments; there is no accountable-human eligibility, Approval decision, ResponsibilityContract, DataAuthorization or exact Action digest. Git mutations, database recovery rows/comments and route-level wakeup/activity cannot be one transaction, yet partial-failure compensation and evidence finality are not demonstrated.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/execution-workspaces-service.test.ts:1-3424 (SHA-256 a754cd36ce49c3a5b5fab3cb656e7f997914744e63af21dc7353d1fb6d190113)",
+        "git history: 72b509c89539b31e421086c782346635c5d0517b, dcac49a4fd4739ec7177b196a869aa5d1cc169d9, a29b10510c2c896652a39589b4056d49b911fc58, 32c1a8576c0f9766298db1d164d3bf9af6d48bbf, e4e12bfb890a0fdf4c7de092362472c50a584533, f3ca4d24bc4b931882109f9617b488d9fd74bf6b, f17202b571ec605d4009e21a0e1316d74a1d55b9, 569b7affc43cea0854d213b348bc046c2c28049c, ece8a51e22144df916d977f0ac98e4affe3fa48c, e4995bbb1cc36454fc0fa3142ad9c7030c397ff0",
+        "2026-08-19 sandboxed focused Vitest: 8/8 pure passed, 35/35 embedded-Postgres skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 8/8 pure passed, 35/35 embedded-Postgres skipped"
+      ],
+      "securityFindings": "CRITICAL privileged-command surface if reused directly: persisted workspace config carries arbitrary provision/runtime/teardown/cleanup commands and host paths without authority/provenance tests. HIGH transaction boundary: Git deletion/rescue, database state, comments/activity and wakeup cannot be atomic and crash compensation is untested. HIGH ownership-integrity gap: a workspace can reference another company's project at schema level and is only excluded by service query logic. HIGH responsibility gap: destructive repair lacks tested accountable-human approval and exact action digest. HIGH data-governance gap: workspace files, service URLs and paths have no classification/export contract. MEDIUM evidence portability: absolute paths enter fingerprints. MEDIUM verification gap: all 35 integration tests skipped locally."
     },
     {
       "id": "application:server/__tests__/export-fidelity",

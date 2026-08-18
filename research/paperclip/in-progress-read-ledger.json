@@ -6387,6 +6387,46 @@
       "completionRequirements": [
         "Read lines 1-392 exactly once and assess workspace route authentication/authorization, bounded file/diff exposure, branch reconciliation and repair, low-trust containment, destructive controls, tenant/path isolation, error contracts and test quality against Company OS runtime and evidence boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/execution-workspaces-service",
+      "path": "server/src/__tests__/execution-workspaces-service.test.ts",
+      "lineCount": 3424,
+      "sha256": "a754cd36ce49c3a5b5fab3cb656e7f997914744e63af21dc7353d1fb6d190113",
+      "linkedEvidence": {
+        "history": [
+          "72b509c89539b31e421086c782346635c5d0517b Recognize delivered workspaces and reap terminal worktrees (#10908)",
+          "dcac49a4fd4739ec7177b196a869aa5d1cc169d9 feat(workspaces): defer isolated setup until runtime start (#10653)",
+          "a29b10510c2c896652a39589b4056d49b911fc58 fix(server): bound inherited workspace runtime services (#10589)",
+          "32c1a8576c0f9766298db1d164d3bf9af6d48bbf fix(server): self-heal execution workspaces whose recorded branch no longer exists (#10578)",
+          "e4e12bfb890a0fdf4c7de092362472c50a584533 fix(workspaces): persist readiness state and validate ports (#9408)",
+          "f3ca4d24bc4b931882109f9617b488d9fd74bf6b fix: repair dirty/foreign-branch execution worktrees (#9297)",
+          "f17202b571ec605d4009e21a0e1316d74a1d55b9 Add execution workspace branch reconciliation route (#9170)",
+          "569b7affc43cea0854d213b348bc046c2c28049c Add bounded workspace overview (#8627)",
+          "ece8a51e22144df916d977f0ac98e4affe3fa48c Bundle local branch fixes from PAP-10032 (#6604)",
+          "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 3424 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in ten non-overlapping ranges. Forty-three tests comprise eight pure delivery/config cases and thirty-five embedded-Postgres plus real temporary-Git/worktree/runtime cases spanning close readiness, delivery proof, reaping, reconciliation, overview scale and environment/runtime metadata.",
+        "Delivery evidence is unusually defensive: merged PR evidence must be directly linked to the source Work and match repository, branch and current workspace HEAD; unrelated inbound mentions, descendant Work products, wrong repository/branch, commits after a previously merged PR and uncommitted files all prevent destructive reaping. Direct ancestry is a separate valid delivery state.",
+        "Terminal sweeping requires a terminal source tree, no active checkout Run, delivered committed state and no dirty/untracked work. It is repeat-safe, marks cleanup eligibility/reason, archives eligible runtime-created worktrees without executing arbitrary configured cleanup hooks, removes the worktree and branch, and leaves reopened Work archived while recording a reopen activity.",
+        "Cleanup has strong TOCTOU defenses: a before-cleanup hook that changes the worktree produces cleanup_failed without deleting work, while held Git index and ref locks prevent concurrent commit/ref mutation during removal. The tests do not cover process/database crash between filesystem deletion and row transition, lock portability/network filesystems, stale cleanup_failed recovery or concurrent sweepers.",
+        "Branch reconciliation is fail-closed for dirty work in normal modes, active workspace lifecycle, running/starting runtime services, write-time state races, diverged forward moves and live-branch claimants with or without an active Run. Missing recorded refs may be adopted only when the current branch resolves and the worktree is clean.",
+        "quarantine_restore preserves dirty tracked/untracked data in a timestamped rescue branch, restores the recorded branch, clears Run pointers, resolves a fingerprinted recovery action, writes two issue comments and returns Work to todo or its pending review/approval participant. It refuses active services and competing branch claimants. Cross-system Git/DB/comment/wakeup atomicity, rescue-name collision, partial failure and approval eligibility are not tested here.",
+        "The deterministic incoherence fingerprint binds source issue, execution workspace, absolute path, expected/actual branch, cleanliness and SHAs. This is valuable idempotency/evidence material, though absolute host paths are sensitive and unstable across self-hosted/cloud relocation and the fingerprint omits company, repository identity, actor, Work contract and runtime generation.",
+        "Shared sessions are non-destructively archivable with open issues because the underlying project workspace remains. Environment selection clearing is company-scoped and preserves other metadata. Reuse summaries exclude shared/closed workspaces. Runtime projection selects only currently configured service names/reuse scopes and avoids multiplying 163 historical services across 6,176 shared sessions.",
+        "The overview is bounded, hides hidden Work, reports at most four latest linked Work items, supports stable filter/pagination, excludes another company's rows and even excludes a same-company workspace pointing at another company's project. The latter pathological fixture shows relational ownership mismatches remain schema-representable and require query defenses.",
+        "Persisted config includes provision/runtime/teardown/cleanup shell commands and local paths. The helper tests preserve/merge/delete them correctly but do not authorize or redact them. The service suite is Git/GitHub/worktree-centric and lacks generic Connector runtime attestation, DataAuthorization/egress evidence, accountable-human approval, Secret/log safety and non-code artifact delivery semantics.",
+        "Sandboxed and approved unsandboxed focused Vitest both passed the 8 pure cases and skipped all 35 embedded-Postgres integration cases. Therefore the sophisticated database, Git, runtime and concurrency assertions were inspected but not executed on the audit host."
+      ],
+      "completionRequirements": [
+        "Read lines 1-3424 exactly once and assess workspace persistence/lifecycle, Git and path containment, runtime services/readiness, reconciliation/rescue, cleanup/reaping, concurrency/idempotency, tenant ownership, audit/evidence and database test quality against Company OS execution and data-governance semantics."
+      ]
     }
   ]
 }
