@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/agent-invokability",
+      "auditStatus": "COMPLETE",
+      "function": "Pure domain-helper tests for deciding whether an Agent can be invoked from its Agent-only reporting chain and enumerating descendants invalidated by a terminated manager.",
+      "dependencyDirection": "Agent lifecycle/assignment services provide a Company Agent snapshot to a stateless graph traversal, which returns an invokable flag, stable reason and reporting-chain details without persistence or external dependencies.",
+      "keyDataModels": "Agent id/Company/status/reportsTo, manager chain, invalid-org-chain flag, reason code and affected descendant ids.",
+      "lifecycle": "An otherwise active Agent is blocked when any ancestor is terminated, its manager is missing or the reporting graph cycles. Terminating a root identifies all non-terminated descendants whose chain becomes invalid while excluding terminated descendants and unrelated roots.",
+      "testAssessment": "Three focused graph cases cover terminated ancestry, missing nodes, cycles, descendant enumeration and unrelated roots. Missing are cross-Company manager ids, self-loop explicitly, deep-chain performance/stack safety, duplicate ids, non-active intermediate statuses, simultaneous graph updates, mixed human/Agent principals, project responsibility, accepted delegation and reason stability across schema versions.",
+      "designRationale": "Prevent Agents from receiving new assignments or runs when the modeled management hierarchy cannot supply a valid supervisory chain, and surface deterministic repair reasons.",
+      "companyOsProblem": "Company OS must guarantee every executable Agent role reaches an active accountable human through valid organization/responsibility relations before work is authorized.",
+      "companyOsFit": "ADAPT the pure cycle/missing/terminated graph validation and affected-descendant calculation. Generalize the graph to typed Human/Agent positions and ResponsibilityContracts, require termination at an active accountable human, scope every edge by Company and effective interval, version the graph snapshot used for authorization and emit remediation projections without conflating structure with accepted responsibility.",
+      "responsibilityConflict": "An Agent-only chain can be structurally valid while never naming a real accountable human. reportsTo is treated as sufficient authority without role occupancy, acceptance, effective dates, delegation scope or evidence that the hierarchy snapshot remained valid when a run began.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-invokability.test.ts:1-69",
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 [codex] prevent invalid agents from receiving assignments and runs (#7663)"
+      ]
+    },
+    {
+      "id": "application:server/__tests__/agent-instructions-service",
+      "auditStatus": "COMPLETE",
+      "function": "Filesystem integration tests for Agent instruction-bundle mode conversion, managed-root derivation, file listing/export filtering and recovery/self-healing when persisted bundle metadata diverges from disk.",
+      "dependencyDirection": "AgentInstructionsService reads Adapter config and process instance/home settings, derives a Company/Agent managed filesystem root, copies or mutates files and returns healed Adapter configuration plus a bundle projection to routes/persistence.",
+      "keyDataModels": "Managed/external bundle mode, root/managed-root/entry-file/file path, Company/Agent/instance identifiers, filtered file listing/export map, healed Adapter config and recovery warnings.",
+      "lifecycle": "Switching external→managed copies eligible files into an instance/Company/Agent root; managed→external creates the requested entry path with prior content. Listings/exports omit OS junk, Node dependencies and Python caches. If config is absent, partial or points at a stale root, an existing managed bundle wins and warnings explain the repair. Later writes/deletes return corrected metadata.",
+      "testAssessment": "Eight useful filesystem cases cover both mode transitions, nested files, common junk filtering, missing/partial/stale metadata, entry recovery and write/delete healing. Missing are symlink/hardlink escape, ../ and absolute entry paths, root ownership/mode, maximum files/bytes/depth, atomic copy/rollback, concurrent writes, malicious encodings, Secret/PII scanning, executable content policy, content hashes/signatures, version history, approval/audit and behavior when both disk and database changed legitimately.",
+      "designRationale": "Make instruction files portable between user-managed workspaces and a predictable Paperclip-owned location while tolerating older/stale configuration and keeping noisy dependency/cache trees out of API payloads.",
+      "companyOsProblem": "Company OS needs reproducible, reviewable instruction artifacts that Connectors can materialize safely without letting arbitrary host filesystem state silently redefine an Agent's effective behavior.",
+      "companyOsFit": "ADAPT managed-root isolation, explicit mode conversion, filtered manifests and recovery warnings. Represent an InstructionBundle as a versioned content-addressed Artifact with manifest, provenance, reviewer/approval, size/type policy and atomic publication; materialize it through Connector/Artifact ports into sandbox-owned directories. Treat arbitrary external roots as local-development imports only, resolving symlinks and scanning content before admission. Disk recovery must produce a proposed reconciliation, not silently supersede authoritative metadata.",
+      "responsibilityConflict": "Instruction content can change Agent behavior and tool usage, yet filesystem copies/recovery have no author, approval, hash, effective interval or link to ResponsibilityContract. Preferring disk over stored metadata can silently activate unreviewed instructions, and external directories may expose unrelated code, credentials or personal files.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/agent-instructions-service.test.ts:1-361",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]
+    }
+  ]
+}
