@@ -5718,6 +5718,34 @@
       "completionRequirements": [
         "Read lines 1-171 exactly once and assess container privilege drop, UID/GID remap, ownership mutation, command forwarding, root/non-root behavior, data safety, portability and test quality against Company OS self-hosted deployment boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/document-annotation-routes",
+      "path": "server/src/__tests__/document-annotation-routes.test.ts",
+      "lineCount": 406,
+      "sha256": "66d8f686444b38d83d99b75092e48ee29b1e05d439ecec0e99d1763d5dc70f94",
+      "linkedEvidence": {
+        "history": [
+          "678728f650bf2a03f325922db32efb038dbb6ac9 feat: maintained in_review review-path contract + stalled-review actions (#10675)",
+          "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+          "0a2230b2ec509fe514a45298ed75d3987cf69f5c [codex] Guard document comment wake boundaries (#7766)",
+          "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 406 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Seven mocked route tests cover compact Agent reads, opt-in comment bodies, revision updates, one bounded review-path recovery wake, annotation create/comment/resolve activity and Agent cross-company 404.",
+        "Default omission of comment bodies is a useful data-minimization pattern, and baseRevisionId plus anchor revision/selector fields support review provenance. Annotation/comment edits deliberately do not use the general issue-comment wake path, reducing notification storms.",
+        "When a board revision expires the final review interactions, one idempotent recovery wake is emitted with sorted interaction references and a one-attempt bound. This is thoughtful review-liveness behavior, but it wakes an Agent rather than escalating to an accountable human when review responsibility is lost.",
+        "All core services are mocked and authorization is globally allowed except the route's Agent company check. Board cross-tenant, Agent mutation/checkout, resolver authority, content/selector validation, size/XSS, optimistic thread status and side-effect transactionality are not proven.",
+        "Sandboxed Vitest failed 7/7 only from Supertest listen denial. Approved unsandboxed run passed 7/7 but emitted two real warnings: external object document sync failed because the DB stub lacked transaction. Tests still passed, demonstrating that external projection sync is best-effort and unasserted; successful HTTP responses can coexist with silently stale external projections."
+      ],
+      "completionRequirements": [
+        "Read lines 1-406 exactly once and assess annotation route actors, tenant/document access, Agent wake boundaries, author/responsibility attribution, validation, errors, side effects and test quality against Company OS evidence/review collaboration."
+      ]
     }
   ]
 }
