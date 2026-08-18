@@ -1,7 +1,9 @@
 # Company OS phase-one handoff
 
 Completed: 2026-08-18  
-Independent repository: `/Users/elliottye/Documents/Codex/2026-08-18/company-os`
+Original phase-one repository: `/Users/elliottye/Documents/Codex/2026-08-18/company-os`
+
+Canonical Pre-3D repository: `/Users/elliottye/Documents/ChatGPT/os`
 
 ## Outcome
 
@@ -45,4 +47,3 @@ Independent repository: `/Users/elliottye/Documents/Codex/2026-08-18/company-os`
 This applies only to the exact top-level `company-os/` file list in the formal
 reception report. Raft ACP, Nostr/core mapping, relay behavior, and Web adapter/
 mount contracts must remain.
-
