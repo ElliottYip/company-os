@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-references-service",
+    "auditStatus": "COMPLETE",
+    "function": "Embedded-PostgreSQL tests for a derived Issue-reference index spanning Issue fields, comments and attached Documents, including inbound/outbound aggregation, source deletion and company backfill.",
+    "dependencyDirection": "Vitest -> issueReferenceService -> Drizzle/PostgreSQL Issues, comments, Documents, Issue-Document links and reference-mention projection; tests create the projection table locally.",
+    "keyDataModels": "Reference mention keyed by company/source Issue/target Issue/source kind/source record; matched text and optional Document key; grouped reference summary with target Issue, mention count and labeled sources.",
+    "lifecycle": "Parse references on Issue/comment/Document sync -> replace or append source-scoped mention rows -> aggregate inbound/outbound summaries; remove a Document source independently; rebuild all current references for a company from authoritative records.",
+    "testAssessment": "Both tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage proves multi-source aggregation, self-reference omission, source-level deletion and legacy backfill. It does not cover cross-tenant attacks, authorization, edits/deletes beyond one Document source, soft deletion/restoration, identifier rename, dangling/cyclic links, concurrent sync, transactional failure or immutable evidence semantics.",
+    "designRationale": "Keep textual Issue references discoverable and explainable without reparsing all rich text on every read, while retaining enough source provenance to update one contributor and rebuild the projection.",
+    "companyOsProblem": "Company OS needs navigable links among Work, goals, approvals, evidence and results, plus rebuildable read projections; responsibility evidence itself must remain immutable, tenant-safe and bound to exact policy/action/digests.",
+    "companyOsFit": "ADAPT the source-attributed, rebuildable projection pattern for non-authoritative navigation. Parse into stable opaque entity IDs through tenant-scoped resolvers, emit versioned projection events and support deterministic repair. Never treat matched text or this mutable projection as evidence; store evidence objects and responsibility-chain digests in an append-only authoritative ledger with separate access policy.",
+    "responsibilityConflict": "The mutable mention table records discoverability, not who authorized or attested an action. Backfill from current text can erase historical meaning, and no accountable-human, approval, permission/data-scope or evidence digest is bound to a reference.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-references-service.test.ts:1-244 (SHA-256 f13b899b89c81c298dfa648646bcb25387acfd7f9fc188403b49fa381c492285)",
+      "git history: ab9051b595be21dcfab93a4c02ff65548a6341ff Add first-class issue references (#4214)",
+      "2026-08-19 sandboxed focused Vitest: 2/2 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 2/2 skipped"
+    ],
+    "securityFindings": "HIGH tenant/auth gap: no adversarial company-boundary or permission test. HIGH evidence-semantic risk: matched mutable text cannot be an authoritative responsibility record. HIGH verification gap: both real-database tests skipped. MEDIUM lifecycle gap: edits, soft delete/restore, detach/rekey/revision and identifier rename are absent. MEDIUM consistency gap: no concurrent/idempotent/transaction failure test. POSITIVE: company_id, source-level provenance, cascades and rebuildability are useful projection primitives."
+  }]
+}

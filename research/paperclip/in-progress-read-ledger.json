@@ -7777,6 +7777,30 @@
       "completionRequirements": [
         "Read lines 1-519 exactly once and assess scheduler claiming/concurrency, retries/backoff/quota reset, secret ownership, wake authority, terminal cleanup, audit receipts, clock behavior and Company OS managed/self-hosted durability."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-references-service",
+      "path": "server/src/__tests__/issue-references-service.test.ts",
+      "lineCount": 244,
+      "sha256": "f13b899b89c81c298dfa648646bcb25387acfd7f9fc188403b49fa381c492285",
+      "linkedEvidence": { "history": [
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff Add first-class issue references (#4214)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-244"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-150 create a real-PostgreSQL derived mention index and prove outbound/inbound aggregation from Issue title/description, comments and attached Documents; self references are ignored, duplicate targets are grouped, source labels remain visible and deleting a Document source removes only that source's mention.",
+        "Lines 151-244 prove company-level backfill can reconstruct pre-existing comment and Document references without write-time sync, but the fixture covers only one company and active records.",
+        "Strong patterns are rebuildable derived projections, source-level provenance, deterministic grouping and cascade cleanup. Gaps include cross-company/adversarial identifiers, authorization at read/write boundaries, soft-deleted/archived restoration, comment deletion/editing, document detach/rekey/revision, issue identifier rename, cyclic/dangling references, concurrency/idempotency, Unicode/case ambiguity, transaction/outbox behavior and immutable evidence digests.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 2 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-244 exactly once and assess tenant/authorization scoping, reference resolution and reconstruction, deletion/recovery integrity, dangling/cyclic references, data minimization and Company OS evidence-chain requirements."
+      ]
     }
   ]
 }
