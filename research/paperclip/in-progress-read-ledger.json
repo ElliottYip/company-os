@@ -6000,6 +6000,33 @@
       "completionRequirements": [
         "Read lines 1-333 exactly once and assess instance-scoped environment routes, company membership/admin authority, Secret binding reconciliation, create/update/delete semantics, custom-image coupling, error contracts and test quality against Company OS tenant/local-node boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-live-ssh",
+      "path": "server/src/__tests__/environment-live-ssh.test.ts",
+      "lineCount": 184,
+      "sha256": "71596ce6c332dd0d26c0dc66baad03f2e06970921f647124eee0899a8c995b2d",
+      "linkedEvidence": {
+        "history": [
+          "2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f External object references across issue surfaces (#8512)",
+          "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)",
+          "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 184 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. One optional live smoke test resolves SSH configuration from explicit environment values/files, an existing env-lab fixture or an auto-started fixture, then prepares a workspace and checks git/tar/pwd remotely.",
+        "Explicit configuration validates host/user/workspace presence and port range, defaults strict host-key checking true and permits an explicit false override. Private keys and known_hosts can be injected inline or read from arbitrary local paths; the test does not prove permissions, symlink policy, redaction, zeroization or that strict checking fails on a changed host key.",
+        "With PAPERCLIP_ENV_LIVE_SSH_NO_AUTO_FIXTURE=true and no explicit configuration, the focused run correctly skipped 1/1. Under the default path, failure to resolve or auto-start a fixture merely warns and returns from the test, which Vitest counts as passed; this can create a green live-integration result without any SSH connection.",
+        "The remote workspace path is JSON.stringify'd and interpolated into a shell command. JSON double quoting is not a POSIX-shell escaping contract because command and parameter substitution remain active inside double quotes; controlled test configuration reduces exposure but this pattern must not be reused with tenant input.",
+        "The smoke assertion only verifies workspace readiness and the presence of path/git/tar strings. It does not cover host-key mismatch, credential rejection/rotation, non-root permissions, command cancellation, output limits beyond one maxBuffer, network interruption, reconnect/idempotency, data egress, audit/attestation or cleanup of remote artifacts."
+      ],
+      "completionRequirements": [
+        "Read lines 1-184 exactly once and assess live SSH credential resolution, Secret scoping, host-key policy, remote probe/execution behavior, redaction, failure handling and test quality against Company OS local execution nodes."
+      ]
     }
   ]
 }

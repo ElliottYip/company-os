@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-live-ssh",
+      "auditStatus": "COMPLETE",
+      "function": "Optional live SSH smoke-test harness that discovers explicit or fixture credentials, initializes a remote workspace and verifies basic git, tar and pwd command availability.",
+      "dependencyDirection": "Vitest -> adapter-utils SSH/env-lab helpers -> local environment/files and optional fixture process/container -> real SSH server; it bypasses Company identity, SecretPort, Connector policy, database and audit/evidence services.",
+      "keyDataModels": "SSH host/port/user/workspace/private key/known_hosts/strict-check config, env-lab state path and command result with bounded timeout/buffer.",
+      "lifecycle": "Read optional credentials -> reuse or start fixture -> ensure remote workspace -> execute a tool-discovery command -> assert basic output -> stop only a fixture started by this test.",
+      "testAssessment": "The deliberate no-fixture focused run skipped 1/1. No live connection was executed. More importantly, default fixture-resolution failure returns successfully inside the test rather than skip/fail, allowing a false-green smoke test. Coverage is only basic connectivity/tool presence and omits trust failure, credential lifecycle, cancellation, recovery, permissions, containment and audit.",
+      "designRationale": "Make a real SSH check convenient for developers with either preconfigured infrastructure or a disposable local lab while avoiding a mandatory external dependency in ordinary test runs.",
+      "companyOsProblem": "Company OS requires trustworthy qualification and ongoing health checks for customer-local execution nodes without real credentials in fixtures or ambiguous test outcomes.",
+      "companyOsFit": "REIMPLEMENT as a gated Connector conformance suite with explicit PASS/SKIP/INFRA_ERROR outcomes, capability and platform metadata, hermetic disposable credentials, strict pinned-host negative tests, argument-safe command execution, cancellation/recovery checks and secret-free signed evidence. Keep local fixture convenience separate from CI acceptance.",
+      "responsibilityConflict": "The test proves neither an accountable operator nor an approved execution-node enrollment, and emits no attestation tying the checked host, credential audience, binary versions or workspace policy to a Company OS responsibility contract.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/environment-live-ssh.test.ts:1-184 (SHA-256 71596ce6c332dd0d26c0dc66baad03f2e06970921f647124eee0899a8c995b2d)",
+        "git history: 2dbaf4a7fa59230aa3f9beffd0d5b539310a9f9f, 778e775c35834aabe09266fb6d415d3dafbd1deb, e4995bbb1cc36454fc0fa3142ad9c7030c397ff0",
+        "2026-08-19 focused Vitest with PAPERCLIP_ENV_LIVE_SSH_NO_AUTO_FIXTURE=true: 1/1 skipped; no live SSH claim"
+      ],
+      "securityFindings": "HIGH false-assurance gap: default fixture/config resolution failure returns a passing test without a connection. HIGH command-construction gap: JSON double quoting does not safely escape arbitrary values for POSIX shells. HIGH credential/trust gap: raw inline/file credentials and strict-check override lack negative tests, permission checks and zeroization. MEDIUM conformance gap: no explicit outcome schema, enrollment identity, attestation, cancellation/recovery or data-policy validation."
+    }
+  ]
+}
