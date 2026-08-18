@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/environment-instance-routes",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route tests for reading and creating an instance-wide execution-environment catalog through company-addressed endpoints, including board authority, Secret envVar handling and activity fan-out.",
+      "dependencyDirection": "Supertest/Vitest -> Express environment routes and real error middleware -> mocked environment, instance-settings, Secret, custom-image, workspace and activity services; database transaction behavior is replaced by a pass-through function.",
+      "keyDataModels": "Instance-scoped environment catalog entry, board/Agent actor and company memberships, instance-admin flag, Secret-ref envVars and instance target, company-specific binding and per-company activity record.",
+      "lifecycle": "Authorize company board access -> list shared instance environments or require instance admin -> normalize envVars in one company context -> create shared environment and replace instance Secret references -> sync requesting-company bindings -> emit activity to every company -> expose full config only to admin.",
+      "testAssessment": "The approved unsandboxed focused run passed 7/7; the sandbox run failed 7/7 only because local listen was denied. Tests establish intended actor gates and service calls but cannot prove transactionality, Secret tenant isolation, activity durability, later-company behavior, concurrent creation or actual runtime authorization because all stateful services are mocked.",
+      "designRationale": "Treat execution infrastructure as an installation-level resource managed once by an operator while allowing every company in that installation to select from the same catalog and receive change visibility.",
+      "companyOsProblem": "Company OS needs deployment/node catalogs usable by both single-enterprise self-hosting and managed cloud without confusing infrastructure ownership, organization authorization, Connector capabilities or tenant-specific Secret/data bindings.",
+      "companyOsFit": "REIMPLEMENT the scope model: separate deployment/node definitions owned by an operator from tenant-scoped execution profiles and explicit grants/bindings. A self-hosted profile may default one deployment to one enterprise; managed cloud must enforce tenant isolation. Preserve pre-read Agent denial and Secret normalization, but use structured errors, transactional outbox audit and per-tenant Secret references.",
+      "responsibilityConflict": "Instance-admin authority and activity fan-out do not identify the accountable human or approved change contract. A shared environment mutation can affect every company's future Agent work, while the test binds Secrets only through one requesting company and provides no cross-company acceptance or revocation evidence.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/environment-instance-routes.test.ts:1-333 (SHA-256 358aa032662b15c4238a3ce455ab0aca77beba219e21b37e06c14f7b2f213600)",
+        "git history: f51cba33fa22f897dd6923f2e2fa10a7145d505b, 8d9f9fd24086a3ae8ee7edc83f8368084be81277, 547463d3a2a0fdf899dc59524eff71a24a6f315c",
+        "2026-08-19 sandboxed focused Vitest: 0/7 passed because local listen was denied (EPERM)",
+        "2026-08-19 approved unsandboxed focused Vitest: 7/7 passed"
+      ],
+      "securityFindings": "CRITICAL scope ambiguity for managed cloud: instance-wide environments are readable across companies while Secret normalization/binding originates from one company context. HIGH blast-radius gap: one instance admin mutates infrastructure used by every company without company acceptance/approval. HIGH transaction/audit gap: mocks do not prove atomic environment, Secret-reference, binding and multi-company activity writes. MEDIUM API-contract gap: company-nested paths address instance resources and tests rely on English error strings."
+    }
+  ]
+}

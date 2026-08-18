@@ -5972,6 +5972,34 @@
       "completionRequirements": [
         "Read lines 1-1373 exactly once and assess execution-target abstraction, workspace transfer, command streaming, provider isolation, observability, cancellation, failure recovery, resource controls, Secret/data boundaries and test quality against Company OS Connector execution nodes."
       ]
+    },
+    {
+      "id": "application:server/__tests__/environment-instance-routes",
+      "path": "server/src/__tests__/environment-instance-routes.test.ts",
+      "lineCount": 333,
+      "sha256": "358aa032662b15c4238a3ce455ab0aca77beba219e21b37e06c14f7b2f213600",
+      "linkedEvidence": {
+        "history": [
+          "f51cba33fa22f897dd6923f2e2fa10a7145d505b fix(server): keep environment secret bindings consistent when re-pointing config secrets (#10576)",
+          "8d9f9fd24086a3ae8ee7edc83f8368084be81277 Add reusable sandbox custom images (#8794)",
+          "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)"
+        ]
+      },
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 333 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once in two non-overlapping ranges. Seven HTTP tests cover shared instance catalog listing, board/member/Agent gates, instance-admin creation, fan-out activity logging, envVar Secret normalization/synchronization and admin-only full-detail retrieval.",
+        "Execution environments are intentionally instance-scoped even though list/create routes are nested under a company URL. Any board member of the addressed company can list the same shared catalog; Agent-key actors cannot enumerate it; mutation requires instance admin. This fits a single-enterprise self-hosted instance but is not a safe managed-cloud tenant boundary by itself.",
+        "Creation enumerates all company IDs and emits one activity per company. The source tests the expected fan-out but not atomicity, partial logging failure, large-tenant amplification, information minimization or whether companies created later receive equivalent history.",
+        "Environment envVars are normalized using the URL companyId, the resulting Secret refs are installed on an instance target and env bindings are synchronized only for that company in this test. The catalog is nevertheless shared, leaving Secret ownership, visibility and runtime resolution for other companies ambiguous and untested.",
+        "The route transaction is replaced by a pass-through fake, and environment/Secret/activity services are mocked. Therefore the suite does not prove atomic create-plus-reference replacement, rollback on Secret sync failure, cross-company runtime access, unique naming, request limits, raw credential rejection or audit durability.",
+        "Sandboxed Vitest failed 7/7 solely because Supertest could not bind 0.0.0.0 (EPERM); the approved unsandboxed run passed 7/7. Error assertions depend on English text substrings rather than stable codes."
+      ],
+      "completionRequirements": [
+        "Read lines 1-333 exactly once and assess instance-scoped environment routes, company membership/admin authority, Secret binding reconciliation, create/update/delete semantics, custom-image coupling, error contracts and test quality against Company OS tenant/local-node boundaries."
+      ]
     }
   ]
 }
