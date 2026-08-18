@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:cli/commands/doctor",
+      "auditStatus": "COMPLETE",
+      "function": "Runs ordered diagnostics for config, deployment/auth, Agent JWT, Secrets, storage, database, LLM, logging, port, Node/managed install and background services. Repairable checks can prompt or execute under --repair --yes, reload the adjacent environment file and rerun the repaired check before presenting pass/warn/fail totals.",
+      "dependencyDirection": "doctor orchestrator -> config/env loaders and individual check modules -> filesystem, processes, ports, databases, provider/storage/Secret adapters and service health endpoints. Diagnostic messages and repair callbacks flow back as a generic CheckResult, so stable error identity, side-effect classification and human accountability are not encoded in the orchestrator contract.",
+      "keyDataModels": "PaperclipConfig, config path and environment overlay; CheckResult{name,status,message,canRepair,repairHint,repair}; pass/warn/fail summary. Deployment profile, resource target, repair plan/digest, operator identity, evidence and rollback state are absent from this layer.",
+      "lifecycle": "Print update/banner -> resolve config and load adjacent env -> fail fast on config check -> read config -> run ordered checks -> optionally prompt/repair each eligible check -> reload env and rerun that check -> continue through local and external health checks -> summarize. Repairs are independent partial side effects; the in-memory config is not reread after a repair.",
+      "testAssessment": "The already completed application:cli/__tests__/doctor assessment was reused without rereading source: its sandbox run needed escalation after listen EPERM, then passed 1/1 and showed 12 passing checks. It validates rerun-after-repair but not production/authenticated profiles, external services, partial failure/rollback, stable codes, Secret entropy/permissions/redaction or cleanup. CLI TypeScript checking passes.",
+      "designRationale": "A single operational diagnostic entry point is valuable for self-hosted support and FDE delivery. Config-first fail-fast avoids noisy dependent failures; ordered checks produce understandable remediation; repair callbacks keep domain logic in check modules; and rerunning after repair provides immediate verification.",
+      "companyOsProblem": "Company OS needs deployment-profile-aware diagnostics and support bundles for managed cloud, self-hosted and hybrid local execution nodes, covering Identity, database, Connector/model, data sources/export firewall, Secrets, event delivery and renderer/assets without invoking paid or production systems unexpectedly.",
+      "companyOsFit": "Adapt the orchestration pattern around typed CheckCode, severity, target, read-only versus mutating classification, evidence, timeout and remediation plan. Default doctor must be read-only and offline-safe; repairs need an explicit reviewed plan/digest, backup/rollback and accountable operator. External/provider checks require opt-in dry-run-safe probes and redacted results.",
+      "responsibilityConflict": "--repair --yes can execute every repairable callback without a consolidated plan or per-action accountable approval. Result messages identify no human/operator and repairs leave no responsibility/evidence record. Provider/service checks may touch credentialed external systems even though the user asked only for diagnosis.",
+      "decision": "ADAPT",
+      "evidence": [
+        "cli/src/commands/doctor.ts (223 lines; SHA-256 bd1a57ded12cdcec46c70656fa33fd2ff81c77b7ee9b22f7b02c8f736322131f)",
+        "git history: fc5a30805ed3c95ac6598c8660261a018b5b5a7f and 73eb23734f25c570d88665e672f80d740797c632",
+        "Completed focused assessment application:cli/__tests__/doctor: escalated rerun passed 1/1 with 12 checks; ADAPT"
+      ],
+      "securityFindings": "The command loads an adjacent env file into the process before most checks and prints arbitrary check/error/repair text without structured redaction or stable codes. Repair-all is non-transactional and can leave partial local/external state; a repair may change config but later closures keep using the stale config object. Update notice, LLM and service checks can perform network activity before an explicit per-provider consent. No global timeout/cancellation, consolidated impact preview, backup ledger, rollback or operator audit is visible. Diagnostic output can reveal paths, hostnames, provider details or Secret-adjacent errors."
+    }
+  ]
+}
