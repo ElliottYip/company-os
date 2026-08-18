@@ -3111,18 +3111,26 @@
     },
     {
       "id": "application:server/__tests__/claude-local-adapter-environment",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Integration-style tests for Claude Local environment diagnostics across host CLI and remote sandbox targets, including authentication-mode reporting, working-directory preparation, permission-safe probes, managed configuration seeding and CLI capability negotiation.",
+      "dependencyDirection": "Company/adapter configuration and process environment feed a vendor adapter diagnostic service; local or injected remote runners execute command probes. Host Claude configuration is sanitized into a Paperclip-managed runtime directory, while selected instructions and remote credentials are materialized for the sandbox execution target.",
+      "keyDataModels": "Structured diagnostic status/check code/level/message, adapter engine/command/cwd/env/effort, executionTarget kind/transport/providerKey/remoteCwd/runner, Anthropic API-key and Bedrock environment modes, managed CLAUDE_CONFIG_DIR, Claude settings/CLAUDE.md/credentials and cached CLI flag capabilities.",
+      "lifecycle": "Diagnostics classify host or adapter authentication environment, create a missing absolute local cwd, derive remote cwd when unset, probe the CLI in a sandbox with an explicit allowed-tools argument rather than global permission bypass, sanitize host settings and credentials into managed runtime config, preserve sandbox-local credentials, seed CLAUDE.md, and downgrade unsupported effort flags to a warning while completing the hello probe.",
+      "testAssessment": "Strong tests cover stable diagnostic codes, host/adapter auth precedence, nonfatal API-key warnings, Bedrock mode, cwd creation/defaulting, safer sandbox permission arguments, stripping dangerous host hooks/MCP/permission flags and credentials, preservation of remote credentials, instruction seeding and version-capability fallback. Missing are arbitrary-path/symlink/TOCTOU and filesystem-permission attacks, env/command allowlisting, secret redaction from diagnostics/logs/errors, credential file modes and lifecycle cleanup, hostile CLAUDE.md prompt injection, runner identity/attestation, probe timeout/cancel/retry, concurrent config materialization, network/data-egress policy, cross-company isolation and proof that diagnostics cannot mutate production state unexpectedly.",
+      "designRationale": "Detect whether a configured local Agent can actually run in its selected environment while avoiding unattended permission prompts and preventing host-only execution settings or credentials from leaking into a remote sandbox.",
+      "companyOsProblem": "Company OS needs Connector health and runtime-attestation checks that are safe, secret-free and deployment-profile neutral, while local enterprise execution nodes must isolate host credentials, instructions, tools and data from each Work environment.",
+      "companyOsFit": "ADAPT the structured check codes, capability probing, remote-cwd abstraction, explicit probe tool policy and sanitize-then-materialize runtime-config pattern inside Connector nodes. Make diagnostics read-only by default; require a separately approved prepare action for filesystem changes, canonical workspace roots, strict env/command allowlists, secret handles rather than values, instruction provenance and injection scanning, ephemeral credentials with restrictive modes, egress policy and short-lived signed runtime attestations returned to the control plane.",
+      "responsibilityConflict": "The diagnostic path creates a caller-selected absolute cwd and copies host CLAUDE.md content into the sandbox without an explicit responsible-human approval or recorded digest. Authentication and credentials are inferred from ambient process/adapter env, so Company-level authority and secret ownership are not proven. A successful hello probe establishes availability but not the exact runtime, tools, permissions, data contract or instructions later used for accountable Work.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/claude-local-adapter-environment.test.ts:1-476",
+        "73eb2373 docs: use structured agent mentions in paperclip skill (#4103)",
+        "9b99d303 Add dedicated environment settings page and test-in-environment (#4798)",
+        "b24c6909 Harden remote sandbox runtime probes, timeouts, and installs (#5685)",
+        "c0743482 fix(claude-local): tolerate sandboxes whose Claude CLI lacks --effort (#8393)",
+        "0c2ec7de Fix sandboxed Claude and Codex probe behavior (#8775)",
+        "eedc7dde Make ACP the default engine for local adapters (#9238)"
+      ]
     },
     {
       "id": "application:server/__tests__/claude-local-execute",
