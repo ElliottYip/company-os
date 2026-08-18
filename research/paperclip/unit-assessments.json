@@ -7715,18 +7715,24 @@
     },
     {
       "id": "application:server/__tests__/issue-closed-workspace-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mocked route tests preventing comment-triggered activity and checkout on an Issue linked to an archived isolated workspace while allowing a board user to migrate it.",
+      "dependencyDirection": "Supertest -> Issue route guards -> mocked Issue/execution-workspace/access/heartbeat/activity services; no database or execution-environment lifecycle is exercised.",
+      "keyDataModels": "Issue executionWorkspaceId, archived isolated workspace with closedAt, comment/PATCH/checkout commands and replacement workspace ID.",
+      "lifecycle": "Resolve linked workspace -> reject execution-affecting comment or checkout when archived -> permit non-comment board update to a replacement workspace -> future execution may resume outside this unit.",
+      "testAssessment": "Sandboxed run failed 4/4 on TCP bind; approved unsandboxed run passed 4/4. Guard behavior is clear, but only a local board actor and mocked services are covered; no cleanup, retention, file access or concurrency is proven.",
+      "designRationale": "Prevent new work from running against a closed isolated workspace without trapping the Issue permanently, since an operator can move it to another workspace.",
+      "companyOsProblem": "Company OS must close execution authority and ephemeral resources without deleting responsibility discussion or immutable evidence, and must explicitly govern migration/reactivation to another execution environment.",
+      "companyOsFit": "ADAPT the fail-closed workspace-state precondition and explicit migration escape hatch. Split append-only Discussion/Evidence commands from Agent-waking execution commands, return stable codes/remediation, verify tenant/workspace ownership, use optimistic versions and record closure/migration/reactivation receipts plus retention/legal-hold policy.",
+      "responsibilityConflict": "Freezing all comments can prevent humans from documenting accountability after execution closes, while moving workspace lacks an asserted approval/evidence chain. Execution closure must not erase or block responsibility records.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-closed-workspace-routes.test.ts:1-260 (SHA-256 23204b944ddbea1d10e79552feece4b9c5a495161e4579ac2f7a118cd9e7b85c)",
+        "git history: 9 commits from b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 through 73eb23734f25c570d88665e672f80d740797c632 recorded in read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/4 passed due TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "HIGH lifecycle-coverage gap: runtime cleanup, files, secrets, leases, retention and legal hold are absent. HIGH responsibility-availability risk: workspace closure blocks all new comments. MEDIUM authorization gap: Agent/cross-tenant/inactive membership cases are untested. MEDIUM race gap: close/migrate/checkout concurrency and version checks are absent. MEDIUM audit gap: closure and migration receipts are not asserted. MEDIUM error-contract gap: denials depend on English text."
     },
     {
       "id": "application:server/__tests__/issue-comment-attribution-audit-routes",

@@ -7258,6 +7258,40 @@
       "completionRequirements": [
         "Read lines 1-391 exactly once and assess blocker diagnostics authorization, tenant/existence privacy, graph/runtime detail exposure, read-only guarantees, stable contracts and test quality against Company OS operational diagnostics boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-closed-workspace-routes",
+      "path": "server/src/__tests__/issue-closed-workspace-routes.test.ts",
+      "lineCount": 260,
+      "sha256": "23204b944ddbea1d10e79552feece4b9c5a495161e4579ac2f7a118cd9e7b85c",
+      "linkedEvidence": { "history": [
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed tests (#9241)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 rollup (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [{ "start": 1, "end": 260 }],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Full source read once. Four mocked board-route tests cover an active todo Issue linked to an archived isolated workspace, despite the filename's closed-Issue wording.",
+        "New comments, comment-bearing PATCH and checkout return 409 before Issue services execute. This prevents comments/wake behavior or a new Run from implicitly reusing a closed execution environment.",
+        "A non-comment board PATCH may change executionWorkspaceId to a new workspace, providing a recovery path instead of making the Work permanently immutable.",
+        "The error contract is asserted through English substring only, with no stable reason code, closed workspace ID/state, remediation link or policy metadata.",
+        "Comments are treated as execution-affecting and therefore frozen with workspace closure. Company OS should preserve append-only human discussion/evidence after execution closure while requiring explicit reactivation/migration for commands that can wake or run an Agent.",
+        "Only a local human board actor is tested. Agent, cross-company, inactive membership, workspace ownership, concurrent close/move/checkout, approval, idempotency and audit receipt cases are absent.",
+        "No file visibility, runtime cleanup, lease destruction, data retention, legal hold, workspace archival evidence or restore/delete lifecycle is tested; the unit only proves route guards.",
+        "Sandboxed focused Vitest failed 4/4 on TCP bind; approved unsandboxed rerun passed 4/4."
+      ],
+      "completionRequirements": [
+        "Read lines 1-260 exactly once and assess closed-Work workspace visibility, file access, execution cleanup, retention/evidence preservation, authorization and test quality against Company OS data lifecycle."
+      ]
     }
   ]
 }
