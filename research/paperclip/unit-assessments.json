@@ -1102,18 +1102,34 @@
     },
     {
       "id": "application:cli/__tests__/token",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "CLI tests for creating/listing/revoking Agent API keys and board API keys, including Agent reference resolution, standard scope, TTL-derived expiration and explicit non-expiring board credentials.",
+      "dependencyDirection": "The Vitest suite registers Token Commander commands, stubs fetch/output and uses fake time for TTL calculation. It verifies client payloads and plaintext JSON output but not server token generation, hashing, authorization or use.",
+      "keyDataModels": "Company/Agent/key IDs, Agent key name and standard scope; board key name/requested company/created/last-used/revoked/expires timestamps; one-time plaintext token returned by create.",
+      "lifecycle": "Resolve Agent by id or company-scoped reference; create/list/revoke Agent key; create board key with client-computed expiry or no expiry; list/revoke board keys; print newly issued plaintext credentials.",
+      "testAssessment": "Focused Vitest passed 6/6 tests on 2026-08-19 and CLI no-emit TypeScript passed. It covers reference resolution, standard Agent scope, deterministic TTL calculation and board key lifecycle routing. It omits caller authority, one-time-output safeguards, scope/audience, maximum TTL, clock skew, hashing, entropy, rotation, concurrent revoke/use, audit events, rate limits and actual expiry enforcement.",
+      "designRationale": "Provide simple credentials for external Agent and administrator automation, exposing metadata for lifecycle management and offering expiration as an operator choice.",
+      "companyOsProblem": "Company OS must distinguish real-human sessions, service accounts, Agent/Connector runtime attestations and local execution-node credentials with independent audience, scope, lifetime, revocation and audit semantics across cloud and self-hosted deployments.",
+      "companyOsFit": "REIMPLEMENT the credential model behind IdentityPort/Connector attestation/SecretPort. Retain opaque key IDs, default short TTL, last-used/revoked metadata and one-time issuance, but require audience/resource scopes, issuer/subject, deployment binding, maximum lifetime, rotation and responsible-human authorization. Prefer OIDC/SSO and short-lived exchange over broad static board tokens; prohibit non-expiring privileged tokens by default.",
+      "responsibilityConflict": "A board token collapses all human board actors into one broad automation persona, preventing reliable attribution to the real accountable person. An Agent key is also not sufficient runtime proof: it does not bind a specific Work, Connector version, permission/data contract or result.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "cli/src/__tests__/token.test.ts:1-245",
+        "SHA-256 de2ac3b77552d03f98946ed1dc1b95dbdcbae141ec9a25a21fc4c5e45aee71ef",
+        "e1050c1a8ca3c8c8b8067f3d414f26044581144d test(cli): cover board token commands (#9138)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "2026-08-19 focused Vitest: 1 file and 6 tests passed",
+        "2026-08-19 cli/tsconfig.json no-emit TypeScript check passed"
+      ],
+      "securityFindings": [
+        "Critical design risk: privileged board credentials can be explicitly non-expiring, increasing theft persistence and weakening mandatory rotation/re-certification.",
+        "New plaintext Agent and board tokens are serialized to stdout JSON, where terminal capture, shell pipelines, CI logs and caller logging can persist them.",
+        "Board-token payload carries requestedCompanyId but no tested audience, role/capability/resource scope, human subject or approval authority.",
+        "Agent key scope is only `{kind: standard}` in the test; least-privilege tool/data/Work/deployment restrictions and runtime attestation are absent.",
+        "Expiry is calculated client-side from local clock; maximum TTL, clock skew and server-owned policy/enforcement are not tested.",
+        "Create/list/revoke calls have no tested step-up authentication, responsible-human approval, idempotency, reason, audit receipt or concurrent-use fencing.",
+        "Token entropy, prefix/format validation, secure hashing, constant-time verification, rate limiting and revocation propagation are outside this unit."
+      ]
     },
     {
       "id": "application:cli/__tests__/update-command",
