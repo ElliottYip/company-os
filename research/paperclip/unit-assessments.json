@@ -2864,33 +2864,39 @@
     },
     {
       "id": "application:server/__tests__/board-claim",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres ownership-transfer test for a token-and-code board claim challenge that replaces the local implicit administrator with a signed-in user and grants that user owner membership.",
+      "dependencyDirection": "Deployment initialization creates an inspectable challenge/warning URL; a signed-in user presents token plus code to claimBoardOwnership, which updates instance roles and Company membership in the database and updates challenge inspection state.",
+      "keyDataModels": "Claim token/code/status, requires-sign-in flag, claimed user, local-board and human instance-admin roles, Company owner membership, authenticated/local deployment mode and warning URL.",
+      "lifecycle": "Switching to authenticated mode produces a warning URL with two challenge components. Inspection reports available and sign-in-required. A valid signed-in claimant atomically removes local-board admin, creates its instance-admin role and owner membership, after which inspection reports claimed.",
+      "testAssessment": "One high-value real-database happy path proves privilege transfer and Company membership effects. Missing are token entropy/storage/hash and log exposure, expiry/rotation/single-use, wrong token/code/user, replay, parallel claims, transaction failure, multiple Companies and existing owners, challenge persistence across restart, audit event, session freshness/MFA and recovery from a lost challenge.",
+      "designRationale": "Make the security-sensitive transition from implicit local control to authenticated human ownership explicit and observable rather than silently retaining a shared local administrator.",
+      "companyOsProblem": "Company OS needs an auditable installation/ownership-transfer ceremony for self-hosted deployments and later IdP changes that does not collapse instance administration and every Company's accountable ownership.",
+      "companyOsFit": "ADAPT the two-part one-time challenge, sign-in requirement, atomic removal/grant and inspectable state. Separate InstanceOperator from CompanyOwner, hash and expire server-side capabilities, require target organization and verified identity/MFA, emit immutable before/after receipt, test restart/concurrency/recovery and never place both secret components in the same URL or log channel.",
+      "responsibilityConflict": "The test grants the claimant instance admin and owner membership together and does not show which Companies are affected. A technically valid setup token is not by itself proof that the claimant is the organization's accountable human, and no durable decision/audit receipt is asserted.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/board-claim.test.ts:1-128",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)"
+      ]
     },
     {
       "id": "application:server/__tests__/board-mutation-guard",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Middleware tests for browser-origin protection on state-changing board requests, with exemptions for non-cookie local, API-key, Cloud-tenant and Agent actors.",
+      "dependencyDirection": "Authenticated actor source plus HTTP method and Host/Origin/Referer/X-Forwarded-Host headers enter boardMutationGuard before mutation routes; cookie-session board requests require a matching browser origin, while non-browser credentials bypass this CSRF-specific gate and proceed to authorization.",
+      "keyDataModels": "Board/Agent actor source, safe versus mutating HTTP method, Host and forwarded host, Origin/Referer URL and 403 browser-origin error.",
+      "lifecycle": "Reads pass. Session-backed board mutations without a trusted Origin/Referer fail; matching direct or forwarded host passes. local_implicit, board_key and cloud_tenant board sources and all Agent actors bypass the origin requirement because their credentials are treated as non-cookie or trusted channels.",
+      "testAssessment": "Ten focused middleware cases cover safe methods, missing/matching/mismatched origins, Referer fallback, forwarded hosts and credential-source exemptions. Missing are OPTIONS/HEAD semantics, malformed/multiple/comma-separated forwarded hosts, trusted-proxy enforcement, scheme/downgrade/default-port normalization, IPv6/IDNA, Origin null, forwarded proto, Sec-Fetch-Site, SameSite cookie behavior, websocket/SSE mutation paths and structured error codes. The permissive forwarded-host case is not paired with a direct-client spoof denial.",
+      "designRationale": "Prevent cookie-authenticated cross-site request forgery without breaking local CLI, Agent API keys or a trusted Cloud gateway whose requests do not carry browser Origin headers.",
+      "companyOsProblem": "Company OS needs profile-aware CSRF/origin enforcement that remains correct behind enterprise proxies and distinguishes browser sessions from Connector/workload credentials without treating actor type alone as transport proof.",
+      "companyOsFit": "ADAPT source-aware CSRF separation, but bind credential class during authentication and use an explicit canonical-origin allowlist. Honor Forwarded/X-Forwarded-* only through verified proxy hops, require HTTPS in managed profiles, add SameSite and anti-CSRF token defense in depth, cover websocket/realtime commands and return stable codes.",
+      "responsibilityConflict": "Origin validation protects request provenance, not organizational authority. board_key, cloud_tenant and Agent actors bypass it entirely, so their credential issuance and scope must carry the responsibility contract. Trusting client-supplied X-Forwarded-Host without a proven proxy boundary can turn the guard into a bypass.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/board-mutation-guard.test.ts:1-149",
+        "9c29394f4df27ca26104d9108175a67726202d72 [codex] Allow cloud tenant import mutations without browser origin (#6378)"
+      ]
     },
     {
       "id": "application:server/__tests__/body-limits",
@@ -2909,18 +2915,21 @@
     },
     {
       "id": "application:server/__tests__/bootstrap-claim-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route tests for first-instance-admin claim through an authenticated private browser session or a bootstrap human invite, including deployment-profile gating, actor restrictions, CSRF guard composition and concurrent-winner conflict.",
+      "dependencyDirection": "Deployment mode/exposure, board actor and optional invite token enter access routes; both browser and invite paths call one claimFirstInstanceAdmin compare-and-set helper, while boardMutationGuard and invite validation sit outside the helper.",
+      "keyDataModels": "Authenticated/private deployment profile, board session actor, instance-admin claim status, bootstrap_ceo invite token hash/type/expiry/revocation/acceptance, claimed user and 200/202/401/404/409 outcomes.",
+      "lifecycle": "Only a session user on authenticated-private deployment can call the direct browser claim; anonymous, Agent, board-key and local-implicit actors are rejected and public/local modes hide the route. The origin guard can block the mutation. A valid human bootstrap invite runs its acceptance inside the shared claim callback. Whichever claimant wins becomes first admin; later direct or invite attempts receive conflict.",
+      "testAssessment": "Seven route scenarios cover profile/actor gating, origin composition, shared atomic helper and race conflict. Service/database behavior is mocked. Missing are proof that signup itself is restricted, out-of-band deployment ownership, brute-force/rate limit, invite expiry/revocation/hash timing, simultaneous real transactions, rollback of invite acceptance, session freshness/MFA, audit alert, existing data/Companies, recovery/reset and stable machine-readable errors.",
+      "designRationale": "Offer a browser-friendly zero-admin bootstrap for private instances while avoiding exposure on public deployments and sharing atomic ownership transfer with the explicit invite path.",
+      "companyOsProblem": "Company OS self-hosted setup must securely bind the first accountable human and enterprise identity provider without allowing the first reachable authenticated account to seize every Company and credential.",
+      "companyOsFit": "REIMPLEMENT as an installation ceremony: one-time short-lived setup capability emitted to console/file or signed installer assertion, canonical local origin, fresh IdP authentication/MFA, explicit target organization, atomic claim and immutable audit. Disable open signup or first-admin mutation until ownership proof; keep invitation and disaster recovery as separate governed flows.",
+      "responsibilityConflict": "Private network exposure is treated as evidence of deployment ownership. Any user able to establish a session before the legitimate operator can claim instance-admin authority, and the fixture does not bind the claim to a named organization, legal administrator or setup capability.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/bootstrap-claim-routes.test.ts:1-231",
+        "8da50dbcf8f98e82fb313c1fb023c13047d44bb6 [codex] Add private browser first-admin claim flow (#6755)"
+      ]
     },
     {
       "id": "application:server/__tests__/budgets-service",
