@@ -8864,6 +8864,30 @@
       "completionRequirements": [
         "Read lines 1-673 exactly once and assess gateway handshake/auth, credential and private-session isolation, capability/version negotiation, task/wait/cancel/idempotency, timeout/retry, pause/approval, evidence/result, attestation, payload minimization, network policy and Company OS neutral Connector contract fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/opencode-local-adapter",
+      "path": "server/src/__tests__/opencode-local-adapter.test.ts",
+      "lineCount": 225,
+      "sha256": "58e5e709e23acd820f4a57ce84d26ef881cfb5bd514bcaeb710ba60bbc05c73d",
+      "linkedEvidence": { "history": [
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-225"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-48 test vendor JSONL aggregation into remote session ID, assistant summary, token/cache usage, USD cost and a terminal free-form error message, plus stale-session detection from a filesystem path embedded in stderr.",
+        "Lines 49-145 test UI projection of assistant text, raw bash command/tool input, raw stdout and exit status, and usage-aware result records.",
+        "Lines 146-225 test CLI printing of session ID, assistant text, shell tool call/result/output and token/cost totals. The unit contains no execute/process tests and provides no evidence for binary selection, environment or secret handling, sandbox/workspace boundaries, cancellation, timeouts, idempotency, approval suspension, evidence manifests or structured error codes.",
+        "Focused Vitest passed all 5 tests in the sandbox."
+      ],
+      "completionRequirements": [
+        "Read lines 1-225 exactly once and assess local process/tool permissions, command and environment construction, credential/private-session isolation, structured progress/evidence/result parsing, cancellation/timeout/idempotency, workspace isolation, error codes and Company OS neutral Connector contract fit."
+      ]
     }
   ]
 }

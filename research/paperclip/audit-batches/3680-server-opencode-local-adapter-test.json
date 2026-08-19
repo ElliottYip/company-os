@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/opencode-local-adapter",
+      "auditStatus": "COMPLETE",
+      "function": "Parser and presentation tests for Paperclip's local OpenCode adapter, converting vendor JSONL into session, summary, usage, cost, error, assistant, tool-call/tool-result and terminal-result projections and formatting those events for a CLI.",
+      "dependencyDirection": "The server test imports first-party OpenCode server, UI and CLI package exports. Vendor-shaped stdout/stderr fixtures flow directly into adapter parsers and then into Paperclip-style UI event records or terminal text; no process execution or database boundary is exercised.",
+      "keyDataModels": "OpenCode step_start/text/tool_use/step_finish/error JSONL; vendor sessionID; token/cache and USD cost aggregates; unknown-session stderr path; assistant/tool_call/tool_result/result UI events; CLI lines.",
+      "lifecycle": "Parse accumulated JSONL into a run summary and accounting totals; classify a missing persisted vendor session as stale; project each streamed line into UI lifecycle events; print equivalent events and accounting to the CLI.",
+      "testAssessment": "All five focused tests pass. They clearly cover representative parser and formatter behavior, including multi-step token/cost accumulation and tool lifecycle pairing. They do not exercise the adapter's process launch, binary or argument construction, cwd/workspace confinement, environment/secret filtering, abort signal, timeout, retry/idempotency, stale-session recovery, malformed/oversized JSONL, redaction, approval pause/resume, evidence integrity or stable provider error classification.",
+      "designRationale": "Normalize a local vendor CLI's machine-readable stream for common Paperclip run accounting and UI/terminal visibility while recognizing when a stored vendor session can no longer be resumed.",
+      "companyOsProblem": "Company OS needs equal Connectors for local and remote Agents without treating vendor session state or raw model/tool output as the control-plane contract; it must expose safe structured progress, cost, evidence and results under explicit permissions and responsibility.",
+      "companyOsFit": "ADAPT the edge-parser and golden-fixture test approach. A Company OS OpenCode Connector should keep the vendor session private to the execution node, emit versioned Connector SDK events, use stable providerErrorCode plus structured parameters, distinguish accounting from billable policy, sanitize tool inputs/outputs by field policy, reference encrypted evidence rather than log it wholesale, and implement process/workspace isolation, credential references, capability declarations, cancel/timeout/idempotency, digest-bound approval suspension/resume and secret-free runtime attestation. Malformed, duplicate, reordered and oversized streams need property/fuzz tests.",
+      "responsibilityConflict": "A parsed assistant summary and raw shell transcript are observational output, not an evidence-backed responsibility chain. The unit does not bind execution to an accountable human, responsibility contract, exact permission/data grant or approval digest, and it exposes vendor session/tool details that Company OS should confine to the Connector node unless explicitly authorized.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/opencode-local-adapter.test.ts:1-225 (SHA-256 58e5e709e23acd820f4a57ce84d26ef881cfb5bd514bcaeb710ba60bbc05c73d)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 5/5 passed"
+      ],
+      "securityFindings": "POSITIVE: machine-readable events allow normalization; cost/token aggregation is explicit; stale vendor session detection supports recovery logic. HIGH disclosure risk: raw bash command, tool input, stdout and vendor session identifiers are projected to UI/CLI with no demonstrated redaction or data-export policy. HIGH execution-evidence gap: this unit proves nothing about local command allowlisting, sandboxing, cwd confinement, environment/secret isolation or abort behavior. HIGH responsibility gap: no human/Agent/permission/data/approval/evidence/result binding. MEDIUM contract gap: terminal errors remain free-form messages and unknown-session detection depends on a path-shaped English stderr pattern. MEDIUM robustness gap: no malformed, adversarial, oversized, duplicated or out-of-order stream cases."
+    }
+  ]
+}
