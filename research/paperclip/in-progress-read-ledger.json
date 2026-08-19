@@ -7801,6 +7801,31 @@
       "completionRequirements": [
         "Read lines 1-244 exactly once and assess tenant/authorization scoping, reference resolution and reconstruction, deletion/recovery integrity, dangling/cyclic references, data minimization and Company OS evidence-chain requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-review-attention",
+      "path": "server/src/__tests__/issue-review-attention.test.ts",
+      "lineCount": 243,
+      "sha256": "62518db0f86244424c4fcfecd3bebb5eb10a6c604f82b19c83ed1f477b6c0cdc",
+      "linkedEvidence": { "history": [
+        "678728f650bf2a03f325922db32efb038dbb6ac9 feat: maintained in_review review-path contract + stalled-review actions (#10675)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-243"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-126 treat an Agent-owned in_review Issue with no participant, interaction, approval, monitor, Run, wake or recovery as stalled; a queued idempotent recovery wake changes it to covered and a partial unique constraint rejects duplicate active recoveries.",
+        "Lines 127-210 classify pending interaction, pending approval, scheduled monitor, string-valued human assignee, execution participant, active Run and active Agent-owned recovery as healthy review paths.",
+        "Lines 211-243 allow a queued recovery to reuse the same fingerprint after an earlier wake is marked skipped, preventing a transient terminal attempt from permanently suppressing recovery.",
+        "Strong patterns are an explicit review-liveness projection, exhaustive path labels, active-only idempotency and retry after skipped delivery. Gaps include verifying that the human assignee exists/is authorized/available, distinguishing review from risk approval, binding approval or interaction to exact action/digest/policy version, path age/SLO, multi-reviewer quorum/separation of duties, completed/stale Run or participant state, cross-tenant adversarial fixtures and responsible-human escalation before Agent recovery.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 3 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-243 exactly once and assess review-attention projection, reviewer/owner semantics, tenant scope, stale review detection, human accountability and approval-versus-review separation."
+      ]
     }
   ]
 }

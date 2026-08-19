@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-review-attention",
+    "auditStatus": "COMPLETE",
+    "function": "Embedded-PostgreSQL tests for an Issue-list review-attention projection that marks in-review work covered or stalled based on human/Agent participants, interactions, approvals, monitors, Runs, wakes and recovery actions.",
+    "dependencyDirection": "Vitest -> issueService list projection -> Drizzle/PostgreSQL Issues plus Agents, approvals, interactions, monitors, Runs, wake requests and recovery actions.",
+    "keyDataModels": "Issue in_review state and assignee; reviewAttention state/reason/path kind/responder; execution participant/policy/monitor; pending interaction/approval; active Run/recovery; wake reason/status/idempotency key.",
+    "lifecycle": "Project current review paths -> mark pathless Agent review stalled -> enqueue fingerprinted recovery -> mark covered while active; allow the same fingerprint to retry after a skipped terminal wake.",
+    "testAssessment": "All 3 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage enumerates seven healthy path types, pathless stall detection, active-wake uniqueness and skipped-wake retry. Missing are reviewer identity/membership/availability, approval-to-action binding, age/SLO, quorum and separation of duties, stale/completed paths, concurrency, cross-company attacks and human escalation outcomes.",
+    "designRationale": "Make invisible stalled reviews observable in list projections, accept multiple legitimate continuation mechanisms and avoid duplicate recovery while permitting retry after transient skips.",
+    "companyOsProblem": "Agent Boss needs a truthful queue of reviews and approvals requiring human attention, with accountable ownership, risk policy, deadlines and recovery that cannot be satisfied by unrelated activity.",
+    "companyOsFit": "ADAPT the explicit covered/stalled projection, typed path reasons and active-only recovery idempotency. Split ReviewAttention from ApprovalObligation; require verified principals, role/certification and availability; bind each path to Work/action/digest/contract/policy version; compute due/overdue/escalated states and route unresolved obligations to accountable humans before any Agent wake.",
+    "responsibilityConflict": "Any string human assignee, generic pending approval, active Agent Run or Agent-owned recovery can count as covered without proving the actor is authorized, the approval matches the risky action, or an accountable human remains responsible. This can hide a responsibility gap behind mere system activity.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-review-attention.test.ts:1-243 (SHA-256 62518db0f86244424c4fcfecd3bebb5eb10a6c604f82b19c83ed1f477b6c0cdc)",
+      "git history: 678728f650bf2a03f325922db32efb038dbb6ac9 feat: maintained in_review review-path contract + stalled-review actions (#10675)",
+      "2026-08-19 sandboxed focused Vitest: 3/3 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 3/3 skipped"
+    ],
+    "securityFindings": "CRITICAL semantic gap for Company OS: generic activity is accepted as review coverage without exact action/digest/policy binding. HIGH identity gap: the tested human reviewer is an unverified string. HIGH governance gap: no role, certification, quorum or separation-of-duties check. HIGH verification gap: all real-database tests skipped. MEDIUM liveness gap: no deadline, age or stale-path coverage. POSITIVE: typed review-path projection and retryable active-only recovery keys are valuable operational primitives."
+  }]
+}
