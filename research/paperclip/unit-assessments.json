@@ -9407,18 +9407,23 @@
     },
     {
       "id": "application:server/__tests__/plugin-managed-agents",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed tests for plugin-declared managed Agents: create/resolve by stable resource key, preserve or reset human edits, select a prevalent compatible adapter, generate path-aware instructions, repair bindings and optionally create a hire approval.",
+      "dependencyDirection": "A plugin manifest with agents.managed capability enters host services; host services materialize first-class Agent/config revision/approval rows, plugin resource/entity bindings and instruction files using Company settings/local folders. Plugin authority therefore crosses directly into organizational principal and executable runtime state.",
+      "keyDataModels": "Plugin manifest/capability/Agent declaration; Agent role/title/capabilities/adapter/config/runtime/permissions/budget; Company approval policy; plugin-managed resource/entity binding and metadata marker; instruction template/local folder path; hire_agent approval payload.",
+      "lifecycle": "Reconcile a stable plugin resource key into an Agent; preserve subsequent edits; explicitly reset to manifest; choose an installed fleet adapter; materialize instructions; relink an orphaned metadata marker; optionally leave the created Agent pending board approval.",
+      "testAssessment": "The six scenarios provide useful lifecycle ideas—stable resource keys, non-destructive reconcile, explicit reset, same-Company relink and optional pending approval—but all were skipped locally because embedded Postgres was unavailable. Critical boundaries are missing: negative capability/tenant authorization, signed manifest provenance, concurrent reconcile uniqueness, tampered/duplicate markers, safe update/security-patch policy, reset authorization, approval accept/reject effects, uninstall/orphan/disable behavior, audit records and rollback. Adapter choice is based on fleet popularity rather than verified health/credential/config fit, and generated instructions expose absolute host paths.",
+      "designRationale": "Allow plugins to ship ready-made specialized Agents that can be installed repeatedly without overwriting user customization, while supporting a Company policy that asks the board to approve new Agents.",
+      "companyOsProblem": "Company OS must let Connectors/templates propose reusable Agent roles without allowing extension code to create organizational principals, executable commands, permissions or budgets outside a real human responsibility contract.",
+      "companyOsFit": "REJECT plugin-authoritative Agent creation/reset. Keep only the stable resource-key and declarative proposal concepts. A signed extension may submit an AgentRoleProposal containing complete immutable hashes for connector/package, role, capabilities, executable/model profile, permission/data requests, budget, reporting line and instructions. A qualified human must accept a ResponsibilityContract and exact proposal digest before Company OS creates/binds a Principal. Reconcile must be three-way/versioned, security updates explicit, reset a reviewed change, and uninstall suspend rather than delete until ownership/evidence/data retention is resolved. Adapter selection must use declared capabilities, health, locality and secret availability, never fleet popularity alone.",
+      "responsibilityConflict": "With approval disabled by default, a plugin can directly instantiate an Agent with executable command, permissions and budget. Even the optional approval omits accountable human, reporting owner, responsibility contract and full configuration/action digest. This conflicts directly with Company OS's premise that an Agent cannot assume organizational responsibility and every Agent role must have a real responsible human.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-managed-agents.test.ts:1-365 (SHA-256 f62547533c4ebd42ff5045958ef595c6acb692a15d55746fdb94626deeb76dc5)",
+        "git history: 3c73ed26b514144b831f02361de809008742194d recorded in the read ledger",
+        "2026-08-19 focused Vitest: file discovered; 6/6 tests skipped because embedded Postgres support was unavailable"
+      ],
+      "securityFindings": "CRITICAL authority escalation: a plugin manifest can create an executable Agent principal with permissions and budget when optional board approval is off. CRITICAL approval-binding gap: pending hire approval does not bind the full immutable Agent/connector/permission/budget/responsibility digest. HIGH code-execution risk: manifest adapterConfig contains an executable process command and explicit reset can restore it over user edits. HIGH ownership risk: relink trusts editable Agent metadata without conflict/tamper proof. HIGH host-disclosure risk: generated Agent instructions contain absolute local folder paths. HIGH lifecycle gap: plugin upgrade/disable/uninstall, orphan suspension, security updates and evidence retention are untested. MEDIUM adapter-selection risk: fleet popularity can choose a runtime without proving credentials, health, locality or semantic compatibility. TEST GAP: all database-backed scenarios were skipped locally."
     },
     {
       "id": "application:server/__tests__/plugin-managed-routines",

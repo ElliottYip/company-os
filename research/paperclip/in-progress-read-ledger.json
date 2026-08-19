@@ -9203,6 +9203,35 @@
       "completionRequirements": [
         "Read lines 1-282 exactly once and assess local folder scope/ownership, plugin/Company authorization, path traversal/symlink/canonicalization, create/read/write/delete semantics, quotas/concurrency/audit, managed versus self-hosted placement and Company OS Data Connector fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-managed-agents",
+      "path": "server/src/__tests__/plugin-managed-agents.test.ts",
+      "lineCount": 365,
+      "sha256": "f62547533c4ebd42ff5045958ef595c6acb692a15d55746fdb94626deeb76dc5",
+      "linkedEvidence": { "history": [
+        "3c73ed26b514144b831f02361de809008742194d expand plugin host surface (#5205)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-183",
+        "184-365"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-67 define an agents.managed plugin manifest that can declare Agent identity/role/title/capabilities, executable process command, model profiles, permissions and monthly budget.",
+        "Lines 68-151 build a database host and verify managedReconcile directly creates an Agent from the manifest, binds a stable plugin/company resource key and resolves it later. New-Agent approval defaults off in the fixture.",
+        "Lines 152-183 preserve manual Agent name/command edits on reconcile but explicit managedReset restores manifest values without a tested approval or configuration-diff receipt.",
+        "Lines 184-224 choose the most-used adapter among a declared preference list, potentially overriding first preference based on Company fleet counts; health, credentials and semantic config compatibility are not tested.",
+        "Lines 225-292 materialize plugin-authored Agent instructions into a local file and interpolate absolute local folder/schema paths into Agent-consumed content.",
+        "Lines 293-330 repair a missing plugin binding by trusting a same-Company Agent metadata marker that names plugin/resource identity; duplicate/conflicting/tampered marker cases are absent.",
+        "Lines 331-365 show optional Company policy creates the Agent row in pending_approval plus a hire_agent approval whose payload binds only agentId, sourcePluginKey and managedResourceKey.",
+        "No negative capability check, plugin/Company caller authorization, manifest signature, accountable human/responsibility contract, full config/permission/budget digest, approval accept/reject effect, update/uninstall/orphan lifecycle, idempotent concurrent reconcile, audit activity or rollback is covered. Focused Vitest skipped all 6 tests because embedded Postgres was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-365 exactly once and assess plugin-managed Agent create/update/delete/list ownership, tenant and plugin authorization, principal/role/reporting/permission/budget/adapter changes, uninstall/orphan lifecycle, idempotency/audit/approval and Company OS accountable-human model fit."
+      ]
     }
   ]
 }
