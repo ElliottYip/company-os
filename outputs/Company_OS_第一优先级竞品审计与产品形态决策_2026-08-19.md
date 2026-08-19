@@ -1,11 +1,11 @@
 # Company OS 第一优先级竞品审计与产品形态决策
 
 日期：2026-08-19  
-状态：审计完成；产品实现继续冻结，等待用户确认方向
+状态：审计完成；方向 B 已由产品负责人于 2026-08-19 接受
 
-## 最终建议
+## 已接受的最终方向
 
-选择 **“责任优先的 AI Native Company System of Record + Agent Boss
+产品负责人已选择 **“责任优先的 AI Native Company System of Record + Agent Boss
 执行控制面”**。
 
 Company OS 不应成为 Paperclip 式通用 Agent 编排器，也不应只做 ServiceNow
@@ -36,7 +36,7 @@ Connector 接入；独立中文/双语 Web、粘土品牌和虚拟办公室是�
 | --- | --- | ---: | --- | --- | --- |
 | Paperclip | `213dabab…` / MIT | 4/5 | `NARROW` | 通用工作控制面、迁移/锁/恢复、Plugin、Secrets | 整体基座、schema、Web、generic responsibility |
 | AgentSpace | `0f9da1b…` / Apache-2.0 | 2.5/5 | `NARROW` | 多 CLI router、远程 daemon | Workspace 大聚合、snapshot 双真相、弱审批/数据策略 |
-| StaffDeck | `v0.4.1` `b18aebb…` / AGPL-3.0-only | 3/5 | `PARTNER/NARROW` | durable invocation、国内渠道、SOP/skill | 默认 Fork/复制、unsafe sandbox defaults、弱责任审批 |
+| StaffDeck | `v0.4.1` `b18aebb…` / AGPL-3.0-only | 3/5 | `PARTNER` | durable invocation、国内渠道、SOP/skill | 默认 Fork/复制、unsafe sandbox defaults、弱责任审批 |
 | Provision | `535cdbd…` / MIT | 3/5 | `NARROW` | 云部署、installer、daemon heartbeat、checkout lease | 结果幂等、Secret 下发、事后审批、生产 Docker 默认 |
 
 四个项目均不应整体 Fork。本轮没有复制任何竞品代码。未来复制必须独立批准，
@@ -94,7 +94,7 @@ delivery 与 access audit 的 fail-closed 顺序；Connector trust tiers；migra
 checksum/advisory lock/safety lint/expand-contract；managed/self-hosted 相同的
 compatibility 和数据退出测试。
 
-## 用户确认后的实施顺序
+## 已确认的实施顺序
 
 1. 责任优先领域、attempt fencing、outbox、migration safety；
 2. Connector SDK、Secret/Data/Identity ports、本地执行节点；
@@ -104,4 +104,5 @@ compatibility 和数据退出测试。
 6. focused unit/integration/E2E、类型、构建、边界与安全验证；
 7. 到需要正式制作 3D 角色、场景、骨骼、动画资产时停止。
 
-在用户确认方向 2 前，重叠的通用 Agent 管理和 Pre-3D 产品实现保持冻结。
+方向 2 已确认，审计冻结解除。后续实现必须服务于责任优先架构；正式 3D 角色、
+场景、骨骼和动画资产仍保持冻结，直到 Pre-3D 纵切和全部验证通过。

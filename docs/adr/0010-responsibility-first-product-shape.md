@@ -1,7 +1,8 @@
 # ADR 0010: Responsibility-first Company System of Record
 
-- Status: Proposed — awaiting user confirmation
+- Status: Accepted
 - Date: 2026-08-19
+- Accepted by product owner: 2026-08-19
 
 ## Context
 
@@ -12,7 +13,7 @@ approval, data authorization and evidence lineage its canonical domain.
 Commercial products separately cover registries, AI asset governance, vertical
 workforces and managed FDE deployment, usually inside proprietary ecosystems.
 
-## Proposed decision
+## Decision
 
 Make Company OS a responsibility-first AI Native Company System of Record and
 Agent Boss control plane. It owns organization, human and Agent principals,
@@ -25,7 +26,7 @@ Do not position the product as a generic orchestration runtime or an SMB avatar
 workforce. Those are implementation/reference and experience layers
 respectively. Do not fork any audited competitor as the product base.
 
-## Consequences if accepted
+## Consequences
 
 - Reuse proven execution, migration, Secret and plugin invariants behind
   Company OS-owned ports and schemas.
@@ -33,7 +34,9 @@ respectively. Do not fork any audited competitor as the product base.
   provenance decision for any copied code.
 - Add explicit `outcome_unknown`, attempt fencing, frozen capability snapshots,
   transactional outbox and Secret-access audit ordering to the architecture.
-- Maintain the implementation freeze until the user accepts this ADR.
+- The competitive-audit implementation freeze is lifted. Resume work in the
+  responsibility-first order recorded in the roadmap; formal 3D asset
+  production remains out of scope until the Pre-3D gate passes.
 
 ## Rejected alternatives
 

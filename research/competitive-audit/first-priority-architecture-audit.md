@@ -1,6 +1,7 @@
 # Company OS 第一优先级开源竞品架构审计
 
-状态：决策审计完成，等待用户确认产品方向  
+状态：审计完成；方向 B 已于 2026-08-19 接受
+
 证据截止：2026-08-19  
 范围：Paperclip、AgentSpace、StaffDeck、Provision  
 评价坐标：独立开源、真人—Agent 责任、国内企业/FDE、平等 Connector、
@@ -240,7 +241,7 @@ daemon upgrade/heartbeat、checkout lease 等设计 `ADAPT`，不是 Fork。
 | --- | --- | --- | --- |
 | Paperclip | `NARROW` | 否 | 最佳通用控制面工程参考，不是 Company OS 基座 |
 | AgentSpace | `NARROW` | 否 | 参考多 CLI daemon，不采用 workspace/domain/approval |
-| StaffDeck | `PARTNER`/`NARROW` | 默认否 | 国内生态和 Harness 值得合作/学习；AGPL 阻止随意复制 |
+| StaffDeck | `PARTNER` | 否 | 国内生态和 Harness 值得合作/学习；AGPL 阻止随意复制 |
 | Provision | `NARROW` | 否 | 参考部署/daemon；不采用责任、Secret 和运行契约 |
 
 四个项目都不应整体 Fork。选择性合法复用必须由未来单独 ADR 和 provenance

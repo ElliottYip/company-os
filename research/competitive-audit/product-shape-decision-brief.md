@@ -1,6 +1,7 @@
 # Company OS 产品形态决策简报
 
-状态：建议已形成，等待用户确认；重叠实现继续冻结  
+状态：方向 B 已由产品负责人于 2026-08-19 接受
+
 日期：2026-08-19
 
 ## 一句话结论
@@ -71,7 +72,7 @@ invocation 与国内渠道；AgentSpace 的多 CLI daemon；Provision 的云部�
 
 | 产品 | 应学习的边界 | 不跟随的边界 | 判断 |
 | --- | --- | --- | --- |
-| Workday ASOR | delegate/ambient 身份分离、skill-scoped ASU、真人/Agent workforce record | Workday HCM/Finance tenant 锁定 | `PARTNER`/`REFERENCE` |
+| Workday ASOR | delegate/ambient 身份分离、skill-scoped ASU、真人/Agent workforce record | Workday HCM/Finance tenant 锁定 | `PARTNER` |
 | Microsoft Agent 365 | owner/sponsor/manager registry，Entra/Purview/Defender 治理 | per-user Microsoft license 与 M365 数据引力 | `PARTNER` |
 | ServiceNow AI Control Tower | AI asset/identity/model/MCP inventory、steward approval、CMDB/ROI | ServiceNow workflow/CMDB 锁定 | `PARTNER` |
 | Salesforce Agentforce | action metering、CRM action/channel deployment | CRM-native proprietary runtime | `NARROW` |
@@ -79,7 +80,7 @@ invocation 与国内渠道；AgentSpace 的多 CLI daemon；Provision 的云部�
 | Sintra | 零门槛 named team、共享 context、温暖入口 | 弱企业责任/权限/部署 | `NARROW` |
 | Lindy | 消息入口、默认草稿审批、企业 SSO/SCIM/audit | 个人助理/inbox 中心模型 | `NARROW` |
 | Artisan / 11x | audit→design→deploy→scale 的 FDE 与白手套交付 | 单一 GTM vertical、代人发送与替代员工叙事 | `NARROW` |
-| OpenAI Presence | job-scoped permissions、simulation/eval、人工批准 rollout、持续改进 | OpenAI-only managed limited GA | `PARTNER`/`REFERENCE` |
+| OpenAI Presence | job-scoped permissions、simulation/eval、人工批准 rollout、持续改进 | OpenAI-only managed limited GA | `PARTNER` |
 
 这些结论基于截至 2026-08-19 的官方公开材料；未公开的价格、schema、数据
 驻留、退出能力和责任合同仍明确标为 unknown，不从营销文案推断实现。
@@ -89,7 +90,7 @@ invocation 与国内渠道；AgentSpace 的多 CLI daemon；Provision 的云部�
 停止自行扩张：第二套通用 Task/Run scheduler、通用 Plugin host、厂商专属
 session 进入 core、整站复制/汉化竞品 UI、在 3D 前制作角色/场景资产。
 
-用户确认方向 B 后恢复，顺序为：
+方向 B 已确认，按以下顺序恢复：
 
 1. 固化责任优先领域模型、attempt fencing、outbox 和 migration safety；
 2. 定义 Connector SDK、Secret/Data/Identity ports 和本地执行节点协议；
@@ -99,7 +100,7 @@ session 进入 core、整站复制/汉化竞品 UI、在 3D 前制作角色/场�
 6. 全部 focused unit/integration/E2E、类型、构建和边界守卫通过后停在正式
    3D 角色、场景、骨骼和动画资产之前。
 
-## 决策请求
+## 决策记录
 
-请用户确认是否接受方向 B。确认前，重叠的通用 Agent 管理与 Pre-3D 产品
-实现继续冻结；审计文档、许可证/provenance 和必要的安全修正可以继续。
+产品负责人于 2026-08-19 接受方向 B。竞品审计阶段冻结解除，但通用能力只在
+责任优先架构需要时实现；正式 3D 角色、场景、骨骼和动画资产仍在禁入线之后。

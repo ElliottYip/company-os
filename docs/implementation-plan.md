@@ -1,23 +1,21 @@
 # Phase-one implementation plan
 
-## Active audit gate — market and full-repository evidence
+## Completed audit gate — product direction accepted
 
-`docs/competitive-audit-charter.md` and ADR 0009 expand the active goal. Before
-overlapping generic Agent-management work resumes, complete the commercial
-matrix, Tier-1 full audits of AgentSpace, StaffDeck, Paperclip and Provision,
-and Tier-2 code audits of Symphony, AgentArea, HumanLayer ACP, Agent Room,
-OpenWorker, Agent Control and Mesa.
+`docs/competitive-audit-charter.md`, ADR 0009 and the first-priority audit record
+the completed decision phase. Paperclip, AgentSpace, StaffDeck and Provision
+were audited at fixed pins through key modules and end-to-end critical paths;
+commercial public boundaries were compared; Tier-2 is paused.
 
-Each repository must be pinned by full SHA and license, enumerate every tracked
-path, close every first-party auditable unit, and assess schema/migrations, API,
-events, execution, identity/permission/approval, secrets/audit, connectors,
-deployment/cloud, Web/mobile, tests/configuration and commit/release history.
-For each production capability, name one best reference and record the rejected
-alternatives; do not compose several implementations into a shared owner.
+ADR 0010 accepts the responsibility-first Company System of Record + Agent Boss
+direction. The old per-unit zero-gap gate is archived evidence, not a delivery
+blocker. One best reference remains assigned per compared capability; no
+competitor becomes a shared runtime owner.
 
-During this gate, generic Agent/Goal/Task/Run/Budget/Artifact/Heartbeat,
-scheduling, runtime, plugin-host and connector-lifecycle expansion is frozen.
-Existing independent and differentiated work remains intact.
+The audit freeze is now lifted. Resume only work that advances mixed human/Agent
+responsibility, exact approval/evidence, data contracts, neutral Connectors,
+Agent Boss, independent Web/FDE templates or Pre-3D contracts. Formal 3D asset
+production remains frozen.
 
 ## Architecture gate — independent open-source product
 

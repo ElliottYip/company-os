@@ -1,14 +1,16 @@
 # Paperclip whole-repository audit protocol
 
-Status: active gate; Company OS large-scale implementation is frozen  
+Status: archived fine-grained evidence protocol; not an active product gate
+
 Pin: `v2026.817.0` / `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`
 
 ## Purpose
 
-Audit all tracked Paperclip material against the Company OS product charter,
-not against a preselected feature list. Existing nine-module findings are
-provisional depth notes. They do not close this gate until the repository-wide
-coverage proof is complete.
+This protocol preserves how Paperclip's fine-grained evidence was collected. On
+2026-08-19 the product owner narrowed the decision audit to key modules and
+end-to-end critical paths and accepted product direction B. The 704 completed
+units remain trusted; the remaining 856 units are not required for the current
+or next delivery gate.
 
 The evaluation axes are:
 
@@ -88,5 +90,6 @@ different plan.
 - periodic competitive radar with no automatic merge, runtime dependency or
   compatibility obligation.
 
-Only after all units are complete, the zero-gap guard passes, and the findings
-are reconciled with the product charter may the implementation plan resume.
+The `--complete` guard still proves the stronger historical claim “all 1,560
+fine-grained units are complete.” It is intentionally not satisfied and must
+not be used to block the accepted responsibility-first implementation plan.

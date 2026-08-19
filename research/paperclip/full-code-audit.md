@@ -1,6 +1,7 @@
 # Paperclip fixed-SHA competitive code audit
 
-Status: provisional nine-area depth review; whole-repository audit remains open  
+Status: completed key-module/critical-path audit; fine-grained ledger archived
+
 Audit date: 2026-08-18  
 Repository: `https://github.com/paperclipai/paperclip`  
 Tag: `v2026.817.0`  
@@ -13,12 +14,13 @@ upstream-sync plan. Company OS does not install, call, embed, or inherit
 Paperclip. The checkout at `work/upstream-audit/paperclip` is read-only research
 input and is excluded from every Company OS product build and deployment.
 
-This document records early code-level findings and may not be treated as the
-final repository audit. The zero-gap completion authority is
-`repository-inventory.json` plus `unit-assessments.json` under
-`repository-audit-protocol.md`.
+This document is the Paperclip deep-audit input to the completed first-priority
+decision. The separate fine-grained ledger remains a trusted appendix with 704
+of 1,560 units complete; the narrowed 2026-08-19 completion model does not
+require clearing the remaining 856 units. The final cross-project authority is
+`research/competitive-audit/first-priority-architecture-audit.md`.
 
-## Provisional executive judgment
+## Executive judgment
 
 Paperclip is a large, actively developed product with mature operational
 patterns. At the audited pin it contains 4,464 tracked files, 111 schema files,
