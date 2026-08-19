@@ -10024,18 +10024,23 @@
     },
     {
       "id": "application:server/__tests__/redaction",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for event/record/text redaction across sensitive keys, Secret binding shapes, JWT/Bearer/GitHub token patterns, JSON and shell assignments, command strings and typed argv metadata.",
+      "dependencyDirection": "Domain events and adapter/runtime command metadata enter a server redaction module before persistence or exposure; the module returns a sanitized event projection while preserving selected audit decision metadata and opaque Secret references.",
+      "keyDataModels": "Event payload record; env binding plain versus secret_ref; authorization reason/header; unstructured text; command, commandArgs/argv and resolved-command environment; redacted marker.",
+      "lifecycle": "Before recording or exposing an event, sanitize structured keys and context-sensitive command fields, then scan unstructured strings for known credential patterns while retaining operationally useful non-secret metadata.",
+      "testAssessment": "All 8 focused tests pass and this suite covers substantially more value patterns and runtime metadata than the middleware-only redactor. It usefully preserves authorization reasons and Secret references. Its behavior still depends on caller field naming: argv is command-sensitive while args is deliberately untouched. No hostile size/object/stream, broad credential corpus, false-positive or policy-version evidence is tested, and coexistence with the second redactor invites drift.",
+      "designRationale": "Keep audit/runtime events useful for diagnosis while removing common credentials embedded in configuration, commands and free-form process metadata that key-only HTTP redaction would miss.",
+      "companyOsProblem": "Agent tool activity and evidence frequently contain command lines, environment data and provider outputs; Company OS must expose enough context for human accountability without leaking credentials or unauthorized enterprise data.",
+      "companyOsFit": "ADAPT this as the stronger Paperclip reference for one Company OS canonical redaction/projection engine; do not maintain a second independent middleware policy. Drive behavior from typed sink schemas and data classifications, with bounded value detectors as defense in depth. Treat args/argv/command/tool inputs consistently through declared semantics. Preserve protected originals and policy/version/provenance in Audit/Evidence storage; provide redacted views to Web, telemetry and Connectors. Keep the Data Egress Firewall as a separate pre-send authorization decision.",
+      "responsibilityConflict": "Sanitized event text is a derived view, not the original evidence. If redaction is unversioned or field-name-dependent, reviewers may see incomplete context or leaked credentials without knowing why. Responsibility records need immutable originals, authorized access and a reproducible redaction policy identity.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/redaction.test.ts:1-150 (SHA-256 31c22e4c42564bb3263e43e37bd3145f86be28fd0a4a304097688caf61188c83)",
+        "git history: five commits from 73eb23734f25c570d88665e672f80d740797c632 through f91a6e27c0feb7f92dcde981c9a741b869484e83 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file passed, 8/8 tests passed"
+      ],
+      "securityFindings": "HIGH schema-confusion risk: argv is sanitized as command metadata while generic args is explicitly left unchanged, so caller naming can leak a Secret. HIGH evasion gap: no broad corpus for quoting, whitespace, Unicode, encoded values, PEM/cloud/database credentials or chunked streams. HIGH availability/object gap: cycle, depth, breadth, string length, getters and uncommon types are untested. HIGH governance gap: no policy version, redaction reason or protected-original linkage is emitted. MEDIUM architecture risk: a second redaction implementation with different coverage can drift. POSITIVE: common structured and unstructured credential shapes, commands and non-string Secret flag values are covered while authorization reasons remain visible."
     },
     {
       "id": "application:server/__tests__/remote-http-endpoint-guard",

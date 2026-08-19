@@ -9732,6 +9732,39 @@
       "completionRequirements": [
         "Read lines 1-100 exactly once and assess recursive redaction coverage, key/value/URL/header/JWT/stack handling, cycles/depth/size/types, false positives, immutable input, telemetry/audit/evidence use and Company OS sensitive-data firewall fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/redaction",
+      "path": "server/src/__tests__/redaction.test.ts",
+      "lineCount": 150,
+      "sha256": "31c22e4c42564bb3263e43e37bd3145f86be28fd0a4a304097688caf61188c83",
+      "linkedEvidence": { "history": [
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 [codex] Roll up May 17 branch changes (#6210)",
+        "4272c1604dd17955f37b4cc5db6672dffe75709c Add ACPX local adapter runtime (#4893)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e [codex] Add runtime lifecycle recovery and live issue visibility (#4419)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-150"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-43 assert recursive key-based sanitization of apiKey/AUTH_TOKEN and plain Secret values while preserving safe fields, API URLs and secret_ref IDs.",
+        "Lines 45-55 redact a JWT-shaped value under a non-sensitive key.",
+        "Lines 57-77 wrap null/object event payloads and preserve an authorization decision reason while redacting an authorization header.",
+        "Lines 79-107 redact Bearer, JSON/escaped JSON, shell environment assignments, GitHub token and JWT shapes from multiline unstructured text.",
+        "Lines 109-134 redact secrets in command strings, commandArgs flags/values and resolved-command env while retaining safe command material.",
+        "Lines 136-143 replace a non-string object following a Secret flag rather than descending into it.",
+        "Lines 145-150 deliberately leave a generic args array untouched while treating argv as command arguments.",
+        "No immutability, cycle/depth/breadth/size, Error/stdout/stderr/tool-result, URL/cookie/PEM/database URI/cloud key, Unicode/case/whitespace/Windows quoting, split/chunked stream, encoded/encrypted value, false-positive, policy version/reason, secret_ref inventory sensitivity or dual-redactor consistency test is present.",
+        "Focused Vitest passed all 8 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-150 exactly once and assess domain redaction targets, recursive/key/value coverage, adapter/session/config leakage, evidence integrity, serialization, cycles/types and Company OS API/Connector projection fit."
+      ]
     }
   ]
 }
