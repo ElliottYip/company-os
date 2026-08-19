@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/merged-pr-confirmation-sweep",
+      "auditStatus": "COMPLETE",
+      "function": "Parser and database sweep tests that infer GitHub merge-confirmation cards from free text, resolve external PR state, mark all-merged confirmations accepted, wake the assignee and audit a system actor.",
+      "dependencyDirection": "Issue interaction service reads pending confirmation rows, calls an injected GitHub PR-state resolver, mutates interaction state/activity and invokes heartbeat wakeup; parsing helpers and cache are internal utility boundaries.",
+      "keyDataModels": "GitHub host/owner/repo/PR number; request_confirmation title/summary/payload/target/toolAction; resolver policy; pending/accepted interaction; Issue/Agent/Goal; wake idempotency key and activity receipt.",
+      "lifecycle": "Discover candidate confirmation text; reject governed or unrelated actions; normalize/dedupe PR references; query cached external merge state; auto-accept when all merged; audit system actor and wake assignee.",
+      "testAssessment": "Six pure parser/cache tests pass; the single embedded-PostgreSQL sweep test skipped locally. Coverage includes duplicate refs, merge-intent requirement, document/tool-action exclusions, extra governed clauses, mixed-open PRs, two resolver policies, system audit and wake idempotency. Missing are typed repository binding, human authorization preservation, repeat/concurrent sweep CAS, external resolver failures/rate limits, cache TTL, merge SHA/evidence, repository rename/deletion, revert and multilingual/adversarial text.",
+      "designRationale": "Recover workflow liveness when a requested PR merge occurred externally but the pending confirmation card was never manually resolved.",
+      "companyOsProblem": "Company OS must observe external delivery facts and reconcile work state without rewriting whether an accountable human authorized a high-risk action.",
+      "companyOsFit": "REIMPLEMENT as two separate records: ExternalDeliveryObserved and ApprovalDecision. Require a typed repository Connector reference, tenant-scoped installation, PR ID, merge commit SHA/tree digest, provider-signed or independently fetched evidence, observedAt and evidence digest. An already-merged action leaves an unapproved board-only request pending/violated and opens a human review; it never becomes accepted by inference. Only a pre-existing digest-bound human ApprovalDecision can authorize execution. Use transactional outbox, CAS/idempotency, cache TTL and immutable reconciliation outcomes. Do not parse free prose to define governed actions.",
+      "responsibilityConflict": "The system actor converts a board_only pending request into accepted based solely on external state. This asserts approval that the accountable human never gave and collapses evidence of occurrence into evidence of authorization—the exact distinction Company OS exists to preserve.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/merged-pr-confirmation-sweep.test.ts:1-319 (SHA-256 6bcba4cc72f1ef2bb862015f303a4afd218187e2b7754fd1bf12d96dab87e941)",
+        "git history: 72b509c89539b31e421086c782346635c5d0517b recorded in the read ledger",
+        "2026-08-19 focused Vitest: 6 passed and 1 skipped because embedded PostgreSQL was unavailable"
+      ],
+      "securityFindings": "CRITICAL approval forgery semantics: external PR merge state causes a board_only confirmation to become accepted by a system actor. CRITICAL intent risk: high-risk action classification is inferred from free-form English text and exclusion keywords. HIGH evidence gap: no merge commit SHA/tree digest, provider receipt/signature or repository installation binding. HIGH confused-deputy risk: arbitrary GitHub owner/repo references are not shown constrained to an approved tenant Connector. HIGH consistency gap: repeat/concurrent sweep CAS and wake/outbox atomicity are untested. MEDIUM availability gap: cache TTL, resolver failure/rate limiting and stale-state handling are absent."
+    }
+  ]
+}

@@ -8710,6 +8710,31 @@
       "completionRequirements": [
         "Read lines 1-357 exactly once and assess fail-closed parsing, schema/version, secret handling, immutable versus mutable overlay, tenant/profile scope, managed sandbox provisioning, upgrade/rollback and Company OS managed-cloud/self-hosted configuration separation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/merged-pr-confirmation-sweep",
+      "path": "server/src/__tests__/merged-pr-confirmation-sweep.test.ts",
+      "lineCount": 319,
+      "sha256": "6bcba4cc72f1ef2bb862015f303a4afd218187e2b7754fd1bf12d96dab87e941",
+      "linkedEvidence": { "history": [
+        "72b509c89539b31e421086c782346635c5d0517b recognize delivered workspaces and reap terminal worktrees (#10908)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-159",
+        "160-319"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-137 bound a shared PR cache, parse/deduplicate GitHub URL and owner/repo#N text, require inferred merge intent, exclude document/tool-action targets and reject extra governed-action clauses such as deploy or erase.",
+        "Lines 138-319 seed six pending confirmation cards and sweep them using a mocked external PR-state resolver. Cards referencing only merged PRs are changed to accepted and wake the assignee with a stable idempotency key, including a board_only card and a board_or_agents card; mixed-open, no-reference, tool-action and extra-action cards stay pending.",
+        "Positive mechanics are bounded cache, typed normalized PR references, all-references-merged gating, idempotent wake key and system audit actor. However, external merge observation retroactively satisfies a human board-only approval, conflating occurrence with authorization. Free-text intent/governed-action detection is brittle, repository/Connector allowlisting and merge-commit digest are absent, and concurrent sweeps/CAS, repeated sweep, resolver failure/rate limits, stale cache, renamed/deleted repositories and post-merge rollback are untested.",
+        "Focused Vitest passed 6 pure tests and skipped the 1 embedded-PostgreSQL sweep test because that dependency was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-319 exactly once and assess external PR merge evidence, repository/tenant binding, idempotent sweep, race/retry and rollback, workspace cleanup safety, responsible-human confirmation, immutable artifact digest and Company OS delivery-evidence semantics."
+      ]
     }
   ]
 }
