@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/resource-memberships-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres route/service tests for per-human project/Agent join-left and project/Agent/document star preferences, including idempotency, activity logging, terminal-resource filtering and cross-Company concealment.",
+      "dependencyDirection": "A session board actor uses self-only HTTP routes; resource-membership service validates Company/resource/user identity; preference tables feed sidebar projections and activity log, with document foreign-key cascade.",
+      "keyDataModels": "Board user and active Company membership role; project/Agent/document; per-user project/Agent membership state joined/left; per-user starredAt for all resource types; activity log action/details; archivedAt and Agent terminated status.",
+      "lifecycle": "Default an absent preference to joined; leave/rejoin resources; star/unstar idempotently; hide terminal resources from star projections; reject Agent and cross-Company callers/targets; cascade document preference on deletion.",
+      "testAssessment": "The 13 source-level cases cover useful self-service, non-enumerating tenant denial, direct-service user binding, activity idempotency, terminal resources and concurrent document star/unstar pairs. They were skipped locally because embedded PostgreSQL is unavailable. Authentication is injected rather than integrated, and suspended users, mismatched Company context, scale, retention and the semantic separation from authorization are not asserted.",
+      "designRationale": "Let each human curate a high-signal sidebar and opt out of resources without requiring administrator actions, while keeping preference changes attributable and preventing Agents or other users from modifying them.",
+      "companyOsProblem": "Agent Boss and employees need personal navigation/following preferences across a large organization, but these preferences must never be confused with legal organization membership, access permission, assignment, accountable ownership or Agent capability.",
+      "companyOsFit": "ADAPT the self-only, idempotent, cross-tenant-concealing and terminal-resource behavior as a PersonalResourcePreference projection. Rename joined/left to followed/hidden or subscribed/unsubscribed and star to pinned; keep it outside Organization/Principal, Permission Grant, Data Authorization and responsibility aggregates. Bind user identity through IdentityPort session claims, handle suspension/deletion and set clear activity-retention/privacy policy. Make default-follow behavior an explicit Company/user policy rather than an implicit missing-row grant.",
+      "responsibilityConflict": "Calling a UI preference membership can imply access or organizational responsibility that it does not provide. A person hiding or starring an Agent/project must not change who is accountable, who may approve, or which data/permissions an Agent can use; those remain explicit versioned contracts.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/resource-memberships-routes.test.ts:1-489 (SHA-256 c391c7056eaa91b9e1fa109ffa55ce63fdc16aaa2f80d4a3a6f82b6e0b3a1af2)",
+        "git history: three commits from 9aea3e3d35fe47a745857b91c392da5b3fc0ae17 through c111ee4cb3312077ce4df7b128002079345c083e recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file and 13 tests skipped because embedded PostgreSQL support was unavailable; no pass claimed"
+      ],
+      "securityFindings": "CRITICAL semantic risk if reused as authorization: absent rows default to joined and viewer self-service changes state, proving this is navigation preference rather than a permission grant. HIGH identity gap: injected user-1 session actor does not prove IdentityPort binding, suspension or session audience. HIGH lifecycle/privacy gap: user deletion, preference/activity retention and archived/terminated row cleanup are untested. MEDIUM race/scale gap: only document pairs exercise concurrent updates; pagination and large organizations are absent. POSITIVE: Agent-key access is forbidden, service rejects another userId, cross-Company targets use non-enumerating 404s and repeated mutations avoid duplicate activity."
+    }
+  ]
+}

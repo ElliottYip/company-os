@@ -9793,6 +9793,43 @@
       "completionRequirements": [
         "Read lines 1-183 exactly once and assess managed-update rerun survival, configuration/Secret preservation, overwrite/delete boundaries, atomicity, rollback, symlink/path handling, permissions, failure recovery and Company OS managed/self-hosted upgrade fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/resource-memberships-routes",
+      "path": "server/src/__tests__/resource-memberships-routes.test.ts",
+      "lineCount": 489,
+      "sha256": "c391c7056eaa91b9e1fa109ffa55ce63fdc16aaa2f80d4a3a6f82b6e0b3a1af2",
+      "linkedEvidence": { "history": [
+        "c111ee4cb3312077ce4df7b128002079345c083e feat(server): add per-user document stars (#9952)",
+        "903886bc7940eefde2e4139c9c5403b2fe173101 [codex] Add starred resource sidebar controls (#9085)",
+        "9aea3e3d35fe47a745857b91c392da5b3fc0ae17 [codex] Add resource membership controls (#6677)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-163",
+        "164-326",
+        "327-489"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-55 gate on embedded PostgreSQL, define a session board actor with active Company membership/role and mount real resource-membership routes.",
+        "Lines 56-162 create two Companies, active/archived/cross-Company projects, active/terminated/cross-Company Agents and local/cross-Company documents, then begin the default-state case.",
+        "Lines 163-181 make absence of preference rows mean joined and return empty membership/star maps.",
+        "Lines 183-216 allow a viewer to leave their own project idempotently, persist one user-scoped row and log exactly one attributed activity.",
+        "Lines 218-268 make repeated project starring idempotent with stable starredAt and one activity; leaving clears the star and records a second action.",
+        "Lines 270-326 make starring a left Agent implicitly rejoin it, then begin idempotent Agent unstar behavior.",
+        "Lines 327-336 finish Agent unstar and assert only the initial star plus first unstar are logged.",
+        "Lines 338-387 retain archived/terminated membership rows but omit them from starred sidebar projections and reject new stars with 404.",
+        "Lines 389-430 reject Agent-key actors and cross-Company project/Agent targets, and direct service mutation for another user.",
+        "Lines 432-477 concurrently star/unstar a document idempotently, cascade its preference row on document deletion and record three activities.",
+        "Lines 479-489 return the same Document not found 404 for a cross-Company document and persist nothing.",
+        "No unauthenticated/suspended/inactive Company membership, mismatched URL Company, session-to-user proof, user deletion, high concurrency/transaction retry beyond document pairs, activity retention/privacy, pagination/scale, archived-state cleanup or explicit distinction from authorization grants is tested.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and all 13 tests were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-489 exactly once and assess resource membership/star authorization, authenticated human binding, tenant/resource isolation, role grant/revoke lifecycle, owner lockout, audit attribution, idempotency/concurrency, enumeration and Company OS Organization/Principal/Permission ports fit."
+      ]
     }
   ]
 }
