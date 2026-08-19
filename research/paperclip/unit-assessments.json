@@ -9614,18 +9614,23 @@
     },
     {
       "id": "application:server/__tests__/plugin-telemetry-bridge",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for capability-gated plugin telemetry forwarding with host-added plugin namespace and restricted event-name syntax.",
+      "dependencyDirection": "A plugin RPC handler with declared capabilities calls host telemetry services; the host prefixes the plugin key and forwards plugin-provided dimensions into the process-global telemetry client.",
+      "keyDataModels": "Plugin ID/key; telemetry.track capability; lowercase slug eventName; arbitrary dimensions map; namespaced dynamic event; stable CAPABILITY_DENIED RPC error.",
+      "lifecycle": "Check capability; validate event-name syntax; add plugin namespace; obtain global telemetry client; forward dimensions.",
+      "testAssessment": "All four tests pass. Namespace prefixing, a narrow event-name grammar and explicit capability denial are sound baseline controls. The actual data boundary remains open: dimensions are arbitrary and forwarded unchanged, with no registered schema, type/field/size/cardinality/rate limits, PII/secret scanning, tenant/run attribution, consent, sink locality, backpressure or failure semantics.",
+      "designRationale": "Let plugins contribute product telemetry without colliding with first-party event names while requiring an explicit manifest capability.",
+      "companyOsProblem": "Company OS needs observable extensions across managed-cloud and self-hosted enterprises without exporting employee, Agent, prompt, evidence, credential or customer data through free-form telemetry.",
+      "companyOsFit": "ADAPT namespace and capability gating only. Require each telemetry event to be registered in a signed manifest with versioned, typed, low-cardinality dimension allowlist and classification. Inject trusted plugin/version/deployment profile locally; never accept tenant/principal/run attribution from plugin fields. Reject unknown/high-cardinality or content-bearing values, secrets and identifiers by policy; enforce size/rate budgets and local aggregation. Self-hosted defaults to local/no external sink, with explicit enterprise opt-in, regional routing, retention/deletion controls and audit of export configuration.",
+      "responsibilityConflict": "Free-form telemetry can silently export data produced by humans or Agents outside the work's data authorization contract, leaving no accountable approver or evidence of what was disclosed.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-telemetry-bridge.test.ts:1-120 (SHA-256 bec1db37989cf1bf4602aebbf51c92f8a35c18bc56d02777d9f711073056bd43)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 and 8a93a0de4cba3ee37d564c83f58d6b7732b3cd62 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "POSITIVE: explicit telemetry capability, plugin namespace and constrained event-name grammar reduce accidental collision; missing capability returns a stable RPC code. CRITICAL data-export gap for Company OS: arbitrary dimensions are forwarded to a global telemetry client without classification or redaction. HIGH privacy/locality gap: no tenant consent, self-hosted opt-out, residency, retention or deletion controls. HIGH abuse gap: no size, rate or high-cardinality budget. MEDIUM attribution gap: trusted plugin version/profile is not demonstrated and plugin dimensions could claim misleading source fields. MEDIUM resilience gap: sink failure, buffering/backpressure and offline behavior are untested."
     },
     {
       "id": "application:server/__tests__/plugin-tenant-isolation",

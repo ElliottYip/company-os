@@ -9436,6 +9436,32 @@
       "completionRequirements": [
         "Read lines 1-297 exactly once and assess SDK harness fidelity, capability denial, human attribution, deleted-content redaction, interaction/approval state and digest semantics, attachment/data isolation, deterministic testing and Company OS extension conformance harness fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-telemetry-bridge",
+      "path": "server/src/__tests__/plugin-telemetry-bridge.test.ts",
+      "lineCount": 120,
+      "sha256": "bec1db37989cf1bf4602aebbf51c92f8a35c18bc56d02777d9f711073056bd43",
+      "linkedEvidence": { "history": [
+        "8a93a0de4cba3ee37d564c83f58d6b7732b3cd62 generated client telemetry types (#8818)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-120"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-20 mock the global telemetry client and construct plugin host/client handlers.",
+        "Lines 21-48 require plugin event names to be prefixed as plugin.<pluginKey>.<eventName> and forward arbitrary dimensions unchanged.",
+        "Lines 49-66 reject bare event names outside lowercase slug syntax.",
+        "Lines 67-120 reject telemetry.track without telemetry.track capability using a stable RPC code and allow it when declared.",
+        "No registered event/dimension schema, field/type/cardinality/size/rate limits, PII/secret/content redaction, tenant/run/source injection, delivery failure/backpressure, consent/opt-out, retention/residency or self-hosted sink behavior is covered. Focused Vitest passed 4/4."
+      ],
+      "completionRequirements": [
+        "Read lines 1-120 exactly once and assess telemetry event schema/source attribution, tenant/run/plugin spoofing, sensitive payload redaction, volume/rate/order/delivery, opt-out/retention/locality and Company OS managed/self-hosted observability fit."
+      ]
     }
   ]
 }
