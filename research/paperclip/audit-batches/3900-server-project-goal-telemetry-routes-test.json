@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/project-goal-telemetry-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Route-level tests that successful project and goal creation emit stable product-analytics event names with a minimal structured goal-level dimension.",
+      "dependencyDirection": "Authenticated board actor and access/service mocks drive HTTP create routes; after creation the route calls a global telemetry client independently of the activity-log mock.",
+      "keyDataModels": "Board actor with Company IDs; project ID/company/name/status; goal ID/company/title/level/status; telemetry event name and dimensions.",
+      "lifecycle": "Accept a create request, authorize and persist through mocked services, return success, then emit project.created or goal.created product telemetry.",
+      "testAssessment": "Both positive cases pass outside the restricted sandbox and prove stable event names plus minimal dimensions. Heavy service and authorization mocking means the file does not establish tenant isolation or failure semantics. There are no negative cases for denied/invalid/failed/duplicate creation, no delivery/idempotency behavior and no privacy, consent, residency or self-hosted assertions.",
+      "designRationale": "Measure adoption of two core objects without sending user-authored project or goal content; retain a low-cardinality goal-level dimension for product analysis.",
+      "companyOsProblem": "Managed Company OS may need privacy-preserving product analytics, while self-hosted enterprises need explicit locality/disablement and the responsibility chain requires a separate authoritative audit/evidence channel.",
+      "companyOsFit": "ADAPT the stable low-cardinality event names and default exclusion of titles/descriptions. Define a typed analytics schema with deployment-profile policy, consent/opt-out, tenant pseudonymization, retention, bounded dimensions and failure isolation. Keep analytics sinks optional and local-capable; emit authoritative organization, approval and responsibility events through the audit/evidence port and never reconstruct them from telemetry.",
+      "responsibilityConflict": "The test separates telemetry and activity-log mocks but does not establish a semantic boundary. Product analytics is lossy and policy-controlled, so treating project.created or goal.created as proof of who proposed or accepted a goal would erase human identity, authority and evidence context.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/project-goal-telemetry-routes.test.ts:1-165 (SHA-256 80f9aef277ab3f9a727d140f8ebb2fccb77ce4d36c4e35c306df989e15619095)",
+        "git history: five commits from 73eb23734f25c570d88665e672f80d740797c632 through 8a93a0de4cba3ee37d564c83f58d6b7732b3cd62 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/2 passed solely due Supertest TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "HIGH privacy/governance gap: no consent, opt-out, residency, retention or self-hosted sink behavior is tested. HIGH attribution gap: Company/actor/deployment/source identifiers and an explicit prohibition on using telemetry as audit evidence are absent. MEDIUM delivery gap: duplicate requests, retries, outbox/exactly-once expectations and sink failure isolation are untested. MEDIUM authorization-observability gap: only an allow-all mock path is exercised, so denied/failed operations could be miscounted. POSITIVE: user-authored names, titles and descriptions are not placed in the asserted telemetry payload."
+    }
+  ]
+}

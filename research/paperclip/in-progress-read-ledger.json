@@ -9523,6 +9523,36 @@
       "completionRequirements": [
         "Read lines 1-740 exactly once and assess productivity review triggers, task/recovery idempotency, concurrency, cancellation, human accountability, bounded loops, evidence, cost/budget controls, lifecycle persistence and Company OS Agent Boss fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/project-goal-telemetry-routes",
+      "path": "server/src/__tests__/project-goal-telemetry-routes.test.ts",
+      "lineCount": 165,
+      "sha256": "80f9aef277ab3f9a727d140f8ebb2fccb77ce4d36c4e35c306df989e15619095",
+      "linkedEvidence": { "history": [
+        "8a93a0de4cba3ee37d564c83f58d6b7732b3cd62 Implement generated client telemetry types (#8818)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+        "9a8d2199492654930ba0864dd5c0757163998649 [codex] Stabilize tests and local maintenance assets (#4423)",
+        "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-165"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-75 mock project/goal/access/environment/secret/activity/telemetry services and route runtime dependencies.",
+        "Lines 76-103 create an Express app with a local_implicit board actor scoped to company-1 and mount either the project or goal route plus the real error handler.",
+        "Lines 104-143 reset modules, grant every mocked access decision, return minimal created project/goal objects and install a telemetry track spy.",
+        "Lines 145-165 assert successful project creation tracks project.created with no dimensions and successful team-goal creation tracks goal.created with only goal_level.",
+        "No denied/failed/duplicate request, exactly-once/outbox, tenant/actor/deployment attribution, content/secret redaction, consent/opt-out, self-hosted locality, retention, delivery failure or telemetry-versus-audit separation assertion is present.",
+        "Sandboxed focused Vitest failed 2/2 solely because Supertest TCP listen was denied with EPERM; approved unsandboxed focused Vitest passed 2/2."
+      ],
+      "completionRequirements": [
+        "Read lines 1-165 exactly once and assess project/goal telemetry authorization, tenant isolation, aggregation semantics, sensitive metadata, stable API/error codes, time windows, empty/deleted state and Company OS projection fit."
+      ]
     }
   ]
 }
