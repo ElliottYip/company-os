@@ -8715,18 +8715,23 @@
     },
     {
       "id": "application:server/__tests__/low-trust-red-team-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "End-to-end low-trust adversarial route suite covering Issue/resource visibility, writes, secret-bearing Agent configuration, skill-test tokens, side effects, quarantined output, higher-trust wake handoff and human promotion.",
+      "dependencyDirection": "Exercises real Agent and Issue HTTP routes, PostgreSQL schema, access policy, heartbeat service and a controlled WebSocket Agent gateway; it crosses control-plane, persistence, runtime and projection boundaries.",
+      "keyDataModels": "Principal/Agent and Run execution policy; trust boundary and preset; Issue tree/Project; comment/document/revision/annotation/attachment/external object/work product; Approval; wake/run/activity; sourceTrust quarantine/promotion provenance; membership and permission grants.",
+      "lifecycle": "Establish a low-trust review scope; read/write allowed resources; deny adjacent/control-plane resources; create quarantined output; relay sanitized stop events; redact Agent self configuration; deliver a sanitized higher-trust wake; let a board actor promote one sanitized artifact.",
+      "testAssessment": "Eleven rich integration cases are declared but all skipped locally because embedded PostgreSQL was unavailable. Coverage uses unique canaries across many resource types, real routes/database, count-side-channel checks, scoped-token negatives and a controlled gateway. Gaps include standard-Agent secret/config exposure as an expected positive control, cross-company relationship integrity, mention capability expiry/scope, Origin/tool/data egress, denial row-content equality, activity/audit assertions, promotion approval/digests and a real accountable-human role matrix.",
+      "designRationale": "Contain prompt-injection and data-exfiltration risk from low-trust review work while still permitting bounded collaboration, explainable denials, sanitized escalation and human-controlled promotion.",
+      "companyOsProblem": "Company OS must safely combine untrusted Agent output with higher-trust humans and Agents without allowing visibility, mentions or execution configuration to become ambient authority, and every trust transition must remain attributable to an accountable human and immutable evidence.",
+      "companyOsFit": "ADAPT the canary-driven red-team method, deny-before-side-effect assertions, database-scoped count filtering, sourceTrust quarantine, fixed higher-trust stubs, uniform foreign-resource not-found and one-time promotion. Replace default-open writes with explicit expiring capabilities; make mentions issue-scoped consultation grants with data/tool limits and responsible-human issuer; never return credential material to any Agent, including self; enforce tenant-consistent composite references in persistence; carry immutable trust provenance in every Connector event; require ApprovalDecision bound to exact source digest, sanitized target digest, action, policy, work, Agent and accountable human before promotion.",
+      "responsibilityConflict": "Paperclip records responsibleUserId and promoter identity but allows collaboration authority to arise from visibility or mention rather than an explicit human-issued responsibility/capability contract. A standard Agent can receive its secret-bearing own configuration. Promotion changes trust disposition without demonstrating an independently authorized approval decision or digest-bound responsibility chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/low-trust-red-team-routes.test.ts:1-1646 (SHA-256 242bb02e158166b571b78313dc27d1b48dc44240b41fc5a9909694eb80519570)",
+        "git history: sixteen commits from e8ae5286eb92a86ddd7421d1ca22398982a3381d through dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 11/11 skipped because embedded PostgreSQL was unavailable"
+      ],
+      "securityFindings": "POSITIVE: extensive multi-resource canaries, quarantined writes, database-level count filtering, sanitized upward handoff, cross-company 404 and one-time promotion are strong security-test patterns. CRITICAL secret boundary: a standard Agent self-view is expected to contain adapter/runtime configuration canaries; Company OS must expose capability state, never credentials. CRITICAL authorization conflict: standard visible Issues default open for comments, and a structured mention grants low-trust cross-boundary comment authority without demonstrated expiry/data/tool contract. CRITICAL responsibility gap: promotion is not bound to a separate approval, policy version, responsibility contract or source/target digest. HIGH persistence gap: the fixture can create a cross-company parent relation, showing tenant consistency is not structurally enforced at that boundary. HIGH provenance gap: the sanitized gateway message intentionally drops sourceTrust. HIGH denial-proof gap: count-only snapshots omit activity and cannot detect same-count mutation. HIGH async-risk signal: teardown must drain fire-and-forget heartbeat writes. TEST LIMITATION: all eleven cases skipped on this host."
     },
     {
       "id": "application:server/__tests__/managed-config",

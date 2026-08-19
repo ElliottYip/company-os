@@ -8632,6 +8632,56 @@
       "completionRequirements": [
         "Read lines 1-110 exactly once and assess provider neutrality, tenant/auth scope, capability discovery, credential and error redaction, rate/cost/data policy, stable codes, caching/failure behavior and Company OS ModelProviderPort fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/low-trust-red-team-routes",
+      "path": "server/src/__tests__/low-trust-red-team-routes.test.ts",
+      "lineCount": 1646,
+      "sha256": "242bb02e158166b571b78313dc27d1b48dc44240b41fc5a9909694eb80519570",
+      "linkedEvidence": { "history": [
+        "e8ae5286eb92a86ddd7421d1ca22398982a3381d cross-task Agent writes with attribution/receipts (#10843)",
+        "dfcda67650d4fc60b1cca537efca7fc9d52c718c default-open visible Issue writes (#10804)",
+        "95d33e1788361b59fe08491b6a81e1890f7f5a0d human-completed inbox archive (#10668)",
+        "d51f42ed648c4711a5e6bc4c41a6d4ff4e6e187b drain Runs in sibling teardown (#10464)",
+        "9574cad3e85a641ef6314843676d8b8dd75848f9 drain Runs before low-trust teardown (#10450)",
+        "148a5b11f5ffd101d9586d3222f553f99e3ad85f blocked transitions to unblock owners (#10112)",
+        "a17bee98f2b7f4e7d319ddbf313fd3d3119e4e65 trust-gated direct-parent reports (#10098)",
+        "176645187ce78a064e1650cc4f3325d198a4b020 request storm coalescing (#9190)",
+        "8b6a06ee254b06cbadbe334e891285e22084caab built-in Agents/Reflection Coach (#9206)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed runs (#9241)",
+        "1c75a46c106c058222c3a5df390a7e82e48fdebb live-work blocked notice (#9298)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 user-specific runtime secrets (#8825)",
+        "4b1332b61c7d5148a2f49f709cfa60f680552aad OpenClaw gateway params (#4416)",
+        "2c98c8e1e5a6f6c07face05739df15891ceb5d7f sandbox git publishing/uploads (#8422)",
+        "67f97e8fb08b64799d314fb4ecf7499b90b09acd single Issue comment read auth (#8346)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-450",
+        "451-900",
+        "901-1300",
+        "1301-1646"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-302 establish real Agent/Issue routes, controlled WebSocket gateway, full-table snapshot helpers and cleanup that must drain fire-and-forget heartbeat writes before deleting fixtures.",
+        "Lines 303-671 seed same-company allowed/out-of-scope Projects, a review tree, low/standard/collaborator/CTO Agents, low-trust Run policy, secret canaries in adapter/runtime config, and canaries across comments, documents, annotations, attachments, external objects, work products and an Approval.",
+        "Lines 672-804 allow bounded same-Issue low-trust writes but stamp comment/document/work-product output quarantined; standard direct-parent reports are audited, low-trust parent reports denied, and visible standard-trust comments default open while run locks block other mutations.",
+        "Lines 805-938 relay only sanitized blocked/cancelled child transitions to the parent, coalesce repeated stops and avoid leaking child prose or unrelated transitions.",
+        "Lines 939-1014 let a previously structured-mentioned low-trust Agent comment on an otherwise out-of-bound assigned Issue, while an unmentioned clone is denied; no expiry, single-use, data/tool scope or responsible-human consultation contract is tested.",
+        "Lines 1015-1131 reject conflicting low-trust policy roots and redact low-trust self/configuration views even when grants exist; however the standard-Agent positive control explicitly returns its adapter/runtime configuration canary, demonstrating a credential/config exposure boundary Company OS must reject.",
+        "Lines 1132-1320 issue 18 out-of-bound/control-plane attempts, require 403/no canary and compare core table counts; bulk summaries return 200 with an empty map. The snapshot assertions omit activity-row comparison and content equality, and do not cover every seeded table.",
+        "Lines 1321-1368 deny skill-test tokens on foreign adjacent resources; lines 1370-1399 prove blocked-count filtering occurs in the database, avoiding hidden-row count leakage.",
+        "Lines 1400-1574 keep raw quarantined output visible inside the same low-trust context but replace it with a fixed stub for higher-trust heartbeat and gateway wakes; raw metadata/presentation canaries do not cross. Agent-facing wake messages omit sourceTrust provenance even though route responses retain it.",
+        "Lines 1575-1646 allow an admin/operator board actor to promote a sanitized work product once, reject a cross-company source with 404, stamp promoter/source provenance and reject a duplicate. No distinct approval decision, responsibility contract, policy/action/source/target digest or content-safety proof is bound to promotion.",
+        "Strong patterns are adversarial canaries across resource types, output quarantine, database-scoped counts, denial without obvious durable creation, sanitized higher-trust handoff, uniform foreign-source 404 and one-time promotion. Critical Company OS conflicts are visibility-as-write, mention-as-cross-boundary authority, standard Agent access to its own secret-bearing configuration, application-only cross-company relationship integrity, incomplete denial snapshots, missing provenance in Agent wake messages and promotion without approval/responsibility/digest binding.",
+        "Focused Vitest skipped all 11 tests because embedded PostgreSQL was unavailable; no passing runtime claim is made."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1646 exactly once and assess low-trust Agent read/write/tool/workspace/secret/approval boundaries, cross-task and cross-tenant attempts, default-open visibility, zero-side-effect denials, attribution/receipts, confused-deputy paths and Company OS capability plus responsibility-contract requirements."
+      ]
     }
   ]
 }
