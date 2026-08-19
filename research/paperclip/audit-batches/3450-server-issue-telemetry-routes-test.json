@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-telemetry-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Mocked HTTP route tests for emitting Agent task-completed product telemetry with Agent role, ID, adapter type and model on an Agent-driven Issue completion, while excluding board-driven completion.",
+    "dependencyDirection": "Supertest/Express -> Issue update route -> mocked access/Issue/Agent/Run services -> shared telemetry helper/client; no real database or authorization policy is exercised.",
+    "keyDataModels": "Typed Agent/board actor; Issue status/assignee/creator; Run Issue context; Agent role/adapterType/adapterConfig.model; analytics task-completed event.",
+    "lifecycle": "Authorize and apply Issue done transition -> identify actor and Agent metadata -> emit narrow Agent-completion analytics asynchronously; board transition bypasses this event and Agent lookup.",
+    "testAssessment": "Approved unsandboxed run passed both tests; sandboxed run failed both solely on Supertest TCP EPERM. Coverage confirms positive Agent event shape and board exclusion. It does not cover real authorization/tenant scope, telemetry disabled/failure/latency, deduplication, retries, consent/retention/region, self-hosted defaults, schema compatibility or secret-bearing metadata adversaries.",
+    "designRationale": "Measure completed Agent work by runtime role/adapter/model without shipping full task content or adapter configuration, and avoid misclassifying human board edits as Agent completions.",
+    "companyOsProblem": "Company OS needs privacy-preserving product and cost telemetry across managed and self-hosted profiles, clearly separated from authoritative audit/evidence and governed by enterprise data-export contracts.",
+    "companyOsFit": "ADAPT the narrow typed event seam and actor-specific classification, not the raw event shape. Use versioned telemetry codes, deployment/tenant pseudonyms with rotation, explicit consent and DataExportPolicy, regional sinks, retention controls and self-hosted off-by-default; emit via non-blocking transactional/outbox-derived analytics with deduplication; measure human/Agent collaboration without treating telemetry as responsibility evidence.",
+    "responsibilityConflict": "A raw stable Agent ID plus vendor/model can leave the control plane without a demonstrated export contract, consent or retention rule. Excluding human completions is correct for this event but can bias product metrics toward automation if no paired human-responsibility metric exists. Analytics cannot prove task quality, approval or accountability.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-telemetry-routes.test.ts:1-236 (SHA-256 5ff8c854b744688f268074f88db9f14e8caf600731a7d0f958ec3ad50ffe3774)",
+      "git history: eleven commits from f91a6e27c0feb7f92dcde981c9a741b869484e83 through 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+      "2026-08-19 sandboxed focused Vitest: 2/2 failed on TCP EPERM only",
+      "2026-08-19 approved unsandboxed focused Vitest: 2/2 passed"
+    ],
+    "securityFindings": "CRITICAL governance requirement for Company OS: external telemetry must pass DataExportPolicy and deployment-specific consent; neither is tested here. HIGH identifier/privacy risk: raw stable Agent ID, adapter and model are exported. HIGH authorization-evidence gap: access is mocked always-allow. MEDIUM reliability gap: no failure isolation, deduplication or delivery semantics. MEDIUM metric-integrity gap: no paired human/accountability measures. POSITIVE: event content is narrow and deliberately avoids full adapter config, task text, outputs, errors and evidence."
+  }]
+}
