@@ -9100,6 +9100,30 @@
       "completionRequirements": [
         "Read lines 1-1876 exactly once and assess service transactions, graph/case/lease/version invariants, automation idempotency/retry/crash behavior, work/secret/workspace propagation, human review, evidence/audit/responsibility, data lifecycle and Company OS workflow/FDE fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-agent-sessions",
+      "path": "server/src/__tests__/plugin-agent-sessions.test.ts",
+      "lineCount": 113,
+      "sha256": "ad2a5537b36ed34c3c8bf02b3a5fc4096513780e2ff2da7144f0581571aee7fb",
+      "linkedEvidence": { "history": [
+        "caae2778f0737c3690b1b8680735503c69e9058b deliver plugin Agent session turns and replies (#10137)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-113"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-39 mock heartbeat dispatch, create a no-op plugin event bus and provide a permissive thenable DB lookup returning one session with Company, Agent and plugin-scoped taskKey.",
+        "Lines 40-81 send a raw prompt plus caller-supplied Company/session/reason through plugin host services; heartbeat receives the prompt twice, in payload and paperclipAgentMessage, with plugin/session attribution but wakeSource automation and wakeTriggerDetail system.",
+        "Lines 82-113 publish a global live heartbeat success carrying finalText and expect a plugin worker event bound to sessionId/runId with eventType done, then dispose the services.",
+        "No negative tenant/session/plugin/Agent mismatch, plugin permission, unrelated live event, duplicate/out-of-order terminal event, failure/cancel/timeout, streaming/progress, content-size/redaction, subscription disposal or database-not-found behavior is covered. Focused Vitest passed 1/1."
+      ],
+      "completionRequirements": [
+        "Read lines 1-113 exactly once and assess plugin session creation/turn/reply delivery, tenant/principal/Agent binding, authorization, private session isolation, ordering/idempotency/retry, content minimization, audit/evidence and Company OS Connector session boundary fit."
+      ]
     }
   ]
 }

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/plugin-agent-sessions",
+      "auditStatus": "COMPLETE",
+      "function": "Happy-path host-service test for a plugin-owned Agent chat session: send a prompt into heartbeat wake context and relay a successful run's final assistant text back to the plugin worker.",
+      "dependencyDirection": "A plugin host service is constructed with plugin record/key, database, event bus and worker notifier. Plugin input resolves a session to Company/Agent/taskKey, invokes the central heartbeat service, subscribes to global live run events and projects a terminal message to the plugin process.",
+      "keyDataModels": "Plugin record/key; Agent session ID/Company/Agent/taskKey; prompt/reason; heartbeat payload/contextSnapshot and paperclipAgentMessage; runId; live heartbeat status/finalText; worker agents.sessions.event with session/run/eventType/message.",
+      "lifecycle": "Resolve the session; wake its Agent with plugin message context; return run ID; observe run completion; deliver final assistant text as a done session event; dispose subscriptions.",
+      "testAssessment": "The single test passes and proves the intended end-to-end happy path and useful plugin/session/run correlation fields. It does not prove the session belongs to the calling plugin or Company, that the plugin may wake the Agent, or that unrelated live events are filtered. It omits missing/duplicate/stale sessions, failures, cancellation, timeout, progress streams, replay/order/deduplication, worker backpressure/restart, disposal behavior, prompt/output limits, redaction and audit persistence. The DB stub ignores query predicates, so tenant binding is not exercised.",
+      "designRationale": "Let a plugin implement an interactive Agent surface while reusing Paperclip's heartbeat execution and returning a simple terminal reply to the plugin runtime.",
+      "companyOsProblem": "Company OS needs Connector and extension sessions without exposing provider-private sessions or losing the real initiating principal, tenant, permissions, approval state and evidence chain.",
+      "companyOsFit": "ADAPT the narrow host contract and explicit session/run correlation, but model Plugin/Connector as a first-class Principal. Resolve session ownership server-side from plugin identity; never accept Company authority from caller input. Issue a command ID/idempotency key, bind tenant/plugin/session/Agent/work/contract, persist monotonic events with replay cursor, and support progress/pause/resume/cancel/timeout/error/evidence/result. Apply input/output data policy and size limits. Report the actual plugin/human initiator in audit context rather than system/automation, and keep vendor-private session handles inside the Connector node.",
+      "responsibilityConflict": "The initiating plugin request is recorded as automation/system, obscuring who caused the Agent action. No accountable human, responsibility contract, permission/data grant or approval digest is attached, and final assistant text is treated as the reply without typed evidence/result provenance.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-agent-sessions.test.ts:1-113 (SHA-256 ad2a5537b36ed34c3c8bf02b3a5fc4096513780e2ff2da7144f0581571aee7fb)",
+        "git history: caae2778f0737c3690b1b8680735503c69e9058b recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 1/1 passed"
+      ],
+      "securityFindings": "POSITIVE: plugin key, session ID, taskKey and run ID are carried for correlation; host service has explicit disposal; worker receives only a terminal projection in the tested case. CRITICAL attribution gap for Company OS: a plugin-originated prompt is labelled automation/system rather than the actual initiating principal. HIGH tenant/auth gap: caller supplies companyId and the permissive DB stub does not test predicate enforcement or plugin ownership/capability. HIGH event-isolation gap: no unrelated Company/run/session live-event tests prove filtering. HIGH data-minimization gap: the raw prompt is duplicated into multiple wake fields and final text is forwarded without policy/redaction. MEDIUM reliability gap: no dedupe, ordering, replay, worker restart/backpressure or terminal failure/cancel coverage."
+    }
+  ]
+}
