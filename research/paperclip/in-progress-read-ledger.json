@@ -9174,6 +9174,35 @@
       "completionRequirements": [
         "Read lines 1-148 exactly once and assess dev-only gating, watched path confinement, debounce/deduplication, plugin identity mapping, unload/reload races, symlink/path escape, failure recovery and Company OS extension development/production boundary fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-local-folders",
+      "path": "server/src/__tests__/plugin-local-folders.test.ts",
+      "lineCount": 282,
+      "sha256": "26482eb7b59250eab8cce823d44de07e8ac8e8c7ef8c4e9a6211c675fab31e92",
+      "linkedEvidence": { "history": [
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 roll up May 17 branch changes (#6210)",
+        "0096b56a1c4e69c077320c0194c804cdaea7615d LLM Wiki plugin host support (#5597)",
+        "3c73ed26b514144b831f02361de809008742194d expand plugin host surface (#5205)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-141",
+        "142-282"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-90 test generic health inspection for configured roots and required files/directories, including clear missing-path codes and no product-specific branches.",
+        "Lines 91-141 prove signed-manifest-equivalent declaration values for access/requirements override stored and caller overrides, and prepare creates required directories but not semantically required files.",
+        "Lines 142-184 allow a readWrite folder to repair missing requirements, reject ../ traversal and classify a required symlink escaping the root as unhealthy.",
+        "Lines 185-239 verify atomic nested text writes, replacement without temp leftovers, automatic parent creation, file deletion and bounded recursive listing that does not follow an escaping directory symlink.",
+        "Lines 240-282 simulate a TOCTOU attack replacing a validated parent directory with an external symlink immediately before temp-file open; the write returns 403 and creates no external file.",
+        "Missing coverage includes authorization tying root to Company/plugin/principal, arbitrary configured root policy, root symlink/replacement, delete/read/list races, hardlinks, file type/device nodes, permissions/umask, quotas/size/depth, concurrent writers/version conflicts, fsync durability, audit/evidence, encoding/content policy and Windows/filesystem variants. Focused Vitest passed 13/13."
+      ],
+      "completionRequirements": [
+        "Read lines 1-282 exactly once and assess local folder scope/ownership, plugin/Company authorization, path traversal/symlink/canonicalization, create/read/write/delete semantics, quotas/concurrency/audit, managed versus self-hosted placement and Company OS Data Connector fit."
+      ]
     }
   ]
 }

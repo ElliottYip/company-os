@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/plugin-local-folders",
+      "auditStatus": "COMPLETE",
+      "function": "Security-focused filesystem tests for generic plugin local-folder declarations, health/preparation, confined path resolution, bounded listing, text read/write/delete and atomic-write TOCTOU defense.",
+      "dependencyDirection": "Plugin folder declarations and stored/operator configuration enter local-folder helpers; helpers inspect and mutate a configured host root with Node filesystem primitives and return generic status/problem/listing projections. Authorization and plugin host invocation are outside this unit.",
+      "keyDataModels": "Folder key/path/access; manifest declaration versus stored/override config; required directories/files; health/readable/writable/missing/problem code; relative path; listing entry/truncation/maxEntries; atomic temporary file.",
+      "lifecycle": "Resolve authoritative declaration constraints; inspect root and requirements; prepare allowed directories; assert configured/writable state; confine a relative path; list/read/atomically replace/delete files; revalidate containment at the write boundary.",
+      "testAssessment": "All 13 tests pass. Coverage is notably strong for a small filesystem boundary: declaration authority cannot be weakened by stored/caller overrides, traversal and required-file symlink escape are rejected, recursive listing avoids escaped symlink contents, listings are bounded, writes leave no temporary residue, and a deliberate parent-directory symlink swap before open is blocked. Missing are root replacement/symlink cases, read/delete/list TOCTOU, hardlinks and special files, permissions/umask, file/depth/byte quotas, concurrent writers/resource versions, fsync durability, arbitrary root allowlists, Company/plugin authorization, audit/evidence, content/encoding policy and cross-platform behavior.",
+      "designRationale": "Offer reusable product-neutral host-folder access to plugins while preserving manifest-declared access constraints and containing common traversal/symlink attacks, including an atomic-write race.",
+      "companyOsProblem": "Company OS needs self-hosted/local enterprise Data Connectors that can safely read or write approved customer folders without exposing host paths or data to the cloud control plane and without letting plugins expand their declared authority.",
+      "companyOsFit": "ADAPT as a strong candidate reference for the canonical local-filesystem Connector implementation, pending audit of the implementation source. Preserve declaration-over-override authority, generic problem codes, bounded non-following traversal, atomic replacement and open-time containment revalidation. Add a signed Connector manifest; bind opaque root handles to tenant/plugin/principal/purpose/data contract on the customer node; never send absolute paths to managed cloud; apply path/file-type allowlists, no-follow descriptor operations, quotas, version/ETag conflict checks, restrictive modes, durability policy and content scanning; audit every read/export/write/delete with evidence hashes and approval for high-risk mutations.",
+      "responsibilityConflict": "Filesystem safety does not establish organizational authorization. A writable root must be accepted by an accountable human and bound to a DataAuthorizationContract, Connector identity and permitted work; delete/write actions may require digest-bound approval and evidence even when path confinement succeeds.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-local-folders.test.ts:1-282 (SHA-256 26482eb7b59250eab8cce823d44de07e8ac8e8c7ef8c4e9a6211c675fab31e92)",
+        "git history: 3c73ed26b514144b831f02361de809008742194d, 0096b56a1c4e69c077320c0194c804cdaea7615d and d734bd43d1c79cc6e33f5a12bffacdb158021a50 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 13/13 passed"
+      ],
+      "securityFindings": "POSITIVE: manifest constraints override weaker stored/caller settings; traversal and escaping symlinks are rejected; recursive listing does not follow an escaped directory link; maxEntries bounds output; atomic writes remove temp artifacts; a targeted parent-symlink TOCTOU attack is blocked before external creation. HIGH authorization gap: helpers are not tested with Company/plugin/principal/data-contract scope. HIGH root-selection gap: arbitrary configured host roots and root replacement are not covered. HIGH mutation gap: delete/read/list races, concurrent writes and optimistic versions are absent. MEDIUM filesystem gap: hardlinks, device/special files, permissions, quotas, durability and platform variants are untested. HIGH governance gap: no data-export firewall, evidence hash, retention or high-risk approval is attached to filesystem operations."
+    }
+  ]
+}
