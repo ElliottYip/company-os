@@ -9427,18 +9427,23 @@
     },
     {
       "id": "application:server/__tests__/plugin-managed-routines",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed tests for plugin-declared managed Routines: resolve stable managed Agent/project references, repair missing references, preserve operator edits and create/wake a plugin-operation issue on manual execution.",
+      "dependencyDirection": "A plugin manifest with agents/projects/routines managed capabilities materializes Company Agent, project, Routine and schedule trigger rows through host services; routineService later creates an issue and invokes heartbeat for the assigned Agent.",
+      "keyDataModels": "Plugin-managed Agent/project/Routine resource keys; active Routine status/priority; cron/timezone trigger; concurrency/catch-up/activity-gate policy; issue visibility/origin/billing; assignee Agent/project; Company default responsible user; routine run/linked issue.",
+      "lifecycle": "Resolve or repair stable dependencies; create an active scheduled Routine from manifest; preserve subsequent title edits; run manually; create a scoped operation issue; wake the Agent.",
+      "testAssessment": "The three tests give useful stable-reference, missing-dependency and operator-edit preservation patterns, but all were skipped locally because embedded Postgres was unavailable. They do not prove capability/tenant authorization, same-Company repair overrides, signed manifest provenance, approval of an active schedule, actual schedule/timezone firing, external-activity gate behavior, concurrency/coalescing/catch-up, run idempotency/cancel/retry, budget, secret/workspace/data scope, accountable-human binding, audit, reset/update or plugin uninstall/orphan handling. A secret-related history commit has no corresponding assertions here.",
+      "designRationale": "Let plugins ship recurring operational automation that binds to their managed Agent/project and remains user-customizable while projecting execution into ordinary issues and billing/origin metadata.",
+      "companyOsProblem": "Company OS needs FDE/industry templates for recurring work, but extension-supplied automation must be a human-approved organizational policy rather than an immediately active plugin side effect.",
+      "companyOsFit": "REJECT plugin-authoritative active Routine creation. Treat a signed plugin/FDE package as a RoutineTemplateProposal with immutable schedule, trigger, Agent role, project/workspace, concurrency/catch-up, activity gate, budget, permission/data and secret-reference requirements. A qualified human accepts a ResponsibilityContract and exact template digest before activation. Resolve stable resource references within one tenant, persist template/instance versions, reapprove material upgrades, issue idempotent scheduled commands with fencing/cancel/retry/dead-letter, resolve secrets locally per run and record responsible human, evidence, cost and result. Preserve missing-ref diagnostics and activity gates as design references.",
+      "responsibilityConflict": "A plugin can materialize an active scheduled Routine and wake an Agent once references exist, without a tested responsible human or approval of schedule, permissions, data, secrets, budget and expected result. Seeding defaultResponsibleUserId does not prove that the created work or run is contractually assigned to that person.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-managed-routines.test.ts:1-260 (SHA-256 842b0ca6bac9c6c92001c27eb8689e03246af7abcdaa42113f4cf81d76cc9ab1)",
+        "git history: 3c73ed26b514144b831f02361de809008742194d, 746e287e33f94e8d3d3ab26d6c578e1825826fe2, ad961227f57a217655c9e05e5987e6d0e5524409 and 30ff3d7c5874e8c71586bb016984c1d37f96ed28 recorded in the read ledger",
+        "2026-08-19 focused Vitest: file discovered; 3/3 tests skipped because embedded Postgres support was unavailable"
+      ],
+      "securityFindings": "CRITICAL persistent-automation authority: a plugin manifest can create an active cron Routine that wakes an Agent without a tested human approval or responsibility contract. HIGH repair escalation gap: caller-supplied Agent/project overrides are not tested for tenant, permission or ownership. HIGH execution gap: schedule, activity gate, concurrency, catch-up, idempotency, cancellation, retry and dead-letter behavior are absent. HIGH secret/data gap: no secret reference, workspace/data contract, export firewall or redaction coverage despite secret-related history. HIGH lifecycle gap: material plugin upgrades, disable/uninstall, orphan automation and evidence retention are untested. MEDIUM billing/governance gap: billingCode and origin are plugin-authored strings rather than policy-bound accounting dimensions. TEST GAP: all database-backed scenarios were skipped locally."
     },
     {
       "id": "application:server/__tests__/plugin-managed-skills",

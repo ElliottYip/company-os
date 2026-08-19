@@ -9232,6 +9232,36 @@
       "completionRequirements": [
         "Read lines 1-365 exactly once and assess plugin-managed Agent create/update/delete/list ownership, tenant and plugin authorization, principal/role/reporting/permission/budget/adapter changes, uninstall/orphan lifecycle, idempotency/audit/approval and Company OS accountable-human model fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-managed-routines",
+      "path": "server/src/__tests__/plugin-managed-routines.test.ts",
+      "lineCount": 260,
+      "sha256": "842b0ca6bac9c6c92001c27eb8689e03246af7abcdaa42113f4cf81d76cc9ab1",
+      "linkedEvidence": { "history": [
+        "30ff3d7c5874e8c71586bb016984c1d37f96ed28 activity gate API (#9438)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 user-specific runtime secrets (#8825)",
+        "746e287e33f94e8d3d3ab26d6c578e1825826fe2 annotation and workspace controls (#8229)",
+        "3c73ed26b514144b831f02361de809008742194d expand plugin host surface (#5205)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-130",
+        "131-260"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-89 define a plugin with managed Agent, project and active nightly Routine; the Routine declares stable refs, cron/timezone, concurrency/catch-up, external-activity gate, plugin-only visibility, origin and billing code.",
+        "Lines 90-151 build a Company with defaultResponsibleUserId and a plugin host, but no approval/policy/principal is passed when managed resources are reconciled.",
+        "Lines 152-183 create Agent/project/Routine directly, resolve stable refs, persist the active scheduled trigger and assert managed plugin metadata plus activity gate.",
+        "Lines 184-230 return missing_refs until an operator supplies arbitrary Agent/project IDs, then create the Routine and preserve a manual title edit on later reconcile. Same-Company validation, caller authorization and config drift/security update behavior are not tested.",
+        "Lines 231-260 manually run the Routine as board-user, create a plugin-operation issue with origin/billing/project/Agent fields and wake the Agent. The Company's default responsible user is seeded but responsibility binding is not asserted.",
+        "The history includes user-specific runtime secrets, yet this unit contains no secret reference/delivery/redaction test. Schedule firing, gate evaluation, concurrency/coalescing, missed-run behavior, budget, approval, cancel, uninstall/orphan and audit are also absent. Focused Vitest skipped all 3 tests because embedded Postgres was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-260 exactly once and assess plugin-managed Routine create/reconcile/reset, schedule/activity/concurrency/catch-up, Agent/human ownership, workspace/secret propagation, tenant/capability authorization, upgrade/uninstall/orphan lifecycle, idempotency/audit/approval and Company OS responsibility fit."
+      ]
     }
   ]
 }
