@@ -8833,18 +8833,24 @@
     },
     {
       "id": "application:server/__tests__/openapi-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Generated OpenAPI document and drift-guard suite comparing literal mounted Express routes with documented method/path entries and checking selected schemas, auth metadata and response codes.",
+      "dependencyDirection": "Reads first-party route source files and the generated spec directly, plus serves the spec through the OpenAPI route; it is a boundary contract test rather than a domain/persistence test.",
+      "keyDataModels": "OpenAPI 3 paths/operations/components.securitySchemes; Express route file/prefix/method/path; request/response schema; security requirement and custom x-paperclip-authorization metadata.",
+      "lifecycle": "Generate spec; serve JSON; scan route source; normalize mounts and parameters; compare exact route sets; assert selected auth/schema/status invariants.",
+      "testAssessment": "Three tests pass outside the sandbox. Route-set equality is broad and useful, and selected sensitive endpoints get focused assertions. However, route discovery is regex/special-case based, three experimental surfaces are excluded, and a listed operation can be semantically incomplete. There is no compatibility-diff baseline, client-generation compile test, stable error schema/code enforcement, operationId uniqueness, audience/scope matrix or async event contract.",
+      "designRationale": "Prevent CLI/client drift and make a growing server API discoverable while documenting authentication and selected high-risk endpoint behavior.",
+      "companyOsProblem": "Company OS requires an independent stable API consumed by its own Web, mobile UI, enterprise clients and Connector SDK, with identity, tenant, approval and evidence semantics that remain compatible across managed and self-hosted profiles.",
+      "companyOsFit": "ADAPT the route/spec drift guard but make Company OS contract-first. Maintain separate versioned public-control, Connector and internal-operations specifications; generate server validators and typed clients from schemas; require stable errorCode + structured parameters, operationId, idempotency key, pagination/cursor, resource version/ETag and tenant/principal scopes. Add breaking-change diff gates, deprecation windows, examples, OAuth/OIDC audience and scope declarations, CSRF/cookie policy, webhook/event schemas with sequence/resume semantics and compatibility tests against both deployment profiles. Every approval/execution operation must expose digest-bound responsibility fields.",
+      "responsibilityConflict": "A path and status-code inventory cannot prove who is authorized or accountable. Selected custom authorization annotations leave the remaining operations without a machine-checked role/capability/responsibility matrix, so generated clients could invoke semantically unsafe operations while still conforming to the document.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/openapi-routes.test.ts:1-262 (SHA-256 b50e3d9f6caf0cfa265066b1eef20af5fbe1ed0fddfdbac9d68c108482fce923)",
+        "git history: twenty-three commits from 5858ccb981717b6589b66e7f0cc69abe3e5fc439 through 70b1a9109d756818fb448beafa67af27babb52de recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 2 passed and 1 failed on TCP EPERM only",
+        "2026-08-19 approved unsandboxed focused Vitest: 3/3 passed"
+      ],
+      "securityFindings": "POSITIVE: security schemes are declared; selected admin routes carry explicit auth metadata; public exceptions are explicit; tool operations are checked not to document sessionToken; source/spec route drift fails tests. HIGH authorization-evidence gap: only selected operations have machine-checked actor/admin metadata, with no exhaustive tenant/resource/capability matrix. HIGH contract gap: stable error schemas/codes and approval/responsibility digests are not enforced. HIGH public-surface risk: public MCP gateway is only asserted as unauthenticated here; protocol-layer auth needs separate proof. MEDIUM discovery gap: regex route scanning can miss computed/chained registration. MEDIUM lifecycle gap: no breaking-change diff, version/deprecation or generated-client compatibility gate."
     },
     {
       "id": "application:server/__tests__/openclaw-gateway-adapter",

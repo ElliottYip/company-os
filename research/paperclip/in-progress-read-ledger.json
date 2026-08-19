@@ -8786,6 +8786,55 @@
       "completionRequirements": [
         "Read lines 1-192 exactly once and assess Unicode round-trip, normalization and byte limits, Chinese search, user/Agent original text preservation, tenant authorization, stable codes, digest canonicalization and Company OS language-boundary requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/openapi-routes",
+      "path": "server/src/__tests__/openapi-routes.test.ts",
+      "lineCount": 262,
+      "sha256": "b50e3d9f6caf0cfa265066b1eef20af5fbe1ed0fddfdbac9d68c108482fce923",
+      "linkedEvidence": { "history": [
+        "5858ccb981717b6589b66e7f0cc69abe3e5fc439 cloud-aware in-app features (#10850)",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "30c49c83276d1c3c6a48e4e67ac1b618de1ae256 decision queues/attention (#10651)",
+        "9c1f8e788732c2cff971d8f2b0c69499bde0fac7 decision propose mode (#10010)",
+        "916c13501f80c7d1d659b89e4a06dc47366aa80f company Import/Export (#10507)",
+        "7e40ed8c439c23a53db9135f7e9bae30b56f3d97 status card view (#10101)",
+        "a090c09ee567d6c6775a5fb0fa0710b190d5d00e decision training snapshot (#9702)",
+        "1f1f54523876481ab0011c3fdd0b842753cd511a summarizer/summary slots (#9713)",
+        "59fb27ff794ce60b81b859922112f3d658376918 Agent inbox tidying (#9724)",
+        "52aea902632fcdb9b3e689c60e3a148a2009358b nested skill folders (#9633)",
+        "3ae2c30f2f48a53fec87c3da05ab63f1964785f1 project skill import (#9620)",
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 open-by-default skills (#9564)",
+        "931eec3fbf83dc425b5381ba5823125162cd13e7 MCP gateway/smoke lab (#9559)",
+        "36ec79c196fcb149c331657a0eb5fa710ae074a9 attention/Decisions (#9380)",
+        "5c85ae64a0dd5af79996cf32e397dbee588522fb Cases object (#9198)",
+        "8b6a06ee254b06cbadbe334e891285e22084caab built-in Agents (#9206)",
+        "f17202b571ec605d4009e21a0e1316d74a1d55b9 workspace branch reconciliation (#9170)",
+        "43b005b704f80aea3ce37cab8136920749c73ee6 pipeline primitives (#7903)",
+        "6f9801a46baf7c45a0091776e4a9b60c92938db5 conference room chat (#8000)",
+        "468edd8b221fe9991e40735b5bbba621e44eb1ad workspace file/artifact links (#7681)",
+        "fff3832a0135279d3b0f0d9fb307cfd5bd1d449d teams catalog (#7550)",
+        "1227bb8ead79c827c06d027d409f9ace71bfc7ba OpenAPI/auth metadata (#4579)",
+        "70b1a9109d756818fb448beafa67af27babb52de CLI API parity (#6626)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-131",
+        "132-262"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-67 enumerate route-file mount prefixes, explicitly exclude three experimental route files, and define regex-based literal Express route discovery plus recognized HTTP methods.",
+        "Lines 68-145 normalize path parameters, special-case mounts/constants, flag unknown route files and build method/path sets from both source files and generated OpenAPI.",
+        "Lines 146-222 verify the public OpenAPI 3.0 document, three authentication schemes, explicitly public health/MCP gateway paths, selected request/response schemas, Agent auth on decision queues, triage validation and absence of sessionToken text in tool-gateway operations.",
+        "Lines 223-235 require exact source-route/spec route-set equality outside explicit exclusions; lines 236-262 assert selected public/admin auth metadata and response statuses for plugin install, branch reconciliation, cost events, backups, invites, API keys and import.",
+        "Strong patterns are route/spec drift detection, explicit experimental exclusions, auth scheme declaration, custom authorization metadata for selected high-risk routes and credential-field absence checks. Gaps include regex blindness to computed/chained routers, operation/schema completeness, stable error envelope/codes, operationId/client generation, compatibility diff/version/deprecation, pagination/idempotency headers, OIDC audience/scopes/CSRF, tenant/resource authorization semantics, public-versus-internal spec separation, events/webhooks/Connector async contracts and comprehensive high-risk authorization metadata.",
+        "Sandboxed focused Vitest passed 2 source/spec tests and failed only the HTTP test because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed all 3 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-262 exactly once and assess OpenAPI completeness, auth/security schemes, tenant scope, stable schemas/error codes, versioning/deprecation, event and Connector contracts, destructive and approval endpoints, client generation and Company OS independent API boundary fit."
+      ]
     }
   ]
 }
