@@ -8111,6 +8111,62 @@
       "completionRequirements": [
         "Read lines 1-2160 exactly once and assess interaction creation/resolution/withdrawal/expiry, actor and addressee authority, low-trust containment, exact-once continuation, review-verdict semantics, payload validation, tenant isolation, audit evidence and Company OS responsibility/approval separation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-thread-interactions-service",
+      "path": "server/src/__tests__/issue-thread-interactions-service.test.ts",
+      "lineCount": 3470,
+      "sha256": "9760266a91fad10d399efb6343892152f0ce78106761233c6edce08ef2fba830",
+      "linkedEvidence": { "history": [
+        "814cb336766cabd7c5a08fb82849d93e35a7ddaf allow agents to resolve review confirmations (#10939)",
+        "f950952de791fad649927388fd2a1e3ef93f7e7c restore sticky plan confirmation CTAs (#10930)",
+        "5888cbf72afc43224cd9bde57e37e0d32ddb7474 restore checkout after accepted confirmations (#10909)",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed agent addressees (#10252)",
+        "8e7f1c03ebf564c3b2f7ac55e1d729cd22bc1d76 improve decision desk triage and queue parity (#10785)",
+        "f6ab82d490cb314f021a0187f07c56096a70f24e interaction withdrawal and terminal expiry (#10251)",
+        "e2068319e7f8cd409b9aaa562aa89d357e3f1fe4 tolerate legacy stored result outcomes (#10119)",
+        "429792f1f3933dedea13422723e6a0cd849e67a1 stop wedging confirmation accept on terminal workspace_finalize (#10099)",
+        "df0e5bd0212cf2f1c98cf2053a4bbb41c7f527b4 do not supersede cards on machine-authored comments (#9015)",
+        "36ec79c196fcb149c331657a0eb5fa710ae074a9 attention queue and Decisions surface (#9380)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 user-specific runtime secrets (#8825)",
+        "ac9a883f8b4619fa4e6e70c55303168d53e0e294 expire questions superseded by comments (#8799)",
+        "e68188c438ae14bbd4e3542571ef38b27d55d2b1 document-comment/routine/workspace fixes (#8536)",
+        "4d5322c82115348d1852e1c70979dc386a07edec checkbox confirmation interactions (#7649)",
+        "af0c43b2052c619737111cef222551a91563b449 operator QoL review feedback",
+        "4afe5ab7cb83407c5b4c8e0a6a208b96a640c48b other answers to Issue questions",
+        "f360fcbbb35a3234380edfb60266e95c4a35e2aa expire confirmations after user comments",
+        "1f70fd9a22be00c7e2daefadaa17699e72ca3a6a workspace finalize gates and no-remote-git (#6969)",
+        "c91a06232625d1939858fcdfbdc0c9b3a64a8296 runtime control-plane fixes (#6380)",
+        "a1b30c9f351a1d6a8c18ccd7aec4f35ac01ee4b9 planning mode (#5353)",
+        "c4269bab59fff7a73ff31797578cc97ece7f160f workflow interaction cancellation (#4862)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-500",
+        "501-1000",
+        "1001-1500",
+        "1501-2000",
+        "2001-2500",
+        "2501-3000",
+        "3001-3470"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-500 use real PostgreSQL to persist creator/addressee/resolver/run identity, enforce board-only and addressed-agent rules, reject self/uninvokable/reporting-chain-invalid addressees, cancel pending interactions before Agent deletion, and create a selected rooted Issue tree inheriting responsibleUserId and increasing requestDepth.",
+        "Lines 501-1000 prevent duplicate task creation after resolution, require selected tree parent closure, normalize/deduplicate/trim question answers, persist cancellation without answers, and expire newer human-comment-superseded questions while excluding Agent/system/older comments.",
+        "Lines 1001-1500 repair historical superseded questions idempotently, deduplicate creation by idempotency key, supersede older same-Issue/kind/Agent confirmations, sweep historical pileups, reject creation on terminal Issues, enforce decline reasons and persist an explicitly authorized Agent review resolver.",
+        "Lines 1501-2000 preserve self/same-run guards, validate checkbox selection bounds and references, support partial idempotent per-item verdicts with reason requirements and terminal replay, preserve resolved items when later human input expires the remainder, and record typed human/Agent resolver identity.",
+        "Lines 2001-2500 return accepted in_review confirmations to the creator Agent as todo without resetting already active work; implement opt-in/out and legacy-safe human-comment supersede, degrade unknown legacy result enums to null instead of bricking list consumers, and distinguish machine comments by createdByRunId even under user authentication.",
+        "Lines 2501-3000 repair historical comments idempotently, bind create/accept/item-verdict operations to the current Issue-document revision under a transaction lock, expire stale interactions and preserve partial verdicts; however stale handling rewrites payload.target to the latest revision while result.staleTarget retains the old revision.",
+        "Lines 3001-3470 scope workspace-finalize gates to the interaction's source Run: successful finalize allows, missing finalize or live running finalize blocks, failed/stale-running finalize with a terminal Run allows, null sourceRun bypasses, foreign Runs do not block, and suggest_tasks/no-workspace interactions bypass the gate.",
+        "Strong patterns are a persisted typed state machine, source/addressee/resolver identity, invokability/reporting-chain validation, inherited responsible human on child Work, transactional current-revision checks, bounded selection validation, idempotent repair/replay, partial-verdict preservation, legacy fail-soft reads and source-Run-specific workspace gating. Gaps include concurrent create/resolve/partial-verdict races, mismatched payload reuse under one idempotency key, cross-tenant adversarial fixtures, policy/action/evidence digests, immutable original request preservation, failed-finalize acknowledgment, forceful in_review-to-todo semantics, resolver certification/quorum and transactional outbox/Connector execution receipts.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 51 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-3470 exactly once and assess persisted interaction state machine, schema validation and legacy compatibility, transaction/concurrency/idempotency, document revision binding, task creation, resolver authority, expiry/withdrawal, workspace-finalize coupling, audit/evidence and Company OS interaction-versus-approval boundaries."
+      ]
     }
   ]
 }
