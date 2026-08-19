@@ -8167,6 +8167,34 @@
       "completionRequirements": [
         "Read lines 1-3470 exactly once and assess persisted interaction state machine, schema validation and legacy compatibility, transaction/concurrency/idempotency, document revision binding, task creation, resolver authority, expiry/withdrawal, workspace-finalize coupling, audit/evidence and Company OS interaction-versus-approval boundaries."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-thread-interactions-telemetry",
+      "path": "server/src/__tests__/issue-thread-interactions-telemetry.test.ts",
+      "lineCount": 516,
+      "sha256": "81294194cfe5bc74bda139a5aefc916780cba895c98605bdf510bdd829d89dbf",
+      "linkedEvidence": { "history": [
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "3522b1c9be3a90485800ec15698e57aba75cbf8a interaction resolved telemetry (#8824)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-260",
+        "261-516"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-154 run the real interaction service against PostgreSQL with a mocked telemetry sink exposing hashing, and define a negative assertion for raw interaction, creator-Agent and source-Run IDs.",
+        "Lines 155-260 emit counts and categorical fields for accepted suggested tasks and checkbox confirmations, omit raw IDs, but deliberately export the creator Agent's raw free-form role plus interaction kind/status/resolver kind/continuation/target type.",
+        "Lines 261-356 omit rejection reason, user answer/summary content and invalid continuation values while emitting resolver/creator kinds and question/answer counts; raw creator role is still emitted for Agent-created questions.",
+        "Lines 357-516 emit expiration reason and aggregate counts while excluding stale target revision/document identifiers and superseding comment ID.",
+        "Strong patterns are negative raw-ID assertions, no prompt/answer/reason/summary/stale-target/comment content, categorical resolution dimensions and counts. Gaps include raw customer-defined Agent role, no addressee/option/item-verdict/tool-action adversarial fields, no consent/export/region/retention, schema/version/cardinality governance, duplicate emission/failure isolation and no proof that hashed private references are appropriately salted or rotated.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 7 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-516 exactly once and assess interaction telemetry field minimization, actor/addressee identifiers, answer/reason leakage, consent/export governance, duplicate emission, failure isolation and separation from Company OS responsibility evidence."
+      ]
     }
   ]
 }

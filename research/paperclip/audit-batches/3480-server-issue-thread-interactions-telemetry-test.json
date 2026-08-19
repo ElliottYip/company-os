@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-thread-interactions-telemetry",
+    "auditStatus": "COMPLETE",
+    "function": "Real-PostgreSQL tests for privacy-minimized interaction.resolved product telemetry across accepted, rejected, answered and expired interaction outcomes.",
+    "dependencyDirection": "Vitest -> real issueThreadInteractionService/PostgreSQL -> mocked telemetry client; hashing exists on the client seam, but asserted events use categorical dimensions and counts rather than entity references.",
+    "keyDataModels": "Interaction kind/status/resolution reason; creator/resolver kind; raw creator Agent role; continuation and target type; created/skipped task, option/selection and question/answer counts; excluded interaction/Agent/Run/comment/document/revision IDs and free text.",
+    "lifecycle": "Persist and resolve/expire interaction -> derive categorical/count analytics dimensions -> send interaction.resolved event while omitting request/answer/reason text and raw operational identifiers.",
+    "testAssessment": "All 7 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage is strong on several explicit negative fields, but lacks item-verdict/tool-action/addressee adversaries, malicious free-form roles, event schema/version/cardinality, duplicate transitions, telemetry disabled/failure/latency and deployment consent/export behavior.",
+    "designRationale": "Measure how structured interactions are used and resolved without exporting their prompts, answers, rejection reasons or raw entity IDs.",
+    "companyOsProblem": "Company OS needs optional privacy-preserving product analytics that cannot bypass enterprise data-export contracts, especially for Chinese/self-hosted customers, and must never be confused with immutable responsibility evidence.",
+    "companyOsFit": "ADAPT explicit allowlisted categorical/count events and negative leak tests. Replace raw role with a controlled role-category code or deployment-scoped pseudonym; version schemas and enforce cardinality budgets; run every event through DataExportPolicy/consent/region/retention; self-hosted off by default; test hostile prompts, roles, addressees, verdicts, tool metadata and Connector errors; deduplicate via outbox event ID and isolate sink failure.",
+    "responsibilityConflict": "Analytics omits the actual decision content and therefore cannot establish accountability; the raw customer-defined creator_agent_role may itself contain personal or confidential information. No export contract or responsible human consent is demonstrated.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-thread-interactions-telemetry.test.ts:1-516 (SHA-256 81294194cfe5bc74bda139a5aefc916780cba895c98605bdf510bdd829d89dbf)",
+      "git history: ded813ad6fae2c0b2c9009e04f59b117ecae0151 and 3522b1c9be3a90485800ec15698e57aba75cbf8a",
+      "2026-08-19 sandboxed focused Vitest: 7/7 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 7/7 skipped"
+    ],
+    "securityFindings": "CRITICAL Company OS governance requirement: no DataExportPolicy, consent, region, retention or self-hosted default is tested. HIGH free-form leakage risk: creator_agent_role is exported raw. HIGH coverage gap: tool action, addressee and item-verdict metadata are not tested against leakage. HIGH verification gap: all real-database tests skipped. MEDIUM reliability gap: duplicate emission, sink failure and schema/version behavior are absent. POSITIVE: explicit negative assertions exclude raw IDs, prompts, answers, summaries, decline reasons, comment and document/revision references."
+  }]
+}
