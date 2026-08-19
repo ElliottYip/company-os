@@ -9972,6 +9972,75 @@
       "completionRequirements": [
         "Read lines 1-674 exactly once and assess routine route authorization/concealment, CRUD/revision/restore/run/trigger/workspace/annotation surfaces, actor attribution, validation/error codes, cross-tenant references, idempotency/concurrency and Company OS responsibility-safe API fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/routines-service",
+      "path": "server/src/__tests__/routines-service.test.ts",
+      "lineCount": 2412,
+      "sha256": "e1eac5dda8eed278d0df9cdcdf22a35959b5510cd0393c589fd67e20747e7f07",
+      "linkedEvidence": { "history": [
+        "14d4db6330e5ca8f3d3500bc2af1fc56defc7748 fix(inbox): keep passive issue views out of Mine (#10581)",
+        "30ff3d7c5874e8c71586bb016984c1d37f96ed28 feat(routines): expose activity gate API (#9438)",
+        "52aea902632fcdb9b3e689c60e3a148a2009358b feat: organize skills with nested folders and My Skills (#9633)",
+        "8368fb30b01645838a1183666b83754aa8d7424f fix(routines): coalesce sub-hourly catch-up runs (#9649)",
+        "4a40c0cb13fd0e8cd1213b71599c4d7275b51582 feat(routines): gate scheduled runs on external activity (#9436)",
+        "70ce005bef50a59f4dec45386dcd884a6fac0ea7 Ensure worktree execution starts only after activation (#9374)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+        "b3c0fadd635c51a4ad147cc5f0170957c5167e55 feat(routines): add date variable controls (#8655)",
+        "746e287e33f94e8d3d3ab26d6c578e1825826fe2 feat(control-plane): add annotation and workspace controls (#8229)",
+        "aeea5f9195d43a7ba66ddd811b26ec2575c7dcd1 fix(ui): stabilize routine schedule editor and interrupted run labels (#8333)",
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 [codex] prevent invalid agents from receiving assignments and runs (#7663)",
+        "d60f50e4a4dc841ce70fbd3eb8efb2cdde8c2bd5 feat(routines): suppress scheduled ticks while project is paused (TON-2139) (#7502)",
+        "70b1a9109d756818fb448beafa67af27babb52de Improve CLI API parity coverage (#6626)",
+        "705c1b8d8115654835e1d902f3d5d015302c13b5 [codex] Add routine env secrets support (#6212)",
+        "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)",
+        "d6d7a7cea645ed8035ae2c5aa953c22e26601159 Add routine revision history and restore flow (#5285)",
+        "2d72292ad6b8261846b2699fb44944fb77ab638f [codex] Add workspace routine run tab (#4958)",
+        "f88f538e6d1b981d195c94b9d8efc7ae7ee52055 Keep manual routine runs visible in the runner inbox (#4615)",
+        "09d0678840336094e70734ba429bc16bb1fd0940 [codex] Harden heartbeat scheduling and runtime controls (#4223)",
+        "549ef11c14b2b05f89220e80cecc41e78be95439 [codex] Respect manual workspace runtime controls (#4125)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-302",
+        "303-604",
+        "605-906",
+        "907-1208",
+        "1209-1510",
+        "1511-1812",
+        "1813-2114",
+        "2115-2412"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-228 build a broad embedded-Postgres fixture with Company defaultResponsibleUserId, active Agent/project, routine service, wakeup recording/queued heartbeat linkage, optional runtime env/provider seams and worktree activation helpers.",
+        "Lines 230-302 filter routine lists by project and begin a cross-Company folder creation probe; lines 303-306 complete its non-enumerating 404.",
+        "Lines 308-552 cover default/first-run activity gates, exclude the routine's own execution activity, include another Agent's delegated child activity and human comments, ignore passive inbox/read bookkeeping, constrain project scope and create a fresh issue after an idle open issue.",
+        "Lines 554-615 force projectless/agentless routines to paused drafts.",
+        "Lines 617-670 create append-only revisions only for real changes, store activity-gate snapshots and reject no-op revision growth.",
+        "Lines 672-760 snapshot plain/secret-ref env, index and repair routine Secret bindings, stamp runs with dispatch revision and change fingerprints when env revisions change.",
+        "Lines 762-875 reject stale base revisions, restore history append-only while preserving runs, default legacy snapshot gates, reject restoring latest, recreate deleted webhook Secret/public identity on historical restore and return new one-time Secret material.",
+        "Lines 877-923 preserve custom cron text and reject an Agent restoring a revision whose snapshot would assign the routine to another Agent.",
+        "Lines 925-1004 reject restore/run/reassignment when the assignee or reporting-chain ancestor is terminated, with structured agent_not_assignable details.",
+        "Lines 1006-1051 append safe trigger metadata revisions for create/update/rotate/delete, delete Secret/binding rows and assert snapshots contain public ID but no Secret value or secretId.",
+        "Lines 1053-1149 create/wake fresh issues, attribute manual runs to creating/responsible user, retain the revision's responsible-user snapshot for automatic runs despite mutable-row drift and await wakeup before returning.",
+        "Lines 1151-1281 coalesce only against a live heartbeat-linked issue and touch/unarchive that issue for a manual runner's inbox; lines 1283-1372 do the analogous inbox behavior for skip_if_active.",
+        "Lines 1374-1510 keep different resolved-variable fingerprints separate, interpolate/default and persist variable values, then begin capital-Date inference/validation.",
+        "Lines 1511-1685 complete date storage, attach selected execution workspaces, derive workspaceBranch into persisted variables and run paused drafts with one-off Agent/project overrides.",
+        "Lines 1687-1850 reject activating automation without a default Agent, schedules lacking valid required defaults and invalid date defaults.",
+        "Lines 1852-1933 serialize two concurrent dispatches into one issue plus coalesced run, and mark/clean the issue when wakeup queueing fails.",
+        "Lines 1935-2076 accept timestamped HMAC, configured Secret provider and GitHub HMAC webhooks, reject one invalid GitHub signature, but also accept unauthenticated public webhook requests under signingMode none.",
+        "Lines 2078-2164 suppress automatic schedule/webhook execution in an unarmed worktree while permitting manual runs, record skips, advance schedule, and only dispatch routines created after an armed cutoff.",
+        "Lines 2166-2284 coalesce multiple missed sub-hourly/weekday ticks, replay hourly and multi-minute daily ticks and advance nextRunAt.",
+        "Lines 2286-2412 let API runs bypass worktree cutoff, suppress/record scheduled work while a project is paused then resume, preserve activity-gate window across quiet skips, and explicitly bypass the external-activity gate for webhook dispatch.",
+        "No explicit request idempotency key, multi-process/node race, huge-outage catch-up cap, DST/clock rollback, stale/future/replayed/missing webhook timestamp, constant-time/signature-format, rate/size/content-type/SSRF input, signed-mode requirement, sensitive-variable classification/redaction, cross-Company Agent/project/workspace, actor authorization for service calls, approval/model/tool/data/budget snapshot, cancel/timeout/terminal result/evidence or retention test is present.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and all 57 tests were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-2412 exactly once and assess full routine service lifecycle: CRUD/revisions/restore, variables, schedules/timezones/catch-up/activity gates, concurrency/idempotency, Agent/project/workspace validity, Secret bindings, issue/run/heartbeat creation, failure/cancel/recovery, tenant/actor attribution, evidence/results and Company OS reusable-work architecture fit."
+      ]
     }
   ]
 }
