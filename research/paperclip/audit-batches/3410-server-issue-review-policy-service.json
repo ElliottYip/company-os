@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/services/issue-review-policy",
+    "auditStatus": "COMPLETE",
+    "function": "Authorizes Issue review verdict actors under anyone, human-only or not-requester policies and recognizes the requester-created confirmation associated with the latest transition into review.",
+    "dependencyDirection": "Issue review-policy service -> shared policy type, Drizzle activity log and structured HTTP errors; caller supplies current Issue, actor and optional policy override and is expected to enforce Issue write access.",
+    "keyDataModels": "Typed Agent/user actor and requester; Issue company/review policy/creator; latest activity transition with old/new status and reviewInteractionId; stable review_policy_denied error metadata.",
+    "lifecycle": "Resolve effective policy -> return immediately for anyone, type-check human_only, or reconstruct latest review requester from tenant-scoped activity/fallback creator -> compare typed actor -> allow or issue structured denial; separately bind the recorded confirmation ID to requester identity.",
+    "testAssessment": "The paired 5-test real-database suite skipped in both environments; TypeScript passed. Intended tests cover default behavior, transition-aware requester exclusion, snapshot noise, interaction identity and human principal type. Missing are override authorization, reopen/multiple rounds, policy versioning, history loss/tamper, tenant attacks, membership/grants, quorum/conflicts and exact content binding.",
+    "designRationale": "Offer minimal, explicit self-review prevention and human-only review without coupling generic confirmation resolution to one actor class, while preserving compatibility with two activity payload generations.",
+    "companyOsProblem": "Company OS needs immutable, round-specific ReviewObligations and ApprovalObligations whose actors, authority, policy and reviewed evidence/action digest remain provable throughout audit and recovery.",
+    "companyOsFit": "ADAPT typed actor matching, tenant-scoped transition evidence, stable error codes and fail-closed unknown requester. Resolve policy exclusively from a versioned obligation snapshot, never a request override; use stable Principal/role/certification/grant records; model review rounds, quorum and conflicts; bind decision to Work/action/artifact/evidence digest and append an immutable verdict receipt.",
+    "responsibilityConflict": "The caller can supply an effective policy, null Issue policy defaults to anyone, and human_only proves only that authentication produced a user-shaped actor. A current activity reconstruction cannot prove which exact content or risk policy the verdict covered.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/services/issue-review-policy.ts:1-137 (SHA-256 35550c90d92e376e6da8c9cad7a1555aa12fa078662f6ee2ed70d9b9150e23d7)",
+      "git history: 814cb336766cabd7c5a08fb82849d93e35a7ddaf and f554d67377a5963bc683a8742f456d0a4b114f84",
+      "paired focused Vitest: 5/5 skipped in sandbox and approved unsandboxed run",
+      "Paperclip server TypeScript check: passed"
+    ],
+    "securityFindings": "CRITICAL policy-integrity risk for Company OS: optional effective-policy input and no immutable policy/content digest can authorize against a weaker or changed rule. HIGH default-open and human-authority gaps. HIGH audit-history dependence without retention/tamper tests. HIGH verification gap: database suite skipped. MEDIUM round ambiguity after repeated in_review transitions. POSITIVE: company-scoped history, typed identities, fail-closed unknown requester and stable codes are useful foundations."
+  }]
+}

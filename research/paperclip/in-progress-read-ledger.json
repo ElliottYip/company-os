@@ -7904,6 +7904,32 @@
       "completionRequirements": [
         "Read lines 1-182 exactly once and assess wake-reason classification, cooldown mathematics, progress semantics, input trust boundaries and Company OS durable/idempotent scheduling requirements."
       ]
+    },
+    {
+      "id": "application:server/services/issue-review-policy",
+      "path": "server/src/services/issue-review-policy.ts",
+      "lineCount": 137,
+      "sha256": "35550c90d92e376e6da8c9cad7a1555aa12fa078662f6ee2ed70d9b9150e23d7",
+      "linkedEvidence": { "history": [
+        "814cb336766cabd7c5a08fb82849d93e35a7ddaf feat(server): allow agents to resolve review confirmations (#10939)",
+        "f554d67377a5963bc683a8742f456d0a4b114f84 fix(server): add explicit review verdict policies (#10931)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-137"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-67 query the latest company- and Issue-scoped transition into in_review using two historical activity shapes, extract actor and interaction IDs, then fall back to exactly one creator identity; ambiguous or missing creators yield null.",
+        "Lines 68-86 require a verdict interaction to match both the recorded interaction ID and requester's typed identity.",
+        "Lines 87-137 normalize an explicit input policy over the Issue's current policy over default anyone; anyone returns without I/O, human_only checks only actor type, and not_creator fails closed if requester is unknown or the same typed actor, returning structured denial/remediation details.",
+        "Strong patterns are tenant-scoped transition lookup, two activity-schema compatibility paths, typed identity matching, fail-closed unknown requester and stable denial code. Gaps include an input-level policy override that can select anyone, default-open semantics, no policy snapshot/digest, no human membership/role/certification check, latest-history reconstruction after reopen, reliance on mutable activity retention, no quorum/conflict graph and no exact reviewed-content binding.",
+        "The paired focused database suite skipped all 5 tests in sandboxed and approved unsandboxed runs; server type-check passed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-137 exactly once and assess policy normalization/defaults, transition-history lookup, actor authorization, error contract and Company OS immutable ReviewObligation requirements."
+      ]
     }
   ]
 }
