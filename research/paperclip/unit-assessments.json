@@ -10355,18 +10355,23 @@
     },
     {
       "id": "application:server/__tests__/secrets-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route tests for Company and per-user Secret administration, provider-vault discovery/configuration, external-reference import, usage/access projections, tenant privacy and audit-log redaction.",
+      "dependencyDirection": "Authenticated board/Agent actors enter Express Secret routes; route policy and validation run before a mocked Secret service. The service owns providers, configs, Secret definitions/values, versions, imports, bindings, run access and access events; route handlers emit sanitized activity records and structured HTTP errors.",
+      "keyDataModels": "Company Secret and user-scoped Secret; user Secret definition; provider configuration/health/discovery candidate; managed versus external-reference mode; provider/version reference; Secret binding usage; access event; concrete user/system/Agent actor; activity detail and structured provider error.",
+      "lifecycle": "Admins define Company or user Secret schemas and provider configs; a concrete user creates/rotates/removes only their own value. Operators discover or import remote references and create/rotate/update/soft-delete Secrets; provider configs can be disabled/removed locally without remote deletion. Usage and access-event projections are tenant-gated, while already deleted Secrets permit cleanup retry.",
+      "testAssessment": "All 35 focused route tests pass when Supertest is allowed a local TCP port; the first sandboxed run failed only with listen EPERM. Coverage is strong for actor/tenant denial, personal identity binding, sensitive-config rejection, aggregate-only audit details, provider error sanitization, cross-tenant existence privacy, external-ref retarget prevention and cleanup retry. Because every service call is mocked, the file does not validate encryption, DB/provider transactions, run-bound resolution, access-event durability, revocation propagation, version pinning or actual vault isolation.",
+      "designRationale": "Separate HTTP authorization/redaction from Secret-provider implementation, support both centrally managed and externally referenced credentials, distinguish Company and per-user scopes, and prevent discovery/import UX from leaking remote identifiers into audit logs. Soft deletion plus cleanup retry supports eventual provider reconciliation.",
+      "companyOsProblem": "Company OS requires Company-, person-, Agent-, work- and data-purpose-scoped Secret grants across managed cloud and customer-local execution nodes, with concrete human identity, non-enumerable tenant boundaries, safe provider discovery, exact version/revocation evidence and no control-plane plaintext exposure.",
+      "companyOsFit": "ADAPT the route-policy patterns: concrete-user-only personal Secrets, system attribution for implicit bootstrap, pre-service tenant denial, identical not-found shapes, origin-only credential-free provider configuration, aggregate-only discovery/import activity, managed/external-mode exclusivity, non-retargetable references and retryable cleanup. Recast these behind Company OS IdentityPort, SecretPort, DataAuthorizationPort and Audit/Evidence port; add stable error codes everywhere, policy-scoped admin roles, purpose/audience/work-contract grants, explicit versions, expiry/revocation propagation, durable access evidence and sealed delivery to customer-local execution nodes.",
+      "responsibilityConflict": "Company-admin and board-actor checks do not express the accountable human, approver mandate, responsibility contract, purpose or exact data/permission grant. Provider configuration and Secret CRUD remain operational administration rather than approval-bound authority publication. A mutable latest version or generic binding can change what an Agent receives without a new responsibility decision unless Company OS snapshots the approved version and grant digest.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/secrets-routes.test.ts:1-984 (SHA-256 6a84f10a155919dac2a56c0d65b041aac5dc351dddb951bc9d992cc4a640fb32)",
+        "git history: eight commits from 778e775c35834aabe09266fb6d415d3dafbd1deb through 0b496c9c03b1e6cee5cb773954823590c7d1d76b recorded in the read ledger",
+        "2026-08-19 focused Vitest: sandboxed run blocked by Supertest listen EPERM; identical permitted run passed 1 file and 35/35 tests"
+      ],
+      "securityFindings": "POSITIVE: concrete user identity is required for personal values; Agents and cross-tenant callers are denied before provider service access; user-scoped records are hidden from legacy Company mutation; missing and foreign Secret projections share a 404 shape; sensitive provider fields and credential-bearing URLs are rejected; logs omit plaintext, sample names and remote refs; external refs cannot be generically retargeted; remote provider data is not silently deleted with local config. HIGH verification gap: service mocking proves none of encryption, provider credential isolation, run-bound authorization, revocation timing or access-event durability. HIGH authority gap: broad Company-admin operations lack scoped approval/separation-of-duties and responsibility-contract binding. HIGH hybrid-custody gap: no tested sealed local-node delivery or control-plane plaintext exclusion. HIGH reproducibility gap: exact version and grant digest are absent from asserted runtime access. MEDIUM contract gap: structured provider codes exist, but many responses remain English-string contracts. MEDIUM SSRF gap: Vault URL shape validation is tested, but DNS resolution, private/link-local endpoints, redirects and TLS trust are not."
     },
     {
       "id": "application:server/__tests__/secrets-service",

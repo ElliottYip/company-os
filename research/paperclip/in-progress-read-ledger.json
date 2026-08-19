@@ -10139,6 +10139,46 @@
       "completionRequirements": [
         "Read lines 1-863 exactly once and assess Agent Secret proposal, human review/approve/reject, plaintext/value custody, exact object/run/Agent/human/digest binding, tenant/role scope, idempotency/races/expiry, resulting grants/bindings, audit/evidence and Company OS approval-publication/SecretPort fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/secrets-routes",
+      "path": "server/src/__tests__/secrets-routes.test.ts",
+      "lineCount": 984,
+      "sha256": "6a84f10a155919dac2a56c0d65b041aac5dc351dddb951bc9d992cc4a640fb32",
+      "linkedEvidence": { "history": [
+        "0b496c9c03b1e6cee5cb773954823590c7d1d76b feat(secrets): add run-bound agent secret access (#9921)",
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "09f503f216b234d973c4ac87ca49d3d19acee448 [codex] Surface AWS secret provider create errors (#9161)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+        "43b005b704f80aea3ce37cab8136920749c73ee6 Add pipeline workflow primitives and operator UI (#7903)",
+        "f88ac9d078a755c6662072e71ffdeedde67a8761 [codex] Fix local skill, secrets, and file viewer regressions (#8586)",
+        "d67347be77f33ecb8c23a12cb41b56864f5d32c3 [codex] Provider vault secrets UX (#6381)",
+        "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-164",
+        "165-328",
+        "329-492",
+        "493-656",
+        "657-820",
+        "821-984"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-164 mock the Secret service boundary, require board Company access for provider health, reject mixed managed/external creation and preserve structured sanitized AWS error details without logging failed creation.",
+        "Lines 165-328 reserve user-Secret definition management for Company admins, attribute local_implicit administration to the system rather than a pseudo-user, bind personal values to a concrete authenticated user, reject empty rotation and hide user-scoped Secrets from legacy Company mutation routes.",
+        "Lines 329-492 deny provider-vault operations to Agents and cross-Company board actors before service calls, reject credential fields in persisted/draft configs, and log only discovery aggregates rather than sampled names or refs.",
+        "Lines 493-656 return structured actionable provider errors, keep coming-soon Vault configs from ready state, require origin-only credential/token-free Vault URLs, log safe config metadata and remove only the local provider configuration without deleting remote provider data.",
+        "Lines 657-820 restrict remote-import previews to board actors, log aggregate candidate/import counts without remote names/ARNs, return sanitized provider errors and pass selected external references to the service for import.",
+        "Lines 821-984 prohibit generic external-reference retargeting, make missing and cross-tenant usage/access-event responses identical 404s, return in-tenant binding usage and allow idempotent cleanup retry for already soft-deleted Secrets.",
+        "The file is a route/service-mock contract: it does not itself prove encryption, provider isolation, database transactions, run-bound access resolution, access-event durability, revocation propagation, exact Secret version use, local execution-node handoff or plaintext memory safety. Several errors have a stable code, but many validation/404/identity assertions still couple to English error text.",
+        "Initial sandboxed Vitest failed all 35 tests solely because Supertest could not listen on 0.0.0.0 (EPERM); the identical focused command rerun with local-port permission passed 1 file and all 35 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-984 exactly once and assess Company/user/Agent Secret authorization, tenant existence privacy, provider/import/create/version/binding lifecycle, run-bound access and revocation, ciphertext/plaintext custody, Secret reference projection, idempotency/concurrency/audit/error codes and Company OS SecretPort/data-governance fit."
+      ]
     }
   ]
 }
