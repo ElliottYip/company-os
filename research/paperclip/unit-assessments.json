@@ -9516,18 +9516,23 @@
     },
     {
       "id": "application:server/__tests__/plugin-sandbox-provider-config-validation",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for normalizing and delegating sandbox-provider plugin configuration validation when a schema field uses the secret-ref format.",
+      "dependencyDirection": "Stored/user provider config enters plugin-environment-driver; the host locates a ready driver manifest, rewrites structured secret bindings, then calls the plugin worker's environmentValidateConfig and trusts its normalized configuration response.",
+      "keyDataModels": "Sandbox environment driver manifest/configSchema; apiKey string with secret-ref format; structured secret_ref secretId/version; bare UUID or raw provider-key string; plugin normalizedConfig.",
+      "lifecycle": "Find a ready provider; convert latest reference object to a bare ID; reject pinned numeric version; pass config to a running plugin for validation/normalization; return normalized output.",
+      "testAssessment": "All three tests pass and document current compatibility behavior, but that behavior collapses two security types: a secret reference becomes a bare string while raw secret strings are also accepted and forwarded unchanged. The plugin cannot distinguish intent by type, and the schema's secret-ref format is not an enforcement boundary. Missing are secret ownership/tenant/target checks, prohibited plaintext, schema strictness, malicious normalized output, version/rotation semantics, side-effect-free validation, timeout and log/error redaction.",
+      "designRationale": "Maintain compatibility with plugin validators expecting a string identifier while accepting newer structured secret binding objects and disallowing unsupported pinned versions.",
+      "companyOsProblem": "Company OS local execution must keep credentials out of control-plane/plugin configuration and preserve typed secret-reference semantics until an authorized execution node resolves the exact secret for a specific run.",
+      "companyOsFit": "REJECT lossy conversion to bare strings and plaintext acceptance. Define an opaque SecretHandle schema containing provider-neutral reference ID, tenant, audience, purpose, selector and policy version, signed or issued by SecretPort. Plugin config validation receives only metadata such as presence/capability, never raw value or globally meaningful secret ID. Runtime resolution occurs just-in-time on the bound local node after Work/Contract/permission/data checks, yields short-lived material, and never round-trips through normalized config. Reject plaintext for secret fields; validate strict schemas and plugin-normalized output; audit access and rotation/revocation.",
+      "responsibilityConflict": "A plugin may receive either an actual credential or a reusable secret identifier with no work, human, permission, purpose or action binding. This makes it impossible to prove which authorized secret was used for which responsible execution.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-sandbox-provider-config-validation.test.ts:1-120 (SHA-256 c3c2d9ba09a861e84954461c1c00577c0279475ad73d3446da8d0fc39a9b0d91)",
+        "git history: 9f5af4ea5d33ee0b40b972eb21b6e8e42cd0cf25 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 3/3 passed"
+      ],
+      "securityFindings": "CRITICAL type-confusion: structured secret_ref is downgraded to a bare string indistinguishable from a raw secret. CRITICAL plaintext path: a raw provider key is explicitly accepted and sent to plugin validation despite secret-ref schema format. HIGH tenant/auth gap: secret existence, Company ownership, target audience and capability are not checked in this unit. HIGH plugin-trust gap: plugin-normalized config is accepted without proving secret types remain safe. HIGH lifecycle gap: only latest is supported and rotation/revocation race semantics are absent. MEDIUM validation gap: strict JSON schema/additional fields and malicious plugin errors/timeouts are untested."
     },
     {
       "id": "application:server/__tests__/plugin-scoped-api-routes",

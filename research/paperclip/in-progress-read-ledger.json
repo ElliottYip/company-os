@@ -9350,6 +9350,31 @@
       "completionRequirements": [
         "Read lines 1-1105 exactly once and assess plugin HTTP route identity/tenant/role/capability matrix, Agent JWT and run scope, tool/runtime invocation, secret endpoints, install/build/dev/MCP exposure, human delegation, stable errors and Company OS extension gateway fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-sandbox-provider-config-validation",
+      "path": "server/src/__tests__/plugin-sandbox-provider-config-validation.test.ts",
+      "lineCount": 120,
+      "sha256": "c3c2d9ba09a861e84954461c1c00577c0279475ad73d3446da8d0fc39a9b0d91",
+      "linkedEvidence": { "history": [
+        "9f5af4ea5d33ee0b40b972eb21b6e8e42cd0cf25 accept secret_ref binding objects in sandbox provider environment config (#10355)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-120"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-49 mock a ready sandbox-provider plugin whose JSON configSchema marks apiKey as string format secret-ref; worker validation simply echoes normalized config.",
+        "Lines 50-86 pass a structured latest secret_ref binding but require the host to canonicalize it into a bare secret UUID before calling the plugin, losing the typed reference envelope.",
+        "Lines 87-103 reject numeric pinned secret versions before plugin validation, permitting only latest in this path.",
+        "Lines 104-120 explicitly permit a raw provider key string through the same secret-ref-formatted field and forward it unchanged to the plugin, making raw secret and bare reference ID indistinguishable by type.",
+        "No secret existence/tenant/target/capability validation, schema additionalProperties/type enforcement, plugin result trust, runtime resolution, redaction, rotation race, validation side-effect isolation or secret-free logging is covered. Focused Vitest passed 3/3."
+      ],
+      "completionRequirements": [
+        "Read lines 1-120 exactly once and assess sandbox provider config schema, environment secret_ref versus plaintext, additional-field/version rules, tenant/target binding, runtime resolution/redaction and Company OS local execution secret contract fit."
+      ]
     }
   ]
 }
