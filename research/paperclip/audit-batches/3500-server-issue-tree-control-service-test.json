@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-tree-control-service",
+    "auditStatus": "COMPLETE",
+    "function": "Real-PostgreSQL service tests for tenant-scoped subtree preview, normalized hold/member snapshots, cancel/restore conflict handling, deep pause ancestry with authenticated human-comment Run waivers, and scoped resume of descendant pause holds.",
+    "dependencyDirection": "Vitest -> issueTreeControlService plus Issue checkout -> Drizzle/PostgreSQL Companies, Agents, Runs, wake requests, comments, Issues and tree hold/member tables.",
+    "keyDataModels": "Issue tree/status/assignee/execution lock; hold mode/status/reason/actor/release policy/metadata; member original status/skipped reason; preview counts/warnings/active Runs; queued wake/Run/comment provenance; restore conflict and resume linkage.",
+    "lifecycle": "Traverse tenant subtree -> preview affected/skipped members and execution -> persist hold/member snapshot -> cancel eligible status -> later compare current state with cancel snapshot and restore only unchanged cancelled members -> release related holds; pause gate blocks descendants except exact human-origin continuation Run; resume releases pause holds rooted inside subtree.",
+    "testAssessment": "All 6 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage proves tenant filtering, terminal/human ownership, normalized snapshots, conflict-safe restore, depth-17 ancestry/provenance waiver and scoped resume. Missing are graph cycles/large trees/query counts, concurrent/overlapping holds, snapshot-version TOCTOU, transaction with Run/wake interruption, Connector fencing, expiry, policy/role/approval and partial saga recovery.",
+    "designRationale": "Make destructive subtree control previewable and reversible without overwriting later human changes, and still allow a narrowly authenticated human-comment handoff to proceed through an otherwise paused ancestry.",
+    "companyOsProblem": "Company OS needs durable emergency control and recovery over Work graphs, including human-owned nodes and heterogeneous Connector executions, with exact command scope, per-node responsibility and truthful partial outcomes.",
+    "companyOsFit": "ADAPT normalized snapshots, terminal skip, conflict-safe restore, safe-state normalization, deep ancestry and provenance-bound human continuation. Add cycle/size/query budgets, graphSnapshotVersion and per-member expectedVersion, overlapping-hold conflict rules, durable saga/outbox, Connector capability revocation/fencing/acknowledgement, explicit WaiverCapability tied to human principal/comment/purpose/expiry, per-node policy and accountable-human notification, and immutable per-member outcome receipts.",
+    "responsibilityConflict": "A hold actor is recorded, but no evidence proves that actor is the responsible human or authorized across every member. Legacy/root continuation waivers are implicit rather than policy-versioned capabilities. Persistence does not prove the corresponding Connector actually stopped, so restored/cancelled state can diverge from execution reality.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-tree-control-service.test.ts:1-691 (SHA-256 300dc22ba4809e6015a2b483281d2b2094793b1648c59fcd6db4e6ca21f211e5)",
+      "git history: four commits from 67b22d872f9589c169ab8129a05a84b6cef05c3c through f98c348e2b3011b2fdc905c7a41f73d4f1998ac3 recorded in the read ledger",
+      "2026-08-19 sandboxed focused Vitest: 6/6 skipped",
+      "2026-08-19 approved unsandboxed focused Vitest: 6/6 skipped"
+    ],
+    "securityFindings": "CRITICAL execution-truth gap: database hold/status state is not coupled to Connector fencing or acknowledgement. HIGH concurrency/TOCTOU gap: no graph/member version or overlapping-hold CAS tests. HIGH graph safety gap: no cycle, scale or query-bound evidence. HIGH responsibility gap: recorded actor is not verified as responsible/authorized per node. HIGH verification gap: all database tests skipped. MEDIUM waiver risk: human-comment and legacy/root exceptions are not explicit expiring capability objects. POSITIVE: tenant scoping, exact provenance checks, conflict-safe restore and preservation of independent human changes are strong controls."
+  }]
+}

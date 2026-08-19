@@ -8227,6 +8227,37 @@
       "completionRequirements": [
         "Read lines 1-419 exactly once and assess tree pause/resume/cancel propagation, actor/tenant authorization, dry-run/confirmation, Run cancellation and Connector effects, idempotency/concurrency, audit receipts and Company OS per-node responsibility constraints."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-tree-control-service",
+      "path": "server/src/__tests__/issue-tree-control-service.test.ts",
+      "lineCount": 691,
+      "sha256": "300dc22ba4809e6015a2b483281d2b2094793b1648c59fcd6db4e6ca21f211e5",
+      "linkedEvidence": { "history": [
+        "67b22d872f9589c169ab8129a05a84b6cef05c3c clarify interrupt handoffs and scoped wake semantics (#7855)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 split backend control-plane QoL (#4700)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e runtime lifecycle recovery and live visibility (#4419)",
+        "f98c348e2b3011b2fdc905c7a41f73d4f1998ac3 subtree pause/cancel/restore controls (#4332)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-350",
+        "351-691"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-179 preview a tenant-scoped root/children tree without mutation, deterministically include terminal nodes as skipped, count statuses/Runs/Agents and warnings, and reject cross-company roots; human-owned in-progress work is affected static state with no fictitious Agent execution.",
+        "Lines 180-350 persist normalized hold/member snapshots with actor and release receipts, cancel only non-terminal members, preserve terminal nodes and detect restore conflicts when a cancelled member was independently changed.",
+        "Lines 351-402 restore only still-cancelled, unmodified snapshot members to a safe todo state, preserve conflicting human changes, clear execution locks and release both cancel and restore holds.",
+        "Lines 403-608 traverse pause ancestry beyond 15 levels and allow checkout only for the exact queued Run/wake/comment chain originating from a human; a forged Agent-originated wake and arbitrary Run are denied, while a legacy/root explicit-comment waiver remains allowed.",
+        "Lines 609-691 resume pause holds whose roots lie within the requested subtree, preserve unrelated holds and write mutual resume/release metadata.",
+        "Strong patterns are normalized member snapshots, terminal skip, human-owned static classification, restore conflict detection, safe todo normalization, deep ancestry, exact human-comment wake provenance and scoped resume metadata. Gaps include cycles/graph-size and query-cost bounds, concurrent/overlapping hold CAS, snapshot version binding, transactional interaction with Run cancellation/wake queues, Connector fencing, expiry/clock, per-node policy/responsible-human authority, explicit semantics for root/legacy waivers and immutable saga outcomes.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 6 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-691 exactly once and assess graph traversal/cycles/caps, hold snapshots and overlap, cancel/restore state fidelity, transactions/concurrency, Run and wake selection, tenant scoping, recovery semantics and Company OS durable tree-control saga requirements."
+      ]
     }
   ]
 }
