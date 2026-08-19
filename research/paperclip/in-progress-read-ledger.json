@@ -8912,6 +8912,42 @@
       "completionRequirements": [
         "Read lines 1-96 exactly once and assess binary discovery/version checks, cwd and environment handling, configuration and secret exposure, structured health/error reporting, false-positive safety implications and Company OS Connector health-contract fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/paperclip-skill-utils",
+      "path": "server/src/__tests__/paperclip-skill-utils.test.ts",
+      "lineCount": 135,
+      "sha256": "7e3dd35e9187664f332c0604c563c0eabb18862b67774c9c65659f4e76cf4a3a",
+      "linkedEvidence": { "history": [
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed agent addressees (#10252)",
+        "627728bddeeea57fb0b0ceadef741eeb390ef8ea authoritative issue PATCH receipts (#10478)",
+        "1f076901846f6c325ef82134f04ed139401ee976 issue thread positioning (#9354)",
+        "33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe retire required bundled skill attribute (#7029)",
+        "e50666e4c8ebc760e5cde6dd2505ddbf153225cd maintainer task skills relocation (#7658)",
+        "f09d4231e35469ae6ee7ad44d748d41256a4271d create-issue-interaction maintainer skill (#7659)",
+        "e080e4686a3b526e1a4c514f31c468c654c4f98d artifact upload reference guidance",
+        "c4bb68c14ba61c7c05e1c23bc7b9f8e986601887 bundled artifact upload helper",
+        "e7cdd0f8c55716fd985ac51a1612aeb8e5eb5640 artifact upload guidance",
+        "91333ec86f0509fa5688408d569ef551c60ae58b paperclip-dev optional bundled skill (#3854)",
+        "641eb449492ce39028ae06dcc5dd013d97cc3d85 create-agent skill governance (#4422)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-135"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-48 verify the packaged runtime skill inventory is limited to the public skills directory and does not pull maintainer-only .agents/skills into a deployed Agent environment.",
+        "Lines 49-76 verify artifact guidance is split from the top-level skill into a reference, a bundled upload helper exists and no duplicate root helper exists. These are documentation/presence assertions, not upload authorization or integrity tests.",
+        "Lines 77-102 assert that runtime/API docs mention governed interaction resolver fields and that skill guidance treats the issue PATCH response as authoritative for monitor scheduling. Substring presence does not enforce server-side governance or receipt authenticity.",
+        "Lines 103-135 keep an interaction UI guide maintainer-only and remove one stale maintainer symlink while preserving an allowlisted runtime symlink and an unrelated custom symlink. The unit does not cover malicious/broken/relative symlinks, path escape, non-symlink collisions, atomic install/update, signatures, version compatibility, content hashing or prompt injection.",
+        "Focused Vitest passed all 6 tests in the sandbox."
+      ],
+      "completionRequirements": [
+        "Read lines 1-135 exactly once and assess skill discovery/content/versioning, prompt-versus-enforced authorization, identity/responsibility semantics, artifact and interaction guidance, injection/data-exposure risk, upgrade drift and Company OS Connector/Agent instruction boundary fit."
+      ]
     }
   ]
 }

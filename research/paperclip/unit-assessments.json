@@ -8975,18 +8975,23 @@
     },
     {
       "id": "application:server/__tests__/paperclip-skill-utils",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Packaging and documentation invariant tests for Paperclip's runtime Agent skills, artifact-upload guidance, governed issue-interaction instructions, authoritative scheduling receipts and removal of stale maintainer-only skill symlinks.",
+      "dependencyDirection": "Server tests call adapter utility filesystem functions and inspect first-party skill/docs files. Repository build-time content is projected into a shared runtime skill home, while .agents maintainer material is deliberately excluded from deployed Agent skill discovery.",
+      "keyDataModels": "Skill entry key/runtimeName/source; runtime versus maintainer skill roots; artifact endpoint/helper references; resolverPolicy and effective/requested policy guidance; issue PATCH monitor fields; shared skill-home symlinks and allowlist.",
+      "lifecycle": "Discover bundled runtime skills; verify references and helper placement; guard selected governance wording; use mutation response as a scheduling receipt; keep maintainer guidance outside runtime distribution; remove stale maintainer symlinks while retaining runtime/custom entries.",
+      "testAssessment": "All six tests pass and meaningfully protect packaging separation and selected documentation drift. They are mostly path or substring assertions: they do not prove artifact authorization/integrity, resolver enforcement, receipt authenticity, accountable-human policy or prompt-injection resistance. Symlink tests omit malicious relative/absolute targets, path escape, broken links, directories/files at target names, atomic upgrade/rollback, content signatures/hashes and concurrent installers.",
+      "designRationale": "Give operational Agents only the supported product instructions and helpers while preventing internal maintainer workflows from leaking into deployed environments; keep detailed guidance modular and synchronize it with evolving APIs.",
+      "companyOsProblem": "Company OS Connectors may install Agent-facing capabilities and operating instructions, but runtime instruction bundles must be versioned, least-privilege, vendor-neutral and subordinate to enforced identity, permission, data and responsibility policy.",
+      "companyOsFit": "ADAPT the explicit runtime/maintainer separation, manifest-based discovery, modular references and packaging drift tests. Define signed/versioned Connector capability bundles with declared compatible protocol range, hashes, provenance and permission/data requirements; install atomically with rollback; canonicalize and confine paths; test malicious symlinks. Treat skill prose only as usability guidance. Enforce artifact upload, interaction resolution, scheduling and approval in Company OS API policy; return stable structured receipts bound to actor, work, contract, action digest, evidence and resource version; test server behavior independently of wording or language.",
+      "responsibilityConflict": "Documentation can tell an Agent how to behave but cannot make it accountable or authorized. The tested interaction and scheduling invariants are textual, with no proof that a real responsible human, scoped principal, data grant or approval digest controls the corresponding action. Installed skill content is also an injection/supply-chain input to the Agent runtime.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/paperclip-skill-utils.test.ts:1-135 (SHA-256 7e3dd35e9187664f332c0604c563c0eabb18862b67774c9c65659f4e76cf4a3a)",
+        "git history: twelve commits from 73eb23734f25c570d88665e672f80d740797c632 through ded813ad6fae2c0b2c9009e04f59b117ecae0151 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 6/6 passed"
+      ],
+      "securityFindings": "POSITIVE: runtime and maintainer skills are intentionally separated; duplicate helper placement is rejected; shared-home cleanup targets stale maintainer links without removing a runtime/custom example; authoritative mutation response avoids an unnecessary read race. HIGH policy-as-prose gap: governance is checked through string presence, not service-side authorization/responsibility behavior. HIGH supply-chain gap: no signed manifest, hash, provenance or protocol-compatibility verification for installed skill content. HIGH artifact gap: helper/path documentation tests do not prove tenant scope, data-export approval, content integrity, malware scanning or evidence retention. MEDIUM filesystem gap: symlink canonicalization, path escape, broken/malicious links, atomicity and concurrency are untested. MEDIUM injection gap: Agent-consumed instruction and reference content has no trust-label or content-policy validation here."
     },
     {
       "id": "application:server/__tests__/parse-status-filter",
