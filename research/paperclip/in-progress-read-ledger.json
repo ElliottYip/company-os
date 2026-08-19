@@ -10105,6 +10105,40 @@
       "completionRequirements": [
         "Read lines 1-221 exactly once and assess sandbox provider registration/lifecycle/lease reuse, Company/instance/run isolation, command/files/network/Secret controls, cleanup/expiry/recovery, capability/attestation shape, plugin trust and Company OS ExecutionNode/Agent Runtime port fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/secret-proposals-routes",
+      "path": "server/src/__tests__/secret-proposals-routes.test.ts",
+      "lineCount": 863,
+      "sha256": "556e0289bac92b7d46833ea64cc8304995d61dd0a22bd9c7a2733fe61b0470bd",
+      "linkedEvidence": { "history": [
+        "e43f187cad3b05c9f00d1b9d4e924f43f7ab125e feat(secrets): add human-approved secret proposals (#9934)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-173",
+        "174-346",
+        "347-519",
+        "520-692",
+        "693-778",
+        "779-863"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-104 build a real embedded-PostgreSQL fixture with a temporary encrypted key file, Company, Agent, running heartbeat/work execution and either Agent JWT/key or board identities.",
+        "Lines 106-173 deny rejection by an ordinary active member and preserve the pending encrypted ciphertext; approval/rejection remains committed when issue-comment and wakeup notifications fail, while terminal proposals clear ciphertext.",
+        "Lines 174-346 let an Agent JWT propose a plaintext Secret and dependent binding but deny agent_key, task_bridge scope and Agent approval; responses omit plaintext/fingerprint, a redaction fingerprint/material record is added to run context, and human cascade approval atomically creates the Secret plus Agent binding, updates adapter config and writes human-attributed activity/comment records.",
+        "Lines 347-519 cover sequential approval, a 20-pending-binding quota under concurrent requests, paginated listing, bounded expiry sweeps and collision-tolerant continuation.",
+        "Lines 520-692 recheck expiry after row locking, reject stale approvals without mutation, revalidate current reporting relationships, reject references to withdrawn Secret proposals and begin a database-triggered rejection-versus-binding race.",
+        "Lines 693-778 prove the concurrent rejection waits for binding creation and then cascade-rejects that binding; withdrawal likewise cascade-rejects dependent bindings. The first combined 693-863 output delivery was truncated, so this range was recovered in two smaller, recorded display ranges rather than treated as already reviewed.",
+        "Lines 779-863 use a PostgreSQL trigger/advisory lock to show a binding approval holds the organization graph stable through commit; a concurrent reorg completes only afterward, preserving the approval-time reporting basis.",
+        "Strong design evidence includes Agent-propose/human-decide separation, encrypted pending values, terminal ciphertext deletion, atomic cascade approval, expiry under lock, org-graph revalidation, quota/race coverage and human-attributed activity. Gaps include skipped runtime execution here, broad Company-admin authority, no exact action/value/config/grant digest or responsibility-contract binding, no two-person/risk-tier decision, no durable outbox for failed notifications, latest-version binding, cloud control-plane plaintext custody/provider handoff, possible provider-private redaction material in run context, English-string error coupling and no proven memory zeroization or local-vault sealed handoff.",
+        "Focused Vitest exited successfully but skipped the file and all 14 tests because the embedded PostgreSQL gate was unavailable; this is not counted as a passing runtime verification."
+      ],
+      "completionRequirements": [
+        "Read lines 1-863 exactly once and assess Agent Secret proposal, human review/approve/reject, plaintext/value custody, exact object/run/Agent/human/digest binding, tenant/role scope, idempotency/races/expiry, resulting grants/bindings, audit/evidence and Company OS approval-publication/SecretPort fit."
+      ]
     }
   ]
 }

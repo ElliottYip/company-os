@@ -10317,18 +10317,23 @@
     },
     {
       "id": "application:server/__tests__/secret-proposals-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Integration-test specification for Agent-created Secret and binding proposals, human approval/rejection, encrypted pending-value custody, cascade resolution, expiry/quota enforcement and organization-graph concurrency.",
+      "dependencyDirection": "Agent-scoped and board-scoped HTTP routes drive proposal services and PostgreSQL transactions; approvals create Company Secrets/bindings and adapter Secret references, then project activities, issue comments and Agent wakeups. Secret providers receive decrypted plaintext only inside the server approval path.",
+      "keyDataModels": "CompanySecretProposal(kind secret|binding, encrypted value, fingerprint/material, status, expiry, resolution); CompanySecret; CompanySecretBinding(target Agent/configPath/version); Agent adapterConfig secret_ref; Company/Agent/reporting edge; heartbeat run and issue execution run; Agent app scope; activity/comment/audit attribution.",
+      "lifecycle": "An eligible running Agent JWT proposes a Secret and optional dependent binding; the server encrypts the pending value and binds proposal context to Company/Agent/run/issue. A human Company admin approves, rejects or permits agent withdrawal; approval rechecks expiry and current reporting authority under database locks, can atomically cascade Secret plus binding creation, clears ciphertext and emits projections. Rejection/withdrawal cascade-rejects dependent bindings; a bounded sweeper expires stale proposals.",
+      "testAssessment": "The 14 integration tests are unusually strong specifications for scope denial, no plaintext response, human-only decisions, cascade atomicity, sequential resolution, concurrent quotas, bounded expiry, post-lock expiry checks, current-org validation, dependent withdrawal/rejection and database-lock ordering. The focused Vitest command exited 0 but skipped the file and all 14 tests because embedded PostgreSQL was unavailable, so no runtime pass is claimed. Notification failures are intentionally swallowed after commit without a tested durable retry/outbox, and stable machine-readable error codes are not asserted.",
+      "designRationale": "Allow an Agent to request narrowly placed credentials without granting it Secret-administration authority, while keeping a human approval gate and ensuring the approved binding is valid against current organization authority at commit time. Atomic cascade reduces partially approved Secret/binding states; terminal ciphertext deletion reduces retained plaintext-equivalent material.",
+      "companyOsProblem": "Company OS needs accountable-human control of Agent credential and data access, exact responsibility/evidence binding, safe hybrid-cloud custody, revocable least-privilege grants, concurrency-safe approval publication and deterministic audit projections.",
+      "companyOsFit": "ADAPT as the leading reference for Company OS SecretProposal and ApprovalPublication behavior, not as copied core. Preserve Agent-propose/human-decide, encrypted-or-sealed pending material, terminal deletion, atomic dependency resolution, expiry/quota/race checks and approval-time org revalidation. Replace broad admin approval with scoped policy and separation-of-duties; bind a signed digest over exact action, Secret descriptor/value fingerprint, target/config, version, permission/data grant, work/responsibility contract, Agent, accountable human, evidence, purpose and expiry. Prefer a sealed one-time handoff to a customer-local SecretPort/vault so managed control plane never decrypts enterprise plaintext; expose stable error/event codes, durable outbox delivery, explicit versions, revocation and grant-use evidence.",
+      "responsibilityConflict": "The tested proposal context identifies Company, Agent, run and issue, but does not prove the exact requested authority is cryptographically bound to a responsibility contract, accountable human, permission/data scope and immutable action digest. Company-admin authority is broader than a policy-specific approver, and latest-version bindings can change effective authority after approval. Cloud-side plaintext decryption also assigns custody to the control plane rather than the responsible customer execution boundary.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/secret-proposals-routes.test.ts:1-863 (SHA-256 556e0289bac92b7d46833ea64cc8304995d61dd0a22bd9c7a2733fe61b0470bd)",
+        "git history: e43f187cad3b05c9f00d1b9d4e924f43f7ab125e feat(secrets): add human-approved secret proposals (#9934)",
+        "2026-08-19 focused Vitest: process exited 0; 1 file and 14 tests skipped because embedded PostgreSQL was unavailable; no runtime pass claimed"
+      ],
+      "securityFindings": "POSITIVE: Agent key and task_bridge scopes are denied, Agents cannot approve, ordinary members cannot reject, responses omit plaintext/fingerprint, pending ciphertext is erased on terminal resolution, approval rechecks expiry and reporting authority under locks, and dependency races are specified. CRITICAL custody gap for Company OS managed-cloud: approval decrypts credential plaintext in the server process before provider creation rather than proving a sealed customer-local vault handoff. HIGH authorization gap: positive decisions use broad Company admin identity, without scoped approver policy, two-person control or separation-of-duties tests. HIGH integrity gap: no signed immutable digest binds the exact Secret descriptor/value fingerprint, target/config/version, work contract, data/permission grant, human decision and evidence. HIGH delivery gap: comment/wakeup failures do not roll back but no durable outbox/retry is asserted. HIGH reproducibility gap: binding to version latest can silently alter post-approval authority. MEDIUM leakage/contract gap: run context stores redaction material and tests do not establish it is provider-neutral/non-sensitive; errors appear asserted by English text rather than stable codes. Runtime evidence remains unverified because all focused tests skipped."
     },
     {
       "id": "application:server/__tests__/secret-provider-registry",
