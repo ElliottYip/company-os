@@ -9061,6 +9061,45 @@
       "completionRequirements": [
         "Read lines 1-1276 exactly once and assess pipeline definitions/steps/triggers/runs, tenant and actor authorization, graph validation, idempotency/concurrency/transactions, failure/retry/cancel, inputs/outputs/secrets, audit/approval/responsibility binding, API errors/versioning and overlap with Company OS work orchestration."
       ]
+    },
+    {
+      "id": "application:server/__tests__/pipelines-service",
+      "path": "server/src/__tests__/pipelines-service.test.ts",
+      "lineCount": 1876,
+      "sha256": "ceaf096b86d997722fcb05bd6ff82ba5994eeed65fe366d97f05228e7be07e31",
+      "linkedEvidence": { "history": [
+        "ad961227f57a217655c9e05e5987e6d0e5524409 user-specific runtime secrets (#8825)",
+        "3e31bf09bc35fb3e2c7d15308c75ad765b1df866 pipeline automation title templates (#8787)",
+        "43b005b704f80aea3ce37cab8136920749c73ee6 pipeline workflow primitives and operator UI (#7903)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-210",
+        "211-420",
+        "421-630",
+        "631-840",
+        "841-1050",
+        "1051-1260",
+        "1261-1470",
+        "1471-1680",
+        "1681-1876"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-272 define relational fixtures and verify default stages, safe stage migration with parent terminal counters, caseKey idempotency for single/batch ingest and workspaceRef persistence.",
+        "Lines 273-470 verify stale patch rollback without events, exactly one winner for parallel versioned transitions, active/expired leases and optional transition-edge enforcement.",
+        "Lines 471-656 verify blockers gate non-review/terminal moves, emit blockers_resolved once per fresh set, notify linked active work issues, and treat cancelled blockers as unsatisfied until explicitly removed.",
+        "Lines 657-912 bound drift notifications to active work links, suppress no-op version/event changes, resolve forward/existing blocker keys, allow per-row batch failure, reject blocker cycles, reject parent cycles and cap parent depth at 32.",
+        "Lines 913-1219 maintain multilevel terminal rollups and one-time notifications; system children-terminal auto-advance can override and clear a human-held parent lease; a gated parent auto-transition failure leaves child completion committed; suggestions supersede/accept/dismiss with event histories.",
+        "Lines 1220-1417 require run provenance for Agent mutations, emit mutation events, run stage-entry automation once, label generated issue context as untrustedContent, and make repeated retry of a simulated crash ledger idempotent for routine run/issue link creation.",
+        "Lines 1418-1634 propagate isolated workspace settings, preserve/upgrade/interpolate automation title templates, and reject cross-Company routines both at configuration and retry execution.",
+        "Lines 1635-1876 implement destructive stage-automation retry cleanup, retire/cancel prior direct children or descendants, optionally cancel linked automation issues, refresh terminal counters and permit a fresh child rollup. Tests use a generic userActor without showing authorization for this cleanup.",
+        "The file history mentions user-specific runtime secrets, but this unit contains no secret binding, redaction or delivery assertions; no such coverage is inferred. Focused Vitest skipped all 32 tests because embedded Postgres support was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1876 exactly once and assess service transactions, graph/case/lease/version invariants, automation idempotency/retry/crash behavior, work/secret/workspace propagation, human review, evidence/audit/responsibility, data lifecycle and Company OS workflow/FDE fit."
+      ]
     }
   ]
 }
