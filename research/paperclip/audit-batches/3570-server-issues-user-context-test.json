@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/issues-user-context",
+      "auditStatus": "COMPLETE",
+      "function": "Pure unit suite for deriving per-user Issue touch time and unread presentation state from creation, assignment, comment, read and external-comment timestamps.",
+      "dependencyDirection": "Calls a pure Issue-service helper with row-like Issue and timestamp inputs; output is a user-specific presentation projection and has no database or authorization dependency.",
+      "keyDataModels": "Issue creator/assignee and createdAt/updatedAt; current user ID; myLastCommentAt, myLastReadAt, lastExternalCommentAt; myLastTouchAt and isUnreadForMe.",
+      "lifecycle": "Choose the latest explicit user read/comment touch, fall back to creator creation time or assignee Issue update time, compare with the latest external comment and emit unread state.",
+      "testAssessment": "Six fast pure tests pass and cover creator/assignee fallbacks, newer self/external activity, explicit reads and SQL timestamp strings. Missing are invalid/equal/skewed timestamps, reassignment, deleted/hidden comments, machine-under-user principals and proof that updatedAt reflects the assignee's own action.",
+      "designRationale": "Compute inbox UX deterministically without mutating Issue state or mixing read presentation with core authorization.",
+      "companyOsProblem": "Agent Boss needs reliable personal attention projections while Company OS must keep identity, responsibility, authorization and read UX as distinct concepts.",
+      "companyOsFit": "REFERENCE ONLY. Preserve the pure per-principal projection boundary, but derive attention from explicit immutable activity/read events with actorPrincipalId and event sequence, not the Issue row's global updatedAt. Treat the result as disposable UI state; never use it to infer authentication, authorization, approval, accountable-human acceptance or evidence review.",
+      "responsibilityConflict": "Marking an assigned Issue effectively read from global updatedAt can hide work the responsible human has never seen, weakening the Agent Boss attention queue. The projection has no evidence of acknowledgment and must not be confused with responsibility acceptance.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/issues-user-context.test.ts:1-113 (SHA-256 1f709c7b3877c4a99951e8daac95686802faa67c8a52565b3f79958394f41d07)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 6/6 passed"
+      ],
+      "securityFindings": "POSITIVE: the helper is pure and separate from authorization. HIGH attention-integrity risk for Company OS: assignee fallback uses global Issue updatedAt, which may be advanced by another principal or system and suppress a human's unread warning. MEDIUM provenance gap: machine-under-user and derived Agent activity are not distinguished. LOW robustness gap: invalid timestamps and clock skew are untested."
+    }
+  ]
+}

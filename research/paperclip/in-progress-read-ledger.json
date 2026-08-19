@@ -8533,6 +8533,29 @@
       "completionRequirements": [
         "Read lines 1-6705 exactly once and assess Issue lifecycle, hierarchy/cycles, execution ownership and fencing, Agent/human attribution, Goal/Project/data scope, comments and evidence, approval/review transitions, idempotency/concurrency, recovery/sweepers, tenant isolation and Company OS responsibility-chain fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issues-user-context",
+      "path": "server/src/__tests__/issues-user-context.test.ts",
+      "lineCount": 113,
+      "sha256": "1f709c7b3877c4a99951e8daac95686802faa67c8a52565b3f79958394f41d07",
+      "linkedEvidence": { "history": [
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-113"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-113 define six pure projection tests combining creator/assignee timestamps, the user's latest comment/read timestamp and latest external comment into myLastTouchAt and isUnreadForMe.",
+        "The function tolerates Date and SQL timestamp strings and keeps user-specific read state separate from authentication/authorization. However, using global Issue updatedAt as an assignee's fallback touch can suppress unread state after someone else or a system updates the Issue; equality, invalid timestamps, clock skew, deleted comments, user reassignment and tenant/principal changes are untested.",
+        "Focused Vitest passed all 6 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-113 exactly once and assess authenticated identity versus presentation context, tenant and role scope, spoofing, authorization use, stable contract and Company OS human-principal/accountability separation."
+      ]
     }
   ]
 }
