@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/routine-run-telemetry",
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres service test that a manually initiated routine creates an issue/queued heartbeat path and emits a minimal product-telemetry event containing only trigger source and issue_created status.",
+      "dependencyDirection": "Routine service creates persistent work and calls heartbeat wakeup; after the run reaches issue_created it invokes a shared telemetry helper with a global telemetry client and a two-field payload.",
+      "keyDataModels": "Company/defaultResponsibleUserId; active Agent/project/routine; routine run source/status; issue executionRunId/lock; queued heartbeat run; product telemetry source/status.",
+      "lifecycle": "Create active routine; invoke it manually; create issue and queued execution; return issue_created routine run; emit one minimal telemetry observation at initiation.",
+      "testAssessment": "The source-level assertion demonstrates strong content minimization, but the single test was skipped locally because embedded PostgreSQL is unavailable. The telemetry helper itself is mocked and only the successful manual issue_created path exists. There is no assertion for completion, failure, cancellation, retries, duplicate delivery, sink failure, privacy policy or responsibility correlation.",
+      "designRationale": "Measure routine adoption and initiation outcome without sending routine names, bodies, identifiers, Agent output or Secret data to product analytics.",
+      "companyOsProblem": "Company OS needs privacy-preserving usage analytics while maintaining a separate complete, queryable responsibility chain for every initiated and executed work item across managed and self-hosted deployments.",
+      "companyOsFit": "ADAPT the minimal low-cardinality product event and absence of authored content. Treat it only as optional analytics. Emit authoritative typed domain/audit events for requested, planned, queued, executing, approval-paused, resumed, cancelled, timed-out, failed and completed transitions, linked by stable work/run/contract/Agent/human IDs and digests. Build analytics from redacted projections with deployment/consent policy; never use analytics delivery as responsibility evidence.",
+      "responsibilityConflict": "The service call has no initiator actor and the seeded default responsible human is unused; source manual therefore does not identify a person. Status issue_created is not an execution result. Company OS must separately prove who initiated, who was accountable, which Agent executed, what authority/data was used, approvals, evidence and final outcome.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/routine-run-telemetry.test.ts:1-170 (SHA-256 37c7cf6b49a574611e0f5d3b7fd973787b1604521d6ee3955b55ada910bbbd1a)",
+        "git history: three commits from 73eb23734f25c570d88665e672f80d740797c632 through ad961227f57a217655c9e05e5987e6d0e5524409 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file and 1 test skipped because embedded PostgreSQL support was unavailable; no pass claimed"
+      ],
+      "securityFindings": "CRITICAL responsibility gap if mistaken for audit: no human initiator/accountable identity, work/run correlation or final result is present. HIGH lifecycle gap: only issue_created is covered, not execution/approval/terminal states. HIGH delivery gap: retries, duplicates, ordering and sink failure isolation are untested. HIGH deployment/privacy gap: consent, retention, residency and self-hosted disable/local sink behavior are absent. POSITIVE: asserted telemetry excludes IDs, names, descriptions, Secrets and Agent output."
+    }
+  ]
+}

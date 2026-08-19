@@ -9861,6 +9861,35 @@
       "completionRequirements": [
         "Read lines 1-304 exactly once and assess routine-document annotation author identity, tenant concealment, document/revision anchoring, edit/delete/resolve lifecycle, concurrency, content safety, execution snapshot propagation, audit/evidence semantics and Company OS human review fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/routine-run-telemetry",
+      "path": "server/src/__tests__/routine-run-telemetry.test.ts",
+      "lineCount": 170,
+      "sha256": "37c7cf6b49a574611e0f5d3b7fd973787b1604521d6ee3955b55ada910bbbd1a",
+      "linkedEvidence": { "history": [
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+        "746e287e33f94e8d3d3ab26d6c578e1825826fe2 feat(control-plane): add annotation and workspace controls (#8229)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-170"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-39 import database models, mock the product telemetry client and shared trackRoutineRun helper, then load the real routine service.",
+        "Lines 41-71 gate on embedded PostgreSQL and clean routine/document/run/issue/workspace/project/Agent/Company state after each case.",
+        "Lines 73-139 seed a Company with defaultResponsibleUserId, active Codex Agent and project; a mocked heartbeat wakeup persists a queued run and locks the created issue; the real service creates an active manual-capable routine.",
+        "Lines 141-151 return the service/routine fixture.",
+        "Lines 153-170 call runRoutine without an actor, assert the returned routine run is issue_created and assert product telemetry receives only source manual plus status issue_created.",
+        "No human initiator/responsible identity, routine/run/issue/Agent/Company correlation, completion result, approval/evidence, other trigger sources/statuses, failed/coalesced/skipped/cancelled path, duplicate/retry/exactly-once, sink failure isolation, consent/locality or explicit content/Secret negative assertion is present.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and its only test were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-170 exactly once and assess routine run telemetry schema, trigger/result/outcome mapping, tenant/run/Agent/human attribution, Secret/content minimization, retries/duplicates, failure/cancel states, audit separation and Company OS responsibility projection fit."
+      ]
     }
   ]
 }
