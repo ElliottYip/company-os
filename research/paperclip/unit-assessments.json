@@ -8133,18 +8133,24 @@
     },
     {
       "id": "application:server/__tests__/issue-review-policy",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL tests for Issue review-verdict actor policies: default anyone, reviewer other than the transition requester, and human-only; also identifies the confirmation interaction representing the verdict.",
+      "dependencyDirection": "Vitest -> issue-review-policy service -> Issue plus activity-log history in Drizzle/PostgreSQL; authorization/membership is expected from the caller.",
+      "keyDataModels": "Issue reviewPolicy and company; typed actor principal; activity transition into in_review with requester and reviewInteractionId; confirmation creator; structured HttpError code/policy/allowedActor.",
+      "lifecycle": "Record transition into in_review -> recover requester and optional verdict interaction from activity -> authorize a verdict actor under current Issue policy -> reject with stable structured error or allow continuation.",
+      "testAssessment": "All 5 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage validates the no-query default, requester exclusion, transition-vs-snapshot distinction, interaction classification and human principal typing. Missing are policy snapshot/version changes, absent/duplicated/tampered history, tenant and write-grant enforcement, human role/certification, quorum, exact decision binding and race conditions.",
+      "designRationale": "Prevent the Agent that requested review from approving its own work when configured, permit a human-only gate, and keep verdict authorization separate from generic confirmation handling.",
+      "companyOsProblem": "Company OS must enforce responsibility contracts and risk-based approval policies with verifiable human authority, conflict rules, separation of duties and an immutable binding to the exact action and evidence being decided.",
+      "companyOsFit": "ADAPT explicit typed verdict policies, transition-aware requester identity and stable structured denial codes. Replace default-open with policy-derived safe defaults; snapshot policy/version and requester in an authoritative ReviewObligation; require tenant membership, write grant, role/certification and conflict checks; bind each signed decision to action/work/contract/Agent/human/evidence/result digests and support quorum/escalation.",
+      "responsibilityConflict": "An arbitrary authenticated user is accepted by this function for human_only and any actor is accepted by default without a database check. The decision is not bound to exact reviewed content or a policy snapshot, so changed work or policy can inherit an authorization intended for another state.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-review-policy.test.ts:1-220 (SHA-256 72dc6c409ba6dba4f62aa1fe705b118e4cd1d8418d90652bbdf13e007523df04)",
+        "git history: 814cb336766cabd7c5a08fb82849d93e35a7ddaf and f554d67377a5963bc683a8742f456d0a4b114f84",
+        "2026-08-19 sandboxed focused Vitest: 5/5 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 5/5 skipped"
+      ],
+      "securityFindings": "CRITICAL for Company OS: verdict authorization lacks exact action/artifact/evidence digest and immutable policy-version binding. HIGH default-open risk: null policy performs no data lookup. HIGH human-authority gap: principal type alone is sufficient here; role, membership, certification, conflict and grant are external assumptions. HIGH verification gap: all database tests skipped. MEDIUM audit dependence: requester identity is reconstructed from mutable/retained activity history without tested ambiguity or tamper handling. POSITIVE: stable denial codes, actor typing and transition-aware requester selection are sound primitives."
     },
     {
       "id": "application:server/__tests__/issue-rewake-throttle",

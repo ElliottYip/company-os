@@ -7826,6 +7826,32 @@
       "completionRequirements": [
         "Read lines 1-243 exactly once and assess review-attention projection, reviewer/owner semantics, tenant scope, stale review detection, human accountability and approval-versus-review separation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-review-policy",
+      "path": "server/src/__tests__/issue-review-policy.test.ts",
+      "lineCount": 220,
+      "sha256": "72dc6c409ba6dba4f62aa1fe705b118e4cd1d8418d90652bbdf13e007523df04",
+      "linkedEvidence": { "history": [
+        "814cb336766cabd7c5a08fb82849d93e35a7ddaf feat(server): allow agents to resolve review confirmations (#10939)",
+        "f554d67377a5963bc683a8742f456d0a4b114f84 fix(server): add explicit review verdict policies (#10931)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-220"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-84 seed explicit anyone/not_creator/human_only policies; the default anyone path intentionally performs no database query, making caller-side write authorization the only surrounding guard.",
+        "Lines 85-169 derive the review requester from the actual transition into in_review in activity history, reject that Agent under not_creator, admit a peer Agent and ignore later snapshots that did not transition status.",
+        "Lines 170-220 classify only the transition-recorded, requester-created confirmation as the review verdict interaction and use authenticated principal type for human_only; denial returns a stable review_policy_denied code and structured policy/allowedActor fields.",
+        "Strong patterns are explicit verdict policy, authenticated actor typing, transition-aware requester derivation and stable error codes. Gaps include default-open semantics, role/certification/membership/availability checks, policy version snapshots, exact action/artifact/digest binding, quorum/separation of duties, reviewer conflict beyond one requester, history tamper/retention, missing/ambiguous transition behavior and independently enforced issue-write scope inside this function.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 5 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-220 exactly once and assess review verdict policies, Agent-versus-human authority, decision binding, policy versioning, state transitions and Company OS separation-of-duties requirements."
+      ]
     }
   ]
 }
