@@ -7991,6 +7991,35 @@
       "completionRequirements": [
         "Read lines 1-544 exactly once and assess stale execution-lock detection/adoption/release, ownership and tenant checks, terminal-state preservation, concurrency/fencing, recovery evidence and Company OS Connector lease semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-subtree-diagnostics-routes",
+      "path": "server/src/__tests__/issue-subtree-diagnostics-routes.test.ts",
+      "lineCount": 431,
+      "sha256": "bbb76427aa8b4d68a3b2fd5fa01e7574f2babe9955c3d1202f660c9a0d61ad28",
+      "linkedEvidence": { "history": [
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "9d5b0e3c57f7469aef238e15e319112b24eb4fd4 Add read-only issue subtree diagnostics endpoint (#9135)",
+        "295294d7ce1639da1d3b979e806a141317e0d990 Add read-only issue blocker diagnostics endpoint (#9114)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-220",
+        "221-431"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-220 create board and low-trust mention-scoped Agent actors, accountable-human seeded Issues, project/parent/blocker graphs and a Run-scoped authorization policy used to test read filtering.",
+        "Lines 221-306 return bounded nodes plus parent/blocker/wake edges and deterministic human-readable stall text while deliberately excluding raw wake payload, details, triggerDetail and error values; a quiet singleton has null diagnosis.",
+        "Lines 307-369 cap output at depth 8/100 nodes with explicit truncation metadata and avoid claiming an unauthorized count when traversal itself is truncated.",
+        "Lines 370-431 let a mentioned low-trust Agent see the root but omit an unauthorized child and its identifiers/secrets, disclose only the omitted count and authorization-boundary caveat, and return uniform 404 for cross-company reads.",
+        "Strong patterns are bounded explainability, explicit truncation/caps, field-level raw-data exclusion, per-node authorization, low-trust run scope and cross-tenant concealment. Gaps include graph cycles/depth and blocker/wake/activity cap tests, query complexity/N+1, stable machine-readable diagnosis codes, stale snapshot/version time, data classification on allowed Issue fields, side-channel implications of unauthorized counts, board role matrix and responsibility/escalation recommendations tied to accountable humans.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 5 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-431 exactly once and assess subtree/blocker diagnostics, tenant and actor authorization, graph cycles/depth/scale, data minimization, staleness and Company OS Agent Boss responsibility explanations."
+      ]
     }
   ]
 }

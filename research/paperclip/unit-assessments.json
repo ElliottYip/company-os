@@ -8234,18 +8234,24 @@
     },
     {
       "id": "application:server/__tests__/issue-subtree-diagnostics-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL HTTP tests for a bounded, authorization-filtered Issue-subtree diagnostic projection containing parent/blocker/wake edges, stall explanations and explicit truncation metadata.",
+      "dependencyDirection": "Supertest/Express -> Issue diagnostics route -> Issue graph/authorization/read-model services -> Drizzle/PostgreSQL Issues, projects, relations, Runs, wake requests, comments and activity.",
+      "keyDataModels": "Company default responsible user; Issue parent/project/status/assignee/responsible user; blocker relation; low-trust Run authorization policy; sanitized wake edge; node diagnosis; caps/truncation and omitted-unauthorized count.",
+      "lifecycle": "Authorize root read -> traverse bounded descendants and blockers -> authorize each node under actor/Run scope -> attach bounded sanitized wake/activity evidence -> derive stall explanation -> report omitted/truncated uncertainty without returning raw operational payloads.",
+      "testAssessment": "All 5 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage proves one blocked graph, quiet singleton, node cap, mention-scoped hidden child and cross-tenant 404. Missing are cycles, depth cap, blocker/wake/activity caps, ordering, large-graph query counts, stale data/versioning, board roles, allowed-field minimization and machine-readable diagnosis stability.",
+      "designRationale": "Give operators and constrained Agents a read-only explanation for stalled subtrees without exposing raw wake payloads, errors or unauthorized nodes, and make bounded/incomplete results explicit.",
+      "companyOsProblem": "Agent Boss needs trustworthy, permission-aware explanations of why work is blocked and who must act, without leaking hidden projects, sensitive data, Connector payloads or evidence outside the viewer's contract.",
+      "companyOsFit": "ADAPT bounded graph projection, per-node authorization, explicit uncertainty and raw-field redaction. Emit versioned structured DiagnosisCode/Cause/RequiredActor/ResponsibilityObligation plus localized presentation separately; scope by data contracts and evidence labels; use snapshot/asOf version, cycle-safe traversal and query budgets; make omitted-count disclosure policy-configurable and route recommended action to the accountable human.",
+      "responsibilityConflict": "The diagnosis explains topology and wake activity but does not prove who is accountable, what authorization or approval is missing, or whether evidence is current. Human-readable strings are not a stable responsibility contract, and an omitted-node count can still reveal hidden structure.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-subtree-diagnostics-routes.test.ts:1-431 (SHA-256 bbb76427aa8b4d68a3b2fd5fa01e7574f2babe9955c3d1202f660c9a0d61ad28)",
+        "git history: 7f2ed0ad90d7186d108f65400e322bda08dcbfe2, 9d5b0e3c57f7469aef238e15e319112b24eb4fd4 and 295294d7ce1639da1d3b979e806a141317e0d990",
+        "2026-08-19 sandboxed focused Vitest: 5/5 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 5/5 skipped"
+      ],
+      "securityFindings": "HIGH authorization side-channel risk: omittedUnauthorizedNodeCount reveals hidden graph cardinality by design. HIGH stability gap: diagnosis/likelyReason are English strings rather than versioned codes and parameters. HIGH performance gap: caps exist but no cycle, depth or query-count evidence proves safe traversal. HIGH verification gap: all real-database/HTTP tests skipped. MEDIUM minimization gap: only raw wake fields are explicitly checked, not every allowed Issue/Agent field. POSITIVE: tenant 404, per-node low-trust filtering, bounded output and secret-marker assertions are unusually strong diagnostic-safety primitives."
     },
     {
       "id": "application:server/__tests__/issue-telemetry-routes",
