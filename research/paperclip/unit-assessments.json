@@ -10162,18 +10162,23 @@
     },
     {
       "id": "application:server/__tests__/routines-e2e",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres route/service vertical tests for routine creation/update, schedule trigger, manual execution, variable interpolation, activity-gate configuration, draft overrides, issue/heartbeat/run projections, activity logging and execution-workspace selection.",
+      "dependencyDirection": "Session board actor with Company owner membership and tasks:assign permission calls real routine routes/access/database services; routine service persists templates/triggers/runs/issues and invokes a mocked heartbeat seam that creates queued execution state.",
+      "keyDataModels": "Company membership and permission grant; routine project/Agent/priority/status/concurrency/catch-up/activity gate/variables; schedule cron/timezone/secretMaterial; routine run source/payload/status/linked issue; issue origin/execution lock/workspace; activity actions; project/execution workspace policy.",
+      "lifecycle": "Create and update reusable work; attach an enabled schedule; trigger manually; create/lock an execution issue and queued heartbeat; list detail/recent runs; interpolate variables; run a paused draft with one-off assignments; persist selected execution workspace.",
+      "testAssessment": "The five source-level cases form a useful broad vertical slice with real authorization, routes and database state around a narrow heartbeat mock. They were skipped locally because embedded PostgreSQL is unavailable. The retry helper repeats HTTP 500 requests without proving idempotency, and the suite stops at issue_created rather than terminal execution. Schedule mechanics, concurrency/catch-up, cross-tenant references, revision identity, permissions/data/approval/evidence and failure paths remain unproven.",
+      "designRationale": "Represent recurring or reusable Agent work as a configurable routine that can be scheduled or manually instantiated into the existing issue/heartbeat execution machinery while retaining recent-run visibility and workspace control.",
+      "companyOsProblem": "Enterprises need reusable work templates and scheduled operations across vendors, but every instantiation must preserve a real initiator and accountable human, exact instruction/authorization snapshot, risk gate, evidence and result without duplicating work on retries.",
+      "companyOsFit": "ADAPT the neutral template/trigger/run/issue/workspace separation, typed variables, activity-gate concept and query projections. Require an idempotency key and unique execution intent; bind each run to an immutable template revision/digest, initiator, accountable human, Agent Connector identity, model, tools, Secret/Data grants, budget and risk policy. Paused/draft templates fail closed unless an authorized human creates a complete one-off responsibility contract. Validate tenant ownership and input sensitivity, enforce schedule/concurrency/catch-up policies and track pause/approval/resume/cancel/timeout/failure/result/evidence terminal states.",
+      "responsibilityConflict": "Owner membership plus tasks:assign permits creation, but the asserted run lacks an accountable-human field and exact authorization/revision snapshot. Manual source and activity action names do not prove who accepted responsibility. Allowing a paused draft to run via overrides can bypass configured review boundaries unless the override itself is an approved responsibility contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/routines-e2e.test.ts:1-573 (SHA-256 149e08a9235896f26dcd3a29e7afee915ca04ce2fbe6f9276f5d7bd0e62760f7)",
+        "git history: five commits from 73eb23734f25c570d88665e672f80d740797c632 through 30ff3d7c5874e8c71586bb016984c1d37f96ed28 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file and 5 tests skipped because embedded PostgreSQL support was unavailable; no pass claimed"
+      ],
+      "securityFindings": "CRITICAL retry/idempotency gap: the test retries a 500 with no idempotency proof, so a post-commit response failure could be masked while duplicating work. CRITICAL responsibility gap: no accountable human, immutable revision or effective permission/data/approval snapshot is asserted per run. HIGH state-bypass risk: a paused draft can execute with one-off Agent/project overrides. HIGH tenant/input gap: cross-Company references and variable sensitivity/injection are untested. HIGH execution gap: only issue_created/queued linkage is covered, not approval or terminal result/evidence. HIGH scheduler gap: cron validation, DST, catch-up and concurrency policies are configured but not exercised. POSITIVE: real access/database routes are used, trigger secretMaterial is null, work links to routine origin and workspace selection is persisted."
     },
     {
       "id": "application:server/__tests__/routines-routes",

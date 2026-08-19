@@ -9890,6 +9890,45 @@
       "completionRequirements": [
         "Read lines 1-170 exactly once and assess routine run telemetry schema, trigger/result/outcome mapping, tenant/run/Agent/human attribution, Secret/content minimization, retries/duplicates, failure/cancel states, audit separation and Company OS responsibility projection fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/routines-e2e",
+      "path": "server/src/__tests__/routines-e2e.test.ts",
+      "lineCount": 573,
+      "sha256": "149e08a9235896f26dcd3a29e7afee915ca04ce2fbe6f9276f5d7bd0e62760f7",
+      "linkedEvidence": { "history": [
+        "30ff3d7c5874e8c71586bb016984c1d37f96ed28 feat(routines): expose activity gate API (#9438)",
+        "746e287e33f94e8d3d3ab26d6c578e1825826fe2 feat(control-plane): add annotation and workspace controls (#8229)",
+        "9a8d2199492654930ba0864dd5c0757163998649 [codex] Stabilize tests and local maintenance assets (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 [codex] Add structured issue-thread interactions (#4244)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-144",
+        "145-287",
+        "288-430",
+        "431-573"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-79 import broad persistent routine/work/permission/workspace state and replace only heartbeat wakeup so a real service run creates a queued heartbeat and issue execution lock.",
+        "Lines 81-151 gate the sequential suite on embedded PostgreSQL, clean all related tables, reset modules and register real routes/access/services around the heartbeat seam.",
+        "Lines 153-182 mount routes with a caller actor; postRoutineRun retries any HTTP 500 once after 25ms with the same body but no asserted idempotency key.",
+        "Lines 184-225 seed a Company, active Codex Agent, active project, owner human membership and tasks:assign permission.",
+        "Lines 227-287 create a high-priority routine with project/Agent, concurrency/catch-up and external-activity gate; update its gate to always/company; create an enabled UTC weekday cron trigger and assert secretMaterial is null.",
+        "Lines 288-366 manually run with an arbitrary payload, assert issue_created, persist/list/detail recent run and active issue, link the issue to routine_execution plus heartbeat executionRunId, and observe routine create/trigger/run activity action names.",
+        "Lines 368-412 create required text/select variables, manually provide one value, apply the default for the other, persist the variables in triggerPayload and interpolate them into the execution issue description.",
+        "Lines 414-442 assert activity gates default to always/company and reject two invalid enum values.",
+        "Lines 444-483 create a paused draft with no project/Agent and nevertheless manually run it using one-off project/Agent overrides, which persist on the issue.",
+        "Lines 485-573 seed project/execution workspaces and experimental settings, manually run with an isolated-workspace selection and persist workspace IDs, reuse preference and settings on the issue.",
+        "No idempotency key/duplicate retry, schedule firing/DST/catch-up/concurrency enforcement, trigger secret lifecycle, invalid cron/timezone, variable missing/invalid/unknown/escaping/size/sensitivity, paused-run policy, cross-Company Agent/project/workspace, responsible human/activity actor details, immutable revision/digest, permission/data/model/budget/approval contract, execution terminal result/evidence, cancel/timeout/failure or cleanup test is present.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and all 5 tests were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-573 exactly once and assess routine CRUD/version/trigger/run/activity-gate lifecycle, human/Agent attribution, idempotency/concurrency/catch-up, approval/data/Secret binding, evidence/results, failure recovery, tenant isolation and Company OS reusable-work fit."
+      ]
     }
   ]
 }
