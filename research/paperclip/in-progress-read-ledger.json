@@ -8682,6 +8682,34 @@
       "completionRequirements": [
         "Read lines 1-1646 exactly once and assess low-trust Agent read/write/tool/workspace/secret/approval boundaries, cross-task and cross-tenant attempts, default-open visibility, zero-side-effect denials, attribution/receipts, confused-deputy paths and Company OS capability plus responsibility-contract requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/managed-config",
+      "path": "server/src/__tests__/managed-config.test.ts",
+      "lineCount": 357,
+      "sha256": "c0c23ea9aaba497dfb912ed0bf977ef0d29706aff472b9f218161c3704bba334",
+      "linkedEvidence": { "history": [
+        "273315a4d01a002cc4ecc5e9e7192ad7a32e91b6 provision managed sandbox environments (#10324)",
+        "216d3d2680d9be66eab5d98e1607bd217a062c1f fail-closed managed config and settings overlay (#10058)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-178",
+        "179-357"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-34 define a versioned cloud config with catalog version, managed-tier feature overlay and plugin auto-install list; absent env means self-hosted while a present blank value fails closed.",
+        "Lines 35-217 test required sections, immutable output, invalid JSON/non-object/unknown keys, exact schema version and cloud mode, catalogVersion, boolean managed-only feature keys and strict plugin list validation including whitespace/type/duplicates.",
+        "Lines 218-337 add an optional single managed environment, deep-freeze its config, constrain provider to auto-installed plugins and reject unknown fields, malformed names/provider and nested keys that look secret-bearing.",
+        "Lines 338-357 cache successful parsing by exact raw env string, reparse when it changes, return to self-hosted on absence and never cache failures.",
+        "Strong patterns are fail-closed parsing, closed schemas, version/catalog checks, managed-versus-preference feature ownership, immutable results, plugin/environment consistency and recursive secret-name rejection. Gaps include configuration signature/digest and trusted issuer, payload depth/size/prototype keys, typed SecretRef, plugin version/SHA/signature and provenance, staged rollout/rollback, change audit, multi-node convergence, tenant overrides and schema migration compatibility.",
+        "Focused Vitest passed all 31 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-357 exactly once and assess fail-closed parsing, schema/version, secret handling, immutable versus mutable overlay, tenant/profile scope, managed sandbox provisioning, upgrade/rollback and Company OS managed-cloud/self-hosted configuration separation."
+      ]
     }
   ]
 }

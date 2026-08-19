@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/managed-config",
+      "auditStatus": "COMPLETE",
+      "function": "Pure parser and cache suite for a versioned, fail-closed environment-provided managed-cloud configuration overlay covering features, plugin auto-install and one sandbox environment.",
+      "dependencyDirection": "Reads a single process-environment value and validates against the experimental feature catalog; the immutable result is an outer deployment overlay rather than a core domain dependency.",
+      "keyDataModels": "Managed config version/mode/catalogVersion; managed-tier boolean feature map; plugin autoInstall IDs; managed environment name/description/provider/config; exact raw-value cache.",
+      "lifecycle": "Absent variable selects self-hosted; present value parses and validates closed schema; freeze and cache by raw value; reparse on change; throw repeatedly on invalid input.",
+      "testAssessment": "Thirty-one fast pure tests pass. Coverage is strong for fail-closed syntax/schema, unknown/version/type/tier errors, plugin duplicates, provider consistency, nested secret-looking keys, freezing and cache invalidation. Missing are signed provenance, payload resource limits/prototype pollution, semantic config schema per provider, plugin pin/signature, rollout/audit/rollback and distributed convergence.",
+      "designRationale": "Let one build support self-hosted and product-operated cloud profiles while preventing managed operators from overriding tenant-preference fields or silently accepting malformed configuration.",
+      "companyOsProblem": "Company OS must ship managed-cloud and self-hosted/local-enterprise profiles from one codebase without making deployment profile a core business dependency or allowing managed configuration to override tenant-owned identity, data or responsibility policy silently.",
+      "companyOsFit": "ADAPT the absent=self-hosted rule, closed versioned schema, managed-only ownership catalog, immutable parsed snapshot and fail-closed behavior. Define a DeploymentProfilePort whose signed config includes schemaVersion, configId/digest, issuer, issuedAt/expiry, rollout generation and previous-compatible version. Use typed SecretRef values resolved only in the local execution plane; pin plugins/connectors by version, full digest and signature; validate provider-specific config; record apply/reject audit events; require multi-node generation convergence and atomic rollback. Core/application receive capabilities, never Paperclip-like config types.",
+      "responsibilityConflict": "A process environment string can change effective product capabilities without a recorded human/operator decision, and heuristic secret-key rejection cannot prove that credentials or data endpoints are safe. Managed flags must not override tenant responsibility, identity or data-contract policy without explicit authority and audit.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/managed-config.test.ts:1-357 (SHA-256 c0c23ea9aaba497dfb912ed0bf977ef0d29706aff472b9f218161c3704bba334)",
+        "git history: 273315a4d01a002cc4ecc5e9e7192ad7a32e91b6 and 216d3d2680d9be66eab5d98e1607bd217a062c1f recorded in the read ledger",
+        "2026-08-19 focused Vitest: 31/31 passed"
+      ],
+      "securityFindings": "POSITIVE: present-but-invalid configuration fails closed; unknown keys/versions/types are rejected; only catalog-managed feature keys can be overlaid; plugin/provider relationships are checked; nested secret-looking keys are rejected; results are frozen. HIGH supply-chain gap: auto-installed plugins are unversioned/unhashed/unsigned in this contract. HIGH provenance gap: raw env config has no signature, issuer, digest, expiry or audit receipt. HIGH secret gap: key-name heuristics are bypassable and the comment says secrets travel as env vars rather than typed local SecretRefs. MEDIUM parser-hardening gap: size/depth and prototype-related keys are untested. MEDIUM operations gap: distributed rollout, convergence and rollback are absent."
+    }
+  ]
+}
