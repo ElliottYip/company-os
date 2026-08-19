@@ -9680,6 +9680,29 @@
       "completionRequirements": [
         "Read lines 1-855 exactly once and assess quota window parsing, provider authentication, token/credential custody, aggregation/reset semantics, stale/failure behavior, tenant/user isolation, cost/budget enforcement, telemetry leakage and Company OS Model Provider/Budget port fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/README",
+      "path": "server/src/__tests__/README.md",
+      "lineCount": 10,
+      "sha256": "c8251ba60e2795303465651ce2ba0f786e8f5e0a846b831c30daeeb5dbc6e428",
+      "linkedEvidence": { "history": [
+        "5a0c1979cf439d434c527de4935687a178be4b8e [codex] Add runtime lifecycle recovery and live issue visibility (#4419)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-10"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-10 require real-PostgreSQL server tests to use a shared embedded-postgres helper, claim it creates a throwaway data directory and reserved-safe loopback port per database, and attribute the guard to PAP-2033 after live control-plane Postgres exposure risk.",
+        "The README contains no executable assertion, exact refusal conditions, production-URL detection, cleanup guarantee, parallel-worker proof or CI policy; those claims remain to be verified when the helper and its tests are audited.",
+        "No focused test applies to this documentation-only unit."
+      ],
+      "completionRequirements": [
+        "Read lines 1-10 exactly once and assess test-suite architecture guidance, isolation/lifecycle expectations, executable accuracy and Company OS testing-strategy relevance without treating documentation claims as implementation proof."
+      ]
     }
   ]
 }

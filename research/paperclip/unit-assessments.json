@@ -9926,18 +9926,23 @@
     },
     {
       "id": "application:server/__tests__/README",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Testing-policy note requiring a shared embedded-PostgreSQL helper so server tests use disposable storage and loopback ports instead of risking the live control-plane database.",
+      "dependencyDirection": "Human test authors are directed from individual server tests to one shared database fixture helper; the helper, not this document, owns isolation behavior.",
+      "keyDataModels": "No domain model; operational concepts are PostgreSQL process, throwaway data directory, reserved-safe loopback port and live control-plane database.",
+      "lifecycle": "Before a database integration test, allocate isolated storage and port through the helper; run the test; clean up without connecting to the live service.",
+      "testAssessment": "This is a ten-line policy document with incident provenance, not executable evidence. It identifies a high-value safety invariant but does not specify or verify refusal conditions, cleanup, parallelism, CI behavior or protection against externally supplied production connection strings.",
+      "designRationale": "Centralize dangerous integration-test database setup after an incident so every suite benefits from the same production-data protection instead of constructing embedded PostgreSQL ad hoc.",
+      "companyOsProblem": "Managed-cloud and self-hosted Company OS tests and migrations must never mutate customer or production databases, especially when FDE deployments expose varied local configuration and operators run validation in customer environments.",
+      "companyOsFit": "REFERENCE ONLY until the helper implementation is audited. Adopt the invariant independently: integration tests may connect only to an explicitly test-marked local disposable database with unique data directory/schema, loopback-only endpoint and generated credentials; refuse known production/staging hosts and non-test database markers; make destructive fixture cleanup validate its exact target; test parallel workers, crashes and CI/container profiles.",
+      "responsibilityConflict": "Accidental test writes to a live control plane can destroy responsibility evidence and customer data without any authorized human decision. The safety gate must fail closed and produce an attributable operator-facing diagnostic rather than rely on convention.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/README.md:1-10 (SHA-256 c8251ba60e2795303465651ce2ba0f786e8f5e0a846b831c30daeeb5dbc6e428)",
+        "git history: 5a0c1979cf439d434c527de4935687a178be4b8e [codex] Add runtime lifecycle recovery and live issue visibility (#4419)",
+        "Documentation-only unit; no focused test exists and no implementation pass is claimed"
+      ],
+      "securityFindings": "CRITICAL risk identified: integration tests can otherwise reach the live control-plane PostgreSQL and mutate production state. HIGH evidence gap: the document does not prove the helper rejects production URLs/hosts, validates cleanup targets or isolates parallel workers. HIGH self-hosted/FDE risk: customer-local environments increase configuration ambiguity and demand explicit test-database markers. POSITIVE: the policy centralizes setup and records incident-driven rationale rather than leaving isolation to each test author."
     },
     {
       "id": "application:server/__tests__/recovery-classifiers",
