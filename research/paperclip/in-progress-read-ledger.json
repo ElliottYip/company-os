@@ -7930,6 +7930,34 @@
       "completionRequirements": [
         "Read lines 1-137 exactly once and assess policy normalization/defaults, transition-history lookup, actor authorization, error contract and Company OS immutable ReviewObligation requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-scheduled-retry-routes",
+      "path": "server/src/__tests__/issue-scheduled-retry-routes.test.ts",
+      "lineCount": 518,
+      "sha256": "b2d37c6977f25d948e39aac02de6b133036aca8f2ad8b28ed8e02c5201c0679a",
+      "linkedEvidence": { "history": [
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+        "772fc92619edc0fba9f7ff503fb9a436cfe40df4 Add issue controls and retry-now recovery (#5426)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-260",
+        "261-518"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-202 build real-PostgreSQL fixtures linking a failed source Run, queued wake request, scheduled retry Run and execution-locked Issue under a tenant, with session/local board and Agent actor shapes.",
+        "Lines 203-330 expose retry metadata in the Issue read model, promote the existing scheduled Run rather than creating another, return explicit already_promoted/no_scheduled_retry outcomes, and record a cancelled gate-suppressed retry plus activity.",
+        "Lines 331-518 reject Agent retry-now, conceal cross-tenant Issue existence with 404, and cancel promotion under paused/budget-blocked Agents, changed review participant, subtree pause, unresolved dependencies or terminal Issue state.",
+        "Strong patterns are existing-Run promotion, sequential idempotent outcomes, tenant concealment, reuse of normal execution gates, low-trust review containment and structured error codes. Gaps include simultaneous/multi-instance promotion, transaction/outbox and wake-delivery receipts, authorization roles below admin, audit assertions for every outcome, stale lock/source/wake mismatch, scheduled time races, cancellation recovery and explicit accountable-human/risk-policy binding.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 12 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-518 exactly once and assess scheduled retry and retry-now authorization, cross-tenant concealment, atomic state transitions, idempotency/concurrency, review containment, audit receipts and Company OS accountable-human recovery controls."
+      ]
     }
   ]
 }
