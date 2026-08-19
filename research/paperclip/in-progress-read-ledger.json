@@ -9610,6 +9610,40 @@
       "completionRequirements": [
         "Read lines 1-110 exactly once and assess archived-project default/query semantics, tenant authorization, invalid input/error codes, lifecycle consistency, execution exclusion, audit retention and Company OS soft-delete/projection fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/qa-routine-secrets-e2e",
+      "path": "server/src/__tests__/qa-routine-secrets-e2e.test.ts",
+      "lineCount": 465,
+      "sha256": "70307f79551cd85ee28b05fa460c39e8e46a5ec1fd84a18f2a3eccd976baa5c1",
+      "linkedEvidence": { "history": [
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+        "746e287e33f94e8d3d3ab26d6c578e1825826fe2 feat(control-plane): add annotation and workspace controls (#8229)",
+        "705c1b8d8115654835e1d902f3d5d015302c13b5 [codex] Add routine env secrets support (#6212)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-155",
+        "156-310",
+        "311-465"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-91 declare six acceptance claims, gate on embedded PostgreSQL, configure a temporary local-encrypted master-key file and clean Secret/routine/project/Agent/Company tables plus key material.",
+        "Lines 92-155 seed a Company with defaultResponsibleUserId and an executor Agent with no direct Secret binding, then create a local-encrypted Secret and active routine whose env contains a plain override plus latest secret_ref; the binding is asserted to belong to the routine.",
+        "Lines 156-194 resolve the real heartbeat adapter config, assert routine beats project beats Agent env, expose plaintext only in resolved runtime config, keep the manifest value-free and record one value-free successful routine/Agent access event.",
+        "Lines 196-234 reject a foreign-Company Secret reference during routine creation.",
+        "Lines 236-291 hard-delete a bound Secret and assert runtime resolution fails without echoing the deleted value.",
+        "Lines 293-354 create two Secret bindings across routine revisions and assert restoring revision one removes the later binding and restores the original reference.",
+        "Lines 356-421 insert a legacy routine_run with null routineRevisionId, but exercise fallback by directly passing current routine.env into the resolver and assert current latest value resolves.",
+        "Lines 423-465 assert a routine with null env has no bindings and preserves only Agent env with an empty Secret-key set.",
+        "Despite the header/history, no disabled Secret or user-specific runtime Secret case is present. No accountable-human grant/restore, purpose/audience/expiry, fixed-version reproducibility, rotation/revocation, concurrent revision atomicity, execution failure cleanup, subprocess/log leakage, remote/local custody split or formal access authorization case is present.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and all 6 tests were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-465 exactly once and assess routine Secret create/bind/resolve/redact/rotate/revoke lifecycle, user versus Company scope, runtime injection, log/API leakage, failure cleanup, authorization and Company OS local execution/SecretPort fit."
+      ]
     }
   ]
 }
