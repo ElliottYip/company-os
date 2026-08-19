@@ -9262,6 +9262,47 @@
       "completionRequirements": [
         "Read lines 1-260 exactly once and assess plugin-managed Routine create/reconcile/reset, schedule/activity/concurrency/catch-up, Agent/human ownership, workspace/secret propagation, tenant/capability authorization, upgrade/uninstall/orphan lifecycle, idempotency/audit/approval and Company OS responsibility fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-orchestration-apis",
+      "path": "server/src/__tests__/plugin-orchestration-apis.test.ts",
+      "lineCount": 1190,
+      "sha256": "5e23866fc737acce45724ae3a2cce55566e59cb489960d47b850e440b142b777",
+      "linkedEvidence": { "history": [
+        "d51f42ed648c4711a5e6bc4c41a6d4ff4e6e187b drain heartbeat runs during teardown (#10464)",
+        "5a00040c4cc3992608c22c6628a44df8ad10f289 plugin interactions/approvals respond and attachment read (#10066)",
+        "e55d702916c4d3ddbcac49b697f879808b160f59 human-attributed issue comments for chat gateway plugins (#10050)",
+        "5071c4c7768b2594e8414a1ee3f9f91931c921e workspace diff viewer plugin (#6071)",
+        "3c73ed26b514144b831f02361de809008742194d expand plugin host surface (#5205)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-200",
+        "201-400",
+        "401-600",
+        "601-800",
+        "801-1000",
+        "1001-1190"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-145 build a broad relational plugin host and document fire-and-forget comment wakeups that require explicit global heartbeat quiescence plus retrying FK cleanup.",
+        "Lines 146-220 return Company-scoped execution workspace metadata but expose absolute cwd/path/providerRef and provider metadata while hiding one internal realization request.",
+        "Lines 221-355 create plugin-origin issues with Agent/run attribution, blockers, billing and audit fields; enforce plugin origin namespace and generic plugin-operation origin. Negative spoofing of supplied Agent/run ownership is not covered.",
+        "Lines 356-500 configure/repair declared readWrite local folders and reject undeclared folder keys for configure/status/read/write.",
+        "Lines 501-600 directly reconcile a plugin-managed project by stable key, preserve operator name/description on plugin manifest update and retain upgraded defaults metadata.",
+        "Lines 601-760 assert a happy checkout owner, refuse wakeup for unresolved blockers and aggregate subtree costs by billing code.",
+        "Lines 761-876 reject human-attributed comments for non-members/viewers, accept an owner-supplied actorUserId and enqueue an attributable Agent wake/run. There is no proof the plugin request is authenticated as that user; membership alone is not identity delegation.",
+        "Lines 877-1000 require actorUserId for interaction responses, reject non-members/viewers, accept operator and converge without mutation if already resolved. Again the plugin supplies the bare user ID.",
+        "Lines 1001-1134 apply the same bare-user membership rule to approvals, accept admin/owner decisions, redact token-shaped output fields and Company-scope approval listing while retaining raw secret payload in storage.",
+        "Lines 1135-1190 hide cross-Company attachment IDs and enforce caller maxBytes. Capability authorization, issue/data permission, content scanning and successful content-read integrity are absent.",
+        "Focused Vitest discovered the file but skipped all 26 tests because embedded Postgres support was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1190 exactly once and assess plugin issue/comment/interaction/approval/attachment/workspace APIs, tenant and capability authorization, real-human attribution/delegation, approval digest binding, data disclosure, idempotency/concurrency/audit and Company OS narrow extension contract fit."
+      ]
     }
   ]
 }
