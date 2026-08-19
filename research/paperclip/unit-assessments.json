@@ -9575,18 +9575,23 @@
     },
     {
       "id": "application:server/__tests__/plugin-sdk-testing",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Regression tests for the plugin SDK in-memory harness covering workspace reads, negative capability gates, deleted-comment redaction and human-attributed comment membership/role behavior.",
+      "dependencyDirection": "Plugin manifest capabilities configure createTestHarness; seeded in-memory workspace, issue, comment and access-member records drive SDK context methods without real IdentityPort, database or authenticated invocation envelope.",
+      "keyDataModels": "Plugin capability strings; execution workspace path/provider metadata; managed skill/access/authorization APIs; comment body/presentation/metadata tombstone; access member status/role; caller-supplied actorUserId.",
+      "lifecycle": "Create a harness; seed resources; allow or deny by manifest capability; scope workspace by Company; redact deleted content; classify membership/role; attribute a new comment to a supplied active member ID.",
+      "testAssessment": "All eight tests pass. Negative capability cases and tombstone-safe deletion are valuable conformance behavior, and the harness mirrors viewer denial. Its human identity fidelity is unsafe: seeding an active member and passing that ID is called verified even though no session, token, audience, nonce or delegated action proof exists. Workspace fixtures expose host paths. Approval/interaction and attachment behavior mentioned in history is not tested here, nor are stable errors, capability parameter scopes, schema/version compatibility, event/retry behavior or parity against a real server.",
+      "designRationale": "Keep plugin developer tests aligned with host capability and presentation rules, reducing surprises between local extension tests and production behavior.",
+      "companyOsProblem": "Company OS needs a conformance kit that catches identity/responsibility violations rather than reproducing them as accepted fixtures.",
+      "companyOsFit": "REJECT the current harness as authoritative conformance because it treats membership as identity verification. ADAPT its deterministic seed/negative-capability/tombstone patterns. Company OS fixtures must mint an IdentityPort test assertion or DelegatedPrincipalProof bound to plugin, tenant, action digest, expiry and nonce; server and harness must consume the same schema/policy evaluator. Use opaque workspace/data handles, stable error codes, strict capability scopes and golden compatibility suites. Add responsibility/approval/evidence/secret/attachment/event cases and run the same contract suite against in-memory, managed-cloud and self-hosted implementations.",
+      "responsibilityConflict": "The harness can produce a human-authored record for any seeded active member ID without proving that human initiated the action. Plugins can therefore ship green tests while fabricating the accountable person in Company OS's responsibility chain.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-sdk-testing.test.ts:1-297 (SHA-256 1404a3654d0e9bb51a0b4a6ccf95af85202a7f503227d552504aae1fa8a3d6e9)",
+        "git history: six commits from 0096b56a1c4e69c077320c0194c804cdaea7615d through 5a00040c4cc3992608c22c6628a44df8ad10f289 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 8/8 passed"
+      ],
+      "securityFindings": "CRITICAL false identity assurance: active membership is labelled verified human attribution without authentication/delegation proof. HIGH conformance risk: a plugin can pass harness tests while remaining able to impersonate an active human in production. HIGH workspace disclosure: absolute host paths/provider metadata are part of the fixture/output contract. HIGH coverage gap: approvals/interactions, attachment data, responsibility/evidence and secret handling are absent despite related history. MEDIUM capability gap: method-level denial exists, but parameter/resource scopes and real server parity are not tested. POSITIVE: explicit negative capability tests and deleted comment body/presentation/metadata redaction are strong patterns."
     },
     {
       "id": "application:server/__tests__/plugin-secrets-handler",

@@ -9403,6 +9403,39 @@
       "completionRequirements": [
         "Read lines 1-257 exactly once and assess Plugin SDK capability-to-method contract, identity/tenant/run/workspace types, request/response schemas, error/version compatibility, private internal leakage, approval/responsibility semantics and Company OS Connector/extension SDK fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-sdk-testing",
+      "path": "server/src/__tests__/plugin-sdk-testing.test.ts",
+      "lineCount": 297,
+      "sha256": "1404a3654d0e9bb51a0b4a6ccf95af85202a7f503227d552504aae1fa8a3d6e9",
+      "linkedEvidence": { "history": [
+        "5a00040c4cc3992608c22c6628a44df8ad10f289 interactions/approvals respond and attachment read (#10066)",
+        "e55d702916c4d3ddbcac49b697f879808b160f59 human-attributed plugin comments (#10050)",
+        "7f70759e6155003b12621d4d57bfdc6db759511c redact deleted issue comments",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions and controls plan (#6386)",
+        "5071c4c7768b2594e8414a1ee3f9f91931c921e3 workspace diff viewer plugin (#6071)",
+        "0096b56a1c4e69c077320c0194c804cdaea7615d LLM Wiki plugin host support (#5597)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-149",
+        "150-297"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-61 positively expose Company-scoped workspace metadata including absolute cwd/path and provider metadata, then negatively require execution.workspaces.read.",
+        "Lines 62-112 negatively require skills.managed, access.members.read, authorization.grants.read and authorization.audit.read capabilities.",
+        "Lines 113-166 seed a deleted comment containing secret body/presentation/metadata and verify the harness returns a tombstone with those fields cleared while retaining deletion attribution.",
+        "Lines 167-223 reject human-attributed comments for suspended/non-member user IDs and mirror the host's active-member check.",
+        "Lines 224-260 reject viewer-role human attribution as read-only.",
+        "Lines 261-297 label an active member's caller-supplied actorUserId as verified and write a human-attributed comment, but provide no authenticated session/delegation proof that the request came from that human.",
+        "Despite file history mentioning approval response and attachment read capabilities, this unit contains no approval/interaction or attachment assertions; no coverage is inferred. Focused Vitest passed 8/8."
+      ],
+      "completionRequirements": [
+        "Read lines 1-297 exactly once and assess SDK harness fidelity, capability denial, human attribution, deleted-content redaction, interaction/approval state and digest semantics, attachment/data isolation, deterministic testing and Company OS extension conformance harness fit."
+      ]
     }
   ]
 }
