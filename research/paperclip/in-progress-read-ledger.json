@@ -9765,6 +9765,34 @@
       "completionRequirements": [
         "Read lines 1-150 exactly once and assess domain redaction targets, recursive/key/value coverage, adapter/session/config leakage, evidence integrity, serialization, cycles/types and Company OS API/Connector projection fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/rerun-survival.integration",
+      "path": "server/src/__tests__/rerun-survival.integration.test.ts",
+      "lineCount": 183,
+      "sha256": "db58afcbca5e490a3c2f776e31dca1ed33c6fa21d9091c09bc032003be05d4c1",
+      "linkedEvidence": { "history": [
+        "9485ffea7028584e0bd2e7ff0fd0d7b42d980964 fix(config): preserve env files during managed updates (#10980)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-183"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-42 declare a cross-cutting setup/sync survival test over config merge, env-file update, managed-resource drift and instruction materialization, while citing separate database-backed suites for related paths.",
+        "Lines 43-77 allocate and clean unique temporary directories, reset process globals, define a base configuration and emulate a writer round trip with schema parse, merge and direct synchronous overwrite.",
+        "Lines 79-99 assert unknown top-level/nested operator config keys survive an unrelated known logging-mode update.",
+        "Lines 101-130 assert an env-file update preserves comments, blank lines, ordering and existing encoding, changes one value, and performs no write for a no-op rerun.",
+        "Lines 132-153 classify operator-modified, stale untouched and current managed sandbox resources using current/binding/latest stock hashes.",
+        "Lines 155-183 materialize an Agent instruction bundle, hand-edit/add files, classify the known stock subset as operator_modified and assert disk edits remain; it does not actually call re-materialization after the skip decision.",
+        "No concurrent writer, partial/crash failure, fsync/directory sync, backup/rollback, file mode/owner, symlink/hardlink/path escape, CRLF/BOM/duplicate env key, downgrade/schema incompatibility, malicious unknown key, forced security update, three-way merge/conflict or managed-versus-operator ownership test is present.",
+        "Focused Vitest passed all 4 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-183 exactly once and assess managed-update rerun survival, configuration/Secret preservation, overwrite/delete boundaries, atomicity, rollback, symlink/path handling, permissions, failure recovery and Company OS managed/self-hosted upgrade fit."
+      ]
     }
   ]
 }

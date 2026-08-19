@@ -10063,18 +10063,23 @@
     },
     {
       "id": "application:server/__tests__/rerun-survival.integration",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Cross-cutting filesystem integration tests that configuration/setup/sync reruns preserve operator-owned JSON extensions, env-file presentation, modified managed resources and instruction-tree edits/additions.",
+      "dependencyDirection": "CLI/server configuration writers share schema merge; env writers share a text-preserving atomic-if-changed helper; boot/plugin/portability reconcilers share stock-hash drift classification; instruction service materializes files under a managed home.",
+      "keyDataModels": "Versioned config JSON with unknown extension keys; textual .env entries/comments/order; current/binding/latest stock hashes and drift status; Agent instruction bundle root, stock files and operator-added files.",
+      "lifecycle": "Seed operator changes; rerun a writer or calculate reconciliation status; apply unrelated known updates/no-op writes; skip clobbering drifted resources; retain operator content on disk.",
+      "testAssessment": "All 4 tests pass and pin valuable non-destructive upgrade behavior across several production helpers. The config round trip itself uses direct writeFileSync and does not prove atomicity. The instruction case proves drift classification plus existing files, not an actual subsequent materialize/reconcile call. There is no concurrency, crash, rollback, permissions/path, schema downgrade or security-update conflict coverage.",
+      "designRationale": "Allow administrators to safely rerun setup and receive managed updates without silently losing hand edits, while automatically advancing untouched stock resources and avoiding needless file rewrites.",
+      "companyOsProblem": "Self-hosted/local enterprise and FDE deployments need repeatable upgrades that preserve customer configuration, identity/data connectors, credentials and industry-template overrides without blocking security fixes or creating an unmaintainable fork.",
+      "companyOsFit": "ADAPT preservation, no-op write avoidance and current/base/latest drift concepts. Define explicit ownership per field/file: immutable release baseline, Company/FDE overlay and generated runtime state. Use schema-aware three-way merge with conflict artifacts, provenance and human resolution; allow policy-marked security migrations to fail closed instead of silently skipping an entire drifted tree. Write atomically with fsync/rename, validated target, modes/owner preservation, backup/rollback and crash/concurrency tests. Keep Secret values outside cloud-managed config and migrate references only.",
+      "responsibilityConflict": "Blind overwrite erases accountable operator decisions, while blanket skip can leave vulnerable or inconsistent policy in place. Upgrade output must show which vendor/FDE/human owned each change, which conflicts remain and who approved resolution or rollback.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/rerun-survival.integration.test.ts:1-183 (SHA-256 db58afcbca5e490a3c2f776e31dca1ed33c6fa21d9091c09bc032003be05d4c1)",
+        "git history: 9485ffea7028584e0bd2e7ff0fd0d7b42d980964 fix(config): preserve env files during managed updates (#10980)",
+        "2026-08-19 focused Vitest: 1 file passed, 4/4 tests passed"
+      ],
+      "securityFindings": "HIGH patch-stagnation risk: operator_modified causes a whole-resource skip, which can prevent security/default updates without a conflict workflow. HIGH durability gap: config test uses direct overwrite and no crash/fsync/backup/rollback behavior is proven. HIGH path/file-trust gap: modes, ownership, symlinks, hardlinks and path escape are untested. HIGH merge-policy gap: unknown keys are preserved without demonstrating schema safety or ownership. MEDIUM evidence gap: instruction re-materialization is described but not actually invoked after drift detection. POSITIVE: temporary targets, byte-conscious env preservation, no-op avoidance and explicit stock drift states reduce destructive rerun risk."
     },
     {
       "id": "application:server/__tests__/resource-memberships-routes",
