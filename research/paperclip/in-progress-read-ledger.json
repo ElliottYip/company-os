@@ -8415,6 +8415,30 @@
       "completionRequirements": [
         "Read lines 1-542 exactly once and assess Goal context propagation, tenant and visibility boundaries, responsible-human and contract provenance, wake payload minimization, stale context, performance, stable codes and Company OS goal-to-work responsibility semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issues-parent-id-alias",
+      "path": "server/src/__tests__/issues-parent-id-alias.test.ts",
+      "lineCount": 116,
+      "sha256": "0ef2be7c4e9d6adf0d8c8e8d1ec6ec846833ffbb21b593823595a6c1c1ab59a7",
+      "linkedEvidence": { "history": [
+        "2ebc236b089d77bb1ac48f19d06b35a44fa3ff05 accept parentIssueId alias in GET /issues (#4032)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-116"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-71 use the shared embedded-PostgreSQL route harness to seed one tenant, two parents, four children and helper calls for Issue lists and blocked counts.",
+        "Lines 72-116 verify canonical parentId and compatibility parentIssueId return the same children/count, parentId silently wins on conflict, and absence returns the full tenant list.",
+        "The focused compatibility behavior is deterministic across list and count endpoints, but the suite does not cover cross-tenant parent IDs, empty/malformed/array parameters, conflict diagnostics, deprecation telemetry/versioning or stable error codes. Silent precedence can mask caller bugs.",
+        "Focused Vitest skipped all 6 tests because embedded PostgreSQL was unavailable; no passing runtime claim is made."
+      ],
+      "completionRequirements": [
+        "Read lines 1-116 exactly once and assess canonical query ownership, conflicting alias behavior, tenant/parent authorization, deprecation observability, stable API semantics and Company OS compatibility policy."
+      ]
     }
   ]
 }

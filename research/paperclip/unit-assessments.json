@@ -8539,18 +8539,23 @@
     },
     {
       "id": "application:server/__tests__/issues-parent-id-alias",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL route compatibility suite ensuring Issue list and blocked-count APIs accept parentIssueId as an alias for canonical parentId.",
+      "dependencyDirection": "Exercises public company-scoped Issue routes through the shared real-database harness; HTTP query normalization feeds the same list/count persistence filters.",
+      "keyDataModels": "Company-scoped Issue hierarchy, parentId, compatibility parentIssueId, Issue status and blocked attention count.",
+      "lifecycle": "Seed two parent subtrees; query list or blocked count using canonical, alias, both or neither parameter; canonical parentId wins when both differ.",
+      "testAssessment": "Six integration cases cover list/count parity, canonical precedence and no-filter behavior. All skipped locally because embedded PostgreSQL was unavailable. Missing are foreign-parent probes, malformed/empty/repeated parameters, conflict warning/error semantics, deprecation telemetry and version removal policy.",
+      "designRationale": "Preserve existing client compatibility after a query-field naming mismatch while maintaining one effective internal filter.",
+      "companyOsProblem": "Company OS needs explicit, low-risk API compatibility and deprecation rules as its Web, mobile clients and Connectors evolve independently.",
+      "companyOsFit": "REFERENCE ONLY. Keep one canonical Company OS field and, only when an actual released client requires it, add a thin boundary alias with contract tests, versioned deprecation metadata and usage telemetry. Reject conflicting values with a stable code instead of silently preferring one; validate opaque IDs and tenant visibility before query execution.",
+      "responsibilityConflict": "No direct responsibility-model conflict, but silently resolving conflicting parent identifiers can make an operator or Connector act on a different work subtree than intended and weakens audit explainability.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/issues-parent-id-alias.test.ts:1-116 (SHA-256 0ef2be7c4e9d6adf0d8c8e8d1ec6ec846833ffbb21b593823595a6c1c1ab59a7)",
+        "git history: 2ebc236b089d77bb1ac48f19d06b35a44fa3ff05 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 6/6 skipped because embedded PostgreSQL was unavailable"
+      ],
+      "securityFindings": "MEDIUM ambiguity: conflicting canonical and alias values are silently accepted, which can conceal a client bug or intent mismatch. MEDIUM coverage gap: foreign-tenant parent IDs and malformed/repeated query values are untested. LOW lifecycle gap: no observable deprecation/version policy. POSITIVE: list and count share deterministic behavior and all returned rows remain company-route scoped in the fixture. TEST LIMITATION: all six focused tests skipped on this host."
     },
     {
       "id": "application:server/__tests__/issues-service",
