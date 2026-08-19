@@ -10179,6 +10179,55 @@
       "completionRequirements": [
         "Read lines 1-984 exactly once and assess Company/user/Agent Secret authorization, tenant existence privacy, provider/import/create/version/binding lifecycle, run-bound access and revocation, ciphertext/plaintext custody, Secret reference projection, idempotency/concurrency/audit/error codes and Company OS SecretPort/data-governance fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/secrets-service",
+      "path": "server/src/__tests__/secrets-service.test.ts",
+      "lineCount": 3779,
+      "sha256": "bcfbc173203429deeb146e96a3b14b4ab2c27fa15b0469b58bb64ccecbe536b4",
+      "linkedEvidence": { "history": [
+        "90ead239a81215e673446608e7c7c63a5cc4e525 feat(ui/server): name cross-company environment secret refs instead of calling them missing (#10577)",
+        "f51cba33fa22f897dd6923f2e2fa10a7145d505b fix(server): keep environment secret bindings consistent when re-pointing config secrets (#10576)",
+        "0cf64d36a5ca37d3e4da86c3354c6633d316b612 feat(secrets): write through external values and deep-link details (#10196)",
+        "0b496c9c03b1e6cee5cb773954823590c7d1d76b feat(secrets): add run-bound agent secret access (#9921)",
+        "cfa5e0704e6b04d4088edd9f3dc83987069282ef feat(mcp) [split 3/8]: add tool access policy core (#9558)",
+        "4856558fd9d36cea0ec30ea1eac79cde60411377 Fix skills routes to skip user secret resolution",
+        "09f503f216b234d973c4ac87ca49d3d19acee448 [codex] Surface AWS secret provider create errors (#9161)",
+        "ad961227f57a217655c9e05e5987e6d0e5524409 feat(secrets): add user-specific runtime secrets (#8825)",
+        "fd2f82ac5bba6ce2db0c5d17c573733af5f2bbb8 [codex] Add built-in Hermes adapters (#8543)",
+        "f90ea4dae4f4aca92c4772973a8687c2262f5cac Fix top-level secret ref binding sync (#8630)",
+        "f88ac9d078a755c6662072e71ffdeedde67a8761 [codex] Fix local skill, secrets, and file viewer regressions (#8586)",
+        "fc95699fdef5b1295a64904b3aa287713e26ff26 fix(server): enforce agent secret binding sync across lifecycle flows (#8307)",
+        "04173b341d08de68865fffb15ebb5163048cbfe7 fix: resolve secret refs before sandbox draft probes (#8256)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+        "d67347be77f33ecb8c23a12cb41b56864f5d32c3 [codex] Provider vault secrets UX (#6381)",
+        "705c1b8d8115654835e1d902f3d5d015302c13b5 [codex] Add routine env secrets support (#6212)",
+        "778e775c35834aabe09266fb6d415d3dafbd1deb Add secrets provider vaults and remote import (#5429)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-200",
+        "201-400",
+        "401-600",
+        "601-800",
+        "801-1000",
+        "1001-1200"
+      ],
+      "sourceReadComplete": false,
+      "nextLine": 1201,
+      "notes": [
+        "Lines 1-120 establish a real embedded-PostgreSQL fixture, temporary local-encryption master key, Company/membership/Agent/running-heartbeat seeds and full Secret-related table cleanup.",
+        "Lines 121-315 reject cross-Company env normalization but deliberately let instance-target replacement and description span Secrets from multiple Companies, persist each binding under its Secret-owning Company, preserve unrelated env bindings and fail atomically for unknown refs. This instance-wide cross-tenant ownership model is a critical Company OS review point.",
+        "Lines 316-400 reject duplicate target/config-path bindings, constrain access.* aliases to Agents and start run-bound resolution coverage.",
+        "Lines 401-570 resolve access.* and env.* only through Agent JWT plus a verified running heartbeat and matching binding, register plaintext for redaction, write value-free access/activity evidence, deny long-lived keys, skill-test scope, mismatched/completed runs and low-trust reads.",
+        "Lines 571-740 make top-level Secret-ref synchronization idempotent, expose reference counts/target labels, enforce consumer binding context, record success/failure without values and detect missing bindings without resolving plaintext.",
+        "Lines 741-860 require low-trust allowlists over exact binding/declaration IDs, fail closed for class-3 static leases and bind user Secret resolution to an allowed declaration.",
+        "Lines 861-1071 cover routine-bound reads and responsible-user values, optional/inactive/deleted user definitions, hidden user-scoped values, value-free access evidence with credential owner/subject, and prohibit generic Company value resolution for user Secrets.",
+        "Lines 1072-1200 allow non-runtime skill discovery to skip user Secrets while still resolving Company values, require a responsible user otherwise, serialize concurrent per-user creation through a unique index and begin AWS creation rollback-failure coverage."
+      ],
+      "completionRequirements": [
+        "Read lines 1-3779 exactly once and assess real Secret service storage/encryption/provider/import/version/binding and run-bound resolution behavior, Company/user/environment scope, cross-tenant consistency, config-reference synchronization, tool-policy interaction, rotation/revocation/deletion recovery, transactions/concurrency, audit access evidence and Company OS hybrid SecretPort/DataAuthorization fit."
+      ]
     }
   ]
 }
