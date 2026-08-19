@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-update-comment-wakeup-routes",
+    "auditStatus": "COMPLETE",
+    "function": "Mocked HTTP tests for board Issue updates/comments that assign, interrupt and hand off Agent work, wake current assignees, recover a lost review path, and route structured Agent mentions without changing ownership.",
+    "dependencyDirection": "Supertest/Express -> broad Issue routes -> mocked access/Issue/heartbeat/interaction/reference/recovery services; external-object sync code runs best-effort against an intentionally incomplete DB mock and warns.",
+    "keyDataModels": "Board actor; Issue human/Agent assignee, status and executionRunId; comment ID/body; structured Agent mention; Run cancellation receipt; wake reason/payload/context; expired review interaction and reviewAttention stall.",
+    "lifecycle": "Board PATCH/comment persists change -> optionally cancel current Run for explicit handoff -> assignment/comment/mention wake targets new owner, current owner or mentioned Agent -> expire superseded interactions -> tag wake when final review path disappears -> best-effort external-object comment sync.",
+    "testAssessment": "Approved unsandboxed run passed all 8 route tests; sandboxed run failed solely on TCP EPERM. The passing run emitted seven swallowed external-sync warnings caused by missing mock transaction support, demonstrating non-blocking behavior but not durable repair. Tests cover core targeting and minimization, but real auth/tenant, cancellation failure/order, transactional outbox, multiple/duplicate mentions, pause/terminal/hidden states, machine user-auth provenance, mention grants and Connector delivery are absent.",
+    "designRationale": "Make explicit human comments and reassignment immediately actionable, preserve handoff context without copying comment text, avoid accidental Agent invocation from plain names and recover review work when a comment consumes its last interaction.",
+    "companyOsProblem": "Company OS needs human-command events that safely transfer responsibility and execution authority, plus non-owning consultation mentions, across heterogeneous Connectors with clear provenance and no hidden data-access expansion.",
+    "companyOsFit": "ADAPT structured mentions, owner/consultant distinction, minimized ID-based wake context, explicit interruption and review-path-loss events. Implement ResponsibilityHandoff as an atomic command with old/new accountable principal, policy version and reason; revoke/fence old Connector lease before activating the new one; use transactional outbox and delivery receipts; issue a scoped, expiring ConsultationCapability for mentions; coalesce duplicates; route failed external projections to durable retry/dead-letter and notify the responsible human.",
+    "responsibilityConflict": "Changing assignment and cancelling/waking runtimes are separate side effects with no proven atomic ordering; if cancellation fails, the old Agent may continue while the new Agent starts. A mention wakes a non-owner without a tested data/capability contract. Best-effort external sync can silently diverge from the control-plane record.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-update-comment-wakeup-routes.test.ts:1-642 (SHA-256 b5126bdb9c9a18ebf4d732c34d9105676900d7379a028031b247dcd819f3b33c)",
+      "git history: sixteen commits from 678728f650bf2a03f325922db32efb038dbb6ac9 through 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+      "2026-08-19 sandboxed focused Vitest: 8/8 failed on TCP EPERM only",
+      "2026-08-19 approved unsandboxed focused Vitest: 8/8 passed with seven swallowed external-sync warnings"
+    ],
+    "securityFindings": "CRITICAL handoff race for Company OS: no atomic revoke-old/activate-new execution lease proof or cancel-failure test. HIGH mention-authority gap: a non-owner Agent wake lacks demonstrated scoped data/tool capability. HIGH external-consistency gap: external sync failure is swallowed with no retry/dead-letter evidence here. HIGH authorization gap: access is mocked always allow. MEDIUM duplicate/storm gap: multiple mentions and coalescing are untested. POSITIVE: structured mention parsing, no ownership mutation and omission of raw comment text materially reduce accidental routing and leakage."
+  }]
+}

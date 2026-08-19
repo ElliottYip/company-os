@@ -8258,6 +8258,49 @@
       "completionRequirements": [
         "Read lines 1-691 exactly once and assess graph traversal/cycles/caps, hold snapshots and overlap, cancel/restore state fidelity, transactions/concurrency, Run and wake selection, tenant scoping, recovery semantics and Company OS durable tree-control saga requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-update-comment-wakeup-routes",
+      "path": "server/src/__tests__/issue-update-comment-wakeup-routes.test.ts",
+      "lineCount": 642,
+      "sha256": "b5126bdb9c9a18ebf4d732c34d9105676900d7379a028031b247dcd819f3b33c",
+      "linkedEvidence": { "history": [
+        "678728f650bf2a03f325922db32efb038dbb6ac9 maintained in_review review paths (#10675)",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed Agent addressees (#10252)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed runs (#9241)",
+        "67b22d872f9589c169ab8129a05a84b6cef05c3c clarify interrupt handoffs/scoped wakes (#7855)",
+        "0a2230b2ec509fe514a45298ed75d3987cf69f5c guard document comment wake boundaries (#7766)",
+        "7fb40264f8df21e18a036bcf104b2c4c565268c8 revert PR #7678 (#7765)",
+        "4da79a88c67e54084d40bd18cada5ee5c8be23da refine Issue comment wake handoffs (#7678)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations and comments (#6733)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions and controls (#6386)",
+        "c91a06232625d1939858fcdfbdc0c9b3a64a8296 runtime control-plane fixes (#6380)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 backend control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests/assets (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-320",
+        "321-642"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-234 build a mocked board route with always-allow access, Issue/interaction/reference/recovery and heartbeat seams; real tenant/grant, persistence and Connector state are not exercised.",
+        "Lines 235-368 attach only Issue/comment IDs—not comment text—to assignment wake payload/context, and on explicit reassignment interruption cancel the prior Run with structured operator_interrupted evidence before waking the new Agent with handoff IDs.",
+        "Lines 369-426 interrupt without Agent wake when a human takes ownership, while still parsing structured mentions; failure and ordering behavior for the prior Run cancel are not tested.",
+        "Lines 427-563 wake an existing Agent assignee for PATCH or top-level board comments and annotate the continuation when a comment expires the final review path, instructing the Agent to restore a reviewer.",
+        "Lines 564-642 ignore plain-text Agent names, but a structured tenant-resolved mention wakes that Agent without transferring Issue ownership and forwards only Issue/comment IDs.",
+        "Strong patterns are structured mentions over name heuristics, owner-versus-mentioned separation, comment-ID minimization, explicit interrupt receipt and review-path-loss context. Gaps include cancel-failure split brain, mutation/cancel/wake transaction and outbox, duplicate/multiple mention coalescing, mentioned-Agent data/capability scope, pause/terminal/hidden Issue behavior, machine-under-user provenance, real auth/tenant tests, Connector acknowledgements and accountable-human notification.",
+        "Sandboxed focused Vitest failed all 8 tests only because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed all 8 tests but emitted seven swallowed external-object sync warnings because the mocked DB lacked transaction support."
+      ],
+      "completionRequirements": [
+        "Read lines 1-642 exactly once and assess comment/update wake selection, human-versus-machine provenance, cross-Issue/mention boundaries, pause/review-path behavior, idempotency/coalescing, tenant/auth scope, payload minimization and Company OS event/capability semantics."
+      ]
     }
   ]
 }
