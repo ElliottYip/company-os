@@ -9644,6 +9644,42 @@
       "completionRequirements": [
         "Read lines 1-465 exactly once and assess routine Secret create/bind/resolve/redact/rotate/revoke lifecycle, user versus Company scope, runtime injection, log/API leakage, failure cleanup, authorization and Company OS local execution/SecretPort fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/quota-windows",
+      "path": "server/src/__tests__/quota-windows.test.ts",
+      "lineCount": 855,
+      "sha256": "ba375a394122c43ac14739989739a42fd11c567419b5b986874666dd4b93295d",
+      "linkedEvidence": { "history": [
+        "79473082762097e0622260229d52cad80ec2b3ec fix(codex): classify refresh auth failures (#9598)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-171",
+        "172-342",
+        "343-513",
+        "514-684",
+        "685-855"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-100 specify an ambiguous percentage heuristic: null stays null, values below one are multiplied by 100, exactly one is 1%, overshoot clamps to 100, and values are rounded; Codex window labels collapse durations into 5h/24h/7d/day-count buckets.",
+        "Lines 101-200 apply the same heuristic to mocked Codex WHAM primary windows including missing and overshoot values.",
+        "Lines 201-308 read Claude access tokens directly from credentials.json or .credentials.json under configurable local directories and handle absent/malformed/empty shapes, using temporary files with no explicit permission/symlink assertions.",
+        "Lines 309-360 parse English Claude CLI usage-panel text into display-ready English labels/details and throw an English remediation string on load failure.",
+        "Lines 361-501 read legacy and nested Codex auth.json shapes, decode unsigned JWT payload fields for email/plan display, return access/account/refresh metadata, and expose a token/account helper.",
+        "Lines 502-640 mock Claude usage responses and cover non-200 English errors, absent windows, percentage/fraction utilization, model-specific windows, extra-usage state and assumed USD cent formatting.",
+        "Lines 641-734 mock Codex WHAM responses and cover non-200 English errors, optional account header, empty bodies, numeric reset timestamps, primary/secondary windows and assumed USD credit formatting.",
+        "Lines 735-820 map Codex RPC root/model-specific limits plus email/plan and finite credit balance into display windows.",
+        "Lines 821-855 assert normal fetch completion and AbortController timeout rejection.",
+        "No negative/NaN/infinite/string percentage, malformed reset/JWT, file permission/owner/symlink/size, token/log/error redaction, refresh lifecycle, 429/retry/backoff/cache/staleness, concurrent account/tenant separation, currency/unit contract, live vendor contract, structured error code or enforcement decision test is present.",
+        "Focused Vitest passed all 58 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-855 exactly once and assess quota window parsing, provider authentication, token/credential custody, aggregation/reset semantics, stale/failure behavior, tenant/user isolation, cost/budget enforcement, telemetry leakage and Company OS Model Provider/Budget port fit."
+      ]
     }
   ]
 }

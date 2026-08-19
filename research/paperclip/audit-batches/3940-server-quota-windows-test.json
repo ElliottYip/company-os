@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/quota-windows",
+      "auditStatus": "COMPLETE",
+      "function": "Pure and mocked-I/O tests for Claude/Codex credential discovery, quota fetching/parsing, CLI fallback parsing, provider/RPC window mapping, credit display and HTTP timeout behavior.",
+      "dependencyDirection": "Vendor-specific local adapters read user CLI auth files, call provider quota endpoints or parse CLI/RPC data, then emit shared display-oriented QuotaWindow objects consumed by the server/UI.",
+      "keyDataModels": "QuotaWindow label/usedPercent/resetsAt/valueLabel/detail; Claude access token and usage windows/extra credits; Codex access/refresh/account token metadata, email/plan, root and model-specific rate limits/credits; timeout AbortSignal.",
+      "lifecycle": "Discover local credentials; optionally decode account display metadata; fetch or parse a vendor usage snapshot; normalize percentages, windows, reset times and credits; return display rows or a thrown English error; abort slow HTTP requests.",
+      "testAssessment": "All 58 focused tests pass quickly and cover many provider response variants, missing fields, legacy auth shapes and timeouts. The tests use mocks rather than live/pinned provider contracts. Boundary and security cases around hostile numeric/string data, credential-file trust, token redaction, refresh, retry/backoff, caching/staleness, account isolation and structured error taxonomy are missing. The intentional 1.0 ambiguity proves this normalization cannot safely enforce spend or authorization.",
+      "designRationale": "Offer a unified lightweight quota display across local Claude and Codex installations despite inconsistent provider schemas and historical fraction-versus-percentage representations.",
+      "companyOsProblem": "Agent Boss and administrators need model capacity/cost visibility across vendors, but Company OS must keep provider credentials in the execution plane and enforce its own approved budgets rather than trusting eventually consistent vendor usage displays.",
+      "companyOsFit": "ADAPT timeout, missing-field tolerance, multi-window/model mapping and reset normalization inside vendor adapters. Define a neutral structured ProviderQuotaObservation with metric/unit, numerator/denominator or explicit percentScale, subject scope, observedAt, resetsAt, staleAt, source/version and confidence; localize labels in Web. Keep tokens/refresh tokens and raw auth files inside the local adapter, exposing only secret-free account aliases and observations. Implement authoritative Company OS Budget/Approval policies over metered execution events, with provider quota only as advisory input.",
+      "responsibilityConflict": "A heuristic or stale quota row cannot authorize spending or prove who accepted cost. Email/plan/token metadata also belongs to a specific human or enterprise account and must not be silently treated as Company-wide Agent authority. Budget exceptions require an accountable human approval bound to exact work, amount, provider and expiry.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/quota-windows.test.ts:1-855 (SHA-256 ba375a394122c43ac14739989739a42fd11c567419b5b986874666dd4b93295d)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 and 79473082762097e0622260229d52cad80ec2b3ec recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file passed, 58/58 tests passed"
+      ],
+      "securityFindings": "CRITICAL credential-boundary risk if reused outside a local vendor adapter: access and refresh tokens are read from user auth files and returned in process objects. HIGH policy-integrity risk: the <1 heuristic makes exactly 1.0 mean 1%, so observations are unsafe for budget enforcement. HIGH privacy risk: unsigned JWT payload email/plan metadata is surfaced and no tenant/account projection policy is tested. HIGH file-trust gap: permissions, owner, symlinks, size and race replacement are untested. HIGH resilience gap: 429 handling, retry/backoff, caching, staleness and auth refresh are absent. MEDIUM contract gap: mocked schemas, English error strings/labels and assumed USD formatting are unstable cross-vendor contracts. POSITIVE: timeout aborts, missing fields, non-200 responses and several schema variants have focused coverage."
+    }
+  ]
+}
