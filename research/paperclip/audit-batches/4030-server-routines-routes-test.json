@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/routines-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked-service HTTP tests for routine list/revisions/annotations/restore and authorization of creation, assignee changes, activation, schedule mutation and manual execution, including cross-tenant concealment and actor propagation.",
+      "dependencyDirection": "Injected board or Agent actor enters real route authorization/middleware; routes consult Company scope and access service, then call mocked routine/annotation services, activity logger and product telemetry.",
+      "keyDataModels": "Routine status/assignee/concurrency/catch-up; versioned routine-plus-trigger snapshot and restore provenance; schedule trigger public/signing/Secret fields; board/Agent/run actor; tasks:assign permission; anchored annotations; activity action; product telemetry.",
+      "lifecycle": "List/filter templates; inspect revision history; collaborate through annotations; restore a historical revision; create/retarget/reactivate templates; create/update schedules; initiate a manual run; deny before service calls and conceal cross-tenant existence.",
+      "testAssessment": "All 15 focused tests pass outside the restricted sandbox. Negative route authorization is relatively strong: service non-invocation and identical 404 behavior are asserted. Most business services are mocked, active membership is not modeled and a single tasks:assign capability spans several materially different actions. The assigned Agent is explicitly allowed to restore executable history without a human approval case. Stable structured errors, Secret restore output and several trigger/run surfaces are absent.",
+      "designRationale": "Centralize reusable-work management behind Company and assignment-aware route guards, reuse task assignment permission for mutation, preserve historical snapshots and allow the assigned Agent to manage its routine within an attributable run.",
+      "companyOsProblem": "Company OS needs a stable API for reusable work and revision collaboration, but must distinguish who may edit templates, schedule work, choose Agents, initiate execution and restore historical executable policy, with human accountability proportional to risk.",
+      "companyOsFit": "ADAPT non-enumerating tenant checks, deny-before-service behavior, actor propagation, revision provenance and metadata-only activity. Split capabilities into template.edit, schedule.manage, execution.start, assignee.change and revision.restore with resource/risk scopes. Agents may propose a restore, but changing a future executable revision requires policy evaluation and accountable-human approval when risk or authority changes; bind approval to exact old/new revision digests and effective grants. Return stable error codes/parameters and keep Secret material out of API/activity responses.",
+      "responsibilityConflict": "The assigned Agent can restore its own executable routine revision under an Agent run with no matched human approval, allowing it to change future behavior and potentially authority. Coarse tasks:assign also collapses assignment, scheduling, activation and execution into one permission, obscuring which human responsibility was actually delegated.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/routines-routes.test.ts:1-674 (SHA-256 0a910d157567d839bf81b8b417e873f93cd588ed1d5729393d2cea94f0a176b8)",
+        "git history: eight commits from 73eb23734f25c570d88665e672f80d740797c632 through 7f2ed0ad90d7186d108f65400e322bda08dcbfe2 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/15 passed solely due Supertest TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 15/15 passed"
+      ],
+      "securityFindings": "CRITICAL autonomous-policy risk: an assigned Agent is allowed to restore an executable routine revision without asserted human approval or risk comparison. HIGH least-privilege gap: tasks:assign controls creation, retargeting, reactivation, schedule mutation and execution. HIGH identity gap: active membership/suspension and IdentityPort session proof are not tested. HIGH Secret/restore gap: restore returns secretMaterials from the mocked service but response exclusion and reauthorization are untested. HIGH API-contract gap: denials depend on English error text rather than stable codes. MEDIUM surface gap: trigger delete/rotation/public firing and several cross-Company references are absent. POSITIVE: cross-tenant/missing trigger responses match, revision reads conceal existence and denied operations do not call services."
+    }
+  ]
+}
