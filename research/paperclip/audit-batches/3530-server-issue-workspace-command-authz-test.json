@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/issue-workspace-command-authz",
+      "auditStatus": "COMPLETE",
+      "function": "Focused HTTP authorization suite preventing Agent callers from storing host-executed workspace provision or teardown commands through Issue create/update APIs.",
+      "dependencyDirection": "Mounts the real Issue route over mocked application services; request actor and nested workspace settings flow inward to a route-level guard before Issue persistence.",
+      "keyDataModels": "Agent JWT/key actor, Issue create input, executionWorkspaceSettings.workspaceStrategy.runtimeProvisionCommand and assigneeAdapterOverrides.adapterConfig.workspaceStrategy.teardownCommand.",
+      "lifecycle": "An Agent submits Issue create or patch input containing a host command; the route returns 403 before calling Issue create/update.",
+      "testAssessment": "Two focused cases pass outside the sandbox and prove the guarded create and patch shapes are rejected before persistence. They do not test all command-bearing aliases/nesting, parser bypasses, board-user role/approval matrices, Connector execution, workspace path/environment isolation, secret/data egress, concurrency or stable machine-readable errors. Nearly all access services are permissive mocks.",
+      "designRationale": "Close a direct privilege-escalation path where an untrusted Agent could turn control-plane fields into arbitrary host commands.",
+      "companyOsProblem": "Company OS must prevent an Agent or compromised Connector from manufacturing host execution authority through task/workspace metadata, while allowing accountable humans to request controlled environment setup.",
+      "companyOsFit": "ADAPT the early reject-before-persistence invariant and maintain adversarial tests. Do not expose free-form host shell commands as a normal Company OS core field: use typed WorkspaceProvisionPlan references, policy-evaluated capabilities, accountable-human approval for elevated actions, a local execution-node boundary, signed digests, strict path/env/secret/data-egress controls, lease fencing and durable execution receipts. Return stable errorCode plus parameters.",
+      "responsibilityConflict": "The guard distinguishes Agent from non-Agent but does not establish which human is authorized and accountable for dangerous commands. A free-form command retained as product data can bypass approval, move secrets or data, and create ambiguous responsibility when later executed by a Connector.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-workspace-command-authz.test.ts:1-318 (SHA-256 be4952c3e26a971ed51c0ce7cc2efc338a827ffd42af8cbb6c145d04b257637b)",
+        "git history: eleven commits from dcac49a4fd4739ec7177b196a869aa5d1cc169d9 through 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 2/2 failed on TCP EPERM only",
+        "2026-08-19 approved unsandboxed focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "CRITICAL threat correctly recognized: Agent-controlled runtimeProvisionCommand/teardownCommand would be host RCE. POSITIVE: both tested paths fail before persistence. CRITICAL residual design risk for Company OS: free-form host commands need typed plans, execution-node isolation, approval and digest binding rather than actor-type filtering alone. HIGH coverage gap: only two shapes are tested and access is otherwise mocked allow. HIGH governance gap: no human role/accountability or high-risk approval test. HIGH egress gap: path, environment, secret and outbound-data controls are not demonstrated. MEDIUM contract gap: assertion depends on English error prose rather than a stable code."
+    }
+  ]
+}

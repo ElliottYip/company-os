@@ -8330,6 +8330,43 @@
       "completionRequirements": [
         "Read lines 1-568 exactly once and assess tenant and authorization boundaries, low-trust identifier redaction, diagnostic provenance, stable codes, leakage of runtime/Connector details, lifecycle coverage and Company OS responsibility-safe wake diagnostics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-workspace-command-authz",
+      "path": "server/src/__tests__/issue-workspace-command-authz.test.ts",
+      "lineCount": 318,
+      "sha256": "be4952c3e26a971ed51c0ce7cc2efc338a827ffd42af8cbb6c145d04b257637b",
+      "linkedEvidence": { "history": [
+        "dcac49a4fd4739ec7177b196a869aa5d1cc169d9 defer isolated setup until runtime start (#10653)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed runs (#9241)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations and comments (#6733)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 roll up May 17 branch changes (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 backend control-plane QoL (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests/assets (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-159",
+        "160-318"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-158 mock Issue, access, Agent, execution-workspace, heartbeat and supporting services, then mount the real Issue route with a synthetic actor and database seam.",
+        "Lines 159-263 establish permissive defaults for almost every service and access decision, so the cases isolate only the Agent-versus-host-command guard rather than the full authorization stack.",
+        "Lines 264-289 prove an Agent-key caller cannot create an Issue carrying a git-worktree runtimeProvisionCommand and that persistence is not reached.",
+        "Lines 290-318 prove an Agent-key caller cannot patch assignee adapter overrides with a git-worktree teardownCommand and that update persistence is not reached.",
+        "The guard addresses a direct Agent-to-host RCE path, but coverage is only two command locations and one actor class. It does not establish exhaustive nested/alias detection, human role and approval policy, command allowlisting, Connector isolation, path/environment/secret egress, immutable audit receipts, TOCTOU behavior or stable error codes.",
+        "Sandboxed focused Vitest failed 2/2 only because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed 2/2."
+      ],
+      "completionRequirements": [
+        "Read lines 1-318 exactly once and assess workspace-command authorization, actor and tenant scope, path and command injection, capability binding, deferred setup, auditability, stable errors and Company OS data-egress and responsible-human requirements."
+      ]
     }
   ]
 }
