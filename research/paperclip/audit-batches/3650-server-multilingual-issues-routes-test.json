@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/multilingual-issues-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Sequential embedded-PostgreSQL HTTP scenario verifying Chinese, Japanese and Hindi Issue content survives create/read/search/comment/document/completion/list and heartbeat-context flows.",
+      "dependencyDirection": "Exercises real Issue routes, database and membership authorization with a cloud-tenant board actor; storage is stubbed and no translation/localization service participates.",
+      "keyDataModels": "Company and active user membership; Issue title/description/status; comment body/order; Markdown document body; completion comment; heartbeat context and comment cursor.",
+      "lifecycle": "Create multilingual Issue; read and search it; add multilingual comment/document; complete with multilingual note; list ordered comments; project original content into execution context.",
+      "testAssessment": "Eight integration cases cover a useful full content path and a non-admin cloud-member actor, but all skipped locally because embedded PostgreSQL was unavailable. The stateful sequential structure can cascade failures. Missing are normalization/digest semantics, complex Unicode classes, byte limits, search-tokenizer depth, malformed encodings, injection/redaction, tenant denial and Agent data-scope tests.",
+      "designRationale": "Ensure international user and Agent content is preserved as data rather than corrupted, translated or dropped by storage, search or execution-context assembly.",
+      "companyOsProblem": "Company OS targets Chinese enterprises while supporting international teams; user input, Agent output, evidence and logs must preserve original language independently from future switchable Chinese/English UI localization.",
+      "companyOsFit": "ADAPT this end-to-end preservation slice into isolated and scenario tests. Store original UTF-8 content unchanged; define canonical serialization for signatures/digests without silently rewriting displayed text; record contentType/language only as optional metadata; build a separate normalized search projection with Chinese-capable tokenization; test NFC/NFD, emoji, combining marks, RTL, control/bidi spoofing, byte limits and export/import. Keep stable error/event codes language-neutral and authorize every heartbeat/evidence projection by the Agent's DataGrant.",
+      "responsibilityConflict": "No direct conflict: preserving original evidence is required for responsibility. However, projecting full multilingual text into heartbeat context without an Agent-specific data contract could leak content, and any hidden Unicode normalization between approval and execution could break digest-bound responsibility evidence.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/multilingual-issues-routes.test.ts:1-192 (SHA-256 ccb223fd27d270dc82ba2ec48a848dd0f536d7afc865b55699e28e20ee42f486)",
+        "git history: 606e74d11f77808880da39a9753d81e12d33d8c3 and 4c47eb46c3c4525325e30d3a7b793090b5bcc06b recorded in the read ledger",
+        "2026-08-19 focused Vitest: 8/8 skipped because embedded PostgreSQL was unavailable"
+      ],
+      "securityFindings": "POSITIVE: cloud tenant access uses active company membership and not instance-admin authority; original multilingual content is expected unchanged across persistence and execution context. HIGH evidence-integrity gap: Unicode normalization and canonical digest behavior are unspecified. HIGH data-egress gap: Agent heartbeat-context authorization is not exercised. MEDIUM spoofing gap: bidi/control/confusable characters and rendering safety are untested. MEDIUM availability gap: byte/grapheme limits and search index behavior are untested. TEST LIMITATION: all eight cases skipped on this host."
+    }
+  ]
+}

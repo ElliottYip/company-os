@@ -8761,6 +8761,31 @@
       "completionRequirements": [
         "Read lines 1-111 exactly once and assess tenant and Agent aggregation, currency precision, calendar/timezone window, late/duplicate events, terminated principals, immutable usage evidence, budget-enforcement semantics and Company OS cost-governance fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/multilingual-issues-routes",
+      "path": "server/src/__tests__/multilingual-issues-routes.test.ts",
+      "lineCount": 192,
+      "sha256": "ccb223fd27d270dc82ba2ec48a848dd0f536d7afc865b55699e28e20ee42f486",
+      "linkedEvidence": { "history": [
+        "606e74d11f77808880da39a9753d81e12d33d8c3 company-scoped cloud tenants (#7525)",
+        "4c47eb46c3c4525325e30d3a7b793090b5bcc06b multilingual Issue preservation (#6069)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-192"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-108 create one embedded-PostgreSQL cloud tenant and active owner membership, mount real Issue routes with a non-instance-admin cloud actor and define Chinese/Japanese/Hindi title, description, replies, completion note and Markdown document.",
+        "Lines 109-192 form one sequential end-to-end scenario: create/read/search Chinese text, preserve multilingual comment/document/completion bodies, retain comment order and expose original title/description in heartbeat context.",
+        "The suite strongly protects original-text round trip and demonstrates tenant membership instead of instance-admin authority. It is sequential and stateful, so early failures cascade. Missing are NFC/NFD and byte-exact digest behavior, emoji/combining/RTL/control characters, length and encoding errors, Chinese tokenization quality, case/width variants, injection/redaction, cross-tenant negatives, Agent-specific data authorization and UI/message localization boundaries.",
+        "Focused Vitest skipped all 8 tests because embedded PostgreSQL was unavailable; no passing runtime claim is made."
+      ],
+      "completionRequirements": [
+        "Read lines 1-192 exactly once and assess Unicode round-trip, normalization and byte limits, Chinese search, user/Agent original text preservation, tenant authorization, stable codes, digest canonicalization and Company OS language-boundary requirements."
+      ]
     }
   ]
 }
