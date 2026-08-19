@@ -9703,6 +9703,35 @@
       "completionRequirements": [
         "Read lines 1-10 exactly once and assess test-suite architecture guidance, isolation/lifecycle expectations, executable accuracy and Company OS testing-strategy relevance without treating documentation claims as implementation proof."
       ]
+    },
+    {
+      "id": "application:server/__tests__/redact-sensitive",
+      "path": "server/src/__tests__/redact-sensitive.test.ts",
+      "lineCount": 100,
+      "sha256": "ac9434e5f84b3a94c735a15f2181871e7692c68eb2366439c857af01d85677db",
+      "linkedEvidence": { "history": [
+        "89ce36d7afcb3b2920c45c47b55f210d635b9976 feat(skills): open-by-default company skill policy and core UX (#9564)",
+        "bb7978327ed568bf012f6efe16fd200e8baa3a5c fix(logger): redact passwords and tokens from HTTP error log lines (#8013)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-100"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-14 assert password redaction on a sign-in body while preserving non-sensitive email and leaving the original input object unchanged.",
+        "Lines 16-35 make password casing-insensitive and redact selected password/access_token/refresh_token/api_key/authorization key shapes.",
+        "Lines 37-42 deliberately preserve a bare token key for cursor/CSRF use.",
+        "Lines 44-51 strip all query and fragment content from a source URL containing a token.",
+        "Lines 53-75 recurse through nested objects/arrays, preserve non-sensitive primitives and return top-level primitives unchanged.",
+        "Lines 77-100 bound recursion so a cycle does not throw and omit arrays beyond the cap rather than serializing them as null entries.",
+        "No value-pattern Bearer/JWT/private-key/connection-string detection, ambiguous bare token classification, cookies/headers/errors/stacks/serialized JSON, PII/email, binary/Date/Map/Set/getter/prototype, Unicode key, breadth/string/output-size, repeated-reference fidelity, source-URL parse failure, structured reason or schema-aware policy test is present.",
+        "Focused Vitest passed all 10 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-100 exactly once and assess recursive redaction coverage, key/value/URL/header/JWT/stack handling, cycles/depth/size/types, false positives, immutable input, telemetry/audit/evidence use and Company OS sensitive-data firewall fit."
+      ]
     }
   ]
 }

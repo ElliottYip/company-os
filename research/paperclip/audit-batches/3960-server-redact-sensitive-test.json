@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/redact-sensitive",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for a non-mutating, depth-bounded recursive logger redactor that masks selected credential-shaped keys and removes query/fragment content from source URLs.",
+      "dependencyDirection": "Arbitrary middleware/log payloads enter a generic redaction utility; sanitized cloned values are intended for logging while the original application payload remains unchanged.",
+      "keyDataModels": "Nested object/array/primitives; credential-shaped property names; source URL; redaction marker; recursion-depth omission.",
+      "lifecycle": "Receive a prospective log value; recursively clone and inspect keys; replace known credential values or strip URL suffixes; stop at bounded depth; serialize the sanitized projection.",
+      "testAssessment": "All 10 focused tests pass and establish useful invariants for input immutability, nested structures, case-insensitive password handling, URL suffix removal and cycle/depth safety. Coverage remains key-name-centric and explicitly preserves ambiguous token fields. It does not address secrets embedded in arbitrary strings, PII, HTTP/Error objects, serialized payloads, hostile object types or total output size.",
+      "designRationale": "Prevent common passwords and API tokens from entering HTTP error logs without mutating request objects or letting cyclic/deep inputs pin the logger.",
+      "companyOsProblem": "Company OS must prevent credentials, enterprise data and personal information from leaking through logs, telemetry, errors, Connector messages and exported evidence while retaining protected originals where accountability legally requires them.",
+      "companyOsFit": "ADAPT as a last-mile logging defense only. Combine schema-declared sensitivity, data-authorization contracts, taint/provenance and sink-specific policies with bounded structural redaction and value detectors. Classify ambiguous fields such as token by context; cover PII and enterprise data; emit structured redaction reasons/counts without content. Store original evidence only in the scoped Audit/Evidence store and provide authorized redacted projections. Data-egress enforcement must decide before transmission, not sanitize afterward.",
+      "responsibilityConflict": "Over-redaction can erase evidence needed to explain an action, while under-redaction exposes credentials or personal data. Company OS must preserve immutable originals under explicit access control and record which policy produced each redacted view, rather than silently replacing responsibility evidence in place.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/redact-sensitive.test.ts:1-100 (SHA-256 ac9434e5f84b3a94c735a15f2181871e7692c68eb2366439c857af01d85677db)",
+        "git history: bb7978327ed568bf012f6efe16fd200e8baa3a5c and 89ce36d7afcb3b2920c45c47b55f210d635b9976 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file passed, 10/10 tests passed"
+      ],
+      "securityFindings": "HIGH false-negative risk: bare token is intentionally retained and credential values in arbitrary strings/serialized JSON are not covered. HIGH data-governance gap: email and other PII/enterprise data are untouched, so this cannot implement an egress firewall. HIGH object/DoS gap: total breadth/string size and uncommon object/getter/prototype behavior are untested despite a depth cap. HIGH evidence-integrity gap if reused in authoritative storage: silent replacement/omission lacks policy/version/reason metadata. MEDIUM false-positive/provenance risk: stripping an entire URL query/fragment can remove legitimate source identity. POSITIVE: input is not mutated, common nested credential keys are masked and cyclic/deep data is bounded."
+    }
+  ]
+}
