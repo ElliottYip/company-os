@@ -9830,6 +9830,37 @@
       "completionRequirements": [
         "Read lines 1-489 exactly once and assess resource membership/star authorization, authenticated human binding, tenant/resource isolation, role grant/revoke lifecycle, owner lockout, audit attribution, idempotency/concurrency, enumeration and Company OS Organization/Principal/Permission ports fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/routine-document-annotation-routes",
+      "path": "server/src/__tests__/routine-document-annotation-routes.test.ts",
+      "lineCount": 304,
+      "sha256": "cb5b1658866650692b7c9220d46f356953fa93adfae5aea35124b6228d6df276",
+      "linkedEvidence": { "history": [
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "e68188c438ae14bbd4e3542571ef38b27d55d2b1 fix: upstream deployed document-comment, routine-annotation, workspace & board-polling fixes (#8536)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-152",
+        "153-304"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-27 define routine/Company/Agent/revision IDs and mock routine plus document-annotation services and activity logging.",
+        "Lines 28-115 model a versioned routine description document, an annotation selector with exact quote/prefix/suffix and normalized/Markdown positions, a thread carrying original/current revisions, anchor state/confidence, human creator/resolver fields, and a human comment.",
+        "Lines 117-152 mount real routine routes with an always-allow canUser mock and either local_implicit board or Agent actor; the board actor has no asserted Company membership/role.",
+        "Lines 154-199 configure service results for document update, thread/comment listing, create/reply/resolve/reopen and open-thread remapping to revision two.",
+        "Lines 201-263 create a thread against base revision one, add a reply, resolve and reopen it, asserting user actor context and metadata-only activity actions for each transition.",
+        "Lines 265-292 update routine description with a baseRevisionId, remap open annotations to the new document revision/body and log one remapped activity per returned thread.",
+        "Lines 294-304 assert a cross-Company Agent annotation read returns non-enumerating 404.",
+        "No real user permission/role, board cross-tenant, Agent same-tenant write, suspended identity, stale base revision/conflict, duplicate/concurrent transition, resolvedBy fields, comment edit/delete/history, content size/markup/mention/attachment safety, ambiguous/orphan remap, manual re-anchor, notification, execution-snapshot adoption or approval distinction test is present.",
+        "Sandboxed focused Vitest failed 3/3 solely because Supertest TCP listen was denied with EPERM; approved unsandboxed focused Vitest passed 3/3."
+      ],
+      "completionRequirements": [
+        "Read lines 1-304 exactly once and assess routine-document annotation author identity, tenant concealment, document/revision anchoring, edit/delete/resolve lifecycle, concurrency, content safety, execution snapshot propagation, audit/evidence semantics and Company OS human review fit."
+      ]
     }
   ]
 }

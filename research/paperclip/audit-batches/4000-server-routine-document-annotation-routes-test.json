@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/routine-document-annotation-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Route-level tests for human-authored routine-description annotation threads: create, reply, resolve, reopen, remap open anchors after a document revision and conceal cross-Company routines from Agent reads.",
+      "dependencyDirection": "Board/Agent actors call routine HTTP routes; routine service owns versioned description updates; annotation service owns anchored threads/comments and remapping; activity logger records metadata-only lifecycle events.",
+      "keyDataModels": "Routine and versioned description document; base/original/current revision IDs/numbers; quote/prefix/suffix plus normalized/Markdown positions; anchor state/confidence; thread status; user/Agent creator/resolver; comment author/run; remap snapshot.",
+      "lifecycle": "Create a thread anchored to a base revision; append comments; resolve/reopen; update routine description using a base revision; remap open threads to the new body/revision; log lifecycle metadata; deny cross-tenant visibility.",
+      "testAssessment": "All 3 focused tests pass outside the restricted sandbox. The modeled anchor and revision metadata is strong and activity payloads avoid comment bodies. Service/authorization behavior is heavily mocked: canUser always permits, board membership is absent, resolver fields and conflict cases are not asserted. Remap success is mocked without ambiguous/orphan behavior, and no test connects accepted feedback to an immutable execution snapshot.",
+      "designRationale": "Support contextual human review directly on reusable Agent instructions while keeping comments attached as text moves across revisions and preserving a visible collaboration lifecycle.",
+      "companyOsProblem": "Agent Boss and accountable employees need precise, reviewable feedback on goals, plans, policies and reusable routines, with authorship and revision context that can later explain why an Agent executed a particular instruction version.",
+      "companyOsFit": "ADAPT the quote/context/position selector, original/current revision pair, anchor state/confidence, threads/comments and remap snapshots. Authenticate every human through IdentityPort and authorize against Company role/resource scope; use optimistic concurrency and surface ambiguous/orphan anchors for manual re-anchoring. Keep comments append-only or versioned. Accepting feedback must create a new instruction revision and bind future work/runs to its digest; annotations remain collaboration evidence and never imply approval, permission or accountable ownership.",
+      "responsibilityConflict": "A comment, resolve action or automated remap does not prove a human approved a high-risk action or accepted responsibility. If an annotation changes executable instructions, Company OS must record who accepted the change, the resulting revision digest and which runs consumed it, separately from the discussion thread.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/routine-document-annotation-routes.test.ts:1-304 (SHA-256 cb5b1658866650692b7c9220d46f356953fa93adfae5aea35124b6228d6df276)",
+        "git history: e68188c438ae14bbd4e3542571ef38b27d55d2b1 and 7f2ed0ad90d7186d108f65400e322bda08dcbfe2 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/3 passed solely due Supertest TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 3/3 passed"
+      ],
+      "securityFindings": "HIGH authorization gap: canUser is mocked allow-all and the local_implicit board actor lacks asserted active membership/role. HIGH integrity gap: stale base revisions, concurrent edits/transitions and resulting revision digest are untested. HIGH responsibility gap: resolve/reopen and remap do not prove approval or adoption into an execution snapshot. HIGH content-safety gap: size, markup, links, mentions, attachments and data classification are absent. MEDIUM anchor-integrity gap: ambiguous/orphan remap and manual recovery are untested. POSITIVE: Agent cross-tenant reads return 404, anchor/revision metadata is rich and activity assertions omit comment bodies."
+    }
+  ]
+}
