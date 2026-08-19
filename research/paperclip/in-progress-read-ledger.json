@@ -9149,6 +9149,31 @@
       "completionRequirements": [
         "Read lines 1-136 exactly once and assess persisted plugin config startup/restart delivery, tenant/plugin/version binding, secret separation/redaction, acknowledgement/failure/rollback, stale config and Company OS extension configuration boundary fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-dev-watcher",
+      "path": "server/src/__tests__/plugin-dev-watcher.test.ts",
+      "lineCount": 148,
+      "sha256": "ed7c4980d373a93f5d9bf56700c98682ae4fe96f16047d5cf06aff7e98389984",
+      "linkedEvidence": { "history": [
+        "b947a7d76c331b3ce4069d3be0ade25cc89b1b90 improve local plugin development workflow (#5821)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-148"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-75 construct local plugin packages, lifecycle and chokidar mocks with cleanup of temporary roots.",
+        "Lines 76-111 expect declared manifest/worker/UI/package files to become sorted non-recursive watch targets; missing entrypoint metadata falls back to enumerated files under dist plus package.json.",
+        "Lines 112-148 start a watcher when plugin.loaded resolves a local package and debounce one file change for 500ms before restartWorker(pluginId), then close the watcher.",
+        "No production/dev Profile gate, canonical root confinement, ../ metadata entrypoint, symlink, missing/deleted file, add/unlink event, unload/reinstall, multiple plugin isolation, burst dedupe semantics, restart failure/backoff, close race or large dist tree is covered. Focused Vitest passed 4/4."
+      ],
+      "completionRequirements": [
+        "Read lines 1-148 exactly once and assess dev-only gating, watched path confinement, debounce/deduplication, plugin identity mapping, unload/reload races, symlink/path escape, failure recovery and Company OS extension development/production boundary fit."
+      ]
     }
   ]
 }

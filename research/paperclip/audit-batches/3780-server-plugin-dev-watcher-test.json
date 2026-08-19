@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/plugin-dev-watcher",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for resolving local plugin build watch targets and restarting a loaded plugin worker after debounced development-file changes.",
+      "dependencyDirection": "Local package metadata/files are interpreted by plugin-dev-watcher; plugin lifecycle loaded events resolve a package path; chokidar observes concrete targets; a debounced callback invokes lifecycle.restartWorker for the plugin ID.",
+      "keyDataModels": "Plugin package root/package.json paperclipPlugin entrypoints; manifest/worker/UI/dist files; watch target path/recursive/kind; plugin.loaded identity; filesystem all event; restartWorker and watcher lifecycle.",
+      "lifecycle": "Resolve declared runtime files or enumerate dist fallback; begin watching when a local plugin loads; coalesce a file change; restart its worker; close watchers and timers.",
+      "testAssessment": "All four tests pass. Watching concrete output files and debouncing restart are sensible development patterns, and the loaded-plugin resolver avoids eagerly watching unknown packages. Missing tests leave the critical boundary unproved: strict development-only enablement, canonical path containment for manifest ../ or symlinks, file add/delete, plugin unload/reinstall, multiple-plugin event isolation, repeated burst semantics, restart serialization/failure/backoff, close during pending timer and large-tree resource limits.",
+      "designRationale": "Shorten local plugin development feedback by automatically restarting only the affected worker when compiled entrypoints or metadata change.",
+      "companyOsProblem": "Company OS needs safe extension development without allowing file watchers or unsigned hot reload to enter managed-cloud/self-hosted production trust boundaries.",
+      "companyOsFit": "ADAPT only for an explicit local development Profile. Require a startup-level non-overridable production prohibition; canonicalize every target with realpath and prove it remains under an approved plugin root; reject symlink/path escape and unbounded fallback scans; serialize restarts per plugin; cancel timers/watchers on unload; handle add/delete and failed restart with bounded backoff; display a persistent unsafe-development state. Production upgrades must use signed immutable packages, staged health checks and rollback rather than watchers.",
+      "responsibilityConflict": "Hot reload changes executable plugin behavior without a release approval, provenance record or responsibility decision. That is acceptable only in a declared developer environment and must never become a path for production Connector or approval logic mutation.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/plugin-dev-watcher.test.ts:1-148 (SHA-256 ed7c4980d373a93f5d9bf56700c98682ae4fe96f16047d5cf06aff7e98389984)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 and b947a7d76c331b3ce4069d3be0ade25cc89b1b90 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "POSITIVE: declared concrete runtime targets reduce watch breadth; changes are debounced; restart is keyed to one plugin; close is exposed. CRITICAL deployment gate gap: no test proves the watcher is impossible to enable in production. HIGH path gap: manifest entrypoint traversal and symlink escape are untested. HIGH supply-chain gap: changed code is executed without signature/hash or approval by design. MEDIUM lifecycle gap: unload/reinstall, pending timer cancellation, concurrent restart and failure/backoff are absent. MEDIUM resource gap: fallback dist enumeration has no tested file/depth cap. LOW disclosure: logs include full local package paths, which is useful in development but should remain outside customer telemetry by default."
+    }
+  ]
+}
