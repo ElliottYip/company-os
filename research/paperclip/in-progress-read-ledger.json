@@ -7878,6 +7878,32 @@
       "completionRequirements": [
         "Read lines 1-209 exactly once and assess re-wake throttle identity, tenant/Issue isolation, time semantics, retry safety, authorization, auditability and Company OS approval/recovery delivery requirements."
       ]
+    },
+    {
+      "id": "application:server/services/issue-rewake-throttle",
+      "path": "server/src/services/issue-rewake-throttle.ts",
+      "lineCount": 182,
+      "sha256": "943945d4aab069c3adcb8cdac84707bac6535b80a9b8cd3e09718c86089b91b1",
+      "linkedEvidence": { "history": [
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)",
+        "5dff52631d15d3705cb9ad05912e8f78e137b7f2 fix(heartbeat): throttle redundant issue re-wakes (#9470)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-182"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-56 document a concrete production failure mode: repeated stalled Issue wakes consumed 25 adapter sessions and 2.4x cost; the module limits only event-free no-op re-invocations, while server recovery inserts bypass it.",
+        "Lines 57-109 define state-poll wake reasons, a narrow Issue-visible progress action allowlist and a broader new-input allowlist including interaction verdicts and blocker-resolution signals.",
+        "Lines 110-182 exempt trusted fresh/explicit/human-event wakes, keep Agent-authored comments/resumes throttleable, then compute a capped exponential cooldown over newest-first same-Agent/same-Issue successful terminal Runs, resetting on new input, failure, missing finish time or visible progress.",
+        "Strong patterns are evidence-backed cost containment, narrow progress semantics, bounded history, overflow-safe backoff and explicit Agent-versus-human wake authority. Gaps are free-form reason/action strings, caller-enforced tenant/Work scoping and ordering, static hard-coded policy, no durable decision/receipt, no jitter, no Connector/provider-specific quota state and no typed invariant proving approval/denial/revocation/emergency events bypass throttling.",
+        "The paired sandboxed focused test passed all 14 tests; server type-check also passed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-182 exactly once and assess wake-reason classification, cooldown mathematics, progress semantics, input trust boundaries and Company OS durable/idempotent scheduling requirements."
+      ]
     }
   ]
 }

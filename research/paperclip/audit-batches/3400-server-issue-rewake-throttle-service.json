@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/services/issue-rewake-throttle",
+    "auditStatus": "COMPLETE",
+    "function": "Pure policy for suppressing repeated no-information Issue wakes after consecutive successful Runs produce no Issue-visible progress, with typed actor exceptions and capped exponential cooldown.",
+    "dependencyDirection": "Standalone service exports constants, string taxonomies and pure functions; callers must query and order tenant/Agent/Issue-scoped Runs/activity, evaluate the decision and enqueue or suppress work.",
+    "keyDataModels": "Wake candidate intent and actor; progress/new-input activity action sets; recent terminal Run sample; no-progress streak; cooldown/last finish/next-allowed decision.",
+    "lifecycle": "Caller classifies a wake -> supplies newest-first same-Agent/same-Issue history and progress/input facts -> service resets or counts no-progress Runs -> blocks until escalating cooldown expires or returns allow -> server recovery paths bypass this gate.",
+    "testAssessment": "The paired 14-test pure suite passed. It exercises classification, human/Agent distinctions, escalation bypass, cooldown threshold/cap/expiry and reset paths. Integration evidence remains necessary for scoped history selection, atomic queue suppression, concurrency, durable receipts, clock skew and complete safety-event classification.",
+    "designRationale": "A documented recovery smoke incurred 25 adapter sessions and 2.4x cost for one stalled recovery, so unchanged polling needs explicit backpressure without slowing genuine human/event/recovery input.",
+    "companyOsProblem": "Company OS must bound runaway Agent and Connector costs, prevent wake storms and expose why work was delayed, while never delaying accountable-human control or masking a required approval.",
+    "companyOsFit": "ADAPT this as a vendor-neutral RetryBackpressurePolicy, retaining narrow visible-progress semantics, bounded sampling and capped backoff. Replace strings with versioned WakeIntent/ProgressKind, scope inputs by tenant/Work/Agent/Connector, persist policy version and ThrottleReceipt, use transactional idempotent scheduling with jitter, and declare HumanDecision/Approval/Revocation/EmergencyStop as non-throttleable types.",
+    "responsibilityConflict": "Responsibility safety depends entirely on callers supplying correctly scoped history and classifying events. Agent-authored resumes are deliberately delayed, and there is no authoritative receipt or policy snapshot explaining suppression to an accountable human.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/services/issue-rewake-throttle.ts:1-182 (SHA-256 943945d4aab069c3adcb8cdac84707bac6535b80a9b8cd3e09718c86089b91b1)",
+      "git history: f91a6e27c0feb7f92dcde981c9a741b869484e83 and 5dff52631d15d3705cb9ad05912e8f78e137b7f2",
+      "paired focused Vitest: 14/14 passed",
+      "Paperclip server TypeScript check: passed"
+    ],
+    "securityFindings": "HIGH caller-trust boundary: the module cannot verify tenant/Work/Agent scoping or newest-first ordering. HIGH safety taxonomy risk: string allowlists determine whether human control signals are delayed. MEDIUM audit gap: suppression is not represented as a durable receipt here. MEDIUM distributed-systems gap: no atomic queue decision, concurrency, jitter or clock/fencing semantics. POSITIVE: overflow cap, failure/new-input resets, human wake privilege and narrow progress evidence directly address a real cost/storm failure mode."
+  }]
+}
