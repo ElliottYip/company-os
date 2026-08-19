@@ -8948,6 +8948,34 @@
       "completionRequirements": [
         "Read lines 1-135 exactly once and assess skill discovery/content/versioning, prompt-versus-enforced authorization, identity/responsibility semantics, artifact and interaction guidance, injection/data-exposure risk, upgrade drift and Company OS Connector/Agent instruction boundary fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/permissions-upgrade-boundary-routes",
+      "path": "server/src/__tests__/permissions-upgrade-boundary-routes.test.ts",
+      "lineCount": 350,
+      "sha256": "2838c5badc8417b4fe38d2f21bacaf1be952a49926cd54c8bf7deca0f6c08abb",
+      "linkedEvidence": { "history": [
+        "cf5ba4bbea9d9e21ced6e7e3e662cccee95249f4 generic per-asset lifecycle-contribution seam (#9778)",
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 close cross-tenant existence oracle (#3967)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 agent permissions and controls plan (#6386)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-175",
+        "176-350"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-111 build an Agent-JWT actor Express app and embedded-Postgres fixtures. The error handler returns a free-form error string. Agents carry free-form JSON permissions; cleanup includes memberships and principal grants.",
+        "Lines 112-250 establish that a private/hidden Agent remains absent from directory semantics but its assigned issues, comments, documents, attachment metadata, activity and work products remain visible to another same-company Agent. This intentionally separates principal privacy from company work visibility.",
+        "Lines 251-286 verify a cross-company Agent receives the same 404/Issue not found response as a nonexistent issue, preventing an existence oracle before private-Agent grant evaluation.",
+        "Lines 287-350 allow any same-company Agent to assign an open target by default, deny a private target, then allow exactly one private target after membership plus a scoped tasks:assign_scope grant. The fixture inserts the grant with grantedByUserId null and does not prove a human grantor, approval, expiry, revocation, audit event, resource version or concurrent policy consistency.",
+        "Focused Vitest discovered the file but skipped all 3 tests because embedded Postgres support was unavailable; this is recorded as skipped, not passed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-350 exactly once and assess tenant-existence privacy, Agent self/cross-Agent privilege changes, human authority, permission/budget/adapter upgrades, approval and responsibility binding, race/idempotency/audit behavior, lifecycle side effects, stable errors and Company OS accountable-human fit."
+      ]
     }
   ]
 }
