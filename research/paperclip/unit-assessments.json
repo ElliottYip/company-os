@@ -8276,18 +8276,24 @@
     },
     {
       "id": "application:server/__tests__/issue-thread-interaction-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Large mocked HTTP suite for listing, creating, resolving, rejecting, cancelling and withdrawing versioned Issue interactions, including task suggestions, questions, per-item verdicts, plan/checkbox/tool confirmations, Agent addressees, continuation wakes and review-path recovery.",
+      "dependencyDirection": "Supertest/Express -> monolithic Issue routes -> mocked access, Issue, interaction, heartbeat, review-policy, trust/watchdog and gateway services; only route orchestration is real, persistence and most authorization are mocked.",
+      "keyDataModels": "Versioned interaction kind/payload/result/status; creator/addressee/source Run; requested/effective resolver policy; continuation policy and idempotency key; exact plan revision; server-owned tool action request; item verdict resolution; typed board/Agent resolver; review transition and policy; wake/activity context.",
+      "lifecycle": "Create pending interaction -> optionally wake addressee -> list may expire superseded/terminal interactions and recover lost review path -> authorized board/Agent resolves, rejects, cancels or withdraws -> service persists result/creates tasks -> route invokes tool gateway or emits bounded continuation wakes/activity -> planning acceptance refreshes workspace and review acceptance can return assignment to Agent.",
+      "testAssessment": "Approved unsandboxed run passed all 43 tests; sandboxed run failed all solely on TCP EPERM. Behavioral breadth is strong for route orchestration and negative Agent scopes. However real authorization, tenant/persistence transactions and payload validation are mocked/delegated. Missing are concurrent duplicate resolution, tool execution exactly-once, decision/outbox atomicity, wake partial failure, gateway timeout after commit, secret/error sanitization, immutable evidence, policy-version/content digest and safe GET semantics.",
+      "designRationale": "Turn free-form Agent/human pauses into explicit durable UI actions with resumable context, prevent low-trust/self/same-run resolution, preserve exact plan/selection information and keep Agents moving after a decision without allowing client-forged tool approvals.",
+      "companyOsProblem": "Company OS needs a vendor-neutral HumanInteraction protocol for clarification and review, plus a separate high-risk ApprovalObligation whose human authority, exact action/data/evidence digest, execution receipt and responsibility chain are independently provable.",
+      "companyOsFit": "ADAPT versioned interaction algebra, addressee/resolver policy, source Run, exact plan revision, server-owned tool request, self/same-run/low-trust constraints and explicit continuation events. Split read-only queries from expiry/recovery commands; separate Interaction from ApprovalObligation; use an idempotent Decision command and transactional outbox, one-time ActionExecutionClaim/fencing token and Connector receipt; sanitize external errors; bind policy/action/arguments/data/evidence digests and accountable human to an immutable decision receipt.",
+      "responsibilityConflict": "A GET can mutate interactions and wake Agents, making observation itself an unacknowledged control action. Another Agent may resolve the exact review confirmation under default anyone even when its effective resolver policy says board_only. Tool approval is committed before gateway execution, but duplicate/exactly-once and failure atomicity are unproven; activity and wake context are not an immutable responsibility record.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-thread-interaction-routes.test.ts:1-2160 (SHA-256 38740f25b428eedee7af2aa8c167ef40e9b0086d22a43bf6799a7d4d14db211a)",
+        "git history: twenty-four commits from 814cb336766cabd7c5a08fb82849d93e35a7ddaf through a95739442027bdec8d291030a91e351dc434f635 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 43/43 failed on TCP EPERM only",
+        "2026-08-19 approved unsandboxed focused Vitest: 43/43 passed"
+      ],
+      "securityFindings": "CRITICAL exactly-once gap: accepted tool-action retry/concurrency and decision-to-execution atomicity are untested. CRITICAL responsibility gap: default review policy permits another Agent to override board_only for the exact review interaction without accountable-human binding. HIGH HTTP semantic risk: GET performs expiration, activity writes and Agent wake recovery. HIGH authorization-evidence gap: core access decisions and persistence are mocked. HIGH data-leak risk: raw Connector failure text is copied into wake context. HIGH policy-integrity gap: no immutable policy/action/arguments/evidence digest receipt. MEDIUM reliability gap: multi-wake fan-out and gateway/post-commit failure recovery are absent. POSITIVE: server-owned tool metadata, exact plan revision, typed resolver/run identity and low-trust/self/same-run restrictions are unusually valuable controls."
     },
     {
       "id": "application:server/__tests__/issue-thread-interactions-service",

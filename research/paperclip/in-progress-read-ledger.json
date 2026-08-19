@@ -8055,6 +8055,62 @@
       "completionRequirements": [
         "Read lines 1-236 exactly once and assess telemetry authorization, tenant isolation, payload/error/secret minimization, actor attribution, cardinality/retention and Company OS observability-versus-evidence separation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-thread-interaction-routes",
+      "path": "server/src/__tests__/issue-thread-interaction-routes.test.ts",
+      "lineCount": 2160,
+      "sha256": "38740f25b428eedee7af2aa8c167ef40e9b0086d22a43bf6799a7d4d14db211a",
+      "linkedEvidence": { "history": [
+        "814cb336766cabd7c5a08fb82849d93e35a7ddaf allow agents to resolve review confirmations (#10939)",
+        "f950952de791fad649927388fd2a1e3ef93f7e7c restore sticky plan confirmation CTAs (#10930)",
+        "678728f650bf2a03f325922db32efb038dbb6ac9 maintained in_review review-path contract (#10675)",
+        "ded813ad6fae2c0b2c9009e04f59b117ecae0151 governed agent addressees (#10252)",
+        "f6ab82d490cb314f021a0187f07c56096a70f24e interaction withdrawal and terminal expiry (#10251)",
+        "931eec3fbf83dc425b5381ba5823125162cd13e7 MCP gateway runtime and Smoke Lab (#9559)",
+        "36ec79c196fcb149c331657a0eb5fa710ae074a9 attention queue and Decisions surface (#9380)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed test runs (#9241)",
+        "246e1b38bf6d716f058d899689b0f47252041267 checkbox selections in continuation wakes (#8893)",
+        "ac9a883f8b4619fa4e6e70c55303168d53e0e294 expire ask-user questions superseded by comments (#8799)",
+        "5e3d6e362746eaa2907f960a9cd98e39308c62fc preserve plan review context in wakes (#8649)",
+        "a71c4b678292a73ea9ddebbb96a861ce5c1687f7 task watchdog control plane (#8339)",
+        "4d5322c82115348d1852e1c70979dc386a07edec checkbox confirmation interactions (#7649)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+        "d9f91576a020812da44833d869426cbe17ae8555 accepted-plan decomposition exact-once guards (#6831)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations and comments (#6733)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 agent permissions and controls plan (#6386)",
+        "c91a06232625d1939858fcdfbdc0c9b3a64a8296 runtime control-plane fixes (#6380)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 branch changes (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery actions (#5599)",
+        "c4269bab59fff7a73ff31797578cc97ece7f160f workflow interaction cancellation (#4862)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 backend control-plane QoL slice (#4700)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests and maintenance assets (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured issue-thread interactions (#4244)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-400",
+        "401-800",
+        "801-1200",
+        "1201-1600",
+        "1601-2000",
+        "2001-2160"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-400 construct a heavily mocked route harness and versioned fixtures for task suggestions, questions, item verdicts, checkbox/confirmation results, cancellation and withdrawal; real access decisions are mocked allowed, so tenant/grant correctness is outside this suite.",
+        "Lines 401-800 make GET interactions perform catch-up expiration plus activity and possibly a bounded review-path recovery wake; creation writes activity and can wake an addressed Agent, while agent-addressed tool actions are rejected and acceptance/answers/verdicts fan out idempotency-shaped continuation wakes.",
+        "Lines 801-1200 restrict withdrawal to board/creator/assignee while excluding unrelated, watchdog and low-trust Agents; tool-action metadata is server-owned, accepted actions execute through a gateway callback and return execution/failure instructions, plan targets are delegated for atomic revision validation, and checkbox selections—including empty—are preserved in wake context.",
+        "Lines 1201-1600 force a fresh workspace-aware session after exact plan-revision acceptance, hand human review assignment back to the returned Agent, suppress accept-only wakes on ordinary rejection, override suppression when the last review path is consumed, and return explicit decline instructions for rejected tool actions.",
+        "Lines 1601-2000 stamp Agent creation with source Run, allow in-scope Agent resolution under resolver policy, special-case the exact transition-linked review confirmation so another Agent may accept/reject despite board_only, keep siblings unrelated, and reject wrong addressee/self/same-run or human_only review verdicts with structured policy denial.",
+        "Lines 2001-2160 admit only addressed Agent or board, require Agent run identity, and reject creator/same-run, board-only, tool-action, watchdog-scoped and low-trust Agent resolution.",
+        "Strong patterns are typed/versioned interactions, server-owned high-risk metadata, exact plan revision, source Run and resolver identity, self/same-run prevention, low-trust/watchdog containment, addressed-agent scope, structured verdict denial, explicit continuation payloads and recovery when the final review path disappears. Critical gaps are mutation and wake side effects on GET, no duplicate/concurrent accepted-tool-action execution test, no atomic decision/execution/outbox proof, raw Connector error propagation, authorization largely mocked, default Agent review verdicts without human responsibility, wake fan-out partial failure, policy/content digest and immutable decision receipt absence, and a very broad route orchestration surface.",
+        "Sandboxed focused Vitest failed all 43 tests only because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed all 43 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-2160 exactly once and assess interaction creation/resolution/withdrawal/expiry, actor and addressee authority, low-trust containment, exact-once continuation, review-verdict semantics, payload validation, tenant isolation, audit evidence and Company OS responsibility/approval separation."
+      ]
     }
   ]
 }
