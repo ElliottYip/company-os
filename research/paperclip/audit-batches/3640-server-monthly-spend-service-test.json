@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/monthly-spend-service",
+      "auditStatus": "COMPLETE",
+      "function": "Mocked service tests asserting Company and Agent read models replace stale persisted monthly-spend fields with a second aggregate-query result.",
+      "dependencyDirection": "Company and Agent services issue opaque mocked select chains; no real database schema, usage ledger, provider adapter or budget policy is exercised.",
+      "keyDataModels": "Company/Agent budgetMonthlyCents and spentMonthlyCents; synthetic aggregate rows keyed by companyId or agentId.",
+      "lifecycle": "Load entity row; run an aggregate query; overwrite the returned read-model spentMonthlyCents with the aggregate result.",
+      "testAssessment": "Two tests pass and protect stale-field replacement. The generic query mock cannot verify UTC-month boundaries, tenant predicates, joins, sums or empty results. Missing are real ledger integration, immutable idempotent usage events, currency/precision, late/reversal data, provider reconciliation, reservations, enforcement races, terminated Agents and audit evidence.",
+      "designRationale": "Avoid displaying an obsolete denormalized spend counter when current-period usage can be recomputed from source records.",
+      "companyOsProblem": "Company OS needs trustworthy cost attribution and budget control across models, Agents, work, departments and deployment profiles, with clear distinction between estimated usage and reconciled vendor charges.",
+      "companyOsFit": "REIMPLEMENT around an append-only UsageLedgerPort. Each event needs tenant, provider/model, credentialRef, Connector/run/work/responsibility IDs, provider request/idempotency ID, usage interval, observedAt, token/unit quantities, amount in integer micros, currency, estimate/final/reversal status and evidence digest. Derive calendar/fiscal-period projections with explicit timezone; support reservations plus atomic budget decisions, late-event correction and invoice reconciliation. Never mutate history; emit adjustment events and bind budget overrides to an accountable human ApprovalDecision.",
+      "responsibilityConflict": "A mutable monthly total cannot explain which Agent/work/data contract incurred cost, whether a human authorized an overrun or whether the value is estimated or invoiced. Using it as an execution gate would make financial responsibility unauditable.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/monthly-spend-service.test.ts:1-111 (SHA-256 98b90adfa60c98f8474716bc59c31ed478bdd8f7adc8d66b2f8365e7b41956e7)",
+        "git history: 71a8464fee7c5b2d5e9c37cb8e6934e74782b676 and 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "HIGH budget-integrity gap: no reservation, atomic enforcement or concurrent overspend behavior is tested. HIGH evidence gap: no immutable provider usage/request receipt or work/responsibility attribution exists in this contract. HIGH test-evidence gap: the query mock does not inspect the alleged UTC-month or tenant predicates. HIGH accounting gap: currency, precision, estimate/final status, late events, duplicates and reversals are absent. MEDIUM lifecycle gap: terminated/deleted Agents and retained financial history are untested."
+    }
+  ]
+}

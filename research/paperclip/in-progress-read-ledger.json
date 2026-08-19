@@ -8735,6 +8735,32 @@
       "completionRequirements": [
         "Read lines 1-319 exactly once and assess external PR merge evidence, repository/tenant binding, idempotent sweep, race/retry and rollback, workspace cleanup safety, responsible-human confirmation, immutable artifact digest and Company OS delivery-evidence semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/monthly-spend-service",
+      "path": "server/src/__tests__/monthly-spend-service.test.ts",
+      "lineCount": 111,
+      "sha256": "98b90adfa60c98f8474716bc59c31ed478bdd8f7adc8d66b2f8365e7b41956e7",
+      "linkedEvidence": { "history": [
+        "71a8464fee7c5b2d5e9c37cb8e6934e74782b676 invalid Agent assignment/run guard (#7663)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-111"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-20 create a generic sequential select-chain mock that returns queued result sets but does not inspect tables, predicates, joins, grouping or time bounds.",
+        "Lines 21-54 assert companyService.list replaces a stored spentMonthlyCents=999999 with an aggregate result of 420.",
+        "Lines 55-111 assert agentService.getById replaces the same stale field with an aggregate result of 175 after two Agent-row-shaped query results.",
+        "The read-time hydration invariant is useful, but the mock cannot prove the claimed current-UTC-month predicate, company/Agent tenant scope or aggregation correctness. No usage-event source, cents rounding, currency, late/duplicate/reversed usage, estimate versus invoice, budget reservation/enforcement, concurrency or audit receipt is covered.",
+        "Focused Vitest passed both tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-111 exactly once and assess tenant and Agent aggregation, currency precision, calendar/timezone window, late/duplicate events, terminated principals, immutable usage evidence, budget-enforcement semantics and Company OS cost-governance fit."
+      ]
     }
   ]
 }
