@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [{
+    "id": "application:server/__tests__/issue-rewake-throttle",
+    "auditStatus": "COMPLETE",
+    "function": "Pure unit tests for classifying throttle-eligible Issue re-wakes and calculating a capped exponential cooldown from consecutive successful terminal Runs without Issue-visible progress.",
+    "dependencyDirection": "Vitest -> pure issue-rewake-throttle policy; persistence, tenancy, queueing and clocks are supplied by callers.",
+    "keyDataModels": "Wake reason, comment ID, requester actor type, explicit-resume/fresh-session flags; terminal Run ID/status/finishedAt; progress Run-ID set; new-input flag; throttle decision with streak/cooldown/nextAllowedAt.",
+    "lifecycle": "Classify wake intent -> collect recent terminal Runs and progress/input facts -> reset on failure/progress/new input or increment no-progress streak -> block within capped cooldown -> allow retry after expiry.",
+    "testAssessment": "All 14 pure tests passed in sandbox. Coverage is focused and deterministic across reason taxonomy, actor distinctions, explicit escalation, threshold/cap, expiry and reset conditions. It does not prove caller tenant isolation, ordering, clock behavior, durable decisions, concurrent queue idempotency, Connector delivery or safety-critical approval/emergency signal exemptions.",
+    "designRationale": "Contain hot loops from Agents repeatedly waking on unchanged work without delaying genuine events, human input, explicit recovery or retry after actual failure.",
+    "companyOsProblem": "Company OS needs vendor-neutral backpressure for Agent loops and Connector retries while preserving immediate delivery of human decisions, approval deadlines, emergency stops and new evidence.",
+    "companyOsFit": "ADAPT the pure policy, typed wake classes, capped exponential cooldown and progress/input/failure resets. Move reason strings to a versioned intent enum; bind evaluation to tenant/Work/Agent/Connector attempt; persist a throttle receipt and next-eligible time; enqueue atomically/idempotently; make HumanDecision, ApprovalGranted/Denied, EmergencyStop and permission-revocation non-throttleable invariants.",
+    "responsibilityConflict": "The pure function cannot prove its supplied Runs/progress/input belong to the same Work or tenant, and Agent-authored explicit resume comments remain throttleable. A misclassified approval or recovery event could delay accountable-human control unless the surrounding contract defines safety-critical exemptions.",
+    "decision": "ADAPT",
+    "evidence": [
+      "server/src/__tests__/issue-rewake-throttle.test.ts:1-209 (SHA-256 d10514c18ea769089eef3ed93d2da573d8d0db2be6268095572724b228917aba)",
+      "git history: f91a6e27c0feb7f92dcde981c9a741b869484e83 and 5dff52631d15d3705cb9ad05912e8f78e137b7f2",
+      "2026-08-19 sandboxed focused Vitest: 14/14 passed"
+    ],
+    "securityFindings": "HIGH caller-boundary risk: no tenant/Work/Agent binding is expressible in the pure input. HIGH safety classification risk: correctness depends on an evolving string reason taxonomy. MEDIUM concurrency/durability gap: no persisted decision or enqueue idempotency evidence. MEDIUM clock/ordering gap: callers must provide correctly ordered Runs and trustworthy time. POSITIVE: human comments, explicit trusted resumes and event-shaped wakes bypass throttling; deterministic pure tests are strong."
+  }]
+}

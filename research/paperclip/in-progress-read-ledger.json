@@ -7852,6 +7852,32 @@
       "completionRequirements": [
         "Read lines 1-220 exactly once and assess review verdict policies, Agent-versus-human authority, decision binding, policy versioning, state transitions and Company OS separation-of-duties requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-rewake-throttle",
+      "path": "server/src/__tests__/issue-rewake-throttle.test.ts",
+      "lineCount": 209,
+      "sha256": "d10514c18ea769089eef3ed93d2da573d8d0db2be6268095572724b228917aba",
+      "linkedEvidence": { "history": [
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)",
+        "5dff52631d15d3705cb9ad05912e8f78e137b7f2 fix(heartbeat): throttle redundant issue re-wakes (#9470)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-209"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-94 throttle passive state-poll and Agent-authored comment/reopen wakes, exempt authenticated human comments plus trusted fresh-session/explicit-resume wakes, and pass event-shaped blocker/monitor/process/liveness signals through.",
+        "Lines 95-167 define capped exponential cooldown after a threshold of terminal successful Runs without Issue-visible progress and permit retry once the newest Run's cooldown elapses.",
+        "Lines 168-209 reset the no-progress streak at the newest progress-producing Run, any failed Run or new Issue input, avoiding delay after failure or changed work.",
+        "Strong patterns are a pure deterministic policy, reason/actor distinctions, exponential cap and progress/input/failure resets. Gaps sit at its caller boundary: tenant/Issue/Agent selection, Run ordering and clock skew, persisted throttle decisions, atomic enqueue, duplicate concurrent callers, stable reason taxonomy/versioning, Connector acknowledgements and explicit proof that human approvals/emergency stops can never be suppressed.",
+        "Sandboxed focused Vitest passed all 14 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-209 exactly once and assess re-wake throttle identity, tenant/Issue isolation, time semantics, retry safety, authorization, auditability and Company OS approval/recovery delivery requirements."
+      ]
     }
   ]
 }
