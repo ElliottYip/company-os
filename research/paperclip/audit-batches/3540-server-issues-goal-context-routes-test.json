@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/issues-goal-context-routes",
+      "auditStatus": "COMPLETE",
+      "function": "Focused HTTP route suite for resolving a legacy Issue's Goal through its Project and projecting compact Issue detail and heartbeat execution context.",
+      "dependencyDirection": "Public Issue detail and heartbeat-context routes orchestrate inward through Issue, Project, Goal, document, execution-workspace and access services; tests replace all service and database behavior with mocks.",
+      "keyDataModels": "Issue, direct/project Goal identifiers, Project and Project workspaces, execution workspace and runtime services, continuation-summary document, blocker relations, work mode and board actor.",
+      "lifecycle": "Read an Issue without a direct Goal; resolve its Project and inherited Goal; assemble compact detail or execution heartbeat context; attach continuation, blocker and active workspace information.",
+      "testAssessment": "Six focused tests pass outside the sandbox. They cover Project-Goal fallback, no unnecessary default-Goal lookup, exclusion of comment bodies during mentioned-project discovery, Project env/metadata minimization, running-service filtering, continuation summary, blockers and workspace context. Access is mocked allow and only a board actor is used. Missing are Agent boundary tests, direct/default/multiple Goal precedence, cross-tenant resources, stale/versioned context, document and relation data contracts, sensitive cwd/URL/config filtering, caps and stable codes.",
+      "designRationale": "Preserve Goal intent for legacy project-linked work and keep frequently loaded detail/context payloads small enough for operator and runtime use.",
+      "companyOsProblem": "Company OS must give each execution a precise Goal and enough authorized context to work, while retaining the human origin, responsibility contract, data authorization and historical version that made the execution legitimate.",
+      "companyOsFit": "ADAPT compact, allowlisted projections and explicit Goal fallback. Resolve GoalContext once into an immutable execution snapshot containing goalId, goalVersion/digest, originating human, accountable human, responsibilityContractId and policy/data-contract versions. Define deterministic direct/project/default precedence and multi-Goal semantics. Produce separate board and Connector projections, minimize continuation/blocker/workspace fields by capability, redact local paths and service endpoints by default, and attach contextVersion/expiry plus stable error codes.",
+      "responsibilityConflict": "Dynamically inheriting the Project's current Goal can rewrite the apparent purpose of historical work after reassignment. The tested Goal has no accountable-human binding, and the only authorization decision is a permissive mock. Raw continuation body, blockers and runtime location information may be exposed without a demonstrated data-use contract.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issues-goal-context-routes.test.ts:1-542 (SHA-256 a4d957890cb4f3e74958c3fbe1414e167f7f41ac846e5a42a1b3e6f8397b542c)",
+        "git history: twenty-one commits from 678728f650bf2a03f325922db32efb038dbb6ac9 through 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 6/6 failed on TCP EPERM only",
+        "2026-08-19 approved unsandboxed focused Vitest: 6/6 passed"
+      ],
+      "securityFindings": "POSITIVE: Project env is nulled; bulky workspace metadata and stopped services are excluded; mentioned-project discovery omits comment bodies. CRITICAL responsibility gap for Company OS: inherited Goal is not shown snapshot/version/digest-bound, so historical purpose can drift. HIGH authorization gap: access is mocked always allow and no Agent actor is tested for heartbeat context. HIGH data-egress gap: continuation body, blocker summaries, cwd, local service URL and possibly execution config are not tested against per-Agent data contracts. HIGH tenant-composition gap: linked Goal/Project/document/workspace cross-company mismatches are untested. MEDIUM availability gap: continuation, relations and runtime services lack demonstrated caps/versioning."
+    }
+  ]
+}

@@ -8367,6 +8367,54 @@
       "completionRequirements": [
         "Read lines 1-318 exactly once and assess workspace-command authorization, actor and tenant scope, path and command injection, capability binding, deferred setup, auditability, stable errors and Company OS data-egress and responsible-human requirements."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issues-goal-context-routes",
+      "path": "server/src/__tests__/issues-goal-context-routes.test.ts",
+      "lineCount": 542,
+      "sha256": "a4d957890cb4f3e74958c3fbe1414e167f7f41ac846e5a42a1b3e6f8397b542c",
+      "linkedEvidence": { "history": [
+        "678728f650bf2a03f325922db32efb038dbb6ac9 maintained in_review review paths (#10675)",
+        "59fb27ff794ce60b81b859922112f3d658376918 Agent inbox tidying (#9724)",
+        "b13eb5b2b5cc7ad721f96b914c55dad9e66c5f81 Skill Studio sandboxed runs (#9241)",
+        "88ce6d35756c9b1c136944eae79e797d12bd958a Issue detail performance (#9125)",
+        "5e3d6e362746eaa2907f960a9cd98e39308c62fc plan review context in Agent wakes (#8649)",
+        "43b005b704f80aea3ce37cab8136920749c73ee6 pipeline workflow primitives (#7903)",
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 low-trust review containment (#7530)",
+        "b7545823bec49b4a73c3813d8fb634f68fc84b48 document annotations/comments (#6733)",
+        "d734bd43d1c79cc6e33f5a12bffacdb158021a50 May 17 rollup (#6210)",
+        "0808b388eec817fda3a798b5ec46e391a463d522 source-scoped recovery (#5599)",
+        "772fc92619edc0fba9f7ff503fb9a436cfe40df4 Issue controls/retry (#5426)",
+        "a1b30c9f351a1d6a8c18ccd7aec4f35ac01ee4b9 Issue planning mode (#5353)",
+        "454edfe81ee8f255577132c79b6b77e2ff58a16a recovery notices (#5289)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 backend control-plane split (#4700)",
+        "deba60ebb23483c7316db95dccc1ea4218986578 serialized route tests (#4448)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e runtime lifecycle recovery (#4419)",
+        "70679a33216bae9247b1b6bddc5fcaad1c04e829 sandbox environment (#4415)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured Issue interactions (#4244)",
+        "09d0678840336094e70734ba429bc16bb1fd0940 heartbeat/runtime hardening (#4223)",
+        "ab9051b595be21dcfab93a4c02ff65548a6341ff first-class Issue references (#4214)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-271",
+        "272-542"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-157 mount the real Issue routes over mocked Issue, Project, Goal, document, workspace and access services; the only actor is a local board user and access decisions always allow.",
+        "Lines 158-270 define a legacy Issue with no direct Goal and a Project linked to one company-level Goal, then configure empty relation/document/attention state and compact project/workspace fixtures.",
+        "Lines 271-290 verify detail lookup inherits the Project Goal, avoids the company-default fallback and scans mentioned projects without comment bodies.",
+        "Lines 291-427 verify detail projection nulls Project env, omits Project workspace metadata/runtimeServices, nulls execution-workspace metadata and includes only the running runtime service without its metadata.",
+        "Lines 428-542 verify heartbeat context carries inherited Goal/work mode, direct continuation-summary body, blocker summaries and current execution-workspace cwd/service URL.",
+        "Strong patterns are legacy Goal fallback, compact projections, environment/metadata minimization and direct continuation lookup. Gaps include direct-versus-project-versus-default precedence and multi-Goal ambiguity, immutable Goal/version binding, accountable-human provenance, Agent and human authorization matrices, data-contract filtering of documents/blockers/workspaces, local path/service URL/config leakage, stale context/versioning, response caps and stable machine codes.",
+        "Sandboxed focused Vitest failed 6/6 only because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed 6/6."
+      ],
+      "completionRequirements": [
+        "Read lines 1-542 exactly once and assess Goal context propagation, tenant and visibility boundaries, responsible-human and contract provenance, wake payload minimization, stale context, performance, stable codes and Company OS goal-to-work responsibility semantics."
+      ]
     }
   ]
 }
