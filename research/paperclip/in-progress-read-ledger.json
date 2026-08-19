@@ -8835,6 +8835,35 @@
       "completionRequirements": [
         "Read lines 1-262 exactly once and assess OpenAPI completeness, auth/security schemes, tenant scope, stable schemas/error codes, versioning/deprecation, event and Connector contracts, destructive and approval endpoints, client generation and Company OS independent API boundary fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/openclaw-gateway-adapter",
+      "path": "server/src/__tests__/openclaw-gateway-adapter.test.ts",
+      "lineCount": 673,
+      "sha256": "d280730d1f95d74141153faa057bdfea6ddfbdccd460559d2ba2006b08fdf3ee",
+      "linkedEvidence": { "history": [
+        "4b1332b61c7d5148a2f49f709cfa60f680552aad drop root Paperclip params (#4416)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-200",
+        "201-400",
+        "401-550",
+        "551-673"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "An earlier combined transport attempt was truncated before review and therefore was not counted as a completed read; the file was then reviewed in four exact non-overlapping ranges.",
+        "Lines 1-294 define two local WebSocket gateway fixtures: challenge/connect negotiation, protocol 3 hello metadata, feature method/event lists, payload limits, agent acceptance, ordered assistant events, wait results, structured NOT_PAIRED and INVALID_REQUEST errors, device pairing list/approval and connection retry state.",
+        "Lines 295-519 verify assistant event parsing and the execute lifecycle. A run-scoped idempotencyKey and issue-scoped sessionKey are sent with a message containing Paperclip run/task/workspace/runtime-service and structured wake/comment context; the legacy root paperclip payload is explicitly absent. Missing URL returns the stable openclaw_gateway_url_missing code.",
+        "Lines 520-673 verify runtime-service metadata projection, automatic approval of one pairing request followed by retry, UI JSON-to-config construction and environment validation. The suite does not cover protocol-version rejection, declared-method enforcement, authentication failure/redaction, reconnect/replay ordering, duplicate events, cancel, run timeout behavior, approval pause/resume, evidence/result typing, attestation, SSRF/URL policy or payload minimization.",
+        "Sandboxed focused Vitest passed four non-listening tests and timed out three gateway tests solely because TCP listen returned EPERM; approved unsandboxed focused Vitest passed all 7 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-673 exactly once and assess gateway handshake/auth, credential and private-session isolation, capability/version negotiation, task/wait/cancel/idempotency, timeout/retry, pause/approval, evidence/result, attestation, payload minimization, network policy and Company OS neutral Connector contract fit."
+      ]
     }
   ]
 }
