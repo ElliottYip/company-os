@@ -8604,6 +8604,34 @@
       "completionRequirements": [
         "Read lines 1-123 exactly once and assess WebSocket upgrade authentication, path/origin/host validation, tenant subscription isolation, unauthenticated leakage, malformed inputs, rate/backpressure, reconnect/replay and Company OS event-port guarantees."
       ]
+    },
+    {
+      "id": "application:server/__tests__/llms-routes",
+      "path": "server/src/__tests__/llms-routes.test.ts",
+      "lineCount": 110,
+      "sha256": "dea242a9f601358b75458a168a4e0ada162a5c9b83e916491542d999f8be61f3",
+      "linkedEvidence": { "history": [
+        "fd2f82ac5bba6ce2db0c5d17c573733af5f2bbb8 built-in Hermes adapters (#8543)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests/assets (#4423)",
+        "641eb449492ce39028ae06dcc5dd013d97cc3d85 create-Agent skill governance (#4422)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-110"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-53 mock Agent service and adapter registry, mount the real llmRoutes with a supplied board actor and return one codex_local adapter documentation fragment.",
+        "Lines 54-75 assert a plain-text Agent configuration document contains Paperclip hiring-skill instructions, source Issue fields and opt-in timer-heartbeat prose.",
+        "Lines 76-110 assert static Hermes Gateway documentation is served even before plugin installation, including adapter names, environment-variable names, CLI command, ports and local/LAN/tailnet/Docker/public URL examples.",
+        "Despite the route name, no model provider discovery, inference, capability, credential, tenant, cost, rate, data policy or failover behavior is tested. Authorization is not asserted, exact English prose is the contract, and the content is Paperclip/Hermes branded and operationally specific.",
+        "Sandboxed focused Vitest failed 2/2 only because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed 2/2."
+      ],
+      "completionRequirements": [
+        "Read lines 1-110 exactly once and assess provider neutrality, tenant/auth scope, capability discovery, credential and error redaction, rate/cost/data policy, stable codes, caching/failure behavior and Company OS ModelProviderPort fit."
+      ]
     }
   ]
 }

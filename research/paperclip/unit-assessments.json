@@ -8658,18 +8658,24 @@
     },
     {
       "id": "application:server/__tests__/llms-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP route regression suite serving plain-text Paperclip Agent configuration and static Hermes Gateway setup documentation.",
+      "dependencyDirection": "The route reads built-in/static documentation plus server adapter descriptors; it does not call an LLM, provider SDK, secret store or tenant data service.",
+      "keyDataModels": "Board actor, adapter type and agentConfigurationDoc; plain-text hiring/heartbeat instructions; Hermes adapter, environment-variable and network endpoint examples.",
+      "lifecycle": "Request documentation index or named Hermes configuration text and assert literal installation/configuration guidance is present.",
+      "testAssessment": "Two HTTP cases pass outside the sandbox and protect availability of Paperclip/Hermes setup prose. They do not assert authorization, content type/cache/version, redaction or any model-provider behavior. Heavy literal-English assertions make tests sensitive to documentation wording rather than stable capability contracts.",
+      "designRationale": "Make adapter onboarding instructions discoverable through the running server, including before an optional plugin is installed.",
+      "companyOsProblem": "Company OS needs vendor-neutral model and Agent capability management, tenant-owned credential references, data-use policy, cost/rate controls and clear onboarding documentation without coupling product behavior to a vendor's prose.",
+      "companyOsFit": "REJECT direct reuse. Define ModelProviderPort with stable provider/model IDs, declared modalities/context/tool/region capabilities, health, pricing snapshot, data-retention/training policy, credentialRef, tenant scope and structured failure codes. Keep Connector onboarding docs as versioned documentation generated from capability manifests, not an /llms route whose tests depend on English text. Adapter-specific Hermes guidance, if ever needed, belongs solely in a Hermes connector package and must not become the canonical model abstraction.",
+      "responsibilityConflict": "The documentation endpoint gives operational setup instructions but carries no accountable human, approved credential/data scope or policy receipt. Treating it as a model-management surface would let configuration prose substitute for enforceable governance.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/llms-routes.test.ts:1-110 (SHA-256 dea242a9f601358b75458a168a4e0ada162a5c9b83e916491542d999f8be61f3)",
+        "git history: four commits from fd2f82ac5bba6ce2db0c5d17c573733af5f2bbb8 through 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 2/2 failed on TCP EPERM only",
+        "2026-08-19 approved unsandboxed focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "CRITICAL capability-evidence gap: no credential isolation, provider tenancy, data-governance, cost, rate, inference or failover behavior is present despite the llms route name. HIGH authorization gap: an admin-like actor is supplied but no denial/role test proves the docs are access controlled. MEDIUM operational-disclosure risk: internal/LAN/tailnet/Docker endpoint patterns and key variable names are published, though no actual secret value appears in the fixture. MEDIUM contract risk: exact English documentation strings are treated as API behavior."
     },
     {
       "id": "application:server/__tests__/log-redaction",
