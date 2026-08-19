@@ -8888,6 +8888,30 @@
       "completionRequirements": [
         "Read lines 1-225 exactly once and assess local process/tool permissions, command and environment construction, credential/private-session isolation, structured progress/evidence/result parsing, cancellation/timeout/idempotency, workspace isolation, error codes and Company OS neutral Connector contract fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/opencode-local-adapter-environment",
+      "path": "server/src/__tests__/opencode-local-adapter-environment.test.ts",
+      "lineCount": 96,
+      "sha256": "1de25dc000d2cb8528a2282b02fb1ccf78302b8a2aebc98590c889e7edbdc7a7",
+      "linkedEvidence": { "history": [
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-96"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-29 verify that an absent absolute cwd yields a stable opencode_cwd_invalid error and failed health status.",
+        "Lines 30-62 verify explicit empty OPENAI_API_KEY adapter configuration takes precedence over a populated host environment and yields opencode_openai_api_key_missing with an explanatory hint.",
+        "Lines 63-96 create and execute an arbitrary configured shell script during environment probing; a vendor/model-specific English stderr signature becomes the stable opencode_hello_probe_model_unavailable warning and overall warn status.",
+        "The unit does not cover executable allowlisting/provenance, symlink/race handling, relative cwd, permissions, timeout/cancel, output bounds, environment allowlisting/redaction, network policy, credential references, version compatibility or separation of health from authorization. Focused Vitest passed all 3 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-96 exactly once and assess binary discovery/version checks, cwd and environment handling, configuration and secret exposure, structured health/error reporting, false-positive safety implications and Company OS Connector health-contract fit."
+      ]
     }
   ]
 }

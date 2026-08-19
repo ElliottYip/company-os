@@ -8916,18 +8916,23 @@
     },
     {
       "id": "application:server/__tests__/opencode-local-adapter-environment",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Focused environment-diagnostic tests for the local OpenCode adapter, checking an absolute working directory, explicit credential override semantics and classification of an unavailable provider/model probe.",
+      "dependencyDirection": "The server test invokes the adapter package's testEnvironment function with Company and adapter configuration. It reads/mutates the test process environment and filesystem, and the diagnostic implementation executes a configured external command whose stderr is mapped into Paperclip health checks.",
+      "keyDataModels": "Adapter environment request; command/cwd/env configuration; structured health check code/level/hint; aggregate fail/warn status; OPENAI_API_KEY override; vendor ProviderModelNotFoundError probe output.",
+      "lifecycle": "Validate cwd; resolve explicit adapter environment over inherited host environment; invoke a configured probe command; classify known stderr into a model-unavailable warning; return structured checks and aggregate status.",
+      "testAssessment": "All three tests pass. They establish useful stable check codes and the important rule that an explicit empty credential cannot silently fall back to a host secret. However, the suite demonstrates that diagnostics execute an arbitrary configured binary and does not test executable trust, symlink/TOCTOU, process timeout/cancel/output limits, environment allowlisting/redaction, network egress, credential reference resolution, version/capability negotiation or cleanup after hung probes. Model classification depends on vendor/model-specific English stderr.",
+      "designRationale": "Give operators actionable preflight feedback and distinguish bad workspace/credential configuration from a runtime that is installed but lacks the selected model.",
+      "companyOsProblem": "Company OS needs Connector health that is safe for managed-cloud and customer-local execution, reports structured readiness without leaking credentials and does not confuse technical availability with permission to execute work.",
+      "companyOsFit": "ADAPT the stable health-code and explicit-override semantics. Run active probes only on an authorized execution node under the same sandbox, egress and audit controls as tasks; identify executables by configured Connector package/signature rather than arbitrary control-plane paths; pass opaque secret references resolved locally; allowlist environment keys; cap time/output; redact before transport; report protocol/version/capability/model/data-access readiness separately; distinguish healthy, degraded, unavailable and unauthorized; never let health grant task or data permission. Use structured provider codes with quarantined text-pattern fallbacks.",
+      "responsibilityConflict": "A successful or warning-only probe says nothing about accountable-human assignment, responsibility contract, permission/data scope or approval. Treating a probe-capable adapter as ready could enable code/network execution before the organizational authority chain exists.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/opencode-local-adapter-environment.test.ts:1-96 (SHA-256 1de25dc000d2cb8528a2282b02fb1ccf78302b8a2aebc98590c889e7edbdc7a7)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 3/3 passed"
+      ],
+      "securityFindings": "POSITIVE: missing cwd fails with a stable code; explicit empty credentials do not inherit a host secret; known model unavailability is separated from total failure. CRITICAL active-probe boundary: testEnvironment executes the configured command, so diagnostics are code execution and require authorization, sandbox, timeout, egress and audit controls. HIGH supply-chain gap: no executable identity/signature/version verification is covered. HIGH secret gap: raw environment values remain the configuration shape and no vault reference, allowlist, rotation or redaction behavior is proved. HIGH false-readiness gap: warning status can coexist with inability to run the chosen model and is not capability- or permission-aware. MEDIUM parser fragility: classification depends on English vendor stderr containing provider/model details. MEDIUM filesystem gap: only a missing absolute cwd is tested, not traversal, symlinks, permissions or race changes."
     },
     {
       "id": "application:server/__tests__/opencode-local-skill-sync",
