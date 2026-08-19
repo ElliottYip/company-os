@@ -9488,6 +9488,41 @@
       "completionRequirements": [
         "Read lines 1-164 exactly once and assess plugin UI asset path confinement, traversal/symlink, MIME/CSP/cache/version/integrity, auth and disabled/uninstalled state, script privilege isolation and Company OS independent Web extension fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/productivity-review-service",
+      "path": "server/src/__tests__/productivity-review-service.test.ts",
+      "lineCount": 740,
+      "sha256": "8b44e984036d4f38c041598d0ae3d8fb103fabc127a2c0f85eb410165d5073c6",
+      "linkedEvidence": { "history": [
+        "53f09cb818b934beadc2a58897604c9ddca1d42e fix: prevent duplicate task creation and recovery loops (#9648)",
+        "85404b46c54172c9801489d5737f422f9c6924f4 fix(server): throttle serial recovery repeats (#9651)",
+        "3ae2c30f2f48a53fec87c3da05ab63f1964785f1 feat(skills): import skills from projects (#9620)",
+        "24bd860280b5a51315a421ad773a9e2352c94ce3 Stop cancelled productivity review loops (#5210)",
+        "454edfe81ee8f255577132c79b6b77e2ff58a16a Add recovery handoff system notices (#5289)",
+        "42a299fb9d66fa0c136eae73bf166cad2c2c3e3e [codex] Bound productivity review recovery loops (#4948)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 [codex] Split backend control-plane QoL slice (#4700)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-185",
+        "186-370",
+        "371-555",
+        "556-740"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-185 build an embedded-Postgres Company/manager/worker/issue/run fixture and begin the no-comment-streak reconciliation case; runs are successful assignment heartbeats with contextSnapshot issue IDs and optional run-authored comments.",
+        "Lines 186-370 assert one manager-assigned cheap-model review per source fingerprint, refresh interval and comment cap, a 24-hour completed-review creation cap, suppression after three completed reviews without source action, and begin an activity-based suppression reset case.",
+        "Lines 371-555 complete the source-action reset, make no-action windows depend on review creation order, exclude cancelled reviews from the creation cap, trigger long-active and high-churn reviews, and begin excluding non-assignee comments from churn evidence.",
+        "Lines 556-740 finish non-assignee filtering, prevent review descendants recursively spawning reviews, treat recently done/cancelled reviews as snooze windows, record a soft continuation hold in activityLog, and clamp poisoned requestDepth to MAX_ISSUE_REQUEST_DEPTH.",
+        "The tests cover serial reconciliation boundaries but not concurrent workers/transactions/unique constraints, crash recovery, tenant-crossing input, authorization, accountable-human routing/approval, evidence validity, permission/data-use/cost signals, false-positive appeal, policy configuration audit, notification delivery or retention.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and all 15 tests were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-740 exactly once and assess productivity review triggers, task/recovery idempotency, concurrency, cancellation, human accountability, bounded loops, evidence, cost/budget controls, lifecycle persistence and Company OS Agent Boss fit."
+      ]
     }
   ]
 }

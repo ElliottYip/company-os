@@ -9729,18 +9729,23 @@
     },
     {
       "id": "application:server/__tests__/productivity-review-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres behavioral tests for detecting stalled or high-churn assigned issues, creating manager-owned productivity-review issues, refreshing them, suppressing repeated recovery loops and holding continuation after a no-comment trigger.",
+      "dependencyDirection": "Heartbeat runs, issue comments, issue/activity history and hierarchy feed a server reconciliation service that writes ordinary issues/comments/activity rows and assigns review work to the worker Agent's manager.",
+      "keyDataModels": "Company; manager and worker Agents; source and review issues; originKind/originId/originFingerprint; heartbeat run contextSnapshot/liveness/nextAction; issue comments with createdByRunId; activity log; requestDepth; configurable streak, interval, cap and suppression thresholds.",
+      "lifecycle": "Scan assigned work; infer no-comment, long-duration or high-churn triggers; create one fingerprinted review; periodically append bounded refresh comments; snooze after done/cancelled review; suppress repeated no-action cycles; optionally soft-hold continuation and record an activity event.",
+      "testAssessment": "The 15 cases are unusually focused on operational loop safety: serial idempotency, rate/cap bounds, action windows, cancelled-state semantics, recursion prevention, snooze behavior, soft-stop logging and poisoned-depth clamping. They do not prove concurrent idempotency or failure recovery and do not test authorization, accountable-human escalation, policy provenance, evidence quality, permission/data/cost risk or appeals. The suite was skipped because embedded PostgreSQL is unavailable on this host, so behavior is source-evidenced rather than locally executed.",
+      "designRationale": "Turn weak productivity signals into bounded manager review work instead of endlessly retrying an Agent, while reusing the issue hierarchy, comment stream and activity log for visibility and recovery coordination.",
+      "companyOsProblem": "Agent Boss needs early warning for blocked, looping or low-evidence work and must stop autonomous continuation without flooding the organization, while preserving who is accountable for the intervention and why.",
+      "companyOsFit": "ADAPT the idempotent origin fingerprint, time-window/cap mechanics, recursion exclusion, cancelled/done snooze, explicit continuation hold and recovery-loop throttle. Replace run-count/comment heuristics with typed work, plan, tool, evidence, result, risk, permission, data-egress and cost projections. Route escalation to the accountable human or delegated approver under a versioned policy, expose explanation/appeal, and preserve trigger inputs plus decisions as immutable responsibility evidence.",
+      "responsibilityConflict": "Paperclip assigns the review to an Agent manager and treats comments/activity as action evidence; neither proves a responsible human saw, authorized or resolved the condition. A soft hold without human ownership, approval semantics and evidence binding is operational supervision, not organizational accountability.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/productivity-review-service.test.ts:1-740 (SHA-256 8b44e984036d4f38c041598d0ae3d8fb103fabc127a2c0f85eb410165d5073c6)",
+        "git history: seven commits from 1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 through 53f09cb818b934beadc2a58897604c9ddca1d42e recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file and 15 tests skipped because embedded PostgreSQL support was unavailable; no pass claimed"
+      ],
+      "securityFindings": "HIGH accountability gap: escalation defaults to an Agent manager with no accountable-human acknowledgement or approval record. HIGH concurrency gap: serial double reconciliation is tested, but no multi-worker race, database uniqueness or transaction rollback case appears. HIGH signal-integrity gap: successful run counts and comment presence are proxies that can be gamed and do not validate evidence/results. MEDIUM governance gap: threshold changes, trigger explanation, appeal and false-positive outcomes are not policy-versioned/audited here. POSITIVE: bounded refreshes, 24-hour caps, no-action suppression, descendant exclusion, snooze windows, soft-stop logging and depth clamping directly address runaway recovery behavior."
     },
     {
       "id": "application:server/__tests__/project-goal-telemetry-routes",
