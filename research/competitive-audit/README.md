@@ -5,6 +5,23 @@ This directory implements the audit gate in
 `work/upstream-audit/` are read-only evidence and are not Company OS runtime or
 build dependencies.
 
+## Current completion model (2026-08-19)
+
+The active first-priority decision audit is intentionally **module and
+end-to-end-chain based**, not a zero-pending-unit exercise. It covers Paperclip,
+AgentSpace, StaffDeck and Provision. The generated inventories remain the
+repository coverage manifests, while `first-priority-architecture-audit.md` is
+the completion authority for the current phase.
+
+Paperclip's fixed-SHA fine-grained evidence is frozen as a trusted appendix:
+704 of 1,560 units are complete and 856 remain pending. Those pending units are
+not a gap against the current decision gate and will not be pursued merely to
+clear a counter. AgentSpace, StaffDeck and Provision use representative critical
+code evidence across the required architecture surfaces.
+
+Tier-2 projects and the previously broadened discovery list are `PAUSED`; they
+are neither rejected nor silently treated as audited.
+
 ## Rules
 
 - `targets.json` is the identity registry. A similarly named repository is not
@@ -12,8 +29,8 @@ build dependencies.
 - Every admitted open-source target is pinned by full commit SHA and license.
 - `inventories/*.json` are generated from `git ls-files`; all tracked paths are
   classified and assigned to an auditable unit.
-- `assessments/*.json` is the eventual unit-completeness surface. A repository
-  cannot be called fully audited while a unit remains `PENDING`.
+- `assessments/*.json` preserves fine-grained evidence but is no longer the
+  completion gate for this product-shape phase.
 - Marketing pages can support the commercial matrix but never substitute for
   source evidence in an open-source audit.
 - `ADOPT-CODE` still requires a separate copied-code provenance record. An
@@ -34,5 +51,6 @@ npm run research:competitors:inventory:check
 npm run research:competitors:complete
 ```
 
-`complete` intentionally fails until every admitted repository unit has all
-required fields and all named repositories have resolved identities.
+`complete` retains the old exhaustive-gate behavior for historical verification;
+it is expected to fail under the narrowed audit and must not be presented as the
+current phase gate.

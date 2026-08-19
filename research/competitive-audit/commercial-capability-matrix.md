@@ -1,7 +1,9 @@
 # Commercial competitor capability matrix
 
-Status: In progress — initial primary-evidence pass  
-Evidence cutoff: 2026-08-18  
+Status: Public product-boundary research complete; undisclosed facts remain explicit
+
+Evidence cutoff: 2026-08-19
+
 Evaluation lens: `docs/product-charter.md` and
 `docs/competitive-audit-charter.md`
 
@@ -54,13 +56,15 @@ Marketing claims are recorded as claims, not proof of implementation.
 | 11x | Clearly packaged white-glove/FDE delivery, managed outbound infrastructure and outcome pricing | Strong “worker replaces team” framing, autonomous send/call exposure, proprietary hosted stack and limited responsibility evidence | `NARROW` hypothesis for FDE packaging and vertical template economics |
 | OpenAI Presence | Job-scoped least access, simulation/eval acceptance, evidence-led improvement and human-approved controlled rollout | Managed proprietary OpenAI-only deployment, no self-host/open Connector neutrality, pricing/schema unavailable | `PARTNER` or `REFERENCE ONLY` hypothesis; strongest current comparator for FDE production lifecycle |
 
-No product-level hypothesis above is a final `GO/NARROW/PARTNER/STOP` decision.
-Those decisions wait for remaining evidence and the single-best-reference matrix.
+The final product-level judgments and single-best-reference choices are recorded
+in `product-shape-decision-brief.md`. `Unknown` and undisclosed fields below are
+durable evidence limits, not blockers to the public-boundary comparison.
 
 ## Primary evidence register
 
 ### Workday
 
+- [Agent security: delegate/ambient identity and least privilege](https://doc.workday.com/admin-guide/en-us/workday-ai/agents/agent-system-of-record/agent-security-and-compliance/setup-considerations--agent-security.html)
 - [ASOR general availability](https://blog.workday.com/en-us/managing-ai-powered-future-of-work.html)
 - [Agent Gateway concept](https://doc.workday.com/admin-guide/en-us/workday-ai/agents/agent-system-of-record/agent-gateway/workday-agent-gateway-for-partner-agents.html.html)
 - [Register external agents](https://doc.workday.com/admin-guide/en-us/workday-ai/agents/agent-system-of-record/external-agents/register-and-define-your-agent-through-an-api.html)
@@ -77,6 +81,7 @@ Those decisions wait for remaining evidence and the single-best-reference matrix
 
 - [AI Control Tower product](https://www.servicenow.com/uk/products/ai-control-tower.html)
 - [Build Agent governance](https://www.servicenow.com/docs/r/application-development/build-agent-governance.html)
+- [AI steward deployment approvals](https://www.servicenow.com/docs/r/intelligent-experiences/ai-control-tower/explore-approvals.html)
 
 ### Salesforce
 
@@ -87,6 +92,7 @@ Those decisions wait for remaining evidence and the single-best-reference matrix
 
 - [Workforce product](https://relevanceai.com/workforce)
 - [Pricing and plan controls](https://relevanceai.com/docs/get-started/pricing)
+- [Approvals and escalations](https://relevanceai.com/docs/build/workforces/workforce-features/approvals-and-escalations)
 
 ### Sintra
 
@@ -95,7 +101,7 @@ Those decisions wait for remaining evidence and the single-best-reference matrix
 
 ### Lindy
 
-- [Pricing and enterprise controls](https://docs.lindy.ai/pricing)
+- [Pricing and enterprise controls](https://www.lindy.ai/pricing)
 - [Lindy Enterprise](https://www.lindy.ai/blog/lindy-enterprise-announcement)
 
 ### Artisan
@@ -114,7 +120,7 @@ Those decisions wait for remaining evidence and the single-best-reference matrix
 - [Product announcement](https://openai.com/index/introducing-openai-presence/)
 - [Managed deployment and governance help](https://help.openai.com/en/articles/20001405)
 
-## Evidence still required
+## Explicit public-evidence limitations
 
 - Workday: exact SKU/price, complete deactivate/retire/delete lifecycle, external
   audit export and public schema stability.

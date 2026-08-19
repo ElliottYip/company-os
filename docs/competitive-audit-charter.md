@@ -55,39 +55,20 @@ explicitly marked; marketing claims are not implementation evidence.
 
 ## Open-source scope and depth
 
-The original tier list remains admitted evidence. The new first batch broadens
-the zero-unexplained-gap audit to:
+The active first-priority scope is exactly Paperclip, AgentSpace, StaffDeck and
+Provision. Each receives one fixed SHA or tag, license record and generated
+tracked-path inventory, followed by a deep module and end-to-end chain review of
+domain, database, API/events, execution, Connector/plugin, identity/permission,
+approval, Secrets, deployment, Web, tests and upgrade behavior.
 
-- AgentSpace
-- StaffDeck
-- Paperclip
-- OpenSpawn
-- Org Studio
-- Agent Compiler
-- SynthOrg
-- OpenWorker
-- Provision
+Representative critical code proves architecture conclusions. The current gate
+does not require every tracked file to be reread, every inventory unit to become
+complete, per-file hashes, or every upstream test to run independently.
 
-Runtime/plugin and Company-as-Code references also require complete repository
-classification plus code-level tracing of every Company OS-relevant path:
-
-- DeepSeek Harness
-- Cordis
-- CompozyOS
-- SmythOS SRE
-- Juggler
-- BeanOS Blueprint and any linked public implementation
-
-Previously admitted tier-2 projects remain in scope and must still cover all
-first-party modules:
-
-- Symphony
-- AgentArea
-- HumanLayer ACP
-- Agent Room
-- OpenWorker
-- Agent Control
-- Mesa
+Symphony, AgentArea, HumanLayer ACP, Agent Room, OpenWorker, Agent Control and
+Mesa are paused. All other previously discovered candidates are also outside the
+active gate. Their inventories remain evidence and are not deleted, rejected or
+silently counted as completed.
 
 Names are discovery prompts, not repository identities. A project stays
 `DISCOVERY_IN_PROGRESS` until an official owner/repository relationship is
@@ -102,10 +83,10 @@ and may be invalidated only by a pin change, a detected evidence defect, or a
 cross-cutting contradiction. Partially read files and sampled ranges do not
 become complete units; they resume at the first unverified path or range.
 
-At this goal transition, Paperclip has 103 complete units and 1,457 pending
-units at `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`. The other admitted repository
-inventories exist, but their module assessments remain pending. This is the
-continuity baseline, not a claim of full audit completion.
+At the current scope transition, Paperclip has 704 complete units and 856 pending
+units at `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`. These 704 units are a trusted
+appendix. They are not reread, discarded or expanded merely to clear all 1,560
+units. The current completion authority is the four-project key-module report.
 
 Repository identity is not inferred from a project name. Before auditing, record
 the official repository URL, owner, license, stable tag when one exists, full
@@ -113,18 +94,17 @@ commit SHA, default branch, retrieval date, and why the identity is unambiguous.
 If several projects share a name, mark discovery unresolved rather than auditing
 the wrong repository.
 
-Each audit covers all first-party code and packages; database schema and every
-migration; APIs and events; plugins and adapters; execution and recovery;
-identity, permission, human collaboration and approval; secrets and audit;
-deployment and cloud code; Web and mobile behavior; tests, fixtures and quality;
-configuration; architecture documents; and commit/release history. Third-party,
-vendored, generated, binary asset, fixture, patch, and lock-file surfaces are
-classified explicitly and never silently omitted.
+Each first-priority audit covers the major first-party packages and representative
+critical paths for database schema/migrations, APIs/events, plugins/adapters,
+execution/recovery, identity/permission, human collaboration/approval, Secrets,
+audit, deployment/cloud, Web/mobile, tests, configuration and release history.
+Generated inventories account for third-party, generated, binary, fixture and
+lock-file surfaces without requiring code-level review of each such file.
 
 ## Evidence and completeness contract
 
-Every repository receives a generated tracked-path inventory and auditable-unit
-coverage table. Every first-party unit must record:
+Every first-priority repository receives a generated tracked-path inventory and
+a key-module coverage table. Each required architecture surface records:
 
 1. audit status and exact source evidence;
 2. function and design rationale;
@@ -137,9 +117,9 @@ coverage table. Every first-party unit must record:
 9. license and provenance implications; and
 10. final judgment.
 
-The zero-gap gate fails for an unknown unit, duplicate assessment, source-SHA
-drift, stale generated inventory, missing required field, or unexplained path.
-README-only findings cannot close a code-audit unit.
+The gate fails for source-SHA drift, missing required architecture surfaces,
+README-only conclusions, absent license identity, or an unexplained product
+judgment. Fine-grained `PENDING` units do not fail this narrowed gate.
 
 ## Decision vocabulary
 
@@ -173,8 +153,8 @@ database schema, internal type graph, trademark, logo, or unauthorized asset.
 ## Required deliverables
 
 - Commercial feature and strategy matrix with dated source evidence.
-- Tier-1 and Tier-2 repository identity/provenance manifests.
-- Per-repository full coverage checklist and completeness proof.
+- Four first-priority repository identity/provenance manifests.
+- Per-repository key-module coverage checklist and representative evidence.
 - End-to-end capability and dependency maps.
 - Data model, migration, lifecycle, recovery and deletion analysis.
 - Security, identity, permission, approval, secret and audit analysis.
@@ -189,12 +169,12 @@ database schema, internal type graph, trademark, logo, or unauthorized asset.
 
 ## Gate closure
 
-The audit phase is complete only when every named commercial product has all
-required dimensions or an explicit evidence limitation, every named open-source
-repository has an unambiguous pinned identity and zero unexplained first-party
-coverage gaps, every production capability has one best reference, all copy
-decisions include license/provenance boundaries, and the resulting architecture
-adjustments are accepted in ADRs.
+The audit phase is complete when every named commercial product has all required
+dimensions or an explicit public-evidence limitation; all four first-priority
+repositories have a fixed identity, key-module architecture review and judgment;
+every compared capability has one best reference; license/copy boundaries are
+explicit; and at least three mutually exclusive product shapes plus a final
+recommendation are delivered.
 
 Only after the reports are complete and the user confirms one product direction
 may overlapping generic Agent-management or Pre-3D implementation resume.
