@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/join-request-dedupe",
+      "auditStatus": "COMPLETE",
+      "function": "Pure helper suite selecting a reusable human join request and collapsing duplicate pending rows for presentation.",
+      "dependencyDirection": "Operates on caller-supplied row arrays with no persistence, tenant, Identity provider or authorization dependency; ordering and scoping are ambient caller assumptions.",
+      "keyDataModels": "Join request ID/type/status, requestingUserId and requestEmailSnapshot; pending human, approved human and Agent request rows.",
+      "lifecycle": "Find the first matching human request by user ID or normalized email; remove older pending duplicates while preserving approved history and non-human rows.",
+      "testAssessment": "Three pure tests pass for newest pending selection, case-insensitive email fallback to an approved row and pending-row collapse. Missing are unordered input, duplicate emails across identities/tenants, unverified or changed email, issuer/subject, concurrent inserts, unique constraints, expiry/revocation, rejected requests, role/grant changes and approval audit.",
+      "designRationale": "Avoid repeated join-request rows in onboarding and retain completed history without affecting Agent join requests.",
+      "companyOsProblem": "Company OS must onboard real employees idempotently while preserving enterprise identity provenance, tenant membership, requested role, approver responsibility and revocation history.",
+      "companyOsFit": "REIMPLEMENT. Use an IdentityPort-bound principal key such as tenantId + identityIssuer + immutableSubject, plus an explicit verified-email claim only as contact metadata. Enforce a database partial unique constraint for active human join attempts, transactional upsert/idempotency key, stable conflict codes, expiry and revocation. Bind requested organization/role/data scope, approving accountable human, policy version and audit receipt. Any email-based account linking must require re-verification and policy approval; never reuse approved membership solely by matching an email string.",
+      "responsibilityConflict": "Email-only reuse can attach a new or recycled identity to an earlier approved request without proving the same legal person or approver intent. Collapsing rows in memory does not prevent two approvals or preserve which request established membership authority.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/join-request-dedupe.test.ts:1-104 (SHA-256 89975790d3c175ee68b44d5716d1c6248c8d69ae55bae3da92d269f3fa543f5c)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 3/3 passed"
+      ],
+      "securityFindings": "CRITICAL identity-linking risk: an approved human request can be reused solely by case-insensitive email when user ID is absent. CRITICAL tenant-contract gap: company/tenant and Identity issuer/subject are absent from the helper contract. HIGH concurrency gap: in-memory collapse is not a transactional idempotency or uniqueness guarantee. HIGH approval gap: approver, requested role/grants, policy and revocation are absent. MEDIUM ordering gap: newest selection depends on input ordering without an asserted timestamp/order contract."
+    }
+  ]
+}

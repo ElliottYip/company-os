@@ -8556,6 +8556,30 @@
       "completionRequirements": [
         "Read lines 1-113 exactly once and assess authenticated identity versus presentation context, tenant and role scope, spoofing, authorization use, stable contract and Company OS human-principal/accountability separation."
       ]
+    },
+    {
+      "id": "application:server/__tests__/join-request-dedupe",
+      "path": "server/src/__tests__/join-request-dedupe.test.ts",
+      "lineCount": 104,
+      "sha256": "89975790d3c175ee68b44d5716d1c6248c8d69ae55bae3da92d269f3fa543f5c",
+      "linkedEvidence": { "history": [
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-104"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-58 reuse the first/newest matching human join request by requestingUserId, or fall back to case-insensitive email and even reuse an approved row when no user ID exists.",
+        "Lines 59-104 collapse older pending human rows per requester while retaining approved history and Agent requests.",
+        "The helpers are pure and preserve history, but correctness depends on caller ordering and pre-scoping not represented in the contract. There is no company/tenant, IdentityPort issuer+subject, verified-email state, invite/grant/role, expiry/revocation, transaction or database uniqueness. Email-only reuse of an approved request is unsafe for enterprise identity.",
+        "Focused Vitest passed all 3 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-104 exactly once and assess join-request idempotency key, concurrent duplicate behavior, identity and company scope, approval state, expiry/revocation, enumeration, stable errors and Company OS human-principal onboarding responsibility."
+      ]
     }
   ]
 }
