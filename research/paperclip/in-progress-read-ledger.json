@@ -9375,6 +9375,34 @@
       "completionRequirements": [
         "Read lines 1-120 exactly once and assess sandbox provider config schema, environment secret_ref versus plaintext, additional-field/version rules, tenant/target binding, runtime resolution/redaction and Company OS local execution secret contract fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-sdk-orchestration-contract",
+      "path": "server/src/__tests__/plugin-sdk-orchestration-contract.test.ts",
+      "lineCount": 257,
+      "sha256": "5598079d5789420cca7390dd7f695a9f846e33daeb1a32641dcf7f29705f5cba",
+      "linkedEvidence": { "history": [
+        "3c73ed26b514144b831f02361de809008742194d expand plugin host surface (#5205)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-129",
+        "130-257"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-52 construct the full shared Paperclip Issue shape inside the plugin SDK harness, exposing many persistence/workspace/run fields rather than a narrow extension DTO.",
+        "Lines 53-119 let a capability-declaring plugin create an issue with caller-supplied Company, assigneeUserId, billing/origin and blockers, then read/mutate relations and subtree. No authenticated principal or responsibility contract appears.",
+        "Lines 120-169 enforce plugin origin namespace and support hidden plugin-operation issue projection.",
+        "Lines 170-220 positively exercise declared checkout/wakeup capabilities with caller-supplied Agent/run IDs and bulk idempotencyKeyPrefix, but do not test missing-capability denial, identity ownership or duplicate suppression.",
+        "Lines 221-257 reject a wakeup when an in-memory issue fixture contains an unresolved blocker.",
+        "No approval/interaction/human delegation, tenant authority, Agent actor/run verification, stable structured errors, schema version negotiation, compatibility snapshots, data/secret/evidence types or provider-private session isolation is covered. Focused Vitest passed 5/5."
+      ],
+      "completionRequirements": [
+        "Read lines 1-257 exactly once and assess Plugin SDK capability-to-method contract, identity/tenant/run/workspace types, request/response schemas, error/version compatibility, private internal leakage, approval/responsibility semantics and Company OS Connector/extension SDK fit."
+      ]
     }
   ]
 }

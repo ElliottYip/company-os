@@ -9555,18 +9555,23 @@
     },
     {
       "id": "application:server/__tests__/plugin-sdk-orchestration-contract",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "In-memory SDK test-harness contract tests for plugin issue creation, origin namespaces, blocker relations/subtrees, checkout assertion and single/bulk wakeups.",
+      "dependencyDirection": "A plugin manifest capability list creates a test harness context; plugin calls accept caller-supplied Company/human/Agent/run identifiers and operate on in-memory fixtures typed with Paperclip's full shared Issue model.",
+      "keyDataModels": "PaperclipPluginManifestV1 capability strings; full shared Issue; Company/assignee user/Agent/run IDs; origin kind/ID/billing; blocker relations/subtree; checkout owner; wakeup reason and idempotencyKeyPrefix.",
+      "lifecycle": "Seed issues; create plugin-origin work; add/remove/read blocker relations and subtree; assert a checked-out run; enqueue single/bulk wakeups; refuse blocked work.",
+      "testAssessment": "All five tests pass and the executable harness is useful for extension authors. Origin namespace and blocker behavior are synchronized with server intent. However, the contract tests only positive capability cases, accepts arbitrary Company/assignee human/Agent/run IDs, exposes the broad internal Issue type, and does not prove idempotency deduplication. It lacks negative capability and tenant matrices, stable error objects, API version compatibility, identity delegation, approval/responsibility/evidence/data/secret types and event ordering/replay.",
+      "designRationale": "Give plugin authors a local high-fidelity way to exercise orchestration APIs and common issue workflows without launching the server.",
+      "companyOsProblem": "Company OS requires a durable public Connector/extension SDK whose types enforce identity, responsibility and data boundaries rather than mirroring internal database-oriented work objects.",
+      "companyOsFit": "REJECT as the Company OS public contract. Retain the executable conformance-harness approach and origin/blocker patterns. Define versioned command/event DTOs independent of internal models; obtain tenant and Principal from an authenticated invocation envelope, not method parameters; represent human assignment as an authorized Principal reference and responsibility contract; use opaque Work/Connector/session/data/secret handles; require command idempotency, resource version, capability and approval/evidence digests; return stable codes and parameters. Add negative capability/tenant tests and compatibility fixtures across SDK/server versions.",
+      "responsibilityConflict": "A plugin can assign an arbitrary user ID and wake work using caller-provided Agent/run identity with no proof of accountable human, delegation, permissions, data grants or exact work contract. The SDK therefore makes organizational attribution a convention rather than an enforced invariant.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-sdk-orchestration-contract.test.ts:1-257 (SHA-256 5598079d5789420cca7390dd7f695a9f846e33daeb1a32641dcf7f29705f5cba)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 and 3c73ed26b514144b831f02361de809008742194d recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 5/5 passed"
+      ],
+      "securityFindings": "CRITICAL identity/assignment gap: arbitrary assigneeUserId and Agent/run identifiers are accepted without authenticated invocation binding. HIGH tenant gap: companyId is a plugin-controlled method argument in the harness. HIGH internal-coupling gap: public tests use the full Paperclip Issue model, increasing accidental exposure and upgrade coupling. HIGH capability-proof gap: only positive declarations are tested; missing capability denial is absent. MEDIUM idempotency gap: a prefix is accepted but duplicate suppression is not proved. HIGH governance gap: no responsibility contract, permission/data snapshot, approval/evidence/result or secret/session boundary appears. POSITIVE: plugin origin spoofing and blocker wakeups are explicitly rejected."
     },
     {
       "id": "application:server/__tests__/plugin-sdk-testing",
