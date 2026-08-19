@@ -10041,6 +10041,36 @@
       "completionRequirements": [
         "Read lines 1-2412 exactly once and assess full routine service lifecycle: CRUD/revisions/restore, variables, schedules/timezones/catch-up/activity gates, concurrency/idempotency, Agent/project/workspace validity, Secret bindings, issue/run/heartbeat creation, failure/cancel/recovery, tenant/actor attribution, evidence/results and Company OS reusable-work architecture fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/runtime-api",
+      "path": "server/src/__tests__/runtime-api.test.ts",
+      "lineCount": 158,
+      "sha256": "262edb88bdc22307c743ef66cbe9480bc3121bc9467b6f5845d2b022f33e178b",
+      "linkedEvidence": { "history": [
+        "d5ceb82571eddb1e618177f976bb4d82bfadeed2 Prefer loopback runtime API URL for local agents (#5102)",
+        "367d4cab7237408ec5f005087380c2c3211251c2 Fix SSH callback URL selection for LAN and private networks (#4799)",
+        "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-158"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-19 prefer an explicit authPublicBaseUrl origin, dropping its path, over allowed/bind/interface choices.",
+        "Lines 21-32 prefer an explicit loopback bind URL over a LAN allowedHostname when no public base exists.",
+        "Lines 34-79 order allowed IPv4/hostname/interface candidates, deduplicate the repeated interface IPv4 and exclude loopback/link-local IPv6 from this result; candidates use plaintext HTTP without an explicit TLS base.",
+        "Lines 81-99 place preferredApiUrl origin before authPublicBaseUrl origin and derive an HTTPS allowed-host candidate from that context.",
+        "Lines 101-115 add plaintext host.docker.internal when the explicit base URL is loopback.",
+        "Lines 117-158 collect private IPv4 and unique-local IPv6 interface hosts while skipping IPv4/IPv6 link-local addresses.",
+        "No malformed/credential-bearing/non-HTTP URL, path-prefix preservation, wildcard IPv6/localhost/duplicate/case/IDN, allowed-host validation, DNS rebinding, IPv6 URL brackets, reachability/authentication, TLS/mTLS/certificate pinning, proxy headers, audience token, node registration/revocation, SSH tunnel binding or candidate leakage test is present.",
+        "Focused Vitest passed all 6 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-158 exactly once and assess runtime callback/API URL selection across local/LAN/SSH/sandbox deployment, trust boundary, TLS/host validation, credential/audience leakage, SSRF/DNS rebinding, override precedence and Company OS managed/local execution-node fit."
+      ]
     }
   ]
 }

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/runtime-api",
+      "auditStatus": "COMPLETE",
+      "function": "Pure tests for selecting a primary runtime API origin and constructing ordered callback candidates from preferred/public URLs, allowed hostnames, bind address, Docker host alias and reachable network interfaces.",
+      "dependencyDirection": "Server deployment/auth/network configuration and OS interface discovery feed a runtime URL helper; local/SSH/sandbox Agent adapters consume the resulting origins to call back into the server.",
+      "keyDataModels": "Preferred API URL; authentication public base URL; allowed hostname list; bind host/port; IPv4/IPv6 interface address/internal/link-local metadata; ordered candidate URL list.",
+      "lifecycle": "Normalize explicit URLs to origins; prefer explicit then loopback choices; enumerate allowed/interface candidates; add a Docker host bridge for loopback; give runtimes multiple callback origins to attempt.",
+      "testAssessment": "All 6 focused tests pass and clearly pin candidate precedence, loopback preference, Docker convenience, deduplication and link-local filtering. They do not establish transport identity or security. Non-loopback plaintext HTTP candidates are expected in some cases, auth public URL is reused as runtime API origin and no hostile URL/hostname, TLS, DNS, proxy, node identity or audience behavior is tested.",
+      "designRationale": "Make local Agents, containers and SSH/private-network runtimes reach a single server across heterogeneous developer networking without requiring operators to configure a dedicated callback origin in every environment.",
+      "companyOsProblem": "Managed-cloud plus customer-local execution requires reliable control/execution connectivity without exposing the control plane, sharing Web/identity tokens, or trusting network-discovered callback addresses across enterprise boundaries.",
+      "companyOsFit": "NARROW to developer and explicit self-hosted bootstrap: loopback preference and link-local filtering are useful. Production/hybrid ExecutionNodes should initiate an authenticated outbound connection or reverse tunnel to a dedicated Runtime Gateway, register a stable opaque node identity/capability set and use mTLS or short-lived audience-bound tokens with rotation/revocation. Require TLS off-loopback, explicit allowlisted endpoints and separate Identity, customer Web and Runtime API origins. Never send ambient credentials while probing candidates.",
+      "responsibilityConflict": "A runtime reaching the wrong origin can execute or report work under the wrong Company/Agent authority. Connectivity selection must bind node, tenant, Connector, work and token audience, and its attestation must be recorded without exposing network topology as responsibility evidence.",
+      "decision": "NARROW",
+      "evidence": [
+        "server/src/__tests__/runtime-api.test.ts:1-158 (SHA-256 262edb88bdc22307c743ef66cbe9480bc3121bc9467b6f5845d2b022f33e178b)",
+        "git history: three commits from 70679a33216bae9247b1b6bddc5fcaad1c04e829 through d5ceb82571eddb1e618177f976bb4d82bfadeed2 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file passed, 6/6 tests passed"
+      ],
+      "securityFindings": "CRITICAL transport risk if used in production: non-loopback callback candidates can be plaintext HTTP with no tested server/node authentication. HIGH trust-domain confusion: authPublicBaseUrl doubles as runtime API configuration even though identity and execution token audiences must differ. HIGH discovery risk: LAN/private/ULA and host.docker.internal candidates broaden reachable targets without tested allowlist/DNS-rebinding controls. HIGH URL gap: malformed schemes, embedded credentials, proxy path prefixes and IPv6 bracket serialization are untested. HIGH credential risk: no test ensures callback probing carries no ambient token to an unverified candidate. POSITIVE: loopback is preferred for local Agents and link-local addresses are filtered."
+    }
+  ]
+}
