@@ -9462,6 +9462,32 @@
       "completionRequirements": [
         "Read lines 1-120 exactly once and assess telemetry event schema/source attribution, tenant/run/plugin spoofing, sensitive payload redaction, volume/rate/order/delivery, opt-out/retention/locality and Company OS managed/self-hosted observability fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-ui-static",
+      "path": "server/src/__tests__/plugin-ui-static.test.ts",
+      "lineCount": 164,
+      "sha256": "35af5b57cd0883f25c77963eff990085a442c5de61e8d08205e51fb23bcbd731",
+      "linkedEvidence": { "history": [
+        "931eec3fbf83dc425b5381ba5823125162cd13e7 MCP gateway runtime and Smoke Lab (#9559)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-164"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-78 create a plugin package with arbitrary dist/ui/index.js, a ready registry entry and board/no-actor Express route harness.",
+        "Lines 79-111 publicly serve the ready plugin's built JavaScript without authentication or Company context and do not consult Company config.",
+        "Lines 112-138 require authentication and board Company access before reading Company-scoped devUiUrl.",
+        "Lines 139-164 in NODE_ENV development proxy the requested asset from configured http://localhost:5173 after Company access and forward the body/content type.",
+        "No traversal/encoded path/symlink, disabled/uninstalled plugin, MIME sniffing/nosniff, CSP/CORS/CORP, SRI/hash/signature, immutable version/cache, source map, range/size, same-origin execution isolation, cookie/API access, devUiUrl scheme/host/redirect SSRF or fetch timeout/error test is present.",
+        "Sandboxed focused Vitest failed 4/4 solely on Supertest TCP listen EPERM; approved unsandboxed focused Vitest passed 4/4."
+      ],
+      "completionRequirements": [
+        "Read lines 1-164 exactly once and assess plugin UI asset path confinement, traversal/symlink, MIME/CSP/cache/version/integrity, auth and disabled/uninstalled state, script privilege isolation and Company OS independent Web extension fit."
+      ]
     }
   ]
 }

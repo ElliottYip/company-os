@@ -9671,18 +9671,24 @@
     },
     {
       "id": "application:server/__tests__/plugin-ui-static",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "HTTP tests for serving a ready plugin's built UI assets publicly and optionally proxying a Company-configured development UI origin after authentication and tenant access checks.",
+      "dependencyDirection": "Plugin registry packagePath/manifest UI entrypoint and optional Company devUiUrl feed an Express static/proxy route under the Paperclip server origin; browser-loaded JavaScript is authored by the plugin package.",
+      "keyDataModels": "Plugin ID/key/package path/version/status/UI entrypoint; static asset path/body; board actor Company IDs; Company config devUiUrl; development environment; proxied content type.",
+      "lifecycle": "Resolve a ready plugin; serve built UI JavaScript without Company context; or authenticate and authorize Company access, read devUiUrl and proxy the requested asset during development.",
+      "testAssessment": "All four tests pass outside the restricted sandbox and Company gating for dev configuration is explicit. The security surface is otherwise largely untested: path encoding/traversal/symlinks, disabled/uninstalled state, asset integrity/version/cache, MIME/nosniff, CSP/CORS/CORP, source maps/size, dev proxy SSRF/redirects/timeouts and browser privilege isolation. Public availability is not itself the main issue; executing untrusted plugin code under the customer application's origin would grant ambient Web privileges unless separately isolated.",
+      "designRationale": "Let installed plugins contribute UI bundles with simple stable asset URLs and support hot local development without rebuilding the main Web application.",
+      "companyOsProblem": "Company OS owns an independent Chinese/Raft-style Web and must not allow third-party pages or scripts to become a second same-origin customer UI or inherit authenticated browser authority.",
+      "companyOsFit": "REJECT direct same-origin plugin UI bundles and arbitrary devUiUrl proxying. Prefer headless server/Connector capabilities projected through Company OS-owned UI. If a third-party UI is indispensable, serve immutable signed assets from a separate uncredentialed origin inside a sandboxed iframe with no same-origin permission, strict CSP/CORP, explicit postMessage schema/capabilities, short-lived audience tokens and user-visible provenance. Development proxying is local-only with loopback allowlist, redirect denial and prominent unsafe mode. Never reuse upstream full page components or business copy.",
+      "responsibilityConflict": "Same-origin plugin JavaScript can potentially act with the logged-in human's browser authority while obscuring which code initiated a decision. That undermines independent identity audiences and the evidence-backed responsibility chain.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-ui-static.test.ts:1-164 (SHA-256 35af5b57cd0883f25c77963eff990085a442c5de61e8d08205e51fb23bcbd731)",
+        "git history: 931eec3fbf83dc425b5381ba5823125162cd13e7 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/4 passed solely due Supertest TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 4/4 passed"
+      ],
+      "securityFindings": "CRITICAL browser trust gap: no test proves plugin JavaScript is isolated from the authenticated application origin, cookies, storage or APIs. HIGH supply-chain gap: asset signature/hash/version integrity and disabled/uninstalled behavior are absent. HIGH path/content gap: traversal/symlink, MIME sniffing, CSP/CORS/CORP, source-map and size controls are untested. HIGH development SSRF gap: configurable devUiUrl proxy lacks tested scheme/host/redirect confinement. MEDIUM cache risk: immutable versioned URLs, revocation and rollback behavior are absent. POSITIVE: dev config is not read before authentication and Company access checks."
     },
     {
       "id": "application:server/__tests__/plugin-worker-manager",
