@@ -9056,18 +9056,23 @@
     },
     {
       "id": "application:server/__tests__/pi-local-execute",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Execution tests for Paperclip's local Pi adapter, asserting that semantic retry exhaustion fails despite a zero process exit and that only explicitly injected Agent skill bin directories enter the spawned process PATH.",
+      "dependencyDirection": "A Paperclip AdapterExecutionContext containing run/Agent/runtime/config/auth state flows into the Pi adapter. The adapter manages vendor session storage under a user Pi directory, spawns a configured command and augments its PATH from selected runtime skill sources.",
+      "keyDataModels": "AdapterExecutionContext and raw authToken; Pi JSON lifecycle including auto_retry_end; semantic exitCode/errorMessage; runtime skill key/name/source and desired-skill selection; child PATH; vendor session directory under ~/.pi.",
+      "lifecycle": "Prepare workspace/command and user session state; resolve desired runtime skills; prepend their bin directories; spawn Pi; parse lifecycle; convert exhausted internal retry to failure even when the process exits zero; keep non-selected skill binaries outside PATH.",
+      "testAssessment": "The assertions target two important behaviors: semantic success must not rely solely on OS exit status, and runtime executable exposure follows an explicit skill selection. In this environment all three tests fail before their fixtures run because the adapter tries to create /Users/elliottye/.pi even though each test changes HOME to a temporary root after module import. An unsandboxed retry was intentionally not run because it would mutate real user state. The suite also omits argument/auth/env redaction, command and cwd trust, timeout/cancel, idempotency, session concurrency/cleanup, malformed events, tool/evidence outputs, symlinked skill bins and executable provenance.",
+      "designRationale": "Correct vendor CLIs whose process exit status does not reflect terminal model failure, and make installed Agent skills executable only when selected for the current runtime.",
+      "companyOsProblem": "Company OS local Connectors must classify semantic results accurately while isolating vendor state and only exposing signed, authorized tools for the exact work contract on a customer execution node.",
+      "companyOsFit": "ADAPT semantic terminal-state parsing and explicit per-run tool selection, but redesign state and executable injection. The execution node must receive a run-scoped state directory as an explicit dependency, never derive or cache a real user home path at module import; use tenant/Connector/run namespaces, restrictive permissions and cleanup/retention policy. Resolve signed capability bundles into a controlled launcher rather than prepend arbitrary directories to PATH. Use opaque secret references, minimal environment, immutable command identity, confined cwd, cancel/timeout/idempotency, structured provider errors, typed evidence/results and digest-bound approval suspension. Add hermetic tests proving zero writes outside a temporary root.",
+      "responsibilityConflict": "Selecting a skill makes its binaries executable but the tested selection is not bound to a human-approved permission/data scope, responsibility contract or action digest. A raw run token and vendor session state also cross the execution boundary without an attestation or evidence chain in this unit.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/pi-local-execute.test.ts:1-210 (SHA-256 673c906dd6daa5c746b2500c4f6edd62dde45d51c8bd7391b210af3ca83fa8ff)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632, 854fa817573476186ce8b1e7a9afbcd3b71dd383 and 33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/3 passed; all failed before fixture execution on EPERM mkdir /Users/elliottye/.pi; no unsafe unsandboxed retry"
+      ],
+      "securityFindings": "POSITIVE: terminal vendor retry failure overrides exit 0; non-selected skill bins are excluded; selected bins are deduplicated. CRITICAL state-isolation finding: focused tests attempt to create the real user's ~/.pi despite assigning a temporary HOME inside each test, proving non-hermetic path binding and potential host-state mutation. HIGH executable supply-chain risk: selected skill bin directories are placed first on PATH without signature/hash/canonical-path assertions. HIGH authorization gap: tool selection is not bound here to accountable-human permission, data grant or approval digest. HIGH credential gap: a raw run JWT is present and propagation/redaction/audience are untested. MEDIUM resilience gap: cancellation, timeout, session concurrency, stale-state cleanup, malformed output and idempotency are absent. MEDIUM error-contract gap: final provider failure is a free-form string rather than a stable structured code."
     },
     {
       "id": "application:server/__tests__/pi-local-skill-sync",

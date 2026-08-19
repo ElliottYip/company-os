@@ -9000,6 +9000,33 @@
       "completionRequirements": [
         "Read lines 1-101 exactly once and assess Pi binary/cwd/version health checks, environment and secret precedence, active-probe execution, structured errors, timeout/output/network controls, false readiness and Company OS Connector health-contract fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/pi-local-execute",
+      "path": "server/src/__tests__/pi-local-execute.test.ts",
+      "lineCount": 210,
+      "sha256": "673c906dd6daa5c746b2500c4f6edd62dde45d51c8bd7391b210af3ca83fa8ff",
+      "linkedEvidence": { "history": [
+        "33353ce62b5d6e9409e0fac9ba2cbc82d05f25fe retire required bundled skill attribute (#7029)",
+        "854fa817573476186ce8b1e7a9afbcd3b71dd383 prepend installed skill bin directories to child PATH (#4331)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-210"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-48 create executable Pi fixtures: one exits zero after emitting auto_retry_end success=false with a free-form quota error; another writes its inherited PATH and emits a nominal empty result.",
+        "Lines 49-99 expect semantic retry exhaustion to override process exit 0 and fail the run. The context includes a raw run JWT, vendor model and prompt but the test does not inspect credential propagation, arguments, cwd confinement, logs or evidence.",
+        "Lines 100-155 expect an explicitly desired runtime skill's bin directory to be prepended exactly once to the child PATH. The test creates an unsigned executable-capable skill directory and checks path ordering only.",
+        "Lines 156-210 expect an available but non-injected skill bin to remain absent when no desired-skill preference exists.",
+        "Focused Vitest failed all 3 tests before process execution because adapter code attempted mkdir /Users/elliottye/.pi. Setting process.env.HOME inside each test did not isolate the session path, indicating it was bound at module import or otherwise ignores the runtime override. No unsandboxed retry was performed because it would write to the user's real Pi state."
+      ],
+      "completionRequirements": [
+        "Read lines 1-210 exactly once and assess Pi process arguments, cwd/workspace and skill PATH handling, prompt/session/vendor-state isolation, environment/secrets, output/result/evidence parsing, cancellation/timeout/idempotency, errors and Company OS neutral Connector fit."
+      ]
     }
   ]
 }
