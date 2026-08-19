@@ -8420,18 +8420,23 @@
     },
     {
       "id": "application:server/__tests__/issue-wake-diagnostics-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL HTTP integration suite for Issue wake diagnostics, including wake/activity projection, diagnosis, trust-boundary redaction, tenant isolation and output caps.",
+      "dependencyDirection": "Exercises the public Express Issue route against the real database schema and shared low-trust preset; route/API behavior depends inward on Issue, Run, wake-request, activity and authorization-policy data.",
+      "keyDataModels": "Company, board or Agent actor, Project, Issue and blocks relation, Agent authorization policy, HeartbeatRun context snapshot, AgentWakeupRequest, ActivityLog and diagnostic event projection.",
+      "lifecycle": "Seed an Issue and related execution state; collect recent wake/activity rows; infer blockers-resolved state when no wake exists; redact records outside the caller boundary; classify and summarize; cap and return a diagnostic projection.",
+      "testAssessment": "Seven integration cases cover payload/error stripping, empty history, inferred no-row state, low-trust hidden blocker and identifier redaction, uniform cross-tenant 404, allowlisted failure/activity projection and 50-row caps. Focused Vitest skipped all seven because embedded PostgreSQL was unavailable. Missing are ordinary human-role authorization, stable machine codes, event-count/timing leakage, pagination, retention, immutable evidence, malformed actions and exhaustive projection allowlisting.",
+      "designRationale": "Give operators and scoped Agents enough evidence to explain wake behavior without exposing raw queue payloads, stack errors or resources outside the execution boundary.",
+      "companyOsProblem": "Company OS needs responsibility-safe operational diagnostics that let a human explain why work did or did not wake while preserving tenant, data-contract and Connector boundaries.",
+      "companyOsFit": "ADAPT the allowlisted projection, uniform not-found behavior, hidden-resource redaction, normalized categories and explicit caps. Replace prose-as-contract with stable diagnosisCode/eventCode plus structured parameters; authorize separate human and Agent views; suppress or bucket counts/timestamps where they reveal hidden activity; bind events to immutable work, responsibility-contract and evidence IDs; define retention/export policy and pagination.",
+      "responsibilityConflict": "A deterministic English sentence is presentation, not an auditable decision contract. Identifier redaction alone can still reveal hidden activity through event count/order/timing, and the suite does not prove that a requesting human is the accountable or authorized reviewer. Diagnostic events are not shown bound to an immutable responsibility/evidence chain.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-wake-diagnostics-routes.test.ts:1-568 (SHA-256 adcbfea575ce147f602d84ef3487589d11aaebb735c6e771838f8ad2fb30f160)",
+        "git history: 7f2ed0ad90d7186d108f65400e322bda08dcbfe2 and 31a0080e61e5510c04a1b8f17dd985f7565d2ca4 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 7/7 skipped because embedded PostgreSQL was unavailable"
+      ],
+      "securityFindings": "POSITIVE: raw payload/details/triggerDetail/error are excluded; unknown private reasons collapse to other; hidden Issue, Agent, Run and hold identifiers are removed; cross-company reads return uniform 404. HIGH: low-trust callers still receive two redacted events, so count/order/timing can form a side channel. HIGH: board authorization is tested only with an instance-admin operator actor. MEDIUM: English diagnosis strings and Issue not found text are unstable contracts. MEDIUM: no exhaustive action/reason allowlist, retention/export or immutable-evidence tests are demonstrated. TEST LIMITATION: all seven focused tests skipped on this host."
     },
     {
       "id": "application:server/__tests__/issue-watchdogs-routes",

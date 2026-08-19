@@ -8301,6 +8301,35 @@
       "completionRequirements": [
         "Read lines 1-642 exactly once and assess comment/update wake selection, human-versus-machine provenance, cross-Issue/mention boundaries, pause/review-path behavior, idempotency/coalescing, tenant/auth scope, payload minimization and Company OS event/capability semantics."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-wake-diagnostics-routes",
+      "path": "server/src/__tests__/issue-wake-diagnostics-routes.test.ts",
+      "lineCount": 568,
+      "sha256": "adcbfea575ce147f602d84ef3487589d11aaebb735c6e771838f8ad2fb30f160",
+      "linkedEvidence": { "history": [
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "31a0080e61e5510c04a1b8f17dd985f7565d2ca4 Fix wake diagnostics low-trust identifier redaction (#9133)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-284",
+        "285-568"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-175 assemble the real Issue route with embedded PostgreSQL and create board/Agent actors, low-trust execution policy, Issues, blockers, Runs and wake/activity records.",
+        "Lines 176-259 verify newest-first wake projection, deterministic diagnosis, caps metadata and removal of raw payload/details/error fields; a quiet Issue returns an empty, null diagnosis.",
+        "Lines 260-378 infer a no-row blockers-resolved case from visible graph state, then ensure hidden blocker identifiers/status and hidden Agent/Run/hold identifiers are redacted for a boundary-scoped Agent.",
+        "Lines 379-407 enforce uniform cross-company 404 so known foreign Issue IDs are indistinguishable from missing IDs.",
+        "Lines 408-568 project allowlisted activity/wake fields, normalize a private reason to other, classify failure without exposing raw error data, cap each source at 50 rows and disclose truncation/lookback metadata.",
+        "Strong patterns are default-deny field projection, unknown-reason normalization, cross-tenant 404, graph-aware boundary redaction and explicit caps. Gaps include stable diagnostic/error codes, localization-safe structured parameters, ordinary human role tests, event-count/timing side channels after identifier redaction, immutable evidence linkage, retention/export policy, pagination and proof that every activity action is allowlisted.",
+        "Focused Vitest skipped all 7 tests because embedded PostgreSQL was unavailable; no passing runtime claim is made."
+      ],
+      "completionRequirements": [
+        "Read lines 1-568 exactly once and assess tenant and authorization boundaries, low-trust identifier redaction, diagnostic provenance, stable codes, leakage of runtime/Connector details, lifecycle coverage and Company OS responsibility-safe wake diagnostics."
+      ]
     }
   ]
 }
