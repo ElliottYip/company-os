@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/plugin-routes-authz",
+      "auditStatus": "COMPLETE",
+      "function": "HTTP authorization regression suite for plugin installation/lifecycle/configuration, manifest-scoped routes, local-folder configuration, tool execution, generic worker bridges, manual jobs and Agent-JWT plugin tool access.",
+      "dependencyDirection": "Authenticated board/Agent request actors enter pluginRoutes; route policy consults actor Company/admin scope, plugin manifest/registry, secret service and relational Agent/run/project ownership before invoking lifecycle, worker bridge, job scheduler or tool dispatcher.",
+      "keyDataModels": "Board/Agent actor and Company IDs; plugin ID/key/manifest/capability/API route; package/version/lifecycle; secret_ref/version/target binding; runContext Agent/run/Company/project; bridge key/params/actorContext; tool identity; job; structured bridge error.",
+      "lifecycle": "Discover/install/upgrade/configure/enable/disable/uninstall plugins; save scoped secret references; dispatch declared HTTP routes; validate local folders; execute a plugin tool under run context; call data/action bridges; trigger jobs; expose tools to authenticated Agents.",
+      "testAssessment": "All 36 tests pass outside the network-restricted sandbox. The suite has valuable tenant checks: instance-admin lifecycle gates, cross-Company secret rejection before binding, manifest route declarations, undeclared folder rejection, DB validation of runContext references, Company scope override and Agent JWT Company boundaries. It does not establish a safe human delegation model: opaque bridge params retain spoofed reviewer IDs, and board actions are allowed with userId null. It also lacks exact actor-Agent/run equality, Agent permission/tool/data/cost policy, exhaustive route auth/capability modes, package signature/provenance, CSRF/idempotency, lifecycle impact approval/rollback and stable redacted worker errors.",
+      "designRationale": "Centralize plugin-facing HTTP access behind authenticated Paperclip routes so extension code receives scoped context and cannot directly choose a different Company or secret binding.",
+      "companyOsProblem": "Company OS needs an extension gateway that is narrow, auditable and responsibility-aware across managed cloud and local enterprise, not a generic bridge that trusts plugin-defined params after only replacing companyId.",
+      "companyOsFit": "REJECT the broad getData/performAction bridge and unrestricted Agent tool execution as the production contract. ADAPT its instance-admin lifecycle checks, secret-reference tenant validation, declared routes, and server-side runContext lookup. Define typed per-capability commands generated from versioned schemas; bind authenticated Principal directly and remove all actor/reviewer IDs from plugin-controlled params; reject missing human identity for human actions. Verify Agent actor equals run Agent and exact Work/Contract/permission/data snapshots; require tool capability, budget and approval. Use opaque local handles, signed packages, staged upgrade/rollback, CSRF/idempotency and stable redacted error codes. No global action may receive all tenant state implicitly.",
+      "responsibilityConflict": "The route supplies authenticated actorContext but also forwards spoofable identity-like plugin params, while downstream host services accept bare actorUserId for interactions/approvals. A board actor with null userId may also invoke actions. Thus the gateway does not guarantee that the human recorded in the responsibility chain actually initiated or authorized the action.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-routes-authz.test.ts:1-1105 (SHA-256 ad787208f6e41253467cb0722623bdca0d2f2419b327b5f345193c5c74bb218f)",
+        "git history: fifteen commits from 73eb23734f25c570d88665e672f80d740797c632 through 931eec3fbf83dc425b5381ba5823125162cd13e7 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/36 passed solely due Supertest TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 36/36 passed"
+      ],
+      "securityFindings": "POSITIVE: plugin lifecycle/config requires instance admin; secret refs are tenant-validated before binding; manifest route/folder declarations constrain surfaces; non-admin/global and cross-Company actions are rejected; runContext Agent/run/project tenant relationships are checked; authenticated actorContext overrides companyId. CRITICAL identity gap: spoofed reviewer IDs remain in opaque params and missing board user identity is accepted, so downstream privileged host calls can still fabricate human attribution. HIGH Agent confused-deputy gap: no test proves authenticated Agent equals runContext Agent within the same Company. HIGH permission gap: Agent JWT tool access is not bound here to tool capability, data grant, approval or budget. HIGH supply-chain gap: install/upgrade lacks signature/hash/allowlist/impact approval tests. HIGH information disclosure: raw worker/database error text is returned with UNKNOWN. MEDIUM global-action risk: instance admins can invoke Company-less actions against a plugin architecture whose worker may hold multi-tenant state. MEDIUM web-security gap: CSRF, idempotency and rate limits are absent."
+    }
+  ]
+}

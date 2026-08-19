@@ -9303,6 +9303,53 @@
       "completionRequirements": [
         "Read lines 1-1190 exactly once and assess plugin issue/comment/interaction/approval/attachment/workspace APIs, tenant and capability authorization, real-human attribution/delegation, approval digest binding, data disclosure, idempotency/concurrency/audit and Company OS narrow extension contract fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-routes-authz",
+      "path": "server/src/__tests__/plugin-routes-authz.test.ts",
+      "lineCount": 1105,
+      "sha256": "ad787208f6e41253467cb0722623bdca0d2f2419b327b5f345193c5c74bb218f",
+      "linkedEvidence": { "history": [
+        "931eec3fbf83dc425b5381ba5823125162cd13e7 MCP gateway runtime and Smoke Lab (#9559)",
+        "c6d4ee10f7f009f8bfb93a4dee87fb076760f275 current-master regression expectations (#9577)",
+        "d47b4da655d5769abd5d34fdbdd088716797a7f2 auto-build bundled plugins (#8254)",
+        "244a5b8002c2d2e5c17c72b8e71cbc91fff95607 Agent JWT plugin tool endpoints (#7480)",
+        "f0ddd24d616a0b277ed9d5bad5f3e51253c64fbb bundled plugins in manager (#6734)",
+        "a1835cfa5e5f4926591cb956055dd870ede492ef runtime invocation scope (#6547)",
+        "38c185fb8b50f909d29c0b62783731a3b326d021 Agent permissions and controls plan (#6386)",
+        "f25753053749d42fa808a9d92132467d2d75dcd0 UI/devops quality (#6384)",
+        "b947a7d76c331b3ce4069d3be0ade25cc89b1b90 local plugin development (#5821)",
+        "778e775c35834aabe09266fb6d415d3dafbd1deb secrets provider vaults and remote import (#5429)",
+        "3c73ed26b514144b831f02361de809008742194d expand plugin host surface (#5205)",
+        "9a8d2199492654930ba0864dd5c0757163998649 stabilize tests/assets (#4423)",
+        "a95739442027bdec8d291030a91e351dc434f635 structured issue-thread interactions (#4244)",
+        "7a329fb8bb9f74cdd75f3f7789c43fab0b2e7581 harden API route authorization (#4122)",
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-200",
+        "201-400",
+        "401-600",
+        "601-800",
+        "801-1000",
+        "1001-1105"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-143 define mocked registry/lifecycle/secret and authenticated board/Agent actors plus route injection; authorization is exercised at HTTP boundary with Supertest.",
+        "Lines 144-414 list bundled examples, require instance admin for install/upgrade/delete/enable/disable/global config, resolve plugin key versus UUID, and sync Company-scoped secret references while rejecting cross-Company secret IDs.",
+        "Lines 415-533 dispatch a manifest-declared scoped route after board Company access and reject undeclared local-folder keys. Negative auth-mode/capability matrices are limited.",
+        "Lines 534-667 reject board tool calls outside Company or when Agent/run/project DB references disagree, then allow a fully same-Company runContext. Exact authenticated actor-to-runContext Agent equality is not tested.",
+        "Lines 668-848 require Company scope for non-admin bridge calls, allow global instance-admin action, override params.companyId with authenticated scope and attach actorContext; arbitrary identity-like params such as reviewerUserId/reviewerAgentId remain untouched, and a board actor with no userId is still allowed with userId null.",
+        "Lines 849-969 reject cross-Company Agent bridge actions, but return raw worker/database error messages with UNKNOWN to HTTP; manual plugin jobs require instance admin.",
+        "Lines 970-1105 allow Agent JWT tool listing/execution after Company/reference checks and reject cross-Company runContext. No Agent tool capability/permission/data contract, actor Agent equals run Agent, approval digest or cost ceiling is asserted.",
+        "Sandboxed focused Vitest failed all 36 tests solely because Supertest listen returned EPERM; approved unsandboxed focused Vitest passed 36/36."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1105 exactly once and assess plugin HTTP route identity/tenant/role/capability matrix, Agent JWT and run scope, tool/runtime invocation, secret endpoints, install/build/dev/MCP exposure, human delegation, stable errors and Company OS extension gateway fit."
+      ]
     }
   ]
 }
