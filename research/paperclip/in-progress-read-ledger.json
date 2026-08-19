@@ -7958,6 +7958,39 @@
       "completionRequirements": [
         "Read lines 1-518 exactly once and assess scheduled retry and retry-now authorization, cross-tenant concealment, atomic state transitions, idempotency/concurrency, review containment, audit receipts and Company OS accountable-human recovery controls."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-stale-execution-lock-routes",
+      "path": "server/src/__tests__/issue-stale-execution-lock-routes.test.ts",
+      "lineCount": 544,
+      "sha256": "c381ddd5ca0db72e1d718160a9115f08c22c29df0c122b0bf2ef93ae47cd48e7",
+      "linkedEvidence": { "history": [
+        "f91a6e27c0feb7f92dcde981c9a741b869484e83 feat(issues): contain cross-issue agent side effects (#10837)",
+        "1ba79d82a5bc966492c7883719e0cddb66d24c88 fix(server): preserve terminal status on issue release (#7524)",
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 security(server): close cross-tenant existence oracle (404 instead of 403) (#3967)",
+        "ef617bee5c1568bfa7cbb74bdb2eb04ef06788a2 [codex] Enforce backend execution release gates (#9089)",
+        "d7049e0cae3c86c0d04dd3beee5b22e0e188c6d8 fix(server): adopt stale checkout run ownership (#5413)",
+        "f3db7b88ea38a89546719ef2e0e2101127e55480 Clear stale checkoutRunId on run finalization and add backstop sweeper (#6008)",
+        "b69b563aa88af811ad45e658b0d8778ccb2f373d Fix stale issue execution run locks (#4258)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-280",
+        "281-544"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-166 build tenant-scoped Agent/Run fixtures and prove an assigned Agent's current Run can adopt a terminal failed execution lock during PATCH when its context names the Issue.",
+        "Lines 167-280 release done/cancelled/in_review/blocked Issues without regressing their status, clear assignee and execution locks, and let the rightful assignee release a failed owner back to todo.",
+        "Lines 281-409 adopt a timed-out owner, reject writes against a different live owner, and preserve the live checkout plus suppress checkout activity on a contention conflict.",
+        "Lines 410-544 restrict force-release to a tenant board principal, conceal outsiders with 404, return previous owner IDs and write an actor-attributed audit event; checkout also clears a terminal orphan lock after reassignment and acquires it for the new assignee.",
+        "Strong patterns are explicit Run ownership, terminal-owner adoption, live-owner conflict, side-effect-free failed checkout, terminal-status preservation, cross-tenant concealment and force-release receipts. Gaps include concurrent CAS/multi-instance races, monotonic fencing tokens and Connector lease acknowledgements, stale-status taxonomy completeness, force-release reason/approval/notification, fine-grained human roles, lease expiry/clock semantics, immutable audit/evidence and crash windows across Issue/Run/activity updates.",
+        "Sandboxed and approved unsandboxed focused Vitest both skipped all 11 tests because embedded PostgreSQL was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-544 exactly once and assess stale execution-lock detection/adoption/release, ownership and tenant checks, terminal-state preservation, concurrency/fencing, recovery evidence and Company OS Connector lease semantics."
+      ]
     }
   ]
 }

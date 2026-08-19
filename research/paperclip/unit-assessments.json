@@ -8195,18 +8195,24 @@
     },
     {
       "id": "application:server/__tests__/issue-stale-execution-lock-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-PostgreSQL HTTP tests for adopting or clearing terminal stale Issue execution/checkout locks, preserving live ownership and terminal status, releasing rightful ownership, and tenant-admin force release with audit evidence.",
+      "dependencyDirection": "Supertest/Express -> Issue routes -> Issue/Run ownership services -> Drizzle/PostgreSQL Issues, Agents, Runs, relations, comments and activity log.",
+      "keyDataModels": "Issue assignee, checkoutRunId, executionRunId/name key/lockedAt/status; Agent and current/failed/timed-out/live Runs with Issue context; board/Agent principal; force-release previous-owner receipt and activity event.",
+      "lifecycle": "Acquire Issue checkout/execution owner -> owner Run terminates or remains live -> same assignee/current Run adopts terminal ownership or release clears it; competing live Run receives conflict with no side effects; board can force clear with previous-state receipt; reassigned checkout self-heals terminal orphan.",
+      "testAssessment": "All 11 tests skipped in sandboxed and approved unsandboxed runs because embedded PostgreSQL was unavailable. Intended coverage spans failed/timed-out adoption, four non-in-progress status-preservation cases, rightful release, live-owner conflict, no false checkout activity, board/tenant authorization and orphan healing. Missing are concurrent CAS/fencing, distributed Connector leases, broader status/corruption matrices, crash atomicity, force-release policy/reason/notification and immutable audit verification.",
+      "designRationale": "Prevent dead Runs from pinning an Issue forever without allowing a contender to steal a live execution, and provide an explicit operator escape hatch with attribution.",
+      "companyOsProblem": "Company OS needs vendor-neutral execution leases that survive Connector/node failure, safely transfer ownership, preserve Work state and keep an accountable human informed whenever ownership is overridden.",
+      "companyOsFit": "ADAPT terminal-owner adoption, live-owner conflict, state-preserving release, tenant concealment and previous-state receipts. Model ExecutionLease with monotonically increasing fencing token, expiry/heartbeat and Connector attestation; mutate via tenant-scoped CAS plus transactional outbox; require reason, role/risk policy and sometimes approval for force release; notify responsible human and append an immutable LeaseOverrideReceipt.",
+      "responsibilityConflict": "A coarse board admin can force-release without a reason or approval and can clear a still-live checkout owner. Mutable activity attribution records who clicked but not why they were authorized, what execution/evidence was abandoned or whether the accountable human and Connector were notified.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-stale-execution-lock-routes.test.ts:1-544 (SHA-256 c381ddd5ca0db72e1d718160a9115f08c22c29df0c122b0bf2ef93ae47cd48e7)",
+        "git history: seven commits from f91a6e27c0feb7f92dcde981c9a741b869484e83 through b69b563aa88af811ad45e658b0d8778ccb2f373d recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 11/11 skipped",
+        "2026-08-19 approved unsandboxed focused Vitest: 11/11 skipped"
+      ],
+      "securityFindings": "CRITICAL distributed ownership gap for Company OS: Run IDs are ownership markers but no monotonic fencing/CAS concurrency proof is present. HIGH force-release authority gap: no mandatory reason, risk policy, approval or affected-party notification. HIGH transaction/audit gap: no crash-atomic proof across lease, Work and activity state. HIGH verification gap: all database/HTTP tests skipped. MEDIUM lifecycle gap: lease expiry/heartbeat and full terminal/corrupt status taxonomy are absent. POSITIVE: live-owner rejection, terminal-owner recovery, tenant 404 and actor/previous-state receipt address recurrent lock failures without blind deletion."
     },
     {
       "id": "application:server/__tests__/issue-stalled-review-decision-routes",
