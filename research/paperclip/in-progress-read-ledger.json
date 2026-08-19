@@ -10071,6 +10071,40 @@
       "completionRequirements": [
         "Read lines 1-158 exactly once and assess runtime callback/API URL selection across local/LAN/SSH/sandbox deployment, trust boundary, TLS/host validation, credential/audience leakage, SSRF/DNS rebinding, override precedence and Company OS managed/local execution-node fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/sandbox-provider-runtime",
+      "path": "server/src/__tests__/sandbox-provider-runtime.test.ts",
+      "lineCount": 221,
+      "sha256": "f9f84c41fe85e63b848da26ffd8973f566dab36b9d0fb9746b212620fedef946",
+      "linkedEvidence": { "history": [
+        "cd38c150b0e79f768d3d3f3258236e55832688dd feat: reuse Daytona sandbox leases (#8513)",
+        "547463d3a2a0fdf899dc59524eff71a24a6f315c refactor(environments): make execution environments instance-scoped (#8375)",
+        "5bd0f578fd3f44aac910aab774443980696f4f97 Generalize sandbox provider core for plugin-only providers (#4449)",
+        "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-111",
+        "112-221"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-35 expose only fake as a built-in provider, reject an unknown plugin key from built-in lookup and positively validate image/reuse config.",
+        "Lines 37-44 reject probing a plugin-backed provider through the built-in provider helper.",
+        "Lines 46-82 acquire fake leases named with heartbeat run plus UUID and show the fake provider ignores a reusable lease even when reuseLease is true because it does not opt in.",
+        "Lines 84-111 select a reusable fake lease by persisted provider/image/reuse metadata.",
+        "Lines 112-145 select a reusable plugin lease by provider/template/apiKey/timeout/reuse metadata, with no Company/node/environment/security-policy field in the tested match input.",
+        "Lines 147-177 strictly and loosely reconstruct fake config, then loosely reconstruct plugin config including remoteCwd and fakeRootDir from persisted metadata.",
+        "Lines 179-210 make strict reconstruction return null for an unregistered secure-plugin but loose reconstruction returns template, timeout, reuse and a UUID-shaped apiKey field from metadata.",
+        "Lines 212-221 release a fake lease without observable external side effects.",
+        "No real process/filesystem/network/kernel isolation, Company/principal/node scope, image digest/signature, policy/capability digest, Secret-ref type/ownership, TTL/expiry/heartbeat, concurrent acquire, stale/released reuse, provider error/timeout, cleanup retry/leak reconciliation, tampered metadata/path, plugin attestation, runtime proof or cancel/kill test is present.",
+        "Focused Vitest passed all 9 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-221 exactly once and assess sandbox provider registration/lifecycle/lease reuse, Company/instance/run isolation, command/files/network/Secret controls, cleanup/expiry/recovery, capability/attestation shape, plugin trust and Company OS ExecutionNode/Agent Runtime port fit."
+      ]
     }
   ]
 }

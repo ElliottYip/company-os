@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/sandbox-provider-runtime",
+      "auditStatus": "COMPLETE",
+      "function": "Unit tests for built-in sandbox provider registration/config validation, lease acquire/reuse selection/release and strict versus loose reconstruction of provider configuration from persisted lease metadata.",
+      "dependencyDirection": "Environment/run/issue execution code calls a provider-runtime registry for built-in providers; plugin-backed providers are rejected from that path and depend on a separate plugin runtime; persisted lease metadata feeds recovery/release configuration.",
+      "keyDataModels": "Provider key; image/template; reuseLease/timeout; environment/heartbeat-run/issue IDs; providerLeaseId; metadata; remoteCwd/fakeRootDir; UUID-shaped apiKey field; release status.",
+      "lifecycle": "Validate/probe provider config; acquire a lease; optionally find/reuse a compatible persisted lease; reconstruct config after restart; release the provider lease.",
+      "testAssessment": "All 9 focused tests pass and make the built-in-versus-plugin ownership boundary explicit. They test only a fake provider and metadata plumbing, not sandbox security. Reuse matching and loose recovery lack Company/node/security-domain fields in the asserted contract, while provider-specific paths and an ambiguous apiKey value are copied from persisted metadata. Expiry, concurrency, failures and cleanup reconciliation are absent.",
+      "designRationale": "Keep the server's provider lifecycle generic and restart-recoverable while allowing plugin-only providers without hard-coding them into the built-in registry; let each provider opt into actual lease resume.",
+      "companyOsProblem": "Vendor-neutral Agent execution needs reusable but strictly isolated environments across managed and customer-local nodes, with auditable capabilities, safe Secret delivery and cleanup that cannot cross Company, responsibility contract or security-policy boundaries.",
+      "companyOsFit": "REIMPLEMENT a Company OS SandboxLeasePort while referencing the acquire/release/recover lifecycle and built-in/plugin ownership split. Define lease identity over Company, ExecutionNode, environment, image digest, filesystem/network/tool policy, Secret/Data grant digest, Agent/work contract and expiry; reuse only after remote attestation and liveness verification. Persist typed opaque Secret references, never raw/provider-private credentials or sessions. Strictly schema-validate signed metadata; quarantine loose legacy recovery. Require cancel/kill, lease renewal, cleanup retries, leak reconciliation and secret-free short-lived runtime proof.",
+      "responsibilityConflict": "Reusing an execution environment under the wrong tenant, Agent, data grant or policy transfers ambient authority and evidence between responsible parties. Every lease must be attributable to an exact work/responsibility contract, while provider-private lease/session identifiers remain adapter-local.",
+      "decision": "REIMPLEMENT",
+      "evidence": [
+        "server/src/__tests__/sandbox-provider-runtime.test.ts:1-221 (SHA-256 f9f84c41fe85e63b848da26ffd8973f566dab36b9d0fb9746b212620fedef946)",
+        "git history: four commits from 70679a33216bae9247b1b6bddc5fcaad1c04e829 through cd38c150b0e79f768d3d3f3258236e55832688dd recorded in the read ledger",
+        "2026-08-19 focused Vitest: 1 file passed, 9/9 tests passed"
+      ],
+      "securityFindings": "CRITICAL isolation-evidence gap: the fake provider and metadata tests prove no filesystem, process, network, kernel or tenant isolation. CRITICAL reuse-scope risk: the tested reusable-lease matcher has no explicit Company, node, work, policy or grant digest, so upstream filtering is a required but unproven safety dependency. HIGH metadata-injection risk: loose recovery copies provider paths/config and ambiguous apiKey data from persistence without tested authenticity or ownership. HIGH lifecycle gap: TTL, renewal, stale/released states, cancellation, provider failure and leak cleanup are absent. HIGH attestation gap: capability declaration and secret-free runtime proof are missing. POSITIVE: plugin providers are not silently routed through the built-in helper and provider opt-in controls actual resume behavior."
+    }
+  ]
+}
