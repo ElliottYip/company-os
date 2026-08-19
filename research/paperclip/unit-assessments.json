@@ -9848,18 +9848,23 @@
     },
     {
       "id": "application:server/__tests__/projects-list-archived-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Embedded-Postgres HTTP tests for hiding projects with archivedAt by default and including them when the caller explicitly sets includeArchived=true.",
+      "dependencyDirection": "A session board actor calls real project routes and database-backed project listing; the query flag controls whether archived rows enter the returned projection.",
+      "keyDataModels": "Company; project status; archivedAt timestamp; Company membership/admin actor; includeArchived query flag; ordered project list.",
+      "lifecycle": "Persist active and archived projects; list active-only by default; opt into a combined active-plus-archived projection.",
+      "testAssessment": "The two concise cases specify an important safe default, but the suite was skipped locally because embedded PostgreSQL is unavailable. The privileged instance-admin fixture does not test ordinary authorization or tenant denial. Archive/restore transitions and effects on child workspaces, tasks, runs, permissions, writes, evidence and legal retention are entirely outside this unit.",
+      "designRationale": "Keep normal project navigation uncluttered while preserving soft-deleted/completed project visibility through an explicit query option.",
+      "companyOsProblem": "Agent Boss needs clean active views without losing historical responsibility evidence, while archive must reliably remove a project from future execution and access paths without acting like destructive deletion.",
+      "companyOsFit": "REFERENCE ONLY for the active-by-default list projection. Model archive as a versioned application command and lifecycle policy: stop or transfer active work, revoke future execution/data grants, preserve immutable responsibility/evidence records, emit an audit event, define restoration eligibility and expose archived projections only to authorized roles. Do not infer those guarantees from archivedAt filtering.",
+      "responsibilityConflict": "Merely hiding a row can make unresolved accountable work disappear from the Agent Boss view while Agents, connectors or grants remain active. Archive must surface blockers and require an accountable human decision when obligations or high-risk work remain.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/projects-list-archived-routes.test.ts:1-110 (SHA-256 5ccb249feb7e73ef3dda508cb52cefd004ec4be57abb350ba013c1870277eb89)",
+        "git history: 564870020b38a59716be5814427358fab1bbd636 Exclude archived projects from the default project list route (#10146)",
+        "2026-08-19 focused Vitest: 1 file and 2 tests skipped because embedded PostgreSQL support was unavailable; no pass claimed"
+      ],
+      "securityFindings": "HIGH lifecycle gap: archivedAt filtering does not prove execution stop, write denial, grant revocation or connector detachment. HIGH authorization gap: only an active Company admin who is also instance admin is used; cross-tenant and least-privilege access are untested. HIGH evidence gap: retention, legal hold and responsibility-chain discoverability are absent. MEDIUM API gap: invalid query values, pagination, stable ordering and restoration semantics are untested. POSITIVE: archived records are retained and excluded from the default operational list."
     },
     {
       "id": "application:server/__tests__/qa-routine-secrets-e2e",

@@ -9584,6 +9584,32 @@
       "completionRequirements": [
         "Read lines 1-233 exactly once and assess project environment/secret binding normalization, plaintext handling, tenant authorization, response redaction, adapter/runtime leakage, validation/error codes, update lifecycle and Company OS Data/Secret ports fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/projects-list-archived-routes",
+      "path": "server/src/__tests__/projects-list-archived-routes.test.ts",
+      "lineCount": 110,
+      "sha256": "5ccb249feb7e73ef3dda508cb52cefd004ec4be57abb350ba013c1870277eb89",
+      "linkedEvidence": { "history": [
+        "564870020b38a59716be5814427358fab1bbd636 Exclude archived projects from the default project list route (#10146)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-110"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-43 gate the suite on embedded PostgreSQL and mount real project routes with a session board actor that is both active Company admin and instance admin.",
+        "Lines 44-85 create a temporary database and seed one active project plus one completed project with archivedAt set.",
+        "Lines 87-98 assert the default Company project list returns only the active project.",
+        "Lines 100-110 assert includeArchived=true returns active then archived project.",
+        "No ordinary-member/cross-Company authorization, false/invalid/repeated query, pagination/order/count, archived read detail, restore, concurrent archive, child workspace/task/run/permission effects, write prohibition, evidence retention, legal hold or audit access test is present.",
+        "Focused Vitest loaded successfully but embedded-Postgres support was unavailable on this host, so 1 file and both tests were skipped; no passing result is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-110 exactly once and assess archived-project default/query semantics, tenant authorization, invalid input/error codes, lifecycle consistency, execution exclusion, audit retention and Company OS soft-delete/projection fit."
+      ]
     }
   ]
 }
