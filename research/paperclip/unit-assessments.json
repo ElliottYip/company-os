@@ -8559,18 +8559,23 @@
     },
     {
       "id": "application:server/__tests__/issues-service",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Large service integration/regression suite spanning Issue queries, participation and inbox projections, Agent assignability, hierarchy and dependency graphs, child/workspace/responsibility inheritance, execution locks, accepted-plan decomposition, comments and recovery.",
+      "dependencyDirection": "Directly exercises issueService over the real Drizzle/PostgreSQL schema plus instance settings and shared policy helpers; Issue service orchestrates persistence models for organizations, Goals, Projects, documents, interactions, workspaces, Runs, activity and Agents.",
+      "keyDataModels": "Issue and hierarchy; blocker relation; responsibleUserId and human/Agent creators/assignees; Goal/Project; comment and derived Run attribution; interaction; inbox archive/read state; execution/project workspace and operation; checkout/execution Run locks; accepted plan document/revision/confirmation/decomposition claim; activity receipt.",
+      "lifecycle": "Create/list/search/read/participate/archive; assign or reject Agent; inherit responsibility and workspace; create children and blockers; transition terminal state and expire interactions; calculate dependency/finalize readiness; checkout/release/adopt/clear execution ownership; decompose an approved plan exactly once; add and attribute comments.",
+      "testAssessment": "116 cases are declared: 7 pure helper tests passed and 109 embedded-PostgreSQL cases skipped locally. Coverage is unusually rich for regressions: conservative authorship, structured assignability conflicts, deep/cyclic graphs, filters and payload bounds, blocker cycles/readiness, workspace inheritance, stale-lock races, exact-once/partial/concurrent plan decomposition and malformed Run IDs. Weaknesses include duplicated workspace-inheritance sections, a very broad service fixture, little explicit cross-tenant composition testing outside mentions, no same-field optimistic-version test, no durable responsibility-contract/approval/evidence test and skipped database execution on this host.",
+      "designRationale": "Centralize Issue invariants so routes, pipelines, recovery and Agents share consistent behavior, then accumulate regression tests for concurrency and legacy data encountered in production.",
+      "companyOsProblem": "Company OS needs reliable work lifecycle and graph mechanics, but every execution must retain immutable human responsibility, approval, data authorization, evidence and Connector lease provenance rather than only mutable Issue fields.",
+      "companyOsFit": "ADAPT selected invariants and tests, not the monolithic service boundary. Split canonical ownership into Work aggregate, ResponsibilityContract, DependencyGraph, ExecutionLease, Context/DataGrant projection and PlanDecomposition saga. Preserve conservative no-guess provenance, structured codes, graph cycle guards, bounded projections, exact-once fingerprints, partial recovery and compare-and-set fencing. Replace responsibleUserId/trust boolean with an authority-issued contract; snapshot Goal/policy/data versions; require explicit capability reauthorization for inherited workspace/context; bind finalize and approvals to artifact/action digests; emit immutable receipts/outbox events; quarantine rather than silently null invalid execution provenance.",
+      "responsibilityConflict": "A mutable responsibleUserId inherited from creator, actor, Run or parent is not enough to answer who accepted legal/organizational responsibility under which policy. Reassignment and resumed plan decomposition can change the acting Agent while retaining or replacing claim ownership without a complete human-approved handoff record. Workspace settings and host commands can propagate to children or follow-ups without a demonstrated renewed data/tool contract, while malformed Run provenance is silently erased.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issues-service.test.ts:1-6705 (SHA-256 e7e35f5dc185b4965ed7f4f6a4044a74640893adb2e94a957a78af684d5fe84e)",
+        "git history: fifty commits from dcac49a4fd4739ec7177b196a869aa5d1cc169d9 through 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 7 passed and 109 skipped because embedded PostgreSQL was unavailable"
+      ],
+      "securityFindings": "POSITIVE: timing alone never establishes Agent authorship; structured mentions are same-tenant; terminated/invalid-chain Agents are rejected before mutation; blocker and parent cycles terminate; list payloads are bounded; stale releases do not overwrite successor locks; accepted revisions and child fingerprints are cross-parent and concurrency guarded. CRITICAL responsibility gap: responsibleUserId plus a trustExplicitResponsibleUserId boolean is an ambient-authority footgun and lacks contract/policy/digest history. CRITICAL execution risk: free-form provision/teardown commands are persisted and synchronized into reusable workspaces. HIGH inheritance risk: workspace, service context and execution settings propagate without demonstrated per-child capability/data-egress reauthorization. HIGH causality risk: a later finalize attributed to another Issue can clear a shared-workspace dependency barrier. HIGH provenance gap: malformed or missing Run IDs are silently nulled. HIGH consistency gap: authoritative receipts lack demonstrated expected-version/CAS for conflicting same-field writes and immutable event linkage. HIGH tenant gap: cross-company Goal/parent/workspace/blocker composition is not comprehensively tested here. TEST LIMITATION: 109 of 116 cases skipped on this host."
     },
     {
       "id": "application:server/__tests__/issues-user-context",
