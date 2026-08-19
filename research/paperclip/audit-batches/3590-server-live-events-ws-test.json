@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/live-events-ws",
+      "auditStatus": "COMPLETE",
+      "function": "Focused unit suite for raw WebSocket upgrade socket cleanup when authenticated live-event authorization rejects, the peer closes early or the socket errors asynchronously.",
+      "dependencyDirection": "Drives the live-events WebSocket server setup through a fake HTTP server and raw Duplex-like socket; session resolution and logger are seams, while no database/event source is used.",
+      "keyDataModels": "HTTP upgrade request path/headers, deployment mode, asynchronous session result, raw socket writable/ended/destroyed state and warning log.",
+      "lifecycle": "Receive upgrade; start asynchronous authorization; handle early close or error; optionally write 403; destroy socket; remove temporary listeners.",
+      "testAssessment": "Three fast unit cases pass and specifically cover close-before-reject, EPIPE-during-auth and listener cleanup after 403. They do not validate successful sessions, tenant/path authorization, Origin/Host, token transport, event projection, replay/ordering, reconnect, rate/size/backpressure or redaction.",
+      "designRationale": "Prevent process crashes, write-after-close errors and listener leaks in an asynchronous HTTP-upgrade rejection path.",
+      "companyOsProblem": "Company OS needs a secure, resumable tenant-scoped event stream for its Web, mobile clients and Connectors, including reliable transport cleanup under adversarial network behavior.",
+      "companyOsFit": "REFERENCE ONLY for raw-socket cleanup tests. Company OS EventPort should expose authenticated tenant/principal subscriptions, allowed event families, monotonically ordered cursor/sequence, resume window and snapshot fallback, bounded payloads, backpressure/slow-consumer eviction, heartbeat/expiry and structured disconnect codes. Browser transport additionally needs explicit Origin and credential policy; every event projection must enforce organization, data-contract and responsibility visibility before publication.",
+      "responsibilityConflict": "Transport cleanup has no direct conflict, but a live stream without proven tenant/principal and responsibility visibility filtering could expose goals, approvals, evidence or Agent activity to an unauthorized observer. These tests provide no evidence for that boundary.",
+      "decision": "REFERENCE ONLY",
+      "evidence": [
+        "server/src/__tests__/live-events-ws.test.ts:1-123 (SHA-256 7f5b676cd44e2573feebfd6a913443b7eccd689f9122f62dbe288a3fa190ba89)",
+        "git history: e93d78b46c1dc074086ff958bc1de3378701cbc7 recorded in the read ledger",
+        "2026-08-19 focused Vitest: 3/3 passed"
+      ],
+      "securityFindings": "POSITIVE: errors during pending auth are contained; no write occurs after close; rejection cleanup removes listeners and destroys the socket. CRITICAL evidence gap: successful authentication and company subscription authorization are entirely untested here. HIGH browser-security gap: Origin/Host/subprotocol and cookie/token behavior are untested. HIGH confidentiality gap: event-level tenant/data/responsibility projection is untested. HIGH availability gap: rate, size, replay, backpressure and slow-consumer behavior are untested."
+    }
+  ]
+}

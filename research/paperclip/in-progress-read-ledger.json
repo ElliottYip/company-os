@@ -8580,6 +8580,30 @@
       "completionRequirements": [
         "Read lines 1-104 exactly once and assess join-request idempotency key, concurrent duplicate behavior, identity and company scope, approval state, expiry/revocation, enumeration, stable errors and Company OS human-principal onboarding responsibility."
       ]
+    },
+    {
+      "id": "application:server/__tests__/live-events-ws",
+      "path": "server/src/__tests__/live-events-ws.test.ts",
+      "lineCount": 123,
+      "sha256": "7f5b676cd44e2573feebfd6a913443b7eccd689f9122f62dbe288a3fa190ba89",
+      "linkedEvidence": { "history": [
+        "e93d78b46c1dc074086ff958bc1de3378701cbc7 harden live events upgrade sockets (#8383)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-123"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-55 define a fake raw upgrade socket that records end/destroy behavior and simulates asynchronous finish, close and error events.",
+        "Lines 56-123 verify an authenticated-mode upgrade does not write after early close, absorbs/logs EPIPE while session resolution is pending, and flushes 403 then destroys the socket and removes error/close/finish listeners.",
+        "The suite is solid transport cleanup regression coverage, but it does not exercise successful authentication, company path authorization, cross-tenant subscriptions, Origin/Host/subprotocol checks, cookie/token handling, event filtering, sequence/replay, reconnect, rate limits, message size, slow consumers/backpressure or secret redaction.",
+        "Focused Vitest passed all 3 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-123 exactly once and assess WebSocket upgrade authentication, path/origin/host validation, tenant subscription isolation, unauthenticated leakage, malformed inputs, rate/backpressure, reconnect/replay and Company OS event-port guarantees."
+      ]
     }
   ]
 }
