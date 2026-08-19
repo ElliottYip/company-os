@@ -8195,6 +8195,38 @@
       "completionRequirements": [
         "Read lines 1-516 exactly once and assess interaction telemetry field minimization, actor/addressee identifiers, answer/reason leakage, consent/export governance, duplicate emission, failure isolation and separation from Company OS responsibility evidence."
       ]
+    },
+    {
+      "id": "application:server/__tests__/issue-tree-control-routes",
+      "path": "server/src/__tests__/issue-tree-control-routes.test.ts",
+      "lineCount": 419,
+      "sha256": "904e08b64f9b5bbc26c3c9e7e0a1324626c7d04866577c479f4f9bd0c0b480f6",
+      "linkedEvidence": { "history": [
+        "7f2ed0ad90d7186d108f65400e322bda08dcbfe2 close cross-tenant existence oracle (#3967)",
+        "70b1a9109d756818fb448beafa67af27babb52de improve CLI API parity coverage (#6626)",
+        "1991ec9d6f852e5a9e0d2b3c8d9eba299c911c34 split backend control-plane QoL (#4700)",
+        "5a0c1979cf439d434c527de4935687a178be4b8e runtime lifecycle recovery and live visibility (#4419)",
+        "f98c348e2b3011b2fdc905c7a41f73d4f1998ac3 Issue subtree pause, cancel and restore controls (#4332)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-220",
+        "221-419"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-129 reject cross-company preview with uniform 404, deny Agent hold creation before Issue lookup and validate hold UUIDs before service access; authorization is otherwise coarse board companyIds with no tested role matrix.",
+        "Lines 130-220 create pause/cancel holds, interrupt previewed active Runs, cancel unclaimed subtree wakes, mark affected Issues cancelled and write interruption/status activity.",
+        "Lines 221-277 deliberately continue cancelling Issue status even when adapter Run interruption fails, return success and record the raw adapter error in activity.",
+        "Lines 278-377 restore saved Issue states, optionally wake assigned Agents, release prior cancel/restore holds, and attempt cleanup release if restore application throws.",
+        "Lines 378-419 model resume as an immediately released operation over pause holds with no Run cancellation, status restoration or wake side effects.",
+        "Strong patterns are preview surface, board/tenant boundary, uniform concealment, explicit hold records, active Run/wake interruption, saved-state restore, optional wake and cleanup on restore failure. Critical gaps are split-brain cancellation after Connector stop failure, no preview snapshot/confirmation token, no transactional saga/outbox, raw external error logging, coarse board authority, no overlapping-hold/concurrent mutation tests, no per-node accountable-human approval/notification, no Connector fencing/revocation receipt and no proof partial restore is compensated.",
+        "Sandboxed focused Vitest failed all 9 tests only because Supertest could not bind TCP (EPERM); approved unsandboxed focused Vitest passed all 9 tests."
+      ],
+      "completionRequirements": [
+        "Read lines 1-419 exactly once and assess tree pause/resume/cancel propagation, actor/tenant authorization, dry-run/confirmation, Run cancellation and Connector effects, idempotency/concurrency, audit receipts and Company OS per-node responsibility constraints."
+      ]
     }
   ]
 }

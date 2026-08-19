@@ -8339,18 +8339,24 @@
     },
     {
       "id": "application:server/__tests__/issue-tree-control-routes",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Mocked HTTP tests for previewing and applying subtree pause/cancel/restore/resume holds, interrupting Runs and queued wakes, changing Issue status, optional Agent wakeup and failure cleanup.",
+      "dependencyDirection": "Supertest/Express -> tree-control routes -> mocked Issue/tree-control/heartbeat/activity services; persistence, graph traversal and transaction semantics are not exercised.",
+      "keyDataModels": "Tenant board/Agent principal; root Issue; hold mode/status/reason/metadata; preview affected totals/warnings/active Runs; updated Issue IDs/saved status; released hold IDs; Run interruption and activity record.",
+      "lifecycle": "Authorize root and optionally preview -> create hold -> for pause/cancel interrupt active Runs and queued wakes, then cancel status for cancel mode -> restore saved states/release cancel holds and optionally wake assignees -> resume releases pause holds -> cleanup restore hold if application fails.",
+      "testAssessment": "Approved unsandboxed run passed all 9 tests; sandboxed run failed solely on TCP EPERM. Coverage checks tenant concealment, Agent denial, malformed IDs, pause/cancel side effects, interruption failure, restore/wake/cleanup and side-effect-free resume. It omits real persistence/graph authorization, preview-to-apply binding, concurrent/overlapping holds, saga atomicity, partial restore, Connector fencing, role/risk policy and per-node responsibility.",
+      "designRationale": "Provide an operator emergency control over an Issue subtree with preview, durable hold semantics, active execution interruption and reversible status restoration.",
+      "companyOsProblem": "Agent Boss needs organization-wide emergency pause/cancel/restore controls that revoke execution authority across heterogeneous Connectors without losing truthful state, while respecting each Work item's responsible human and approval policy.",
+      "companyOsFit": "ADAPT preview/hold/restore concepts, uniform tenant concealment and explicit Run/wake effects. Bind apply to a signed previewSnapshotVersion and policy version; model TreeControlCommand as a durable saga with per-node outcomes, CAS/fencing-token capability revocation and Connector acknowledgements; expose partial/failed interruption rather than reporting clean cancellation; require reason, role/risk policy and approval when appropriate; notify accountable humans and append immutable control receipts.",
+      "responsibilityConflict": "When adapter interruption fails, Issues are still marked cancelled and the API returns 201, creating a dangerous split brain: the control plane says stopped while the Agent may still act. Coarse board access is not accountable authority for every subtree node, and no responsible-human notification or approval is proved.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/issue-tree-control-routes.test.ts:1-419 (SHA-256 904e08b64f9b5bbc26c3c9e7e0a1324626c7d04866577c479f4f9bd0c0b480f6)",
+        "git history: five commits from 7f2ed0ad90d7186d108f65400e322bda08dcbfe2 through f98c348e2b3011b2fdc905c7a41f73d4f1998ac3 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 9/9 failed on TCP EPERM only",
+        "2026-08-19 approved unsandboxed focused Vitest: 9/9 passed"
+      ],
+      "securityFindings": "CRITICAL split-brain safety flaw for Company OS adoption: failed Run interruption does not prevent cancelled control-plane status or success response. CRITICAL distributed-systems gap: no Connector fencing/capability revocation/acknowledgement or saga proof. HIGH TOCTOU gap: preview is not bound to apply snapshot. HIGH responsibility gap: no role/risk policy, per-node accountable human or approval. HIGH audit leakage: raw adapter error is written to activity. MEDIUM restore gap: partial application compensation is unproven. POSITIVE: Agent denial, uniform tenant 404, explicit holds and restore cleanup are strong starting controls."
     },
     {
       "id": "application:server/__tests__/issue-tree-control-service",
