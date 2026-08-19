@@ -9553,6 +9553,37 @@
       "completionRequirements": [
         "Read lines 1-165 exactly once and assess project/goal telemetry authorization, tenant isolation, aggregation semantics, sensitive metadata, stable API/error codes, time windows, empty/deleted state and Company OS projection fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/project-routes-env",
+      "path": "server/src/__tests__/project-routes-env.test.ts",
+      "lineCount": 233,
+      "sha256": "4c00e99031812daa65859ec7dcea2e49eb46af6fe78cf73e7e1447b0b4517841",
+      "linkedEvidence": { "history": [
+        "dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 Add low-trust review containment (#7530)",
+        "9a8d2199492654930ba0864dd5c0757163998649 [codex] Stabilize tests and local maintenance assets (#4423)",
+        "70679a33216bae9247b1b6bddc5fcaad1c04e829 Add sandbox environment support (#4415)",
+        "e4995bbb1cc36454fc0fa3142ad9c7030c397ff0 Add SSH environment support (#4358)",
+        "73eb23734f25c570d88665e672f80d740797c632 docs: use structured agent mentions in paperclip skill (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-117",
+        "118-233"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-103 mock project, secret, environment, access, telemetry and workspace runtime services and mount project routes under a local_implicit board actor scoped to company-1.",
+        "Lines 104-162 define a project response fixture that includes env and absolute managed/effective local folders, grant all access decisions and make normalization an identity function by default.",
+        "Lines 164-202 assert create passes a secret_ref environment binding through Company-scoped normalization into persistence and records only envKeys in activity details.",
+        "Lines 204-233 assert update accepts a normalized plain binding containing a secret-looking value, returns a project carrying that env object, and records only changedKeys plus envKeys in activity details.",
+        "No response/list/get redaction, raw-versus-normalized input distinction, plaintext prohibition/classification, cross-Company secret reference, read/write capability, secret existence/version/rotation/revocation, update deletion, reserved variable, size/encoding/injection, runtime audience, local-node resolution or audit serializer assertion beyond the mocked details object is present.",
+        "Sandboxed focused Vitest failed 2/2 solely because Supertest TCP listen was denied with EPERM; approved unsandboxed focused Vitest passed 2/2."
+      ],
+      "completionRequirements": [
+        "Read lines 1-233 exactly once and assess project environment/secret binding normalization, plaintext handling, tenant authorization, response redaction, adapter/runtime leakage, validation/error codes, update lifecycle and Company OS Data/Secret ports fit."
+      ]
     }
   ]
 }

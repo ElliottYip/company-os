@@ -9809,18 +9809,24 @@
     },
     {
       "id": "application:server/__tests__/project-routes-env",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Route-level tests that project create/update normalize environment bindings before persistence and restrict activity-log details to changed field names and environment variable keys.",
+      "dependencyDirection": "Board-authenticated project HTTP routes call a Company-scoped Secret service normalizer, pass its result to the project service, and send metadata-only details to the activity logger.",
+      "keyDataModels": "Project env map; secret_ref binding with secretId/version; plain binding with value; Company/project identity; activity details envKeys/changedKeys; project response including environment and workspace paths.",
+      "lifecycle": "Receive environment bindings on project create or update; normalize under Company context; persist the normalized map; return the project; record only affected key names in activity metadata.",
+      "testAssessment": "Both positive cases pass outside the restricted sandbox and the metadata-only activity-log assertion is useful. Service mocking prevents proof that normalization validates Company ownership or encrypts/rejects content. A secret-looking plain value is explicitly accepted into the persisted/returned fixture, while response redaction, read routes, rotation/revocation, runtime resolution and negative authorization/input cases are absent.",
+      "designRationale": "Centralize environment binding normalization so routes do not implement Secret persistence details and keep raw values out of routine activity-log metadata.",
+      "companyOsProblem": "Company OS must configure Agents and data connectors without placing vendor credentials in its control plane, logs, API projections or Connector contract, across managed-cloud and customer-local execution profiles.",
+      "companyOsFit": "ADAPT the Company-scoped normalization port, typed secret_ref and key-only audit metadata. Separate non-sensitive configuration from Secret bindings; reject or quarantine credential-like plain values in formal mode. Store opaque scope/version/audience references, validate ownership, resolve just in time inside the authorized execution plane, return only redacted descriptors, support rotation/revocation and ensure self-hosted/local nodes can retain secret material without sending it to cloud control.",
+      "responsibilityConflict": "An environment map containing plaintext can silently expand an Agent's authority and leak through project reads without identifying which human granted which secret scope. Company OS must bind every secret/data grant to an accountable human, purpose, Agent/work contract, expiry and auditable revocation.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/project-routes-env.test.ts:1-233 (SHA-256 4c00e99031812daa65859ec7dcea2e49eb46af6fe78cf73e7e1447b0b4517841)",
+        "git history: five commits from 73eb23734f25c570d88665e672f80d740797c632 through dbebf30c89ca6302b6ed6b36a484b4efe5cbc4e2 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 0/2 passed solely due Supertest TCP listen EPERM",
+        "2026-08-19 approved unsandboxed focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "CRITICAL plaintext boundary gap: the tested normalized model permits a plain value carrying secret material and the returned project fixture retains it. HIGH tenant-reference gap: no test rejects a secretId owned by another Company. HIGH response/runtime gap: API redaction, Connector exclusion, audience-limited resolution and local execution-plane custody are untested. HIGH lifecycle gap: version pinning/latest semantics, rotation, expiry, revocation and deletion are absent. MEDIUM authorization gap: an allow-all access mock reports project:read even for writes, so mutation capability fidelity is not demonstrated. POSITIVE: activity details assert environment key names rather than raw values."
     },
     {
       "id": "application:server/__tests__/project-shortname-resolution",
