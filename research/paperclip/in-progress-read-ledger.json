@@ -8976,6 +8976,30 @@
       "completionRequirements": [
         "Read lines 1-350 exactly once and assess tenant-existence privacy, Agent self/cross-Agent privilege changes, human authority, permission/budget/adapter upgrades, approval and responsibility binding, race/idempotency/audit behavior, lifecycle side effects, stable errors and Company OS accountable-human fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/pi-local-adapter-environment",
+      "path": "server/src/__tests__/pi-local-adapter-environment.test.ts",
+      "lineCount": 101,
+      "sha256": "5de4d0bac7a6af629a219358fa8f6f1ecd8b1e5f0272b13a65db0f68258cb3f1",
+      "linkedEvidence": { "history": [
+        "73eb23734f25c570d88665e672f80d740797c632 structured Agent mentions (#4103)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-101"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-38 create executable Node fixtures. Success supports --list-models and emits session/Agent/turn JSON with a usage-bearing assistant result; failure emits an English npm registry 404 for a stale package.",
+        "Lines 39-76 verify a configured PATH resolves the fake binary, a raw OPENAI_API_KEY and selected model are passed, discovery plus an active hello execution yield pi_models_discovered and pi_hello_probe_passed, and aggregate health passes.",
+        "Lines 77-101 verify the npm error string becomes a pi_package_install_failed warning with a targeted removal hint. The suite does not cover missing/invalid cwd, executable provenance, malicious PATH entries, credential redaction/reference resolution, model mismatch, version/capability negotiation, timeouts/cancel/output bounds, network egress, probe side effects or cleanup on assertion failure.",
+        "Focused Vitest passed both tests in the sandbox."
+      ],
+      "completionRequirements": [
+        "Read lines 1-101 exactly once and assess Pi binary/cwd/version health checks, environment and secret precedence, active-probe execution, structured errors, timeout/output/network controls, false readiness and Company OS Connector health-contract fit."
+      ]
     }
   ]
 }

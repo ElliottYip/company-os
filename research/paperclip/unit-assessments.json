@@ -9036,18 +9036,23 @@
     },
     {
       "id": "application:server/__tests__/pi-local-adapter-environment",
-      "auditStatus": "PENDING",
-      "function": null,
-      "dependencyDirection": null,
-      "keyDataModels": null,
-      "lifecycle": null,
-      "testAssessment": null,
-      "designRationale": null,
-      "companyOsProblem": null,
-      "companyOsFit": null,
-      "responsibilityConflict": null,
-      "decision": null,
-      "evidence": []
+      "auditStatus": "COMPLETE",
+      "function": "Active environment-diagnostic tests for the local Pi adapter, checking model discovery, a minimal execution probe, structured pass codes and targeted diagnosis of a stale npm package configuration.",
+      "dependencyDirection": "The test calls the Pi adapter's testEnvironment with Company/adapter configuration. A controllable PATH resolves an executable fixture; raw environment credentials and model/cwd configuration cross into external child processes whose output is classified into health checks.",
+      "keyDataModels": "Pi adapter environment request; command/cwd/model/env; PATH and OPENAI_API_KEY; model-list text; session/agent_start/turn_start/turn_end JSON; usage/cost; structured health code/level/hint and aggregate status.",
+      "lifecycle": "Resolve configured binary; run model discovery; run a hello Agent turn; recognize a terminal assistant result and report passing readiness; alternatively map an npm package-registry failure to a targeted warning/remediation hint.",
+      "testAssessment": "Both focused tests pass. The two-stage discovery-plus-execution probe gives stronger readiness evidence than checking binary existence alone, and stable check codes improve operator handling. Coverage omits executable/package identity and version, unsafe PATH resolution, cwd validation, secret references/redaction, selected-model mismatch, protocol/capability compatibility, timeout/cancel/output bounds, network policy, probe side effects, malformed streams and cleanup through finally. The stale-package decision is coupled to English npm stderr.",
+      "designRationale": "Detect whether Pi can both enumerate the configured model surface and complete a real minimal turn, while giving an actionable warning for a known obsolete package-install path.",
+      "companyOsProblem": "Company OS needs trustworthy Connector readiness for managed and customer-local nodes without exposing secrets or allowing a control-plane health check to become uncontrolled code/model/network execution.",
+      "companyOsFit": "ADAPT the layered health model: passive manifest/signature/version validation, capability/model discovery and an explicitly authorized active canary. Execute probes only on the bound execution node with package identity verification, fixed executable resolution, scoped network/data policy, time/output/cost budgets and full audit. Resolve opaque secret references locally into a minimal allowlisted environment and redact all outputs. Return stable health reason codes and structured provider parameters; keep text signatures as quarantined compatibility fallbacks. Health never grants work authority.",
+      "responsibilityConflict": "The hello probe performs an Agent/model action using credentials but is not bound to an accountable human, approved purpose, data/egress grant, budget or evidence record. A technically passing probe must remain separate from organizational authorization to execute real work.",
+      "decision": "ADAPT",
+      "evidence": [
+        "server/src/__tests__/pi-local-adapter-environment.test.ts:1-101 (SHA-256 5de4d0bac7a6af629a219358fa8f6f1ecd8b1e5f0272b13a65db0f68258cb3f1)",
+        "git history: 73eb23734f25c570d88665e672f80d740797c632 recorded in the read ledger",
+        "2026-08-19 sandboxed focused Vitest: 2/2 passed"
+      ],
+      "securityFindings": "POSITIVE: readiness includes both discovery and real minimal execution; results use stable codes; known install drift gets a targeted diagnostic. CRITICAL active-probe boundary: health invokes an Agent/model process and therefore consumes code, credentials, network and possibly money. HIGH secret risk: a raw API key is present in adapter environment configuration and no reference resolution/redaction is proved. HIGH executable risk: PATH is caller-controlled and no package/signature/version identity is tested. HIGH egress/cost gap: no model-call network allowlist, data policy, timeout or cost ceiling is covered. MEDIUM parser fragility: stale-package recognition depends on English npm registry text. MEDIUM lifecycle gap: cleanup is not guarded by finally and hung/malformed probes are untested."
     },
     {
       "id": "application:server/__tests__/pi-local-execute",
