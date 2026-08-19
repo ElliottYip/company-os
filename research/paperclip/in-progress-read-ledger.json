@@ -9124,6 +9124,31 @@
       "completionRequirements": [
         "Read lines 1-113 exactly once and assess plugin session creation/turn/reply delivery, tenant/principal/Agent binding, authorization, private session isolation, ordering/idempotency/retry, content minimization, audit/evidence and Company OS Connector session boundary fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/plugin-config-startup-delivery",
+      "path": "server/src/__tests__/plugin-config-startup-delivery.test.ts",
+      "lineCount": 136,
+      "sha256": "01f12725573b45a314a79493973f237af5caea76d91a6d9754e6a191a0a9e31a",
+      "linkedEvidence": { "history": [
+        "1ebf5254b6849ad04d1cce8ccf9cf8373f8229c4 deliver stored config to freshly-started plugin workers (#10092)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-136"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-22 explicitly document one worker per plugin rather than per Company; because proactive setup has no Company-scoped invocation, loader startup replays every configured Company's config to that shared worker.",
+        "Lines 23-84 define relational plugin/company/config fixtures with manifest/version/apiVersion/status but no worker isolation, config revision, secret reference or delivery acknowledgement model.",
+        "Lines 85-108 store Company-specific configJson containing Slack bot/app token-shaped plaintext values and require listConfigs(pluginId) to return both Companies' complete values to the caller.",
+        "Lines 109-136 verify filtering between plugins and empty results. They do not test Company-authorized retrieval, per-tenant worker isolation, encryption/decryption boundary, redaction, secret references, rotation/revocation, version compatibility, config revision ordering, acknowledgement, startup partial failure, rollback or worker compromise.",
+        "Focused Vitest discovered the file but skipped all 3 tests because embedded Postgres support was unavailable."
+      ],
+      "completionRequirements": [
+        "Read lines 1-136 exactly once and assess persisted plugin config startup/restart delivery, tenant/plugin/version binding, secret separation/redaction, acknowledgement/failure/rollback, stale config and Company OS extension configuration boundary fit."
+      ]
     }
   ]
 }

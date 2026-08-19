@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+  "units": [
+    {
+      "id": "application:server/__tests__/plugin-config-startup-delivery",
+      "auditStatus": "COMPLETE",
+      "function": "Database-backed regression tests for replaying every Company-scoped configuration row to a newly started singleton plugin worker, while filtering rows by plugin ID.",
+      "dependencyDirection": "Company administrators persist plugin config through pluginRegistryService; one process is spawned per plugin across Companies; registry.listConfigs(pluginId) loads all tenant rows and the loader delivers their full configJson to that shared worker at startup.",
+      "keyDataModels": "Plugin ID/key/package/version/apiVersion/manifest/capabilities/status/install order; Company; pluginConfig Company row; arbitrary configJson containing Slack bot/app token-shaped values.",
+      "lifecycle": "Install a plugin; save separate Company configs; start one plugin-wide worker; list and replay every configured Company's values; return none if unconfigured and exclude other plugin IDs.",
+      "testAssessment": "The three scenarios explicitly verify the intended startup replay and plugin-level filtering, but all were skipped locally because embedded Postgres was unavailable. The design test demonstrates a large multi-tenant secret blast radius: one worker receives complete config for every configured Company. It omits Company-authorized reads, isolation after worker compromise, config versions/order, acknowledgement, partial delivery and rollback, restart races, schema validation, secret reference resolution, redaction, rotation/revocation and upgrade compatibility. The assertions prove decrypted/raw token-shaped values reach listConfigs callers; they do not by themselves prove the database's at-rest encryption behavior.",
+      "designRationale": "Allow proactive plugins to initialize Company-specific integrations before any Company-scoped invocation, compensating for a plugin-wide worker bootstrap that otherwise has no tenant config.",
+      "companyOsProblem": "Company OS extensions and Connectors must support proactive behavior without concentrating every enterprise tenant's secrets in a shared process or cloud control plane, especially for self-hosted/local execution.",
+      "companyOsFit": "REJECT singleton-worker all-tenant full-config replay. Use declarative non-secret config revisions plus opaque SecretPort references. Bind each invocation or proactive subscription to one tenant/execution domain and capability set; resolve only required secrets just-in-time inside the customer's execution node; issue short-lived audience-scoped material; never return other tenant rows to the process. Require config schema/version, monotonic revision, signed delivery envelope, acknowledgement, health, rollback, rotation/revocation and audit events. Isolation may be per tenant, sandbox or connector node depending risk, but the security boundary cannot be plugin ID alone.",
+      "responsibilityConflict": "A shared plugin process can act proactively for multiple Companies with all of their configuration, but no accountable human, purpose, responsibility contract, data scope or per-action approval accompanies startup replay. A compromised or confused plugin can therefore cross organizational responsibility and secret boundaries.",
+      "decision": "REJECT",
+      "evidence": [
+        "server/src/__tests__/plugin-config-startup-delivery.test.ts:1-136 (SHA-256 01f12725573b45a314a79493973f237af5caea76d91a6d9754e6a191a0a9e31a)",
+        "git history: 1ebf5254b6849ad04d1cce8ccf9cf8373f8229c4 recorded in the read ledger",
+        "2026-08-19 focused Vitest: file discovered; 3/3 tests skipped because embedded Postgres support was unavailable"
+      ],
+      "securityFindings": "CRITICAL multi-tenant blast radius: one plugin worker receives every configured Company's full config at startup. CRITICAL secret delivery risk: token-shaped Slack credentials are returned as raw config values rather than opaque references or short-lived scoped material. HIGH isolation gap: filtering by plugin ID prevents cross-plugin bleed but provides no isolation between Companies inside the same worker. HIGH lifecycle gap: no config revision/order, acknowledgement, retry, partial-failure, rollback, rotation or revocation behavior. HIGH authorization gap: listConfigs is not tested with a Company principal or per-tenant capability decision. MEDIUM compatibility gap: manifest apiVersion exists but startup config schema/version migration is absent. TEST GAP: all database-backed scenarios were skipped locally."
+    }
+  ]
+}
