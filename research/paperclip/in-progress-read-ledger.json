@@ -9027,6 +9027,40 @@
       "completionRequirements": [
         "Read lines 1-210 exactly once and assess Pi process arguments, cwd/workspace and skill PATH handling, prompt/session/vendor-state isolation, environment/secrets, output/result/evidence parsing, cancellation/timeout/idempotency, errors and Company OS neutral Connector fit."
       ]
+    },
+    {
+      "id": "application:server/__tests__/pipelines-routes",
+      "path": "server/src/__tests__/pipelines-routes.test.ts",
+      "lineCount": 1276,
+      "sha256": "8a6ef4d10a97d845f83c0c55c6ed415e75a1362d7127ba7036dc47ba1bcf0b1f",
+      "linkedEvidence": { "history": [
+        "3e31bf09bc35fb3e2c7d15308c75ad765b1df866 pipeline automation title templates (#8787)",
+        "43b005b704f80aea3ce37cab8136920749c73ee6 pipeline workflow primitives and operator UI (#7903)"
+      ]},
+      "auditStatus": "IN_PROGRESS",
+      "completedRanges": [
+        "1-220",
+        "221-440",
+        "441-660",
+        "661-880",
+        "881-1100",
+        "1101-1276"
+      ],
+      "sourceReadComplete": true,
+      "nextLine": null,
+      "notes": [
+        "Lines 1-155 define a broad embedded-Postgres route harness, board actor, Company/Agent/workspace fixtures and cleanup across pipeline, work, execution, permission and audit tables.",
+        "Lines 156-352 exercise the full CRUD/state surface: pipeline/stage/transition/document, single and forward-referencing batch case ingestion, optimistic patch, lease claim/release, suggestions, reviews, blockers/rollups/context, idempotent conversation opening, issue links, automation retry and stage deletion with case migration.",
+        "Lines 353-440 prove case content plus workspaceRef update in one version/event transaction, filter retired children and preserve Agent/run attribution for issue link/unlink events. The Agent grant is inserted directly without human-grant provenance.",
+        "Lines 441-660 expose automation provenance and carry project/workspace/execution context into generated execution issues; mismatched project/workspace references fail before issue creation.",
+        "Lines 661-835 preserve legacy automation defaults, reflect routine title edits, cap and offset-paginate event history, and return only a bounded latest context tail.",
+        "Lines 836-1025 verify broad cross-Company route classes return 404, Agent mutations require runId, Agents cannot exit human review stages and review-stage targets/config validate.",
+        "Lines 1026-1276 apply review decisions plus edits atomically, preserve reasons verbatim, support request-changes routes and optional reason policy, aggregate review inbox context, bulk-process 50 reviews with per-item version conflicts and return structured 409 version details.",
+        "Focused Vitest discovered the file but skipped all 19 tests because embedded Postgres support was unavailable; no runtime pass is claimed."
+      ],
+      "completionRequirements": [
+        "Read lines 1-1276 exactly once and assess pipeline definitions/steps/triggers/runs, tenant and actor authorization, graph validation, idempotency/concurrency/transactions, failure/retry/cancel, inputs/outputs/secrets, audit/approval/responsibility binding, API errors/versioning and overlap with Company OS work orchestration."
+      ]
     }
   ]
 }
