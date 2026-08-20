@@ -6,7 +6,7 @@ import type {
   SessionIdentityClaims,
   SessionValidationPolicy,
 } from "../identity/session-claims.ts";
-import { LocalEventStore } from "../storage/local-event-store.ts";
+import { LocalDurableControlPlaneStore } from "../storage/local-durable-control-plane-store.ts";
 import type { AuthorizationIntent, AuthorizationReceipt } from "../../ports/identity-port.ts";
 
 type ClaimsProvider = () => Promise<SessionIdentityClaims | null>;
@@ -64,6 +64,6 @@ export function createSelfHostedComposition(
       options.authorizationProvider,
       options.identityPolicy,
     ),
-    events: new LocalEventStore(options.dataDirectory),
+    events: new LocalDurableControlPlaneStore(options.dataDirectory),
   };
 }

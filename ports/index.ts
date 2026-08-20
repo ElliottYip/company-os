@@ -2,6 +2,7 @@ export * from "./agent-execution-port.ts";
 export * from "./approval-publication-port.ts";
 export * from "./audit-evidence-port.ts";
 export * from "./data-connector-port.ts";
+export * from "./durable-control-plane-store-port.ts";
 export * from "./event-data-store-port.ts";
 export * from "./generic-work-port.ts";
 export * from "./identity-port.ts";

@@ -68,6 +68,14 @@ clearly labels every connector and actor as a fixture.
 
 ## Deployment profiles
 
+The self-hosted profile persists new writes through an atomic control-plane
+store: the domain event and every external publication are committed together,
+while replayable projections advance with optimistic, monotonic checkpoints.
+It reads the earlier `*.events.json` schema as a rollback-safe migration source,
+leaves that source untouched, and creates `*.control-plane.json` on the first
+new write. Managed-cloud storage must provide the same durable semantics before
+production admission.
+
 Both profiles compose the same core/application:
 
 | Profile | Default identity | Store | Execution plane |
