@@ -1,5 +1,6 @@
 import type { CompanyWorkState } from "../application/company-operations.ts";
 import { compileOfficeScene } from "../core/office.ts";
+import type { OrganizationDraft } from "../core/organization.ts";
 import {
   createDemoApplicationClient,
   type CompanyOSApplicationClient,
@@ -47,10 +48,19 @@ function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character] ?? character);
 }
 
-function responsibilityChain(state: CompanyWorkState): string {
+function principalName(organization: OrganizationDraft, id: string): string {
+  return organization.humans.find((human) => human.id === id)?.name ??
+    organization.agents.find((agent) => agent.id === id)?.name ?? id;
+}
+
+function fixtureAgentSuffix(name: string, state: CompanyWorkState): string {
+  return state.mode === "DEMO_FIXTURE" && !/[（(](?:演示|模拟)/.test(name) ? "（模拟）" : "";
+}
+
+function responsibilityChain(state: CompanyWorkState, organization: OrganizationDraft): string {
   return `<ol class="chain-list" data-testid="responsibility-chain">
-    <li><span>${t("responsibility.initiator")}</span><strong>林澄 · Agent Boss</strong></li>
-    <li><span>${t("responsibility.executor")}</span><strong>市场研究员（模拟）</strong></li>
+    <li><span>${t("responsibility.initiator")}</span><strong>${escapeHtml(principalName(organization, state.responsibility.goalInitiatorId))}</strong></li>
+    <li><span>${t("responsibility.executor")}</span><strong>${escapeHtml(principalName(organization, state.responsibility.executingAgentId))}${fixtureAgentSuffix(principalName(organization, state.responsibility.executingAgentId), state)}</strong></li>
     <li><span>${t("responsibility.permissionsData")}</span><strong>${state.responsibility.permissionIds.length} 项权限 · ${state.responsibility.dataAuthorizationIds.length} 份数据合同</strong></li>
     <li><span>${t("responsibility.approval")}</span><strong>${state.responsibility.approvalIds.length ? "林澄 · 已精确绑定" : "尚未触发"}</strong></li>
     <li><span>${t("responsibility.evidenceResult")}</span><strong>${state.responsibility.evidenceIds.length} 份证据 · ${state.responsibility.resultId ? "结果已记录" : "结果待形成"}</strong></li>
@@ -59,7 +69,7 @@ function responsibilityChain(state: CompanyWorkState): string {
 
 function eventFeed(state: CompanyWorkState, expanded = false): string {
   const events = state.events.length ? state.events.map((event) => `<article class="event-row" data-event-code="${escapeHtml(event.type)}">
-    <time>${event.occurredAt.slice(11, 19)}</time><div><strong>${escapeHtml(eventKind(event.type))}</strong><p>${escapeHtml(event.summary)}</p></div><span>FIXTURE</span>
+    <time>${event.occurredAt.slice(11, 19)}</time><div><strong>${escapeHtml(eventKind(event.type))}</strong><p>${escapeHtml(event.summary)}</p></div><span>${event.isFixture ? "FIXTURE" : "FORMAL"}</span>
   </article>`).join("") : `<p class="empty-copy">${t("events.empty")}</p>`;
   return `<section class="event-feed${expanded ? " event-feed--expanded" : ""}" aria-live="polite"><h3>${t("events.title")}</h3>${events}</section>`;
 }
@@ -77,32 +87,35 @@ function workView(state: CompanyWorkState): string {
     <div><p class="eyebrow">HUMAN GATE</p><h3>模拟发布动作需要真人决定</h3></div>
     <p>批准仅绑定当前 work、责任合同、执行 Agent、证据摘要和动作 digest；任何字段变化都必须重新审批。</p>
     <dl><div><dt>负责真人</dt><dd>林澄</dd></div><div><dt>风险</dt><dd>高风险 · 已暂停</dd></div><div><dt>证据</dt><dd>${state.responsibility.evidenceIds.length} 份</dd></div></dl>
-    <div class="task-actions" data-task-actions></div></section>` : `<section class="work-focus"><p class="eyebrow">ACTIVE WORK</p><h3>${t("work.goal")}</h3><p>状态：${statusCopy(state)}。所有活动均来自确定性模拟事件，不调用真实模型或工具。</p><div class="task-actions" data-task-actions></div></section>`;
+    <div class="task-actions" data-task-actions></div></section>` : `<section class="work-focus"><p class="eyebrow">ACTIVE WORK</p><h3>${t("work.goal")}</h3><p>状态：${statusCopy(state)}。${state.mode === "DEMO_FIXTURE" ? "所有活动均来自确定性模拟事件，不调用真实模型或工具。" : "此处读取正式控制面投影；写操作仍需通过正式身份与权限门禁。"}</p><div class="task-actions" data-task-actions></div></section>`;
   return `<section class="projection-stage" data-section="work" aria-labelledby="work-title">
     <div class="stage-heading"><div><p class="eyebrow">AGENT BOSS WORKBENCH</p><h2 id="work-title">工作与审批</h2></div><span class="phase phase--${state.phase.toLowerCase()}">${statusCopy(state)}</span></div>${focus}${eventFeed(state, true)}
   </section>`;
 }
 
-function responsibilityView(state: CompanyWorkState): string {
+function responsibilityView(state: CompanyWorkState, organization: OrganizationDraft): string {
   return `<section class="projection-stage" data-section="responsibility" aria-labelledby="responsibility-title">
     <div class="stage-heading"><div><p class="eyebrow">ACCOUNTABILITY IS A PRODUCT OBJECT</p><h2 id="responsibility-title">完整责任记录</h2></div></div>
-    <div class="responsibility-ledger">${responsibilityChain(state)}<dl class="contract-facts">
-      <div><dt>工作 ID</dt><dd>${escapeHtml(state.responsibility.workId)}</dd></div><div><dt>责任合同</dt><dd>demo-responsibility-contract · fixture</dd></div>
+    <div class="responsibility-ledger">${responsibilityChain(state, organization)}<dl class="contract-facts">
+      <div><dt>工作 ID</dt><dd>${escapeHtml(state.responsibility.workId)}</dd></div><div><dt>记录来源</dt><dd>${state.mode === "DEMO_FIXTURE" ? "确定性 fixture" : "正式控制面投影"}</dd></div>
       <div><dt>真人负责人</dt><dd>${escapeHtml(state.responsibility.accountableHumanId)}</dd></div><div><dt>执行主体</dt><dd>${escapeHtml(state.responsibility.executingAgentId)}</dd></div>
       <div><dt>数据授权</dt><dd>${state.responsibility.dataAuthorizationIds.length} 项 · 仅演示引用</dd></div><div><dt>结果</dt><dd>${state.responsibility.resultId ? escapeHtml(state.responsibility.resultId) : "尚未形成"}</dd></div>
     </dl></div>${eventFeed(state, true)}
   </section>`;
 }
 
-function connectorsView(): string {
-  return `<section class="projection-stage" data-section="connectors" aria-labelledby="connectors-title">
-    <div class="stage-heading"><div><p class="eyebrow">EQUAL CONNECTOR CONTRACT</p><h2 id="connectors-title">连接器与数据边界</h2></div><span class="fixture-seal">DEMO · NO NETWORK</span></div>
-    <div class="connector-list">
+function connectorsView(mode: CompanyOSApplicationClient["mode"]): string {
+  const catalogRows = mode === "DEMO_FIXTURE" ? `
       <article><span class="connector-orb connector-orb--green"></span><div><h3>State machine fixture</h3><p>声明暂停、恢复、取消、证据与结果能力</p></div><strong>隔离运行</strong></article>
-      <article><span class="connector-orb connector-orb--amber"></span><div><h3>Journal fixture</h3><p>输出确定性进度事件，不持有凭据或外部 session</p></div><strong>隔离运行</strong></article>
+      <article><span class="connector-orb connector-orb--amber"></span><div><h3>Journal fixture</h3><p>输出确定性进度事件，不持有凭据或外部 session</p></div><strong>隔离运行</strong></article>` : `
+      <article><span class="connector-orb connector-orb--green"></span><div><h3>正式 Connector Catalog</h3><p>能力、版本、执行驻留与 Secret 引用由 Company OS 版本化管理</p></div><strong>正式模式</strong></article>`;
+  return `<section class="projection-stage" data-section="connectors" aria-labelledby="connectors-title">
+    <div class="stage-heading"><div><p class="eyebrow">EQUAL CONNECTOR CONTRACT</p><h2 id="connectors-title">连接器与数据边界</h2></div><span class="fixture-seal">${mode === "DEMO_FIXTURE" ? "DEMO · NO NETWORK" : "FORMAL CONTROL PLANE"}</span></div>
+    <div class="connector-list">
+      ${catalogRows}
       <article class="connector-placeholder"><span class="connector-orb"></span><div><h3>正式 Connector</h3><p>Raft Agent、Codex、DeepSeek 与企业 Agent 将通过同一契约接入</p></div><strong>未绑定</strong></article>
     </div>
-    <section class="boundary-band"><div><span>模型调用</span><strong>0</strong></div><div><span>企业数据读取</span><strong>0</strong></div><div><span>外部网络请求</span><strong>0</strong></div><p>Demo 不保存密钥、私有推理或厂商 session。正式模式需重新绑定身份、数据合同和出口策略。</p></section>
+    <section class="boundary-band"><div><span>Secret material</span><strong>0</strong></div><div><span>私有 session</span><strong>0</strong></div><div><span>未授权出口</span><strong>0</strong></div><p>${mode === "DEMO_FIXTURE" ? "Demo 不访问外部系统；转正式只复制清理后的组织模板。" : "控制面只保存 Secret 引用与租约证明；正式数据访问和出口按合同逐次判定。"}</p></section>
   </section>`;
 }
 
@@ -122,14 +135,15 @@ export function mountCompanyOS(
       application.snapshot(),
       application.organization(),
     ]);
-    const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state) : connectorsView();
-    root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${t("demo.badge")}</span></header>
+    const isDemo = application.mode === "DEMO_FIXTURE";
+    const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state, organization) : connectorsView(application.mode);
+    root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${isDemo ? t("demo.badge") : "正式模式 · 身份已门禁"}</span></header>
       <div class="workspace"><aside class="company-rail" aria-label="${t("demo.companyAria")}">
-        <p class="eyebrow">${t("demo.runningCompany")}</p><h1>${t("demo.companyName")}</h1><p>${t("demo.accountability")}</p>
-        <dl><div><dt>Agent Boss</dt><dd>${t("demo.boss")}</dd></div><div><dt>执行同事</dt><dd>${t("demo.executors")}</dd></div><div><dt>外部调用</dt><dd>${t("demo.externalCalls")}</dd></div></dl>
+        <p class="eyebrow">${isDemo ? t("demo.runningCompany") : "FORMAL COMPANY"}</p><h1>${escapeHtml(organization.company.name)}</h1><p>${isDemo ? t("demo.accountability") : "真人、Agent、责任合同、审批和证据处于同一个正式公司边界。"}</p>
+        <dl><div><dt>真人负责人</dt><dd>${organization.humans.length}</dd></div><div><dt>Agent 同事</dt><dd>${organization.agents.length}</dd></div><div><dt>数据模式</dt><dd>${isDemo ? t("demo.externalCalls") : "正式投影"}</dd></div></dl>
         <nav aria-label="Company OS sections">${SECTIONS.map(({ id, label }) => `<button type="button" data-section-target="${id}"${section === id ? ' aria-current="page"' : ""}>${label}</button>`).join("")}</nav></aside>
-        ${main}<aside class="responsibility-rail" aria-label="${t("responsibility.aria")}"><div class="rail-heading"><p class="eyebrow">RESPONSIBILITY CHAIN</p><h2>${t("responsibility.title")}</h2></div>${responsibilityChain(state)}${eventFeed(state)}</aside>
-      </div><footer>${t("demo.safetyFooter")}</footer>`;
+        ${main}<aside class="responsibility-rail" aria-label="${t("responsibility.aria")}"><div class="rail-heading"><p class="eyebrow">RESPONSIBILITY CHAIN</p><h2>${t("responsibility.title")}</h2></div>${responsibilityChain(state, organization)}${eventFeed(state)}</aside>
+      </div><footer>${isDemo ? t("demo.safetyFooter") : "正式模式 · 身份、租户、责任合同和数据授权均在服务端校验"}</footer>`;
 
     root.querySelectorAll<HTMLButtonElement>("[data-section-target]").forEach((button) => button.addEventListener("click", () => {
       section = button.dataset.sectionTarget as CompanyOSSection;
@@ -142,7 +156,7 @@ export function mountCompanyOS(
       "demo-researcher": state.phase === "AWAITING_APPROVAL" ? "BLOCKED" : state.phase === "COMPLETED" ? "COMPLETED" : state.phase === "READY" ? "WAITING" : "WORKING",
     } }));
     const actions = root.querySelector<HTMLElement>("[data-task-actions]");
-    if (actions) {
+    if (actions && application.mode === "DEMO_FIXTURE") {
       if (state.phase === "READY") actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void application.assignWork().then(render) }));
       else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void application.advanceWork().then(render) }));
       else if (state.phase === "AWAITING_APPROVAL") actions.append(createButton({ label: t("action.approve"), tone: "primary", onClick: () => void application.decideApproval("APPROVED").then(render) }), createButton({ label: t("action.reject"), tone: "danger", onClick: () => void application.decideApproval("REJECTED").then(render) }));

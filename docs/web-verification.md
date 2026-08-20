@@ -8,10 +8,12 @@ The customer shell does not import or embed competitor pages. Stable section and
 event codes are independent of display copy.
 
 `CompanyOSApplicationClient` is the Web anti-corruption boundary. The default
-composition is the deterministic Demo client; formal managed-cloud and
-self-hosted clients can implement the same projection/command contract without
-changing the shell or exposing competitor DTOs. The Raft host contract still
-contains only a mount element, base path, and navigation callback.
+composition is the deterministic Demo client. The formal client now consumes
+only `GET /api/v1/companies/{companyId}/agent-boss`, maps stable projection
+codes into the shell, and exposes no Demo mutation. The same client works for
+managed-cloud and self-hosted profiles without exposing persisted events or
+competitor DTOs. The Raft host contract still contains only a mount element,
+base path, and navigation callback.
 
 The verified browser flow is:
 
@@ -30,10 +32,14 @@ as fixtures; formal connectors remain visibly unbound.
 
 ## Browser evidence
 
-Verified locally with the Playwright CLI against the independent Vite entry at
-1440 × 960 and 320 × 800. The run covered all four navigation targets, the
-approved responsibility loop, responsive navigation, semantic regions and
-buttons, and a clean console after adding the local data-URI favicon.
+Re-verified on 2026-08-20 with a real Chromium session through the Playwright
+CLI against the independent Vite entry. The run covered assign → plan → tool
+activity → exact high-risk pause → accountable-human approval → three evidence
+records and result, with zero browser errors or warnings. Desktop output was
+visually inspected at the default viewport; the completed state was also
+inspected at 390 × 844 with responsive navigation, semantic regions, named
+buttons, and the full responsibility chain. Browser inspection found and the
+implementation removed a duplicated fixture suffix in the Agent label.
 
 This is a Pre-3D structural renderer. It intentionally does not claim to be the
 final office renderer or a substitute for approved human/office 3D assets.
