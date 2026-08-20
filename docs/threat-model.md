@@ -44,6 +44,12 @@ are prohibited from this development program.
 | Oversized/recursive input exhausts service | D | Request/payload/record/depth/time bounds and rate policy |
 | Store or backup is silently modified | T/R | Digest chain, corruption detection, append sequence, restore validation |
 | Error/log exposes secret or private record | I | Field allowlists, redaction, stable public errors, no stack traces |
+
+Secret material remains in a deployment-selected broker and never crosses the
+Company OS domain/application boundary. Formal access records the authorized
+intent before lease issuance. The control plane receives only a reference,
+version, consumer/work-attempt binding, expiry, and attestation digest; broker
+failure events persist a stable code rather than provider output.
 | Office renderer gains business authority | E | Renderer consumes immutable scene only; no identity/store/execution imports |
 
 ## Security invariants
@@ -65,4 +71,3 @@ are prohibited from this development program.
 - Dependency audit has no critical/high reachable finding.
 - Browser responses include restrictive security headers.
 - Backup corruption and cross-organization access tests fail closed.
-
