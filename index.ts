@@ -8,6 +8,7 @@ export * from "./application/get-agent-boss-projection.ts";
 export * from "./application/governance-registry.ts";
 export * from "./application/dispatch-accountable-work.ts";
 export * from "./application/formal-agent-boss-api.ts";
+export * from "./application/work-attempt-service.ts";
 export * from "./application/responsibility-registry.ts";
 export * from "./application/issue-secret-lease.ts";
 export * from "./connector-sdk/index.ts";
