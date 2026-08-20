@@ -19,6 +19,10 @@ export interface AgentBossAttemptProjection {
 export interface AgentBossProjection {
   readonly schemaVersion: 1;
   readonly mode: "PRODUCTION";
+  readonly viewer: {
+    readonly actorId: Identifier;
+    readonly displayName: string;
+  };
   readonly organization: OrganizationDraft;
   readonly responsibilities: {
     readonly revision: number;
@@ -105,6 +109,7 @@ export class GetAgentBossProjection {
     return {
       schemaVersion: 1,
       mode: "PRODUCTION",
+      viewer: { actorId: identity.actorId, displayName: identity.displayName },
       organization: structuredClone(organization),
       responsibilities: structuredClone(responsibilities),
       work,

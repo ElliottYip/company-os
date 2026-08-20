@@ -6,6 +6,7 @@ import {
   type CompanyOSApplicationClient,
 } from "./application-client.ts";
 import { createButton } from "./components/button.ts";
+import { createFormalAssignment, formalWebFailure } from "./formal-work-state.ts";
 import { t } from "./i18n/zh-CN.ts";
 import { OfficeDomRenderer } from "./office-dom-renderer.ts";
 
@@ -87,7 +88,7 @@ function workView(state: CompanyWorkState): string {
     <div><p class="eyebrow">HUMAN GATE</p><h3>模拟发布动作需要真人决定</h3></div>
     <p>批准仅绑定当前 work、责任合同、执行 Agent、证据摘要和动作 digest；任何字段变化都必须重新审批。</p>
     <dl><div><dt>负责真人</dt><dd>林澄</dd></div><div><dt>风险</dt><dd>高风险 · 已暂停</dd></div><div><dt>证据</dt><dd>${state.responsibility.evidenceIds.length} 份</dd></div></dl>
-    <div class="task-actions" data-task-actions></div></section>` : `<section class="work-focus"><p class="eyebrow">ACTIVE WORK</p><h3>${t("work.goal")}</h3><p>状态：${statusCopy(state)}。${state.mode === "DEMO_FIXTURE" ? "所有活动均来自确定性模拟事件，不调用真实模型或工具。" : "此处读取正式控制面投影；写操作仍需通过正式身份与权限门禁。"}</p><div class="task-actions" data-task-actions></div></section>`;
+    <div class="task-actions" data-task-actions></div></section>` : `<section class="work-focus"><p class="eyebrow">ACTIVE WORK</p><h3>${t("work.goal")}</h3><p>状态：${statusCopy(state)}。${state.mode === "DEMO_FIXTURE" ? "所有活动均来自确定性模拟事件，不调用真实模型或工具。" : "正式命令将由服务端重新校验身份、租户、责任合同和动作权限。"}</p><div class="task-actions" data-task-actions></div></section>`;
   return `<section class="projection-stage" data-section="work" aria-labelledby="work-title">
     <div class="stage-heading"><div><p class="eyebrow">AGENT BOSS WORKBENCH</p><h2 id="work-title">工作与审批</h2></div><span class="phase phase--${state.phase.toLowerCase()}">${statusCopy(state)}</span></div>${focus}${eventFeed(state, true)}
   </section>`;
@@ -129,12 +130,43 @@ export function mountCompanyOS(
   root.className = "company-os";
   host.mountElement.replaceChildren(root);
 
+  function renderFailure(error: unknown): void {
+    const failure = formalWebFailure(error);
+    root.removeAttribute("aria-busy");
+    root.innerHTML = `<section class="system-state" role="alert" data-state="${failure.kind}">
+      <p class="eyebrow">${failure.kind}</p><h1>${escapeHtml(failure.copy)}</h1>
+      <p>错误代码：<code>${escapeHtml(failure.code)}</code></p>
+      <button class="cos-button cos-button--secondary" type="button" data-retry>重试</button>
+    </section>`;
+    root.querySelector<HTMLButtonElement>("[data-retry]")?.addEventListener("click", () => void render());
+  }
+
+  async function runAction(action: () => Promise<unknown>): Promise<void> {
+    root.setAttribute("aria-busy", "true");
+    try {
+      await action();
+      await render();
+    } catch (error) {
+      renderFailure(error);
+    }
+  }
+
   async function render(): Promise<void> {
     if (disposed) return;
-    const [state, organization] = await Promise.all([
-      application.snapshot(),
-      application.organization(),
-    ]);
+    root.setAttribute("aria-busy", "true");
+    if (!root.childElementCount) root.innerHTML = `<section class="system-state" data-state="LOADING"><p class="eyebrow">LOADING</p><h1>正在读取公司控制面…</h1></section>`;
+    let state: CompanyWorkState;
+    let organization: OrganizationDraft;
+    let assignmentOptions: Awaited<ReturnType<CompanyOSApplicationClient["assignmentOptions"]>>;
+    try {
+      [state, organization, assignmentOptions] = await Promise.all([
+        application.snapshot(), application.organization(), application.assignmentOptions(),
+      ]);
+    } catch (error) {
+      renderFailure(error);
+      return;
+    }
+    if (disposed) return;
     const isDemo = application.mode === "DEMO_FIXTURE";
     const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state, organization) : connectorsView(application.mode);
     root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${isDemo ? t("demo.badge") : "正式模式 · 身份已门禁"}</span></header>
@@ -144,6 +176,7 @@ export function mountCompanyOS(
         <nav aria-label="Company OS sections">${SECTIONS.map(({ id, label }) => `<button type="button" data-section-target="${id}"${section === id ? ' aria-current="page"' : ""}>${label}</button>`).join("")}</nav></aside>
         ${main}<aside class="responsibility-rail" aria-label="${t("responsibility.aria")}"><div class="rail-heading"><p class="eyebrow">RESPONSIBILITY CHAIN</p><h2>${t("responsibility.title")}</h2></div>${responsibilityChain(state, organization)}${eventFeed(state)}</aside>
       </div><footer>${isDemo ? t("demo.safetyFooter") : "正式模式 · 身份、租户、责任合同和数据授权均在服务端校验"}</footer>`;
+    root.removeAttribute("aria-busy");
 
     root.querySelectorAll<HTMLButtonElement>("[data-section-target]").forEach((button) => button.addEventListener("click", () => {
       section = button.dataset.sectionTarget as CompanyOSSection;
@@ -157,10 +190,33 @@ export function mountCompanyOS(
     } }));
     const actions = root.querySelector<HTMLElement>("[data-task-actions]");
     if (actions && application.mode === "DEMO_FIXTURE") {
-      if (state.phase === "READY") actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void application.assignWork().then(render) }));
-      else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void application.advanceWork().then(render) }));
-      else if (state.phase === "AWAITING_APPROVAL") actions.append(createButton({ label: t("action.approve"), tone: "primary", onClick: () => void application.decideApproval("APPROVED").then(render) }), createButton({ label: t("action.reject"), tone: "danger", onClick: () => void application.decideApproval("REJECTED").then(render) }));
-      if (application.mode === "DEMO_FIXTURE") actions.append(createButton({ label: t("action.reset"), tone: "quiet", onClick: () => void application.resetFixture().then(render) }));
+      if (state.phase === "READY") actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void runAction(() => application.assignWork()) }));
+      else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void runAction(() => application.advanceWork()) }));
+      else if (state.phase === "AWAITING_APPROVAL") actions.append(createButton({ label: t("action.approve"), tone: "primary", onClick: () => void runAction(() => application.decideApproval("APPROVED")) }), createButton({ label: t("action.reject"), tone: "danger", onClick: () => void runAction(() => application.decideApproval("REJECTED")) }));
+      actions.append(createButton({ label: t("action.reset"), tone: "quiet", onClick: () => void runAction(() => application.resetFixture()) }));
+    } else if (actions && state.phase === "READY") {
+      if (!assignmentOptions.agents.length) {
+        actions.innerHTML = `<p class="empty-copy" role="status">没有已绑定责任合同且可执行动作的 Agent。</p>`;
+      } else {
+        actions.innerHTML = `<form class="formal-work-form" data-formal-work-form>
+          <label>工作标题<input name="title" required maxlength="120" autocomplete="off"></label>
+          <label>目标<textarea name="goal" required maxlength="1000" rows="2"></textarea></label>
+          <label>执行 Agent<select name="agentId">${assignmentOptions.agents.map((agent) => `<option value="${escapeHtml(agent.id)}">${escapeHtml(agent.name)}</option>`).join("")}</select></label>
+          <button class="cos-button cos-button--primary" type="submit">分配正式工作</button>
+        </form>`;
+        actions.querySelector<HTMLFormElement>("[data-formal-work-form]")?.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const data = new FormData(event.currentTarget as HTMLFormElement);
+          void runAction(() => application.assignWork(createFormalAssignment(assignmentOptions, {
+            title: String(data.get("title") ?? ""), goal: String(data.get("goal") ?? ""), agentId: String(data.get("agentId") ?? ""),
+          })));
+        });
+      }
+    } else if (actions && state.phase === "AWAITING_APPROVAL") {
+      actions.append(
+        createButton({ label: t("action.approve"), tone: "primary", onClick: () => void runAction(() => application.decideApproval("APPROVED")) }),
+        createButton({ label: t("action.reject"), tone: "danger", onClick: () => void runAction(() => application.decideApproval("REJECTED")) }),
+      );
     }
   }
 

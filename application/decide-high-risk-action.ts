@@ -52,30 +52,30 @@ export class DecideHighRiskAction {
 
   async execute(command: DecideHighRiskActionCommand): Promise<ApprovalDecision> {
     const identity = await this.#dependencies.identity.getCurrentIdentity();
-    if (!identity) throw new Error("Authentication required.");
+    if (!identity) throw new Error("FORMAL_IDENTITY_REQUIRED");
     if (identity.assurance === "LOCAL_DEMO") {
-      throw new Error("Demo identities cannot authorize formal actions.");
+      throw new Error("FORMAL_IDENTITY_REQUIRED");
     }
     if (identity.organizationId !== command.companyId) {
-      throw new Error("Tenant mismatch.");
+      throw new Error("TENANT_MISMATCH");
     }
 
     const request = (await this.#dependencies.approvals.pending(command.companyId))
       .find(({ id }) => id === command.requestId);
-    if (!request) throw new Error("Pending approval request not found.");
+    if (!request) throw new Error("APPROVAL_REQUEST_NOT_FOUND");
     if (!sameBinding(request.binding, command.expectedBinding)) {
-      throw new Error("Approval binding mismatch.");
+      throw new Error("APPROVAL_BINDING_MISMATCH");
     }
     if (request.binding.accountableHumanId !== identity.actorId) {
-      throw new Error("Only the accountable human can decide this action.");
+      throw new Error("APPROVAL_REQUIRES_ACCOUNTABLE_HUMAN");
     }
 
     const now = this.#dependencies.now();
     if (!Number.isFinite(Date.parse(now)) || Date.parse(now) >= Date.parse(request.expiresAt)) {
-      throw new Error("Approval request has expired.");
+      throw new Error("APPROVAL_EXPIRED");
     }
     if (await this.#dependencies.approvals.decision(request.id)) {
-      throw new Error("Approval request has already been decided.");
+      throw new Error("APPROVAL_ALREADY_DECIDED");
     }
 
     const receipt = await this.#dependencies.identity.authorize({
@@ -85,7 +85,7 @@ export class DecideHighRiskAction {
       reason: `Decide exact action ${request.binding.action.id} for work ${request.binding.workId}`,
     });
     if (receipt.principalId !== identity.actorId) {
-      throw new Error("Authorization receipt principal mismatch.");
+      throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
     }
 
     const decision: ApprovalDecision = {

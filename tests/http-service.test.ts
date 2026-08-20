@@ -6,14 +6,18 @@ import { createCompanyOsHttpService } from "../adapters/http/company-os-http-ser
 
 async function withService(
   run: (baseUrl: string) => Promise<void>,
-  formalApi?: { getAgentBoss(companyId: string): Promise<unknown> },
+  formalApi?: {
+    getAgentBoss(companyId: string): Promise<unknown>;
+    dispatchWork?(companyId: string, input: unknown): Promise<unknown>;
+    decideApproval?(companyId: string, requestId: string, input: unknown): Promise<unknown>;
+  },
 ) {
   const { runtime } = createDemoComposition();
   const server = createCompanyOsHttpService({
     runtime,
     deploymentProfile: "self-hosted",
     allowedOrigins: ["http://allowed.test"],
-    maxBodyBytes: 128,
+    maxBodyBytes: 2_048,
     formalApi,
   });
   server.listen(0, "127.0.0.1");
@@ -74,6 +78,103 @@ test("formal API returns a versioned projection and stable structured errors", a
   });
 });
 
+test("formal command API validates and tenant-binds accountable work and exact approval", async () => {
+  const calls: unknown[] = [];
+  const binding = {
+    action: {
+      id: "action-one",
+      type: "publish-content",
+      description: "Publish approved brief",
+      inputDigest: "sha256:exact-input",
+      risk: "HIGH",
+    },
+    workId: "work-one",
+    responsibilityContractId: "contract-one",
+    executingAgentId: "agent-one",
+    accountableHumanId: "human-one",
+    evidenceReferences: ["evidence-one"],
+    resultReference: null,
+  };
+  await withService(async (baseUrl) => {
+    const created = await fetch(`${baseUrl}/api/v1/companies/company-one/work`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({
+        draft: {
+          id: "work-one", title: "Prepare brief", goal: "Prepare an accountable brief.",
+          scope: "AGENT", departmentId: "operations", projectId: null, agentId: "agent-one",
+          requestedBy: "human-one", actionIds: ["read-knowledge"], parentWorkId: null,
+        },
+        genericGoalId: null,
+      }),
+    });
+    assert.equal(created.status, 201);
+
+    const decided = await fetch(`${baseUrl}/api/v1/companies/company-one/approvals/approval-one/decisions`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ decision: "APPROVED", expectedBinding: binding }),
+    });
+    assert.equal(decided.status, 200);
+    assert.deepEqual(calls, [
+      { operation: "dispatch", companyId: "company-one", draftCompanyId: "company-one" },
+      { operation: "decide", companyId: "company-one", requestId: "approval-one", binding },
+    ]);
+  }, {
+    async getAgentBoss() { return {}; },
+    async dispatchWork(companyId, input) {
+      calls.push({
+        operation: "dispatch",
+        companyId,
+        draftCompanyId: (input as { draft: { companyId: string } }).draft.companyId,
+      });
+      return { work: { id: "work-one" } };
+    },
+    async decideApproval(companyId, requestId, input) {
+      calls.push({
+        operation: "decide",
+        companyId,
+        requestId,
+        binding: (input as { expectedBinding: unknown }).expectedBinding,
+      });
+      return { requestId, decision: "APPROVED" };
+    },
+  });
+});
+
+test("formal command API rejects bad structure, disallowed origin, and unavailable commands", async () => {
+  await withService(async (baseUrl) => {
+    const invalid = await fetch(`${baseUrl}/api/v1/companies/company-one/work`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ draft: { id: "../../escape" } }),
+    });
+    assert.equal(invalid.status, 422);
+    assert.deepEqual(await invalid.json(), { error: { code: "INVALID_FORMAL_COMMAND", parameters: {} } });
+
+    const forbidden = await fetch(`${baseUrl}/api/v1/companies/company-one/work`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://evil.test" },
+      body: "{}",
+    });
+    assert.equal(forbidden.status, 403);
+    assert.deepEqual(await forbidden.json(), { error: { code: "ORIGIN_NOT_ALLOWED", parameters: {} } });
+
+    const unavailable = await fetch(`${baseUrl}/api/v1/companies/company-one/work`, {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({
+        draft: {
+          id: "work-one", title: "Prepare brief", goal: "Prepare an accountable brief.",
+          scope: "AGENT", departmentId: "operations", projectId: null, agentId: "agent-one",
+          requestedBy: "human-one", actionIds: ["read-knowledge"], parentWorkId: null,
+        }, genericGoalId: null,
+      }),
+    });
+    assert.equal(unavailable.status, 503);
+  }, { async getAgentBoss() { return {}; } });
+});
+
 test("HTTP service fails closed for origin, input, size, and route errors", async () => {
   await withService(async (baseUrl) => {
     const forbidden = await fetch(`${baseUrl}/api/demo/actions`, {
@@ -94,7 +195,7 @@ test("HTTP service fails closed for origin, input, size, and route errors", asyn
     const oversized = await fetch(`${baseUrl}/api/demo/actions`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ action: "RESET", padding: "x".repeat(256) }),
+      body: JSON.stringify({ action: "RESET", padding: "x".repeat(4_096) }),
     });
     assert.equal(oversized.status, 413);
 

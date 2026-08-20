@@ -94,7 +94,7 @@ test("approval fails closed for cross-tenant identity, wrong human, or changed d
       expectedBinding: request.binding,
       decision: "APPROVED",
     }),
-    /tenant mismatch/i,
+    /TENANT_MISMATCH/,
   );
 
   const outsider = harness("human-two");
@@ -105,7 +105,7 @@ test("approval fails closed for cross-tenant identity, wrong human, or changed d
       expectedBinding: request.binding,
       decision: "APPROVED",
     }),
-    /accountable human/i,
+    /APPROVAL_REQUIRES_ACCOUNTABLE_HUMAN/,
   );
 
   const changed = structuredClone(request.binding);
@@ -118,7 +118,7 @@ test("approval fails closed for cross-tenant identity, wrong human, or changed d
       expectedBinding: changed,
       decision: "APPROVED",
     }),
-    /binding mismatch/i,
+    /APPROVAL_BINDING_MISMATCH/,
   );
   assert.equal(mismatch.decisions.length, 0);
 });
