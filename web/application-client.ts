@@ -2,11 +2,13 @@ import { createDemoComposition } from "../adapters/demo/create-demo-composition.
 import { DEMO_COMPANY } from "../adapters/demo/demo-company.ts";
 import type { CompanyWorkState } from "../application/company-operations.ts";
 import type { AgentBossProjection } from "../application/get-agent-boss-projection.ts";
+import type { AdministrationProjection } from "../application/get-administration-projection.ts";
 import type { OrganizationDraft } from "../core/organization.ts";
 
 export interface CompanyOSApplicationClient {
   readonly mode: "DEMO_FIXTURE" | "FORMAL";
   organization(): Promise<OrganizationDraft>;
+  administration(): Promise<AdministrationProjection | null>;
   assignmentOptions(): Promise<CompanyOSAssignmentOptions>;
   snapshot(): Promise<CompanyWorkState>;
   assignWork(input?: CompanyOSWorkAssignment): Promise<CompanyWorkState>;
@@ -39,6 +41,7 @@ export function createDemoApplicationClient(): CompanyOSApplicationClient {
   return {
     mode: "DEMO_FIXTURE",
     async organization() { return structuredClone(DEMO_COMPANY); },
+    async administration() { return null; },
     async assignmentOptions() {
       return {
         viewerId: "demo-boss",
@@ -81,22 +84,25 @@ export function createFormalApplicationClient(
   const fetcher = options.fetcher ?? fetch;
   const baseUrl = options.baseUrl.replace(/\/$/, "");
   const endpoint = `${baseUrl}/api/v1/companies/${encodeURIComponent(options.companyId)}/agent-boss`;
+  const administrationEndpoint = `${baseUrl}/api/v1/companies/${encodeURIComponent(options.companyId)}/administration`;
 
-  async function projection(): Promise<AgentBossProjection> {
-    const response = await fetcher(endpoint, {
-      method: "GET",
-      headers: { accept: "application/json" },
-      credentials: "same-origin",
+  async function getJson(url: string): Promise<unknown> {
+    const response = await fetcher(url, {
+      method: "GET", headers: { accept: "application/json" }, credentials: "same-origin",
     });
     const payload: unknown = await response.json();
     if (!response.ok) {
-      const code = payload && typeof payload === "object" &&
-          !Array.isArray(payload) &&
+      const code = payload && typeof payload === "object" && !Array.isArray(payload) &&
           typeof (payload as { error?: { code?: unknown } }).error?.code === "string"
         ? (payload as { error: { code: string } }).error.code
         : "FORMAL_API_REQUEST_FAILED";
       throw new Error(code);
     }
+    return payload;
+  }
+
+  async function projection(): Promise<AgentBossProjection> {
+    const payload = await getJson(endpoint);
     if (!payload || typeof payload !== "object" || Array.isArray(payload) ||
         (payload as { schemaVersion?: unknown }).schemaVersion !== 1 ||
         (payload as { mode?: unknown }).mode !== "PRODUCTION") {
@@ -149,6 +155,15 @@ export function createFormalApplicationClient(
   return {
     mode: "FORMAL",
     async organization() { return structuredClone((await projection()).organization); },
+    async administration() {
+      const payload = await getJson(administrationEndpoint);
+      if (!payload || typeof payload !== "object" || Array.isArray(payload) ||
+          (payload as { schemaVersion?: unknown }).schemaVersion !== 1 ||
+          (payload as { mode?: unknown }).mode !== "PRODUCTION") {
+        throw new Error("FORMAL_API_PROJECTION_INVALID");
+      }
+      return payload as AdministrationProjection;
+    },
     async assignmentOptions() {
       const value = await projection();
       return {

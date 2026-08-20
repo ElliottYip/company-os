@@ -8,6 +8,7 @@ async function withService(
   run: (baseUrl: string) => Promise<void>,
   formalApi?: {
     getAgentBoss(companyId: string): Promise<unknown>;
+    getAdministration?(companyId: string): Promise<unknown>;
     dispatchWork?(companyId: string, input: unknown): Promise<unknown>;
     decideApproval?(companyId: string, requestId: string, input: unknown): Promise<unknown>;
   },
@@ -75,6 +76,20 @@ test("formal API returns a versioned projection and stable structured errors", a
     });
   }, {
     async getAgentBoss() { throw new Error("TENANT_MISMATCH"); },
+  });
+});
+
+test("formal API exposes a separate sanitized administration projection", async () => {
+  await withService(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/v1/companies/company-one/administration`);
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { schemaVersion: 1, connectorCatalog: { revision: 2 } });
+  }, {
+    async getAgentBoss() { return {}; },
+    async getAdministration(companyId) {
+      assert.equal(companyId, "company-one");
+      return { schemaVersion: 1, connectorCatalog: { revision: 2 } };
+    },
   });
 });
 

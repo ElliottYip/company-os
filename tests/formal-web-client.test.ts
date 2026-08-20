@@ -54,6 +54,12 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
     companyId: "company-one",
     fetcher: async (input, init) => {
       calls.push({ url: String(input), init });
+      if (String(input).endsWith("/administration")) return response({
+        schemaVersion: 1, mode: "PRODUCTION", viewer: projection.viewer,
+        connectorCatalog: { revision: 1, connectors: [] },
+        governance: { revision: 1, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
+        egressDecisions: [], generatedAt: projection.generatedAt,
+      });
       return init?.method === "POST" ? response({ ok: true }) : response(projection);
     },
   });
@@ -68,6 +74,7 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   const options = await client.assignmentOptions();
   assert.equal(options.viewerId, "human-one");
   assert.deepEqual(options.agents[0]?.allowedActionIds, ["read-knowledge", "publish-content"]);
+  assert.equal((await client.administration())?.governance.revision, 1);
 
   await client.assignWork({
     title: "New brief", goal: "Prepare new brief", agentId: "agent-one",

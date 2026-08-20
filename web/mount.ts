@@ -1,4 +1,5 @@
 import type { CompanyWorkState } from "../application/company-operations.ts";
+import type { AdministrationProjection } from "../application/get-administration-projection.ts";
 import { compileOfficeScene } from "../core/office.ts";
 import type { OrganizationDraft } from "../core/organization.ts";
 import {
@@ -105,17 +106,23 @@ function responsibilityView(state: CompanyWorkState, organization: OrganizationD
   </section>`;
 }
 
-function connectorsView(mode: CompanyOSApplicationClient["mode"]): string {
+function connectorsView(mode: CompanyOSApplicationClient["mode"], administration: AdministrationProjection | null): string {
   const catalogRows = mode === "DEMO_FIXTURE" ? `
       <article><span class="connector-orb connector-orb--green"></span><div><h3>State machine fixture</h3><p>声明暂停、恢复、取消、证据与结果能力</p></div><strong>隔离运行</strong></article>
       <article><span class="connector-orb connector-orb--amber"></span><div><h3>Journal fixture</h3><p>输出确定性进度事件，不持有凭据或外部 session</p></div><strong>隔离运行</strong></article>` : `
-      <article><span class="connector-orb connector-orb--green"></span><div><h3>正式 Connector Catalog</h3><p>能力、版本、执行驻留与 Secret 引用由 Company OS 版本化管理</p></div><strong>正式模式</strong></article>`;
+      ${administration?.connectorCatalog.connectors.map((connector) => `<article><span class="connector-orb ${connector.status === "ENABLED" ? "connector-orb--green" : ""}"></span><div><h3>${escapeHtml(connector.displayName)}</h3><p>${connector.operations.join(" · ")} · ${escapeHtml(connector.executionResidency)}</p></div><strong>${connector.secretConfigured ? "Secret 已配置" : "无需 Secret"}</strong></article>`).join("") || `<article class="connector-placeholder"><span class="connector-orb"></span><div><h3>尚未注册 Connector</h3><p>通过同等 Connector 契约接入企业执行面。</p></div><strong>空目录</strong></article>`}`;
+  const governance = mode === "FORMAL" && administration ? `<section class="admin-grid" aria-label="模型与数据治理">
+    <article><span>模型策略</span><strong>${administration.governance.modelRoutingPolicies.length}</strong><p>凭据仅显示是否配置，不返回引用值。</p></article>
+    <article><span>数据授权合同</span><strong>${administration.governance.dataAuthorizationContracts.length}</strong><p>按 Agent、用途、分类和出口目的地约束。</p></article>
+    <article><span>出口判定记录</span><strong>${administration.egressDecisions.length}</strong><p>允许与拒绝都持久化为可审计决定。</p></article>
+  </section>` : "";
   return `<section class="projection-stage" data-section="connectors" aria-labelledby="connectors-title">
     <div class="stage-heading"><div><p class="eyebrow">EQUAL CONNECTOR CONTRACT</p><h2 id="connectors-title">连接器与数据边界</h2></div><span class="fixture-seal">${mode === "DEMO_FIXTURE" ? "DEMO · NO NETWORK" : "FORMAL CONTROL PLANE"}</span></div>
     <div class="connector-list">
       ${catalogRows}
-      <article class="connector-placeholder"><span class="connector-orb"></span><div><h3>正式 Connector</h3><p>Raft Agent、Codex、DeepSeek 与企业 Agent 将通过同一契约接入</p></div><strong>未绑定</strong></article>
+      ${mode === "DEMO_FIXTURE" ? `<article class="connector-placeholder"><span class="connector-orb"></span><div><h3>正式 Connector</h3><p>Raft Agent、Codex、DeepSeek 与企业 Agent 将通过同一契约接入</p></div><strong>未绑定</strong></article>` : ""}
     </div>
+    ${governance}
     <section class="boundary-band"><div><span>Secret material</span><strong>0</strong></div><div><span>私有 session</span><strong>0</strong></div><div><span>未授权出口</span><strong>0</strong></div><p>${mode === "DEMO_FIXTURE" ? "Demo 不访问外部系统；转正式只复制清理后的组织模板。" : "控制面只保存 Secret 引用与租约证明；正式数据访问和出口按合同逐次判定。"}</p></section>
   </section>`;
 }
@@ -158,9 +165,10 @@ export function mountCompanyOS(
     let state: CompanyWorkState;
     let organization: OrganizationDraft;
     let assignmentOptions: Awaited<ReturnType<CompanyOSApplicationClient["assignmentOptions"]>>;
+    let administration: AdministrationProjection | null;
     try {
-      [state, organization, assignmentOptions] = await Promise.all([
-        application.snapshot(), application.organization(), application.assignmentOptions(),
+      [state, organization, assignmentOptions, administration] = await Promise.all([
+        application.snapshot(), application.organization(), application.assignmentOptions(), application.administration(),
       ]);
     } catch (error) {
       renderFailure(error);
@@ -168,7 +176,7 @@ export function mountCompanyOS(
     }
     if (disposed) return;
     const isDemo = application.mode === "DEMO_FIXTURE";
-    const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state, organization) : connectorsView(application.mode);
+    const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state, organization) : connectorsView(application.mode, administration);
     root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${isDemo ? t("demo.badge") : "正式模式 · 身份已门禁"}</span></header>
       <div class="workspace"><aside class="company-rail" aria-label="${t("demo.companyAria")}">
         <p class="eyebrow">${isDemo ? t("demo.runningCompany") : "FORMAL COMPANY"}</p><h1>${escapeHtml(organization.company.name)}</h1><p>${isDemo ? t("demo.accountability") : "真人、Agent、责任合同、审批和证据处于同一个正式公司边界。"}</p>

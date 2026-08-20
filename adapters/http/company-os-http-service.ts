@@ -16,6 +16,7 @@ export interface CompanyOsHttpServiceOptions {
   readonly maxBodyBytes?: number;
   readonly formalApi?: {
     getAgentBoss(companyId: string): Promise<unknown>;
+    getAdministration?(companyId: string): Promise<unknown>;
     dispatchWork?(companyId: string, input: unknown): Promise<unknown>;
     decideApproval?(companyId: string, requestId: string, input: unknown): Promise<unknown>;
   };
@@ -238,6 +239,14 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (method === "GET" && agentBossRoute) {
         if (!options.formalApi) throw new Error("FORMAL_API_UNAVAILABLE");
         sendJson(res, 200, await options.formalApi.getAgentBoss(agentBossRoute[1] as string));
+        return;
+      }
+      const administrationRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/administration$/,
+      );
+      if (method === "GET" && administrationRoute) {
+        if (!options.formalApi?.getAdministration) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getAdministration(administrationRoute[1] as string));
         return;
       }
       const formalWorkRoute = path.match(

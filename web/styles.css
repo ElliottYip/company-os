@@ -216,6 +216,11 @@ button:focus-visible { outline: 3px solid rgb(244 91 11 / 35%); outline-offset: 
 .boundary-band span { color: var(--cos-faint); font-size: 10px; }
 .boundary-band strong { font-size: 22px; }
 .boundary-band p { grid-column: 1 / -1; margin: 0; padding: 14px 18px; background: var(--cos-paper-warm); color: var(--cos-muted); font-size: 11px; line-height: 1.6; }
+.admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.admin-grid article { padding: 18px; border: 1px solid var(--cos-line); border-radius: 16px; background: var(--cos-paper); }
+.admin-grid span { color: var(--cos-faint); font-size: 10px; }
+.admin-grid strong { display: block; margin-top: 6px; font-size: 24px; }
+.admin-grid p { color: var(--cos-muted); font-size: 11px; line-height: 1.5; }
 footer { padding: 9px 20px; border-top: 1px solid var(--cos-line); background: #eee6da; color: var(--cos-muted); font-size: 10px; text-align: center; }
 .system-state { min-height: 60vh; display: grid; place-content: center; justify-items: start; padding: 32px; }
 .system-state h1 { max-width: 620px; margin: 0; font-size: clamp(24px, 4vw, 40px); }
@@ -256,6 +261,7 @@ footer { padding: 9px 20px; border-top: 1px solid var(--cos-line); background: #
   .chain-list { grid-template-columns: 1fr 1fr; }
   .responsibility-ledger { grid-template-columns: 1fr; padding: 16px; }
   .approval-focus dl, .boundary-band { grid-template-columns: 1fr; }
+  .admin-grid { grid-template-columns: 1fr; }
   .boundary-band p { grid-column: 1; }
   .contract-facts { grid-template-columns: 1fr; }
   .connector-list article { grid-template-columns: 18px minmax(0, 1fr); }

@@ -9,6 +9,7 @@ import type { ApprovalBinding } from "../ports/approval-publication-port.ts";
 
 interface FormalAgentBossApiDependencies {
   readonly projection: { execute(companyId: Identifier): Promise<unknown> };
+  readonly administration?: { execute(companyId: Identifier): Promise<unknown> };
   readonly dispatch: { execute(input: DispatchAccountableWorkInput): Promise<unknown> };
   readonly approvals: { execute(command: DecideHighRiskActionCommand): Promise<unknown> };
 }
@@ -29,6 +30,11 @@ export class FormalAgentBossApi {
 
   getAgentBoss(companyId: Identifier): Promise<unknown> {
     return this.#dependencies.projection.execute(companyId);
+  }
+
+  getAdministration(companyId: Identifier): Promise<unknown> {
+    if (!this.#dependencies.administration) throw new Error("FORMAL_API_UNAVAILABLE");
+    return this.#dependencies.administration.execute(companyId);
   }
 
   dispatchWork(companyId: Identifier, input: DispatchAccountableWorkInput): Promise<unknown> {

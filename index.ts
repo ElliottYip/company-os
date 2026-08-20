@@ -11,6 +11,8 @@ export * from "./application/formal-agent-boss-api.ts";
 export * from "./application/work-attempt-service.ts";
 export * from "./ports/company-configuration-projection-port.ts";
 export * from "./adapters/storage/event-backed-company-configuration-projection.ts";
+export * from "./application/evaluate-data-egress.ts";
+export * from "./application/get-administration-projection.ts";
 export * from "./application/responsibility-registry.ts";
 export * from "./application/issue-secret-lease.ts";
 export * from "./connector-sdk/index.ts";
