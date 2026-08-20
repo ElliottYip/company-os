@@ -14,4 +14,5 @@ export * from "./core/office.ts";
 export * from "./core/organization.ts";
 export * from "./core/responsibility.ts";
 export * from "./core/work.ts";
+export * from "./core/work-attempt.ts";
 export * from "./ports/index.ts";

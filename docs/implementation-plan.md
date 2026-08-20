@@ -1,4 +1,38 @@
-# Phase-one implementation plan
+# Direction B Pre-3D implementation plan
+
+## Current execution goal
+
+Build the independent responsibility-first Company System of Record and Agent
+Boss product through the renderer-neutral Pre-3D boundary. Existing verified
+responsibility, approval, data-governance, deterministic Demo, owned Web, and
+Office Compiler foundations are inputs, not rewrite targets.
+
+Delivery proceeds through these production-risk-ordered increments:
+
+1. **Execution truth:** first-class work attempts, frozen authority snapshots,
+   leases with fencing tokens, cancellation/timeout, explicit
+   `OUTCOME_UNKNOWN`, and evidence-backed reconciliation.
+2. **Durable truth:** atomic domain events plus outbox records, idempotent
+   projection checkpoints, schema versions, backup/restore, and migration tests.
+3. **Formal control plane:** authenticated, tenant-scoped API with stable error
+   codes and Agent Boss responsibility/work/approval/evidence projections.
+4. **Governed execution:** equal Connector registration and lifecycle, secret
+   references and access audit, model routing, data authorization, and outbound
+   data enforcement. Raw credentials and vendor sessions never enter domain
+   records.
+5. **Daily product:** responsive Company OS Web consuming the formal API while
+   keeping zero-configuration Demo strictly isolated and visibly synthetic.
+6. **FDE delivery:** versioned, inspectable company/industry templates with
+   validation, dry-run, apply, and rollback semantics.
+7. **Pre-3D office:** deterministic spatial compilation, entity state, asset and
+   interaction contracts, plus a replaceable renderer boundary.
+8. **Release gate:** focused unit/integration/E2E, type, build, dependency,
+   independence, secret, migration, and security verification; then stop before
+   producing 3D characters, scenes, rigs, animation, GLB, or Three.js code.
+
+Paperclip and other audited products remain evidence sources only. Company OS
+owns its runtime, schemas, APIs, events, Web, deployment profiles, and upgrade
+lifecycle, and must operate with none of those products installed.
 
 ## Completed audit gate — product direction accepted
 
