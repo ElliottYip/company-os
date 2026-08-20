@@ -17,10 +17,15 @@ function unique<T extends string>(values: readonly T[], code: string): readonly 
   return [...values];
 }
 
+function uniqueOptional<T extends string>(values: readonly T[], code: string): readonly T[] {
+  if (new Set(values).size !== values.length) throw new Error(code);
+  return [...values];
+}
+
 export function validateGovernanceCatalog(catalog: GovernanceCatalog): GovernanceCatalog {
   if (!REFERENCE.test(catalog.companyId)) throw new Error("GOVERNANCE_COMPANY_ID_INVALID");
-  unique(catalog.modelRoutingPolicies.map(({ id }) => id), "MODEL_POLICY_IDS_INVALID");
-  unique(
+  uniqueOptional(catalog.modelRoutingPolicies.map(({ id }) => id), "MODEL_POLICY_IDS_INVALID");
+  uniqueOptional(
     catalog.dataAuthorizationContracts.map(({ id }) => id),
     "DATA_CONTRACT_IDS_INVALID",
   );

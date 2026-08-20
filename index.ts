@@ -1,5 +1,6 @@
 export * from "./application/company-operations.ts";
 export * from "./application/company-registry.ts";
+export * from "./application/apply-fde-template.ts";
 export * from "./application/connector-registry.ts";
 export * from "./application/deterministic-demo-runtime.ts";
 export * from "./application/get-control-plane-snapshot.ts";
@@ -14,6 +15,7 @@ export * from "./core/company-structure.ts";
 export * from "./core/connector.ts";
 export * from "./core/data-governance.ts";
 export * from "./core/demo-promotion.ts";
+export * from "./core/fde-template.ts";
 export * from "./core/governance-catalog.ts";
 export * from "./core/model-governance.ts";
 export * from "./core/office.ts";
