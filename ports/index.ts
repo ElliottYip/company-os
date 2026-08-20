@@ -6,6 +6,7 @@ export * from "./data-connector-port.ts";
 export * from "./durable-control-plane-store-port.ts";
 export * from "./event-data-store-port.ts";
 export * from "./generic-work-port.ts";
+export * from "./governance-catalog-port.ts";
 export * from "./identity-port.ts";
 export * from "./model-provider-port.ts";
 export * from "./office-renderer-port.ts";
