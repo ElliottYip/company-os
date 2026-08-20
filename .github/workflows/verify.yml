@@ -28,5 +28,7 @@ jobs:
         run: npm run security:secrets
       - name: Audit Company OS production dependency graph
         run: npm run security:dependencies
+      - name: Install browser used by the E2E admission gate
+        run: npx playwright install --with-deps chromium
       - name: Run full independent verification
         run: npm run verify

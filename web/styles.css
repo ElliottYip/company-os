@@ -32,11 +32,12 @@
 }
 
 * { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
 body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--cos-canvas); }
 button { font: inherit; }
 button:focus-visible { outline: 3px solid rgb(244 91 11 / 35%); outline-offset: 2px; }
 
-.company-os { min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
+.company-os { width: 100%; min-width: 0; min-height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
 .topbar {
   min-height: 68px;
   display: flex;
@@ -60,6 +61,7 @@ button:focus-visible { outline: 3px solid rgb(244 91 11 / 35%); outline-offset: 
   background: #fff5e9; color: #8a4a0d !important; padding: 7px 10px;
   font-weight: 750; letter-spacing: .04em;
 }
+.topbar-reset { margin-left: 0; }
 
 .workspace { display: grid; grid-template-columns: 224px minmax(520px, 1fr) 310px; min-height: 0; }
 .company-rail, .responsibility-rail { background: var(--cos-paper); }
@@ -242,13 +244,16 @@ footer { padding: 9px 20px; border-top: 1px solid var(--cos-line); background: #
   .chain-list li::before, .chain-list li::after { display: none; }
 }
 @media (max-width: 720px) {
-  .topbar { padding: 9px 12px; }
+  .topbar { min-width: 0; flex-wrap: wrap; padding: 9px 12px; }
+  .topbar > div:nth-child(2), .demo-badge { min-width: 0; }
+  .demo-badge { white-space: normal; }
+  .topbar-reset { padding-inline: 8px; }
   .topbar div:nth-child(2) span { display: none; }
   .demo-badge { max-width: 138px; text-align: center; }
-  .workspace { display: block; }
+  .workspace { display: block; width: 100%; min-width: 0; }
   .company-rail { border-right: 0; border-bottom: 1px solid var(--cos-line); padding: 18px; }
   .company-rail dl { display: none; }
-  .company-rail nav { display: flex; gap: 6px; margin-top: 14px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin; }
+  .company-rail nav { width: 100%; max-width: 100%; display: flex; gap: 6px; margin-top: 14px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: thin; }
   .company-rail nav button { min-width: max-content; padding: 0 12px; }
   .office-stage, .projection-stage { padding: 16px; }
   .office-canvas { min-height: 430px; grid-template-columns: 1fr; }

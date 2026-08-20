@@ -177,7 +177,7 @@ export function mountCompanyOS(
     if (disposed) return;
     const isDemo = application.mode === "DEMO_FIXTURE";
     const main = section === "office" ? officeView(state) : section === "work" ? workView(state) : section === "responsibility" ? responsibilityView(state, organization) : connectorsView(application.mode, administration);
-    root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${isDemo ? t("demo.badge") : "正式模式 · 身份已门禁"}</span></header>
+    root.innerHTML = `<header class="topbar"><div class="brand-mark" aria-hidden="true">C</div><div><strong>${t("app.name")}</strong><span>${t("app.subtitle")}</span></div><span class="demo-badge">${isDemo ? t("demo.badge") : "正式模式 · 身份已门禁"}</span>${isDemo ? `<button class="cos-button cos-button--quiet topbar-reset" type="button" data-global-reset>${t("action.reset")}</button>` : ""}</header>
       <div class="workspace"><aside class="company-rail" aria-label="${t("demo.companyAria")}">
         <p class="eyebrow">${isDemo ? t("demo.runningCompany") : "FORMAL COMPANY"}</p><h1>${escapeHtml(organization.company.name)}</h1><p>${isDemo ? t("demo.accountability") : "真人、Agent、责任合同、审批和证据处于同一个正式公司边界。"}</p>
         <dl><div><dt>真人负责人</dt><dd>${organization.humans.length}</dd></div><div><dt>Agent 同事</dt><dd>${organization.agents.length}</dd></div><div><dt>数据模式</dt><dd>${isDemo ? t("demo.externalCalls") : "正式投影"}</dd></div></dl>
@@ -191,6 +191,9 @@ export function mountCompanyOS(
       host.onNavigate?.(`${host.basePath ?? ""}/${section}`.replace(/\/+/g, "/"));
       void render();
     }));
+    root.querySelector<HTMLButtonElement>("[data-global-reset]")?.addEventListener("click", () => {
+      void runAction(() => application.resetFixture());
+    });
 
     const canvas = root.querySelector<HTMLElement>("[data-office-canvas]");
     if (canvas) await new OfficeDomRenderer(canvas).render(compileOfficeScene(organization, { entityStates: {
@@ -201,7 +204,6 @@ export function mountCompanyOS(
       if (state.phase === "READY") actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void runAction(() => application.assignWork()) }));
       else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void runAction(() => application.advanceWork()) }));
       else if (state.phase === "AWAITING_APPROVAL") actions.append(createButton({ label: t("action.approve"), tone: "primary", onClick: () => void runAction(() => application.decideApproval("APPROVED")) }), createButton({ label: t("action.reject"), tone: "danger", onClick: () => void runAction(() => application.decideApproval("REJECTED")) }));
-      actions.append(createButton({ label: t("action.reset"), tone: "quiet", onClick: () => void runAction(() => application.resetFixture()) }));
     } else if (actions && state.phase === "READY") {
       if (!assignmentOptions.agents.length) {
         actions.innerHTML = `<p class="empty-copy" role="status">没有已绑定责任合同且可执行动作的 Agent。</p>`;

@@ -12,6 +12,7 @@
     "start:managed-cloud": "COMPANY_OS_PROFILE=managed-cloud node --experimental-strip-types adapters/http/service-entry.ts",
     "start:self-hosted": "COMPANY_OS_PROFILE=self-hosted node --experimental-strip-types adapters/http/service-entry.ts",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit",
     "check:boundaries": "node scripts/check-boundaries.mjs",
     "check:independence": "node scripts/check-independent-runtime.mjs",
@@ -26,9 +27,10 @@
     "security:dependencies": "npm audit --omit=dev --audit-level=high",
     "security": "npm run security:secrets && npm run security:dependencies",
     "build": "vite build --config web/vite.config.mjs",
-    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:research && npm run security && npm run typecheck && npm run build"
+    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:research && npm run security && npm run typecheck && npm run build && npm run test:e2e"
   },
   "devDependencies": {
+    "@playwright/test": "1.55.1",
     "@types/node": "^26.2.0",
     "typescript": "~6.0.0",
     "vite": "^8.0.0"
