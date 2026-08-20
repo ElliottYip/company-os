@@ -14,6 +14,9 @@ export interface CompanyOsHttpServiceOptions {
   readonly deploymentProfile: "managed-cloud" | "self-hosted";
   readonly allowedOrigins?: readonly string[];
   readonly maxBodyBytes?: number;
+  readonly formalApi?: {
+    getAgentBoss(companyId: string): Promise<unknown>;
+  };
 }
 
 const SECURITY_HEADERS = {
@@ -38,6 +41,15 @@ function sendJson(res: ServerResponse, status: number, body: unknown) {
 
 function sendError(res: ServerResponse, status: number, code: string, message: string) {
   sendJson(res, status, { error: { code, message } });
+}
+
+function sendStructuredError(
+  res: ServerResponse,
+  status: number,
+  code: string,
+  parameters: Readonly<Record<string, string | number | boolean | null>> = {},
+) {
+  sendJson(res, status, { error: { code, parameters } });
 }
 
 async function readJson(req: IncomingMessage, maxBodyBytes: number): Promise<unknown> {
@@ -89,6 +101,17 @@ function publicErrorCode(error: unknown) {
   return known.has(error.message) ? error.message : "OPERATION_REJECTED";
 }
 
+function formalError(error: unknown): { readonly status: number; readonly code: string } {
+  const code = error instanceof Error ? error.message : "INTERNAL_ERROR";
+  if (code === "FORMAL_IDENTITY_REQUIRED") return { status: 401, code };
+  if (code === "TENANT_MISMATCH" || code === "AUTHORIZATION_PRINCIPAL_MISMATCH") {
+    return { status: 403, code };
+  }
+  if (code === "ORGANIZATION_NOT_FOUND") return { status: 404, code };
+  if (code === "FORMAL_API_UNAVAILABLE") return { status: 503, code };
+  return { status: 409, code: "OPERATION_REJECTED" };
+}
+
 export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions): Server {
   const allowedOrigins = options.allowedOrigins ?? [];
   const maxBodyBytes = options.maxBodyBytes ?? 64 * 1024;
@@ -118,6 +141,14 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         sendJson(res, 200, await options.runtime.snapshot());
         return;
       }
+      const agentBossRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/agent-boss$/,
+      );
+      if (method === "GET" && agentBossRoute) {
+        if (!options.formalApi) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getAgentBoss(agentBossRoute[1] as string));
+        return;
+      }
       if (method === "POST" && path === "/api/demo/actions") {
         if (!isAllowedOrigin(req, allowedOrigins)) {
           sendError(res, 403, "ORIGIN_NOT_ALLOWED", "Request origin is not allowed.");
@@ -140,6 +171,11 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       }
       sendError(res, 404, "ROUTE_NOT_FOUND", "Route not found.");
     } catch (error) {
+      if (path.startsWith("/api/v1/")) {
+        const response = formalError(error);
+        sendStructuredError(res, response.status, response.code);
+        return;
+      }
       if (error instanceof Error && error.message === "REQUEST_BODY_TOO_LARGE") {
         sendError(res, 413, "REQUEST_BODY_TOO_LARGE", "Request body is too large.");
         return;

@@ -4,13 +4,17 @@ import { once } from "node:events";
 import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
 import { createCompanyOsHttpService } from "../adapters/http/company-os-http-service.ts";
 
-async function withService(run: (baseUrl: string) => Promise<void>) {
+async function withService(
+  run: (baseUrl: string) => Promise<void>,
+  formalApi?: { getAgentBoss(companyId: string): Promise<unknown> },
+) {
   const { runtime } = createDemoComposition();
   const server = createCompanyOsHttpService({
     runtime,
     deploymentProfile: "self-hosted",
     allowedOrigins: ["http://allowed.test"],
     maxBodyBytes: 128,
+    formalApi,
   });
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -45,6 +49,28 @@ test("HTTP service exposes bounded Demo, health, and security-header contracts",
     });
     assert.equal(assigned.status, 200);
     assert.equal((await assigned.json() as { phase: string }).phase, "PLANNING");
+  });
+});
+
+test("formal API returns a versioned projection and stable structured errors", async () => {
+  await withService(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/v1/companies/company-one/agent-boss`);
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { schemaVersion: 1, company: { id: "company-one" } });
+  }, {
+    async getAgentBoss(companyId) {
+      return { schemaVersion: 1, company: { id: companyId } };
+    },
+  });
+
+  await withService(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/v1/companies/company-one/agent-boss`);
+    assert.equal(response.status, 403);
+    assert.deepEqual(await response.json(), {
+      error: { code: "TENANT_MISMATCH", parameters: {} },
+    });
+  }, {
+    async getAgentBoss() { throw new Error("TENANT_MISMATCH"); },
   });
 });
 

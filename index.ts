@@ -2,6 +2,7 @@ export * from "./application/company-operations.ts";
 export * from "./application/company-registry.ts";
 export * from "./application/deterministic-demo-runtime.ts";
 export * from "./application/get-control-plane-snapshot.ts";
+export * from "./application/get-agent-boss-projection.ts";
 export * from "./application/dispatch-accountable-work.ts";
 export * from "./application/responsibility-registry.ts";
 export * from "./connector-sdk/index.ts";
