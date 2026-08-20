@@ -1,5 +1,6 @@
 export * from "./agent-execution-port.ts";
 export * from "./approval-publication-port.ts";
+export * from "./connector-catalog-port.ts";
 export * from "./audit-evidence-port.ts";
 export * from "./data-connector-port.ts";
 export * from "./durable-control-plane-store-port.ts";

@@ -1,17 +1,10 @@
 import type { RuntimeProof } from "../ports/agent-execution-port.ts";
+import type { ConnectorOperation } from "../core/connector.ts";
 
 export interface CapabilityDeclaration {
   readonly connectorId: string;
   readonly protocolVersion: "1.0";
-  readonly operations: readonly (
-    | "SUBMIT"
-    | "PROGRESS"
-    | "PAUSE"
-    | "RESUME"
-    | "CANCEL"
-    | "EVIDENCE"
-    | "RESULT"
-  )[];
+  readonly operations: readonly ConnectorOperation[];
   readonly maximumTimeoutSeconds: number;
 }
 
@@ -58,4 +51,3 @@ export interface TaskResult {
 }
 
 export interface ConnectorRuntimeProof extends RuntimeProof {}
-
