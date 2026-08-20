@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -25,6 +25,11 @@ interface LegacyEventStream {
   readonly schemaVersion: 1;
   readonly companyId: Identifier;
   readonly events: readonly CompanyDomainEvent[];
+}
+
+interface ControlPlaneBackup extends PersistedControlPlaneState {
+  readonly backupVersion: 1;
+  readonly digest: string;
 }
 
 const PORTABLE_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
@@ -221,6 +226,53 @@ export class LocalDurableControlPlaneStore implements DurableControlPlaneStorePo
     });
   }
 
+  async exportBackup(companyId: Identifier): Promise<string> {
+    const state = await this.#load(companyId);
+    const backup: ControlPlaneBackup = {
+      backupVersion: 1,
+      ...state,
+      digest: this.#digest(state),
+    };
+    return `${JSON.stringify(backup)}\n`;
+  }
+
+  async restoreBackup(companyId: Identifier, source: string): Promise<void> {
+    await this.#exclusive(companyId, async () => {
+      const current = await this.#load(companyId);
+      if (current.events.length || current.outbox.length || Object.keys(current.checkpoints).length) {
+        throw new Error("Durable control-plane store is not empty.");
+      }
+      let candidate: ControlPlaneBackup;
+      try {
+        const parsed: unknown = JSON.parse(source);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
+        candidate = parsed as ControlPlaneBackup;
+      } catch {
+        throw new Error("Invalid durable control-plane backup.");
+      }
+      const checkpoints = candidate.checkpoints;
+      const state: PersistedControlPlaneState = {
+        schemaVersion: candidate.schemaVersion,
+        companyId: candidate.companyId,
+        events: candidate.events,
+        outbox: candidate.outbox,
+        checkpoints,
+      };
+      if (candidate.backupVersion !== 1 || candidate.schemaVersion !== 1 ||
+          candidate.companyId !== companyId || !Array.isArray(candidate.events) ||
+          !candidate.events.every((item) => isDomainEvent(item, companyId)) ||
+          !Array.isArray(candidate.outbox) ||
+          !candidate.outbox.every((item) => isPublication(item, companyId)) ||
+          !checkpoints || typeof checkpoints !== "object" || Array.isArray(checkpoints) ||
+          !Object.entries(checkpoints).every(([name, item]) =>
+            PROJECTION_NAME.test(name) && isCheckpoint(item, companyId, name)
+          ) || candidate.digest !== this.#digest(state)) {
+        throw new Error("Durable control-plane backup digest or schema is invalid.");
+      }
+      await this.#persist(structuredClone(state));
+    });
+  }
+
   async resetFixture(companyId: Identifier): Promise<void> {
     await this.#exclusive(companyId, async () => {
       const state = await this.#load(companyId);
@@ -311,6 +363,10 @@ export class LocalDurableControlPlaneStore implements DurableControlPlaneStorePo
   #path(companyId: Identifier): string {
     assertCompanyId(companyId);
     return join(this.#directory, `${companyId}.control-plane.json`);
+  }
+
+  #digest(state: PersistedControlPlaneState): string {
+    return `sha256:${createHash("sha256").update(JSON.stringify(state)).digest("hex")}`;
   }
 
   async #exclusive<T>(companyId: Identifier, operation: () => Promise<T>): Promise<T> {

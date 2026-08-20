@@ -151,3 +151,25 @@ test("legacy event streams migrate forward without modifying the rollback source
     "event-two",
   ]);
 });
+
+test("durable backup includes outbox/checkpoints and rejects tamper or overwrite", async () => {
+  const sourceDirectory = await mkdtemp(join(tmpdir(), "company-os-durable-source-"));
+  const source = new LocalDurableControlPlaneStore(sourceDirectory);
+  await source.commit({ event: event("event-one"), publications: [publication("message-one")], expectedEventSequence: 0 });
+  await source.saveProjectionCheckpoint({
+    companyId: "company-one", projectionName: "agent-boss", eventSequence: 1,
+    expectedEventSequence: 0, updatedAt: "2026-08-20T11:02:00.000Z",
+  });
+  const backup = await source.exportBackup("company-one");
+  const targetDirectory = await mkdtemp(join(tmpdir(), "company-os-durable-target-"));
+  const target = new LocalDurableControlPlaneStore(targetDirectory);
+  await assert.rejects(
+    target.restoreBackup("company-one", backup.replace("attempt-one", "attempt-tampered")),
+    /backup digest or schema/i,
+  );
+  await target.restoreBackup("company-one", backup);
+  assert.equal((await target.read("company-one")).length, 1);
+  assert.equal((await target.readPendingPublications("company-one", { afterSequence: 0, limit: 10 })).length, 1);
+  assert.equal((await target.loadProjectionCheckpoint("company-one", "agent-boss"))?.eventSequence, 1);
+  await assert.rejects(target.restoreBackup("company-one", backup), /not empty/i);
+});

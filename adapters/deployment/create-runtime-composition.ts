@@ -1,4 +1,4 @@
-import type { EventDataStorePort } from "../../ports/event-data-store-port.ts";
+import type { DurableControlPlaneStorePort } from "../../ports/durable-control-plane-store-port.ts";
 import type { IdentityPort } from "../../ports/identity-port.ts";
 import { EnterpriseOidcIdentityAdapter } from "../identity/enterprise-oidc-identity-adapter.ts";
 import { RaftIdentityAdapter } from "../identity/raft-identity-adapter.ts";
@@ -19,7 +19,7 @@ interface CommonOptions {
 }
 
 export interface ManagedCloudCompositionOptions extends CommonOptions {
-  readonly eventStore: EventDataStorePort;
+  readonly controlPlaneStore: DurableControlPlaneStorePort;
 }
 
 export interface SelfHostedCompositionOptions extends CommonOptions {
@@ -31,13 +31,23 @@ export interface RuntimeComposition {
   readonly identityKind: "raft-identity" | "enterprise-oidc";
   readonly businessCodeProfile: "shared";
   readonly identity: IdentityPort;
-  readonly events: EventDataStorePort;
+  readonly events: DurableControlPlaneStorePort;
+  readonly controlPlaneStore: DurableControlPlaneStorePort;
+}
+
+function assertDurableStore(value: unknown): asserts value is DurableControlPlaneStorePort {
+  if (!value || typeof value !== "object" ||
+      !["commit", "readPendingPublications", "markPublicationDelivered",
+        "loadProjectionCheckpoint", "saveProjectionCheckpoint", "exportBackup", "restoreBackup"]
+        .every((method) => typeof (value as Record<string, unknown>)[method] === "function")) {
+    throw new Error("Managed cloud durable control-plane store is required.");
+  }
 }
 
 export function createManagedCloudComposition(
   options: ManagedCloudCompositionOptions,
 ): RuntimeComposition {
-  if (!options.eventStore) throw new Error("Managed cloud event store is required.");
+  assertDurableStore(options.controlPlaneStore);
   return {
     profile: "managed-cloud",
     identityKind: "raft-identity",
@@ -47,7 +57,8 @@ export function createManagedCloudComposition(
       options.authorizationProvider,
       options.identityPolicy,
     ),
-    events: options.eventStore,
+    events: options.controlPlaneStore,
+    controlPlaneStore: options.controlPlaneStore,
   };
 }
 
@@ -55,6 +66,7 @@ export function createSelfHostedComposition(
   options: SelfHostedCompositionOptions,
 ): RuntimeComposition {
   if (!options.dataDirectory.trim()) throw new Error("Self-hosted data directory is required.");
+  const controlPlaneStore = new LocalDurableControlPlaneStore(options.dataDirectory);
   return {
     profile: "self-hosted",
     identityKind: "enterprise-oidc",
@@ -64,6 +76,7 @@ export function createSelfHostedComposition(
       options.authorizationProvider,
       options.identityPolicy,
     ),
-    events: new LocalDurableControlPlaneStore(options.dataDirectory),
+    events: controlPlaneStore,
+    controlPlaneStore,
   };
 }

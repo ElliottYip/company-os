@@ -58,4 +58,6 @@ export interface DurableControlPlaneStorePort extends EventDataStorePort {
     projectionName: string,
   ): Promise<ProjectionCheckpoint | null>;
   saveProjectionCheckpoint(command: SaveProjectionCheckpointCommand): Promise<void>;
+  exportBackup(companyId: Identifier): Promise<string>;
+  restoreBackup(companyId: Identifier, source: string): Promise<void>;
 }
