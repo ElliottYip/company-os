@@ -13,10 +13,17 @@ organizational or responsibility logic. The initial Web adapter may use DOM and
 Version 1.0 freezes three renderer-neutral contracts:
 
 - `OfficeScene`: entrance, reception, department/project/meeting rooms, pantry,
-  restroom, corridor topology, embodied occupants, semantic work state, and
-  workstation/room/transit occupancy anchors.
-- `AssetManifest`: logical asset kind, variants, and interaction slots only.
-- `ActionSequence`: actor, semantic actions, targets, and durations only.
+  restroom, corridor topology, deterministic abstract-unit bounds, embodied
+  occupants, semantic work state, workstation/door anchors, and action
+  sequences.
+- `AssetManifest`: logical asset kind, variants, unit scale, abstract bounds,
+  semantic anchor points, interaction slots, and accessibility fallback.
+- `ActionSequence`: actor, semantic movement/work/door/prop/approval/celebration
+  actions, targets, and durations only.
+
+`OfficeRendererPort.describe()` advertises supported contract versions and
+whether an adapter is a structural preview or production renderer. This avoids
+silently feeding a future renderer an incompatible scene.
 
 No contract contains a runtime URL, mesh, material, skeleton, vendor session, or
 renderer object. A production renderer resolves logical IDs behind the renderer

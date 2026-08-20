@@ -1,5 +1,5 @@
 import type { OfficeScene } from "../core/office.ts";
-import type { OfficeRendererPort } from "../ports/office-renderer-port.ts";
+import type { OfficeRendererInfo, OfficeRendererPort } from "../ports/office-renderer-port.ts";
 import { t } from "./i18n/zh-CN.ts";
 
 const fishByIndex = [
@@ -13,6 +13,16 @@ export class OfficeDomRenderer implements OfficeRendererPort {
 
   constructor(element: HTMLElement) {
     this.#element = element;
+  }
+
+  describe(): OfficeRendererInfo {
+    return {
+      rendererId: "company-os-dom-structural-preview",
+      mode: "STRUCTURAL_PREVIEW",
+      officeSceneVersions: ["1.0"],
+      assetManifestVersions: ["1.0"],
+      actionSequenceVersions: ["1.0"],
+    };
   }
 
   async render(scene: OfficeScene): Promise<void> {
