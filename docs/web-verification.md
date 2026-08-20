@@ -9,8 +9,8 @@ event codes are independent of display copy.
 
 `CompanyOSApplicationClient` is the Web anti-corruption boundary. The default
 composition is the deterministic Demo client. The formal client now consumes
-only `GET /api/v1/companies/{companyId}/agent-boss`, maps stable projection
-codes into the shell, and exposes no Demo mutation. The same client works for
+the Agent Boss and administration APIs, maps stable projection/error codes into
+the shell, and sends only tenant-bound work/approval commands. The same client works for
 managed-cloud and self-hosted profiles without exposing persisted events or
 competitor DTOs. The Raft host contract still contains only a mount element,
 base path, and navigation callback.
@@ -32,14 +32,12 @@ as fixtures; formal connectors remain visibly unbound.
 
 ## Browser evidence
 
-Re-verified on 2026-08-20 with a real Chromium session through the Playwright
-CLI against the independent Vite entry. The run covered assign → plan → tool
-activity → exact high-risk pause → accountable-human approval → three evidence
-records and result, with zero browser errors or warnings. Desktop output was
-visually inspected at the default viewport; the completed state was also
-inspected at 390 × 844 with responsive navigation, semantic regions, named
-buttons, and the full responsibility chain. Browser inspection found and the
-implementation removed a duplicated fixture suffix in the Agent label.
+`npm run test:e2e` now runs the independent Vite entry in a real headless
+Chromium-family browser. It verifies the complete loop, keyboard activation,
+one-click reset, rejection, explicit formal unauthorized state, absence of
+document-level horizontal overflow, and zero console errors/warnings at 320,
+768, 1024, and 1440 px. CI installs a pinned Chromium while local macOS uses the
+installed Chrome channel; both run the same five Playwright cases.
 
 This is a Pre-3D structural renderer. It intentionally does not claim to be the
 final office renderer or a substitute for approved human/office 3D assets.

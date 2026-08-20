@@ -1,6 +1,6 @@
 # Company OS Pre-3D delivery program
 
-Status: Active  
+Status: Pre-3D asset gate complete on 2026-08-20
 Canonical repository: `/Users/elliottye/Documents/ChatGPT/os`  
 Imported baseline: `f904a66`
 
@@ -15,6 +15,23 @@ action contracts.
 
 No Blender, GLB, Three.js, rig, mesh, texture, animation, or actual 3D asset is
 in scope.
+
+## Final reconciliation
+
+The phase checkboxes below are preserved as the original execution plan; they
+are not the final status source. The seven concrete gaps found at the last audit
+were tracked in `docs/pre-3d-readiness.md` and are now closed by commits
+`be907d4` through `a0eb9ee`. The authoritative admission command now includes
+101 focused tests and five real-browser cases.
+
+The delivered vertical covers deterministic Demo, formal Agent Boss commands,
+exact approval/responsibility, durable WorkAttempt/outbox, model/data/Connector
+administration, persisted egress decisions, FDE replay/rollback, both deployment
+profiles, and frozen Pre-3D renderer contracts. Production-scale items such as
+real vendor connectors/providers, a customer data-source onboarding catalog,
+formal organization editing, bounded operational metrics, and external 3D asset
+production remain separate goals. They are not silently represented by fixtures
+and do not change the frozen renderer/asset interface.
 
 ## Binary exit criteria
 
@@ -194,12 +211,13 @@ admission runners must allow an isolated loopback ephemeral port.
 
 #### Final Pre-3D checkpoint
 
-- All ten binary exit criteria pass.
-- Product charter/ADRs/API docs and asset-production brief match frozen v1
+- [x] The Pre-3D vertical and all concrete readiness gaps pass the complete
+  repository admission command.
+- [x] Product charter/ADRs/API docs and asset-production brief match frozen v1
   contracts.
-- Repository contains no Blender, GLB, Three.js, mesh, texture, rig, or actual
-  3D asset production.
-- Goal stops here and reports that 3D asset production may begin separately.
+- [x] Repository contains no Blender, GLB, Three.js, mesh, texture, rig, or
+  actual 3D asset production.
+- [x] Goal stops here; 3D asset production may begin only as a separate goal.
 
 ## Stop-and-ask conditions
 

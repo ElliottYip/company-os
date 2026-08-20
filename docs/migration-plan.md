@@ -31,16 +31,15 @@
 - Serializer compatibility for event kinds 30179–30189, 30624–30627, 46021,
   `snake_case`, and `schema_version`.
 
-## Next Company OS slices
+## Pre-3D reception status
 
-1. Contract-test a real credential-reference vault boundary and provider/data
-   isolation without adding paid credentials.
-2. Add persistence adapters for managed and local profiles behind the same
-   event/evidence tests.
-3. Expand Demo E2E to the full three-minute browser loop and template promotion
-   sanitization.
-4. Build Agent Boss organization/task/approval/evidence projections.
-5. Add model/data administration and egress-policy UI.
-6. Expand Office Compiler with projects, adjacency, capacity, and renderer
-   contract tests before any 3D work.
+The listed independent slices are complete: credential access is reference-only
+and audited, both profiles share the durable operational contract, Demo has a
+real-browser responsibility loop, Agent Boss/formal administration projections
+are versioned, every egress decision persists, and Office Compiler/renderer
+conformance is frozen at `1.0`.
 
+See `docs/deployment-migration-handoff.md` for runtime upgrade/rollback. Any
+future Raft adapter migration remains a separate, compatibility-tested change;
+the next visual phase may consume the frozen contracts but must not move 3D
+business logic into Raft Web.

@@ -28,7 +28,12 @@ Delivery proceeds through these production-risk-ordered increments:
    interaction contracts, plus a replaceable renderer boundary.
 8. **Release gate:** focused unit/integration/E2E, type, build, dependency,
    independence, secret, migration, and security verification; then stop before
-   producing 3D characters, scenes, rigs, animation, GLB, or Three.js code.
+producing 3D characters, scenes, rigs, animation, GLB, or Three.js code.
+
+Completion note (2026-08-20): all eight increments are implemented and the
+complete admission command passes. The project is intentionally stopped at the
+renderer-neutral 3D asset-production boundary. See `docs/pre-3d-readiness.md`
+and `docs/deployment-migration-handoff.md` for the final evidence and handoff.
 
 Paperclip and other audited products remain evidence sources only. Company OS
 owns its runtime, schemas, APIs, events, Web, deployment profiles, and upgrade

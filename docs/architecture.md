@@ -28,6 +28,7 @@ these layers.
 | `IdentityPort` | Resolve Company OS identity and authorize intent without exposing host tokens |
 | `OrganizationPrincipalPort` | Load organizations and neutral principals |
 | `EventDataStorePort` | Append/read company events and reset isolated fixture state |
+| `DurableControlPlaneStorePort` | Atomically commit event/outbox, checkpoint projections, and export/restore versioned backups |
 | `GenericWorkPort` | Company OS-owned canonical work/run persistence and scheduling boundary |
 | `AgentExecutionPort` | Declare capabilities/health and submit, observe, pause, resume, cancel work |
 | `ModelProviderPort` | Resolve a model policy to a referenced output without leaking vendor sessions |
@@ -52,6 +53,12 @@ human, evidence references, and result reference.
 Raft's current event kinds and `snake_case`/`schema_version` formats remain a
 future serializer in a Raft-specific adapter; they are not core concepts.
 
+WorkAttempt is the durable execution truth. It freezes the responsibility
+revision, accountable human, allowed actions, permissions, data contracts,
+Connector and capability digest. Fencing tokens reject stale workers;
+running/approval work whose external outcome is uncertain becomes
+`OUTCOME_UNKNOWN` and requires evidence-backed reconciliation.
+
 ## Deterministic Demo runtime
 
 The Demo runtime is an in-memory state machine:
@@ -73,15 +80,16 @@ store: the domain event and every external publication are committed together,
 while replayable projections advance with optimistic, monotonic checkpoints.
 It reads the earlier `*.events.json` schema as a rollback-safe migration source,
 leaves that source untouched, and creates `*.control-plane.json` on the first
-new write. Managed-cloud storage must provide the same durable semantics before
-production admission.
+new write. Managed-cloud composition rejects an event-only store: injected
+storage must also implement atomic outbox, checkpoints, corruption-checked
+backup and empty-target restore.
 
 Both profiles compose the same core/application:
 
 | Profile | Default identity | Store | Execution plane |
 |---|---|---|---|
-| `managed-cloud` | `raft-identity` adapter | cloud event store | hybrid |
-| `self-hosted` | enterprise/local OIDC adapter | local event store | local |
+| `managed-cloud` | `raft-identity` adapter | injected durable cloud store | hybrid |
+| `self-hosted` | enterprise/local OIDC adapter | local durable store | local |
 
 This is composition metadata only. Production adapters are intentionally absent
 from phase one. Unified login never implies shared token audience or permission.
@@ -108,11 +116,12 @@ retryability; it cannot erase or redefine the Company OS responsibility fact.
 
 ## HTTP service boundary
 
-`adapters/http` provides the independent service entry. The current endpoint is
-explicitly `DEMO_FIXTURE`; it exposes bounded JSON actions, health/readiness,
-stable public error codes, restrictive security headers, origin checks, request
-size/time limits, and graceful shutdown. It does not claim to be a production
-Agent or production identity service.
+`adapters/http` provides the independent service entry. `/api/demo` remains
+explicitly `DEMO_FIXTURE`; versioned formal routes expose Agent Boss reads,
+accountable work, exact approval and sanitized administration. The service has
+bounded JSON, health/readiness, stable public error codes, restrictive security
+headers, origin checks, request-size limits, and graceful shutdown. It does not
+claim to be a production Agent or identity service.
 
 ## Web and mount ownership
 
@@ -127,6 +136,11 @@ contract or link to the standalone domain.
 entity states. `OfficeRendererPort` consumes this description. The current DOM
 adapter is replaceable; no domain rule references DOM, images, camera, geometry,
 Blender, GLB, or Three.js.
+
+The conformance gate checks OfficeScene/AssetManifest/ActionSequence versions,
+entity/asset kind, occupancy, every work state, and the locomotion, workstation,
+door, handheld-prop and seating slots. It validates semantics only; it does not
+manufacture a fake final 3D appearance.
 
 ## Framework sources
 

@@ -26,29 +26,29 @@ shape. The audit freeze is lifted. Work resumes at A–G below; generic capabili
 work is admitted only when it supports that architecture, and formal 3D asset
 production remains behind stage H.
 
-### A. Constitution and boundaries
+### A. Constitution and boundaries — Pre-3D complete
 
 Product charter, ADRs, dependency rules, migration-manifest format, independent
 build/configuration/data lifecycle, and source provenance.
 
-### B. Independent scaffold and contracts
+### B. Independent scaffold and contracts — Pre-3D complete
 
 Domain/application foundation and ports. Equal connector SDK with validation,
 idempotency, versioning, timeout, cancellation, progress, approvals, evidence,
 results, and runtime proof.
 
-### C. Owned design system
+### C. Owned design system — Pre-3D complete
 
 Raft-influenced Company OS tokens and accessible base components. Legally
 tracked fish assets; no runtime imports from Raft.
 
-### D. Deterministic demo runtime
+### D. Deterministic demo runtime — complete
 
 Zero-configuration event-driven demo company and three-minute assign → plan →
 activity → approval → evidence/result → responsibility → reset loop, isolated
 from production identity, models, tools, data, and secrets.
 
-### E. Agent Boss MVP projection
+### E. Agent Boss MVP projection — runnable vertical complete
 
 Organizations, principals, roles, human accountability, reporting lines, tasks,
 risk/autonomy, approvals, evidence, and responsibility projections. Validate
@@ -59,18 +59,18 @@ The application dispatch boundary enforces enterprise-human identity and a
 revisioned responsibility contract before issuing an idempotent Company OS work
 command; fixtures cannot write formal contracts.
 
-### F. Model and data boundary
+### F. Model and data boundary — reference-only vertical complete
 
 Provider/session isolation, model switching, data authorization, connector
 management, egress firewall, and secure credential references (never raw
 secrets in the control plane).
 
-### G. Office Compiler Pre-3D
+### G. Office Compiler Pre-3D — contract frozen
 
 Spatial modules, entity/state model, deterministic layout compilation, and
 replaceable renderer/asset contracts independent of 2D DOM.
 
-### H. 3D production (explicitly later)
+### H. 3D production — next separate goal, not started
 
 Reusable characters, rooms, furniture, rigs, actions, renderer, and asset QA,
 only after Pre-3D contracts and the product loop are validated.

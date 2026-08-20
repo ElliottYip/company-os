@@ -1,6 +1,6 @@
 # Direction B Pre-3D readiness
 
-Status: active; not yet at the 3D production gate.
+Status: complete on 2026-08-20; stopped at the 3D asset-production gate.
 
 ## Verified in the current execution
 
@@ -22,24 +22,26 @@ Status: active; not yet at the 3D production gate.
   `ActionSequence 1.0`, including abstract coordinates, bounds, anchors,
   semantic actions, and renderer capability negotiation.
 
-## Remaining before the gate can close
+## Closed gate evidence
 
-1. Add formal command HTTP contracts for work assignment and exact approval;
-   wire them into the formal Web with input, loading, unauthorized, offline,
-   empty, and failure states. The current formal Web is intentionally read-only.
-2. Persist and project WorkAttempt transitions through the durable store/outbox
-   rather than only defining the pure state machine.
-3. Enforce the durable control-plane store contract for managed-cloud admission,
-   and add deployment smoke/backup/rollback verification for both profiles.
-4. Project applied/rolled-back FDE packages into the four canonical catalogs and
-   test restart/replay behavior.
-5. Add model/data/Connector administration projections to the formal API and
-   Web, plus persisted data-egress decision audit.
-6. Add renderer conformance around every scene state and semantic asset slot;
-   keep the DOM output explicitly structural and do not improve it by faking a
-   final 3D office.
-7. Reconcile the historical checklist in `docs/pre-3d-program.md`, run the final
-   complete verification matrix, and publish the deployment/migration handoff.
+1. Formal work and exact-approval commands are tenant-bound HTTP contracts; the
+   formal Web has server-derived input plus loading, unauthorized, forbidden,
+   offline, empty, and failure states.
+2. Every WorkAttempt transition is replayable from the durable event ledger;
+   Connector commands commit atomically through a secret-free outbox.
+3. Both deployment profiles admit only the operational durable-store contract
+   and pass the same commit, outbox, backup, restore, and rollback-target smoke.
+4. Trusted FDE applications and rollbacks replay after restart into one
+   Company OS-owned organization/responsibility/Connector/governance projection.
+5. Formal Connector/model/data/egress administration is sanitized; every export
+   allow or deny decision is persisted without content, credentials, or session.
+6. Renderer conformance covers every entity state and semantic interaction slot
+   while the DOM adapter remains explicitly a structural preview.
+7. `npm run verify` passes 101 focused tests, all guards/scans/type/build gates,
+   and five real-browser cases at 320, 768, 1024, and 1440 px with no console
+   errors or warnings.
 
-No formal 3D character, room, prop, rig, animation, GLB, or Three.js work is
-authorized until these items are complete.
+The next product task may prepare formal 3D characters, rooms, props, rigs, and
+animation assets against the frozen contracts. It must remain a separate goal;
+this repository currently contains no Blender, GLB, Three.js, mesh, rig, or 3D
+asset-production implementation.

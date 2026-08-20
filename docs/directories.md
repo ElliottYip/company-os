@@ -8,7 +8,7 @@ company-os/
 ├── adapters/         Demo, deployment, identity, HTTP, storage, and Connector edges
 ├── connector-sdk/    Provider-neutral versioned connector contract
 ├── web/              Standalone Vite shell, host mount, DOM adapter, owned assets
-├── tests/            Focused behavior and boundary-facing tests
+├── tests/            Focused unit/integration tests plus real-browser E2E
 ├── scripts/          Dependency-boundary guard
 └── docs/             Charter, roadmap, ADRs, provenance, migration, handoff
 ```
