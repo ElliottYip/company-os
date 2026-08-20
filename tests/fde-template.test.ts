@@ -1,8 +1,13 @@
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import { ApplyFdeTemplate } from "../application/apply-fde-template.ts";
 import { InMemoryEventStore } from "../adapters/storage/in-memory-event-store.ts";
+import { EventBackedCompanyConfigurationProjection } from "../adapters/storage/event-backed-company-configuration-projection.ts";
+import { LocalDurableControlPlaneStore } from "../adapters/storage/local-durable-control-plane-store.ts";
 import { DEMO_COMPANY } from "../adapters/demo/demo-company.ts";
 import { validateFdeTemplate } from "../core/fde-template.ts";
 import type { IdentityPort } from "../ports/identity-port.ts";
@@ -109,4 +114,32 @@ test("untrusted template fails before any configuration event", async () => {
     previousRevisions: { organization: 0, responsibility: 0, connectors: 0, governance: 0 },
   }), /FDE_TEMPLATE_UNTRUSTED:PUBLISHER_NOT_TRUSTED/);
   assert.equal((await events.read("demo-company")).length, 0);
+});
+
+test("applied and rolled-back FDE packages replay into all canonical configuration catalogs", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "company-os-fde-replay-"));
+  const events = new LocalDurableControlPlaneStore(directory);
+  let id = 0;
+  const service = new ApplyFdeTemplate({
+    identity: identity(),
+    trust: { async verify(candidate) { return { trusted: true, verifiedDigest: candidate.contentDigest, publisherId: candidate.trust.publisherId }; } },
+    events,
+    now: () => "2026-08-20T17:00:00.000Z",
+    nextId: () => `fde-projection-${++id}`,
+  });
+  const applied = await service.apply(template(), {
+    expectedEventSequence: 0,
+    previousRevisions: { organization: 0, responsibility: 0, connectors: 0, governance: 0 },
+  });
+  const restarted = new EventBackedCompanyConfigurationProjection(new LocalDurableControlPlaneStore(directory));
+  const active = await restarted.load("demo-company");
+  assert.equal(active?.applicationId, applied.applicationId);
+  assert.equal(active?.organization.company.name, DEMO_COMPANY.company.name);
+  assert.equal(active?.responsibility.contracts.length, 2);
+  assert.equal(active?.connectors.connectors.length, 2);
+  assert.equal(active?.governance.companyId, "demo-company");
+  assert.deepEqual(active?.revisions, { organization: 1, responsibility: 1, connectors: 1, governance: 1 });
+
+  await service.rollback("demo-company", applied.applicationId, 1, "PILOT_ROLLBACK");
+  assert.equal(await new EventBackedCompanyConfigurationProjection(new LocalDurableControlPlaneStore(directory)).load("demo-company"), null);
 });
