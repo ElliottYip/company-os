@@ -22,6 +22,7 @@ test("the open-source release carries the selected Apache-2.0 license and distin
   assert.match(thirdParty, /Docker CLI 29\.1\.3/);
   assert.match(thirdParty, /Docker\s+Compose plugin 5\.0\.0/);
   assert.match(thirdParty, /github\.com\/creack\/pty/);
+  assert.match(thirdParty, /@aws-sdk\/client-s3.*3\.1118\.0/);
   for (const source of [packageJsonSource, agentPackage, dataPackage, brokerPackage, vaultBrokerPackage]) {
     assert.equal(JSON.parse(source).license, "Apache-2.0");
   }
@@ -85,6 +86,30 @@ test("self-hosted encrypted backups are opt-in, scheduled, and keep the key outs
     "node scripts/run-postgres-encrypted-backup-admission.mjs");
   assert.match(workflow, /npm run test:encrypted-backup:postgres16/);
   assert.doesNotMatch(compose, /COMPANY_OS_BACKUP_ENCRYPTION_KEY:\s*[A-Za-z0-9+/]{43}=/);
+});
+
+test("encrypted backups can publish to dedicated S3-compatible storage using file-only credentials", async () => {
+  const [selfHosted, staging, selfHostedExample, stagingExample, runbook] = await Promise.all([
+    read("deploy/compose.self-hosted.yml"),
+    read("deploy/compose.staging.yml"),
+    read("deploy/self-hosted.env.example"),
+    read("deploy/staging.env.example"),
+    read("docs/staging-raft-xin.md"),
+  ]);
+  for (const compose of [selfHosted, staging]) {
+    assert.match(compose, /COMPANY_OS_BACKUP_S3_ENDPOINT:/);
+    assert.match(compose, /COMPANY_OS_BACKUP_S3_REGION:/);
+    assert.match(compose, /COMPANY_OS_BACKUP_S3_BUCKET:/);
+    assert.match(compose, /COMPANY_OS_BACKUP_S3_ACCESS_KEY_ID_FILE: \/run\/company-os\/backup-secrets\/zos-access-key-id/);
+    assert.match(compose, /COMPANY_OS_BACKUP_S3_SECRET_ACCESS_KEY_FILE: \/run\/company-os\/backup-secrets\/zos-secret-access-key/);
+    assert.doesNotMatch(compose, /COMPANY_OS_BACKUP_S3_(?:ACCESS_KEY_ID|SECRET_ACCESS_KEY):/);
+  }
+  assert.match(staging, /company_os_staging_backups:\/backup/);
+  assert.match(staging, /COMPANY_OS_BACKUP_ENCRYPTION_KEY_FILE: \/run\/company-os\/backup-secrets\/backup-encryption-key/);
+  assert.match(selfHostedExample, /^COMPANY_OS_BACKUP_S3_ENDPOINT=https:\/\//m);
+  assert.match(stagingExample, /^COMPANY_OS_BACKUP_S3_BUCKET=CHANGE_ME_/m);
+  assert.match(runbook, /completion manifest.*last/i);
+  assert.match(runbook, /versioning/i);
 });
 
 test("production images are pinned, non-root, health checked, and independently runnable", async () => {

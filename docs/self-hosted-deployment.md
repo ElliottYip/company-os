@@ -170,9 +170,13 @@ docker compose --env-file deploy/self-hosted.env \
 ```
 
 `COMPANY_OS_BACKUP_INTERVAL_SECONDS` defaults to 86400 and cannot be configured
-below one hour. The service does not automatically delete historical backups;
-retention and off-site replication belong to operator-controlled encrypted
-storage. The maintained encrypted restore drill authenticates the entire
+below one hour. The service does not automatically delete historical backups.
+When an S3-compatible destination is configured, it streams the encrypted
+ciphertext to object storage, verifies the remote length and digest metadata,
+then publishes the small completion manifest last. Access keys are accepted
+only from private mounted files, never inline Compose values. Object retention,
+versioning and deletion remain operator-owned policies. The maintained
+encrypted restore drill authenticates the entire
 ciphertext and its critical manifest metadata before streaming a second
 decryption pass directly into `pg_restore`; it never creates a plaintext dump:
 

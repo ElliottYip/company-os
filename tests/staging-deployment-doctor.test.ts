@@ -19,7 +19,8 @@ function readySnapshot(): StagingDeploymentSnapshot {
       files: [
         "migration-database-url", "runtime-database-url", "runtime-database-password",
         "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
-        "data-node-bearer-token", "secret-broker-bearer-token",
+        "data-node-bearer-token", "secret-broker-bearer-token", "backup-encryption-key",
+        "zos-access-key-id", "zos-secret-access-key",
       ].map((name) => ({ name, kind: "file" as const, mode: 0o400, size: 64 })),
     },
     runtime: { dockerAvailable: true, composeAvailable: true, cpuCount: 2,
@@ -35,6 +36,9 @@ function readySnapshot(): StagingDeploymentSnapshot {
       COMPANY_OS_HTTP_AGENT_NODE_BASE_URL: "https://agent.staging.example",
       COMPANY_OS_HTTP_DATA_NODE_BASE_URL: "https://data.staging.example",
       COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: "https://broker.staging.example",
+      COMPANY_OS_BACKUP_S3_ENDPOINT: "https://object-storage.staging.example",
+      COMPANY_OS_BACKUP_S3_REGION: "us-east-1",
+      COMPANY_OS_BACKUP_S3_BUCKET: "company-os-staging-backup",
     },
   };
 }

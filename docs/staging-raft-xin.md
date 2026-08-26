@@ -37,13 +37,17 @@ The following external prerequisites do not yet exist for Company OS:
 - an enterprise OIDC client/issuer;
 - a HashiCorp Vault coordinate and least-privilege AppRole;
 - a Data Node and Agent Node coordinate;
-- a Company OS-owned private ZOS bucket and bucket-scoped identity;
+- the final binding and verification of the dedicated ZOS bucket-scoped identity;
 - DNS, Nginx sites and certificates for both fixed hostnames.
 
-The ZOS Hangzhou 7 endpoints are known, but no bucket is allocated. Existing
-`generator001y`, `workflow001y` and `raft-client-upload-20260601` buckets are
-not Company OS staging resources and must not be reused. This preflight is
-inventory evidence only; it is not staging acceptance.
+The dedicated ZOS Hangzhou 7 bucket has now been created as private,
+single-availability-zone storage with ZOS-managed encryption and versioning.
+Object Lock is disabled and no automatic lifecycle deletion is configured.
+The bucket-scoped policy exists but the persistent IAM identity is not accepted
+until its credentials have been saved by the user and the policy binding has
+been verified. Existing `generator001y`, `workflow001y` and
+`raft-client-upload-20260601` buckets remain forbidden. This is infrastructure
+preparation evidence only; it is not backup or staging acceptance.
 
 ## Secret files
 
@@ -60,6 +64,9 @@ arguments:
 - `agent-node-bearer-token`
 - `data-node-bearer-token`
 - `secret-broker-bearer-token`
+- `backup-encryption-key`
+- `zos-access-key-id`
+- `zos-secret-access-key`
 
 `NAME` and `NAME_FILE` are mutually exclusive and ambiguous configuration
 fails closed. Vault is accessed only through the customer-owned Secret Broker;
@@ -68,11 +75,13 @@ tokens.
 
 ## Object storage
 
-The existing ZOS bucket `generator001y` is forbidden. Create a separate private
-bucket for encrypted Company OS backups, enable versioning, use a bucket-scoped
-IAM principal, and decide object lock before bucket creation because compliance
-retention cannot be disabled later. The storage endpoint is configured only in
-the backup uploader, not in the API or Web containers.
+The existing ZOS bucket `generator001y` is forbidden. Company OS uses a
+separate private, versioned bucket and a bucket-scoped IAM principal. The
+uploader validates the encrypted ciphertext against its authenticated manifest,
+uploads ciphertext first, verifies remote length and digest metadata, and
+publishes the completion manifest last. A failed verification never publishes
+completion. Credentials are read only from private files; the storage endpoint
+is configured only in the backup service, not in API or Web containers.
 
 ## Deployment gate
 

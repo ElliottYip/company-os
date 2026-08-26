@@ -5,6 +5,7 @@ import { isAbsolute, join } from "node:path";
 import { spawn } from "node:child_process";
 import { pipeline } from "node:stream/promises";
 import { setTimeout as delay } from "node:timers/promises";
+import { readSecretFileEnvironment } from "../adapters/config/secret-file-environment.ts";
 import { postgresCommandCoordinates } from "./postgres-restore-drill.ts";
 
 const ALGORITHM = "aes-256-gcm" as const;
@@ -127,7 +128,13 @@ export async function createEncryptedPostgresBackup(input: {
   readonly outputDirectory: string;
   readonly encryptionKey: Buffer;
   readonly now?: () => Date;
-}): Promise<{ readonly schemaVersion: 1; readonly status: "PASS"; readonly ciphertextDigest: string }> {
+}): Promise<{
+  readonly schemaVersion: 1;
+  readonly status: "PASS";
+  readonly ciphertextDigest: string;
+  readonly ciphertextPath: string;
+  readonly manifestPath: string;
+}> {
   if (!isAbsolute(input.outputDirectory)) throw new Error("BACKUP_DIRECTORY_INVALID");
   if (input.encryptionKey.length !== 32) throw new Error("BACKUP_ENCRYPTION_KEY_INVALID");
   const coordinates = postgresCommandCoordinates(input.databaseUrl);
@@ -174,7 +181,8 @@ export async function createEncryptedPostgresBackup(input: {
     await writeFile(manifestPartialPath, `${JSON.stringify(manifest)}\n`, { flag: "wx", mode: 0o600 });
     await rename(partialPath, ciphertextPath);
     await rename(manifestPartialPath, manifestPath);
-    return { schemaVersion: 1, status: "PASS", ciphertextDigest: encrypted.digest };
+    return { schemaVersion: 1, status: "PASS", ciphertextDigest: encrypted.digest,
+      ciphertextPath, manifestPath };
   } catch (error) {
     child.kill("SIGTERM");
     await Promise.all([rm(partialPath, { force: true }), rm(manifestPartialPath, { force: true })]);
@@ -183,11 +191,14 @@ export async function createEncryptedPostgresBackup(input: {
 }
 
 async function main(): Promise<void> {
-  const databaseUrl = process.env.COMPANY_OS_DATABASE_URL;
+  const databaseUrl = await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL");
   const outputDirectory = process.env.COMPANY_OS_BACKUP_DIRECTORY;
   if (!databaseUrl || !outputDirectory) throw new Error("BACKUP_CONFIGURATION_REQUIRED");
-  const encryptionKey = backupEncryptionKey(process.env.COMPANY_OS_BACKUP_ENCRYPTION_KEY);
+  const encryptionKey = backupEncryptionKey(await readSecretFileEnvironment("COMPANY_OS_BACKUP_ENCRYPTION_KEY"));
   const intervalMs = scheduledBackupIntervalMs(process.env.COMPANY_OS_BACKUP_INTERVAL_SECONDS);
+  const offsiteModule = await import("./offsite-encrypted-backup.ts");
+  const offsiteConfiguration = await offsiteModule.loadS3BackupConfiguration(process.env);
+  const offsiteStore = offsiteConfiguration ? new offsiteModule.S3BackupObjectStore(offsiteConfiguration) : undefined;
   let stopping = false;
   const shutdown = new AbortController();
   process.once("SIGINT", () => { stopping = true; shutdown.abort(); });
@@ -195,7 +206,17 @@ async function main(): Promise<void> {
   do {
     try {
       const result = await createEncryptedPostgresBackup({ databaseUrl, outputDirectory, encryptionKey });
-      process.stdout.write(`${JSON.stringify({ event: "company_os.encrypted_backup_completed", ...result })}\n`);
+      if (offsiteConfiguration && offsiteStore) {
+        await offsiteModule.publishEncryptedBackup({
+          ciphertextPath: result.ciphertextPath,
+          manifestPath: result.manifestPath,
+          destination: offsiteConfiguration.destination,
+          store: offsiteStore,
+        });
+      }
+      process.stdout.write(`${JSON.stringify({ event: "company_os.encrypted_backup_completed",
+        schemaVersion: result.schemaVersion, status: result.status, ciphertextDigest: result.ciphertextDigest,
+        offsite: Boolean(offsiteConfiguration) })}\n`);
     } catch {
       process.stderr.write(`${JSON.stringify({ event: "company_os.encrypted_backup_failed", code: "ENCRYPTED_BACKUP_FAILED" })}\n`);
       if (process.env.COMPANY_OS_BACKUP_RUN_MODE === "once") process.exitCode = 1;
@@ -207,6 +228,7 @@ async function main(): Promise<void> {
       if (!(error instanceof Error) || error.name !== "AbortError") throw error;
     }
   } while (!stopping);
+  offsiteStore?.destroy();
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) await main();

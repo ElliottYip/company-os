@@ -9,6 +9,15 @@ terms, or the separate MIT license carried by `skills/agentboss-school`.
 
 ## Incorporated
 
+### AWS SDK for JavaScript v3 — S3 client
+
+The Company OS operations path uses `@aws-sdk/client-s3` 3.1118.0 for
+S3-compatible encrypted backup publication and retrieval. The package is
+distributed under Apache-2.0 by Amazon Web Services; source and license are
+available at `https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-s3`.
+It is an operations-only transport dependency. Company OS supplies its own
+backup envelope, completion semantics and credential-file boundary.
+
 ### OpenAI Codex CLI
 
 The separately released Codex Agent Node image installs `@openai/codex` at the
