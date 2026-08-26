@@ -99,7 +99,7 @@ read-only `qualify` job against the exact tagged revision. It includes the compl
 PostgreSQL recovery/upgrade/role checks, Keycloak, verified-TLS customer
 boundary preflight, the sustained HTTP soak and both Compose profiles. Only the
 dependent `publish` job receives package, attestation and release-write
-permissions. The five images, their attestations, the manifest and the SBOM are
+permissions. The six images, their attestations, the manifest and the SBOM are
 created before the GitHub Release is published; prerelease tags remain visibly
 marked as prereleases.
 

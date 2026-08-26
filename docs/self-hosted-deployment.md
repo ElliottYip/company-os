@@ -246,7 +246,7 @@ On 2026-08-26 both Dockerfiles built successfully with Node
 build and TypeScript checks passed, and focused deployment/runtime-config tests
 passed. Both containers were started as UID 1000; the Web returned its injected
 formal configuration and the API returned structured liveness. The full test
-gate also passed 468 cases (464 passed and four explicitly environment-gated
+gate also passed 527 cases (523 passed and four explicitly environment-gated
 live cases skipped in the credential-free run) plus 19 Chromium cases (15
 passed and four live-infrastructure gates skipped by default). The reference OIDC live
 gate passed separately with no route interception. A second compatibility gate

@@ -130,8 +130,8 @@ and Settings captures verify the locale and spacing boundary.
 `capture-report.json` records 42 captures with viewport, active language and
 horizontal-overflow results; every capture reports no horizontal overflow.
 
-The latest full admission on 2026-08-26 has 468 unit and integration cases
-(464 passed and four explicit external-infrastructure skips),
+The latest full admission on 2026-08-26 has 527 unit and integration cases
+(523 passed and four explicit external-infrastructure skips),
 boundary and independence guards, secret and dependency audits, strict type
 checking, the production build, the Web performance budget, and 19 browser
 E2E cases (15 passed and four explicit external-infrastructure skips). A disposable PostgreSQL 16 instance enabled the real database,
@@ -159,7 +159,7 @@ The formal Activity page
 uses a tenant-authorized, paginated and raw-payload-free server projection; the
 Dashboard, Inbox, Approvals and Accountability surfaces resolve the real Work
 title and accountable human rather than Demo copy. The initial application
-bundle is 261,552 bytes raw / 69,244 bytes gzip; the
+bundle is 267,309 bytes raw / 70,880 bytes gzip; the
 graph renderer is loaded only on pages that use it. Governance includes formal
 Tool Access profiles/bindings/policies, and Usage & Budgets now reads verified
 cost events and writes revisioned budget policies instead of showing an
