@@ -181,6 +181,16 @@ only through the process environment.
 
 ### Environment asset production
 
+- `assets/3d/environment/sources/*.blend` are the 79 compact, independently
+  editable Blender masters for the canonical environment catalog. They were
+  generated procedurally inside Company OS, contain no external textures or
+  provider payloads, and are distributed with the project under Apache-2.0.
+- `assets/3d/environment/qa/rooms/*.png` and
+  `assets/3d/environment/qa/reception-reference/room-reception.png` are
+  Company OS-generated visual admission renders. The approved reception art
+  direction master is retained at
+  `assets/3d/environment/references/reception-art-direction-v1.png`; it is a
+  Company OS-generated reference, not copied third-party artwork.
 - `assets/3d/environment/hyper3d-sources/*/multiview-v1/` contains
   Company OS-generated five-view modeling inputs. It does not copy Raft source
   code or brand assets.

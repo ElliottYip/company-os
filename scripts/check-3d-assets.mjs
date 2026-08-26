@@ -1,8 +1,22 @@
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { readFile, stat } from "node:fs/promises";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
 
 const root = process.cwd();
+const trackedFiles = new Set(
+  execFileSync("git", ["ls-files"], { cwd: root, encoding: "utf8" })
+    .split("\n")
+    .filter(Boolean),
+);
+
+function assertTracked(path, label) {
+  const repositoryPath = relative(root, path).replaceAll("\\", "/");
+  if (!trackedFiles.has(repositoryPath)) {
+    throw new Error(`${label} is not tracked by Git: ${repositoryPath}`);
+  }
+}
+
 const manifestPath = resolve(root, "web/public/assets/3d/manifest.json");
 const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
 const requiredActions = new Set(manifest.actions);
@@ -27,6 +41,7 @@ async function validateAssetFile(asset) {
     throw new Error(`Invalid asset URL: ${asset.src}`);
   }
   const path = resolve(root, "web/public", asset.src.slice(1));
+  assertTracked(path, `${asset.id}: runtime asset`);
   const bytes = await readFile(path);
   const metadata = await stat(path);
   const digest = createHash("sha256").update(bytes).digest("hex");
@@ -58,6 +73,7 @@ async function validateSourceBlend(asset) {
     throw new Error(`${asset.id}: missing independent Blender source.`);
   }
   const path = resolve(root, source.path);
+  assertTracked(path, `${asset.id}: Blender source`);
   const bytes = await readFile(path);
   const metadata = await stat(path);
   const digest = createHash("sha256").update(bytes).digest("hex");
@@ -109,14 +125,18 @@ for (const room of roomManifest.rooms) {
     throw new Error(`${room.id}: ceiling-light assets are forbidden in the approved room composition.`);
   }
   await validateAssetFile(room);
-  await stat(resolve(root, room.preview));
+  const previewPath = resolve(root, room.preview);
+  assertTracked(previewPath, `${room.id}: preview`);
+  await stat(previewPath);
 }
 const canonicalFishIds = new Set(manifest.assets.map(({ id }) => id));
 const fixtureIds = roomManifest.showcase?.fixtureCharacterIds ?? [];
 if (fixtureIds.length !== 3 || fixtureIds.some((id) => !canonicalFishIds.has(id))) {
   throw new Error("Showcase must use exactly the three approved fish as explicit fixtures.");
 }
-await stat(resolve(root, roomManifest.showcase.preview));
+const showcasePreviewPath = resolve(root, roomManifest.showcase.preview);
+assertTracked(showcasePreviewPath, "Room showcase preview");
+await stat(showcasePreviewPath);
 
 const detailRoomManifest = JSON.parse(await readFile(resolve(root, "web/public/assets/3d/detail/rooms/manifest.json"), "utf8"));
 if (detailRoomManifest.schemaVersion !== "1.0" || detailRoomManifest.contract !== "OfficeRoomAsset 1.0" || detailRoomManifest.rooms.length !== 1) {
@@ -133,8 +153,12 @@ if (!receptionDetail.interactiveSlots?.includes("receptionist") || !receptionDet
   throw new Error("Focused reception detail must preserve live entity and screen slots.");
 }
 await validateAssetFile(receptionDetail);
-await stat(resolve(root, receptionDetail.preview));
-await stat(resolve(root, receptionDetail.reference));
+const receptionPreviewPath = resolve(root, receptionDetail.preview);
+const receptionReferencePath = resolve(root, receptionDetail.reference);
+assertTracked(receptionPreviewPath, "Focused reception preview");
+assertTracked(receptionReferencePath, "Focused reception reference");
+await stat(receptionPreviewPath);
+await stat(receptionReferencePath);
 
 console.log(
   `3D asset guard passed: ${manifest.assets.length} canonical fish, ` +
