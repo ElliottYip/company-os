@@ -15,6 +15,7 @@ test("Keycloak compatibility admission pins providers and creates credentials on
   assert.match(runner, /--import-realm/);
   assert.match(runner, /mkdtempSync\(join\(tmpdir\(\)/);
   assert.doesNotMatch(runner, /\/private\/tmp/);
+  assert.match(runner, /company-os-compat-realm\.json[\s\S]+mode: 0o644/);
   assert.match(workflow, /npm run test:oidc:keycloak/);
 });
 

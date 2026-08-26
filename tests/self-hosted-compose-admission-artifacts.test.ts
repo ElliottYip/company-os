@@ -17,6 +17,7 @@ test("self-hosted admission exercises the production Compose profile through TLS
   assert.match(runner, /host-gateway/);
   assert.match(runner, /mkdtempSync\(join\(tmpdir\(\)/);
   assert.doesNotMatch(runner, /\/private\/tmp/);
+  assert.match(runner, /company-os-compose-realm\.json[\s\S]+mode: 0o644/);
   assert.match(runner, /quay\.io\/keycloak\/keycloak@sha256:[a-f0-9]{64}/);
   assert.match(runner, /down", "--volumes", "--remove-orphans"/);
   assert.match(browserTest, /Claim first administrator/);

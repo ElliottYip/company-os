@@ -212,7 +212,9 @@ try {
       firstName: "Compose", lastName: "User",
       credentials: [{ type: "password", value: password, temporary: false }] }],
   };
-  writeFileSync(importDirectory + "/company-os-compose-realm.json", JSON.stringify(realm, null, 2) + "\n", { mode: 0o600 });
+  // The outer mkdtemp directory remains 0700. The mounted import file must be
+  // readable by Keycloak's non-root container user on Linux.
+  writeFileSync(importDirectory + "/company-os-compose-realm.json", JSON.stringify(realm, null, 2) + "\n", { mode: 0o644 });
   const managedMigrationDatabaseUrl = `postgres://${databaseOwner}:${databasePassword}@${postgresContainer}:5432/company_os`;
   const managedDatabaseUrl = `postgres://${runtimeDatabaseUser}:${runtimeDatabasePassword}@${postgresContainer}:5432/company_os`;
   const environmentLines = [

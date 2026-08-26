@@ -71,7 +71,9 @@ try {
       credentials: [{ type: "password", value: password, temporary: false }],
     }],
   };
-  writeFileSync(`${importDirectory}/company-os-compat-realm.json`, `${JSON.stringify(realm, null, 2)}\n`, { mode: 0o600 });
+  // The outer mkdtemp directory remains 0700. The mounted import file must be
+  // readable by Keycloak's non-root container user on Linux.
+  writeFileSync(`${importDirectory}/company-os-compat-realm.json`, `${JSON.stringify(realm, null, 2)}\n`, { mode: 0o644 });
 
   docker("run", "-d", "--name", postgresContainer,
     "-e", "POSTGRES_USER=company_os_test", "-e", "POSTGRES_PASSWORD=company_os_test",
