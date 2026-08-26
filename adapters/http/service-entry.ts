@@ -35,6 +35,7 @@ import { SessionCompanyIdentityAdapter } from "../identity/session-company-ident
 import { PostgresEventStore } from "../persistence/postgres/postgres-event-store.ts";
 import { createPostgresHumanInviteStore } from "../persistence/postgres/postgres-human-invite-store.ts";
 import { PostgresCompanyRestoreStore } from "../persistence/postgres/postgres-company-restore-store.ts";
+import { PostgresInstanceMaintenanceStore } from "../persistence/postgres/postgres-instance-maintenance-store.ts";
 import { EventBackedOrganizationPrincipalStore } from "../storage/event-backed-organization-principal-store.ts";
 import { EventBackedResponsibilityContractStore } from "../storage/event-backed-responsibility-contract-store.ts";
 import { EventBackedApprovalStore } from "../storage/event-backed-approval-store.ts";
@@ -72,6 +73,7 @@ import { ResolveWorkModelRoute } from "../../application/resolve-work-model-rout
 import { ManageToolAccess } from "../../application/manage-tool-access.ts";
 import { ManageUsageBudget } from "../../application/manage-usage-budget.ts";
 import { AuthorizeWorkBudget } from "../../application/authorize-work-budget.ts";
+import { ManageInstanceMaintenance } from "../../application/manage-instance-maintenance.ts";
 import { ManageSecretReference } from "../../application/manage-secret-reference.ts";
 import type { SecretBrokerManagementPort } from "../../ports/secret-broker-management-port.ts";
 import {
@@ -173,6 +175,7 @@ const companyAccessStore = database ? createPostgresCompanyAccessStore(database.
 const companyRestoreStore = database ? new PostgresCompanyRestoreStore(database.db) : null;
 const formalEvents = database ? new PostgresEventStore(database.db) : null;
 const humanInviteStore = database ? createPostgresHumanInviteStore(database.db) : null;
+const instanceMaintenance = database ? new PostgresInstanceMaintenanceStore(database.db) : null;
 const formalExecutionPorts = await loadFormalConnectors(
   parseFormalConnectorPackages(process.env.COMPANY_OS_CONNECTOR_PACKAGES),
 );
@@ -267,6 +270,22 @@ async function formalCompanyContext(request: import("node:http").IncomingMessage
     }),
   };
 }
+
+async function formalInstanceMaintenance(request: import("node:http").IncomingMessage) {
+  if (!auth || !companyAccessStore || !instanceMaintenance) throw new Error("FORMAL_IDENTITY_REQUIRED");
+  const session = await resolveCompanyAuthSession(auth, request);
+  if (!session) throw new Error("FORMAL_IDENTITY_REQUIRED");
+  const now = () => new Date().toISOString();
+  return new ManageInstanceMaintenance({
+    identity: {
+      async getCurrentIdentity() { return { actorId: session.user.id, organizationId: "instance",
+        displayName: session.user.name, assurance: "ENTERPRISE_ASSERTED" }; },
+      async currentPrincipal() { return { id: session.user.id, kind: "HUMAN", displayName: session.user.name }; },
+      async authorize() { throw new Error("INSTANCE_MAINTENANCE_DIRECT_AUTHORIZATION_FORBIDDEN"); },
+    },
+    access: companyAccessStore, maintenance: instanceMaintenance, now, nextId: nextPostgresRecordId,
+  });
+}
 async function formalAgentBossApi(request: import("node:http").IncomingMessage, companyId: string) {
   if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
   const context = await formalCompanyContext(request, companyId);
@@ -301,6 +320,7 @@ async function formalAgentBossApi(request: import("node:http").IncomingMessage, 
       structure: organization,
       now: context.now,
       nextId: nextPostgresRecordId,
+      maintenance: instanceMaintenance!,
       attemptScheduler: new ScheduleWorkAttempt({
         store: formalEvents,
         executionPorts: formalExecutionPorts,
@@ -423,6 +443,19 @@ const server = createCompanyOsHttpService({
       });
     },
   },
+  ...(auth && companyAccessStore && instanceMaintenance ? {
+    instanceMaintenance: {
+      async get(request) { return (await formalInstanceMaintenance(request)).load(); },
+      async change(request, input) {
+        return (await formalInstanceMaintenance(request)).execute(input as {
+          mode: "OPEN" | "DISPATCH_FROZEN";
+          expectedRevision: number;
+          operationId: string;
+          authorizationReference: string;
+        });
+      },
+    },
+  } : {}),
   ...(auth && formalEvents && companyAccessStore && accessDirectory ? {
     formalApi: {
       async getAgentBoss(request, companyId) {

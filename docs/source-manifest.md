@@ -399,6 +399,15 @@ Company OS drain proof, exact immutable release status, shared lifecycle lock,
 explicit external change reference and post-restart adoption proof. No upstream
 service manager, state record, command implementation or schema is copied.
 
+The persistent instance dispatch freeze extends that reference beyond process
+supervision. Paperclip's pinned lifecycle work exposed the generic
+drain-before-restart problem; Company OS independently models the solution as a
+revisioned, instance-admin-authorized domain state with an append-only audit
+event. Its maintenance schema, port, HTTP command, dispatch guard and exact
+source digest are Company OS-owned and deliberately do not reproduce
+Paperclip's service state, database schema, internal types or routes. See ADR
+0039.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

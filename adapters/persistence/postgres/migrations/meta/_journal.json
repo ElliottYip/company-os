@@ -36,6 +36,13 @@
       "when": 1787560800000,
       "tag": "0005_durable_control_plane",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1787561400000,
+      "tag": "0006_instance_maintenance",
+      "breakpoints": true
     }
   ]
 }

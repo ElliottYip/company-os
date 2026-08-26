@@ -61,7 +61,7 @@ async function withService(
   deploymentExposure: "private" | "public" = "private",
   operational?: Pick<
     import("../adapters/http/company-os-http-service.ts").CompanyOsHttpServiceOptions,
-    "serviceMode" | "operationalReadiness" | "metricsEnabled"
+    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance"
   >,
 ) {
   const { runtime } = createDemoComposition();
@@ -1415,6 +1415,79 @@ test("independent Web origins receive exact credentialed CORS and bounded prefli
     assert.equal(denied.status, 403);
     assert.equal(denied.headers.get("access-control-allow-origin"), null);
   }, { async getAgentBoss() { return {}; } });
+});
+
+test("instance administrators can read and explicitly freeze dispatch through the bounded API", async () => {
+  const changes: unknown[] = [];
+  await withService(async (baseUrl) => {
+    const current = await fetch(`${baseUrl}/api/v1/instance/maintenance`);
+    assert.equal(current.status, 200);
+    assert.deepEqual(await current.json(), {
+      schemaVersion: 1,
+      mode: "OPEN",
+      revision: 0,
+      operationId: null,
+      authorizationReference: null,
+      changedBy: null,
+      changedAt: null,
+    });
+
+    const frozen = await fetch(`${baseUrl}/api/v1/instance/maintenance`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({
+        mode: "DISPATCH_FROZEN",
+        expectedRevision: 0,
+        operationId: "upgrade-staging-01",
+        authorizationReference: "change:approved-01",
+      }),
+    });
+    assert.equal(frozen.status, 200);
+    assert.deepEqual(await frozen.json(), { mode: "DISPATCH_FROZEN", revision: 1 });
+    assert.deepEqual(changes, [{
+      mode: "DISPATCH_FROZEN",
+      expectedRevision: 0,
+      operationId: "upgrade-staging-01",
+      authorizationReference: "change:approved-01",
+    }]);
+
+    const invalid = await fetch(`${baseUrl}/api/v1/instance/maintenance`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({
+        mode: "DISPATCH_FROZEN",
+        expectedRevision: 0,
+        operationId: "upgrade-staging-02",
+        authorizationReference: "change:approved-02",
+        unexpected: true,
+      }),
+    });
+    assert.equal(invalid.status, 422);
+    assert.deepEqual(await invalid.json(), { error: { code: "INVALID_FORMAL_COMMAND", parameters: {} } });
+
+    const forbidden = await fetch(`${baseUrl}/api/v1/instance/maintenance`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json", origin: "http://evil.test" },
+      body: JSON.stringify({
+        mode: "OPEN",
+        expectedRevision: 1,
+        operationId: "upgrade-staging-01",
+        authorizationReference: "change:approved-01",
+      }),
+    });
+    assert.equal(forbidden.status, 403);
+  }, undefined, undefined, undefined, undefined, "private", {
+    instanceMaintenance: {
+      async get() {
+        return { schemaVersion: 1, mode: "OPEN", revision: 0, operationId: null,
+          authorizationReference: null, changedBy: null, changedAt: null };
+      },
+      async change(_request, input) {
+        changes.push(input);
+        return { mode: "DISPATCH_FROZEN", revision: 1 };
+      },
+    },
+  });
 });
 
 test("private operational metrics expose bounded route families without customer identifiers", async () => {

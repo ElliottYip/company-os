@@ -58,7 +58,7 @@ const drained = {
   observedAt: "2026-08-26T17:00:00.000Z", blockers: [],
   snapshot: { companyCount: 1, eventCount: 4, eventSequenceTotal: 4,
     terminalAttemptCount: 1, pendingPublicationCount: 0, pendingApprovalCount: 0,
-    issuedLeaseCount: 1, revokedLeaseCount: 1 },
+    issuedLeaseCount: 1, revokedLeaseCount: 1, maintenanceRevision: 1 },
   exactSourceDigest: `sha256:${"a".repeat(64)}`,
 };
 

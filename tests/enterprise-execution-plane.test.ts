@@ -195,6 +195,8 @@ test("three independent fixture nodes complete one governed approval and evidenc
         status: "idle" as const, pauseReason: null, pausedAt: null, errorCode: null,
         updatedAt: "2026-08-25T10:00:00.000Z" }] }; }, async transition() { throw new Error("not used"); } },
       structure: structurePort,
+      maintenance: { async load() { return { schemaVersion: 1 as const, mode: "OPEN" as const,
+        revision: 0, operationId: null, authorizationReference: null, changedBy: null, changedAt: null }; } },
       now: () => "2026-08-25T10:00:00.000Z", nextId,
       attemptScheduler: new ScheduleWorkAttempt({ store, executionPorts: [agentPort], runtimeSecurity: security, nextId }),
       commandDelivery: delivery("2026-08-25T10:01:00.000Z"),

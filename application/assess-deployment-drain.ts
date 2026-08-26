@@ -1,4 +1,5 @@
 import type { WorkAttemptStatus } from "../core/work-attempt.ts";
+import type { InstanceMaintenanceState } from "../core/instance-maintenance.ts";
 import type { DeploymentDrainCompanySource } from "../ports/deployment-drain-state-port.ts";
 
 const ATTEMPT_STATUSES = new Set<WorkAttemptStatus>([
@@ -13,12 +14,14 @@ export interface DeploymentDrainCompanyState extends DeploymentDrainCompanySourc
 
 export interface DeploymentDrainInput {
   readonly observedAt: string;
+  readonly maintenance: Pick<InstanceMaintenanceState, "mode" | "revision">;
   readonly companies: readonly DeploymentDrainCompanyState[];
 }
 
 export interface DeploymentDrainBlocker {
   readonly code:
     | "DRAIN_SOURCE_STATE_INVALID"
+    | "DISPATCH_NOT_FROZEN"
     | "NON_TERMINAL_WORK_ATTEMPTS"
     | "PENDING_APPROVALS"
     | "PENDING_CONNECTOR_PUBLICATIONS"
@@ -41,6 +44,7 @@ export interface DeploymentDrainAssessment {
     readonly pendingApprovalCount: number;
     readonly issuedLeaseCount: number;
     readonly revokedLeaseCount: number;
+    readonly maintenanceRevision: number;
   };
 }
 
@@ -57,6 +61,8 @@ export function assessDeploymentDrain(input: DeploymentDrainInput): DeploymentDr
   const revokedLeases = new Set<string>();
   const companyIds = new Set<string>();
   let invalidCount = Number.isFinite(Date.parse(input.observedAt)) ? 0 : 1;
+  if (!Number.isSafeInteger(input.maintenance.revision) || input.maintenance.revision < 0 ||
+      !["OPEN", "DISPATCH_FROZEN"].includes(input.maintenance.mode)) invalidCount += 1;
   let eventCount = 0;
   let eventSequenceTotal = 0;
   let pendingPublicationCount = 0;
@@ -109,6 +115,7 @@ export function assessDeploymentDrain(input: DeploymentDrainInput): DeploymentDr
     pendingPublicationCount, pendingApprovalCount,
     issuedLeaseCount: issuedLeases.size,
     revokedLeaseCount: [...revokedLeases].filter((id) => issuedLeases.has(id)).length,
+    maintenanceRevision: input.maintenance.revision,
   };
   if (invalidCount > 0) return {
     schemaVersion: 1, status: "STATE_INVALID_REQUIRES_REVIEW", restartAllowed: false,
@@ -116,6 +123,9 @@ export function assessDeploymentDrain(input: DeploymentDrainInput): DeploymentDr
     blockers: [{ code: "DRAIN_SOURCE_STATE_INVALID", count: invalidCount }], snapshot,
   };
   const blockers: DeploymentDrainBlocker[] = [];
+  if (input.maintenance.mode !== "DISPATCH_FROZEN") {
+    blockers.push({ code: "DISPATCH_NOT_FROZEN", count: 1 });
+  }
   if (nonTerminalAttemptCount) blockers.push({ code: "NON_TERMINAL_WORK_ATTEMPTS", count: nonTerminalAttemptCount });
   if (pendingApprovalCount) blockers.push({ code: "PENDING_APPROVALS", count: pendingApprovalCount });
   if (pendingPublicationCount) blockers.push({ code: "PENDING_CONNECTOR_PUBLICATIONS", count: pendingPublicationCount });

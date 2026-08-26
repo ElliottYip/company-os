@@ -9,6 +9,7 @@ import { verifyDeploymentStateAdoption } from "../scripts/verify-deployment-stat
 const snapshot = {
   companyCount: 1, eventCount: 4, eventSequenceTotal: 4, terminalAttemptCount: 1,
   pendingPublicationCount: 0, pendingApprovalCount: 0, issuedLeaseCount: 1, revokedLeaseCount: 1,
+  maintenanceRevision: 1,
 };
 const digest = `sha256:${"a".repeat(64)}`;
 

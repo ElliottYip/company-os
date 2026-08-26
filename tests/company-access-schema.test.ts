@@ -9,6 +9,8 @@ import {
   domainEvents,
   humanInvites,
   instanceUserRoles,
+  instanceMaintenance,
+  instanceMaintenanceEvents,
   principalPermissionGrants,
   projectionCheckpoints,
 } from "../adapters/persistence/postgres/company-access-schema.ts";
@@ -18,6 +20,8 @@ test("durable company access tables are Company OS-owned and Paperclip-independe
     companies,
     companyMemberships,
     instanceUserRoles,
+    instanceMaintenance,
+    instanceMaintenanceEvents,
     principalPermissionGrants,
     humanInvites,
     domainEvents,
@@ -27,12 +31,26 @@ test("durable company access tables are Company OS-owned and Paperclip-independe
     "company_os_company",
     "company_os_company_membership",
     "company_os_instance_user_role",
+    "company_os_instance_maintenance",
+    "company_os_instance_maintenance_event",
     "company_os_principal_permission_grant",
     "company_os_human_invite",
     "company_os_domain_event",
     "company_os_connector_outbox",
     "company_os_projection_checkpoint",
   ]);
+});
+
+test("instance maintenance migration is additive, revisioned, and append-audited", async () => {
+  const sql = await readFile(new URL(
+    "../adapters/persistence/postgres/migrations/0006_instance_maintenance.sql",
+    import.meta.url,
+  ), "utf8");
+  assert.match(sql, /company_os_instance_maintenance_singleton_ck/);
+  assert.match(sql, /company_os_instance_maintenance_event_revision_uq/);
+  assert.match(sql, /DISPATCH_FROZEN/);
+  assert.match(sql, /authorization_reference/);
+  assert.doesNotMatch(sql, /^\s*(?:DROP|TRUNCATE|DELETE\s+FROM)\b/im);
 });
 
 test("durable outbox migration preserves atomic delivery and replay contracts", async () => {

@@ -225,8 +225,18 @@ short-lived operator lifecycle and never crosses into a product service. See
 Runtime reconciliation and the reason it remains separate from acceptance are
 recorded in [ADR 0035](adr/0035-read-only-staging-runtime-status.md).
 
-Before any planned restart, capture the database-backed drain state using the
-runtime database role:
+Before any planned restart or upgrade, a formally authenticated instance
+administrator must first read `GET /api/v1/instance/maintenance` and issue an
+origin-checked `PATCH /api/v1/instance/maintenance` with the current revision,
+`mode: "DISPATCH_FROZEN"`, an operation ID and an approved external change
+reference. Do this through the authenticated Company OS admin session; never
+place a session cookie, OIDC material or Secret in a shell history or retained
+operation record.
+
+The freeze rejects new accountable-work dispatch but deliberately allows
+already admitted work, Connector publications and lease revocation to finish.
+After those boundaries settle, capture the database-backed drain state using
+the runtime database role:
 
 ```sh
 docker run --rm --network host --read-only --cap-drop ALL \
@@ -238,6 +248,8 @@ docker run --rm --network host --read-only --cap-drop ALL \
 ```
 
 Only `DRAINED` with `restartAllowed: true` admits the next maintenance phase.
+An `OPEN` dispatch window produces `DISPATCH_NOT_FROZEN` even when no work is
+currently active, closing the check-to-restart race.
 `NOT_DRAINED` identifies aggregate blockers without exposing tenant or Work
 records. Retain the output in the protected release store for post-restart
 digest comparison; do not treat the record as customer acceptance. See
@@ -260,6 +272,11 @@ docker run --rm --network host --read-only --cap-drop ALL \
 `ADOPTION_VERIFIED` means the exact drained durable source state is unchanged.
 Any new blocker, digest drift, malformed/redirected record, or non-private
 record mode fails closed and requires operator review.
+
+After adoption and operator review, the same instance administrator issues a
+second revision-checked maintenance command with `mode: "OPEN"`. Reopening is
+never automatic: a failed or ambiguous restart remains frozen for review. See
+[ADR 0039](adr/0039-persistent-instance-dispatch-freeze.md).
 
 The supported restart path performs these checks as one authorized lifecycle.
 Run it without `--apply` first to inspect the exact plan, then repeat with

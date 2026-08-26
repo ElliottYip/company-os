@@ -13,6 +13,7 @@ test("PostgreSQL upgrade admission proves additive migration and parallel rollba
   assert.match(runner, /postgres:16\.15-bookworm@sha256:[a-f0-9]{64}/);
   assert.match(runner, /0004_human_invites/);
   assert.match(runner, /0005_durable_control_plane/);
+  assert.match(runner, /0006_instance_maintenance/);
   assert.match(runner, /company-os-api:upgrade-admission/);
   assert.match(runner, /pg_dump/);
   assert.match(runner, /pg_restore/);

@@ -3,6 +3,7 @@ import test from "node:test";
 
 import { inspectDeploymentDrain } from "../scripts/inspect-deployment-drain.ts";
 import type { DeploymentDrainStatePort } from "../ports/deployment-drain-state-port.ts";
+import type { InstanceMaintenancePort } from "../ports/instance-maintenance-port.ts";
 
 function source(payload: Record<string, unknown>): DeploymentDrainStatePort {
   return {
@@ -19,13 +20,23 @@ function source(payload: Record<string, unknown>): DeploymentDrainStatePort {
   };
 }
 
+const frozenMaintenance: Pick<InstanceMaintenancePort, "load"> = {
+  async load() {
+    return { schemaVersion: 1, mode: "DISPATCH_FROZEN", revision: 1,
+      operationId: "upgrade-staging-01", authorizationReference: "change:approved-01",
+      changedBy: "admin-one", changedAt: "2026-08-26T09:59:00.000Z" };
+  },
+};
+
 test("deployment drain inspector emits a secret-free exact digest and stable assessment", async () => {
   const first = await inspectDeploymentDrain({
     source: source({ attempt: { status: "SUCCEEDED", id: "attempt-one" } }),
+    maintenance: frozenMaintenance,
     now: () => "2026-08-26T10:01:00.000Z",
   });
   const reordered = await inspectDeploymentDrain({
     source: source({ attempt: { id: "attempt-one", status: "SUCCEEDED" } }),
+    maintenance: frozenMaintenance,
     now: () => "2026-08-26T10:02:00.000Z",
   });
 
@@ -34,4 +45,8 @@ test("deployment drain inspector emits a secret-free exact digest and stable ass
   assert.match(first.exactSourceDigest, /^sha256:[a-f0-9]{64}$/);
   assert.equal(first.exactSourceDigest, reordered.exactSourceDigest);
   assert.doesNotMatch(JSON.stringify(first), /operator-one|attempt-one|company-one/);
+});
+
+test("deployment drain inspector requires both authoritative supplied ports", async () => {
+  await assert.rejects(inspectDeploymentDrain({ source: source({}) }), /DRAIN_SUPPLIED_PORTS_INCOMPLETE/);
 });

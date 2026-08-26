@@ -57,9 +57,11 @@ async function prepareBaselineMigrations() {
   const source = new URL("../adapters/persistence/postgres/migrations/", import.meta.url);
   await cp(source, baselineMigrations, { recursive: true });
   await rm(join(baselineMigrations, "0005_durable_control_plane.sql"));
+  await rm(join(baselineMigrations, "0006_instance_maintenance.sql"));
   const journalPath = join(baselineMigrations, "meta", "_journal.json");
   const journal = JSON.parse(await readFile(journalPath, "utf8"));
-  journal.entries = journal.entries.filter(({ tag }) => tag !== "0005_durable_control_plane");
+  journal.entries = journal.entries.filter(({ tag }) =>
+    !["0005_durable_control_plane", "0006_instance_maintenance"].includes(tag));
   await writeFile(journalPath, `${JSON.stringify(journal, null, 2)}\n`, { mode: 0o600 });
 }
 
@@ -116,10 +118,11 @@ try {
     "node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]);
 
   const upgraded = await psql(sourceDatabase,
-    "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations), to_regclass('public.company_os_connector_outbox'), payload->>'marker' FROM company_os_domain_event WHERE id='upgrade-event';");
+    "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations), to_regclass('public.company_os_connector_outbox'), to_regclass('public.company_os_instance_maintenance'), payload->>'marker' FROM company_os_domain_event WHERE id='upgrade-event';");
   const upgradedFields = upgraded.stdout.trim().split("|");
-  if (upgradedFields[0] !== "5" || upgradedFields[1] !== "company_os_connector_outbox" ||
-      upgradedFields[2] !== marker) throw new Error("UPGRADE_ADMISSION_CURRENT_SCHEMA_MISMATCH");
+  if (upgradedFields[0] !== "6" || upgradedFields[1] !== "company_os_connector_outbox" ||
+      upgradedFields[2] !== "company_os_instance_maintenance" ||
+      upgradedFields[3] !== marker) throw new Error("UPGRADE_ADMISSION_CURRENT_SCHEMA_MISMATCH");
 
   const legacyProbe = await psql(sourceDatabase, [
     "INSERT INTO company_os_domain_event (id,company_id,sequence,type,occurred_at,actor_id,payload,provenance)",
@@ -143,7 +146,7 @@ try {
   }
 
   process.stdout.write(`${JSON.stringify({ schemaVersion: 1, status: "PASS",
-    fromMigration: "0004_human_invites", toMigration: "0005_durable_control_plane",
+    fromMigration: "0004_human_invites", toMigration: "0006_instance_maintenance",
     rollback: "PARALLEL_RESTORE_VERIFIED" })}\n`);
 } finally {
   await cleanup();

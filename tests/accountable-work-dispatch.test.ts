@@ -38,6 +38,9 @@ const structure: CompanyStructure = {
 };
 
 const lifecycleDependencies = {
+  maintenance: { async load() { return { schemaVersion: 1 as const, mode: "OPEN" as const,
+    revision: 0, operationId: null, authorizationReference: null,
+    changedBy: null, changedAt: null }; } },
   structure: { async load() { return structure; } },
   lifecycle: {
     async load() { return { revision: 1, agents: DEMO_COMPANY.agents.map((agent) => ({
@@ -47,6 +50,28 @@ const lifecycleDependencies = {
     async transition() { throw new Error("not used"); },
   },
 };
+
+test("formal dispatch fails before product side effects while instance dispatch is frozen", async () => {
+  const events = new InMemoryEventStore();
+  let organizationCalls = 0;
+  const service = new DispatchAccountableWork({
+    identity: identity(),
+    organization: { async getOrganization() { organizationCalls += 1; return DEMO_COMPANY; },
+      async listPrincipals() { return []; } },
+    contracts: responsibilities,
+    genericWork: { async createWork() { throw new Error("must not run"); } } as unknown as GenericWorkPort,
+    events,
+    structure: lifecycleDependencies.structure,
+    lifecycle: lifecycleDependencies.lifecycle,
+    maintenance: { async load() { return { schemaVersion: 1, mode: "DISPATCH_FROZEN",
+      revision: 3, operationId: "upgrade-staging-01", authorizationReference: "change:approved-01",
+      changedBy: "instance-admin", changedAt: "2026-08-26T18:00:00.000Z" }; } },
+    now: () => "2026-08-26T18:01:00.000Z", nextId: () => "unused-event",
+  });
+  await assert.rejects(service.execute({ draft: draft(), genericGoalId: null }), /INSTANCE_DISPATCH_FROZEN/);
+  assert.equal(organizationCalls, 0);
+  assert.equal((await events.read("demo-company")).length, 0);
+});
 
 function identity(actorId = "demo-boss", companyId = "demo-company"): IdentityPort {
   return {

@@ -16,6 +16,7 @@ function event(id: string, type: string, payload: unknown): CompanyDomainEvent {
 test("deployment drain admits only fully terminal durable state", () => {
   const result = assessDeploymentDrain({
     observedAt: "2026-08-26T10:01:00.000Z",
+    maintenance: { mode: "DISPATCH_FROZEN", revision: 1 },
     companies: [{
       companyId,
       eventSequence: 4,
@@ -49,12 +50,14 @@ test("deployment drain admits only fully terminal durable state", () => {
     pendingApprovalCount: 0,
     issuedLeaseCount: 1,
     revokedLeaseCount: 1,
+    maintenanceRevision: 1,
   });
 });
 
 test("deployment drain blocks every non-terminal Attempt and unresolved boundary", () => {
   const result = assessDeploymentDrain({
     observedAt: "2026-08-26T10:01:00.000Z",
+    maintenance: { mode: "DISPATCH_FROZEN", revision: 1 },
     companies: [{
       companyId,
       eventSequence: 8,
@@ -95,6 +98,7 @@ test("deployment drain blocks every non-terminal Attempt and unresolved boundary
 test("deployment drain fails closed for malformed relevant events and sequence claims", () => {
   const result = assessDeploymentDrain({
     observedAt: "2026-08-26T10:01:00.000Z",
+    maintenance: { mode: "DISPATCH_FROZEN", revision: 1 },
     companies: [{
       companyId,
       eventSequence: 1,
@@ -106,4 +110,16 @@ test("deployment drain fails closed for malformed relevant events and sequence c
   assert.equal(result.status, "STATE_INVALID_REQUIRES_REVIEW");
   assert.equal(result.restartAllowed, false);
   assert.deepEqual(result.blockers, [{ code: "DRAIN_SOURCE_STATE_INVALID", count: 1 }]);
+});
+
+test("deployment drain rejects an empty but still-open dispatch window", () => {
+  const result = assessDeploymentDrain({
+    observedAt: "2026-08-26T10:01:00.000Z",
+    maintenance: { mode: "OPEN", revision: 0 },
+    companies: [],
+  });
+
+  assert.equal(result.status, "NOT_DRAINED");
+  assert.equal(result.restartAllowed, false);
+  assert.deepEqual(result.blockers, [{ code: "DISPATCH_NOT_FROZEN", count: 1 }]);
 });

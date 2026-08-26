@@ -24,6 +24,10 @@ export interface CompanyOsHttpServiceOptions {
   readonly formalAccess?: {
     getStatus(request: IncomingMessage): Promise<unknown>;
   };
+  readonly instanceMaintenance?: {
+    get(request: IncomingMessage): Promise<unknown>;
+    change(request: IncomingMessage, input: unknown): Promise<unknown>;
+  };
   readonly operationalReadiness?: {
     getStatus(): Promise<{
       readonly status: "ready" | "not_ready";
@@ -177,6 +181,21 @@ function actionFromBody(value: unknown):
 }
 
 const PORTABLE_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const MAINTENANCE_ID = /^[a-z0-9][a-z0-9-]{2,95}$/;
+const AUTHORIZATION_REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$/;
+
+function instanceMaintenanceCommand(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (!["OPEN", "DISPATCH_FROZEN"].includes(String(input.mode)) ||
+      !Number.isSafeInteger(input.expectedRevision) || Number(input.expectedRevision) < 0 ||
+      typeof input.operationId !== "string" || !MAINTENANCE_ID.test(input.operationId) ||
+      typeof input.authorizationReference !== "string" ||
+      !AUTHORIZATION_REFERENCE.test(input.authorizationReference) ||
+      Object.keys(input).some((key) => !["mode", "expectedRevision", "operationId",
+        "authorizationReference"].includes(key))) return null;
+  return structuredClone(input);
+}
 
 function optionalId(value: unknown): string | null | undefined {
   if (value === null) return null;
@@ -789,6 +808,12 @@ function formalError(error: unknown): { readonly status: number; readonly code: 
   if (code === "FORMAL_IDENTITY_REQUIRED") return { status: 401, code };
   if (code === "FIRST_ADMIN_ALREADY_CLAIMED") return { status: 409, code };
   if (code === "INSTANCE_ADMIN_REQUIRED") return { status: 403, code };
+  if (code === "INSTANCE_DISPATCH_FROZEN") return { status: 503, code };
+  if (code === "INSTANCE_MAINTENANCE_REVISION_CONFLICT" ||
+      code === "INSTANCE_MAINTENANCE_MODE_UNCHANGED") return { status: 409, code };
+  if (code.startsWith("INSTANCE_MAINTENANCE_") && code.endsWith("_INVALID")) {
+    return { status: 422, code };
+  }
   if (code === "ORGANIZATION_ALREADY_REGISTERED") return { status: 409, code };
   if (code === "COMPANY_ACCESS_NOT_FOUND") return { status: 404, code };
   if (code === "TENANT_MISMATCH" || code === "AUTHORIZATION_PRINCIPAL_MISMATCH") {
@@ -1013,6 +1038,19 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (method === "GET" && path === "/api/v1/access") {
         if (!options.formalAccess) throw new Error("FORMAL_ACCESS_UNAVAILABLE");
         sendJson(res, 200, await options.formalAccess.getStatus(req));
+        return;
+      }
+      if (method === "GET" && path === "/api/v1/instance/maintenance") {
+        if (!options.instanceMaintenance) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.instanceMaintenance.get(req));
+        return;
+      }
+      if (method === "PATCH" && path === "/api/v1/instance/maintenance") {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.instanceMaintenance) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const command = instanceMaintenanceCommand(await readJson(req, maxBodyBytes));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.instanceMaintenance.change(req, command));
         return;
       }
       if (method === "POST" && path === "/api/v1/bootstrap/claim") {

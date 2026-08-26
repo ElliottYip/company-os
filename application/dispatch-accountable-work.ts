@@ -8,6 +8,7 @@ import type { IdentityPort } from "../ports/identity-port.ts";
 import type { OrganizationPrincipalPort } from "../ports/organization-principal-port.ts";
 import type { ResponsibilityContractPort } from "../ports/responsibility-contract-port.ts";
 import type { AgentLifecyclePort } from "../ports/agent-lifecycle-port.ts";
+import type { InstanceMaintenancePort } from "../ports/instance-maintenance-port.ts";
 import type { CompanyStructurePort } from "../ports/company-structure-port.ts";
 import { evaluateCompanyAgentEligibility } from "../core/agent-lifecycle.ts";
 import {
@@ -63,6 +64,7 @@ export class DispatchAccountableWork {
     execute(companyId: Identifier): Promise<readonly unknown[]>;
   };
   readonly #budgetAuthorization?: { execute(work: WorkItem): Promise<unknown> };
+  readonly #maintenance: Pick<InstanceMaintenancePort, "load">;
 
   constructor(dependencies: {
     readonly identity: IdentityPort;
@@ -97,6 +99,7 @@ export class DispatchAccountableWork {
       execute(companyId: Identifier): Promise<readonly unknown[]>;
     };
     readonly budgetAuthorization?: { execute(work: WorkItem): Promise<unknown> };
+    readonly maintenance: Pick<InstanceMaintenancePort, "load">;
   }) {
     this.#identity = dependencies.identity;
     this.#organization = dependencies.organization;
@@ -112,6 +115,7 @@ export class DispatchAccountableWork {
     this.#executionPreparation = dependencies.executionPreparation;
     this.#commandDelivery = dependencies.commandDelivery;
     this.#budgetAuthorization = dependencies.budgetAuthorization;
+    this.#maintenance = dependencies.maintenance;
   }
 
   async execute(input: DispatchAccountableWorkInput): Promise<DispatchAccountableWorkResult> {
@@ -120,6 +124,7 @@ export class DispatchAccountableWork {
     if (!identity || identity.assurance === "LOCAL_DEMO") throw new Error("FORMAL_IDENTITY_REQUIRED");
     if (identity.organizationId !== draft.companyId) throw new Error("TENANT_MISMATCH");
     if (identity.actorId !== draft.requestedBy) throw new Error("WORK_INITIATOR_IDENTITY_MISMATCH");
+    if ((await this.#maintenance.load()).mode !== "OPEN") throw new Error("INSTANCE_DISPATCH_FROZEN");
     const organization = await this.#organization.getOrganization(draft.companyId);
     if (!organization) throw new Error("ORGANIZATION_NOT_FOUND");
     const [structure, lifecycle] = await Promise.all([

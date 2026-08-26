@@ -67,7 +67,7 @@ async function readBeforeRecord(path: string) {
 function validSnapshot(value: unknown): value is Record<string, number> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const entries = Object.entries(value as Record<string, unknown>);
-  return entries.length === 8 && entries.every(([, item]) =>
+  return entries.length === 9 && entries.every(([, item]) =>
     Number.isSafeInteger(item) && (item as number) >= 0);
 }
 

@@ -12,7 +12,7 @@ source compatibility. Company OS remains independently owned and runnable.
 
 ## Evidence captured at baseline
 
-`npm test` passed on 2026-08-26 with 500 cases (496 passed and four explicit
+`npm test` passed on 2026-08-26 with 507 cases (503 passed and four explicit
 environment-gated live cases skipped in the credential-free run). The live
 PostgreSQL database, OIDC and reference Connector cases passed separately
 against disposable infrastructure. The complete `npm run verify` gate also ran
@@ -38,6 +38,14 @@ newly installed candidate. Staging N+1 no longer changes N's health/image
 assessment or prevents an authorized N restart; status reports both immutable
 coordinates so upgrade automation cannot silently treat installation as
 cutover.
+Planned maintenance now has a durable instance-wide dispatch boundary. A
+formally authenticated instance administrator freezes new accountable work
+through a revision-fenced API command with an external authorization reference;
+the current state and every transition are retained in PostgreSQL. Drain proof
+fails while dispatch remains open, and post-restart adoption binds the exact
+frozen revision before an administrator may explicitly reopen it. Existing
+admitted work continues to drain, so the control is not misrepresented as a
+Connector kill switch.
 Dependency-boundary, Paperclip-independence, asset,
 research-governance, secret, production-dependency, type, build, and Web
 performance checks. The production dependency audit has no moderate, high, or

@@ -41,6 +41,30 @@ export const instanceUserRoles = pgTable("company_os_instance_user_role", {
   index("company_os_instance_user_role_role_idx").on(table.role),
 ]);
 
+export const instanceMaintenance = pgTable("company_os_instance_maintenance", {
+  id: text("id").primaryKey(),
+  mode: text("mode").notNull(),
+  revision: integer("revision").notNull(),
+  operationId: text("operation_id").notNull(),
+  authorizationReference: text("authorization_reference").notNull(),
+  changedByUserId: text("changed_by_user_id").notNull()
+    .references(() => authUsers.id, { onDelete: "restrict" }),
+  changedAt: text("changed_at").notNull(),
+});
+
+export const instanceMaintenanceEvents = pgTable("company_os_instance_maintenance_event", {
+  id: text("id").primaryKey(),
+  revision: integer("revision").notNull(),
+  mode: text("mode").notNull(),
+  operationId: text("operation_id").notNull(),
+  authorizationReference: text("authorization_reference").notNull(),
+  changedByUserId: text("changed_by_user_id").notNull()
+    .references(() => authUsers.id, { onDelete: "restrict" }),
+  changedAt: text("changed_at").notNull(),
+}, (table) => [
+  uniqueIndex("company_os_instance_maintenance_event_revision_uq").on(table.revision),
+]);
+
 export const principalPermissionGrants = pgTable("company_os_principal_permission_grant", {
   id: text("id").primaryKey(),
   companyId: text("company_id").notNull().references(() => companies.id, { onDelete: "cascade" }),
