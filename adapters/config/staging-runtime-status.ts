@@ -4,7 +4,7 @@ export interface StagingRuntimeSnapshot {
     readonly releaseVersion: string;
     readonly sourceRevision: string;
     readonly dependencyManifestDigest: string;
-    readonly images: { readonly api: string; readonly web: string };
+    readonly images: { readonly api: string; readonly web: string; readonly referenceDataNode: string };
   };
   readonly startupState: null | {
     readonly state: "STARTING" | "STARTED_NOT_ACCEPTED" | "START_FAILED_REQUIRES_REVIEW";
@@ -54,12 +54,13 @@ export function evaluateStagingRuntimeStatus(snapshot: StagingRuntimeSnapshot): 
     add("DEPENDENCY_MANIFEST_MISMATCH", "staging-dependencies");
   }
   if (snapshot.startupState.acceptanceClaimed) add("UNVERIFIED_ACCEPTANCE_CLAIM", "startup-state");
-  for (const service of ["api", "web"] as const) {
+  for (const [service, imageKey] of [["api", "api"], ["web", "web"],
+    ["reference-data-node", "referenceDataNode"]] as const) {
     const records = snapshot.containers.filter((container) => container.service === service);
     if (records.length === 0) { add("CONTAINER_MISSING", service); continue; }
     if (records.length > 1) add("CONTAINER_DUPLICATE", service);
     const record = records[0] as StagingRuntimeSnapshot["containers"][number];
-    if (record.image !== snapshot.expected.images[service]) add("CONTAINER_IMAGE_MISMATCH", service);
+    if (record.image !== snapshot.expected.images[imageKey]) add("CONTAINER_IMAGE_MISMATCH", service);
     if (record.status !== "running") add("CONTAINER_NOT_RUNNING", service);
     if (record.health !== "healthy") add("CONTAINER_NOT_HEALTHY", service);
   }

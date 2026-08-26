@@ -6,10 +6,11 @@ import { createReleaseManifest } from "../scripts/create-release-manifest.mjs";
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("the open-source release carries the selected Apache-2.0 license and distinct third-party notices", async () => {
-  const [license, notice, thirdParty, packageJsonSource, agentPackage, dataPackage, brokerPackage,
-    vaultBrokerPackage] = await Promise.all([
+  const [license, notice, thirdParty, packageJsonSource, agentPackage, dataPackage, referenceDataPackage,
+    brokerPackage, vaultBrokerPackage] = await Promise.all([
     read("LICENSE"), read("NOTICE"), read("THIRD_PARTY_NOTICES.md"), read("package.json"),
     read("connectors/http-agent-node/package.json"), read("connectors/http-data-node/package.json"),
+    read("connectors/http-data-node-reference/package.json"),
     read("brokers/http-secret-broker/package.json"),
     read("brokers/vault-secret-broker/package.json"),
   ]);
@@ -23,7 +24,8 @@ test("the open-source release carries the selected Apache-2.0 license and distin
   assert.match(thirdParty, /Docker\s+Compose plugin 5\.0\.0/);
   assert.match(thirdParty, /github\.com\/creack\/pty/);
   assert.match(thirdParty, /@aws-sdk\/client-s3.*3\.1118\.0/);
-  for (const source of [packageJsonSource, agentPackage, dataPackage, brokerPackage, vaultBrokerPackage]) {
+  for (const source of [packageJsonSource, agentPackage, dataPackage, referenceDataPackage,
+    brokerPackage, vaultBrokerPackage]) {
     assert.equal(JSON.parse(source).license, "Apache-2.0");
   }
 });
@@ -158,6 +160,25 @@ test("Codex Agent Node image pins the CLI and never bakes authentication or full
   assert.match(runbook, /never receives the Codex login token/i);
 });
 
+test("reference Data Node image is non-root, fixture-only, file-secret based and separately stateful", async () => {
+  const [dockerfile, compose, catalog, runbook] = await Promise.all([
+    read("deploy/Dockerfile.reference-data-node"),
+    read("deploy/compose.staging.yml"),
+    read("connectors/http-data-node-reference/fixtures/acceptance-fixtures.json"),
+    read("connectors/http-data-node-reference/README.md"),
+  ]);
+  assert.match(dockerfile, /FROM node:22\.12\.0-bookworm-slim/);
+  assert.match(dockerfile, /USER node/);
+  assert.match(dockerfile, /HEALTHCHECK/);
+  assert.doesNotMatch(dockerfile, /COPY[^\n]*(?:\.env|bearer-token|credential)/i);
+  assert.equal(JSON.parse(catalog).fixtureOnly, true);
+  assert.match(runbook, /not an enterprise data connector/i);
+  assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN_FILE:/);
+  assert.match(compose, /company_os_staging_data_node:\/var\/lib\/company-os-data-node/);
+  assert.match(compose, /127\.0\.0\.1:4322:4321/);
+  assert.doesNotMatch(compose, /COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN:\s*\S+/);
+});
+
 test("Vault Secret Broker image is non-root and accepts credentials only from runtime files", async () => {
   const [dockerfile, example, runbook, compose] = await Promise.all([
     read("deploy/Dockerfile.vault-secret-broker"),
@@ -265,6 +286,7 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
   assert.match(compose, /name: company-os-staging_internal/);
   assert.match(compose, /127\.0\.0\.1:4600:8080/);
   assert.match(compose, /127\.0\.0\.1:4601:4310/);
+  assert.match(compose, /127\.0\.0\.1:4322:4321/);
   assert.match(compose, /company-os\.raft\.xin/);
   assert.match(compose, /company-os-api\.raft\.xin/);
   assert.match(compose, /read_only: true/);
@@ -273,6 +295,8 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
   assert.match(compose, /COMPANY_OS_DATABASE_URL_FILE:/);
   assert.match(compose, /COMPANY_OS_OIDC_CLIENT_SECRET_FILE:/);
   assert.match(compose, /COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN_FILE:/);
+  assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:\?set the immutable acceptance Data Node image digest/);
+  assert.match(example, /^COMPANY_OS_REFERENCE_DATA_NODE_IMAGE=.*@sha256:/m);
   assert.doesNotMatch(compose, /buzz-prod|generator001y|\/opt\/raft-relay|\/data\/raft-h3/);
   assert.doesNotMatch(compose, /^\s+postgres:\s*$/m);
   assert.doesNotMatch(example, /(?:password|secret|bearer)=\S+/i);
@@ -301,6 +325,7 @@ test("release manifest binds source, immutable images, lockfile and ordered migr
     COMPANY_OS_OPS_IMAGE: `registry.example/ops@sha256:${"d".repeat(64)}`,
     COMPANY_OS_CODEX_AGENT_NODE_IMAGE: `registry.example/codex-agent-node@sha256:${"e".repeat(64)}`,
     COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: `registry.example/vault-secret-broker@sha256:${"f".repeat(64)}`,
+    COMPANY_OS_REFERENCE_DATA_NODE_IMAGE: `registry.example/reference-data-node@sha256:${"1".repeat(64)}`,
   });
   assert.equal(manifest.sourceRevision, "a".repeat(40));
   assert.deepEqual(manifest.provenance, {
@@ -318,6 +343,7 @@ test("release manifest binds source, immutable images, lockfile and ordered migr
   assert.equal(manifest.images.ops, `registry.example/ops@sha256:${"d".repeat(64)}`);
   assert.equal(manifest.images.codexAgentNode, `registry.example/codex-agent-node@sha256:${"e".repeat(64)}`);
   assert.equal(manifest.images.vaultSecretBroker, `registry.example/vault-secret-broker@sha256:${"f".repeat(64)}`);
+  assert.equal(manifest.images.referenceDataNode, `registry.example/reference-data-node@sha256:${"1".repeat(64)}`);
   assert.deepEqual(manifest.contracts, {
     formalApi: "v1",
     connectorEnvelope: "1.0",
@@ -355,6 +381,7 @@ test("release manifest rejects a tag or qualification run outside its exact repo
     COMPANY_OS_OPS_IMAGE: `registry.example/ops@sha256:${"d".repeat(64)}`,
     COMPANY_OS_CODEX_AGENT_NODE_IMAGE: `registry.example/codex-agent-node@sha256:${"e".repeat(64)}`,
     COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: `registry.example/vault-secret-broker@sha256:${"f".repeat(64)}`,
+    COMPANY_OS_REFERENCE_DATA_NODE_IMAGE: `registry.example/reference-data-node@sha256:${"1".repeat(64)}`,
   };
   await assert.rejects(() => createReleaseManifest({ ...base, COMPANY_OS_RELEASE_TAG: "v1.2.3" }),
     /COMPANY_OS_RELEASE_TAG_MISMATCH/);
@@ -363,7 +390,7 @@ test("release manifest rejects a tag or qualification run outside its exact repo
   /COMPANY_OS_QUALIFICATION_RUN_URI_MISMATCH/);
 });
 
-test("release automation publishes five digest-addressed images with SBOM and provenance", async () => {
+test("release automation publishes six digest-addressed images with SBOM and provenance", async () => {
   const [workflow, opsDockerfile] = await Promise.all([
     read(".github/workflows/release.yml"),
     read("deploy/Dockerfile.ops"),
@@ -400,7 +427,9 @@ test("release automation publishes five digest-addressed images with SBOM and pr
   assert.match(workflow, /COMPANY_OS_CODEX_AGENT_NODE_IMAGE/);
   assert.match(workflow, /deploy\/Dockerfile\.codex-agent-node/);
   assert.match(workflow, /deploy\/Dockerfile\.vault-secret-broker/);
-  assert.equal((workflow.match(/docker\/build-push-action@/g) ?? []).length, 5);
+  assert.match(workflow, /deploy\/Dockerfile\.reference-data-node/);
+  assert.match(workflow, /COMPANY_OS_REFERENCE_DATA_NODE_IMAGE/);
+  assert.equal((workflow.match(/docker\/build-push-action@/g) ?? []).length, 6);
   assert.match(workflow, /npm run --silent release:manifest > release-manifest\.json/);
   assert.match(workflow, /npm run --silent release:sbom > company-os\.cdx\.json/);
   assert.match(workflow, /JSON\.parse\(readFileSync\(path, "utf8"\)\)/);

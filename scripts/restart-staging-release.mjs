@@ -33,7 +33,8 @@ export async function planStagingRestart(input, supplied = {}) {
   }
   const release = JSON.parse(await readFile(join(prepared.releaseDirectory, "release-manifest.json"), "utf8"));
   for (const [key, expected] of [["COMPANY_OS_API_IMAGE", release.images?.api],
-    ["COMPANY_OS_WEB_IMAGE", release.images?.web]]) {
+    ["COMPANY_OS_WEB_IMAGE", release.images?.web],
+    ["COMPANY_OS_REFERENCE_DATA_NODE_IMAGE", release.images?.referenceDataNode]]) {
     if (environment[key] !== expected) throw new Error(`STAGING_RESTART_RELEASE_IMAGE_MISMATCH:${key}`);
   }
   const inspectRuntime = supplied.inspectRuntime ?? (() => inspectStagingRuntime({ rootDirectory: paths.rootDirectory }));

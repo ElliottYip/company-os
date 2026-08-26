@@ -1,7 +1,8 @@
 name: company-os-staging
 
 # Isolated acceptance profile for the small raft-generator host. PostgreSQL,
-# OIDC, Vault and execution/data nodes remain external trust boundaries. This
+# OIDC, Vault and Agent execution remain external trust boundaries. The
+# fixture-only reference Data Node remains a separate replaceable process. This
 # file must never join an existing production network or reuse its volumes.
 x-api-image: &api-image ${COMPANY_OS_API_IMAGE:?set an immutable API image digest}
 x-api-security: &api-security
@@ -17,6 +18,31 @@ x-api-security: &api-security
     - ${COMPANY_OS_SECRET_DIRECTORY:-/etc/company-os/secrets}:/run/company-os/secrets:ro
 
 services:
+  reference-data-node:
+    image: ${COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:?set the immutable acceptance Data Node image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    networks: [internal]
+    environment:
+      COMPANY_OS_REFERENCE_DATA_NODE_HOST: 0.0.0.0
+      COMPANY_OS_REFERENCE_DATA_NODE_PORT: 4321
+      COMPANY_OS_REFERENCE_DATA_NODE_CATALOG_FILE: /app/connectors/http-data-node-reference/fixtures/acceptance-fixtures.json
+      COMPANY_OS_REFERENCE_DATA_NODE_STATE_FILE: /var/lib/company-os-data-node/protocol-state.json
+      COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN_FILE: /run/secrets/data-node-bearer-token
+    ports:
+      - "127.0.0.1:4322:4321"
+    volumes:
+      - ${COMPANY_OS_SECRET_DIRECTORY:-/etc/company-os/secrets}/data-node-bearer-token:/run/secrets/data-node-bearer-token:ro
+      - company_os_staging_data_node:/var/lib/company-os-data-node
+
   migrate:
     <<: *api-security
     image: *api-image
@@ -91,6 +117,8 @@ services:
     depends_on:
       provision-runtime:
         condition: service_completed_successfully
+      reference-data-node:
+        condition: service_healthy
 
   web:
     image: ${COMPANY_OS_WEB_IMAGE:?set an immutable Web image digest}
@@ -153,3 +181,4 @@ networks:
 
 volumes:
   company_os_staging_backups:
+  company_os_staging_data_node:

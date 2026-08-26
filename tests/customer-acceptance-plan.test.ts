@@ -16,6 +16,7 @@ const manifest = {
     ops: `registry.invalid/ops@${digest("c")}`,
     codexAgentNode: `registry.invalid/codex-agent-node@${digest("e")}`,
     vaultSecretBroker: `registry.invalid/vault-secret-broker@${digest("f")}`,
+    referenceDataNode: `registry.invalid/reference-data-node@${digest("1")}`,
   },
 };
 

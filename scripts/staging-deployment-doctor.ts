@@ -79,7 +79,7 @@ async function targetState(): Promise<StagingDeploymentSnapshot["target"]> {
     "label=com.docker.compose.project=company-os-staging", "--quiet"], true);
   const targetNetworkExists = command(["docker", "network", "inspect", "company-os-staging_internal"], true);
   return { composeProjectExists, targetNetworkExists,
-    loopbackPorts: await Promise.all(([4600, 4601] as const).map(async (port) => ({ port,
+    loopbackPorts: await Promise.all(([4322, 4600, 4601] as const).map(async (port) => ({ port,
       status: await portStatus(port) }))) };
 }
 
@@ -89,7 +89,7 @@ function command(argv: readonly string[], requireOutput = false): boolean {
   return result.status === 0 && (!requireOutput || Boolean(result.stdout.trim()));
 }
 
-function portStatus(port: 4600 | 4601): Promise<"FREE" | "OCCUPIED" | "UNKNOWN"> {
+function portStatus(port: 4322 | 4600 | 4601): Promise<"FREE" | "OCCUPIED" | "UNKNOWN"> {
   return new Promise((resolve) => {
     const socket = connect({ host: "127.0.0.1", port });
     const done = (value: "FREE" | "OCCUPIED" | "UNKNOWN") => { socket.destroy(); resolve(value); };

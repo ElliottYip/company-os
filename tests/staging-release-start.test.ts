@@ -14,7 +14,8 @@ import {
 const image = (name: string, digest = "a") => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
   sourceRevision: "b".repeat(40), images: { api: image("api"), web: image("web", "c"),
-    ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f") } };
+    ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f"),
+    referenceDataNode: image("data", "1") } };
 
 async function fixture(prefix: string) {
   const temporary = await mkdtemp(join(tmpdir(), prefix));
@@ -31,6 +32,7 @@ async function fixture(prefix: string) {
     `COMPANY_OS_API_IMAGE=${release.images.api}`,
     `COMPANY_OS_WEB_IMAGE=${release.images.web}`,
     `COMPANY_OS_OPS_IMAGE=${release.images.ops}`,
+    `COMPANY_OS_REFERENCE_DATA_NODE_IMAGE=${release.images.referenceDataNode}`,
     `COMPANY_OS_SECRET_DIRECTORY=${secretDirectory}`,
     "COMPANY_OS_OIDC_CLIENT_ID=company-os-staging",
     "COMPANY_OS_OIDC_ISSUER=https://identity.example",
@@ -92,7 +94,7 @@ test("staging start defaults to a non-mutating plan bound to one prepared releas
   assert.equal(plan.authorizationReference, "change:staging-acceptance-2026-08-26");
   assert.deepEqual(plan.steps.map(({ id }) => id), [
     "VALIDATE_DEPENDENCIES", "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE", "PROVISION_RUNTIME_ROLE",
-    "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE",
+    "START_DATA_NODE", "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE",
   ]);
   await assert.rejects(readFile(join(value.root, "startup-state.json")), /ENOENT/);
 });
@@ -109,7 +111,7 @@ test("authorized staging start runs the ordered path and records started-not-acc
   });
   assert.equal(result.status, "STARTED_NOT_ACCEPTED");
   assert.deepEqual(calls, ["VALIDATE_DEPENDENCIES", "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE",
-    "PROVISION_RUNTIME_ROLE", "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE"]);
+    "PROVISION_RUNTIME_ROLE", "START_DATA_NODE", "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE"]);
   const state = JSON.parse(await readFile(join(value.root, "startup-state.json"), "utf8"));
   assert.equal(state.state, "STARTED_NOT_ACCEPTED");
   assert.equal(state.automaticRollbackAttempted, false);

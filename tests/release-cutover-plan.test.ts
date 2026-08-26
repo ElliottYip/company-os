@@ -11,7 +11,8 @@ const manifest = (overrides: Record<string, unknown> = {}) => ({
   releaseVersion: "1.0.0",
   sourceRevision: "a".repeat(40),
   images: { api: image("api", "a"), web: image("web", "b"), ops: image("ops", "c"),
-    codexAgentNode: image("codex-agent-node", "9"), vaultSecretBroker: image("vault-secret-broker", "7") },
+    codexAgentNode: image("codex-agent-node", "9"), vaultSecretBroker: image("vault-secret-broker", "7"),
+    referenceDataNode: image("reference-data-node", "5") },
   contracts: { formalApi: "v1", connectorEnvelope: "1.0", agentNode: "1.0", dataNode: "1.0", secretBroker: "1.0" },
   runtime: { node: "22.12.0", codexCli: "0.144.1", postgresqlMajor: 16 },
   database: { engine: "postgresql", migrations: [migration("0001_initial.sql", "1")] },
@@ -24,7 +25,8 @@ test("release cutover plan binds two real versions and never claims execution ev
     releaseVersion: "1.1.0",
     sourceRevision: "b".repeat(40),
     images: { api: image("api", "d"), web: image("web", "e"), ops: image("ops", "f"),
-      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6") },
+      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6"),
+      referenceDataNode: image("reference-data-node", "4") },
     database: {
       engine: "postgresql",
       migrations: [migration("0001_initial.sql", "1"), migration("0002_outbox.sql", "2")],
@@ -49,7 +51,8 @@ test("release cutover plan allows an application-only release without inventing 
     releaseVersion: "1.0.1",
     sourceRevision: "b".repeat(40),
     images: { api: image("api", "d"), web: image("web", "e"), ops: image("ops", "c"),
-      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6") },
+      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6"),
+      referenceDataNode: image("reference-data-node", "4") },
   });
   const plan = createReleaseCutoverPlan(previous, current);
   assert.equal(plan.compatibility.migrationAdded, false);
@@ -72,7 +75,8 @@ test("release cutover plan rejects migration rewrites and removal", () => {
     releaseVersion: "1.1.0",
     sourceRevision: "b".repeat(40),
     images: { api: image("api", "d"), web: image("web", "e"), ops: image("ops", "f"),
-      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6") },
+      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6"),
+      referenceDataNode: image("reference-data-node", "4") },
     database: { engine: "postgresql", migrations: [migration("0001_initial.sql", "9")] },
   })), /MIGRATION_HISTORY_IS_NOT_AN_EXACT_PREFIX/);
 });
@@ -82,7 +86,8 @@ test("release cutover plan rejects unproven runtime and public contract changes"
     releaseVersion: "2.0.0",
     sourceRevision: "b".repeat(40),
     images: { api: image("api", "d"), web: image("web", "e"), ops: image("ops", "f"),
-      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6") },
+      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6"),
+      referenceDataNode: image("reference-data-node", "4") },
   };
   assert.throws(() => createReleaseCutoverPlan(manifest(), manifest({
     ...next,

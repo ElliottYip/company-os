@@ -33,7 +33,8 @@ export async function inspectStagingRuntime(input, supplied = {}) {
   const expected = { releaseId: active.releaseId, releaseVersion: active.releaseVersion,
     sourceRevision: active.sourceRevision,
     dependencyManifestDigest: dependencyAdmission?.manifestDigest ?? `sha256:${"0".repeat(64)}`,
-    images: { api: release.images.api, web: release.images.web } };
+    images: { api: release.images.api, web: release.images.web,
+      referenceDataNode: release.images.referenceDataNode } };
   const candidate = store.prepared.releaseId === active.releaseId ? null : {
     id: store.prepared.releaseId, version: store.prepared.releaseVersion,
     sourceRevision: store.prepared.sourceRevision,

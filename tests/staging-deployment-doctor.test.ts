@@ -26,10 +26,12 @@ function readySnapshot(): StagingDeploymentSnapshot {
     runtime: { dockerAvailable: true, composeAvailable: true, cpuCount: 2,
       totalMemoryBytes: 3_500_000_000, freeDiskBytes: 12_000_000_000 },
     target: { composeProjectExists: false, targetNetworkExists: false,
-      loopbackPorts: [{ port: 4600, status: "FREE" }, { port: 4601, status: "FREE" }] },
+      loopbackPorts: [{ port: 4322, status: "FREE" }, { port: 4600, status: "FREE" },
+        { port: 4601, status: "FREE" }] },
     publicEnvironment: {
       COMPANY_OS_API_IMAGE: digest("api"), COMPANY_OS_WEB_IMAGE: digest("web"),
       COMPANY_OS_OPS_IMAGE: digest("ops"),
+      COMPANY_OS_REFERENCE_DATA_NODE_IMAGE: digest("reference-data-node"),
       COMPANY_OS_OIDC_ISSUER: "https://identity.staging.example",
       COMPANY_OS_OIDC_DISCOVERY_URL: "https://identity.staging.example/.well-known/openid-configuration",
       COMPANY_OS_OIDC_CLIENT_ID: "company-os-staging",
@@ -49,6 +51,16 @@ test("staging doctor admits an isolated immutable install without reading secret
   assert.doesNotMatch(JSON.stringify(result), /database-url|client-secret|bearer-token|signing-key/);
 });
 
+test("initial staging start does not require opt-in backup credentials", () => {
+  const snapshot = readySnapshot();
+  const startupSecrets = snapshot.secretDirectory.files.filter(({ name }) => ![
+    "backup-encryption-key", "zos-access-key-id", "zos-secret-access-key",
+  ].includes(name));
+  const result = evaluateStagingDeploymentReadiness({ ...snapshot,
+    secretDirectory: { ...snapshot.secretDirectory, files: startupSecrets } });
+  assert.deepEqual(result, { schemaVersion: 1, mode: "INSTALL", status: "READY", findings: [] });
+});
+
 test("staging doctor requires the privileged operator image by immutable digest", () => {
   const snapshot = readySnapshot();
   const { COMPANY_OS_OPS_IMAGE: _omitted, ...withoutOpsImage } = snapshot.publicEnvironment;
@@ -66,7 +78,7 @@ test("staging doctor reports every actionable precondition with stable codes", (
     secretDirectory: { ...snapshot.secretDirectory, mode: 0o755,
       files: snapshot.secretDirectory.files.map((file, index) => index === 0
         ? { ...file, kind: "symlink" as const, mode: 0o644, size: 0 }
-        : file).slice(0, -1) },
+        : file).filter(({ name }) => name !== "secret-broker-bearer-token") },
     runtime: { ...snapshot.runtime, composeAvailable: false, freeDiskBytes: 2_000_000_000 },
     target: { composeProjectExists: true, targetNetworkExists: true,
       loopbackPorts: [{ port: 4600, status: "OCCUPIED" }, { port: 4601, status: "FREE" }] },

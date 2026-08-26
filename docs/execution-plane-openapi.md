@@ -19,6 +19,12 @@ the installed Company OS clients remain the conformance authority for request
 size, TLS, redirect, timeout, ordering, idempotency and secret-free payload
 checks that OpenAPI cannot express completely.
 
+The repository also contains `connectors/http-data-node-reference`, a
+fixture-only server used for deterministic staging acceptance. It is not an
+enterprise data connector. Its separately attested image can be replaced by a
+customer-owned implementation without changing the Data Connector client or
+Company OS inward layers.
+
 The redemption contract is intentionally separate from the browser/control
 contract. It returns ephemeral material and therefore must be reachable only
 from an execution node. The Company OS API and Web must never possess its

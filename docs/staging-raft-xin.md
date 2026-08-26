@@ -8,14 +8,17 @@ network, volume, database, bucket, queue, or H3 runtime.
 
 - Web: `https://company-os.raft.xin` -> `127.0.0.1:4600`
 - API: `https://company-os-api.raft.xin` -> `127.0.0.1:4601`
+- fixture-only reference Data Node ingress -> `127.0.0.1:4322`
 - deployment root: `/srv/company-os/staging`
 - Compose project/network: `company-os-staging` / `company-os-staging_internal`
 - host budget: at most 1 CPU, 1.25 GiB memory, 8 GiB disk and 256 steady-state PIDs
 
-The API and Web are the only long-running Company OS containers on
-`raft-generator`. PostgreSQL 16, enterprise OIDC, Vault Broker, Agent Node and
-Data Node must be externally hosted staging dependencies. `raft-h3` is outside
-the deployment boundary.
+API, Web and the fixture-only reference Data Node are long-running Company OS
+containers in this acceptance profile. PostgreSQL 16, enterprise OIDC, Vault
+Broker and Agent Node remain separately owned staging dependencies. The
+reference Data Node is exposed only through environment-owned verified TLS and
+may be replaced with a customer Data Node implementing protocol `1.0`.
+`raft-h3` is outside the deployment boundary.
 
 ## Infrastructure preflight and isolated host preparation — 2026-08-26
 
@@ -36,7 +39,8 @@ The following external prerequisites do not yet exist for Company OS:
 - an independent PostgreSQL 16 coordinate;
 - an enterprise OIDC client/issuer;
 - a HashiCorp Vault coordinate and least-privilege AppRole;
-- a Data Node and Agent Node coordinate;
+- an Agent Node coordinate and verified TLS ingress for either the fixture-only
+  reference Data Node or a customer Data Node;
 - the final binding and verification of the dedicated ZOS bucket-scoped identity;
 - DNS, Nginx sites and certificates for both fixed hostnames.
 
@@ -51,7 +55,8 @@ preparation evidence only; it is not backup or staging acceptance.
 
 ## Secret files
 
-An operator or Vault Agent renders the following files under
+An operator or Vault Agent renders the following eight files required for the
+initial API/Web/Data Node start under
 `/etc/company-os/secrets` with directory mode `0700` and file mode `0400` or
 `0600`. Values never enter Compose YAML, image layers, Git, chat, or command
 arguments:
@@ -64,6 +69,10 @@ arguments:
 - `agent-node-bearer-token`
 - `data-node-bearer-token`
 - `secret-broker-bearer-token`
+
+The opt-in backup profile is a separate readiness gate. Before that profile is
+started, render these additional files under the same policy:
+
 - `backup-encryption-key`
 - `zos-access-key-id`
 - `zos-secret-access-key`
@@ -167,8 +176,10 @@ Before any start:
    a read-only-looking bind option. It is allowed only for this short-lived,
    exact-digest operator container after explicit deployment authorization; it
    is never mounted into the API, Web, Agent Node, Data Node or Secret Broker;
-3. publish immutable API/Web image digests and verify SBOM/provenance;
-4. create external PostgreSQL 16, OIDC, Vault Broker, Agent Node and Data Node;
+3. publish immutable API/Web/Ops/Agent Node/Vault Broker/reference Data Node
+   image digests and verify SBOM/provenance;
+4. create external PostgreSQL 16, OIDC, Vault Broker and Agent Node; configure
+   verified TLS ingress for the selected Data Node;
 5. create the isolated ZOS bucket and restricted IAM principal;
 6. add new Nginx site files without modifying existing site files;
 7. issue new certificates through Certbot without copying private keys;

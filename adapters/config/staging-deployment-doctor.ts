@@ -4,10 +4,10 @@ const PUBLIC_KEY = /^[A-Z][A-Z0-9_]{0,127}$/;
 const REQUIRED_SECRET_FILES = [
   "migration-database-url", "runtime-database-url", "runtime-database-password",
   "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
-  "data-node-bearer-token", "secret-broker-bearer-token", "backup-encryption-key",
-  "zos-access-key-id", "zos-secret-access-key",
+  "data-node-bearer-token", "secret-broker-bearer-token",
 ] as const;
-const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE"] as const;
+const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE",
+  "COMPANY_OS_REFERENCE_DATA_NODE_IMAGE"] as const;
 const HTTPS_KEYS = ["COMPANY_OS_OIDC_ISSUER", "COMPANY_OS_OIDC_DISCOVERY_URL",
   "COMPANY_OS_HTTP_AGENT_NODE_BASE_URL", "COMPANY_OS_HTTP_DATA_NODE_BASE_URL",
   "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL", "COMPANY_OS_BACKUP_S3_ENDPOINT"] as const;
@@ -22,7 +22,7 @@ export interface StagingDeploymentSnapshot {
   readonly runtime: { readonly dockerAvailable: boolean; readonly composeAvailable: boolean;
     readonly cpuCount: number; readonly totalMemoryBytes: number; readonly freeDiskBytes: number };
   readonly target: { readonly composeProjectExists: boolean; readonly targetNetworkExists: boolean;
-    readonly loopbackPorts: readonly { readonly port: 4600 | 4601;
+    readonly loopbackPorts: readonly { readonly port: 4322 | 4600 | 4601;
       readonly status: "FREE" | "OCCUPIED" | "UNKNOWN" }[] };
   readonly publicEnvironment: Readonly<Record<string, string>>;
 }

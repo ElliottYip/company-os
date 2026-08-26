@@ -23,7 +23,8 @@ export async function planStagingReleaseStart(input) {
   }
   const release = JSON.parse(await readFile(join(prepared.releaseDirectory, "release-manifest.json"), "utf8"));
   for (const [key, expected] of [["COMPANY_OS_API_IMAGE", release.images?.api],
-    ["COMPANY_OS_WEB_IMAGE", release.images?.web], ["COMPANY_OS_OPS_IMAGE", release.images?.ops]]) {
+    ["COMPANY_OS_WEB_IMAGE", release.images?.web], ["COMPANY_OS_OPS_IMAGE", release.images?.ops],
+    ["COMPANY_OS_REFERENCE_DATA_NODE_IMAGE", release.images?.referenceDataNode]]) {
     if (environment[key] !== expected) throw new Error(`STAGING_START_RELEASE_IMAGE_MISMATCH:${key}`);
   }
   const dependencyAdmission = await validateStagingDependencies(paths.dependencyManifestFile, {
@@ -40,9 +41,10 @@ export async function planStagingReleaseStart(input) {
       "--root", paths.rootDirectory, "--secret-directory", paths.secretDirectory,
       "--public-env-file", paths.environmentFile]),
     commandStep("COMPOSE_CONFIG", [...compose, "config", "--quiet"]),
-    commandStep("PULL_IMAGES", [...compose, "pull", "api", "web"]),
+    commandStep("PULL_IMAGES", [...compose, "pull", "api", "web", "reference-data-node"]),
     commandStep("MIGRATE", [...compose, "run", "--rm", "--no-deps", "migrate"]),
     commandStep("PROVISION_RUNTIME_ROLE", [...compose, "run", "--rm", "--no-deps", "provision-runtime"]),
+    commandStep("START_DATA_NODE", [...compose, "up", "-d", "--wait", "--no-deps", "reference-data-node"]),
     commandStep("START_API", [...compose, "up", "-d", "--no-deps", "api"]),
     probeStep("API_READY", "http://127.0.0.1:4601/ready"),
     commandStep("START_WEB", [...compose, "up", "-d", "--no-deps", "web"]),

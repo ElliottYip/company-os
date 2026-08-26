@@ -41,7 +41,7 @@ const validateManifest = (value, side) => {
   text(manifest.releaseVersion, version, `${side}_RELEASE_VERSION_INVALID`);
   text(manifest.sourceRevision, revision, `${side}_SOURCE_REVISION_INVALID`);
   const images = object(manifest.images, `${side}_IMAGES_INVALID`);
-  for (const image of ["api", "web", "ops", "codexAgentNode", "vaultSecretBroker"]) {
+  for (const image of ["api", "web", "ops", "codexAgentNode", "vaultSecretBroker", "referenceDataNode"]) {
     text(images[image], digestImage, `${side}_${image.toUpperCase()}_IMAGE_INVALID`);
   }
   const runtime = object(manifest.runtime, `${side}_RUNTIME_INVALID`);
@@ -132,6 +132,7 @@ export function createReleaseCutoverPlan(previousValue, currentValue) {
       { id: "candidate-readiness", evidenceId: `${evidencePrefix}/07-readiness`, outcome: "DEPENDENCY_AWARE_READY" },
       { id: "start-candidate-secret-broker", evidenceId: `${evidencePrefix}/07a-candidate-secret-broker`, outcome: "CURRENT_VAULT_SECRET_BROKER_DIGEST_READY" },
       { id: "start-candidate-agent-node", evidenceId: `${evidencePrefix}/07b-candidate-agent-node`, outcome: "CURRENT_CODEX_AGENT_NODE_DIGEST_READY" },
+      { id: "start-candidate-data-node", evidenceId: `${evidencePrefix}/07c-candidate-data-node`, outcome: "CURRENT_REFERENCE_DATA_NODE_DIGEST_READY_AND_FIXTURE_ONLY" },
       { id: "customer-smoke", evidenceId: `${evidencePrefix}/08-customer-smoke`, outcome: "IDENTITY_COMPANY_WORK_APPROVAL_EVIDENCE_PATH_PASSED" },
       { id: "state-comparison", evidenceId: `${evidencePrefix}/09-state-comparison`, outcome: "CONTROL_TOTALS_AND_RESPONSIBILITY_EVIDENCE_MATCHED" },
       { id: "start-candidate-web", evidenceId: `${evidencePrefix}/10-candidate-web`, outcome: "CURRENT_WEB_DIGEST_SERVED" },
@@ -166,6 +167,7 @@ export function createReleaseCutoverPlan(previousValue, currentValue) {
           `${evidencePrefix}/07-readiness`,
           `${evidencePrefix}/07a-candidate-secret-broker`,
           `${evidencePrefix}/07b-candidate-agent-node`,
+          `${evidencePrefix}/07c-candidate-data-node`,
           `${evidencePrefix}/08-customer-smoke`,
           `${evidencePrefix}/09-state-comparison`,
           `${evidencePrefix}/10-candidate-web`,

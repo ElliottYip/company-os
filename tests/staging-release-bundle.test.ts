@@ -9,7 +9,8 @@ import { createStagingReleaseBundle, verifyStagingReleaseBundle } from "../scrip
 const image = (name: string) => `ghcr.io/example/${name}@sha256:${"a".repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
   sourceRevision: "b".repeat(40), images: { api: image("api"), web: image("web"), ops: image("ops"),
-    codexAgentNode: image("codex"), vaultSecretBroker: image("vault") } };
+    codexAgentNode: image("codex"), vaultSecretBroker: image("vault"),
+    referenceDataNode: image("data") } };
 
 test("staging release bundle is digest-bound, secret-free, verifiable and refuses overwrite", async (context) => {
   const temporary = await mkdtemp(join(tmpdir(), "company-os-staging-bundle-"));

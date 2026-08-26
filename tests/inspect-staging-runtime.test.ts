@@ -13,7 +13,8 @@ import { raftXinStagingExpectation, validateStagingDependencies } from
 const image = (name: string, digest: string) => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
   sourceRevision: "b".repeat(40), images: { api: image("api", "a"), web: image("web", "c"),
-    ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f") } };
+    ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f"),
+    referenceDataNode: image("data", "1") } };
 const candidate = { ...release, releaseVersion: "0.2.0-rc.1", sourceRevision: "9".repeat(40),
   images: { ...release.images, api: image("api", "8"), web: image("web", "7") } };
 
@@ -80,6 +81,8 @@ test("read-only runtime inspection binds retained startup state to exact contain
     listContainers: async () => { calls.push("containers"); return [
       { service: "api", image: release.images.api, status: "running", health: "healthy" },
       { service: "web", image: release.images.web, status: "running", health: "healthy" },
+      { service: "reference-data-node", image: release.images.referenceDataNode,
+        status: "running", health: "healthy" },
     ]; },
     probe: async ({ id }) => { calls.push(id); return true; },
   });
@@ -101,6 +104,8 @@ test("a staged candidate does not replace the startup-bound active runtime", asy
     listContainers: async () => [
       { service: "api", image: release.images.api, status: "running", health: "healthy" },
       { service: "web", image: release.images.web, status: "running", health: "healthy" },
+      { service: "reference-data-node", image: release.images.referenceDataNode,
+        status: "running", health: "healthy" },
     ],
     probe: async () => true,
   });

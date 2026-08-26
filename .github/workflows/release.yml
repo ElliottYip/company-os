@@ -118,6 +118,7 @@ jobs:
           echo "ops=ghcr.io/${repository}-ops" >> "$GITHUB_OUTPUT"
           echo "codex_agent_node=ghcr.io/${repository}-codex-agent-node" >> "$GITHUB_OUTPUT"
           echo "vault_secret_broker=ghcr.io/${repository}-vault-secret-broker" >> "$GITHUB_OUTPUT"
+          echo "reference_data_node=ghcr.io/${repository}-reference-data-node" >> "$GITHUB_OUTPUT"
 
       - name: Set up the attestation-capable Buildx builder
         uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
@@ -184,6 +185,17 @@ jobs:
           sbom: true
           provenance: mode=max
 
+      - name: Build and publish reference Data Node image
+        id: reference_data_node
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: deploy/Dockerfile.reference-data-node
+          push: true
+          tags: ${{ steps.coordinates.outputs.reference_data_node }}:${{ github.ref_name }}
+          sbom: true
+          provenance: mode=max
+
       - name: Attest API image provenance
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
@@ -219,6 +231,13 @@ jobs:
           subject-digest: ${{ steps.vault_secret_broker.outputs.digest }}
           push-to-registry: true
 
+      - name: Attest reference Data Node image provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ${{ steps.coordinates.outputs.reference_data_node }}
+          subject-digest: ${{ steps.reference_data_node.outputs.digest }}
+          push-to-registry: true
+
       - name: Use the release Node contract
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
@@ -242,6 +261,7 @@ jobs:
           COMPANY_OS_OPS_IMAGE: ${{ steps.coordinates.outputs.ops }}@${{ steps.ops.outputs.digest }}
           COMPANY_OS_CODEX_AGENT_NODE_IMAGE: ${{ steps.coordinates.outputs.codex_agent_node }}@${{ steps.codex_agent_node.outputs.digest }}
           COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: ${{ steps.coordinates.outputs.vault_secret_broker }}@${{ steps.vault_secret_broker.outputs.digest }}
+          COMPANY_OS_REFERENCE_DATA_NODE_IMAGE: ${{ steps.coordinates.outputs.reference_data_node }}@${{ steps.reference_data_node.outputs.digest }}
         run: |
           npm run --silent release:manifest > release-manifest.json
           npm run --silent release:sbom > company-os.cdx.json

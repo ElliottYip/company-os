@@ -12,7 +12,8 @@ const image = (name: string, digest: string) =>
   `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
   sourceRevision: "b".repeat(40), images: { api: image("api", "a"), web: image("web", "c"),
-    ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f") } };
+    ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f"),
+    referenceDataNode: image("data", "1") } };
 const dependencyManifestDigest = `sha256:${"6".repeat(64)}`;
 
 async function fixture(prefix: string) {
@@ -30,6 +31,7 @@ async function fixture(prefix: string) {
     `COMPANY_OS_API_IMAGE=${release.images.api}`,
     `COMPANY_OS_WEB_IMAGE=${release.images.web}`,
     `COMPANY_OS_OPS_IMAGE=${release.images.ops}`,
+    `COMPANY_OS_REFERENCE_DATA_NODE_IMAGE=${release.images.referenceDataNode}`,
     `COMPANY_OS_SECRET_DIRECTORY=${secretDirectory}`,
     "COMPANY_OS_OIDC_CLIENT_ID=company-os-staging",
     "COMPANY_OS_OIDC_ISSUER=https://identity.example",
