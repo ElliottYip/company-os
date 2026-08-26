@@ -408,6 +408,13 @@ source digest are Company OS-owned and deliberately do not reproduce
 Paperclip's service state, database schema, internal types or routes. See ADR
 0039.
 
+The evidence-bound staging dependency manifest similarly adopts only the
+generic validate-before-mutation discipline from the pinned Paperclip service
+lifecycle audit. Its exact owner/evidence fields, enterprise boundary set,
+production-resource denylist and canonical digest are independently authored
+for Company OS. No Paperclip configuration record, schema, service coordinate,
+runtime type or implementation is copied. See ADR 0040.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

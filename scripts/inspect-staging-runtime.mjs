@@ -5,6 +5,7 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { evaluateStagingRuntimeStatus } from "../adapters/config/staging-runtime-status.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
+import { raftXinStagingExpectation, validateStagingDependencies } from "./validate-staging-dependencies.ts";
 import {
   readVerifiedStagingReleaseStore,
   resolveStagingReleaseRecord,
@@ -13,6 +14,7 @@ import {
 const STORE_MARKER = "company-os staging release store v1\n";
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const REVISION = /^[a-f0-9]{40}$/;
+const DIGEST = /^sha256:[a-f0-9]{64}$/;
 const START_STATES = new Set(["STARTING", "STARTED_NOT_ACCEPTED", "START_FAILED_REQUIRES_REVIEW"]);
 
 export async function inspectStagingRuntime(input, supplied = {}) {
@@ -24,8 +26,14 @@ export async function inspectStagingRuntime(input, supplied = {}) {
     : store.prepared;
   await verifyStagingReleaseBundle(active.releaseDirectory);
   const release = JSON.parse(await readFile(join(active.releaseDirectory, "release-manifest.json"), "utf8"));
+  const dependencyAdmission = startupState ? await validateStagingDependencies(
+    join(rootDirectory, "staging-dependencies.json"),
+    { ...raftXinStagingExpectation, deploymentRoot: rootDirectory },
+  ) : null;
   const expected = { releaseId: active.releaseId, releaseVersion: active.releaseVersion,
-    sourceRevision: active.sourceRevision, images: { api: release.images.api, web: release.images.web } };
+    sourceRevision: active.sourceRevision,
+    dependencyManifestDigest: dependencyAdmission?.manifestDigest ?? `sha256:${"0".repeat(64)}`,
+    images: { api: release.images.api, web: release.images.web } };
   const candidate = store.prepared.releaseId === active.releaseId ? null : {
     id: store.prepared.releaseId, version: store.prepared.releaseVersion,
     sourceRevision: store.prepared.sourceRevision,
@@ -67,8 +75,10 @@ async function readStartupState(rootDirectory) {
     const value = JSON.parse(await readFile(path, "utf8"));
     if (value?.schemaVersion !== 1 || value.product !== "company-os" || !START_STATES.has(value.state) ||
         !RELEASE_ID.test(value.releaseId ?? "") || !REVISION.test(value.sourceRevision ?? "") ||
+        !DIGEST.test(value.dependencyManifestDigest ?? "") ||
         typeof value.acceptanceClaimed !== "boolean") throw new Error("STAGING_STATUS_STATE_INVALID");
     return { state: value.state, releaseId: value.releaseId, sourceRevision: value.sourceRevision,
+      dependencyManifestDigest: value.dependencyManifestDigest,
       acceptanceClaimed: value.acceptanceClaimed };
   } catch (error) {
     if (isCode(error, "ENOENT")) return null;

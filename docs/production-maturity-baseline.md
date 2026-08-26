@@ -12,7 +12,7 @@ source compatibility. Company OS remains independently owned and runnable.
 
 ## Evidence captured at baseline
 
-`npm test` passed on 2026-08-26 with 507 cases (503 passed and four explicit
+`npm test` passed on 2026-08-26 with 510 cases (506 passed and four explicit
 environment-gated live cases skipped in the credential-free run). The live
 PostgreSQL database, OIDC and reference Connector cases passed separately
 against disposable infrastructure. The complete `npm run verify` gate also ran
@@ -46,7 +46,14 @@ fails while dispatch remains open, and post-restart adoption binds the exact
 frozen revision before an administrator may explicitly reopen it. Existing
 admitted work continues to drain, so the control is not misrepresented as a
 Connector kill switch.
-Dependency-boundary, Paperclip-independence, asset,
+Staging startup is now bound to a strictly validated, secret-free external
+dependency manifest. The manifest names the dedicated PostgreSQL, product-scoped
+OIDC client, Vault Broker, Agent Node, Data Node, ingress and off-site backup
+boundary together with portable owner and evidence references. Startup retains
+its digest, and runtime inspection fails closed if the file later drifts; this
+proves declared coordinates and accountability, not that the external services
+have been provisioned or accepted by the customer.
+The admission includes dependency-boundary, Paperclip-independence, asset,
 research-governance, secret, production-dependency, type, build, and Web
 performance checks. The production dependency audit has no moderate, high, or
 critical finding. The unused Drizzle Kit CLI is no longer a root dependency,

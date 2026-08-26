@@ -3,12 +3,14 @@ export interface StagingRuntimeSnapshot {
     readonly releaseId: string;
     readonly releaseVersion: string;
     readonly sourceRevision: string;
+    readonly dependencyManifestDigest: string;
     readonly images: { readonly api: string; readonly web: string };
   };
   readonly startupState: null | {
     readonly state: "STARTING" | "STARTED_NOT_ACCEPTED" | "START_FAILED_REQUIRES_REVIEW";
     readonly releaseId: string;
     readonly sourceRevision: string;
+    readonly dependencyManifestDigest: string;
     readonly acceptanceClaimed: boolean;
   };
   readonly containers: readonly {
@@ -25,13 +27,15 @@ export interface StagingRuntimeStatus {
   readonly status: "NOT_STARTED" | "RUNNING_NOT_ACCEPTED" | "START_INCOMPLETE_REQUIRES_REVIEW" |
     "START_FAILED_REQUIRES_REVIEW" | "DEGRADED_REQUIRES_REVIEW";
   readonly acceptanceClaimed: false;
-  readonly release: { readonly id: string; readonly version: string; readonly sourceRevision: string };
+  readonly release: { readonly id: string; readonly version: string; readonly sourceRevision: string;
+    readonly dependencyManifestDigest: string };
   readonly findings: readonly { readonly code: string; readonly subject: string }[];
 }
 
 export function evaluateStagingRuntimeStatus(snapshot: StagingRuntimeSnapshot): StagingRuntimeStatus {
   const release = { id: snapshot.expected.releaseId, version: snapshot.expected.releaseVersion,
-    sourceRevision: snapshot.expected.sourceRevision };
+    sourceRevision: snapshot.expected.sourceRevision,
+    dependencyManifestDigest: snapshot.expected.dependencyManifestDigest };
   if (!snapshot.startupState) return { schemaVersion: 1, status: "NOT_STARTED",
     acceptanceClaimed: false, release, findings: [] };
   const findings: { code: string; subject: string }[] = [];
@@ -45,6 +49,9 @@ export function evaluateStagingRuntimeStatus(snapshot: StagingRuntimeSnapshot): 
   }
   if (snapshot.startupState.sourceRevision !== snapshot.expected.sourceRevision) {
     add("STARTUP_SOURCE_MISMATCH", "startup-state");
+  }
+  if (snapshot.startupState.dependencyManifestDigest !== snapshot.expected.dependencyManifestDigest) {
+    add("DEPENDENCY_MANIFEST_MISMATCH", "staging-dependencies");
   }
   if (snapshot.startupState.acceptanceClaimed) add("UNVERIFIED_ACCEPTANCE_CLAIM", "startup-state");
   for (const service of ["api", "web"] as const) {

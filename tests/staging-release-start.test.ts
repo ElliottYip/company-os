@@ -40,7 +40,38 @@ async function fixture(prefix: string) {
     "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL=https://broker.example",
     "",
   ].join("\n"), { mode: 0o600 });
-  return { temporary, root, environmentFile, secretDirectory, releaseId: installed.releaseId };
+  const dependencyManifestFile = join(root, "staging-dependencies.json");
+  await writeFile(dependencyManifestFile, `${JSON.stringify(dependencyManifest(root))}\n`, { mode: 0o600 });
+  return { temporary, root, environmentFile, dependencyManifestFile, secretDirectory,
+    releaseId: installed.releaseId };
+}
+
+function dependencyManifest(root: string) {
+  return {
+    schemaVersion: 1, environment: "STAGING", deploymentId: "company-os-staging-raft-xin",
+    ingress: { webOrigin: "https://company-os.raft.xin", apiOrigin: "https://company-os-api.raft.xin",
+      ownerReference: "team:infrastructure", dnsEvidenceReference: "evidence:dns-01",
+      tlsEvidenceReference: "evidence:tls-01" },
+    isolation: { deploymentRoot: root, composeProject: "company-os-staging",
+      network: "company-os-staging_internal", webLoopbackPort: 4600, apiLoopbackPort: 4601 },
+    postgres: { majorVersion: 16, ownership: "DEDICATED", tlsMode: "VERIFY_FULL",
+      coordinateSource: "SECRET_FILES", ownerReference: "team:database",
+      evidenceReference: "evidence:postgres-01" },
+    oidc: { issuer: "https://identity.staging.example",
+      discoveryUrl: "https://identity.staging.example/.well-known/openid-configuration",
+      clientId: "company-os-staging", ownership: "PRODUCT_SCOPED_CLIENT", pkce: "S256",
+      ownerReference: "team:identity", evidenceReference: "evidence:oidc-01" },
+    vaultBroker: { baseUrl: "https://vault.staging.example", ownership: "DEDICATED",
+      ownerReference: "team:secrets", evidenceReference: "evidence:vault-01" },
+    agentNode: { baseUrl: "https://agent.staging.example", ownership: "DEDICATED",
+      ownerReference: "team:agent", evidenceReference: "evidence:agent-01" },
+    dataNode: { baseUrl: "https://data.staging.example", ownership: "DEDICATED",
+      ownerReference: "team:data", evidenceReference: "evidence:data-01" },
+    backup: { provider: "ZOS_S3_COMPATIBLE", endpoint: "https://hangzhou7.zos.ctyun.cn",
+      region: "us-east-1", bucket: "company-os-staging-backup", ownership: "DEDICATED",
+      versioning: true, objectLock: "DISABLED", credentialSource: "VAULT_RENDERED_FILES",
+      ownerReference: "team:backup", evidenceReference: "evidence:backup-01" },
+  };
 }
 
 const input = (value: Awaited<ReturnType<typeof fixture>>) => ({
@@ -48,6 +79,7 @@ const input = (value: Awaited<ReturnType<typeof fixture>>) => ({
   releaseId: value.releaseId,
   authorizationReference: "change:staging-acceptance-2026-08-26",
   environmentFile: value.environmentFile,
+  dependencyManifestFile: value.dependencyManifestFile,
   secretDirectory: value.secretDirectory,
 });
 
@@ -59,7 +91,7 @@ test("staging start defaults to a non-mutating plan bound to one prepared releas
   assert.equal(plan.releaseId, value.releaseId);
   assert.equal(plan.authorizationReference, "change:staging-acceptance-2026-08-26");
   assert.deepEqual(plan.steps.map(({ id }) => id), [
-    "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE", "PROVISION_RUNTIME_ROLE",
+    "VALIDATE_DEPENDENCIES", "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE", "PROVISION_RUNTIME_ROLE",
     "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE",
   ]);
   await assert.rejects(readFile(join(value.root, "startup-state.json")), /ENOENT/);
@@ -76,7 +108,7 @@ test("authorized staging start runs the ordered path and records started-not-acc
     wait: async () => undefined,
   });
   assert.equal(result.status, "STARTED_NOT_ACCEPTED");
-  assert.deepEqual(calls, ["DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE",
+  assert.deepEqual(calls, ["VALIDATE_DEPENDENCIES", "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE",
     "PROVISION_RUNTIME_ROLE", "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE"]);
   const state = JSON.parse(await readFile(join(value.root, "startup-state.json"), "utf8"));
   assert.equal(state.state, "STARTED_NOT_ACCEPTED");
@@ -101,7 +133,7 @@ test("a migration-stage failure is retained for review and never triggers automa
   assert.equal(state.failureCode, "COMMAND_FAILED");
   assert.equal(state.databaseMigrationMayHaveRun, true);
   assert.equal(state.automaticRollbackAttempted, false);
-  assert.deepEqual(calls, ["DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE"]);
+  assert.deepEqual(calls, ["VALIDATE_DEPENDENCIES", "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE"]);
   await assert.rejects(startStagingRelease(input(value), {
     runCommand: async () => ({ ok: true }), probe: async () => true, wait: async () => undefined,
   }), /STAGING_START_REVIEW_REQUIRED/);

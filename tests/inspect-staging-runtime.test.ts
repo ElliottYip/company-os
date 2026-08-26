@@ -7,6 +7,8 @@ import test from "node:test";
 import { createStagingReleaseBundle } from "../scripts/create-staging-release-bundle.mjs";
 import { installStagingReleaseBundle } from "../scripts/install-staging-release-bundle.mjs";
 import { inspectStagingRuntime } from "../scripts/inspect-staging-runtime.mjs";
+import { raftXinStagingExpectation, validateStagingDependencies } from
+  "../scripts/validate-staging-dependencies.ts";
 
 const image = (name: string, digest: string) => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
@@ -31,7 +33,39 @@ async function fixture(prefix: string) {
     releaseManifestPath: manifest, outputDirectory: source });
   await import("node:fs/promises").then(({ mkdir }) => mkdir(root, { mode: 0o750 }));
   const installed = await installStagingReleaseBundle({ rootDirectory: root, bundleDirectory: source });
-  return { temporary, root, releaseId: installed.releaseId };
+  const dependencyManifestDigest = await writeDependencies(root);
+  return { temporary, root, releaseId: installed.releaseId, dependencyManifestDigest };
+}
+
+async function writeDependencies(root: string) {
+  const path = join(root, "staging-dependencies.json");
+  await writeFile(path, `${JSON.stringify({
+    schemaVersion: 1, environment: "STAGING", deploymentId: "company-os-staging-raft-xin",
+    ingress: { webOrigin: "https://company-os.raft.xin", apiOrigin: "https://company-os-api.raft.xin",
+      ownerReference: "team:infra", dnsEvidenceReference: "evidence:dns-01",
+      tlsEvidenceReference: "evidence:tls-01" },
+    isolation: { deploymentRoot: root, composeProject: "company-os-staging",
+      network: "company-os-staging_internal", webLoopbackPort: 4600, apiLoopbackPort: 4601 },
+    postgres: { majorVersion: 16, ownership: "DEDICATED", tlsMode: "VERIFY_FULL",
+      coordinateSource: "SECRET_FILES", ownerReference: "team:database",
+      evidenceReference: "evidence:postgres-01" },
+    oidc: { issuer: "https://identity.staging.example",
+      discoveryUrl: "https://identity.staging.example/.well-known/openid-configuration",
+      clientId: "company-os-staging", ownership: "PRODUCT_SCOPED_CLIENT", pkce: "S256",
+      ownerReference: "team:identity", evidenceReference: "evidence:oidc-01" },
+    vaultBroker: { baseUrl: "https://vault.staging.example", ownership: "DEDICATED",
+      ownerReference: "team:vault", evidenceReference: "evidence:vault-01" },
+    agentNode: { baseUrl: "https://agent.staging.example", ownership: "DEDICATED",
+      ownerReference: "team:agent", evidenceReference: "evidence:agent-01" },
+    dataNode: { baseUrl: "https://data.staging.example", ownership: "DEDICATED",
+      ownerReference: "team:data", evidenceReference: "evidence:data-01" },
+    backup: { provider: "ZOS_S3_COMPATIBLE", endpoint: "https://hangzhou7.zos.ctyun.cn",
+      region: "us-east-1", bucket: "company-os-staging-backup", ownership: "DEDICATED",
+      versioning: true, objectLock: "DISABLED", credentialSource: "VAULT_RENDERED_FILES",
+      ownerReference: "team:backup", evidenceReference: "evidence:backup-01" },
+  })}\n`, { mode: 0o600 });
+  return (await validateStagingDependencies(path,
+    { ...raftXinStagingExpectation, deploymentRoot: root })).manifestDigest;
 }
 
 test("read-only runtime inspection binds retained startup state to exact container images", async (context) => {
@@ -39,7 +73,8 @@ test("read-only runtime inspection binds retained startup state to exact contain
   context.after(() => rm(value.temporary, { recursive: true, force: true }));
   await writeFile(join(value.root, "startup-state.json"), `${JSON.stringify({ schemaVersion: 1,
     product: "company-os", state: "STARTED_NOT_ACCEPTED", releaseId: value.releaseId,
-    sourceRevision: release.sourceRevision, acceptanceClaimed: false })}\n`, { mode: 0o600 });
+    sourceRevision: release.sourceRevision, dependencyManifestDigest: value.dependencyManifestDigest,
+    acceptanceClaimed: false })}\n`, { mode: 0o600 });
   const calls: string[] = [];
   const result = await inspectStagingRuntime({ rootDirectory: value.root }, {
     listContainers: async () => { calls.push("containers"); return [
@@ -58,7 +93,8 @@ test("a staged candidate does not replace the startup-bound active runtime", asy
   context.after(() => rm(value.temporary, { recursive: true, force: true }));
   await writeFile(join(value.root, "startup-state.json"), `${JSON.stringify({ schemaVersion: 1,
     product: "company-os", state: "STARTED_NOT_ACCEPTED", releaseId: value.releaseId,
-    sourceRevision: release.sourceRevision, acceptanceClaimed: false })}\n`, { mode: 0o600 });
+    sourceRevision: release.sourceRevision, dependencyManifestDigest: value.dependencyManifestDigest,
+    acceptanceClaimed: false })}\n`, { mode: 0o600 });
   const staged = await install(value.root, value.temporary, candidate, "candidate");
   assert.notEqual(staged.releaseId, value.releaseId);
   const result = await inspectStagingRuntime({ rootDirectory: value.root }, {

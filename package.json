@@ -28,6 +28,7 @@
     "ops:provision-managed-admin": "node --experimental-strip-types scripts/provision-managed-instance-admin.ts",
     "ops:preflight:customer-boundaries": "node --experimental-strip-types scripts/customer-boundary-preflight.ts",
     "ops:doctor:staging": "node --experimental-strip-types scripts/staging-deployment-doctor.ts",
+    "ops:validate:staging-dependencies": "node --experimental-strip-types scripts/validate-staging-dependencies.ts",
     "ops:status:staging": "node --experimental-strip-types scripts/inspect-staging-runtime.mjs",
     "ops:drain:staging": "node --experimental-strip-types scripts/inspect-deployment-drain.ts",
     "ops:adoption:staging": "node --experimental-strip-types scripts/verify-deployment-state-adoption.ts",

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "environment": "STAGING",
+  "deploymentId": "company-os-staging-raft-xin",
+  "ingress": {
+    "webOrigin": "https://company-os.raft.xin",
+    "apiOrigin": "https://company-os-api.raft.xin",
+    "ownerReference": "team:replace-with-infrastructure-owner",
+    "dnsEvidenceReference": "evidence:replace-with-dns-check",
+    "tlsEvidenceReference": "evidence:replace-with-tls-check"
+  },
+  "isolation": {
+    "deploymentRoot": "/srv/company-os/staging",
+    "composeProject": "company-os-staging",
+    "network": "company-os-staging_internal",
+    "webLoopbackPort": 4600,
+    "apiLoopbackPort": 4601
+  },
+  "postgres": {
+    "majorVersion": 16,
+    "ownership": "DEDICATED",
+    "tlsMode": "VERIFY_FULL",
+    "coordinateSource": "SECRET_FILES",
+    "ownerReference": "team:replace-with-database-owner",
+    "evidenceReference": "evidence:replace-with-postgres-check"
+  },
+  "oidc": {
+    "issuer": "https://replace-with-staging-identity.example",
+    "discoveryUrl": "https://replace-with-staging-identity.example/.well-known/openid-configuration",
+    "clientId": "company-os-staging",
+    "ownership": "PRODUCT_SCOPED_CLIENT",
+    "pkce": "S256",
+    "ownerReference": "team:replace-with-identity-owner",
+    "evidenceReference": "evidence:replace-with-oidc-check"
+  },
+  "vaultBroker": {
+    "baseUrl": "https://replace-with-vault-broker.example",
+    "ownership": "DEDICATED",
+    "ownerReference": "team:replace-with-secret-owner",
+    "evidenceReference": "evidence:replace-with-vault-check"
+  },
+  "agentNode": {
+    "baseUrl": "https://replace-with-agent-node.example",
+    "ownership": "DEDICATED",
+    "ownerReference": "team:replace-with-agent-node-owner",
+    "evidenceReference": "evidence:replace-with-agent-node-check"
+  },
+  "dataNode": {
+    "baseUrl": "https://replace-with-data-node.example",
+    "ownership": "DEDICATED",
+    "ownerReference": "team:replace-with-data-node-owner",
+    "evidenceReference": "evidence:replace-with-data-node-check"
+  },
+  "backup": {
+    "provider": "ZOS_S3_COMPATIBLE",
+    "endpoint": "https://hangzhou7.zos.ctyun.cn",
+    "region": "us-east-1",
+    "bucket": "replace-with-company-os-staging-bucket",
+    "ownership": "DEDICATED",
+    "versioning": true,
+    "objectLock": "DISABLED",
+    "credentialSource": "VAULT_RENDERED_FILES",
+    "ownerReference": "team:replace-with-backup-owner",
+    "evidenceReference": "evidence:replace-with-backup-check"
+  }
+}

@@ -13,6 +13,7 @@ const image = (name: string, digest: string) =>
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
   sourceRevision: "b".repeat(40), images: { api: image("api", "a"), web: image("web", "c"),
     ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f") } };
+const dependencyManifestDigest = `sha256:${"6".repeat(64)}`;
 
 async function fixture(prefix: string) {
   const temporary = await mkdtemp(join(tmpdir(), prefix));
@@ -41,7 +42,7 @@ async function fixture(prefix: string) {
   await writeFile(join(root, "startup-state.json"), `${JSON.stringify({
     schemaVersion: 1, product: "company-os", state: "STARTED_NOT_ACCEPTED",
     releaseId: installed.releaseId, releaseVersion: release.releaseVersion,
-    sourceRevision: release.sourceRevision, acceptanceClaimed: false,
+    sourceRevision: release.sourceRevision, dependencyManifestDigest, acceptanceClaimed: false,
   })}\n`, { mode: 0o600 });
   return { temporary, root, environmentFile, secretDirectory, releaseId: installed.releaseId };
 }

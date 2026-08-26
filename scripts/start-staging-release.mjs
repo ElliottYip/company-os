@@ -5,6 +5,7 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { parsePublicStagingEnvironment } from "../adapters/config/staging-deployment-doctor.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
+import { raftXinStagingExpectation, validateStagingDependencies } from "./validate-staging-dependencies.ts";
 
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const AUTHORIZATION_REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$/;
@@ -25,11 +26,16 @@ export async function planStagingReleaseStart(input) {
     ["COMPANY_OS_WEB_IMAGE", release.images?.web], ["COMPANY_OS_OPS_IMAGE", release.images?.ops]]) {
     if (environment[key] !== expected) throw new Error(`STAGING_START_RELEASE_IMAGE_MISMATCH:${key}`);
   }
+  const dependencyAdmission = await validateStagingDependencies(paths.dependencyManifestFile, {
+    ...raftXinStagingExpectation, deploymentRoot: paths.rootDirectory,
+  });
   await rejectExistingStartupState(paths.rootDirectory);
 
   const compose = ["docker", "compose", "--env-file", paths.environmentFile,
     "-f", join(prepared.releaseDirectory, "compose.staging.yml")];
   const steps = [
+    commandStep("VALIDATE_DEPENDENCIES", ["node", "--experimental-strip-types",
+      "scripts/validate-staging-dependencies.ts", paths.dependencyManifestFile]),
     commandStep("DOCTOR", ["node", "--experimental-strip-types", "scripts/staging-deployment-doctor.ts",
       "--root", paths.rootDirectory, "--secret-directory", paths.secretDirectory,
       "--public-env-file", paths.environmentFile]),
@@ -45,6 +51,7 @@ export async function planStagingReleaseStart(input) {
   ];
   return { schemaVersion: 1, status: "PLANNED_NOT_APPLIED", releaseId: prepared.releaseId,
     releaseVersion: prepared.releaseVersion, sourceRevision: prepared.sourceRevision,
+    dependencyManifestDigest: dependencyAdmission.manifestDigest,
     authorizationReference: input.authorizationReference, rootDirectory: paths.rootDirectory, steps };
 }
 
@@ -123,6 +130,8 @@ async function validatedPaths(input) {
   const rootDirectory = safeAbsolutePath(input.rootDirectory, "STAGING_START_ROOT_ABSOLUTE_PATH_REQUIRED");
   const environmentFile = safeAbsolutePath(input.environmentFile, "STAGING_START_ENV_ABSOLUTE_PATH_REQUIRED");
   const secretDirectory = safeAbsolutePath(input.secretDirectory, "STAGING_START_SECRET_DIRECTORY_ABSOLUTE_PATH_REQUIRED");
+  const dependencyManifestFile = safeAbsolutePath(input.dependencyManifestFile,
+    "STAGING_START_DEPENDENCY_MANIFEST_ABSOLUTE_PATH_REQUIRED");
   if (rootDirectory === "/" || rootDirectory === resolve(homedir())) throw new Error("STAGING_START_ROOT_TOO_BROAD");
   if (!RELEASE_ID.test(input.releaseId ?? "")) throw new Error("STAGING_START_RELEASE_ID_INVALID");
   if (!AUTHORIZATION_REFERENCE.test(input.authorizationReference ?? "")) {
@@ -138,7 +147,7 @@ async function validatedPaths(input) {
       (markerStat.mode & 0o077) !== 0 || await readFile(marker, "utf8") !== STORE_MARKER) {
     throw new Error("STAGING_START_STORE_MARKER_UNSAFE");
   }
-  return { rootDirectory, environmentFile, secretDirectory };
+  return { rootDirectory, environmentFile, secretDirectory, dependencyManifestFile };
 }
 
 async function preparedRelease(rootDirectory, releaseId) {
@@ -180,6 +189,7 @@ async function rejectExistingStartupState(rootDirectory) {
 function state(plan, details) {
   return { schemaVersion: 1, product: "company-os", releaseId: plan.releaseId,
     releaseVersion: plan.releaseVersion, sourceRevision: plan.sourceRevision,
+    dependencyManifestDigest: plan.dependencyManifestDigest,
     authorizationReference: plan.authorizationReference, ...details };
 }
 
@@ -213,6 +223,7 @@ class StagingStepError extends Error {
 
 function argumentsFrom(values) {
   const result = { rootDirectory: "/srv/company-os/staging", environmentFile: "/srv/company-os/staging/staging.env",
+    dependencyManifestFile: "/srv/company-os/staging/staging-dependencies.json",
     secretDirectory: "/etc/company-os/secrets", releaseId: undefined, authorizationReference: undefined, apply: false };
   for (let index = 0; index < values.length; index += 1) {
     const flag = values[index];
@@ -221,6 +232,7 @@ function argumentsFrom(values) {
     else if (flag === "--release") result.releaseId = values[++index];
     else if (flag === "--authorization") result.authorizationReference = values[++index];
     else if (flag === "--public-env-file") result.environmentFile = values[++index];
+    else if (flag === "--dependency-manifest") result.dependencyManifestFile = values[++index];
     else if (flag === "--secret-directory") result.secretDirectory = values[++index];
     else throw new Error("STAGING_START_ARGUMENT_INVALID");
   }

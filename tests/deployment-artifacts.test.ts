@@ -226,11 +226,13 @@ test("managed-cloud profile reuses immutable API/Web artifacts and an external d
   assert.doesNotMatch(example, /sk-[A-Za-z0-9_-]{16,}/);
 });
 
-test("raft.xin staging is isolated, loopback-only, resource bounded, and file-secret based", async () => {
-  const [compose, example, runbook] = await Promise.all([
+test("raft.xin staging is isolated, dependency-bound, resource bounded, and file-secret based", async () => {
+  const [compose, example, dependencies, runbook, packageJsonSource] = await Promise.all([
     read("deploy/compose.staging.yml"),
     read("deploy/staging.env.example"),
+    read("deploy/staging-dependencies.example.json"),
     read("docs/staging-raft-xin.md"),
+    read("package.json"),
   ]);
   assert.match(compose, /^name: company-os-staging$/m);
   assert.match(compose, /name: company-os-staging_internal/);
@@ -247,7 +249,14 @@ test("raft.xin staging is isolated, loopback-only, resource bounded, and file-se
   assert.doesNotMatch(compose, /buzz-prod|generator001y|\/opt\/raft-relay|\/data\/raft-h3/);
   assert.doesNotMatch(compose, /^\s+postgres:\s*$/m);
   assert.doesNotMatch(example, /(?:password|secret|bearer)=\S+/i);
+  assert.equal(JSON.parse(dependencies).schemaVersion, 1);
+  assert.match(dependencies, /"ownership": "DEDICATED"/);
+  assert.match(dependencies, /"versioning": true/);
+  assert.doesNotMatch(dependencies, /(?:hvs\.|sk-)[A-Za-z0-9_-]{16,}/);
+  assert.equal(JSON.parse(packageJsonSource).scripts["ops:validate:staging-dependencies"],
+    "node --experimental-strip-types scripts/validate-staging-dependencies.ts");
   assert.match(runbook, /generator001y.*forbidden/i);
+  assert.match(runbook, /staging-dependencies\.json/);
   assert.match(runbook, /previous immutable image digests/);
 });
 

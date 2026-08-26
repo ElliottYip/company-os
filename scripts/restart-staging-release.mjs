@@ -16,6 +16,7 @@ import {
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const OPERATION_ID = /^restart-[a-z0-9][a-z0-9-]{2,95}$/;
 const AUTHORIZATION_REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$/;
+const DIGEST = /^sha256:[a-f0-9]{64}$/;
 const STORE_MARKER = "company-os staging release store v1\n";
 const LIFECYCLE_LOCK = ".staging-lifecycle.lock";
 const CURRENT_STATE = "restart-state.json";
@@ -25,7 +26,7 @@ export async function planStagingRestart(input, supplied = {}) {
   const paths = await validatedPaths(input);
   const prepared = await preparedRelease(paths.rootDirectory, input.releaseId);
   await verifyStagingReleaseBundle(prepared.releaseDirectory);
-  await validateStartedState(paths.rootDirectory, prepared);
+  const startedState = await validateStartedState(paths.rootDirectory, prepared);
   const environment = await publicEnvironment(paths.environmentFile);
   if (resolve(environment.COMPANY_OS_SECRET_DIRECTORY ?? "") !== paths.secretDirectory) {
     throw new Error("STAGING_RESTART_SECRET_DIRECTORY_MISMATCH");
@@ -44,7 +45,9 @@ export async function planStagingRestart(input, supplied = {}) {
   return {
     schemaVersion: 1, status: "PLANNED_NOT_APPLIED", operationId: input.operationId,
     releaseId: prepared.releaseId, releaseVersion: prepared.releaseVersion,
-    sourceRevision: prepared.sourceRevision, authorizationReference: input.authorizationReference,
+    sourceRevision: prepared.sourceRevision,
+    dependencyManifestDigest: startedState.dependencyManifestDigest,
+    authorizationReference: input.authorizationReference,
     rootDirectory: paths.rootDirectory,
     steps: [
       { id: "CAPTURE_DRAIN", kind: "DRAIN" },
@@ -212,7 +215,9 @@ async function validateStartedState(rootDirectory, prepared) {
   const value = JSON.parse(await readFile(path, "utf8"));
   if (value?.schemaVersion !== 1 || value.product !== "company-os" || value.state !== "STARTED_NOT_ACCEPTED" ||
       value.releaseId !== prepared.releaseId || value.sourceRevision !== prepared.sourceRevision ||
+      !DIGEST.test(value.dependencyManifestDigest ?? "") ||
       value.acceptanceClaimed !== false) throw new Error("STAGING_RESTART_START_STATE_INVALID");
+  return value;
 }
 
 async function publicEnvironment(path) {
@@ -242,7 +247,8 @@ async function rejectExistingRecord(path) {
 function state(plan, details) {
   return { schemaVersion: 1, product: "company-os", operationId: plan.operationId,
     releaseId: plan.releaseId, releaseVersion: plan.releaseVersion,
-    sourceRevision: plan.sourceRevision, authorizationReference: plan.authorizationReference, ...details };
+    sourceRevision: plan.sourceRevision, dependencyManifestDigest: plan.dependencyManifestDigest,
+    authorizationReference: plan.authorizationReference, ...details };
 }
 
 async function writeRestartState(rootDirectory, value) {

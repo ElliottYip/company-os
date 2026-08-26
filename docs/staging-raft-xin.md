@@ -110,9 +110,30 @@ Before any start:
    directory and rename, records `PREPARED_NOT_STARTED`, and preserves every
    earlier immutable release. It does not pull images, read Secrets, migrate the
    database, start services or move traffic;
-2. copy only the public `staging.env` and separately inject the required Secret
-   files. Run the doctor from the same attested Ops image and retain its `READY`
-   result:
+2. copy only the public `staging.env`, create a private regular file named
+   `/srv/company-os/staging/staging-dependencies.json` from
+   `deploy/staging-dependencies.example.json`, and separately inject the
+   required Secret files. Every placeholder in the dependency file must be
+   replaced with an independently owned resource, accountable owner reference
+   and retained evidence reference. The template itself is intentionally
+   rejected.
+
+   Before the doctor, validate the exact dependency file through the attested
+   Ops image and retain its secret-free digest:
+
+   ```sh
+   docker run --rm --network none --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging,readonly \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/validate-staging-dependencies.ts \
+     /srv/company-os/staging/staging-dependencies.json
+   ```
+
+   The admission rejects weak transport, missing owners/evidence, credentials,
+   placeholders and known Buzz/Raft production coordinates. Database and bearer
+   coordinates still belong only in protected Secret files. Then run the doctor
+   from the same attested Ops image and retain its `READY` result:
 
    ```sh
    docker run --rm --network host --read-only --cap-drop ALL \
@@ -149,6 +170,7 @@ Before any start:
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
      node --experimental-strip-types scripts/start-staging-release.mjs \
      --root /srv/company-os/staging \
+     --dependency-manifest /srv/company-os/staging/staging-dependencies.json \
      --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
      --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
      --secret-directory /etc/company-os/secrets \
@@ -162,6 +184,7 @@ Before any start:
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
      node --experimental-strip-types scripts/start-staging-release.mjs \
      --root /srv/company-os/staging \
+     --dependency-manifest /srv/company-os/staging/staging-dependencies.json \
      --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
      --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
      --secret-directory /etc/company-os/secrets \
@@ -170,7 +193,9 @@ Before any start:
    ```
 
    The first command only validates the prepared release, exact API/Web/Ops
-   image coordinates and proposed ordered actions. `--apply` acquires a
+   image coordinates, dependency-manifest digest and proposed ordered actions.
+   `--apply` revalidates the dependency file before any Docker mutation,
+   acquires a
    single-writer lock, runs the doctor again, validates Compose, pulls the exact
    images, runs migration and runtime-role provisioning, starts API, waits for
    readiness, starts Web, and performs Web/API smoke probes. Success is recorded
@@ -201,13 +226,16 @@ and health status, then probes the loopback Web and API readiness endpoints. It
 does not inspect container environment variables or mount the Secret directory.
 `RUNNING_NOT_ACCEPTED` proves only exact runtime alignment and health. Image
 drift, duplicate/missing containers, incomplete/failed start state or failed
-probes return a stable review-required status. The Docker socket remains
+probes return a stable review-required status. A changed or missing dependency
+manifest is also rejected against the startup-bound digest. The Docker socket remains
 daemon-level authority despite the command's read-only behavior.
 When a newer bundle has been installed but not cut over, `release` continues to
 describe the startup-bound active version and `candidate` reports the staged
 version separately. Staging a candidate therefore neither creates image drift
 nor prevents an authorized restart of the active release. See
 [ADR 0038](adr/0038-active-and-candidate-release-coordinates.md).
+The dependency ownership and drift contract is recorded in
+[ADR 0040](adr/0040-evidence-bound-staging-dependencies.md).
 
 The doctor is deliberately first-install-only and logically read-only. It refuses an
 existing `company-os-staging` project/network, mutable image tags, unsafe Secret
