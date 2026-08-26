@@ -47,6 +47,21 @@ async function waitForPostgres() {
   throw new Error("UPGRADE_ADMISSION_POSTGRES_TIMEOUT");
 }
 
+async function waitForHostPostgres(url) {
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const sql = postgres(url, { max: 1, connect_timeout: 2 });
+    try {
+      await sql`SELECT 1`;
+      return;
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } finally {
+      await sql.end();
+    }
+  }
+  throw new Error("UPGRADE_ADMISSION_HOST_POSTGRES_TIMEOUT");
+}
+
 async function psql(database, statement, options = {}) {
   return run("docker", ["exec", "--env", `PGPASSWORD=${password}`, container,
     "psql", "--username", databaseUser, "--dbname", database,
@@ -91,6 +106,7 @@ try {
   const hostPort = portResult.stdout.trim().match(/:(\d+)$/)?.[1];
   if (!hostPort) throw new Error("UPGRADE_ADMISSION_DATABASE_PORT_INVALID");
   const hostUrl = `postgres://${databaseUser}:${password}@127.0.0.1:${hostPort}/${sourceDatabase}`;
+  await waitForHostPostgres(hostUrl);
   const baselineSql = postgres(hostUrl, { max: 1, connect_timeout: 10 });
   try {
     await migrate(drizzle(baselineSql), { migrationsFolder: baselineMigrations });
