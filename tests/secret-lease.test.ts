@@ -23,7 +23,7 @@ function request() {
     companyId: "company-one",
     secretReferenceId: "secret-model-one",
     expectedVersion: 4,
-    consumerId: "connector-one",
+    consumerId: "model-provider-one",
     workAttemptId: "attempt-one",
     reasonCode: "MODEL_INFERENCE",
     expiresAt: "2026-08-20T13:05:00.000Z",
@@ -69,7 +69,9 @@ test("secret access intent is audited before a secret-free lease is issued", asy
 
   const lease = await service.execute(request());
   order.push("returned");
+  const replay = await service.execute(request());
   assert.deepEqual(order, ["broker", "returned"]);
+  assert.deepEqual(replay, lease);
   assert.equal(lease.secretReferenceId, "secret-model-one");
   assert.doesNotMatch(JSON.stringify(lease), /credential|password|private.?key|access.?token|secretValue/i);
   assert.deepEqual((await events.read("company-one")).map(({ type }) => type), [
@@ -119,4 +121,26 @@ test("broker failures persist only a stable failure code", async () => {
   const stored = JSON.stringify(await events.read("company-one"));
   assert.match(stored, /SECRET_BROKER_UNAVAILABLE/);
   assert.doesNotMatch(stored, /vault stack|raw provider response/i);
+});
+
+test("model inference leases can only target the bound model provider", async () => {
+  const service = new IssueSecretLease({
+    identity: identity(),
+    broker: {
+      async describe() {
+        return {
+          id: "secret-model-one", companyId: "company-one", purpose: "MODEL_PROVIDER",
+          providerAdapterId: "model-provider-one", currentVersion: 4, status: "ACTIVE",
+        };
+      },
+      async issueLease() { throw new Error("must not issue mismatched lease"); },
+      async revokeLease() { throw new Error("unused"); },
+    },
+    events: new InMemoryEventStore(),
+    now: () => "2026-08-20T13:00:00.000Z",
+    nextId: () => "unused",
+  });
+
+  await assert.rejects(service.execute({ ...request(), consumerId: "connector-one" }),
+    /SECRET_REFERENCE_CONSUMER_MISMATCH/);
 });

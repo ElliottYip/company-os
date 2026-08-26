@@ -21,7 +21,7 @@ are prohibited from this development program.
 2. Identity assertion → `IdentityPort` verifier.
 3. Company command → authorization and responsibility policy.
 4. Company OS → agent connector.
-5. Company OS → model provider.
+5. Company OS → model-provider capability/health boundary; Agent Node → Broker/provider execution boundary.
 6. Company OS → company data connector and egress firewall.
 7. Application → event/evidence store and backup.
 8. managed-cloud control plane ↔ customer-local execution plane.
@@ -41,16 +41,24 @@ are prohibited from this development program.
 | Agent exports unauthorized company data | I/E | Default-deny egress policy and auditable contract-bound decision |
 | Demo reaches production adapters or records | E/I | Separate composition, fixture provenance, no-side-effect test, rebinding gate |
 | Duplicate submit creates duplicate work/spend | T/D | Idempotency key and deterministic duplicate result |
+| Connector forges or replays usage against another model/Work | T/R | Derive authority from frozen Attempt; digest-bound usage reference; atomic idempotent ledger ingestion |
 | Oversized/recursive input exhausts service | D | Request/payload/record/depth/time bounds and rate policy |
 | Store or backup is silently modified | T/R | Digest chain, corruption detection, append sequence, restore validation |
 | Error/log exposes secret or private record | I | Field allowlists, redaction, stable public errors, no stack traces |
+| Office renderer gains business authority | E | Renderer consumes immutable scene only; no identity/store/execution imports |
 
 Secret material remains in a deployment-selected broker and never crosses the
 Company OS domain/application boundary. Formal access records the authorized
 intent before lease issuance. The control plane receives only a reference,
 version, consumer/work-attempt binding, expiry, and attestation digest; broker
 failure events persist a stable code rather than provider output.
-| Office renderer gains business authority | E | Renderer consumes immutable scene only; no identity/store/execution imports |
+
+Broker-owned management URLs are short-lived HMAC capabilities. Company OS
+returns them only to the currently authorized browser and never persists them
+in domain events. The Broker stores only their digest, serves forms with
+`no-store`, `frame-ancestors 'none'`, `form-action 'self'` and `no-referrer`,
+and never renders an existing Secret. Control and execution bearer authorities
+cannot substitute for the browser capability.
 
 ## Security invariants
 

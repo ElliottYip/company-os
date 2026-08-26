@@ -3,7 +3,20 @@
 This file distinguishes software/assets currently incorporated from candidates
 that have only been audited.
 
+The root Apache-2.0 license covers Company OS-owned contributions. It does not
+replace third-party copyright, attribution, trademark, generated-asset provider
+terms, or the separate MIT license carried by `skills/agentboss-school`.
+
 ## Incorporated
+
+### OpenAI Codex CLI
+
+The separately released Codex Agent Node image installs `@openai/codex` at the
+exact version recorded in the release manifest. Codex CLI is distributed under
+Apache-2.0 by OpenAI. Its source and license are available at
+`https://github.com/openai/codex`. It is an execution-plane dependency only;
+no Codex package or private runtime type enters Company OS core, ports,
+application, database schema, or Web.
 
 ### Raft visual subset
 

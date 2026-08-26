@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "erasableSyntaxOnly": true,
+    "jsx": "react-jsx",
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleDetection": "force",
@@ -11,6 +12,7 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "skipLibCheck": true,
     "strict": true,
     "target": "ES2023",
     "types": ["node"]
@@ -22,6 +24,7 @@
     "application/**/*.ts",
     "adapters/**/*.ts",
     "connector-sdk/**/*.ts",
-    "web/**/*.ts"
+    "web/**/*.ts",
+    "web/**/*.tsx"
   ]
 }

@@ -40,10 +40,51 @@ export class IssueSecretLease {
     if (!Number.isFinite(duration) || duration <= 0 || duration > 15 * 60 * 1_000) {
       throw new Error("SECRET_LEASE_EXPIRY_INVALID");
     }
+    const recorded = (await this.#events.read(intent.companyId)).flatMap((event) => {
+      if (event.type !== "secret.lease-issued") return [];
+      const payload = event.payload as {
+        readonly leaseId?: Identifier;
+        readonly secretReferenceId?: Identifier;
+        readonly version?: number;
+        readonly consumerId?: Identifier;
+        readonly workAttemptId?: Identifier;
+        readonly issuedAt?: string;
+        readonly expiresAt?: string;
+        readonly attestationDigest?: string;
+      };
+      return payload.workAttemptId === intent.workAttemptId &&
+          payload.secretReferenceId === intent.secretReferenceId
+        ? [payload]
+        : [];
+    }).at(-1);
+    if (recorded) {
+      if (recorded.version !== intent.expectedVersion || recorded.consumerId !== intent.consumerId ||
+          recorded.expiresAt !== intent.expiresAt || !recorded.leaseId || !recorded.issuedAt ||
+          !recorded.attestationDigest || !SHA256_DIGEST.test(recorded.attestationDigest)) {
+        throw new Error("SECRET_LEASE_IDEMPOTENCY_CONFLICT");
+      }
+      return {
+        id: recorded.leaseId,
+        secretReferenceId: intent.secretReferenceId,
+        version: recorded.version,
+        consumerId: recorded.consumerId,
+        workAttemptId: intent.workAttemptId,
+        issuedAt: recorded.issuedAt,
+        expiresAt: recorded.expiresAt,
+        attestationDigest: recorded.attestationDigest,
+      };
+    }
     const reference = await this.#broker.describe(intent.companyId, intent.secretReferenceId);
     if (!reference) throw new Error("SECRET_REFERENCE_NOT_FOUND");
     if (reference.companyId !== intent.companyId) throw new Error("TENANT_MISMATCH");
     if (reference.status !== "ACTIVE") throw new Error("SECRET_REFERENCE_INACTIVE");
+    const expectedPurpose = intent.reasonCode === "WORK_EXECUTION"
+      ? "AGENT_CONNECTOR"
+      : intent.reasonCode === "MODEL_INFERENCE" ? "MODEL_PROVIDER" : null;
+    if (expectedPurpose &&
+        (reference.purpose !== expectedPurpose || reference.providerAdapterId !== intent.consumerId)) {
+      throw new Error("SECRET_REFERENCE_CONSUMER_MISMATCH");
+    }
     if (reference.currentVersion !== intent.expectedVersion) {
       throw new Error("SECRET_VERSION_MISMATCH");
     }

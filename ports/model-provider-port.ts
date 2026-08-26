@@ -1,19 +1,21 @@
-import type { Identifier } from "../core/control-plane.ts";
+import type { ModelResidency } from "../core/model-governance.ts";
 
-export interface ModelRequest {
-  readonly requestId: Identifier;
-  readonly modelPolicyId: Identifier;
-  readonly promptReference: Identifier;
-  readonly timeoutAt: string;
+export interface ModelProviderCapabilities {
+  readonly providerAdapterId: string;
+  readonly displayName: string;
+  readonly protocolVersion: "1.0";
+  readonly modelReferences: readonly string[];
+  readonly supportedResidencies: readonly ModelResidency[];
 }
 
-export interface ModelResult {
-  readonly requestId: Identifier;
-  readonly outputReference: Identifier;
-  readonly usageReference: Identifier;
-}
-
+/**
+ * Control-plane view of an installed model boundary.
+ *
+ * Inference is deliberately absent: the bound Agent execution node redeems the
+ * opaque Broker grant and owns provider I/O. Company OS only selects, freezes,
+ * fingerprints, and health-checks the route.
+ */
 export interface ModelProviderPort {
-  complete(request: ModelRequest): Promise<ModelResult>;
+  capabilities(): Promise<ModelProviderCapabilities>;
+  health(): Promise<"HEALTHY" | "DEGRADED" | "UNAVAILABLE">;
 }
-

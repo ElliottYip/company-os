@@ -40,7 +40,7 @@ const CLASSIFICATION_RANK: Record<DataClassification, number> = {
   CONFIDENTIAL: 2,
   RESTRICTED: 3,
 };
-const DIGEST = /^sha256:[a-z0-9-]{8,128}$/;
+const DIGEST = /^sha256:[a-f0-9]{64}$/;
 
 function deny(policyCode: string): DataPolicyDecision {
   return { type: "DENIED", policyCode };

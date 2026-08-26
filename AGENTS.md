@@ -33,7 +33,8 @@ contracts. Raft is an adapter and optional host, never a domain dependency.
 - TypeScript strict mode, ESM, named exports.
 - External input is validated at adapters and connector SDK boundaries.
 - Demo and fixture data must be explicitly labelled; never imply it is live.
-- Do not add credentials, production data, paid services, 3D runtimes, or GLB.
+- Never commit credentials or production data. User-authorized paid 3D
+  generation, project-owned GLB assets, and a lightweight 3D runtime are
+  allowed when provenance, cost, and validation are recorded.
 - Managed-cloud and self-hosted are deployment profiles of one codebase.
 - Update `docs/source-manifest.md` before copying any external visual asset.
-

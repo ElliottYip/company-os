@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:company-os:agentboss-school:claim-map:v1",
+  "title": "AgentBoss School claim map v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "claims"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "kind", "status", "sourceIds", "primaryNode", "alsoUsedBy", "scope", "limitations", "resolution"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^CLM-[0-9]{3}$" },
+          "statement": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["EVIDENCE", "OPERATIONAL_DEFINITION", "AGENTBOSS_POLICY", "HYPOTHESIS"] },
+          "status": { "enum": ["SUPPORTED", "CONTESTED", "PROJECT_CHOICE", "NOT_YET_VERIFIED"] },
+          "sourceIds": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+          "primaryNode": { "type": "string" },
+          "alsoUsedBy": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+          "scope": { "type": "string", "minLength": 1 },
+          "limitations": { "type": "string", "minLength": 1 },
+          "resolution": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

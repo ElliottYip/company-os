@@ -1,5 +1,6 @@
 import type { RuntimeProof } from "../ports/agent-execution-port.ts";
 import type { ConnectorOperation } from "../core/connector.ts";
+import type { ExactAction } from "../core/control-plane.ts";
 
 export interface CapabilityDeclaration {
   readonly connectorId: string;
@@ -20,6 +21,21 @@ export interface TaskInput {
   readonly goalReference: string;
   readonly permissionReferences: readonly string[];
   readonly dataAuthorizationReferences: readonly string[];
+  /** Customer-node references only; enterprise records never cross the control-plane boundary. */
+  readonly governedDataReferences?: readonly string[];
+  readonly dataEvidenceReferences?: readonly string[];
+  /** Opaque broker grants redeemable only by the bound execution node. */
+  readonly executionGrantReferences?: readonly string[];
+  /** Secret-free route plus the exact opaque Broker grant for model execution. */
+  readonly modelBinding?: {
+    readonly policyId: string;
+    readonly routeId: string;
+    readonly providerAdapterId: string;
+    readonly modelReference: string;
+    readonly classification: "PUBLIC" | "INTERNAL" | "CONFIDENTIAL" | "RESTRICTED";
+    readonly residency: "MANAGED_CLOUD" | "LOCAL";
+    readonly executionGrantReference: string;
+  };
   readonly idempotencyKey: string;
   readonly timeoutAt: string;
 }
@@ -34,7 +50,10 @@ export interface TaskProgress {
 export interface ApprovalPause {
   readonly workId: string;
   readonly approvalRequestId: string;
-  readonly actionDigest: string;
+  readonly action: ExactAction;
+  readonly evidenceReferences: readonly string[];
+  readonly resultReference: string | null;
+  readonly expiresAt: string;
 }
 
 export interface EvidenceOutput {

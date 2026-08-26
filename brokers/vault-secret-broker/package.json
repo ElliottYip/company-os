@@ -1,0 +1,12 @@
+{
+  "name": "@company-os/vault-secret-broker",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./redemption-openapi": "./redemption-openapi.json"
+  },
+  "engines": { "node": ">=22.12.0" }
+}

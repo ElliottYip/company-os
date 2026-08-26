@@ -1,0 +1,135 @@
+name: company-os
+
+services:
+  postgres:
+    image: postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-company_os}
+      POSTGRES_USER: ${POSTGRES_USER:-company_os_owner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - company_os_postgres:/var/lib/postgresql/data
+
+  migrate:
+    image: ${COMPANY_OS_API_IMAGE:-company-os-api:local}
+    restart: "no"
+    command: ["node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]
+    environment:
+      COMPANY_OS_DATABASE_URL: postgres://${POSTGRES_USER:-company_os_owner}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-company_os}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  provision-runtime:
+    image: ${COMPANY_OS_API_IMAGE:-company-os-api:local}
+    restart: "no"
+    command: ["node", "--experimental-strip-types", "scripts/provision-postgres-runtime-role.ts"]
+    environment:
+      COMPANY_OS_MIGRATION_DATABASE_URL: postgres://${POSTGRES_USER:-company_os_owner}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-company_os}
+      COMPANY_OS_RUNTIME_DATABASE_USER: ${COMPANY_OS_RUNTIME_DATABASE_USER:-company_os_runtime}
+      COMPANY_OS_RUNTIME_DATABASE_PASSWORD: ${COMPANY_OS_RUNTIME_DATABASE_PASSWORD:?set COMPANY_OS_RUNTIME_DATABASE_PASSWORD}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.api
+    image: ${COMPANY_OS_API_IMAGE:-company-os-api:local}
+    restart: unless-stopped
+    environment:
+      COMPANY_OS_PROFILE: self-hosted
+      COMPANY_OS_EXPOSURE: ${COMPANY_OS_EXPOSURE:-private}
+      COMPANY_OS_HOST: 0.0.0.0
+      COMPANY_OS_PORT: 4310
+      COMPANY_OS_PUBLIC_URL: ${COMPANY_OS_PUBLIC_URL:?set the HTTPS public API URL}
+      COMPANY_OS_WEB_ORIGINS: ${COMPANY_OS_WEB_ORIGINS:?set the HTTPS public Web origin}
+      COMPANY_OS_DATABASE_URL: postgres://${COMPANY_OS_RUNTIME_DATABASE_USER:-company_os_runtime}:${COMPANY_OS_RUNTIME_DATABASE_PASSWORD:?set COMPANY_OS_RUNTIME_DATABASE_PASSWORD}@postgres:5432/${POSTGRES_DB:-company_os}
+      COMPANY_OS_OIDC_ISSUER: ${COMPANY_OS_OIDC_ISSUER:?set COMPANY_OS_OIDC_ISSUER}
+      COMPANY_OS_OIDC_DISCOVERY_URL: ${COMPANY_OS_OIDC_DISCOVERY_URL:?set COMPANY_OS_OIDC_DISCOVERY_URL}
+      COMPANY_OS_OIDC_CLIENT_ID: ${COMPANY_OS_OIDC_CLIENT_ID:?set COMPANY_OS_OIDC_CLIENT_ID}
+      COMPANY_OS_OIDC_CLIENT_SECRET: ${COMPANY_OS_OIDC_CLIENT_SECRET:?set COMPANY_OS_OIDC_CLIENT_SECRET}
+      COMPANY_OS_OIDC_REDIRECT_URI: ${COMPANY_OS_OIDC_REDIRECT_URI:?set the exact HTTPS callback URL}
+      COMPANY_OS_SESSION_SIGNING_KEY: ${COMPANY_OS_SESSION_SIGNING_KEY:?set COMPANY_OS_SESSION_SIGNING_KEY}
+      COMPANY_OS_INSTANCE_ID: ${COMPANY_OS_INSTANCE_ID:-company-os-self-hosted}
+      COMPANY_OS_RETENTION_POLICY_ID: ${COMPANY_OS_RETENTION_POLICY_ID:-standard-retention}
+      COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID: ${COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID:-standard-accountability-export}
+      COMPANY_OS_TRUSTED_PROXY_CIDRS: ${COMPANY_OS_TRUSTED_PROXY_CIDRS:-}
+      COMPANY_OS_CONNECTOR_PACKAGES: ${COMPANY_OS_CONNECTOR_PACKAGES:-}
+      COMPANY_OS_SECRET_BROKER_PACKAGE: ${COMPANY_OS_SECRET_BROKER_PACKAGE:-}
+      COMPANY_OS_MODEL_PROVIDER_PACKAGES: ${COMPANY_OS_MODEL_PROVIDER_PACKAGES:-}
+      COMPANY_OS_DATA_CONNECTOR_PACKAGES: ${COMPANY_OS_DATA_CONNECTOR_PACKAGES:-}
+      COMPANY_OS_HTTP_AGENT_NODE_ID: ${COMPANY_OS_HTTP_AGENT_NODE_ID:-http-agent-node}
+      COMPANY_OS_HTTP_AGENT_NODE_NAME: ${COMPANY_OS_HTTP_AGENT_NODE_NAME:-Enterprise HTTP Agent Node}
+      COMPANY_OS_HTTP_AGENT_NODE_BASE_URL: ${COMPANY_OS_HTTP_AGENT_NODE_BASE_URL:-}
+      COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN: ${COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN:-}
+      COMPANY_OS_HTTP_AGENT_NODE_ALLOW_INSECURE_LOOPBACK: ${COMPANY_OS_HTTP_AGENT_NODE_ALLOW_INSECURE_LOOPBACK:-false}
+      COMPANY_OS_HTTP_AGENT_NODE_TIMEOUT_MS: ${COMPANY_OS_HTTP_AGENT_NODE_TIMEOUT_MS:-10000}
+      COMPANY_OS_HTTP_SECRET_BROKER_ID: ${COMPANY_OS_HTTP_SECRET_BROKER_ID:-http-secret-broker}
+      COMPANY_OS_HTTP_SECRET_BROKER_NAME: ${COMPANY_OS_HTTP_SECRET_BROKER_NAME:-Enterprise HTTP Secret Broker}
+      COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:-}
+      COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN: ${COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN:-}
+      COMPANY_OS_HTTP_SECRET_BROKER_ALLOW_INSECURE_LOOPBACK: ${COMPANY_OS_HTTP_SECRET_BROKER_ALLOW_INSECURE_LOOPBACK:-false}
+      COMPANY_OS_HTTP_SECRET_BROKER_TIMEOUT_MS: ${COMPANY_OS_HTTP_SECRET_BROKER_TIMEOUT_MS:-10000}
+      COMPANY_OS_HTTP_SECRET_BROKER_MAXIMUM_LEASE_SECONDS: ${COMPANY_OS_HTTP_SECRET_BROKER_MAXIMUM_LEASE_SECONDS:-600}
+      COMPANY_OS_HTTP_DATA_NODE_ID: ${COMPANY_OS_HTTP_DATA_NODE_ID:-http-data-node}
+      COMPANY_OS_HTTP_DATA_NODE_NAME: ${COMPANY_OS_HTTP_DATA_NODE_NAME:-Enterprise HTTP Data Node}
+      COMPANY_OS_HTTP_DATA_NODE_SOURCES: ${COMPANY_OS_HTTP_DATA_NODE_SOURCES:-}
+      COMPANY_OS_HTTP_DATA_NODE_OPERATIONS: ${COMPANY_OS_HTTP_DATA_NODE_OPERATIONS:-READ}
+      COMPANY_OS_HTTP_DATA_NODE_BASE_URL: ${COMPANY_OS_HTTP_DATA_NODE_BASE_URL:-}
+      COMPANY_OS_HTTP_DATA_NODE_BEARER_TOKEN: ${COMPANY_OS_HTTP_DATA_NODE_BEARER_TOKEN:-}
+      COMPANY_OS_HTTP_DATA_NODE_ALLOW_INSECURE_LOOPBACK: ${COMPANY_OS_HTTP_DATA_NODE_ALLOW_INSECURE_LOOPBACK:-false}
+      COMPANY_OS_HTTP_DATA_NODE_TIMEOUT_MS: ${COMPANY_OS_HTTP_DATA_NODE_TIMEOUT_MS:-10000}
+      COMPANY_OS_METRICS_ENABLED: ${COMPANY_OS_METRICS_ENABLED:-false}
+    ports:
+      - "${COMPANY_OS_API_PORT:-4310}:4310"
+    depends_on:
+      provision-runtime:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+    image: ${COMPANY_OS_WEB_IMAGE:-company-os-web:local}
+    restart: unless-stopped
+    environment:
+      COMPANY_OS_WEB_HOST: 0.0.0.0
+      COMPANY_OS_WEB_PORT: 8080
+      COMPANY_OS_WEB_MODE: formal
+      COMPANY_OS_WEB_API_URL: ${COMPANY_OS_PUBLIC_URL:?set the HTTPS public API URL}
+    ports:
+      - "${COMPANY_OS_WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  backup:
+    profiles: ["backup"]
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.ops
+    image: ${COMPANY_OS_OPS_IMAGE:-company-os-ops:local}
+    restart: unless-stopped
+    command: ["node", "--experimental-strip-types", "scripts/postgres-encrypted-backup.ts"]
+    environment:
+      COMPANY_OS_DATABASE_URL: postgres://${COMPANY_OS_RUNTIME_DATABASE_USER:-company_os_runtime}:${COMPANY_OS_RUNTIME_DATABASE_PASSWORD:?set COMPANY_OS_RUNTIME_DATABASE_PASSWORD}@postgres:5432/${POSTGRES_DB:-company_os}
+      COMPANY_OS_BACKUP_DIRECTORY: /backup
+      COMPANY_OS_BACKUP_ENCRYPTION_KEY: ${COMPANY_OS_BACKUP_ENCRYPTION_KEY:-}
+      COMPANY_OS_BACKUP_INTERVAL_SECONDS: ${COMPANY_OS_BACKUP_INTERVAL_SECONDS:-86400}
+    volumes:
+      - company_os_backups:/backup
+    depends_on:
+      provision-runtime:
+        condition: service_completed_successfully
+
+volumes:
+  company_os_postgres:
+  company_os_backups:

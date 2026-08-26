@@ -62,6 +62,36 @@ function hasStringArray(input: Record<string, unknown>, key: string): boolean {
   );
 }
 
+function hasOptionalStringArray(input: Record<string, unknown>, key: string): boolean {
+  return !(key in input) || hasStringArray(input, key);
+}
+
+const MODEL_BINDING_KEYS = new Set([
+  "policyId",
+  "routeId",
+  "providerAdapterId",
+  "modelReference",
+  "classification",
+  "residency",
+  "executionGrantReference",
+]);
+
+function validModelBinding(value: unknown, executionGrantReferences: unknown): boolean {
+  if (!isRecord(value) || !Array.isArray(executionGrantReferences)) return false;
+  if (!Object.keys(value).every((key) => MODEL_BINDING_KEYS.has(key))) return false;
+  return hasString(value, "policyId") && hasString(value, "routeId") &&
+    hasString(value, "providerAdapterId") && hasString(value, "modelReference") &&
+    hasString(value, "executionGrantReference") &&
+    ["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"].includes(String(value.classification)) &&
+    (value.residency === "MANAGED_CLOUD" || value.residency === "LOCAL") &&
+    executionGrantReferences.includes(value.executionGrantReference);
+}
+
+function validOptionalModelBinding(payload: Record<string, unknown>): boolean {
+  return !("modelBinding" in payload) ||
+    validModelBinding(payload.modelBinding, payload.executionGrantReferences);
+}
+
 const FORBIDDEN_KEYS = /(?:api[_-]?key|access[_-]?token|refresh[_-]?token|password|secret|credential|session|private[_-]?reasoning)/i;
 
 function containsForbiddenMaterial(value: unknown, depth = 0): boolean {
@@ -75,6 +105,13 @@ function containsForbiddenMaterial(value: unknown, depth = 0): boolean {
 
 function validTimestamp(value: unknown): value is string {
   return typeof value === "string" && value.length <= 64 && Number.isFinite(Date.parse(value));
+}
+
+function validExactAction(value: unknown): boolean {
+  if (!isRecord(value)) return false;
+  return hasString(value, "id") && hasString(value, "type") && hasString(value, "description") &&
+    typeof value.inputDigest === "string" && /^sha256:[a-f0-9]{64}$/.test(value.inputDigest) &&
+    (value.risk === "HIGH" || value.risk === "CRITICAL");
 }
 
 function validPayload(type: ConnectorMessageType, payload: unknown): boolean {
@@ -91,13 +128,19 @@ function validPayload(type: ConnectorMessageType, payload: unknown): boolean {
       return hasString(payload, "workId") && hasString(payload, "goalReference") &&
         hasStringArray(payload, "permissionReferences") &&
         hasStringArray(payload, "dataAuthorizationReferences") &&
+        hasOptionalStringArray(payload, "governedDataReferences") &&
+        hasOptionalStringArray(payload, "dataEvidenceReferences") &&
+        hasOptionalStringArray(payload, "executionGrantReferences") &&
+        validOptionalModelBinding(payload) &&
         hasString(payload, "idempotencyKey") && validTimestamp(payload.timeoutAt);
     case "task.progress":
       return hasString(payload, "workId") && Number.isInteger(payload.sequence) &&
         Number(payload.sequence) > 0 && hasString(payload, "state") && hasString(payload, "summary");
     case "task.pause":
       return hasString(payload, "workId") && hasString(payload, "approvalRequestId") &&
-        hasString(payload, "actionDigest");
+        validExactAction(payload.action) && hasStringArray(payload, "evidenceReferences") &&
+        (payload.resultReference === null || hasString(payload, "resultReference")) &&
+        validTimestamp(payload.expiresAt);
     case "task.resume":
       return hasString(payload, "workId") && hasString(payload, "approvalRequestId");
     case "task.cancel":
@@ -189,6 +232,13 @@ export function parseConnectorEnvelope(input: unknown): ParseResult {
           message: "Task timing or idempotency fields do not match the envelope.",
         },
       };
+    }
+  }
+  if (type === "task.pause") {
+    const payload = input.payload as Record<string, unknown>;
+    if (Date.parse(payload.expiresAt as string) <= Date.parse(input.sentAt as string)) {
+      return { ok: false, error: { code: "INVALID_CONNECTOR_TIMING",
+        message: "Approval expiry must be after the pause request." } };
     }
   }
 

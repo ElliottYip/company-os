@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "curriculumVersion": "0.7.1",
+  "handle": "me",
+  "displayName": null,
+  "enrolledAt": "2026-08-24",
+  "lastSeenAt": "2026-08-24",
+  "currentCourse": "role",
+  "lastNode": "role/not-a-prompt-engineer",
+  "competencies": {
+    "delegation": { "level": "developing", "basis": "完成角色边界情境判断" },
+    "operations": { "level": "unknown", "basis": null },
+    "governance": { "level": "unknown", "basis": null },
+    "team_adoption": { "level": "unknown", "basis": null }
+  },
+  "nodes": {
+    "role/not-a-prompt-engineer": {
+      "status": "done",
+      "comprehension": "developing",
+      "evidenceNote": "能指出 Agent 不能替真人承担最终责任",
+      "at": "2026-08-24"
+    }
+  },
+  "labs": {},
+  "artifactReferences": [],
+  "artifactStorageConsent": false,
+  "deferredQuestions": [],
+  "nextRecommended": "role/delegation-fit",
+  "serviceRecommendation": {
+    "category": "none",
+    "status": "not-shown",
+    "basis": null
+  },
+  "log": ["2026-08-24 入学并完成角色边界节点"],
+  "apiToken": "must-not-be-stored"
+}

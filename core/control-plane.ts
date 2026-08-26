@@ -26,7 +26,7 @@ export interface AgentDescriptor {
   readonly displayName: string;
   readonly runtimeConnectorId: Identifier;
   readonly accountableHumanId: Identifier;
-  readonly roleId: Identifier;
+  readonly role: string;
   readonly autonomyLevel: number;
 }
 
@@ -57,7 +57,33 @@ export interface WorkObservation {
   readonly status: WorkStatus;
   readonly summary: string;
   readonly evidenceRefs: readonly Identifier[];
+  /** Admitted Connector evidence metadata; material stays in the execution environment. */
+  readonly evidenceOutputs?: readonly {
+    readonly evidenceReference: Identifier;
+    readonly contentDigest: string;
+  }[];
+  /** Provider billing evidence authored by the authenticated execution node. */
+  readonly usageOutputs?: readonly ConnectorUsageOutput[];
+  /** Required for a successful terminal observation. */
+  readonly resultReference?: Identifier | null;
+  readonly approvalRequest?: {
+    readonly requestId: Identifier;
+    readonly action: ExactAction;
+    readonly expiresAt: string;
+  };
   readonly recordedAt: string;
+}
+
+export interface ConnectorUsageOutput {
+  readonly usageReference: Identifier;
+  readonly biller: Identifier;
+  readonly billingType: "metered_api" | "subscription_included" | "subscription_overage" | "credits" | "fixed" | "unknown";
+  readonly costStatus: "reported" | "unpriced";
+  readonly inputTokens: number;
+  readonly cachedInputTokens: number;
+  readonly outputTokens: number;
+  readonly costCents: number;
+  readonly occurredAt: string;
 }
 
 export interface ExactAction {
@@ -67,4 +93,3 @@ export interface ExactAction {
   readonly inputDigest: string;
   readonly risk: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 }
-

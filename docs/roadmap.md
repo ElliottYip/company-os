@@ -59,11 +59,14 @@ The application dispatch boundary enforces enterprise-human identity and a
 revisioned responsibility contract before issuing an idempotent Company OS work
 command; fixtures cannot write formal contracts.
 
-### F. Model and data boundary — reference-only vertical complete
+### F. Model, data, tool, and usage boundary — formal vertical complete
 
 Provider/session isolation, model switching, data authorization, connector
-management, egress firewall, and secure credential references (never raw
-secrets in the control plane).
+management, egress firewall, secure credential references (never raw secrets in
+the control plane), Tool Access profiles/bindings/policies, verified cost events,
+and revisioned company budget policies. External provider packages remain
+optional; missing runtimes and unpriced usage fail closed rather than producing
+invented activity or spend.
 
 ### G. Office Compiler Pre-3D — contract frozen
 
@@ -85,7 +88,9 @@ only after Pre-3D contracts and the product loop are validated.
 3. **Virtual office:** finish spatial compilation/Pre-3D semantics before 3D
    characters, furniture, actions, and renderer.
 4. **Training/certification:** Agent Boss education, role management, human and
-   agent capability certification.
+   agent capability certification. AgentBoss School v0.1 now includes an
+   issuer-reviewed Foundations course credential and opt-in Yearbook; production
+   issuance still requires the operational public-key/reviewer process.
 5. **Enterprise pilots/templates:** validate ratios, boundaries, and cost before
    producing sales, support, finance, engineering, and industry templates.
 

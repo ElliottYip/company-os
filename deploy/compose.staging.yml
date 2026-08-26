@@ -1,0 +1,122 @@
+name: company-os-staging
+
+# Isolated acceptance profile for the small raft-generator host. PostgreSQL,
+# OIDC, Vault and execution/data nodes remain external trust boundaries. This
+# file must never join an existing production network or reuse its volumes.
+x-api-image: &api-image ${COMPANY_OS_API_IMAGE:?set an immutable API image digest}
+x-api-security: &api-security
+  read_only: true
+  init: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  tmpfs:
+    - /tmp:size=32m,mode=1777
+  pids_limit: 96
+  networks: [internal]
+  volumes:
+    - ${COMPANY_OS_SECRET_DIRECTORY:-/etc/company-os/secrets}:/run/company-os/secrets:ro
+
+services:
+  migrate:
+    <<: *api-security
+    image: *api-image
+    restart: "no"
+    cpus: 0.25
+    mem_limit: 256m
+    command: ["node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]
+    environment:
+      COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/migration-database-url
+
+  provision-runtime:
+    <<: *api-security
+    image: *api-image
+    restart: "no"
+    cpus: 0.25
+    mem_limit: 256m
+    command: ["node", "--experimental-strip-types", "scripts/provision-postgres-runtime-role.ts"]
+    environment:
+      COMPANY_OS_MIGRATION_DATABASE_URL_FILE: /run/company-os/secrets/migration-database-url
+      COMPANY_OS_RUNTIME_DATABASE_USER: ${COMPANY_OS_RUNTIME_DATABASE_USER:-company_os_runtime}
+      COMPANY_OS_RUNTIME_DATABASE_PASSWORD_FILE: /run/company-os/secrets/runtime-database-password
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  api:
+    <<: *api-security
+    image: *api-image
+    restart: unless-stopped
+    cpus: 0.55
+    mem_limit: 640m
+    pids_limit: 128
+    environment:
+      COMPANY_OS_PROFILE: managed-cloud
+      COMPANY_OS_EXPOSURE: public
+      COMPANY_OS_HOST: 0.0.0.0
+      COMPANY_OS_PORT: 4310
+      COMPANY_OS_PUBLIC_URL: https://company-os-api.raft.xin
+      COMPANY_OS_WEB_ORIGINS: https://company-os.raft.xin
+      COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/runtime-database-url
+      COMPANY_OS_OIDC_ISSUER: ${COMPANY_OS_OIDC_ISSUER:?set the staging OIDC issuer}
+      COMPANY_OS_OIDC_DISCOVERY_URL: ${COMPANY_OS_OIDC_DISCOVERY_URL:?set the staging OIDC discovery URL}
+      COMPANY_OS_OIDC_CLIENT_ID: ${COMPANY_OS_OIDC_CLIENT_ID:?set the product-scoped OIDC client ID}
+      COMPANY_OS_OIDC_CLIENT_SECRET_FILE: /run/company-os/secrets/oidc-client-secret
+      COMPANY_OS_OIDC_REDIRECT_URI: https://company-os-api.raft.xin/api/auth/oauth2/callback/enterprise-oidc
+      COMPANY_OS_SESSION_SIGNING_KEY_FILE: /run/company-os/secrets/session-signing-key
+      COMPANY_OS_INSTANCE_ID: company-os-staging-raft-xin
+      COMPANY_OS_RETENTION_POLICY_ID: ${COMPANY_OS_RETENTION_POLICY_ID:-standard-retention}
+      COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID: ${COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID:-standard-accountability-export}
+      COMPANY_OS_TRUSTED_PROXY_CIDRS: ${COMPANY_OS_TRUSTED_PROXY_CIDRS:-127.0.0.1/32,::1/128}
+      COMPANY_OS_CONNECTOR_PACKAGES: ${COMPANY_OS_CONNECTOR_PACKAGES:-@company-os/http-agent-node-connector}
+      COMPANY_OS_SECRET_BROKER_PACKAGE: ${COMPANY_OS_SECRET_BROKER_PACKAGE:-@company-os/http-secret-broker}
+      COMPANY_OS_DATA_CONNECTOR_PACKAGES: ${COMPANY_OS_DATA_CONNECTOR_PACKAGES:-@company-os/http-data-node-connector}
+      COMPANY_OS_HTTP_AGENT_NODE_ID: codex-staging
+      COMPANY_OS_HTTP_AGENT_NODE_NAME: Codex Acceptance Agent Node
+      COMPANY_OS_HTTP_AGENT_NODE_BASE_URL: ${COMPANY_OS_HTTP_AGENT_NODE_BASE_URL:?set the HTTPS Agent Node URL}
+      COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN_FILE: /run/company-os/secrets/agent-node-bearer-token
+      COMPANY_OS_HTTP_AGENT_NODE_ALLOW_INSECURE_LOOPBACK: "false"
+      COMPANY_OS_HTTP_DATA_NODE_ID: staging-test-data
+      COMPANY_OS_HTTP_DATA_NODE_NAME: Staging Test Data Node
+      COMPANY_OS_HTTP_DATA_NODE_SOURCES: ${COMPANY_OS_HTTP_DATA_NODE_SOURCES:-acceptance-fixtures}
+      COMPANY_OS_HTTP_DATA_NODE_OPERATIONS: ${COMPANY_OS_HTTP_DATA_NODE_OPERATIONS:-READ}
+      COMPANY_OS_HTTP_DATA_NODE_BASE_URL: ${COMPANY_OS_HTTP_DATA_NODE_BASE_URL:?set the HTTPS Data Node URL}
+      COMPANY_OS_HTTP_DATA_NODE_BEARER_TOKEN_FILE: /run/company-os/secrets/data-node-bearer-token
+      COMPANY_OS_HTTP_SECRET_BROKER_ID: vault-staging
+      COMPANY_OS_HTTP_SECRET_BROKER_NAME: HashiCorp Vault Staging Broker
+      COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:?set the HTTPS Vault Broker URL}
+      COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN_FILE: /run/company-os/secrets/secret-broker-bearer-token
+      COMPANY_OS_METRICS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:4601:4310"
+    depends_on:
+      provision-runtime:
+        condition: service_completed_successfully
+
+  web:
+    image: ${COMPANY_OS_WEB_IMAGE:?set an immutable Web image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    networks: [internal]
+    environment:
+      COMPANY_OS_WEB_HOST: 0.0.0.0
+      COMPANY_OS_WEB_PORT: 8080
+      COMPANY_OS_WEB_MODE: formal
+      COMPANY_OS_WEB_API_URL: https://company-os-api.raft.xin
+    ports:
+      - "127.0.0.1:4600:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  internal:
+    name: company-os-staging_internal
+    driver: bridge

@@ -1,0 +1,23 @@
+FROM node:22.12.0-bookworm-slim
+
+ARG CODEX_CLI_VERSION=0.144.1
+ENV NODE_ENV=production
+WORKDIR /app
+
+# Exact version only. Authentication is mounted at runtime; it is never baked
+# into this image or build cache.
+RUN npm install --global --omit=dev --ignore-scripts=false "@openai/codex@${CODEX_CLI_VERSION}" \
+    && codex --version \
+    && npm cache clean --force
+
+COPY --chown=node:node connectors/http-agent-node-reference ./connectors/http-agent-node-reference
+COPY --chown=node:node connectors/codex-exec-driver ./connectors/codex-exec-driver
+
+RUN mkdir -p /var/lib/company-os-codex /work \
+    && chown -R node:node /var/lib/company-os-codex /work
+
+USER node
+EXPOSE 4320
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:4320/v1/health',{headers:{authorization:'Bearer '+require('fs').readFileSync('/run/secrets/node-bearer-token','utf8').trim()}}).then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+CMD ["node", "connectors/codex-exec-driver/service-entry.mjs"]

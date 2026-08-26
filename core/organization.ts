@@ -73,7 +73,6 @@ export function validateOrganizationDraft(
     throw new Error("公司必须包含 1–64 个部门");
   }
   if (!draft.humans.length) throw new Error("至少添加一位真人负责人");
-  if (!draft.agents.length) throw new Error("至少添加一位 Agent 同事");
 
   const departmentIds = new Set<Identifier>();
   const departments = draft.departments.map((department, index) => {
@@ -157,4 +156,3 @@ export function validateOrganizationDraft(
     agents,
   };
 }
-

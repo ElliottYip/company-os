@@ -6,6 +6,7 @@ import type {
 } from "../ports/approval-publication-port.ts";
 import type { EventDataStorePort } from "../ports/event-data-store-port.ts";
 import type { IdentityPort } from "../ports/identity-port.ts";
+import type { WorkAttemptService } from "./work-attempt-service.ts";
 
 export interface DecideHighRiskActionCommand {
   readonly companyId: Identifier;
@@ -21,6 +22,7 @@ interface Dependencies {
   readonly events: EventDataStorePort;
   readonly now: () => string;
   readonly nextId: () => Identifier;
+  readonly attempts?: WorkAttemptService;
 }
 
 function sameList(left: readonly Identifier[], right: readonly Identifier[]): boolean {
@@ -61,7 +63,8 @@ export class DecideHighRiskAction {
     }
 
     const request = (await this.#dependencies.approvals.pending(command.companyId))
-      .find(({ id }) => id === command.requestId);
+      .find(({ id }) => id === command.requestId)
+      ?? await this.#dependencies.approvals.request?.(command.requestId);
     if (!request) throw new Error("APPROVAL_REQUEST_NOT_FOUND");
     if (!sameBinding(request.binding, command.expectedBinding)) {
       throw new Error("APPROVAL_BINDING_MISMATCH");
@@ -70,14 +73,19 @@ export class DecideHighRiskAction {
       throw new Error("APPROVAL_REQUIRES_ACCOUNTABLE_HUMAN");
     }
 
+    const existingDecision = await this.#dependencies.approvals.decision(request.id);
+    if (existingDecision) {
+      if (existingDecision.decision !== command.decision || existingDecision.decidedBy !== identity.actorId) {
+        throw new Error("APPROVAL_ALREADY_DECIDED");
+      }
+      await this.#recordDecisionEvent(command.companyId, request.binding, existingDecision, null);
+      await this.#applyAttemptDecision(command.companyId, request.binding.workId, request.id, existingDecision);
+      return existingDecision;
+    }
     const now = this.#dependencies.now();
     if (!Number.isFinite(Date.parse(now)) || Date.parse(now) >= Date.parse(request.expiresAt)) {
       throw new Error("APPROVAL_EXPIRED");
     }
-    if (await this.#dependencies.approvals.decision(request.id)) {
-      throw new Error("APPROVAL_ALREADY_DECIDED");
-    }
-
     const receipt = await this.#dependencies.identity.authorize({
       companyId: command.companyId,
       action: `approval:${command.decision.toLowerCase()}`,
@@ -97,23 +105,55 @@ export class DecideHighRiskAction {
     };
     await this.#dependencies.approvals.publishDecision(decision);
 
-    const existing = await this.#dependencies.events.read(command.companyId);
+    await this.#recordDecisionEvent(command.companyId, request.binding, decision, receipt.id);
+    await this.#applyAttemptDecision(command.companyId, request.binding.workId, request.id, decision);
+    return decision;
+  }
+
+  async #recordDecisionEvent(
+    companyId: Identifier,
+    binding: ApprovalBinding,
+    decision: ApprovalDecision,
+    authorizationReceiptId: Identifier | null,
+  ): Promise<void> {
+    const existing = await this.#dependencies.events.read(companyId);
+    if (existing.some(({ type, payload }) => type === "approval.decided" &&
+      (payload as { requestId?: Identifier }).requestId === decision.requestId)) return;
     const event: CompanyDomainEvent = {
-      id: this.#dependencies.nextId(),
-      companyId: command.companyId,
-      type: "approval.decided",
-      occurredAt: now,
-      actorId: identity.actorId,
-      payload: {
-        requestId: request.id,
-        decision: command.decision,
-        authorizationReceiptId: receipt.id,
-        binding: structuredClone(request.binding),
-      },
-      correlationId: request.binding.workId,
-      provenance: "PRODUCTION",
+      id: this.#dependencies.nextId(), companyId, type: "approval.decided",
+      occurredAt: decision.decidedAt, actorId: decision.decidedBy,
+      payload: { requestId: decision.requestId, decision: decision.decision,
+        authorizationReceiptId, binding: structuredClone(binding) },
+      correlationId: binding.workId, provenance: "PRODUCTION",
     };
     await this.#dependencies.events.append(event, existing.length);
-    return decision;
+  }
+
+  async #applyAttemptDecision(
+    companyId: Identifier,
+    workId: Identifier,
+    requestId: Identifier,
+    decision: ApprovalDecision,
+  ): Promise<void> {
+    const attempts = this.#dependencies.attempts;
+    if (!attempts) return;
+    const attempt = await attempts.latestForWork(companyId, workId);
+    if (!attempt) throw new Error("WORK_ATTEMPT_NOT_FOUND");
+    if (decision.decision === "APPROVED" && attempt.status === "RUNNING") return;
+    if (decision.decision === "REJECTED" &&
+        (attempt.status === "CANCELLATION_REQUESTED" || attempt.status === "CANCELLED")) return;
+    if (attempt.status !== "AWAITING_APPROVAL" || attempt.pendingApprovalId !== requestId) {
+      throw new Error("WORK_ATTEMPT_APPROVAL_BINDING_MISMATCH");
+    }
+    const operation = decision.decision === "APPROVED" ? "RESUME" : "REQUEST_CANCEL";
+    const base = {
+      companyId: attempt.companyId, attemptId: attempt.id,
+      eventId: this.#dependencies.nextId(), publicationId: this.#dependencies.nextId(),
+      actorId: decision.decidedBy, occurredAt: decision.decidedAt,
+      expectedEventSequence: (await this.#dependencies.events.read(attempt.companyId)).length,
+      fencingToken: attempt.lastFencingToken,
+    } as const;
+    if (operation === "RESUME") await attempts.transition({ ...base, operation, approvalRequestId: requestId });
+    else await attempts.transition({ ...base, operation });
   }
 }

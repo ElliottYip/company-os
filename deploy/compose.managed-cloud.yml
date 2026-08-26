@@ -1,0 +1,88 @@
+name: company-os-managed-cloud
+
+# Reference topology for a managed environment. The database, OIDC provider,
+# Secret Broker and Connector nodes are external managed dependencies. This
+# file deliberately reuses the same API/Web images and migration entry point as
+# the self-hosted profile; it is not a second product implementation.
+services:
+  migrate:
+    image: ${COMPANY_OS_API_IMAGE:?set an immutable API image digest}
+    restart: "no"
+    command: ["node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]
+    environment:
+      COMPANY_OS_DATABASE_URL: ${COMPANY_OS_MIGRATION_DATABASE_URL:?set the managed migration PostgreSQL URL}
+
+  provision-runtime:
+    image: ${COMPANY_OS_API_IMAGE:?set an immutable API image digest}
+    restart: "no"
+    command: ["node", "--experimental-strip-types", "scripts/provision-postgres-runtime-role.ts"]
+    environment:
+      COMPANY_OS_MIGRATION_DATABASE_URL: ${COMPANY_OS_MIGRATION_DATABASE_URL:?set the managed migration PostgreSQL URL}
+      COMPANY_OS_RUNTIME_DATABASE_USER: ${COMPANY_OS_RUNTIME_DATABASE_USER:-company_os_runtime}
+      COMPANY_OS_RUNTIME_DATABASE_PASSWORD: ${COMPANY_OS_RUNTIME_DATABASE_PASSWORD:?inject from a secret manager}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  api:
+    image: ${COMPANY_OS_API_IMAGE:?set an immutable API image digest}
+    restart: unless-stopped
+    environment:
+      COMPANY_OS_PROFILE: managed-cloud
+      COMPANY_OS_EXPOSURE: public
+      COMPANY_OS_HOST: 0.0.0.0
+      COMPANY_OS_PORT: 4310
+      COMPANY_OS_PUBLIC_URL: ${COMPANY_OS_PUBLIC_URL:?set the public API URL}
+      COMPANY_OS_WEB_ORIGINS: ${COMPANY_OS_WEB_ORIGINS:?set exact Web origins}
+      COMPANY_OS_DATABASE_URL: ${COMPANY_OS_DATABASE_URL:?set the managed PostgreSQL URL}
+      COMPANY_OS_OIDC_ISSUER: ${COMPANY_OS_OIDC_ISSUER:?set the OIDC issuer}
+      COMPANY_OS_OIDC_DISCOVERY_URL: ${COMPANY_OS_OIDC_DISCOVERY_URL:?set the OIDC discovery URL}
+      COMPANY_OS_OIDC_CLIENT_ID: ${COMPANY_OS_OIDC_CLIENT_ID:?set the OIDC client ID}
+      COMPANY_OS_OIDC_CLIENT_SECRET: ${COMPANY_OS_OIDC_CLIENT_SECRET:?inject from a secret manager}
+      COMPANY_OS_OIDC_REDIRECT_URI: ${COMPANY_OS_OIDC_REDIRECT_URI:?set the exact callback URL}
+      COMPANY_OS_SESSION_SIGNING_KEY: ${COMPANY_OS_SESSION_SIGNING_KEY:?inject from a secret manager}
+      COMPANY_OS_INSTANCE_ID: ${COMPANY_OS_INSTANCE_ID:?set a stable instance ID}
+      COMPANY_OS_RETENTION_POLICY_ID: ${COMPANY_OS_RETENTION_POLICY_ID:-standard-retention}
+      COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID: ${COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID:-standard-accountability-export}
+      COMPANY_OS_TRUSTED_PROXY_CIDRS: ${COMPANY_OS_TRUSTED_PROXY_CIDRS:?set the ingress proxy CIDRs}
+      COMPANY_OS_CONNECTOR_PACKAGES: ${COMPANY_OS_CONNECTOR_PACKAGES:-}
+      COMPANY_OS_SECRET_BROKER_PACKAGE: ${COMPANY_OS_SECRET_BROKER_PACKAGE:-}
+      COMPANY_OS_MODEL_PROVIDER_PACKAGES: ${COMPANY_OS_MODEL_PROVIDER_PACKAGES:-}
+      COMPANY_OS_DATA_CONNECTOR_PACKAGES: ${COMPANY_OS_DATA_CONNECTOR_PACKAGES:-}
+      COMPANY_OS_HTTP_AGENT_NODE_ID: ${COMPANY_OS_HTTP_AGENT_NODE_ID:-http-agent-node}
+      COMPANY_OS_HTTP_AGENT_NODE_NAME: ${COMPANY_OS_HTTP_AGENT_NODE_NAME:-Enterprise HTTP Agent Node}
+      COMPANY_OS_HTTP_AGENT_NODE_BASE_URL: ${COMPANY_OS_HTTP_AGENT_NODE_BASE_URL:-}
+      COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN: ${COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN:-}
+      COMPANY_OS_HTTP_AGENT_NODE_ALLOW_INSECURE_LOOPBACK: "false"
+      COMPANY_OS_HTTP_AGENT_NODE_TIMEOUT_MS: ${COMPANY_OS_HTTP_AGENT_NODE_TIMEOUT_MS:-10000}
+      COMPANY_OS_HTTP_DATA_NODE_ID: ${COMPANY_OS_HTTP_DATA_NODE_ID:-http-data-node}
+      COMPANY_OS_HTTP_DATA_NODE_NAME: ${COMPANY_OS_HTTP_DATA_NODE_NAME:-Enterprise HTTP Data Node}
+      COMPANY_OS_HTTP_DATA_NODE_SOURCES: ${COMPANY_OS_HTTP_DATA_NODE_SOURCES:-}
+      COMPANY_OS_HTTP_DATA_NODE_OPERATIONS: ${COMPANY_OS_HTTP_DATA_NODE_OPERATIONS:-READ}
+      COMPANY_OS_HTTP_DATA_NODE_BASE_URL: ${COMPANY_OS_HTTP_DATA_NODE_BASE_URL:-}
+      COMPANY_OS_HTTP_DATA_NODE_BEARER_TOKEN: ${COMPANY_OS_HTTP_DATA_NODE_BEARER_TOKEN:-}
+      COMPANY_OS_HTTP_DATA_NODE_ALLOW_INSECURE_LOOPBACK: "false"
+      COMPANY_OS_HTTP_DATA_NODE_TIMEOUT_MS: ${COMPANY_OS_HTTP_DATA_NODE_TIMEOUT_MS:-10000}
+      COMPANY_OS_HTTP_SECRET_BROKER_ID: ${COMPANY_OS_HTTP_SECRET_BROKER_ID:-http-secret-broker}
+      COMPANY_OS_HTTP_SECRET_BROKER_NAME: ${COMPANY_OS_HTTP_SECRET_BROKER_NAME:-Enterprise HTTP Secret Broker}
+      COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:-}
+      COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN: ${COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN:-}
+      COMPANY_OS_HTTP_SECRET_BROKER_ALLOW_INSECURE_LOOPBACK: "false"
+      COMPANY_OS_HTTP_SECRET_BROKER_TIMEOUT_MS: ${COMPANY_OS_HTTP_SECRET_BROKER_TIMEOUT_MS:-10000}
+      COMPANY_OS_HTTP_SECRET_BROKER_MAXIMUM_LEASE_SECONDS: ${COMPANY_OS_HTTP_SECRET_BROKER_MAXIMUM_LEASE_SECONDS:-600}
+      COMPANY_OS_METRICS_ENABLED: "false"
+    depends_on:
+      provision-runtime:
+        condition: service_completed_successfully
+
+  web:
+    image: ${COMPANY_OS_WEB_IMAGE:?set an immutable Web image digest}
+    restart: unless-stopped
+    environment:
+      COMPANY_OS_WEB_HOST: 0.0.0.0
+      COMPANY_OS_WEB_PORT: 8080
+      COMPANY_OS_WEB_MODE: formal
+      COMPANY_OS_WEB_API_URL: ${COMPANY_OS_PUBLIC_URL:?set the public API URL}
+    depends_on:
+      api:
+        condition: service_healthy

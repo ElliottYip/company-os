@@ -1,0 +1,17 @@
+.git
+.github
+.playwright-cli
+.pnpm-store
+node_modules
+test-results
+tests
+research
+experiments
+outputs
+tmp
+work
+web/dist
+*.log
+.env
+.env.*
+!.env.example

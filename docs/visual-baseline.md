@@ -27,16 +27,28 @@ finished 3D office.
   `ClayAvatarPicker.tsx`: audited only. React/Tailwind dependencies and UI code
   were not copied. The existing CSS-shape person is a temporary idea, not an asset
   direction.
+- Paperclip UI layout references at audit pin `v2026.817.0` / commit
+  `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`: `ui/src/components/Layout.tsx`,
+  `Sidebar.tsx`, `SidebarShell.tsx`, `BreadcrumbBar.tsx`, `PropertiesPanel.tsx`,
+  `MetricCard.tsx`, and `ui/src/pages/Dashboard.tsx`. They establish the
+  workspace layout reference only; Paperclip React/Tailwind code and product
+  models are not copied into Company OS.
 
 ## Product-space intent
 
-The user-supplied concept establishes a split experience: organization editing
-on the left and a generated isometric office preview on the right. Company,
-departments, humans, agents, reporting/accountability, projects, and workspaces
-are source data. The compiler must produce department rooms, cross-department
-project rooms, meeting rooms, reception, break area, toilets, entrance, and
-connected corridors. Adding or removing structure must deterministically alter
-the space.
+Outside the 3D office itself, Company OS combines two explicit sources without
+mixing their product domains. Paperclip governs functional arrangement: company
+context, quick actions, grouped navigation, breadcrumbs, command discovery,
+contextual detail panes, and a five-slot mobile bottom bar. Buzz/Raft governs
+visual execution: the pale grey-green rail, continuous white workspace, compact
+type, restrained borders and radii, semantic status pills, and activity-led
+content density. Neither product is a runtime dependency.
+
+The office remains Company OS-owned. Company, departments, humans, agents,
+reporting/accountability, projects, and workspaces are source data. The compiler
+must produce department rooms, cross-department project rooms, meeting rooms,
+reception, break area, toilets, entrance, and connected corridors. Adding or
+removing structure must deterministically alter the space.
 
 Humans and fish are embodied occupants. They occupy rooms, seats, doors, and
 common areas and later perform reusable interactions; they are not floating
@@ -44,12 +56,33 @@ avatars pinned over cards. Work states such as working, waiting, blocked,
 approval-needed, and complete must be legible in both accessible UI and spatial
 state.
 
+## Product typography system
+
+The customer Web uses one semantic type scale owned by `web/family-ui.css`:
+
+| Role | Token | Default |
+|---|---|---:|
+| Product display | `--type-display` | responsive 36–62 px |
+| Page title | `--type-page-title` | 18 px |
+| Section title | `--type-section-title` | 14 px |
+| Body | `--type-body` | 13 px |
+| Controls | `--type-control` | 13 px |
+| Supporting copy | `--type-supporting` | 12 px |
+| Labels and metadata | `--type-label` | 11 px |
+| Metrics | `--type-metric` | 24 px |
+
+Ten-pixel microcopy is reserved for keyboard hints and compact renderer
+annotations. Primary product content must not use 8–10 px local values. Page,
+section, body, and supporting copy use shared title/body/compact line-height
+tokens so Chinese and English keep the same vertical rhythm.
+
 ## Required visual qualities
 
 - Bright, warm, calm, tactile, and operational.
 - One clay-miniature material family across office, humans, fish, and props.
 - Clear rooms, thresholds, circulation, furniture purpose, and occupant scale.
-- Raft-like restraint in typography, controls, color, and interaction feedback.
+- Paperclip-like workspace hierarchy and information density, combined with
+  repository-owned Raft-family control primitives.
 - Character diversity through silhouette, body, hair, clothing, mobility aids,
   and accessories—not skin-tone swaps on one generic bust.
 - Every visual state has a semantic text equivalent; color or animation alone is

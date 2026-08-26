@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:company-os:agentboss-school:source-registry:v1",
+  "title": "AgentBoss School source registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "reviewedAt", "sources"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "reviewedAt": { "type": "string", "format": "date" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "publisher", "publishedAt", "url", "sourceType", "evidenceTier", "status", "appliesTo", "use", "limitations"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^SRC-[A-Z0-9-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "publisher": { "type": "string", "minLength": 1 },
+          "publishedAt": { "type": ["string", "null"], "format": "date" },
+          "url": { "type": "string", "pattern": "^https://" },
+          "sourceType": { "enum": ["STANDARD", "GOVERNMENT_GUIDE", "PEER_REVIEWED", "RESEARCH_REPORT", "OFFICIAL_GUIDE", "OFFICIAL_DOCS", "OPEN_SOURCE_PROJECT"] },
+          "evidenceTier": { "enum": ["A", "B", "C", "D", "E"] },
+          "status": { "enum": ["ACTIVE", "CONTEXT_ONLY", "DEPRECATED"] },
+          "appliesTo": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+          "use": { "type": "string", "minLength": 1 },
+          "limitations": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

@@ -25,7 +25,7 @@ export class CompanyRegistry {
     const identity = await this.#identityFor(structure.organization.company.id);
     const existing = await this.#dependencies.events.read(identity.organizationId);
     if (existing.some(({ type }) => type === "organization.registered")) {
-      throw new Error("Company structure is already registered.");
+      throw new Error("ORGANIZATION_ALREADY_REGISTERED");
     }
     const receipt = await this.#dependencies.identity.authorize({
       companyId: identity.organizationId,
@@ -33,7 +33,7 @@ export class CompanyRegistry {
       resourceId: identity.organizationId,
       reason: "Register the initial company structure",
     });
-    if (receipt.principalId !== identity.actorId) throw new Error("Authorization principal mismatch.");
+    if (receipt.principalId !== identity.actorId) throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
     const event: CompanyDomainEvent = {
       id: this.#dependencies.nextId(),
       companyId: identity.organizationId,
@@ -50,7 +50,7 @@ export class CompanyRegistry {
   async get(companyId: Identifier): Promise<CompanyStructure | null> {
     await this.#identityFor(companyId);
     const event = (await this.#dependencies.events.read(companyId, {
-      types: ["organization.registered"],
+      types: ["organization.registered", "organization.revised"],
     })).at(-1);
     if (!event) return null;
     const payload = event.payload as { readonly structure?: CompanyStructure };
@@ -60,9 +60,8 @@ export class CompanyRegistry {
 
   async #identityFor(companyId: Identifier) {
     const identity = await this.#dependencies.identity.getCurrentIdentity();
-    if (!identity) throw new Error("Authentication required.");
-    if (identity.assurance === "LOCAL_DEMO") throw new Error("Demo identity cannot access formal registry.");
-    if (identity.organizationId !== companyId) throw new Error("Tenant mismatch.");
+    if (!identity || identity.assurance === "LOCAL_DEMO") throw new Error("FORMAL_IDENTITY_REQUIRED");
+    if (identity.organizationId !== companyId) throw new Error("TENANT_MISMATCH");
     return identity;
   }
 }

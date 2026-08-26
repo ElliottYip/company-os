@@ -18,10 +18,13 @@ export class EventBackedResponsibilityContractStore implements ResponsibilityCon
   }
 
   async load(companyId: Identifier): Promise<ResponsibilityContractSnapshot> {
-    const events = await this.#events.read(companyId, { types: [EVENT_TYPE] });
+    const events = await this.#events.read(companyId, { types: [EVENT_TYPE, "organization.revised"] });
     const latest = events.at(-1);
     if (!latest) return { revision: 0, contracts: [] };
-    const payload = latest.payload as Partial<ResponsibilityContractSnapshot>;
+    const payload = latest.type === "organization.revised"
+      ? (latest.payload as { responsibilitySnapshot?: Partial<ResponsibilityContractSnapshot> }).responsibilitySnapshot
+      : latest.payload as Partial<ResponsibilityContractSnapshot>;
+    if (!payload) throw new Error("Stored responsibility contract snapshot is invalid.");
     if (!Number.isInteger(payload.revision) || !Array.isArray(payload.contracts)) {
       throw new Error("Stored responsibility contract snapshot is invalid.");
     }

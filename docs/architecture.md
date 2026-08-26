@@ -31,7 +31,7 @@ these layers.
 | `DurableControlPlaneStorePort` | Atomically commit event/outbox, checkpoint projections, and export/restore versioned backups |
 | `GenericWorkPort` | Company OS-owned canonical work/run persistence and scheduling boundary |
 | `AgentExecutionPort` | Declare capabilities/health and submit, observe, pause, resume, cancel work |
-| `ModelProviderPort` | Resolve a model policy to a referenced output without leaking vendor sessions |
+| `ModelProviderPort` | Inspect provider capabilities and health for route governance; inference belongs to the Agent Node |
 | `DataConnectorPort` | Enforce data authorization and egress decisions |
 | `ApprovalPublicationPort` | Publish exact high-risk requests and human decisions |
 | `AuditEvidencePort` | Record evidence and project the first-class responsibility chain |
@@ -49,6 +49,11 @@ The control plane stores references/digests, not credentials, private vendor
 sessions, or private reasoning. A high-risk approval binds exact action,
 action digest, work, responsibility contract, executing agent, accountable
 human, evidence references, and result reference.
+
+Model execution has one canonical owner: the customer-operated Agent Node.
+Company OS selects and freezes the model route, fingerprints the installed
+provider boundary and issues an opaque Broker grant, but never accepts a prompt
+or calls inference through `ModelProviderPort`. See ADR 0028.
 
 Raft's current event kinds and `snake_case`/`schema_version` formats remain a
 future serializer in a Raft-specific adapter; they are not core concepts.

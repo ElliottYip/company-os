@@ -38,6 +38,19 @@ test("attempt state and secret-free connector command survive service restart at
   });
   assert.doesNotMatch(JSON.stringify(pending[0]), /credential|secret|session|reasoning/i);
 
+  const replay = await service.create({
+    draft: draft(), eventId: "event-replayed", publicationId: "publication-replayed",
+    actorId: "human-one", expectedEventSequence: 99,
+  });
+  assert.equal(replay.id, "attempt-one");
+  assert.equal((await store.readPendingPublications("company-one", { afterSequence: 0, limit: 10 })).length, 1);
+
+  await assert.rejects(service.create({
+    draft: { ...draft(), idempotencyKey: "different-command" },
+    eventId: "event-conflict", publicationId: "publication-conflict",
+    actorId: "human-one", expectedEventSequence: 1,
+  }), /WORK_ATTEMPT_IDEMPOTENCY_CONFLICT/);
+
   const restarted = new WorkAttemptService(new LocalDurableControlPlaneStore(directory));
   assert.equal((await restarted.load("company-one", "attempt-one"))?.status, "QUEUED");
   await restarted.transition({

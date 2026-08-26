@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0",
+  "contract": "AssetManifest 1.0",
+  "status": "rigid-body-rigged",
+  "notice": "These are authored Company OS character assets, not real Agents or business records.",
+  "actions": ["COS_IDLE", "COS_WORK", "COS_APPROVAL", "COS_CELEBRATE"],
+  "anchors": ["root", "gaze", "fin_left", "fin_right", "tail", "dorsal", "workstation", "door", "handheld_prop"],
+  "assets": [
+    {
+      "id": "fish-bumble-3d-v4",
+      "displayName": "Bumble",
+      "src": "/assets/3d/fish-bumble-3d-v4.glb",
+      "sha256": "3bb5acc59daa6fd84a478681addeee3ca40e7794cb017948a58b7efd1d753853",
+      "bytes": 8325940
+    },
+    {
+      "id": "fish-fizz-3d-v3",
+      "displayName": "Fizz",
+      "src": "/assets/3d/fish-fizz-3d-v3.glb",
+      "sha256": "0f5cfd8951edd4fcfdbcb4c7c1cd092cee0b5cdbb38ab572e2857194597b8481",
+      "bytes": 7996712
+    },
+    {
+      "id": "fish-honey-3d-v2",
+      "displayName": "Honey",
+      "src": "/assets/3d/fish-honey-3d-v2.glb",
+      "sha256": "d7934238554e7c82b1e5c96c9146167f791a32518f182d1c4d296eb868009e2e",
+      "bytes": 7313712
+    }
+  ],
+  "limitations": [
+    "The current animations move the complete fish as one rigid body.",
+    "Fin, tail, dorsal, and gaze bones are stable contract seams but are intentionally unweighted pending manual skinning or part separation."
+  ]
+}

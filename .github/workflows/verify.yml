@@ -11,7 +11,23 @@ permissions:
 jobs:
   company-os:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825
+        env:
+          POSTGRES_DB: company_os_test
+          POSTGRES_USER: company_os
+          POSTGRES_PASSWORD: company_os_test_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U company_os -d company_os_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      COMPANY_OS_TEST_DATABASE_URL: postgres://company_os:company_os_test_only@127.0.0.1:5432/company_os_test
     steps:
       - name: Checkout exact revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -32,3 +48,25 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run full independent verification
         run: npm run verify
+      - name: Run real Keycloak OIDC compatibility admission
+        run: npm run test:oidc:keycloak
+      - name: Run PostgreSQL 16 backup and restore admission
+        run: npm run test:restore:postgres16
+      - name: Run authenticated encrypted PostgreSQL backup and restore admission
+        run: npm run test:encrypted-backup:postgres16
+      - name: Run PostgreSQL migration/runtime least-privilege admission
+        run: npm run test:runtime-role:postgres16
+      - name: Run bounded HTTP load, abuse and recovery admission
+        run: npm run test:resilience:http
+      - name: Run verified-TLS customer boundary preflight admission
+        run: npm run test:customer-boundaries:tls
+      - name: Run real Vault AppRole and KV v2 compatibility admission
+        run: npm run test:vault:compatibility
+      - name: Run PostgreSQL 16 upgrade and parallel rollback admission
+        run: npm run test:upgrade:postgres16
+      - name: Run PostgreSQL 16 to 17 major-version admission
+        run: npm run test:upgrade:postgres-major
+      - name: Run real self-hosted Compose admission
+        run: npm run test:compose:self-hosted
+      - name: Run real managed-cloud Compose admission
+        run: npm run test:compose:managed-cloud

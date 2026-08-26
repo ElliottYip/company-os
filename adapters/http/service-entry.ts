@@ -1,5 +1,105 @@
+import { createHash, randomBytes } from "node:crypto";
 import { createDemoComposition } from "../demo/create-demo-composition.ts";
+import { getFormalAccessStatus } from "../../application/get-formal-access-status.ts";
+import {
+  createCompanyAuth,
+  createCompanyAuthHandler,
+  resolveCompanyAuthSession,
+} from "../identity/better-auth-instance.ts";
+import { createCompanyDatabase } from "../persistence/postgres/company-database.ts";
+import { createCompanyAccessDirectory } from "../persistence/postgres/company-access-directory.ts";
+import {
+  createPostgresCompanyAccessStore,
+  nextPostgresRecordId,
+} from "../persistence/postgres/postgres-company-access-store.ts";
+import { CompanyBootstrapService } from "../../application/company-bootstrap.ts";
+import { RestoreCompanyFromBackup } from "../../application/restore-company-from-backup.ts";
+import { CompanyRegistry } from "../../application/company-registry.ts";
+import { SetupInitialOrganization } from "../../application/setup-initial-organization.ts";
+import { ArchiveDepartment, ReviseCompanyOrganization, TransferAgentResponsibility, UpdateCompanyProfile } from "../../application/revise-company-organization.ts";
+import { ArchiveCompany } from "../../application/archive-company.ts";
+import { AcceptHumanInvite, CreateHumanInvite } from "../../application/human-invites.ts";
+import { ManageCompanyMembers } from "../../application/manage-company-members.ts";
+import { GetAgentBossProjection } from "../../application/get-agent-boss-projection.ts";
+import { GetAdministrationProjection } from "../../application/get-administration-projection.ts";
+import { DispatchAccountableWork } from "../../application/dispatch-accountable-work.ts";
+import { AccessGovernedData } from "../../application/access-governed-data.ts";
+import { IssueSecretLease } from "../../application/issue-secret-lease.ts";
+import { PrepareWorkExecution } from "../../application/prepare-work-execution.ts";
+import { DecideHighRiskAction } from "../../application/decide-high-risk-action.ts";
+import { FormalAgentBossApi } from "../../application/formal-agent-boss-api.ts";
+import { ConnectorRegistry } from "../../application/connector-registry.ts";
+import { GovernanceRegistry } from "../../application/governance-registry.ts";
+import { ResponsibilityRegistry } from "../../application/responsibility-registry.ts";
+import { SessionCompanyIdentityAdapter } from "../identity/session-company-identity-adapter.ts";
+import { PostgresEventStore } from "../persistence/postgres/postgres-event-store.ts";
+import { createPostgresHumanInviteStore } from "../persistence/postgres/postgres-human-invite-store.ts";
+import { PostgresCompanyRestoreStore } from "../persistence/postgres/postgres-company-restore-store.ts";
+import { EventBackedOrganizationPrincipalStore } from "../storage/event-backed-organization-principal-store.ts";
+import { EventBackedResponsibilityContractStore } from "../storage/event-backed-responsibility-contract-store.ts";
+import { EventBackedApprovalStore } from "../storage/event-backed-approval-store.ts";
+import { EventBackedConnectorCatalogStore } from "../storage/event-backed-connector-catalog-store.ts";
+import { EventBackedGovernanceCatalogStore } from "../storage/event-backed-governance-catalog-store.ts";
+import { EventBackedGenericWorkStore } from "../storage/event-backed-generic-work-store.ts";
+import { EventBackedAgentLifecycleStore } from "../storage/event-backed-agent-lifecycle-store.ts";
+import { ManageAgentLifecycle } from "../../application/manage-agent-lifecycle.ts";
+import { ScheduleWorkAttempt } from "../../application/schedule-work-attempt.ts";
+import { DeliverConnectorCommands } from "../../application/deliver-connector-commands.ts";
+import { Sha256ConnectorRuntimeSecurity } from "../connectors/sha256-connector-runtime-security.ts";
+import { startConnectorCommandSupervisor } from "../connectors/connector-command-supervisor.ts";
+import { RedriveConnectorCommands } from "../../application/redrive-connector-commands.ts";
+import { RecoverExpiredWorkAttempts } from "../../application/recover-expired-work-attempts.ts";
+import { PlanningRegistry } from "../../application/planning-registry.ts";
+import { EventBackedPlanningStore } from "../storage/event-backed-planning-store.ts";
+import { EventBackedToolAccessCatalogStore } from "../storage/event-backed-tool-access-catalog-store.ts";
+import { EventBackedUsageBudgetStore } from "../storage/event-backed-usage-budget-store.ts";
+import { CollectConnectorObservations } from "../../application/collect-connector-observations.ts";
+import { IngestConnectorUsage } from "../../application/ingest-connector-usage.ts";
+import { WorkAttemptService } from "../../application/work-attempt-service.ts";
+import { RequestWorkCancellation } from "../../application/request-work-cancellation.ts";
+import { ReconcileWorkAttempt } from "../../application/reconcile-work-attempt.ts";
+import { RetryWorkAttempt } from "../../application/retry-work-attempt.ts";
+import { RetryWorkExecutionPreparation } from "../../application/retry-work-execution-preparation.ts";
+import { GetWorkRunTimeline } from "../../application/get-work-run-timeline.ts";
+import { GetCompanyActivity } from "../../application/get-company-activity.ts";
+import { GetAccountabilityLedger } from "../../application/get-accountability-ledger.ts";
+import { ExportAccountabilityPackage } from "../../application/export-accountability-package.ts";
+import { RevokeAttemptSecretLeases } from "../../application/revoke-attempt-secret-leases.ts";
+import { ManageConnectorRuntimeRegistration } from "../../application/manage-connector-runtime-registration.ts";
+import { ManageDataAuthorizationContract } from "../../application/manage-data-authorization-contract.ts";
+import { ManageModelRoute } from "../../application/manage-model-route.ts";
+import { ResolveWorkModelRoute } from "../../application/resolve-work-model-route.ts";
+import { ManageToolAccess } from "../../application/manage-tool-access.ts";
+import { ManageUsageBudget } from "../../application/manage-usage-budget.ts";
+import { AuthorizeWorkBudget } from "../../application/authorize-work-budget.ts";
+import { ManageSecretReference } from "../../application/manage-secret-reference.ts";
+import type { SecretBrokerManagementPort } from "../../ports/secret-broker-management-port.ts";
+import {
+  loadFormalConnectors,
+  parseFormalConnectorPackages,
+} from "../connectors/load-formal-connectors.ts";
 import { createCompanyOsHttpService } from "./company-os-http-service.ts";
+import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
+import {
+  loadFormalSecretBroker,
+  parseFormalSecretBrokerPackage,
+} from "../secrets/load-formal-secret-broker.ts";
+import {
+  loadFormalModelProviders,
+  parseFormalModelProviderPackages,
+} from "../models/load-formal-model-providers.ts";
+import { Sha256ModelRuntimeSecurity } from "../models/sha256-model-runtime-security.ts";
+import { Sha256ContentDigest } from "../security/sha256-content-digest.ts";
+import { parseTrustedProxyCidrs } from "../identity/better-auth-options.ts";
+import { parseAllowedWebOrigins } from "./allowed-web-origins.ts";
+import { loadFormalDataConnectors, parseFormalDataConnectorPackages } from "../data/load-formal-data-connectors.ts";
+import { operationalLogLine } from "./structured-operational-log.ts";
+import { getOperationalReadiness } from "./operational-readiness.ts";
+import {
+  configuredAccountabilityExportPolicyId as resolveAccountabilityExportPolicyId,
+  configuredRetentionPolicyId as resolveRetentionPolicyId,
+} from "./retention-policy-configuration.ts";
+import { readSecretFileEnvironment } from "../config/secret-file-environment.ts";
 
 function deploymentProfile(value: string | undefined): "managed-cloud" | "self-hosted" {
   if (value === undefined || value === "self-hosted") return "self-hosted";
@@ -15,25 +115,837 @@ function port(value: string | undefined) {
   return parsed;
 }
 
+function exposure(value: string | undefined): "private" | "public" {
+  if (value === undefined || value === "private") return "private";
+  if (value === "public") return value;
+  throw new Error("COMPANY_OS_EXPOSURE must be private or public");
+}
+
 const profile = deploymentProfile(process.env.COMPANY_OS_PROFILE);
+const deploymentExposure = exposure(process.env.COMPANY_OS_EXPOSURE);
+const metricsEnabled = process.env.COMPANY_OS_METRICS_ENABLED === "true";
+const runtimeMetrics = metricsEnabled ? new BoundedHttpMetrics() : null;
+if (metricsEnabled && deploymentExposure !== "private") {
+  throw new Error("COMPANY_OS_METRICS_PRIVATE_EXPOSURE_REQUIRED");
+}
 const host = process.env.COMPANY_OS_HOST?.trim() || "127.0.0.1";
 const listenPort = port(process.env.COMPANY_OS_PORT);
+const trustedProxyCidrs = parseTrustedProxyCidrs(process.env.COMPANY_OS_TRUSTED_PROXY_CIDRS);
+const configuredRetentionPolicyId = resolveRetentionPolicyId(process.env.COMPANY_OS_RETENTION_POLICY_ID);
+const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicyId(
+  process.env.COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID,
+);
 const { runtime } = createDemoComposition();
-const server = createCompanyOsHttpService({ runtime, deploymentProfile: profile });
+const formalConfiguration = {
+  publicBaseUrl: process.env.COMPANY_OS_PUBLIC_URL,
+  issuer: process.env.COMPANY_OS_OIDC_ISSUER,
+  discoveryUrl: process.env.COMPANY_OS_OIDC_DISCOVERY_URL,
+  clientId: process.env.COMPANY_OS_OIDC_CLIENT_ID,
+  clientSecret: await readSecretFileEnvironment("COMPANY_OS_OIDC_CLIENT_SECRET"),
+  redirectUri: process.env.COMPANY_OS_OIDC_REDIRECT_URI,
+  sessionSigningKey: await readSecretFileEnvironment("COMPANY_OS_SESSION_SIGNING_KEY"),
+  databaseUrl: await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL"),
+};
+const allowedWebOrigins = parseAllowedWebOrigins(
+  process.env.COMPANY_OS_WEB_ORIGINS,
+  formalConfiguration.publicBaseUrl,
+);
+const isFormalConfigured = Object.values(formalConfiguration).every((value) => value?.trim());
+const database = isFormalConfigured
+  ? createCompanyDatabase(formalConfiguration.databaseUrl as string)
+  : null;
+const auth = database
+  ? createCompanyAuth(database.db, {
+      baseUrl: formalConfiguration.publicBaseUrl as string,
+      redirectUri: formalConfiguration.redirectUri as string,
+      issuer: formalConfiguration.issuer as string,
+      discoveryUrl: formalConfiguration.discoveryUrl as string,
+      clientId: formalConfiguration.clientId as string,
+      clientSecret: formalConfiguration.clientSecret as string,
+      sessionSecret: formalConfiguration.sessionSigningKey as string,
+      instanceId: process.env.COMPANY_OS_INSTANCE_ID,
+      trustedProxyCidrs,
+      trustedWebOrigins: allowedWebOrigins,
+    })
+  : null;
+const accessDirectory = database ? createCompanyAccessDirectory(database.db) : null;
+const companyAccessStore = database ? createPostgresCompanyAccessStore(database.db) : null;
+const companyRestoreStore = database ? new PostgresCompanyRestoreStore(database.db) : null;
+const formalEvents = database ? new PostgresEventStore(database.db) : null;
+const humanInviteStore = database ? createPostgresHumanInviteStore(database.db) : null;
+const formalExecutionPorts = await loadFormalConnectors(
+  parseFormalConnectorPackages(process.env.COMPANY_OS_CONNECTOR_PACKAGES),
+);
+const formalSecretBroker = await loadFormalSecretBroker(
+  parseFormalSecretBrokerPackage(process.env.COMPANY_OS_SECRET_BROKER_PACKAGE),
+);
+const formalModelProviders = await loadFormalModelProviders(
+  parseFormalModelProviderPackages(process.env.COMPANY_OS_MODEL_PROVIDER_PACKAGES),
+);
+const formalDataConnectors = await loadFormalDataConnectors(
+  parseFormalDataConnectorPackages(process.env.COMPANY_OS_DATA_CONNECTOR_PACKAGES),
+);
 
-server.listen(listenPort, host, () => {
-  process.stdout.write(JSON.stringify({
-    event: "company_os.started",
-    host,
-    port: listenPort,
-    profile,
-    mode: "DEMO_FIXTURE",
-  }) + "\n");
+function secretManagementBroker() {
+  if (!formalSecretBroker || typeof formalSecretBroker.beginReferenceManagement !== "function" ||
+      typeof formalSecretBroker.referenceManagementResult !== "function") {
+    throw new Error("SECRET_BROKER_MANAGEMENT_UNAVAILABLE");
+  }
+  return formalSecretBroker as typeof formalSecretBroker & SecretBrokerManagementPort;
+}
+const connectorRuntimeSecurity = new Sha256ConnectorRuntimeSecurity();
+const modelRuntimeSecurity = new Sha256ModelRuntimeSecurity();
+const contentDigests = new Sha256ContentDigest();
+
+function connectorDelivery(dependencies: {
+  readonly structure: EventBackedOrganizationPrincipalStore;
+  readonly now: () => string;
+}) {
+  const delivery = new DeliverConnectorCommands({
+    store: formalEvents!,
+    structure: dependencies.structure,
+    executionPorts: formalExecutionPorts,
+    runtimeSecurity: connectorRuntimeSecurity,
+    modelProviders: formalModelProviders,
+    modelRuntimeSecurity,
+    now: dependencies.now,
+    nextId: nextPostgresRecordId,
+  });
+  return {
+    async execute(companyId: string) {
+      const outcomes = await delivery.execute(companyId);
+      runtimeMetrics?.recordConnectorDeliveries(outcomes);
+      return outcomes;
+    },
+  };
+}
+const companyBootstrap = companyAccessStore ? new CompanyBootstrapService({
+  store: companyAccessStore,
+  nextId: nextPostgresRecordId,
+}) : null;
+async function authenticatedHuman(request: import("node:http").IncomingMessage) {
+  if (!auth) throw new Error("FORMAL_IDENTITY_REQUIRED");
+  const session = await resolveCompanyAuthSession(auth, request);
+  if (!session) throw new Error("FORMAL_IDENTITY_REQUIRED");
+  return {
+    userId: session.user.id,
+    sessionId: session.session.id,
+    name: session.user.name,
+    email: session.user.email,
+  };
+}
+
+function issueHumanInviteToken(): string {
+  return `company_os_invite_${randomBytes(32).toString("base64url")}`;
+}
+
+function hashHumanInviteToken(token: string): string {
+  return createHash("sha256").update(token, "utf8").digest("hex");
+}
+async function formalCompanyContext(request: import("node:http").IncomingMessage, companyId: string) {
+  if (!auth || !accessDirectory || !companyAccessStore) throw new Error("FORMAL_IDENTITY_REQUIRED");
+  const session = await resolveCompanyAuthSession(auth, request);
+  if (!session) throw new Error("FORMAL_IDENTITY_REQUIRED");
+  const company = await accessDirectory.getForUser(session.user.id, companyId);
+  if (!company) throw new Error("COMPANY_ACCESS_NOT_FOUND");
+  const memberships = await companyAccessStore.listActiveHumanMemberships(session.user.id);
+  const isInstanceAdmin = await companyAccessStore.isInstanceAdmin(session.user.id);
+  const permissionKeys = await companyAccessStore.listPermissionKeys(session.user.id, companyId);
+  const now = () => new Date().toISOString();
+  return {
+    session,
+    company,
+    now,
+    identity: new SessionCompanyIdentityAdapter({
+      user: { id: session.user.id, displayName: session.user.name },
+      companyId,
+      memberships,
+      isInstanceAdmin,
+      permissionKeys,
+      now,
+      nextId: nextPostgresRecordId,
+    }),
+  };
+}
+async function formalAgentBossApi(request: import("node:http").IncomingMessage, companyId: string) {
+  if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+  const context = await formalCompanyContext(request, companyId);
+  const organization = new EventBackedOrganizationPrincipalStore(formalEvents);
+  const responsibilities = new EventBackedResponsibilityContractStore(formalEvents, nextPostgresRecordId);
+  const approvals = new EventBackedApprovalStore(formalEvents, companyId, nextPostgresRecordId, context.now);
+  const connectors = new EventBackedConnectorCatalogStore(formalEvents, nextPostgresRecordId);
+  const governance = new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId);
+  const toolAccess = new EventBackedToolAccessCatalogStore(formalEvents, nextPostgresRecordId);
+  const usageBudget = new EventBackedUsageBudgetStore(formalEvents, nextPostgresRecordId);
+  const genericWork = new EventBackedGenericWorkStore(formalEvents, context.now, nextPostgresRecordId);
+  const lifecycle = new EventBackedAgentLifecycleStore(formalEvents, nextPostgresRecordId);
+  return new FormalAgentBossApi({
+    projection: new GetAgentBossProjection({
+      identity: context.identity, organization, responsibilities, approvals, events: formalEvents,
+      lifecycle, structure: organization,
+    }),
+    administration: new GetAdministrationProjection({
+      identity: context.identity, connectors, governance, events: formalEvents,
+      executionPorts: formalExecutionPorts, secretBroker: formalSecretBroker,
+      modelProviders: formalModelProviders, toolAccess, usageBudget,
+      dataConnectors: formalDataConnectors,
+      retentionPolicyId: configuredRetentionPolicyId,
+    }),
+    dispatch: new DispatchAccountableWork({
+      identity: context.identity,
+      organization,
+      contracts: responsibilities,
+      genericWork,
+      events: formalEvents,
+      lifecycle,
+      structure: organization,
+      now: context.now,
+      nextId: nextPostgresRecordId,
+      attemptScheduler: new ScheduleWorkAttempt({
+        store: formalEvents,
+        executionPorts: formalExecutionPorts,
+        runtimeSecurity: connectorRuntimeSecurity,
+        nextId: nextPostgresRecordId,
+      }),
+      modelResolver: new ResolveWorkModelRoute({
+        governance,
+        providers: formalModelProviders,
+        secretBroker: formalSecretBroker,
+        runtimeSecurity: modelRuntimeSecurity,
+      }),
+      budgetAuthorization: new AuthorizeWorkBudget({ store: usageBudget, now: context.now }),
+      commandDelivery: connectorDelivery({ structure: organization, now: context.now }),
+      executionPreparation: new PrepareWorkExecution({
+        events: formalEvents,
+        dataAccess: new AccessGovernedData({
+          identity: context.identity,
+          governance,
+          events: formalEvents,
+          connectors: formalDataConnectors,
+          now: context.now,
+          nextId: nextPostgresRecordId,
+        }),
+        ...(formalSecretBroker ? {
+          secretLeases: new IssueSecretLease({
+            identity: context.identity,
+            broker: formalSecretBroker,
+            events: formalEvents,
+            now: context.now,
+            nextId: nextPostgresRecordId,
+          }),
+        } : {}),
+        now: context.now,
+        nextId: nextPostgresRecordId,
+      }),
+    }),
+    approvals: new DecideHighRiskAction({
+      identity: context.identity,
+      approvals,
+      events: formalEvents,
+      now: context.now,
+      nextId: nextPostgresRecordId,
+      attempts: new WorkAttemptService(formalEvents),
+    }),
+    connectorRegistry: new ConnectorRegistry({ identity: context.identity, store: connectors }),
+    governanceRegistry: new GovernanceRegistry({ identity: context.identity, store: governance }),
+    responsibilityRegistry: new ResponsibilityRegistry({
+      identity: context.identity,
+      organization,
+      contracts: responsibilities,
+      now: context.now,
+    }),
+    now: context.now,
+    agentLifecycle: new ManageAgentLifecycle({
+      identity: context.identity,
+      structure: organization,
+      lifecycle,
+      connectors,
+      executionPorts: formalExecutionPorts,
+      now: context.now,
+    }),
+  });
+}
+
+async function formalPlanningRegistry(
+  request: import("node:http").IncomingMessage,
+  companyId: string,
+): Promise<PlanningRegistry> {
+  if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+  const context = await formalCompanyContext(request, companyId);
+  return new PlanningRegistry({
+    identity: context.identity,
+    structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+    store: new EventBackedPlanningStore(formalEvents, nextPostgresRecordId),
+    now: context.now,
+    nextId: nextPostgresRecordId,
+  });
+}
+const server = createCompanyOsHttpService({
+  runtime,
+  deploymentProfile: profile,
+  serviceMode: isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",
+  deploymentExposure,
+  metricsEnabled,
+  ...(runtimeMetrics ? { metrics: runtimeMetrics } : {}),
+  allowedOrigins: allowedWebOrigins,
+  ...(auth ? { authHandler: createCompanyAuthHandler(auth, {
+    trustForwardedFor: trustedProxyCidrs.length > 0,
+  }) } : {}),
+  operationalReadiness: {
+    async getStatus() {
+      return getOperationalReadiness({
+        formalRequired: deploymentExposure === "public",
+        formalConfigured: isFormalConfigured,
+        database,
+        connectors: formalExecutionPorts,
+        modelProviders: formalModelProviders,
+        secretBroker: formalSecretBroker,
+        dataConnectors: formalDataConnectors,
+      });
+    },
+  },
+  formalAccess: {
+    async getStatus(request) {
+      let session = null;
+      let identityRuntimeHealthy = true;
+      if (auth) {
+        try {
+          session = await resolveCompanyAuthSession(auth, request);
+        } catch {
+          identityRuntimeHealthy = false;
+        }
+      }
+      return getFormalAccessStatus({
+        deploymentProfile: profile,
+        configuration: formalConfiguration,
+        authenticated: session !== null,
+        identityRuntimeHealthy,
+      });
+    },
+  },
+  ...(auth && formalEvents && companyAccessStore && accessDirectory ? {
+    formalApi: {
+      async getAgentBoss(request, companyId) {
+        return (await formalAgentBossApi(request, companyId)).getAgentBoss(companyId);
+      },
+      async getAdministration(request, companyId) {
+        return (await formalAgentBossApi(request, companyId)).getAdministration(companyId);
+      },
+      async getAccountabilityLedger(request, companyId) {
+        const context = await formalCompanyContext(request, companyId);
+        return new GetAccountabilityLedger({ identity: context.identity, events: formalEvents, now: context.now })
+          .execute(companyId);
+      },
+      async exportAccountability(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ExportAccountabilityPackage({
+          identity: context.identity,
+          events: formalEvents,
+          now: context.now,
+          nextId: nextPostgresRecordId,
+          retentionPolicyId: configuredRetentionPolicyId,
+          exportPolicyId: configuredAccountabilityExportPolicyId,
+          digests: contentDigests,
+        }).execute({ companyId, ...(input as Omit<Parameters<ExportAccountabilityPackage["execute"]>[0], "companyId">) });
+      },
+      async getPlanning(request, companyId) {
+        return (await formalPlanningRegistry(request, companyId)).load(companyId);
+      },
+      async replacePlanning(request, companyId, input) {
+        const command = input as import("../../core/planning.ts").PlanningCatalog & { expectedRevision: number };
+        return (await formalPlanningRegistry(request, companyId)).replace(companyId, {
+          revision: command.expectedRevision,
+          goals: command.goals,
+          projects: command.projects,
+        }, command.expectedRevision);
+      },
+      async createGoal(request, companyId, input) {
+        return (await formalPlanningRegistry(request, companyId)).createGoal(
+          companyId,
+          input as import("../../application/planning-registry.ts").CreateGoalInput,
+        );
+      },
+      async updateGoal(request, companyId, goalId, input) {
+        return (await formalPlanningRegistry(request, companyId)).updateGoal(
+          companyId,
+          goalId,
+          input as import("../../application/planning-registry.ts").UpdateGoalInput,
+        );
+      },
+      async createProject(request, companyId, input) {
+        return (await formalPlanningRegistry(request, companyId)).createProject(
+          companyId,
+          input as import("../../application/planning-registry.ts").CreateProjectInput,
+        );
+      },
+      async updateProject(request, companyId, projectId, input) {
+        return (await formalPlanningRegistry(request, companyId)).updateProject(
+          companyId,
+          projectId,
+          input as import("../../application/planning-registry.ts").UpdateProjectInput,
+        );
+      },
+      async archiveProject(request, companyId, projectId, input) {
+        return (await formalPlanningRegistry(request, companyId)).archiveProject(
+          companyId,
+          projectId,
+          (input as { expectedRevision: number }).expectedRevision,
+        );
+      },
+      async dispatchWork(request, companyId, input) {
+        return (await formalAgentBossApi(request, companyId)).dispatchWork(companyId, input as never);
+      },
+      async listWork(request, companyId, input) {
+        return (await formalAgentBossApi(request, companyId)).listWork(companyId, input);
+      },
+      async getWork(request, companyId, workId) {
+        return (await formalAgentBossApi(request, companyId)).getWork(companyId, workId);
+      },
+      async getWorkRunTimeline(request, companyId, workId, attemptId, input) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        return new GetWorkRunTimeline({
+          identity: context.identity,
+          events: formalEvents,
+          attempts: new WorkAttemptService(formalEvents),
+        }).execute({ companyId, workId, attemptId, ...input });
+      },
+      async getCompanyActivity(request, companyId, input) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        return new GetCompanyActivity({ identity: context.identity, events: formalEvents })
+          .execute({ companyId, ...input });
+      },
+      async requestWorkCancellation(request, companyId, workId, attemptId) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        const organization = new EventBackedOrganizationPrincipalStore(formalEvents);
+        const delivery = connectorDelivery({ structure: organization, now: context.now });
+        return new RequestWorkCancellation({
+          identity: context.identity, store: formalEvents, executionPorts: formalExecutionPorts,
+          deliver: delivery, now: context.now, nextId: nextPostgresRecordId,
+        }).execute({ companyId, workId, attemptId });
+      },
+      async reconcileWorkAttempt(request, companyId, workId, attemptId, input) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        const command = input as { resolution: import("../../core/work-attempt.ts").UnknownOutcomeResolution; evidenceId: string };
+        return new ReconcileWorkAttempt({ identity: context.identity, store: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId,
+        }).execute({ companyId, workId, attemptId, ...command });
+      },
+      async retryWorkAttempt(request, companyId, workId, attemptId) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        const organization = new EventBackedOrganizationPrincipalStore(formalEvents);
+        const delivery = connectorDelivery({ structure: organization, now: context.now });
+        return new RetryWorkAttempt({ identity: context.identity, store: formalEvents, structure: organization,
+          lifecycle: new EventBackedAgentLifecycleStore(formalEvents, nextPostgresRecordId),
+          responsibilities: new EventBackedResponsibilityContractStore(formalEvents, nextPostgresRecordId),
+          governance: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+          executionPorts: formalExecutionPorts, runtimeSecurity: connectorRuntimeSecurity, deliver: delivery,
+          modelResolver: new ResolveWorkModelRoute({
+            governance: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+            providers: formalModelProviders, secretBroker: formalSecretBroker,
+            runtimeSecurity: modelRuntimeSecurity,
+          }),
+          preparation: new PrepareWorkExecution({
+            events: formalEvents,
+            dataAccess: new AccessGovernedData({ identity: context.identity,
+              governance: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+              events: formalEvents, connectors: formalDataConnectors,
+              now: context.now, nextId: nextPostgresRecordId }),
+            ...(formalSecretBroker ? { secretLeases: new IssueSecretLease({
+              identity: context.identity, broker: formalSecretBroker, events: formalEvents,
+              now: context.now, nextId: nextPostgresRecordId,
+            }) } : {}),
+            now: context.now, nextId: nextPostgresRecordId,
+          }),
+          now: context.now, nextId: nextPostgresRecordId,
+        }).execute({ companyId, workId, attemptId });
+      },
+      async retryWorkExecutionPreparation(request, companyId, workId, attemptId) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        const organization = new EventBackedOrganizationPrincipalStore(formalEvents);
+        const governance = new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId);
+        const preparation = new PrepareWorkExecution({
+          events: formalEvents,
+          dataAccess: new AccessGovernedData({ identity: context.identity, governance, events: formalEvents,
+            connectors: formalDataConnectors, now: context.now, nextId: nextPostgresRecordId }),
+          ...(formalSecretBroker ? { secretLeases: new IssueSecretLease({ identity: context.identity,
+            broker: formalSecretBroker, events: formalEvents, now: context.now,
+            nextId: nextPostgresRecordId }) } : {}),
+          now: context.now,
+          nextId: nextPostgresRecordId,
+        });
+        const delivery = connectorDelivery({ structure: organization, now: context.now });
+        return new RetryWorkExecutionPreparation({ identity: context.identity, store: formalEvents,
+          preparation, delivery }).execute({ companyId, workId, attemptId });
+      },
+      async decideApproval(request, companyId, requestId, input) {
+        return (await formalAgentBossApi(request, companyId)).decideApproval(companyId, requestId, input as never);
+      },
+      async replaceConnectorCatalog(request, companyId, input) {
+        return (await formalAgentBossApi(request, companyId)).replaceConnectorCatalog(companyId, input as never);
+      },
+      async registerConnectorRuntime(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageConnectorRuntimeRegistration({
+          identity: context.identity,
+          store: new EventBackedConnectorCatalogStore(formalEvents, nextPostgresRecordId),
+          executionPorts: formalExecutionPorts,
+          now: context.now,
+        }).register({ companyId, ...(input as {
+          connectorId: string; executionResidency: "MANAGED_CLOUD" | "CUSTOMER_ENVIRONMENT";
+          expectedRevision: number;
+        }) });
+      },
+      async setConnectorStatus(request, companyId, connectorId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageConnectorRuntimeRegistration({
+          identity: context.identity,
+          store: new EventBackedConnectorCatalogStore(formalEvents, nextPostgresRecordId),
+          executionPorts: formalExecutionPorts,
+          now: context.now,
+        }).setStatus({ companyId, connectorId, ...(input as {
+          status: "ENABLED" | "DISABLED"; expectedRevision: number;
+        }) });
+      },
+      async replaceGovernanceCatalog(request, companyId, input) {
+        return (await formalAgentBossApi(request, companyId)).replaceGovernanceCatalog(companyId, input as never);
+      },
+      async createDataAuthorizationContract(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageDataAuthorizationContract({
+          identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+          now: context.now,
+        }).create({ companyId, ...(input as Omit<import("../../application/manage-data-authorization-contract.ts").CreateDataAuthorizationContractInput, "companyId">) });
+      },
+      async setDataAuthorizationStatus(request, companyId, contractId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageDataAuthorizationContract({
+          identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+          now: context.now,
+        }).setStatus({ companyId, contractId, ...(input as {
+          status: "ACTIVE" | "SUSPENDED" | "REVOKED"; expectedRevision: number;
+        }) });
+      },
+      async createModelRoute(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageModelRoute({ identity: context.identity,
+          store: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+          providers: formalModelProviders, secretBroker: formalSecretBroker, now: context.now,
+        }).create({ companyId, ...(input as Omit<Parameters<ManageModelRoute["create"]>[0], "companyId">) });
+      },
+      async setModelRouteEnabled(request, companyId, routeId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageModelRoute({ identity: context.identity,
+          store: new EventBackedGovernanceCatalogStore(formalEvents, nextPostgresRecordId),
+          providers: formalModelProviders, secretBroker: formalSecretBroker, now: context.now,
+        }).setEnabled({ companyId, routeId, ...(input as { enabled: boolean; expectedRevision: number }) });
+      },
+      async createToolProfile(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageToolAccess({ identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedToolAccessCatalogStore(formalEvents, nextPostgresRecordId), now: context.now,
+        }).createProfile({ companyId, ...(input as Omit<Parameters<ManageToolAccess["createProfile"]>[0], "companyId">) });
+      },
+      async bindToolProfile(request, companyId, profileId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageToolAccess({ identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedToolAccessCatalogStore(formalEvents, nextPostgresRecordId), now: context.now,
+        }).bindProfile({ companyId, profileId, ...(input as Omit<Parameters<ManageToolAccess["bindProfile"]>[0], "companyId" | "profileId">) });
+      },
+      async createToolPolicy(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageToolAccess({ identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedToolAccessCatalogStore(formalEvents, nextPostgresRecordId), now: context.now,
+        }).createPolicy({ companyId, ...(input as Omit<Parameters<ManageToolAccess["createPolicy"]>[0], "companyId">) });
+      },
+      async setToolProfileStatus(request, companyId, profileId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageToolAccess({ identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedToolAccessCatalogStore(formalEvents, nextPostgresRecordId), now: context.now,
+        }).setProfileStatus({ companyId, profileId, ...(input as { status: import("../../core/tool-access.ts").ToolProfileStatus;
+          expectedRevision: number }) });
+      },
+      async upsertBudgetPolicy(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageUsageBudget({ identity: context.identity,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          store: new EventBackedUsageBudgetStore(formalEvents, nextPostgresRecordId), now: context.now,
+        }).upsertPolicy({ companyId, ...(input as Omit<Parameters<ManageUsageBudget["upsertPolicy"]>[0], "companyId">) });
+      },
+      async replaceResponsibilityContracts(request, companyId, input) {
+        return (await formalAgentBossApi(request, companyId)).replaceResponsibilityContracts(companyId, input as never);
+      },
+      async transitionAgentLifecycle(request, companyId, agentId, input) {
+        return (await formalAgentBossApi(request, companyId)).transitionAgentLifecycle(companyId, agentId, input as never);
+      },
+      async transferResponsibility(request, companyId, agentId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new TransferAgentResponsibility({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).execute({ companyId, agentId,
+          ...(input as Omit<import("../../application/revise-company-organization.ts").TransferAgentResponsibilityInput,
+            "companyId" | "agentId">) });
+      },
+      async exportCompany(request, companyId) {
+        const context = await formalCompanyContext(request, companyId);
+        const receipt = await context.identity.authorize({
+          companyId, action: "company-portability:export", resourceId: companyId,
+          reason: "Export a versioned Company OS backup",
+        });
+        if (receipt.principalId !== context.session.user.id) {
+          throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
+        }
+        return { schemaVersion: 1, backup: JSON.parse(await formalEvents.exportBackup(companyId)) };
+      },
+      async beginSecretReferenceManagement(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageSecretReference({ identity: context.identity, broker: secretManagementBroker(),
+          events: formalEvents, now: context.now, nextId: nextPostgresRecordId,
+        }).begin({ companyId, ...(input as Omit<import("../../core/secret-governance.ts").SecretReferenceManagementIntent, "companyId">) });
+      },
+      async confirmSecretReferenceManagement(request, companyId, sessionId) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageSecretReference({ identity: context.identity, broker: secretManagementBroker(),
+          events: formalEvents, now: context.now, nextId: nextPostgresRecordId,
+        }).confirm(companyId, sessionId);
+      },
+    },
+  } : {}),
+  ...(auth && accessDirectory && companyBootstrap && companyRestoreStore && formalEvents && humanInviteStore ? {
+    formalDirectory: {
+      async listCompanies(request) {
+        const actor = await authenticatedHuman(request);
+        return accessDirectory.listForUser(actor.userId);
+      },
+      async claimFirstAdmin(request) {
+        const result = await companyBootstrap.claimFirstInstanceAdmin(await authenticatedHuman(request));
+        if (result.status === "ALREADY_CLAIMED") throw new Error("FIRST_ADMIN_ALREADY_CLAIMED");
+        return { claimed: true, userId: result.userId };
+      },
+      async createCompany(request, input) {
+        return companyBootstrap.createOwnedCompany(
+          await authenticatedHuman(request),
+          input as { name: string; purpose: string; locale: string },
+        );
+      },
+      async restoreCompany(request, input) {
+        const backup = (input as { readonly backup: unknown }).backup;
+        return new RestoreCompanyFromBackup({ store: companyRestoreStore,
+          nextId: nextPostgresRecordId }).execute(await authenticatedHuman(request), JSON.stringify(backup));
+      },
+      async inspectCompanyRestore(request, input) {
+        const backup = (input as { readonly backup: unknown }).backup;
+        return new RestoreCompanyFromBackup({ store: companyRestoreStore,
+          nextId: nextPostgresRecordId }).inspect(await authenticatedHuman(request), JSON.stringify(backup));
+      },
+      async setupOrganization(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        const registry = new CompanyRegistry({
+          identity: context.identity,
+          events: formalEvents,
+          now: context.now,
+          nextId: nextPostgresRecordId,
+        });
+        const setup = new SetupInitialOrganization({ registry, nextId: nextPostgresRecordId });
+        const command = input as { departmentName: string; ownerTitle: string };
+        return setup.execute({
+          company: {
+            id: context.company.id,
+            name: context.company.name,
+            purpose: context.company.purpose,
+            locale: context.company.locale,
+          },
+          owner: {
+            id: context.session.user.id,
+            name: context.session.user.name,
+            title: command.ownerTitle,
+          },
+          departmentName: command.departmentName,
+        });
+      },
+      async reviseOrganization(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ReviseCompanyOrganization({
+          identity: context.identity,
+          events: formalEvents,
+          now: context.now,
+          nextId: nextPostgresRecordId,
+        }).execute({
+          companyId,
+          organization: (input as { organization: import("../../core/organization.ts").OrganizationDraft }).organization,
+        });
+      },
+      async updateCompanyProfile(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new UpdateCompanyProfile({ identity: context.identity, events: formalEvents,
+          profileStore: companyAccessStore!,
+          now: context.now, nextId: nextPostgresRecordId }).execute({
+          companyId,
+          ...(input as Omit<import("../../application/revise-company-organization.ts").UpdateCompanyProfileInput,
+            "companyId">),
+        });
+      },
+      async archiveCompany(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ArchiveCompany({ identity: context.identity, events: formalEvents,
+          portability: formalEvents, lifecycle: companyAccessStore!,
+          now: context.now, nextId: nextPostgresRecordId,
+          retentionPolicyId: configuredRetentionPolicyId }).execute({ companyId,
+          ...(input as Omit<import("../../application/archive-company.ts").ArchiveCompanyInput, "companyId">),
+        });
+      },
+      async archiveDepartment(request, companyId, departmentId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ArchiveDepartment({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).execute({ companyId, departmentId,
+          ...(input as Omit<import("../../application/revise-company-organization.ts").ArchiveDepartmentInput,
+            "companyId" | "departmentId">) });
+      },
+      async createHumanInvite(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        const command = input as {
+          email: string;
+          departmentId: string;
+          title: string;
+          role: "owner" | "admin" | "operator" | "viewer";
+        };
+        const result = await new CreateHumanInvite({
+          identity: context.identity,
+          events: formalEvents,
+          store: humanInviteStore,
+          now: context.now,
+          nextId: nextPostgresRecordId,
+          issueToken: issueHumanInviteToken,
+          hashToken: hashHumanInviteToken,
+        }).execute({ companyId, ...command });
+        return {
+          inviteId: result.invite.id,
+          expiresAt: result.invite.expiresAt,
+          invitePath: `/invite/${result.token}`,
+          token: result.token,
+        };
+      },
+      async listHumanMembers(request, companyId) {
+        const context = await formalCompanyContext(request, companyId);
+        await context.identity.authorize({
+          companyId,
+          action: "company-members:read",
+          resourceId: companyId,
+          reason: "List the human members of this company",
+        });
+        return {
+          schemaVersion: 1,
+          members: await companyAccessStore!.listCompanyHumanMembers(companyId),
+        };
+      },
+      async updateHumanMember(request, companyId, userId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageCompanyMembers({
+          identity: context.identity,
+          events: formalEvents,
+          store: companyAccessStore!,
+          now: context.now,
+          nextId: nextPostgresRecordId,
+        }).update({
+          companyId,
+          userId,
+          ...(input as {
+            expectedRole: "owner" | "admin" | "operator" | "viewer";
+            expectedStatus: "pending" | "active" | "suspended" | "archived";
+            role: "owner" | "admin" | "operator" | "viewer";
+            status: "active" | "suspended";
+          }),
+        });
+      },
+      async acceptHumanInvite(request, token) {
+        const actor = await authenticatedHuman(request);
+        const invite = await new AcceptHumanInvite({
+          events: formalEvents,
+          store: humanInviteStore,
+          now: () => new Date().toISOString(),
+          nextId: nextPostgresRecordId,
+          hashToken: hashHumanInviteToken,
+        }).execute({
+          token,
+          user: { id: actor.userId, name: actor.name, email: actor.email },
+        });
+        return {
+          accepted: true,
+          companyId: invite.companyId,
+          membershipRole: invite.membershipRole,
+        };
+      },
+    },
+  } : {}),
 });
 
-function shutdown(signal: string) {
-  server.close(() => {
-    process.stdout.write(JSON.stringify({ event: "company_os.stopped", signal }) + "\n");
+const stopConnectorSupervisor = formalEvents && companyAccessStore
+  ? startConnectorCommandSupervisor(new RedriveConnectorCommands({
+      listCompanyIds: () => companyAccessStore.listCompanyIds(),
+      deliver: async (companyId) => {
+        await new RecoverExpiredWorkAttempts({
+          store: formalEvents,
+          now: () => new Date().toISOString(),
+          nextId: nextPostgresRecordId,
+        }).execute(companyId);
+        const collectObservations = () => new CollectConnectorObservations({
+          store: formalEvents,
+          executionPorts: formalExecutionPorts,
+          approvals: new EventBackedApprovalStore(formalEvents, companyId, nextPostgresRecordId, () => new Date().toISOString()),
+          usageIngestion: new IngestConnectorUsage({
+            store: new EventBackedUsageBudgetStore(formalEvents, nextPostgresRecordId),
+            nextId: nextPostgresRecordId,
+          }),
+          nextId: nextPostgresRecordId,
+        }).execute(companyId);
+        await collectObservations();
+        // Observation handling may enqueue PAUSE/CANCEL commands. Deliver after
+        // collection so safety commands do not wait for another supervisor tick.
+        const deliveries = await connectorDelivery({
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          now: () => new Date().toISOString(),
+        }).execute(companyId);
+        // A delivered RESUME/CANCEL may synchronously expose a terminal
+        // observation. Collect once more only when this tick sent commands;
+        // idle ticks remain a single bounded poll.
+        if (deliveries.length) await collectObservations();
+        if (formalSecretBroker) {
+          const revocations = await new RevokeAttemptSecretLeases({ events: formalEvents, broker: formalSecretBroker,
+            now: () => new Date().toISOString(), nextId: nextPostgresRecordId }).execute(companyId);
+          runtimeMetrics?.recordSecretLeaseRevocations(revocations);
+        }
+        return deliveries;
+      },
+    }), {
+      intervalMs: Math.max(10_000, Number(process.env.COMPANY_OS_CONNECTOR_REDRIVE_INTERVAL_MS) || 30_000),
+      onError: () => process.stderr.write(operationalLogLine({
+        event: "company_os.connector_redrive_failed", level: "ERROR", code: "CONNECTOR_REDRIVE_FAILED",
+      })),
+    })
+  : () => {};
+
+server.listen(listenPort, host, () => {
+  process.stdout.write(operationalLogLine({ event: "company_os.started", level: "INFO",
+    deploymentProfile: profile, exposure: deploymentExposure, port: listenPort }));
+});
+
+function shutdown(signal: "SIGINT" | "SIGTERM") {
+  stopConnectorSupervisor();
+  server.close(async () => {
+    await database?.close();
+    process.stdout.write(operationalLogLine({ event: "company_os.stopped", level: "INFO", signal }));
     process.exitCode = 0;
   });
 }

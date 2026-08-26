@@ -23,11 +23,13 @@ export async function runConnectorConformance(
     displayName: "Conformance Fixture Agent",
     runtimeConnectorId: capabilities.connectorId,
     accountableHumanId: "human-conformance",
-    roleId: "role-conformance",
+    role: "Conformance operator",
     autonomyLevel: 1,
   };
   const deployment = await connector.deploy(agent);
+  const replayedDeployment = await connector.deploy(agent);
   expect(deployment.connectorId === capabilities.connectorId, "deployment connector mismatch");
+  expect(replayedDeployment.id === deployment.id, "Agent deployment must be idempotent");
 
   const request: WorkRequest = {
     id: "work-conformance",

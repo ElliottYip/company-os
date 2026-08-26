@@ -5,6 +5,7 @@ export type OfficeModuleKind =
   | "ENTRANCE"
   | "RECEPTION"
   | "DEPARTMENT"
+  | "TEAM_ROOM"
   | "PROJECT_ROOM"
   | "MEETING_ROOM"
   | "PANTRY"
@@ -16,7 +17,15 @@ export interface OfficeModule {
   readonly kind: OfficeModuleKind;
   readonly label: string;
   readonly capacity: number;
+  readonly ownerHumanId?: Identifier;
   readonly bounds: OfficeBounds;
+}
+
+export interface OfficeDepartmentRegion {
+  readonly id: Identifier;
+  readonly label: string;
+  readonly departmentId: Identifier;
+  readonly teamRoomIds: readonly Identifier[];
 }
 
 export interface OfficeBounds {
@@ -49,6 +58,7 @@ export interface OfficeEntity {
 export interface OfficeScene {
   readonly companyId: Identifier;
   readonly modules: readonly OfficeModule[];
+  readonly departmentRegions: readonly OfficeDepartmentRegion[];
   readonly connections: readonly OfficeConnection[];
   readonly entities: readonly OfficeEntity[];
   readonly anchors: readonly OfficeAnchor[];
@@ -183,6 +193,7 @@ export function validateOfficeScene(scene: OfficeScene): OfficeScene {
     throw new Error("Unsupported office scene contract.");
   }
   uniqueIds(scene.modules, "Office module");
+  uniqueIds(scene.departmentRegions, "Office department region");
   uniqueIds(scene.entities, "Office entity");
   uniqueIds(scene.anchors, "Office anchor");
   const moduleIds = new Set(scene.modules.map(({ id }) => id));
@@ -193,6 +204,14 @@ export function validateOfficeScene(scene: OfficeScene): OfficeScene {
         x < 0 || y < 0 || width < 1 || height < 1 ||
         x + width > scene.coordinateSpace.width || y + height > scene.coordinateSpace.height) {
       throw new Error("Office module bounds are invalid.");
+    }
+  }
+  for (const region of scene.departmentRegions) {
+    if (!region.departmentId || region.teamRoomIds.some((id) => !moduleIds.has(id))) {
+      throw new Error("Office department region references an unknown team room.");
+    }
+    if (region.teamRoomIds.some((id) => scene.modules.find((module) => module.id === id)?.kind !== "TEAM_ROOM")) {
+      throw new Error("Office department region may contain only team rooms.");
     }
   }
   for (const connection of scene.connections) {
@@ -208,6 +227,12 @@ export function validateOfficeScene(scene: OfficeScene): OfficeScene {
   for (const entity of scene.entities) {
     if (!moduleIds.has(entity.moduleId) || !anchorIds.has(entity.occupancy.anchorId)) {
       throw new Error("Office entity placement is invalid.");
+    }
+  }
+  for (const module of scene.modules.filter(({ kind }) => kind === "TEAM_ROOM")) {
+    const humans = scene.entities.filter((entity) => entity.moduleId === module.id && entity.kind === "HUMAN");
+    if (humans.length !== 1 || humans[0]?.id !== module.ownerHumanId) {
+      throw new Error("Every team room requires exactly one owning human.");
     }
   }
   scene.actionSequences.forEach(validateActionSequence);
@@ -242,15 +267,12 @@ export function compileOfficeScene(
   const moduleDrafts: Omit<OfficeModule, "bounds">[] = [
     { id: "entrance", kind: "ENTRANCE", label: "入口", capacity: 4 },
     { id: "reception", kind: "RECEPTION", label: "前台", capacity: 4 },
-    ...organization.departments.map((department) => ({
-      id: `department-${department.id}`,
-      kind: "DEPARTMENT" as const,
-      label: department.name,
-      capacity: Math.max(
-        3,
-        organization.humans.filter(({ departmentId }) => departmentId === department.id).length +
-          organization.agents.filter(({ departmentId }) => departmentId === department.id).length,
-      ),
+    ...organization.humans.map((human) => ({
+      id: `team-${human.id}`,
+      kind: "TEAM_ROOM" as const,
+      label: `${human.name}团队房`,
+      ownerHumanId: human.id,
+      capacity: Math.max(2, 1 + organization.agents.filter(({ accountableHumanId }) => accountableHumanId === human.id).length),
     })),
     ...(options.projects ?? []).map((project) => ({
       id: `project-${project.id}`,
@@ -272,6 +294,14 @@ export function compileOfficeScene(
 
   const layout = placeModules(moduleDrafts);
   const modules = layout.modules;
+  const departmentRegions: OfficeDepartmentRegion[] = organization.departments.map((department) => ({
+    id: `department-${department.id}`,
+    label: department.name,
+    departmentId: department.id,
+    teamRoomIds: organization.humans
+      .filter(({ departmentId }) => departmentId === department.id)
+      .map(({ id }) => `team-${id}`),
+  }));
 
   uniqueIds(modules, "Office module");
   const connections: OfficeConnection[] = [
@@ -290,7 +320,7 @@ export function compileOfficeScene(
     ...organization.humans.map((human) => ({
       id: human.id,
       kind: "HUMAN" as const,
-      moduleId: `department-${human.departmentId}`,
+      moduleId: `team-${human.id}`,
       state: options.entityStates?.[human.id] ?? "AVAILABLE" as const,
       assetId: human.avatarId,
       occupancy: { kind: "WORKSTATION" as const, anchorId: `workstation-${human.id}` },
@@ -298,7 +328,7 @@ export function compileOfficeScene(
     ...organization.agents.map((agent) => ({
       id: agent.id,
       kind: "AGENT" as const,
-      moduleId: `department-${agent.departmentId}`,
+      moduleId: `team-${agent.accountableHumanId}`,
       state: options.entityStates?.[agent.id] ?? "WAITING" as const,
       assetId: agent.avatarId,
       occupancy: { kind: "WORKSTATION" as const, anchorId: `workstation-${agent.id}` },
@@ -333,6 +363,7 @@ export function compileOfficeScene(
   return validateOfficeScene({
     companyId: organization.company.id,
     modules,
+    departmentRegions,
     connections,
     entities,
     anchors,

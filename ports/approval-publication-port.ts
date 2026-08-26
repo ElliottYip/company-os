@@ -28,9 +28,9 @@ export interface ApprovalDecision {
 }
 
 export interface ApprovalPublicationPort {
+  request?(requestId: Identifier): Promise<ApprovalRequest | null>;
   publishRequest(input: ApprovalRequest): Promise<void>;
   pending(companyId: Identifier): Promise<readonly ApprovalRequest[]>;
   publishDecision(decision: ApprovalDecision): Promise<void>;
   decision(requestId: Identifier): Promise<ApprovalDecision | null>;
 }
-

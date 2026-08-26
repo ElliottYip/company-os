@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "case-synthetic-invoice-timeout",
+      "title": "付款接口超时后，Agent 想再次提交",
+      "summary": "用虚构付款流程练习副作用、结果未知、幂等查询、人工对账和新审批。",
+      "language": "zh-CN",
+      "status": "VERIFIED",
+      "caseType": "SYNTHETIC_SCENARIO",
+      "industries": ["finance-operations", "procurement"],
+      "capabilities": ["delegation", "operations", "governance"],
+      "lessonNodes": ["role/outcome-contract", "operations/retry-and-outcome-unknown", "operations/intervene", "governance/exact-action-approval", "shared/outcome-unknown-tabletop"],
+      "evidenceQuality": "ILLUSTRATIVE",
+      "isAnonymized": true,
+      "source": {
+        "label": "AgentBoss School 合成教学情境；无外部来源",
+        "uri": null,
+        "consentReference": null
+      },
+      "outcomeClaims": [
+        {
+          "claim": "假设团队通过 tabletop 识别出超时与业务失败的差别。",
+          "evidenceReference": null,
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "contentFile": "references/cases/case-synthetic-invoice-timeout.md",
+      "updatedAt": "2026-08-24"
+    },
+    {
+      "id": "case-synthetic-research-injection",
+      "title": "市场研究网页试图命令 Agent 上传内部资料",
+      "summary": "用虚构研究流程解释不可信内容、数据隔离、最小工具权限、运行时拦截和精确确认。",
+      "language": "zh-CN",
+      "status": "VERIFIED",
+      "caseType": "SYNTHETIC_SCENARIO",
+      "industries": ["consumer-research", "content-operations"],
+      "capabilities": ["operations", "governance"],
+      "lessonNodes": ["role/context-and-instructions", "operations/evaluate-and-review", "governance/prompt-injection-and-tool-risk", "governance/data-boundary", "governance/incident-and-recovery", "shared/agent-security-tabletop"],
+      "evidenceQuality": "ILLUSTRATIVE",
+      "isAnonymized": true,
+      "source": {
+        "label": "AgentBoss School 合成教学情境；无外部来源",
+        "uri": null,
+        "consentReference": null
+      },
+      "outcomeClaims": [
+        {
+          "claim": "假设分层控制阻止了模拟的未授权外部提交动作。",
+          "evidenceReference": null,
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "contentFile": "references/cases/case-synthetic-research-injection.md",
+      "updatedAt": "2026-08-24"
+    },
+    {
+      "id": "case-synthetic-multi-agent-support",
+      "title": "五个客服 Agent 不如一个受控工作流",
+      "summary": "比较确定性工作流、单 Agent 和多 Agent 的协调、权限、评测、成本与环境结果。",
+      "language": "zh-CN",
+      "status": "VERIFIED",
+      "caseType": "SYNTHETIC_SCENARIO",
+      "industries": ["customer-support", "software-services"],
+      "capabilities": ["delegation", "operations"],
+      "lessonNodes": ["role/work-decomposition", "role/orchestration-fit", "operations/evaluate-and-review", "operations/cost-latency-budget", "shared/delegation-clinic"],
+      "evidenceQuality": "ILLUSTRATIVE",
+      "isAnonymized": true,
+      "source": {
+        "label": "AgentBoss School 合成教学情境；无外部来源",
+        "uri": null,
+        "consentReference": null
+      },
+      "outcomeClaims": [
+        {
+          "claim": "假设团队在离线比较后选择了复杂度更低的受控工作流。",
+          "evidenceReference": null,
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "contentFile": "references/cases/case-synthetic-multi-agent-support.md",
+      "updatedAt": "2026-08-24"
+    },
+    {
+      "id": "case-synthetic-candidate-screening",
+      "title": "招聘筛选 Agent 把高效变成不可解释拒绝",
+      "summary": "用虚构招聘情境练习高影响任务的委派边界、数据最小化、人工纠错与试点评测。",
+      "language": "zh-CN",
+      "status": "VERIFIED",
+      "caseType": "SYNTHETIC_SCENARIO",
+      "industries": ["human-resources", "workforce-operations"],
+      "capabilities": ["delegation", "governance", "team-adoption"],
+      "lessonNodes": ["role/delegation-fit", "governance/authority-and-least-privilege", "governance/data-boundary", "team/pilot", "team/role-design", "shared/delegation-clinic"],
+      "evidenceQuality": "ILLUSTRATIVE",
+      "isAnonymized": true,
+      "source": {
+        "label": "AgentBoss School 合成教学情境；无外部来源",
+        "uri": null,
+        "consentReference": null
+      },
+      "outcomeClaims": [
+        {
+          "claim": "假设团队把自动拒绝方案收缩为证据整理和真人决定。",
+          "evidenceReference": null,
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "contentFile": "references/cases/case-synthetic-candidate-screening.md",
+      "updatedAt": "2026-08-24"
+    },
+    {
+      "id": "case-synthetic-sales-pilot",
+      "title": "销售周报 Agent 的试点为什么暂停扩张",
+      "summary": "用虚构销售运营试点练习基线、共同口径、代表性评测、周度复盘和退出条件。",
+      "language": "zh-CN",
+      "status": "VERIFIED",
+      "caseType": "SYNTHETIC_SCENARIO",
+      "industries": ["b2b-sales", "revenue-operations"],
+      "capabilities": ["delegation", "operations", "team-adoption"],
+      "lessonNodes": ["role/outcome-contract", "operations/evaluate-and-review", "shared/evaluation-lab", "team/pilot", "team/role-design", "team/operating-review", "team/skill-as-process", "team/value-and-economics", "team/change-and-handoff", "shared/team-pilot-studio"],
+      "evidenceQuality": "ILLUSTRATIVE",
+      "isAnonymized": true,
+      "source": {
+        "label": "AgentBoss School 合成教学情境；无外部来源",
+        "uri": null,
+        "consentReference": null
+      },
+      "outcomeClaims": [
+        {
+          "claim": "假设试点因业务口径不一致而暂停扩大范围。",
+          "evidenceReference": null,
+          "verification": "UNVERIFIED"
+        }
+      ],
+      "contentFile": "references/cases/case-synthetic-sales-pilot.md",
+      "updatedAt": "2026-08-24"
+    }
+  ]
+}

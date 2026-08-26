@@ -3,27 +3,41 @@ import type { OrganizationDraft } from "../../core/organization.ts";
 export const DEMO_COMPANY: OrganizationDraft = Object.freeze({
   company: Object.freeze({
     id: "demo-company",
-    name: "珊瑚实验室",
-    purpose: "确定性 Company OS 演示公司",
-    locale: "zh-CN",
+    name: "Coral Lab",
+    purpose: "Deterministic Company OS demo company",
+    locale: "en",
   }),
   departments: Object.freeze([
-    Object.freeze({ id: "operations", name: "运营部", mandate: "安全交付" }),
+    Object.freeze({ id: "operations", name: "Operations", mandate: "Safe delivery" }),
   ]),
   humans: Object.freeze([
     Object.freeze({
       id: "demo-boss",
-      name: "林澄",
-      title: "Agent Boss（演示）",
+      name: "Lin Cheng",
+      title: "Agent Boss (demo)",
       departmentId: "operations",
       avatarId: "clay-human-placeholder",
+    }),
+    Object.freeze({
+      id: "demo-product-boss",
+      name: "Lu Yao",
+      title: "Product Lead (demo)",
+      departmentId: "operations",
+      avatarId: "clay-human-product",
+    }),
+    Object.freeze({
+      id: "demo-finance-boss",
+      name: "Zhou Ning",
+      title: "Finance Lead (demo)",
+      departmentId: "operations",
+      avatarId: "clay-human-finance",
     }),
   ]),
   agents: Object.freeze([
     Object.freeze({
       id: "demo-researcher",
-      name: "市场研究员（演示）",
-      role: "形成带证据的市场简报",
+      name: "Market Researcher (demo)",
+      role: "Create evidence-backed market briefs",
       departmentId: "operations",
       accountableHumanId: "demo-boss",
       runtimeConnectorId: "fixture-reference-one",
@@ -32,8 +46,8 @@ export const DEMO_COMPANY: OrganizationDraft = Object.freeze({
     }),
     Object.freeze({
       id: "demo-operator",
-      name: "运营协作者（演示）",
-      role: "模拟运营进度",
+      name: "Operations Partner (demo)",
+      role: "Simulate operational progress",
       departmentId: "operations",
       accountableHumanId: "demo-boss",
       runtimeConnectorId: "fixture-reference-two",
@@ -42,4 +56,3 @@ export const DEMO_COMPANY: OrganizationDraft = Object.freeze({
     }),
   ]),
 });
-

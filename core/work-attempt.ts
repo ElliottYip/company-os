@@ -1,10 +1,12 @@
 import type { Identifier } from "./control-plane.ts";
+import type { ModelExecutionAuthority } from "./model-governance.ts";
 
 export type WorkAttemptStatus =
   | "QUEUED"
   | "LEASED"
   | "RUNNING"
   | "AWAITING_APPROVAL"
+  | "CANCELLATION_REQUESTED"
   | "SUCCEEDED"
   | "FAILED"
   | "CANCELLED"
@@ -20,6 +22,8 @@ export interface WorkAuthoritySnapshot {
   readonly dataAuthorizationIds: readonly Identifier[];
   readonly connectorId: Identifier;
   readonly connectorCapabilityDigest: string;
+  /** Absent on legacy records; normalized to null when a new Attempt is created. */
+  readonly model?: ModelExecutionAuthority | null;
 }
 
 export interface WorkAttemptLease {
@@ -75,6 +79,7 @@ export interface WorkAttemptDraft {
 
 const PORTABLE_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const SHA256_DIGEST = /^sha256:[a-f0-9]{64}$/;
+const PORTABLE_REFERENCE = /^[a-z0-9][a-z0-9-]{0,127}$/;
 const TERMINAL = new Set<WorkAttemptStatus>([
   "SUCCEEDED",
   "FAILED",
@@ -97,6 +102,25 @@ function uniqueIds(values: readonly Identifier[], code: string): readonly Identi
   const normalized = values.map((value) => id(value, code));
   if (new Set(normalized).size !== normalized.length) throw new Error(code);
   return normalized;
+}
+
+function modelAuthority(value: ModelExecutionAuthority | null | undefined): ModelExecutionAuthority | null {
+  if (!value) return null;
+  if (![value.policyId, value.routeId, value.providerAdapterId, value.modelReference,
+    value.credentialReferenceId].every((reference) => PORTABLE_REFERENCE.test(reference))) {
+    throw new Error("WORK_ATTEMPT_MODEL_REFERENCE_INVALID");
+  }
+  if (!Number.isSafeInteger(value.credentialVersion) || value.credentialVersion < 1) {
+    throw new Error("WORK_ATTEMPT_MODEL_CREDENTIAL_VERSION_INVALID");
+  }
+  if (!SHA256_DIGEST.test(value.providerCapabilityDigest)) {
+    throw new Error("WORK_ATTEMPT_MODEL_CAPABILITY_DIGEST_INVALID");
+  }
+  if (!["PUBLIC", "INTERNAL", "CONFIDENTIAL", "RESTRICTED"].includes(value.classification) ||
+      !["MANAGED_CLOUD", "LOCAL"].includes(value.residency)) {
+    throw new Error("WORK_ATTEMPT_MODEL_AUTHORITY_INVALID");
+  }
+  return structuredClone(value);
 }
 
 function requireActiveLease(
@@ -160,6 +184,7 @@ export function createWorkAttempt(draft: WorkAttemptDraft): WorkAttempt {
       ),
       connectorId: id(draft.authority.connectorId, "WORK_ATTEMPT_CONNECTOR_ID_INVALID"),
       connectorCapabilityDigest: draft.authority.connectorCapabilityDigest,
+      model: modelAuthority(draft.authority.model),
     },
     status: "QUEUED",
     lease: null,
@@ -286,6 +311,22 @@ export function cancelWorkAttempt(
   };
 }
 
+export function requestWorkAttemptCancellation(
+  attempt: WorkAttempt,
+  fencingToken: number | null,
+  requestedAt: string,
+): WorkAttempt {
+  if (TERMINAL.has(attempt.status)) throw new Error("WORK_ATTEMPT_TERMINAL");
+  const at = instant(requestedAt, "WORK_ATTEMPT_TIME_INVALID");
+  if (attempt.status === "OUTCOME_UNKNOWN") throw new Error("WORK_ATTEMPT_RECONCILIATION_REQUIRED");
+  if (attempt.status === "CANCELLATION_REQUESTED") return attempt;
+  if (attempt.status !== "QUEUED") {
+    if (fencingToken === null) throw new Error("WORK_ATTEMPT_FENCED");
+    requireActiveLease(attempt, fencingToken, at);
+  }
+  return { ...attempt, status: "CANCELLATION_REQUESTED", pendingApprovalId: null };
+}
+
 export function timeOutWorkAttempt(attempt: WorkAttempt, timedOutAt: string): WorkAttempt {
   if (TERMINAL.has(attempt.status)) throw new Error("WORK_ATTEMPT_TERMINAL");
   const at = instant(timedOutAt, "WORK_ATTEMPT_TIME_INVALID");
@@ -293,7 +334,8 @@ export function timeOutWorkAttempt(attempt: WorkAttempt, timedOutAt: string): Wo
     throw new Error("WORK_ATTEMPT_TIMEOUT_NOT_REACHED");
   }
   if (attempt.status === "OUTCOME_UNKNOWN") return attempt;
-  const outcomeMayExist = attempt.status === "RUNNING" || attempt.status === "AWAITING_APPROVAL";
+  const outcomeMayExist = attempt.status === "RUNNING" || attempt.status === "AWAITING_APPROVAL" ||
+    attempt.status === "CANCELLATION_REQUESTED";
   return {
     ...attempt,
     status: outcomeMayExist ? "OUTCOME_UNKNOWN" : "TIMED_OUT",
@@ -310,7 +352,8 @@ export function expireWorkAttemptLease(attempt: WorkAttempt, expiredAt: string):
     throw new Error("WORK_ATTEMPT_LEASE_ACTIVE");
   }
   if (attempt.status === "LEASED") return { ...attempt, status: "QUEUED", lease: null };
-  if (attempt.status === "RUNNING" || attempt.status === "AWAITING_APPROVAL") {
+  if (attempt.status === "RUNNING" || attempt.status === "AWAITING_APPROVAL" ||
+      attempt.status === "CANCELLATION_REQUESTED") {
     return { ...attempt, status: "OUTCOME_UNKNOWN", lease: null, pendingApprovalId: null };
   }
   throw new Error("WORK_ATTEMPT_LEASE_STATE_INVALID");

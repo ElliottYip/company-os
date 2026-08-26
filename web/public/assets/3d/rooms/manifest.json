@@ -1,0 +1,1366 @@
+{
+  "schemaVersion": "1.0",
+  "contract": "OfficeRoomAsset 1.0",
+  "style": "COMPANY_OS_WARM_CLAY",
+  "unit": "METER",
+  "rooms": [
+    {
+      "id": "room-entrance",
+      "kind": "ENTRANCE",
+      "label": "入口",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-entrance.glb",
+      "sha256": "476057d80e7a4a24afd50db2337a867fbf2aa6683873480682521b76ebe9fa30",
+      "bytes": 714272,
+      "size": [
+        8,
+        6,
+        3.2
+      ],
+      "assetIds": [
+        "art-panel",
+        "bench",
+        "directional-sign",
+        "doorway-glass",
+        "parcel-stack",
+        "plant-tall",
+        "umbrella-stand",
+        "welcome-mat"
+      ],
+      "placements": 9,
+      "preview": "assets/3d/environment/qa/rooms/room-entrance.png",
+      "composition": [
+        {
+          "assetId": "doorway-glass",
+          "position": {
+            "x": 0,
+            "y": -2.75,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "welcome-mat",
+          "position": {
+            "x": 0,
+            "y": -1.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "bench",
+          "position": {
+            "x": -2.5,
+            "y": 1.35,
+            "z": 0.0
+          },
+          "rotationDegrees": 90,
+          "scale": 1.0
+        },
+        {
+          "assetId": "umbrella-stand",
+          "position": {
+            "x": 2.7,
+            "y": 1.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "directional-sign",
+          "position": {
+            "x": 2.7,
+            "y": -0.5,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "parcel-stack",
+          "position": {
+            "x": -2.7,
+            "y": -0.55,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-tall",
+          "position": {
+            "x": 3.1,
+            "y": -2.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-tall",
+          "position": {
+            "x": -3.1,
+            "y": 2.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "art-panel",
+          "position": {
+            "x": -2.2,
+            "y": 2.75,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-reception",
+      "kind": "RECEPTION",
+      "label": "前台",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-reception.glb",
+      "sha256": "aaf1adfe4a4b2a34cb0b83194a5de9f94c8a68add89f2ede1481bbdb8e33dd3d",
+      "bytes": 1011652,
+      "size": [
+        8,
+        6,
+        3.2
+      ],
+      "assetIds": [
+        "armchair",
+        "art-panel",
+        "monitor",
+        "office-chair",
+        "parcel-stack",
+        "plant-desk",
+        "plant-tall",
+        "reception-bell",
+        "reception-desk",
+        "rug-round",
+        "side-table",
+        "sofa-two-seat",
+        "wall-clock"
+      ],
+      "placements": 13,
+      "preview": "assets/3d/environment/qa/rooms/room-reception.png",
+      "composition": [
+        {
+          "assetId": "reception-desk",
+          "position": {
+            "x": 0,
+            "y": 1.4,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "office-chair",
+          "position": {
+            "x": 0,
+            "y": 2.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "monitor",
+          "position": {
+            "x": -0.45,
+            "y": 1.25,
+            "z": 0.86
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "reception-bell",
+          "position": {
+            "x": 0.75,
+            "y": 1.0,
+            "z": 0.86
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "sofa-two-seat",
+          "position": {
+            "x": -2.8,
+            "y": -1.55,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "armchair",
+          "position": {
+            "x": 2.65,
+            "y": -1.1,
+            "z": 0.0
+          },
+          "rotationDegrees": -135,
+          "scale": 1.0
+        },
+        {
+          "assetId": "side-table",
+          "position": {
+            "x": 1.45,
+            "y": -1.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "rug-round",
+          "position": {
+            "x": 0,
+            "y": -1.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-tall",
+          "position": {
+            "x": -3.2,
+            "y": 2.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-desk",
+          "position": {
+            "x": 1.45,
+            "y": -1.25,
+            "z": 0.52
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "wall-clock",
+          "position": {
+            "x": 0,
+            "y": 2.85,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "art-panel",
+          "position": {
+            "x": 2.2,
+            "y": 2.85,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "parcel-stack",
+          "position": {
+            "x": -2.9,
+            "y": 1.65,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-department",
+      "kind": "DEPARTMENT",
+      "label": "部门办公室",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-department.glb",
+      "sha256": "bc2f4163c434ecef1d75e4a97dd9d945f9be2fdb71e6714b70739b7b4c60aa73",
+      "bytes": 1438268,
+      "size": [
+        10,
+        8,
+        3.2
+      ],
+      "assetIds": [
+        "approval-beacon",
+        "bookshelf",
+        "desk-double",
+        "keyboard",
+        "monitor",
+        "office-chair",
+        "plant-tall",
+        "planter-divider",
+        "recycle-bin",
+        "storage-cabinet",
+        "task-board"
+      ],
+      "placements": 21,
+      "preview": "assets/3d/environment/qa/rooms/room-department.png",
+      "composition": [
+        {
+          "assetId": "desk-double",
+          "position": {
+            "x": -2.4,
+            "y": 0.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "desk-double",
+          "position": {
+            "x": 2.4,
+            "y": 0.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "office-chair",
+          "position": {
+            "x": -3.0,
+            "y": 0.05,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "office-chair",
+          "position": {
+            "x": -1.8,
+            "y": 0.05,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "office-chair",
+          "position": {
+            "x": 1.8,
+            "y": 0.05,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "office-chair",
+          "position": {
+            "x": 3.0,
+            "y": 0.05,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "monitor",
+          "position": {
+            "x": -3.0,
+            "y": 0.85,
+            "z": 0.75
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "monitor",
+          "position": {
+            "x": -1.8,
+            "y": 0.85,
+            "z": 0.75
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "monitor",
+          "position": {
+            "x": 1.8,
+            "y": 0.85,
+            "z": 0.75
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "monitor",
+          "position": {
+            "x": 3.0,
+            "y": 0.85,
+            "z": 0.75
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "keyboard",
+          "position": {
+            "x": -3.0,
+            "y": 0.35,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "keyboard",
+          "position": {
+            "x": -1.8,
+            "y": 0.35,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "keyboard",
+          "position": {
+            "x": 1.8,
+            "y": 0.35,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "keyboard",
+          "position": {
+            "x": 3.0,
+            "y": 0.35,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "task-board",
+          "position": {
+            "x": 0,
+            "y": 3.85,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "bookshelf",
+          "position": {
+            "x": -4.25,
+            "y": 2.7,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "storage-cabinet",
+          "position": {
+            "x": 4.25,
+            "y": 2.7,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "approval-beacon",
+          "position": {
+            "x": -1.35,
+            "y": 0.82,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "planter-divider",
+          "position": {
+            "x": 0,
+            "y": -1.7,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "recycle-bin",
+          "position": {
+            "x": 4.25,
+            "y": -2.7,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-tall",
+          "position": {
+            "x": -4.25,
+            "y": -2.55,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-project",
+      "kind": "PROJECT_ROOM",
+      "label": "项目房",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-project.glb",
+      "sha256": "25917c61bb9dc45411eaff1c76f489ec3544e20bebc9c14fba02a8cbc09c6bbe",
+      "bytes": 714944,
+      "size": [
+        8,
+        7,
+        3.2
+      ],
+      "assetIds": [
+        "acoustic-partition",
+        "charging-dock",
+        "conference-display",
+        "laptop",
+        "meeting-table-long",
+        "plant-desk",
+        "pouf",
+        "speakerphone",
+        "task-board",
+        "visitor-chair",
+        "whiteboard"
+      ],
+      "placements": 17,
+      "preview": "assets/3d/environment/qa/rooms/room-project.png",
+      "composition": [
+        {
+          "assetId": "meeting-table-long",
+          "position": {
+            "x": 0,
+            "y": 0.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": -1.15,
+            "y": -0.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 0,
+            "y": -0.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 1.15,
+            "y": -0.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": -1.15,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 0,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 1.15,
+            "y": 1.25,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "speakerphone",
+          "position": {
+            "x": 0,
+            "y": 0.25,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "laptop",
+          "position": {
+            "x": -0.8,
+            "y": 0.25,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "task-board",
+          "position": {
+            "x": -2.2,
+            "y": 3.4,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "whiteboard",
+          "position": {
+            "x": 2.2,
+            "y": 3.4,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "conference-display",
+          "position": {
+            "x": 0,
+            "y": 3.42,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "charging-dock",
+          "position": {
+            "x": 2.9,
+            "y": -2.15,
+            "z": 0.05
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "pouf",
+          "position": {
+            "x": -2.9,
+            "y": -2.1,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "pouf",
+          "position": {
+            "x": -2.1,
+            "y": -2.1,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-desk",
+          "position": {
+            "x": 1.25,
+            "y": 0.25,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "acoustic-partition",
+          "position": {
+            "x": -3.45,
+            "y": 0.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 90,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-meeting",
+      "kind": "MEETING_ROOM",
+      "label": "会议室",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-meeting.glb",
+      "sha256": "757f33a03b509279021d8804432be8e74236fd03c9b34a21d65c1bfa1f8ffe42",
+      "bytes": 732128,
+      "size": [
+        9,
+        7,
+        3.2
+      ],
+      "assetIds": [
+        "conference-display",
+        "meeting-table-long",
+        "plant-tall",
+        "speakerphone",
+        "visitor-chair",
+        "wall-clock",
+        "whiteboard"
+      ],
+      "placements": 14,
+      "preview": "assets/3d/environment/qa/rooms/room-meeting.png",
+      "composition": [
+        {
+          "assetId": "meeting-table-long",
+          "position": {
+            "x": 0,
+            "y": 0.2,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": -1.25,
+            "y": -0.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 0,
+            "y": -0.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 1.25,
+            "y": -0.9,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": -1.25,
+            "y": 1.3,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 0,
+            "y": 1.3,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 1.25,
+            "y": 1.3,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": -2.0,
+            "y": 0.2,
+            "z": 0.0
+          },
+          "rotationDegrees": 90,
+          "scale": 1.0
+        },
+        {
+          "assetId": "visitor-chair",
+          "position": {
+            "x": 2.0,
+            "y": 0.2,
+            "z": 0.0
+          },
+          "rotationDegrees": -90,
+          "scale": 1.0
+        },
+        {
+          "assetId": "conference-display",
+          "position": {
+            "x": 0,
+            "y": 3.4,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "whiteboard",
+          "position": {
+            "x": -2.5,
+            "y": 3.4,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "speakerphone",
+          "position": {
+            "x": 0,
+            "y": 0.2,
+            "z": 0.75
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "wall-clock",
+          "position": {
+            "x": 2.85,
+            "y": 3.4,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-tall",
+          "position": {
+            "x": 3.7,
+            "y": 2.55,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-pantry",
+      "kind": "PANTRY",
+      "label": "茶水间",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-pantry.glb",
+      "sha256": "752ffe6f56ff59f239207bd4c5ae526d7bb467f1270de11169a00cd06288bc81",
+      "bytes": 711596,
+      "size": [
+        8,
+        6,
+        3.2
+      ],
+      "assetIds": [
+        "art-panel",
+        "cafe-table",
+        "coffee-machine",
+        "fridge",
+        "fruit-bowl",
+        "kettle",
+        "microwave",
+        "mug",
+        "pantry-counter",
+        "recycle-bin",
+        "sink-unit",
+        "snack-shelf",
+        "stool",
+        "water-cooler"
+      ],
+      "placements": 17,
+      "preview": "assets/3d/environment/qa/rooms/room-pantry.png",
+      "composition": [
+        {
+          "assetId": "sink-unit",
+          "position": {
+            "x": -3.2,
+            "y": 2.45,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "pantry-counter",
+          "position": {
+            "x": -1.55,
+            "y": 2.45,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "pantry-counter",
+          "position": {
+            "x": 0.55,
+            "y": 2.45,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "coffee-machine",
+          "position": {
+            "x": -1.85,
+            "y": 2.45,
+            "z": 0.92
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "kettle",
+          "position": {
+            "x": -0.95,
+            "y": 2.45,
+            "z": 0.92
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "fridge",
+          "position": {
+            "x": 3.4,
+            "y": 2.35,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "microwave",
+          "position": {
+            "x": 0.65,
+            "y": 2.45,
+            "z": 0.92
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "snack-shelf",
+          "position": {
+            "x": 2.15,
+            "y": 2.55,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "water-cooler",
+          "position": {
+            "x": -3.35,
+            "y": 0.6,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "cafe-table",
+          "position": {
+            "x": -1.2,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "cafe-table",
+          "position": {
+            "x": 1.3,
+            "y": -1.2,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "stool",
+          "position": {
+            "x": -1.2,
+            "y": -2.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "stool",
+          "position": {
+            "x": 1.3,
+            "y": -2.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "mug",
+          "position": {
+            "x": -1.2,
+            "y": -1.2,
+            "z": 0.72
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "fruit-bowl",
+          "position": {
+            "x": 1.3,
+            "y": -1.2,
+            "z": 0.72
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "recycle-bin",
+          "position": {
+            "x": 3.25,
+            "y": -1.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "art-panel",
+          "position": {
+            "x": -2.3,
+            "y": 2.85,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-restroom",
+      "kind": "RESTROOM",
+      "label": "卫生间",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-restroom.glb",
+      "sha256": "90bc77cda4c4ef48944f651af406762197ba0563e1efd9072c0c430683cb5e25",
+      "bytes": 610260,
+      "size": [
+        7,
+        6,
+        3.2
+      ],
+      "assetIds": [
+        "bench",
+        "hand-dryer",
+        "mirror-round",
+        "plant-desk",
+        "restroom-stall",
+        "sink-basin",
+        "soap-dispenser",
+        "toilet",
+        "trash-bin"
+      ],
+      "placements": 11,
+      "preview": "assets/3d/environment/qa/rooms/room-restroom.png",
+      "composition": [
+        {
+          "assetId": "restroom-stall",
+          "position": {
+            "x": -2.0,
+            "y": 1.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "toilet",
+          "position": {
+            "x": -2.0,
+            "y": 1.7,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "restroom-stall",
+          "position": {
+            "x": 0,
+            "y": 1.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "toilet",
+          "position": {
+            "x": 0,
+            "y": 1.7,
+            "z": 0.0
+          },
+          "rotationDegrees": 180,
+          "scale": 1.0
+        },
+        {
+          "assetId": "sink-basin",
+          "position": {
+            "x": 2.25,
+            "y": 1.8,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "mirror-round",
+          "position": {
+            "x": 2.25,
+            "y": 2.9,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "soap-dispenser",
+          "position": {
+            "x": 1.7,
+            "y": 2.65,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "hand-dryer",
+          "position": {
+            "x": 3.0,
+            "y": 2.65,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "trash-bin",
+          "position": {
+            "x": 3.0,
+            "y": 1.45,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "plant-desk",
+          "position": {
+            "x": 2.25,
+            "y": 1.8,
+            "z": 0.92
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "bench",
+          "position": {
+            "x": -1.2,
+            "y": -1.85,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    },
+    {
+      "id": "room-corridor",
+      "kind": "CORRIDOR",
+      "label": "走廊",
+      "formatVersion": "1.0",
+      "src": "/assets/3d/rooms/room-corridor.glb",
+      "sha256": "8a99c3bff670f007a4f0b659645e6843de168b3d30cb60d14222ca99e222c1c1",
+      "bytes": 277796,
+      "size": [
+        16,
+        3.2,
+        3.2
+      ],
+      "assetIds": [
+        "art-panel",
+        "bench",
+        "directional-sign",
+        "planter-divider",
+        "room-sign",
+        "rug-runner",
+        "wall-clock"
+      ],
+      "placements": 9,
+      "preview": "assets/3d/environment/qa/rooms/room-corridor.png",
+      "composition": [
+        {
+          "assetId": "rug-runner",
+          "position": {
+            "x": -4.7,
+            "y": 0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "rug-runner",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "rug-runner",
+          "position": {
+            "x": 4.7,
+            "y": 0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "bench",
+          "position": {
+            "x": -5.7,
+            "y": 1.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "planter-divider",
+          "position": {
+            "x": 5.6,
+            "y": 1.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "directional-sign",
+          "position": {
+            "x": -1.7,
+            "y": 1.0,
+            "z": 0.0
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "room-sign",
+          "position": {
+            "x": 1.2,
+            "y": 1.52,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "art-panel",
+          "position": {
+            "x": 3.0,
+            "y": 1.56,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        },
+        {
+          "assetId": "wall-clock",
+          "position": {
+            "x": -3.4,
+            "y": 1.55,
+            "z": 1.25
+          },
+          "rotationDegrees": 0,
+          "scale": 1.0
+        }
+      ]
+    }
+  ],
+  "showcase": {
+    "preview": "assets/3d/environment/qa/rooms/company-os-office-showcase.png",
+    "fixtureCharacterIds": [
+      "fish-bumble-3d-v4",
+      "fish-fizz-3d-v3",
+      "fish-honey-3d-v2"
+    ]
+  }
+}

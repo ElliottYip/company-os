@@ -26,10 +26,16 @@ export class EventBackedApprovalStore implements ApprovalPublicationPort {
 
   async publishRequest(input: ApprovalRequest): Promise<void> {
     if (input.companyId !== this.#companyId) throw new Error("Approval tenant mismatch.");
-    if ((await this.#requests()).some(({ id }) => id === input.id)) {
-      throw new Error("Approval request already exists.");
+    const existing = (await this.#requests()).find(({ id }) => id === input.id);
+    if (existing) {
+      if (JSON.stringify(existing) !== JSON.stringify(input)) throw new Error("APPROVAL_REQUEST_IDEMPOTENCY_CONFLICT");
+      return;
     }
     await this.#append("approval.publication.requested", { request: structuredClone(input) });
+  }
+
+  async request(requestId: Identifier): Promise<ApprovalRequest | null> {
+    return (await this.#requests()).find(({ id }) => id === requestId) ?? null;
   }
 
   async pending(companyId: Identifier): Promise<readonly ApprovalRequest[]> {

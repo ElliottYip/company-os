@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-08-24",
+  "policy": "Star 只用于发现候选，不进入证据等级。当前课程只做独立概括和模式比较，没有复制任何第三方代码、正文、图表或视觉资产。",
+  "projects": [
+    {
+      "sourceId": "SRC-LANGGRAPH",
+      "repository": "https://github.com/langchain-ai/langgraph",
+      "starsSnapshot": 40312,
+      "license": "MIT",
+      "licenseUrl": "https://github.com/langchain-ai/langgraph/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "状态图、持久化、interrupt 与人审是控制闭环的实现样本。",
+      "copyrightBoundary": "不复制文档、图或代码；若未来移植代码，必须保留 MIT copyright notice。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-AUTOGEN",
+      "repository": "https://github.com/microsoft/autogen",
+      "starsSnapshot": 60604,
+      "license": "代码 MIT；文档/内容 CC BY 4.0，以仓库 LICENSE-CODE 与 LICENSE 为准",
+      "licenseUrl": "https://github.com/microsoft/autogen",
+      "maintenance": "MAINTENANCE",
+      "patternUse": "只作事件驱动与多 Agent 分层设计的历史样本，并讲清迁移状态。",
+      "copyrightBoundary": "不复制文档或代码；不能因仓库顶层显示 CC BY 就忽略代码的独立许可证。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-MICROSOFT-AGENT-FRAMEWORK",
+      "repository": "https://github.com/microsoft/agent-framework",
+      "starsSnapshot": 12500,
+      "license": "MIT",
+      "licenseUrl": "https://github.com/microsoft/agent-framework/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "workflow、middleware、单/多 Agent 和跨供应商接口的当前 Microsoft 实现样本。",
+      "copyrightBoundary": "不复制 README、示例或代码；第三方连接器仍需分别复核其条款与数据边界。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-CREWAI",
+      "repository": "https://github.com/crewAIInc/crewAI",
+      "starsSnapshot": 53600,
+      "license": "MIT",
+      "licenseUrl": "https://github.com/crewAIInc/crewAI/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "比较角色化 Crew 与确定性 Flow；不以多 Agent 作为默认答案。",
+      "copyrightBoundary": "只独立概括公开架构；营销效果与认证人数不作为课程证据。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-OPENHANDS",
+      "repository": "https://github.com/OpenHands/OpenHands",
+      "starsSnapshot": 64000,
+      "license": "核心 MIT；enterprise 目录为单独的 source-available license",
+      "licenseUrl": "https://github.com/OpenHands/OpenHands/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "长程软件 Agent、工具环境和评测基础设施的领域样本。",
+      "copyrightBoundary": "不使用 enterprise 目录内容；不把仓库整体描述成纯 MIT；不复制资产。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-LANGFUSE",
+      "repository": "https://github.com/langfuse/langfuse",
+      "starsSnapshot": null,
+      "license": "核心 MIT；ee 目录适用商业条款",
+      "licenseUrl": "https://github.com/langfuse/langfuse/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "trace、dataset、experiment 和自托管观测的实现样本。",
+      "copyrightBoundary": "不复制 ee 内容；未来若移植 MIT 代码需保留 notice；当前无复制。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-PHOENIX",
+      "repository": "https://github.com/Arize-ai/phoenix",
+      "starsSnapshot": 10100,
+      "license": "Elastic License 2.0",
+      "licenseUrl": "https://github.com/Arize-ai/phoenix/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "OpenTelemetry trace、dataset 与 experiment 的产品样本。",
+      "copyrightBoundary": "ELv2 不是 MIT；课程只作事实性比较，不复制代码或资产，也不把它列作可直接合并依赖。",
+      "copiedAssets": []
+    },
+    {
+      "sourceId": "SRC-INSPECT-AI",
+      "repository": "https://github.com/UKGovernmentBEIS/inspect_ai",
+      "starsSnapshot": 2585,
+      "license": "MIT",
+      "licenseUrl": "https://github.com/UKGovernmentBEIS/inspect_ai/blob/main/LICENSE",
+      "maintenance": "ACTIVE",
+      "patternUse": "task、solver、scorer、sandbox 与 trajectory 的可复现评测样本。",
+      "copyrightBoundary": "只概括评测对象分层；当前不复制代码、文档或评测数据。",
+      "copiedAssets": []
+    }
+  ]
+}

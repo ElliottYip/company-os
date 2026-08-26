@@ -1,0 +1,307 @@
+{
+  "name": "agentboss-school",
+  "version": "0.7.1",
+  "schemaVersion": 1,
+  "updatePolicy": "explicit-opt-in",
+  "defaultPath": [
+    "role/not-a-prompt-engineer",
+    "role/delegation-fit",
+    "role/outcome-contract",
+    "governance/exact-action-approval",
+    "shared/demo-responsibility-loop"
+  ],
+  "courses": [
+    { "id": "role", "map": "references/course-role.md" },
+    { "id": "operations", "map": "references/course-operations.md" },
+    { "id": "governance", "map": "references/course-governance.md" },
+    { "id": "team", "map": "references/course-team.md" }
+  ],
+  "nodes": [
+    {
+      "id": "role/not-a-prompt-engineer",
+      "course": "role",
+      "lesson": "references/lessons/role/01-not-a-prompt-engineer.md",
+      "prerequisites": []
+    },
+    {
+      "id": "role/delegation-fit",
+      "course": "role",
+      "lesson": "references/lessons/role/02-delegation-fit.md",
+      "prerequisites": ["role/not-a-prompt-engineer"]
+    },
+    {
+      "id": "role/outcome-contract",
+      "course": "role",
+      "lesson": "references/lessons/role/03-outcome-contract.md",
+      "prerequisites": ["role/delegation-fit"]
+    },
+    {
+      "id": "role/work-decomposition",
+      "course": "role",
+      "lesson": "references/lessons/role/04-work-decomposition.md",
+      "prerequisites": ["role/delegation-fit"]
+    },
+    {
+      "id": "role/context-and-instructions",
+      "course": "role",
+      "lesson": "references/lessons/role/05-context-and-instructions.md",
+      "prerequisites": ["role/outcome-contract"]
+    },
+    {
+      "id": "role/orchestration-fit",
+      "course": "role",
+      "lesson": "references/lessons/role/06-orchestration-fit.md",
+      "prerequisites": ["role/work-decomposition", "role/context-and-instructions"]
+    },
+    {
+      "id": "operations/lifecycle-control-loop",
+      "course": "operations",
+      "lesson": "references/lessons/operations/01-lifecycle-control-loop.md",
+      "prerequisites": ["role/outcome-contract", "role/orchestration-fit"]
+    },
+    {
+      "id": "operations/observe",
+      "course": "operations",
+      "lesson": "references/lessons/operations/02-observe.md",
+      "prerequisites": ["operations/lifecycle-control-loop"]
+    },
+    {
+      "id": "operations/evaluate-and-review",
+      "course": "operations",
+      "lesson": "references/lessons/operations/03-evaluate-and-review.md",
+      "prerequisites": ["operations/observe", "role/outcome-contract"]
+    },
+    {
+      "id": "governance/authority-and-least-privilege",
+      "course": "governance",
+      "lesson": "references/lessons/governance/02-authority-and-least-privilege.md",
+      "prerequisites": ["role/not-a-prompt-engineer"]
+    },
+    {
+      "id": "governance/exact-action-approval",
+      "course": "governance",
+      "lesson": "references/lessons/governance/01-exact-action-approval.md",
+      "prerequisites": ["role/outcome-contract"]
+    },
+    {
+      "id": "governance/prompt-injection-and-tool-risk",
+      "course": "governance",
+      "lesson": "references/lessons/governance/03-prompt-injection-and-tool-risk.md",
+      "prerequisites": ["governance/authority-and-least-privilege", "role/context-and-instructions"]
+    },
+    {
+      "id": "operations/retry-and-outcome-unknown",
+      "course": "operations",
+      "lesson": "references/lessons/operations/04-retry-and-outcome-unknown.md",
+      "prerequisites": ["operations/observe", "governance/exact-action-approval"]
+    },
+    {
+      "id": "operations/intervene",
+      "course": "operations",
+      "lesson": "references/lessons/operations/05-intervene.md",
+      "prerequisites": ["operations/observe"]
+    },
+    {
+      "id": "governance/data-boundary",
+      "course": "governance",
+      "lesson": "references/lessons/governance/04-data-boundary.md",
+      "prerequisites": ["governance/authority-and-least-privilege"]
+    },
+    {
+      "id": "governance/incident-and-recovery",
+      "course": "governance",
+      "lesson": "references/lessons/governance/05-incident-and-recovery.md",
+      "prerequisites": ["operations/retry-and-outcome-unknown", "governance/data-boundary"]
+    },
+    {
+      "id": "shared/outcome-unknown-tabletop",
+      "course": "operations",
+      "lesson": "references/lessons/shared/02-outcome-unknown-tabletop.md",
+      "prerequisites": ["operations/retry-and-outcome-unknown", "operations/intervene"]
+    },
+    {
+      "id": "shared/agent-security-tabletop",
+      "course": "governance",
+      "lesson": "references/lessons/shared/03-agent-security-tabletop.md",
+      "prerequisites": ["governance/prompt-injection-and-tool-risk", "governance/data-boundary", "governance/incident-and-recovery"]
+    },
+    {
+      "id": "team/pilot",
+      "course": "team",
+      "lesson": "references/lessons/team/01-pilot.md",
+      "prerequisites": ["operations/evaluate-and-review", "governance/exact-action-approval"]
+    },
+    {
+      "id": "operations/cost-latency-budget",
+      "course": "operations",
+      "lesson": "references/lessons/operations/06-cost-latency-budget.md",
+      "prerequisites": ["operations/observe", "operations/evaluate-and-review"]
+    },
+    {
+      "id": "governance/secrets-and-identity",
+      "course": "governance",
+      "lesson": "references/lessons/governance/06-secrets-and-identity.md",
+      "prerequisites": ["governance/authority-and-least-privilege", "governance/data-boundary"]
+    },
+    {
+      "id": "team/role-design",
+      "course": "team",
+      "lesson": "references/lessons/team/02-role-design.md",
+      "prerequisites": ["role/not-a-prompt-engineer", "role/outcome-contract"]
+    },
+    {
+      "id": "team/operating-review",
+      "course": "team",
+      "lesson": "references/lessons/team/03-operating-review.md",
+      "prerequisites": ["operations/observe", "governance/incident-and-recovery", "team/role-design"]
+    },
+    {
+      "id": "shared/evaluation-lab",
+      "course": "operations",
+      "lesson": "references/lessons/shared/04-evaluation-lab.md",
+      "prerequisites": ["operations/evaluate-and-review"]
+    },
+    {
+      "id": "team/skill-as-process",
+      "course": "team",
+      "lesson": "references/lessons/team/04-skill-as-process.md",
+      "prerequisites": ["role/work-decomposition", "operations/evaluate-and-review"]
+    },
+    {
+      "id": "team/value-and-economics",
+      "course": "team",
+      "lesson": "references/lessons/team/05-value-and-economics.md",
+      "prerequisites": ["operations/evaluate-and-review", "operations/cost-latency-budget", "team/pilot"]
+    },
+    {
+      "id": "team/change-and-handoff",
+      "course": "team",
+      "lesson": "references/lessons/team/06-change-and-handoff.md",
+      "prerequisites": ["team/role-design", "team/operating-review", "team/value-and-economics"]
+    },
+    {
+      "id": "shared/delegation-clinic",
+      "course": "role",
+      "lesson": "references/lessons/shared/05-delegation-clinic.md",
+      "prerequisites": ["role/delegation-fit", "role/work-decomposition", "role/outcome-contract", "role/orchestration-fit"]
+    },
+    {
+      "id": "shared/team-pilot-studio",
+      "course": "team",
+      "lesson": "references/lessons/shared/06-team-pilot-studio.md",
+      "prerequisites": ["team/pilot", "team/role-design", "team/operating-review", "team/value-and-economics", "team/change-and-handoff"]
+    },
+    {
+      "id": "shared/demo-responsibility-loop",
+      "course": "operations",
+      "lesson": "references/lessons/shared/01-demo-responsibility-loop.md",
+      "prerequisites": [
+        "role/outcome-contract",
+        "governance/exact-action-approval"
+      ]
+    }
+  ],
+  "files": [
+    ".github/workflows/validate.yml",
+    ".gitignore",
+    "CHANGELOG.md",
+    "LICENSE",
+    "SECURITY.md",
+    "README.md",
+    "CONTRIBUTING.md",
+    "SKILL.md",
+    "YEARBOOK.md",
+    "agents/openai.yaml",
+    "credentials/completion-submission.example.json",
+    "credentials/completion-submission.schema.json",
+    "credentials/credential.schema.json",
+    "credentials/issuer-keys.json",
+    "credentials/issuer-keys.schema.json",
+    "credentials/revocations.json",
+    "credentials/revocations.schema.json",
+    "credentials/yearbook.json",
+    "credentials/yearbook.schema.json",
+    "manifest.json",
+    "package.json",
+    "practice/scenarios.json",
+    "practice/submission.example.json",
+    "rag/case-catalog.json",
+    "rag/case-catalog.schema.json",
+    "rag/index.generated.json",
+    "research/claim-map.json",
+    "research/claim-map.schema.json",
+    "research/open-source-projects.json",
+    "research/open-source-projects.schema.json",
+    "research/source-registry.json",
+    "research/source-registry.schema.json",
+    "references/case-rag.md",
+    "references/certification.md",
+    "references/classroom-runtime.md",
+    "references/curriculum-framework.md",
+    "references/knowledge-thickness.md",
+    "references/open-source-research.md",
+    "references/practice-system.md",
+    "references/cases/_case-intake-template.md",
+    "references/cases/_case-template.md",
+    "references/cases/README.md",
+    "references/cases/case-synthetic-candidate-screening.md",
+    "references/cases/case-synthetic-invoice-timeout.md",
+    "references/cases/case-synthetic-multi-agent-support.md",
+    "references/cases/case-synthetic-research-injection.md",
+    "references/cases/case-synthetic-sales-pilot.md",
+    "references/pedagogy.md",
+    "references/state-schema.md",
+    "references/sources.md",
+    "references/service-paths.md",
+    "references/course-role.md",
+    "references/course-operations.md",
+    "references/course-governance.md",
+    "references/course-team.md",
+    "references/lessons/role/01-not-a-prompt-engineer.md",
+    "references/lessons/role/02-delegation-fit.md",
+    "references/lessons/role/03-outcome-contract.md",
+    "references/lessons/role/04-work-decomposition.md",
+    "references/lessons/role/05-context-and-instructions.md",
+    "references/lessons/role/06-orchestration-fit.md",
+    "references/lessons/operations/01-lifecycle-control-loop.md",
+    "references/lessons/operations/02-observe.md",
+    "references/lessons/operations/03-evaluate-and-review.md",
+    "references/lessons/operations/04-retry-and-outcome-unknown.md",
+    "references/lessons/operations/05-intervene.md",
+    "references/lessons/operations/06-cost-latency-budget.md",
+    "references/lessons/governance/01-exact-action-approval.md",
+    "references/lessons/governance/02-authority-and-least-privilege.md",
+    "references/lessons/governance/03-prompt-injection-and-tool-risk.md",
+    "references/lessons/governance/04-data-boundary.md",
+    "references/lessons/governance/05-incident-and-recovery.md",
+    "references/lessons/governance/06-secrets-and-identity.md",
+    "references/lessons/team/01-pilot.md",
+    "references/lessons/team/02-role-design.md",
+    "references/lessons/team/03-operating-review.md",
+    "references/lessons/team/04-skill-as-process.md",
+    "references/lessons/team/05-value-and-economics.md",
+    "references/lessons/team/06-change-and-handoff.md",
+    "references/lessons/shared/01-demo-responsibility-loop.md",
+    "references/lessons/shared/02-outcome-unknown-tabletop.md",
+    "references/lessons/shared/03-agent-security-tabletop.md",
+    "references/lessons/shared/04-evaluation-lab.md",
+    "references/lessons/shared/05-delegation-clinic.md",
+    "references/lessons/shared/06-team-pilot-studio.md",
+    "scripts/build-case-index.mjs",
+    "scripts/build-yearbook.mjs",
+    "scripts/case-rag-lib.mjs",
+    "scripts/credential-lib.mjs",
+    "scripts/install.mjs",
+    "scripts/issue-credential.mjs",
+    "scripts/register-yearbook.mjs",
+    "scripts/remove-yearbook-entry.mjs",
+    "scripts/render-certificate.mjs",
+    "scripts/retrieve-cases.mjs",
+    "scripts/research-lib.mjs",
+    "scripts/practice-lab-lib.mjs",
+    "scripts/validate-curriculum.mjs",
+    "scripts/validate-state.mjs",
+    "scripts/run-practice-lab.mjs",
+    "scripts/verify-credential.mjs"
+  ]
+}

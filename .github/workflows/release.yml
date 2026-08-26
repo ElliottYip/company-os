@@ -1,0 +1,244 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825
+        env:
+          POSTGRES_DB: company_os_test
+          POSTGRES_USER: company_os
+          POSTGRES_PASSWORD: company_os_test_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U company_os -d company_os_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      COMPANY_OS_TEST_DATABASE_URL: postgres://company_os:company_os_test_only@127.0.0.1:5432/company_os_test
+    steps:
+      - name: Checkout exact release revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Require the repository-wide open-source license decision
+        run: test -f LICENSE
+      - name: Use the release Node contract
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.12.0
+          package-manager-cache: false
+      - name: Install exact release dependency graph
+        run: npm ci --ignore-scripts
+      - name: Install the release browser admission runtime
+        run: npx playwright install --with-deps chromium
+      - name: Run the complete repository qualification gate
+        run: npm run verify
+      - name: Run real Keycloak OIDC compatibility
+        run: npm run test:oidc:keycloak
+      - name: Run PostgreSQL restore, encryption, role and upgrade admissions
+        run: |
+          npm run test:restore:postgres16
+          npm run test:encrypted-backup:postgres16
+          npm run test:runtime-role:postgres16
+          npm run test:upgrade:postgres16
+          npm run test:upgrade:postgres-major
+      - name: Run the verified-TLS customer boundary admission
+        run: npm run test:customer-boundaries:tls
+      - name: Run real Vault AppRole and KV v2 compatibility
+        run: npm run test:vault:compatibility
+      - name: Run the sustained same-process release-candidate soak
+        run: npm run test:soak:http
+      - name: Run both release-shaped deployment profiles
+        run: |
+          npm run test:compose:self-hosted
+          npm run test:compose:managed-cloud
+
+  publish:
+    needs: qualify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production-release
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      artifact-metadata: write
+      id-token: write
+    steps:
+      - name: Checkout exact release revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Require the repository-wide open-source license decision
+        run: test -f LICENSE
+
+      - name: Derive bounded release coordinates
+        id: coordinates
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.-]+)?$ ]]; then
+            echo "Release tag must be vMAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH" >&2
+            exit 1
+          fi
+          repository="${GITHUB_REPOSITORY,,}"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "api=ghcr.io/${repository}-api" >> "$GITHUB_OUTPUT"
+          echo "web=ghcr.io/${repository}-web" >> "$GITHUB_OUTPUT"
+          echo "ops=ghcr.io/${repository}-ops" >> "$GITHUB_OUTPUT"
+          echo "codex_agent_node=ghcr.io/${repository}-codex-agent-node" >> "$GITHUB_OUTPUT"
+          echo "vault_secret_broker=ghcr.io/${repository}-vault-secret-broker" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish API image
+        id: api
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: deploy/Dockerfile.api
+          push: true
+          tags: ${{ steps.coordinates.outputs.api }}:${{ github.ref_name }}
+          sbom: true
+          provenance: mode=max
+
+      - name: Build and publish Web image
+        id: web
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: deploy/Dockerfile.web
+          push: true
+          tags: ${{ steps.coordinates.outputs.web }}:${{ github.ref_name }}
+          sbom: true
+          provenance: mode=max
+
+      - name: Build and publish operations image
+        id: ops
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: deploy/Dockerfile.ops
+          push: true
+          tags: ${{ steps.coordinates.outputs.ops }}:${{ github.ref_name }}
+          sbom: true
+          provenance: mode=max
+
+      - name: Build and publish Codex Agent Node image
+        id: codex_agent_node
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: deploy/Dockerfile.codex-agent-node
+          push: true
+          tags: ${{ steps.coordinates.outputs.codex_agent_node }}:${{ github.ref_name }}
+          sbom: true
+          provenance: mode=max
+
+      - name: Build and publish Vault Secret Broker image
+        id: vault_secret_broker
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: deploy/Dockerfile.vault-secret-broker
+          push: true
+          tags: ${{ steps.coordinates.outputs.vault_secret_broker }}:${{ github.ref_name }}
+          sbom: true
+          provenance: mode=max
+
+      - name: Attest API image provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ${{ steps.coordinates.outputs.api }}
+          subject-digest: ${{ steps.api.outputs.digest }}
+          push-to-registry: true
+
+      - name: Attest Web image provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ${{ steps.coordinates.outputs.web }}
+          subject-digest: ${{ steps.web.outputs.digest }}
+          push-to-registry: true
+
+      - name: Attest operations image provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ${{ steps.coordinates.outputs.ops }}
+          subject-digest: ${{ steps.ops.outputs.digest }}
+          push-to-registry: true
+
+      - name: Attest Codex Agent Node image provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ${{ steps.coordinates.outputs.codex_agent_node }}
+          subject-digest: ${{ steps.codex_agent_node.outputs.digest }}
+          push-to-registry: true
+
+      - name: Attest Vault Secret Broker image provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ${{ steps.coordinates.outputs.vault_secret_broker }}
+          subject-digest: ${{ steps.vault_secret_broker.outputs.digest }}
+          push-to-registry: true
+
+      - name: Use the release Node contract
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.12.0
+          package-manager-cache: false
+
+      - name: Install exact release dependency graph
+        run: npm ci --ignore-scripts
+
+      - name: Generate release manifest and application SBOM
+        env:
+          COMPANY_OS_RELEASE_VERSION: ${{ steps.coordinates.outputs.version }}
+          COMPANY_OS_SOURCE_REVISION: ${{ github.sha }}
+          COMPANY_OS_API_IMAGE: ${{ steps.coordinates.outputs.api }}@${{ steps.api.outputs.digest }}
+          COMPANY_OS_WEB_IMAGE: ${{ steps.coordinates.outputs.web }}@${{ steps.web.outputs.digest }}
+          COMPANY_OS_OPS_IMAGE: ${{ steps.coordinates.outputs.ops }}@${{ steps.ops.outputs.digest }}
+          COMPANY_OS_CODEX_AGENT_NODE_IMAGE: ${{ steps.coordinates.outputs.codex_agent_node }}@${{ steps.codex_agent_node.outputs.digest }}
+          COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: ${{ steps.coordinates.outputs.vault_secret_broker }}@${{ steps.vault_secret_broker.outputs.digest }}
+        run: |
+          npm run release:manifest > release-manifest.json
+          npm run release:sbom > company-os.cdx.json
+
+      - name: Attest release manifest
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: release-manifest.json
+
+      - name: Retain release evidence in the workflow
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: company-os-${{ steps.coordinates.outputs.version }}-release-evidence
+          path: |
+            release-manifest.json
+            company-os.cdx.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Attach evidence to the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "$GITHUB_REF_NAME" release-manifest.json company-os.cdx.json

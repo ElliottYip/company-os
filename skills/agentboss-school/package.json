@@ -1,0 +1,17 @@
+{
+  "name": "agentboss-school",
+  "version": "0.7.1",
+  "private": true,
+  "type": "module",
+  "description": "Open-source, vendor-neutral curriculum for managing accountable agent work.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "validate": "node scripts/validate-curriculum.mjs",
+    "check:rag": "node scripts/build-case-index.mjs --check",
+    "check:practice": "node scripts/run-practice-lab.mjs --score outcome-unknown --submission practice/submission.example.json --json",
+    "test": "npm run validate && npm run check:rag && npm run check:practice"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "scenarioId": "outcome-unknown",
+  "rounds": [
+    {
+      "round": 1,
+      "action": "FREEZE",
+      "rationale": "超时不能证明付款失败；在确认外部结果前冻结副作用路径。",
+      "evidenceRefs": ["approval:request-8842", "client:timeout"],
+      "prohibitedActions": ["RETRY_NEW_REQUEST"],
+      "owner": "付款业务负责人",
+      "resumeCondition": "取得能绑定原 request-8842 的查询或对账证据。"
+    },
+    {
+      "round": 2,
+      "action": "RECONCILE",
+      "rationale": "NOT_FOUND 仍处于索引延迟窗口，不能被解释为明确失败。",
+      "evidenceRefs": ["query:not-found", "docs:index-delay-10m"],
+      "prohibitedActions": ["TREAT_NOT_FOUND_AS_FAILURE", "RETRY_NEW_REQUEST"],
+      "owner": "付款业务负责人",
+      "resumeCondition": "索引延迟窗口结束并完成银行批次对账。"
+    },
+    {
+      "round": 3,
+      "action": "RECONCILE",
+      "rationale": "银行出现与原请求一致的待处理条目，应保持原动作身份并等待最终结算。",
+      "evidenceRefs": ["bank:pending-request-8842", "owner:no-second-payment"],
+      "prohibitedActions": ["RETRY_NEW_REQUEST", "CREATE_REPLACEMENT_APPROVAL"],
+      "owner": "付款业务负责人",
+      "resumeCondition": "银行确认原条目成功或失败，并将证据写回同一责任记录。"
+    }
+  ]
+}

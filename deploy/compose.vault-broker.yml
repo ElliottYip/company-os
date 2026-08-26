@@ -1,0 +1,41 @@
+# Optional maintained Vault Broker deployment unit. Combine with either
+# Company OS profile or run it as a separate ingress-backed Compose project.
+services:
+  vault-secret-broker:
+    image: ${COMPANY_OS_VAULT_SECRET_BROKER_IMAGE:?set an immutable Vault Broker image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    user: node
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    pids_limit: 64
+    cpus: 0.25
+    mem_limit: 256m
+    environment:
+      COMPANY_OS_VAULT_ADDRESS: ${COMPANY_OS_VAULT_ADDRESS:?set the customer Vault HTTPS origin}
+      COMPANY_OS_VAULT_NAMESPACE: ${COMPANY_OS_VAULT_NAMESPACE:-}
+      COMPANY_OS_VAULT_AUTH_MOUNT: ${COMPANY_OS_VAULT_AUTH_MOUNT:-approle}
+      COMPANY_OS_VAULT_ROLE_ID_FILE: /run/secrets/vault-role-id
+      COMPANY_OS_VAULT_SECRET_ID_FILE: /run/secrets/vault-secret-id
+      COMPANY_OS_VAULT_BROKER_CONTROL_BEARER_TOKEN_FILE: /run/secrets/control-bearer-token
+      COMPANY_OS_VAULT_BROKER_EXECUTION_BEARER_TOKEN_FILE: /run/secrets/execution-bearer-token
+      COMPANY_OS_VAULT_BROKER_MANAGEMENT_SIGNING_KEY_FILE: /run/secrets/management-signing-key
+      COMPANY_OS_VAULT_BROKER_REFERENCES_FILE: /run/config/secret-references.json
+      COMPANY_OS_VAULT_BROKER_STATE_FILE: /var/lib/company-os-vault-broker/leases.json
+      COMPANY_OS_VAULT_BROKER_REFERENCE_STATE_FILE: /var/lib/company-os-vault-broker/references.json
+      COMPANY_OS_VAULT_BROKER_PUBLIC_URL: ${COMPANY_OS_VAULT_BROKER_PUBLIC_URL:?set the ingress HTTPS origin}
+      COMPANY_OS_VAULT_BROKER_HOST: 0.0.0.0
+      COMPANY_OS_VAULT_BROKER_PORT: 4321
+      COMPANY_OS_VAULT_BROKER_MAXIMUM_LEASE_SECONDS: ${COMPANY_OS_VAULT_BROKER_MAXIMUM_LEASE_SECONDS:-600}
+    volumes:
+      - ${COMPANY_OS_VAULT_BROKER_SECRET_DIRECTORY:?set the absolute Broker secret directory}:/run/secrets:ro
+      - ${COMPANY_OS_VAULT_BROKER_CONFIG_DIRECTORY:?set the absolute Broker config directory}:/run/config:ro
+      - company_os_vault_broker_state:/var/lib/company-os-vault-broker
+    ports:
+      - "127.0.0.1:${COMPANY_OS_VAULT_BROKER_PORT:-4321}:4321"
+
+volumes:
+  company_os_vault_broker_state:

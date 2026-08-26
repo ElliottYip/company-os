@@ -26,6 +26,23 @@ export interface ModelRoutingIntent {
   readonly requiredResidency: ModelResidency;
 }
 
+/**
+ * Immutable, secret-free authority selected for one Work Attempt. The opaque
+ * credential reference is retained only so the control plane can obtain a
+ * short-lived broker lease; credential material never enters this snapshot.
+ */
+export interface ModelExecutionAuthority {
+  readonly policyId: Identifier;
+  readonly routeId: Identifier;
+  readonly providerAdapterId: Identifier;
+  readonly modelReference: Identifier;
+  readonly classification: DataClassification;
+  readonly residency: ModelResidency;
+  readonly credentialReferenceId: Identifier;
+  readonly credentialVersion: number;
+  readonly providerCapabilityDigest: string;
+}
+
 export type ModelRoutingDecision =
   | { readonly type: "SELECTED"; readonly policyId: Identifier; readonly route: ModelRoute }
   | { readonly type: "DENIED"; readonly policyCode: string };

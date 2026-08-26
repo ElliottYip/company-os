@@ -1,0 +1,83 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Company OS Secret Lease Redemption",
+    "version": "1.0.0",
+    "description": "Execution-node-only redemption of an opaque, attempt-bound secret lease. This contract is never available to browsers or the Company OS control plane."
+  },
+  "servers": [{ "url": "https://customer-broker.invalid", "description": "Replace with the customer-owned Broker origin." }],
+  "security": [{ "executionBearerAuth": [] }],
+  "paths": {
+    "/v1/redemptions": {
+      "post": {
+        "summary": "Redeem one exact lease at an execution boundary",
+        "operationId": "redeemSecretLease",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RedemptionRequest" } } }
+        },
+        "responses": {
+          "200": {
+            "description": "Ephemeral material returned only to the authenticated execution node.",
+            "headers": { "Cache-Control": { "required": true, "schema": { "type": "string", "const": "no-store" } } },
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RedemptionResponse" } } }
+          },
+          "401": { "description": "Execution authentication failed.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Lease not found.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "413": { "description": "Request size limit exceeded.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": { "description": "Lease is expired, revoked, stale, or bound to a different attempt.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "503": { "description": "Vault is unavailable.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": { "executionBearerAuth": { "type": "http", "scheme": "bearer" } },
+    "schemas": {
+      "Identifier": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+      "RedemptionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["schemaVersion", "leaseId", "companyId", "consumerId", "workAttemptId"],
+        "properties": {
+          "schemaVersion": { "type": "integer", "const": 1 },
+          "leaseId": { "$ref": "#/components/schemas/Identifier" },
+          "companyId": { "$ref": "#/components/schemas/Identifier" },
+          "consumerId": { "$ref": "#/components/schemas/Identifier" },
+          "workAttemptId": { "$ref": "#/components/schemas/Identifier" },
+          "expectedVersion": { "type": "integer", "minimum": 1 }
+        }
+      },
+      "RedemptionResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["material"],
+        "properties": {
+          "material": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["environmentVariable", "value", "expiresAt"],
+            "properties": {
+              "environmentVariable": { "type": "string", "enum": ["OPENAI_API_KEY", "CODEX_ACCESS_TOKEN"] },
+              "value": { "type": "string", "minLength": 1, "maxLength": 32768 },
+              "expiresAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code"],
+            "properties": { "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,95}$" } }
+          }
+        }
+      }
+    }
+  }
+}

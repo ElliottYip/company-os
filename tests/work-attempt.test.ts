@@ -31,6 +31,17 @@ function draft() {
       dataAuthorizationIds: ["data-contract-1"],
       connectorId: "connector-1",
       connectorCapabilityDigest: `sha256:${"a".repeat(64)}`,
+      model: {
+        policyId: "default-models",
+        routeId: "local-primary",
+        providerAdapterId: "provider-one",
+        modelReference: "model-one",
+        classification: "INTERNAL",
+        residency: "LOCAL",
+        credentialReferenceId: "model-secret-one",
+        credentialVersion: 7,
+        providerCapabilityDigest: `sha256:${"b".repeat(64)}`,
+      },
     },
     createdAt: "2026-08-20T10:00:00.000Z",
   };
@@ -46,7 +57,14 @@ test("an attempt freezes the exact responsibility, capability, permission, and d
   assert.deepEqual(attempt.authority.actionIds, ["read-data", "publish-result"]);
   assert.deepEqual(attempt.authority.permissionIds, ["permission-1"]);
   assert.equal(attempt.authority.responsibilityContractRevision, 7);
+  assert.equal(attempt.authority.model?.routeId, "local-primary");
   assert.equal(attempt.lastFencingToken, 0);
+});
+
+test("an attempt rejects a malformed model authority before persistence", () => {
+  const input = draft();
+  input.authority.model.providerCapabilityDigest = "sha256:not-a-real-digest";
+  assert.throws(() => createWorkAttempt(input), /WORK_ATTEMPT_MODEL_CAPABILITY_DIGEST_INVALID/);
 });
 
 test("a newer lease fences a stale worker before it can start or complete", () => {

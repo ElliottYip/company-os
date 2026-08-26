@@ -58,7 +58,7 @@ test("company registry rejects cross-tenant access and invalid reporting cycles"
   const crossTenant = new CompanyRegistry({
     identity: identity("company-two"), events, now: () => "2026-08-18T08:00:00.000Z", nextId: () => "event-one",
   });
-  await assert.rejects(crossTenant.register(structure), /tenant mismatch/i);
+  await assert.rejects(crossTenant.register(structure), /TENANT_MISMATCH/);
 
   const cyclic = structuredClone(structure);
   cyclic.reportingLines.push({ subordinatePositionId: "position-boss", managerPositionId: "position-agent" });

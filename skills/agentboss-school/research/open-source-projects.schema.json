@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:company-os:agentboss-school:open-source-projects:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "capturedAt", "policy", "projects"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "capturedAt": { "type": "string", "format": "date" },
+    "policy": { "type": "string", "minLength": 1 },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "repository", "starsSnapshot", "license", "licenseUrl", "maintenance", "patternUse", "copyrightBoundary", "copiedAssets"],
+        "properties": {
+          "sourceId": { "type": "string", "pattern": "^SRC-[A-Z0-9-]+$" },
+          "repository": { "type": "string", "pattern": "^https://github.com/" },
+          "starsSnapshot": { "type": ["integer", "null"], "minimum": 0 },
+          "license": { "type": "string", "minLength": 1 },
+          "licenseUrl": { "type": "string", "pattern": "^https://" },
+          "maintenance": { "enum": ["ACTIVE", "MAINTENANCE", "ARCHIVED", "UNKNOWN"] },
+          "patternUse": { "type": "string", "minLength": 1 },
+          "copyrightBoundary": { "type": "string", "minLength": 1 },
+          "copiedAssets": { "type": "array", "maxItems": 0 }
+        }
+      }
+    }
+  }
+}

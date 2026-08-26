@@ -10,10 +10,10 @@ export interface ButtonOptions {
 export function createButton(options: ButtonOptions): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
-  button.className = `cos-button cos-button--${options.tone ?? "secondary"}`;
+  const tone = options.tone ?? "secondary";
+  button.className = `family-button family-button--${tone} cos-button cos-button--${tone}`;
   button.textContent = options.label;
   button.disabled = options.disabled ?? false;
   button.addEventListener("click", options.onClick);
   return button;
 }
-

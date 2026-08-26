@@ -1,0 +1,71 @@
+{
+  "desktop": [
+    {
+      "slug": "sidebar",
+      "storyId": "product-navigation-layout--sidebar-icon-alignment",
+      "text": "P\nPaperclip Storybook\nNew Task\nSearch\nDashboard\n1 live\nInbox\n5\nWORK\nTasks\nRoutines\nArtifacts\nSkills\nWorkspaces\nProjects\nAGENTS\nCodexCoder\n1 live\nSee all agents\nCOMPANY\nOrg\nTimeline\nCosts\nActivity\nSettings"
+    },
+    {
+      "slug": "inbox",
+      "storyId": "product-inbox-blocked-tab--desktop-loaded",
+      "text": "INBOX / BLOCKED TAB — DESKTOP LAYOUT\n\nNo work is stopped.\n\nTasks that need a decision, recovery, or external action will appear here."
+    },
+    {
+      "slug": "decisions",
+      "storyId": "pages-decisions-desk--todays-desk",
+      "text": "Decisions\n5 decisions\nAll\nPRs to review\n4\nPlan approvals\n2\nQuestions\n1\nAll\nToday\nYesterday\nLast 7 days\nThis month\nCustom\nDECIDE NOW\n3\nApproval\n·\nPAP-1000\n·\nToday\n· set by Prioritizer\nTrain\n18d ago\nMerge PR #10664: decisions desk data layer\n\nPR passed CI and is waiting on a merge decision.\n\nExpired\nWhen to decide\nToday\nThis week\nWhenever\nPick date\nQueues\nPRs to review\nQueue\nSnooze\nAsk agent for recommendation\nSee less\nRequest revision\nReject\nApprove\nDecision requested\n·\nPAP-1000\n·\nToday\n· set by Prioritizer\nTrain\n18d ago\nApprove plan: heartbeat.ts split\n\nCoverage-first, 5 phases\n\nSee more\nApproval\n·\nPAP-1000\n·\nThis week\n· set by Prioritizer\nTrain\n18d ago\nMerge PR #10651: prioritized attention feed\n\nSecond review approved; ready to merge.\n\nSee more\nReject\nApprove\nNEW TODAY\n1\nReview\n·\nPAP-1000\n·\nWhenever\n19d ago\nDesign review: settings redesign\n\nIn-review issue is waiting on a human reviewer.\n\nSee more\nOpen\nEARLIER\n1\nBudget\n20d ago\nCompany budget crossed 85%\n\nBudget crossed the 85% threshold.\n\nSee more\nOpen\nDECIDED\nEXPIRED"
+    },
+    {
+      "slug": "agent-detail",
+      "storyId": "pages-agent-detail--dashboard",
+      "text": "CodexCoder\n\nEngineer - Senior Product Engineer\n\nAssign Task\nRun Heartbeat\nPause\nrunning\nDashboard\nInstructions\nSkills\nConfiguration\nTools\nRuns\nAudit\nBudget\nLive Run\n· run-agen\nrunning\nrun-agen\nOn-demand\n2h ago\nRun Activity\nLast 14 days\n8/7\n8/13\n8/20\nSucceeded\nFailed\nOther\nTasks by Status\nLast 14 days\n\nNo tasks\n\nSuccess Rate\nLast 14 days\n8/7\n8/13\n8/20\nRecent Tasks\nSee All →\nPAP-1641\nCreate super-detailed storybooks for the project\nin progress\nPAP-1528\nAdd budget hard-stop incident review\nblocked\nPAP-1602\nQA invite flow on authenticated private mode\nin review\nPAP-1668\nExtract issue row density fixtures\ntodo\nCosts\nInput tokens\n1.3M\nOutput tokens\n402.1k\nCached tokens\n733.4k\nTotal cost\n$129.40"
+    },
+    {
+      "slug": "timeline",
+      "storyId": "pages-work-timeline--full-page-with-mock-data",
+      "text": "Work Timeline\nRuns\n44\nAgents\n12\nRun time\n5h 4m\nTokens used\n2.3M\nDelegated\nAutomation\nCancelled\nNow\nClaudeCoder\nCloudOpsEngineer\nSenior Engineer…\nCTO\nUXDesigner\nCodexCoder\nCEO\nQA\nDevRel\nSecurityEngineer\nSenior Planning…\nStrategic Ops\nClaudeCoder\nCloudOpsEngineer\nSenior Engineer F…\nCTO\nUXDesigner\nCodexCoder\nCEO\nQA\nDevRel\nSecurityEngineer\nSenior Planning E…\nStrategic Ops\nJul 2, 10 PM\nJul 2, 10:15 PM\nJul 2, 10:30 PM\nJul 2, 10:45 PM\nJul 2, 11 PM\nJul 2, 11:15 PM\nJul 2, 11:30 PM\nJul 2, 11:45 PM\nJul 3, 12 AM\n\n44 runs · 2026/7/2 22:00:00 to 2026/7/3 00:00:00\n\nRange\nToday\n7 days\n30 days\nto"
+    },
+    {
+      "slug": "routines",
+      "storyId": "product-routines-·-list-grouped-cards--grouped-cards",
+      "text": "BOARD UI\n3\nWeekly digest\nBoard UI\nDigest Bot\n2026/6/9 16:00:00 · succeeded\nRun now\nOn\nTriage stale issues\nBoard UI\nCodexCoder\n2026/6/8 16:00:00 · succeeded\nRun now\nOn\nNightly changelog draft\npaused\nBoard UI\nCodexCoder\nNever\nRun now\nOff\nGROWTH\n2\nLead enrichment sweep\nGrowth\nCodexCoder\n2026/6/9 14:00:00 · running\nRun now\nOn\nOutbound follow-ups\nGrowth\nDigest Bot\n2026/6/7 14:00:00 · failed\nRun now\nOn"
+    },
+    {
+      "slug": "artifacts",
+      "storyId": "pages-artifacts--grid",
+      "text": "All\nImages\nVideos\nDocuments\nText\nFiles\nProduct demo — primary cut.mp4\nLast edited Jun 4, 2026\n·\nClaudeCoder\nHero render.png\nLast edited Jun 4, 2026\n·\nClaudeCoder\n\nBuild a company-level Artifacts page at /{companyPrefix}/artifacts, with a sidebar item below Goals and a three-column artifact grid. The page should make agent-produced work easy to find without becoming another attachment dump.\n\nArtifacts Page Plan\nLast edited Jun 4, 2026\n·\nCodexCoder\n\nReviewed the primary cut. Color grade looks good; trim the first 1.2s of dead air. Re-export at 1080p and attach the final to the issue.\n\nreview-notes.txt\nLast edited Jun 4, 2026\n·\nClaudeCoder\nFILE\ndesign-assets.zip\nLast edited Jun 4, 2026\n·\nClaudeCoder\nIMAGE\nmissing-preview.png (broken source)\nLast edited Jun 4, 2026\n·\nClaudeCoder"
+    },
+    {
+      "slug": "secrets",
+      "storyId": "product-secrets--secrets-inventory",
+      "text": "Secrets\nSecrets\nMy secrets\nProvider vaults\nProposals\n\nUse secrets by binding them to runtime environment variables.\n\nCreate or link a secret here, then open an agent's Environment variables or a project's Env field. Add the env key the process expects, for example GH_TOKEN, choose Secret, and select the stored secret version.\n\nPaperclip resolves the value server-side when the run starts and injects it as that env var. Project env applies to every task in the project and overrides agent env on matching keys.\n\nFolders\nFlat\nImport from vault\nNew secret\nSECRET\nSTATUS\nVERSION / COVERAGE\nUPDATED\nACTIONS\nOPENAI_API_KEY\nopenai_api_key\nCompany\nActive\nv3 · managed\n2026/4/20\nPROD_AWS_DEPLOY_KEY\nprod_aws_deploy\nCompany\nActive\nv2 · linked\n2026/4/20\nPersonal GitHub token\nPERSONAL_GH_TOKEN\nEach user\nActive\n5/7 set\n· 2 miss\n2026/6/2\nUser OpenAI API key\nUSER_OPENAI_API_KEY\nEach user\nActive\n7/7 set\n2026/6/4"
+    },
+    {
+      "slug": "tools",
+      "storyId": "tools-access-profiles--index-populated",
+      "text": "Access profiles\n\nDecide which tools your agents can use. Build a profile once, then assign it to the agents that need it.\n\nCheck an agent's access\nNew profile\nActive\nArchived\nProfile\tAllows\tAssigned to\tStatus\tUpdated\t\n\nRead-only starter\n\t\n6 tools\n\t\n3 agents\t\nActive\n\t70d ago\t\n\n\nEveryday work\n\t\n12 tools · 1 app\n\t\n2 agents\t\nActive\n\t69d ago\t\n\n\nCompany baseline\n\t\nAll except 4 tools\n\tCompany default\t\nActive\n\t72d ago\t\n\n\nMarketing reach\n\t\n3 tools\n\tNot assigned yet— does not change access\t\nActive\n\t71d ago\t\n\n\nOnboarding bot access\n\t\n2 tools\n\tNot assigned yet— does not change access\t\nDraft\nResume\n\t69d ago\t"
+    }
+  ],
+  "mobile": [
+    {
+      "slug": "decisions",
+      "storyId": "pages-decisions--mobile-populated",
+      "text": "Decisions\n7 decisions\nTODAY\n2\nRecovery\n·\nPAP-1000\nJul 10, 2026\nRun watchdog escalated — agent stalled 40m\n\n“Agent has not produced output in 40 minutes.”\n\nOpen\nApproval\nJul 10, 2026\nHire agent: Research Analyst\n\n“Adds a Research Analyst to the Growth pod.”\n\nSee less\nRequest revision\nReject\nApprove\nYESTERDAY\n2\nDecision requested\n·\nPAP-1000\nJul 9, 2026\nWhich rollout order should we use?\n\n2 questions — “Which auth provider should we standardize on?”\n\nSee more\nReview\n·\nPAP-1000\nJul 9, 2026\nPR ready for review: attention feed endpoint\n\n“3 files changed · +212 / −41”\n\n+1\nSee more\nOpen\nTHIS WEEK\n2\nJoin request\nJul 7, 2026\nalex@acme.dev wants to join\n\nJoin request is pending approval.\n\nSee more\nReject\nApprove\nFailed run\nJul 5, 2026\nDeploy pipeline failed after 3 retries\n\nDeployer — “exit code 1 running migrate”\n\nOpen\nEARLIER\n1\nBudget\nMay 31, 2026\nCompany budget crossed 85%\n\n85% of budget used ($425 / $500)\n\nOpen"
+    },
+    {
+      "slug": "artifacts",
+      "storyId": "pages-artifacts--mobile-grouping",
+      "text": "All\nImages\nVideos\nDocuments\nText\nFiles\n5\nPAP-10306\nLanding visuals refresh\n5 artifacts\n·\nUpdated Jun 4, 2026\n3\nPAP-10205\nRecord the launch walkthrough\n3 artifacts\n·\nUpdated Jun 3, 2026\n2\nPAP-10341\nDraft the rollout plan\n2 artifacts\n·\nUpdated Jun 3, 2026"
+    },
+    {
+      "slug": "agent-detail",
+      "storyId": "pages-agent-detail--dashboard",
+      "text": "CodexCoder\n\nEngineer - Senior Product Engineer\n\nLive\nDashboard\nInstructions\nSkills\nConfiguration\nTools\nRuns\nAudit\nBudget\nLive Run\n· run-agen\nrunning\nrun-agen\nOn-demand\n2h ago\nRun Activity\nLast 14 days\n8/7\n8/13\n8/20\nSucceeded\nFailed\nOther\nTasks by Status\nLast 14 days\n\nNo tasks\n\nSuccess Rate\nLast 14 days\n8/7\n8/13\n8/20\nRecent Tasks\nSee All →\nPAP-1641\nCreate super-detailed storybooks for the project\nin progress\nPAP-1528\nAdd budget hard-stop incident review\nblocked\nPAP-1602\nQA invite flow on authenticated private mode\nin review\nPAP-1668\nExtract issue row density fixtures\ntodo\nCosts\nInput tokens\n1.3M\nOutput tokens\n402.1k\nCached tokens\n733.4k\nTotal cost\n$129.40"
+    },
+    {
+      "slug": "tools",
+      "storyId": "tools-access-profiles--index-populated",
+      "text": "Access profiles\n\nDecide which tools your agents can use. Build a profile once, then assign it to the agents that need it.\n\nCheck an agent's access\nNew profile\nActive\nArchived\nProfile\tAllows\tAssigned to\tStatus\tUpdated\t\n\nRead-only starter\n\t\n6 tools\n\t\n3 agents\t\nActive\n\t70d ago\t\n\n\nEveryday work\n\t\n12 tools · 1 app\n\t\n2 agents\t\nActive\n\t69d ago\t\n\n\nCompany baseline\n\t\nAll except 4 tools\n\tCompany default\t\nActive\n\t72d ago\t\n\n\nMarketing reach\n\t\n3 tools\n\tNot assigned yet— does not change access\t\nActive\n\t71d ago\t\n\n\nOnboarding bot access\n\t\n2 tools\n\tNot assigned yet— does not change access\t\nDraft\nResume\n\t69d ago\t"
+    }
+  ]
+}

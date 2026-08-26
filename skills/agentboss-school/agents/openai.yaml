@@ -1,0 +1,4 @@
+interface:
+  display_name: "AgentBoss School"
+  short_description: "系统学习如何委派、监督、审批并为 Agent 的业务结果负责"
+  default_prompt: "Use $agentboss-school to start or continue my Agent Boss course."

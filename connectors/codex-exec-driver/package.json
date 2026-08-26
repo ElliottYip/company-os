@@ -1,0 +1,11 @@
+{
+  "name": "@company-os/codex-exec-driver",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": "./index.mjs",
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
