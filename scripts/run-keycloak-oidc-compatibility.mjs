@@ -36,7 +36,7 @@ function cleanup() {
   if (cleaned) return;
   cleaned = true;
   for (const name of [keycloakContainer, postgresContainer]) {
-    try { docker("stop", name); } catch { /* already stopped */ }
+    try { docker("rm", "--force", name); } catch { /* already removed */ }
   }
   rmSync(temporaryDirectory, { recursive: true, force: true });
 }
@@ -73,11 +73,11 @@ try {
   };
   writeFileSync(`${importDirectory}/company-os-compat-realm.json`, `${JSON.stringify(realm, null, 2)}\n`, { mode: 0o600 });
 
-  docker("run", "-d", "--rm", "--name", postgresContainer,
+  docker("run", "-d", "--name", postgresContainer,
     "-e", "POSTGRES_USER=company_os_test", "-e", "POSTGRES_PASSWORD=company_os_test",
     "-e", "POSTGRES_DB=company_os_test", "-p", `127.0.0.1:${postgresPort}:5432`, POSTGRES_IMAGE);
   waitForPostgres();
-  docker("run", "-d", "--rm", "--name", keycloakContainer, "--memory", "1g",
+  docker("run", "-d", "--name", keycloakContainer, "--memory", "1g",
     "-e", `KC_BOOTSTRAP_ADMIN_USERNAME=${adminUsername}`,
     "-e", `KC_BOOTSTRAP_ADMIN_PASSWORD=${adminPassword}`,
     "-p", `127.0.0.1:${keycloakPort}:8443`,
@@ -103,7 +103,8 @@ try {
     },
   });
   if (result.status !== 0) {
-    const logs = docker("logs", "--tail", "120", keycloakContainer);
+    let logs = "KEYCLOAK_COMPAT_LOGS_UNAVAILABLE";
+    try { logs = docker("logs", "--tail", "120", keycloakContainer); } catch { /* preserve the test failure */ }
     process.stderr.write(`${logs}\n`);
     process.exitCode = result.status ?? 1;
   }
@@ -124,6 +125,10 @@ async function waitForHttps(url, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (await httpsReady(url)) return;
+    const running = spawnSync("docker", ["inspect", "--format", "{{.State.Running}}", keycloakContainer], { encoding: "utf8" });
+    if (running.status === 0 && running.stdout.trim() === "false") {
+      throw new Error(`KEYCLOAK_COMPAT_EXITED:${docker("logs", "--tail", "120", keycloakContainer)}`);
+    }
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   throw new Error(`KEYCLOAK_COMPAT_NOT_READY:${docker("logs", "--tail", "120", keycloakContainer)}`);

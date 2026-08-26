@@ -175,11 +175,11 @@ async function cleanup() {
     try { compose("down", "--volumes", "--remove-orphans"); } catch { /* exact project may already be down */ }
   }
   if (managedCloud) {
-    try { docker("stop", postgresContainer); } catch { /* --rm container may already be gone */ }
+    try { docker("rm", "--force", postgresContainer); } catch { /* container may already be gone */ }
     try { docker("network", "rm", externalNetwork); } catch { /* exact network may already be gone */ }
   }
   try { docker("image", "rm", apiImage, webImage); } catch { /* an interrupted build may not have produced both */ }
-  try { docker("stop", keycloakContainer); } catch { /* --rm container may already be gone */ }
+  try { docker("rm", "--force", keycloakContainer); } catch { /* container may already be gone */ }
   rmSync(temporaryDirectory, { recursive: true, force: true });
 }
 
@@ -260,7 +260,7 @@ try {
   }
   writeFileSync(overridePath, overrideLines.join("\n") + "\n", { mode: 0o600 });
 
-  docker("run", "--detach", "--rm", "--name", keycloakContainer, "--memory", "1g",
+  docker("run", "--detach", "--name", keycloakContainer, "--memory", "1g",
     "--env", "KC_BOOTSTRAP_ADMIN_USERNAME=" + adminUsername,
     "--env", "KC_BOOTSTRAP_ADMIN_PASSWORD=" + adminPassword,
     "--publish", "127.0.0.1:" + keycloakPort + ":8443",
@@ -274,7 +274,7 @@ try {
 
   if (managedCloud) {
     docker("network", "create", externalNetwork);
-    docker("run", "--detach", "--rm", "--name", postgresContainer, "--network", externalNetwork,
+    docker("run", "--detach", "--name", postgresContainer, "--network", externalNetwork,
       "--env", "POSTGRES_DB=company_os", "--env", "POSTGRES_USER=" + databaseOwner,
       "--env", "POSTGRES_PASSWORD=" + databasePassword, POSTGRES_IMAGE);
     await waitForPostgres();
