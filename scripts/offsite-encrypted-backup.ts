@@ -4,7 +4,7 @@ import { link, lstat, mkdir, readFile, rm, stat } from "node:fs/promises";
 import { basename, isAbsolute } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { parseEncryptedBackupManifest } from "./postgres-encrypted-backup.ts";
+import { parseEncryptedBackupManifest } from "./encrypted-backup-manifest.ts";
 
 const BUCKET = /^(?=.{3,63}$)[a-z0-9](?:[a-z0-9.-]*[a-z0-9])$/;
 const PREFIX = /^(?:[a-z0-9][a-z0-9._-]*)(?:\/[a-z0-9][a-z0-9._-]*)*$/;
