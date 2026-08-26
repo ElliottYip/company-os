@@ -12,7 +12,7 @@ source compatibility. Company OS remains independently owned and runnable.
 
 ## Evidence captured at baseline
 
-`npm test` passed on 2026-08-26 with 510 cases (506 passed and four explicit
+`npm test` passed on 2026-08-26 with 511 cases (507 passed and four explicit
 environment-gated live cases skipped in the credential-free run). The live
 PostgreSQL database, OIDC and reference Connector cases passed separately
 against disposable infrastructure. The complete `npm run verify` gate also ran
@@ -27,6 +27,10 @@ reconciles retained startup state with exact digest-addressed API/Web images,
 container health and loopback probes, while keeping customer acceptance a
 separate authority. Partial or failed starts remain visible as stable
 operator-review states instead of being silently retried or promoted.
+The release manifest now binds the exact public source repository, SemVer tag,
+release workflow and GitHub Actions qualification run/attempt URI alongside the
+five image digests. The manifest therefore points to the run that produced its
+admission evidence rather than only listing intended commands.
 Planned staging restart is now an explicit authorized state machine rather than
 a runbook-only command sequence. It requires a database-derived zero-blocker
 drain proof, serializes against first start, restarts only API and Web, verifies

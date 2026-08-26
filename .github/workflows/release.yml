@@ -229,6 +229,11 @@ jobs:
         env:
           COMPANY_OS_RELEASE_VERSION: ${{ steps.coordinates.outputs.version }}
           COMPANY_OS_SOURCE_REVISION: ${{ github.sha }}
+          COMPANY_OS_SOURCE_REPOSITORY: ${{ github.server_url }}/${{ github.repository }}
+          COMPANY_OS_RELEASE_TAG: ${{ github.ref_name }}
+          COMPANY_OS_QUALIFICATION_RUN_ID: ${{ github.run_id }}
+          COMPANY_OS_QUALIFICATION_RUN_ATTEMPT: ${{ github.run_attempt }}
+          COMPANY_OS_QUALIFICATION_RUN_URI: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           COMPANY_OS_API_IMAGE: ${{ steps.coordinates.outputs.api }}@${{ steps.api.outputs.digest }}
           COMPANY_OS_WEB_IMAGE: ${{ steps.coordinates.outputs.web }}@${{ steps.web.outputs.digest }}
           COMPANY_OS_OPS_IMAGE: ${{ steps.coordinates.outputs.ops }}@${{ steps.ops.outputs.digest }}

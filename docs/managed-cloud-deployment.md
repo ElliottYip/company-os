@@ -60,6 +60,11 @@ create or rotate that role and never enters the API container.
    ```sh
    COMPANY_OS_RELEASE_VERSION=0.1.0 \
    COMPANY_OS_SOURCE_REVISION=<40-hex-commit> \
+   COMPANY_OS_SOURCE_REPOSITORY=https://github.com/<owner>/<repository> \
+   COMPANY_OS_RELEASE_TAG=v0.1.0 \
+   COMPANY_OS_QUALIFICATION_RUN_ID=<github-actions-run-id> \
+   COMPANY_OS_QUALIFICATION_RUN_ATTEMPT=<github-actions-run-attempt> \
+   COMPANY_OS_QUALIFICATION_RUN_URI=https://github.com/<owner>/<repository>/actions/runs/<run-id> \
    COMPANY_OS_API_IMAGE=<registry/api@sha256:64-hex> \
    COMPANY_OS_WEB_IMAGE=<registry/web@sha256:64-hex> \
    COMPANY_OS_OPS_IMAGE=<registry/ops@sha256:64-hex> \
@@ -85,8 +90,9 @@ then drives the complete browser bootstrap without request interception or
 production credentials.
 
 The manifest contains no credentials and may be retained with public release
-provenance. The SBOM is produced by release automation rather than committed as
-a stale snapshot.
+provenance. It binds the source repository, exact tag and GitHub Actions
+qualification run rather than merely listing the intended checks. The SBOM is
+produced by release automation rather than committed as a stale snapshot.
 
 An exact SemVer release tag starts the protected workflow. It first runs a
 read-only `qualify` job against the exact tagged revision. It includes the complete repository gate, real

@@ -16,6 +16,18 @@ export async function createReleaseManifest(environment = process.env) {
     const codexAgentNodeImage = required(environment, "COMPANY_OS_CODEX_AGENT_NODE_IMAGE", /@sha256:[a-f0-9]{64}$/);
     const vaultSecretBrokerImage = required(environment, "COMPANY_OS_VAULT_SECRET_BROKER_IMAGE", /@sha256:[a-f0-9]{64}$/);
     const releaseVersion = required(environment, "COMPANY_OS_RELEASE_VERSION", /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?$/);
+    const sourceRepository = required(environment, "COMPANY_OS_SOURCE_REPOSITORY",
+      /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/);
+    const releaseTag = required(environment, "COMPANY_OS_RELEASE_TAG",
+      /^v[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?$/);
+    const qualificationRunId = required(environment, "COMPANY_OS_QUALIFICATION_RUN_ID", /^[1-9][0-9]{0,19}$/);
+    const qualificationRunAttempt = required(environment, "COMPANY_OS_QUALIFICATION_RUN_ATTEMPT", /^[1-9][0-9]{0,5}$/);
+    const qualificationRunUri = required(environment, "COMPANY_OS_QUALIFICATION_RUN_URI",
+      /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/actions\/runs\/[1-9][0-9]{0,19}$/);
+    if (releaseTag !== `v${releaseVersion}`) throw new Error("COMPANY_OS_RELEASE_TAG_MISMATCH");
+    if (qualificationRunUri !== `${sourceRepository}/actions/runs/${qualificationRunId}`) {
+      throw new Error("COMPANY_OS_QUALIFICATION_RUN_URI_MISMATCH");
+    }
     const root = new URL("../", import.meta.url);
     const lockfile = await readFile(new URL("package-lock.json", root));
     const migrationsDirectory = new URL("adapters/persistence/postgres/migrations/", root);
@@ -30,6 +42,17 @@ export async function createReleaseManifest(environment = process.env) {
       product: "company-os",
       releaseVersion,
       sourceRevision,
+      provenance: {
+        sourceRepository,
+        releaseTag,
+        workflowPath: ".github/workflows/release.yml",
+        workflowEvent: "push",
+        qualificationRun: {
+          id: qualificationRunId,
+          attempt: qualificationRunAttempt,
+          uri: qualificationRunUri,
+        },
+      },
       profiles: ["managed-cloud", "self-hosted"],
       images: {
         api: apiImage,

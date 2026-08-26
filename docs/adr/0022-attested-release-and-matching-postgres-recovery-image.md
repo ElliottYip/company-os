@@ -30,7 +30,8 @@ and make rollback evidence incomplete.
 - The release manifest requires digest-addressed coordinates for all five
   images and records the exact source revision, lockfile digest, ordered
   migration digests, public protocol versions, runtime versions and required
-  qualification commands.
+  qualification commands. It also binds the source repository, release tag and
+  exact GitHub Actions qualification run/attempt URI.
 - Release automation separates a read-only `qualify` job from the privileged
   `publish` job. The exact release revision must pass repository, database,
   identity, verified-TLS customer-boundary, sustained-soak and both deployment

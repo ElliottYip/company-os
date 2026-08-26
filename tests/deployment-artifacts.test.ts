@@ -264,6 +264,11 @@ test("release manifest binds source, immutable images, lockfile and ordered migr
   const manifest = await createReleaseManifest({
     COMPANY_OS_RELEASE_VERSION: "1.2.3",
     COMPANY_OS_SOURCE_REVISION: "a".repeat(40),
+    COMPANY_OS_SOURCE_REPOSITORY: "https://github.com/example/company-os",
+    COMPANY_OS_RELEASE_TAG: "v1.2.3",
+    COMPANY_OS_QUALIFICATION_RUN_ID: "123456789",
+    COMPANY_OS_QUALIFICATION_RUN_ATTEMPT: "1",
+    COMPANY_OS_QUALIFICATION_RUN_URI: "https://github.com/example/company-os/actions/runs/123456789",
     COMPANY_OS_API_IMAGE: `registry.example/api@sha256:${"b".repeat(64)}`,
     COMPANY_OS_WEB_IMAGE: `registry.example/web@sha256:${"c".repeat(64)}`,
     COMPANY_OS_OPS_IMAGE: `registry.example/ops@sha256:${"d".repeat(64)}`,
@@ -271,6 +276,17 @@ test("release manifest binds source, immutable images, lockfile and ordered migr
     COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: `registry.example/vault-secret-broker@sha256:${"f".repeat(64)}`,
   });
   assert.equal(manifest.sourceRevision, "a".repeat(40));
+  assert.deepEqual(manifest.provenance, {
+    sourceRepository: "https://github.com/example/company-os",
+    releaseTag: "v1.2.3",
+    workflowPath: ".github/workflows/release.yml",
+    workflowEvent: "push",
+    qualificationRun: {
+      id: "123456789",
+      attempt: "1",
+      uri: "https://github.com/example/company-os/actions/runs/123456789",
+    },
+  });
   assert.deepEqual(manifest.profiles, ["managed-cloud", "self-hosted"]);
   assert.equal(manifest.images.ops, `registry.example/ops@sha256:${"d".repeat(64)}`);
   assert.equal(manifest.images.codexAgentNode, `registry.example/codex-agent-node@sha256:${"e".repeat(64)}`);
@@ -296,6 +312,28 @@ test("release manifest binds source, immutable images, lockfile and ordered migr
   assert.match(manifest.cutover.planCommand, /previous-manifest\.json/);
   assert.doesNotMatch(JSON.stringify(manifest),
     /"(?:password|accessToken|refreshToken|clientSecret|bearerToken|credentialValue)"\s*:/i);
+});
+
+test("release manifest rejects a tag or qualification run outside its exact repository", async () => {
+  const base = {
+    COMPANY_OS_RELEASE_VERSION: "1.2.3-rc.1",
+    COMPANY_OS_SOURCE_REVISION: "a".repeat(40),
+    COMPANY_OS_SOURCE_REPOSITORY: "https://github.com/example/company-os",
+    COMPANY_OS_RELEASE_TAG: "v1.2.3-rc.1",
+    COMPANY_OS_QUALIFICATION_RUN_ID: "123456789",
+    COMPANY_OS_QUALIFICATION_RUN_ATTEMPT: "2",
+    COMPANY_OS_QUALIFICATION_RUN_URI: "https://github.com/example/company-os/actions/runs/123456789",
+    COMPANY_OS_API_IMAGE: `registry.example/api@sha256:${"b".repeat(64)}`,
+    COMPANY_OS_WEB_IMAGE: `registry.example/web@sha256:${"c".repeat(64)}`,
+    COMPANY_OS_OPS_IMAGE: `registry.example/ops@sha256:${"d".repeat(64)}`,
+    COMPANY_OS_CODEX_AGENT_NODE_IMAGE: `registry.example/codex-agent-node@sha256:${"e".repeat(64)}`,
+    COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: `registry.example/vault-secret-broker@sha256:${"f".repeat(64)}`,
+  };
+  await assert.rejects(() => createReleaseManifest({ ...base, COMPANY_OS_RELEASE_TAG: "v1.2.3" }),
+    /COMPANY_OS_RELEASE_TAG_MISMATCH/);
+  await assert.rejects(() => createReleaseManifest({ ...base,
+    COMPANY_OS_QUALIFICATION_RUN_URI: "https://github.com/other/company-os/actions/runs/123456789" }),
+  /COMPANY_OS_QUALIFICATION_RUN_URI_MISMATCH/);
 });
 
 test("release automation publishes five digest-addressed images with SBOM and provenance", async () => {
@@ -325,6 +363,10 @@ test("release automation publishes five digest-addressed images with SBOM and pr
   assert.match(workflow, /provenance: mode=max/);
   assert.match(workflow, /actions\/attest@[a-f0-9]{40}/);
   assert.match(workflow, /COMPANY_OS_OPS_IMAGE/);
+  assert.match(workflow, /COMPANY_OS_SOURCE_REPOSITORY: \$\{\{ github\.server_url \}\}\/\$\{\{ github\.repository \}\}/);
+  assert.match(workflow, /COMPANY_OS_RELEASE_TAG: \$\{\{ github\.ref_name \}\}/);
+  assert.match(workflow, /COMPANY_OS_QUALIFICATION_RUN_ID: \$\{\{ github\.run_id \}\}/);
+  assert.match(workflow, /COMPANY_OS_QUALIFICATION_RUN_ATTEMPT: \$\{\{ github\.run_attempt \}\}/);
   assert.match(workflow, /COMPANY_OS_CODEX_AGENT_NODE_IMAGE/);
   assert.match(workflow, /deploy\/Dockerfile\.codex-agent-node/);
   assert.match(workflow, /deploy\/Dockerfile\.vault-secret-broker/);

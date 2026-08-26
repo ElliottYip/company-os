@@ -27,6 +27,10 @@ workflow serializes by tag and refuses cancellation in progress. It then:
 5. creates the digest-bound release manifest and application SBOM; and
 6. creates the GitHub Release only after all earlier evidence exists.
 
+The manifest retains the exact repository, tag, workflow path, event and
+qualification run/attempt URI. These are public provenance coordinates, not an
+authorization token or a claim that later staging acceptance has passed.
+
 A prerelease suffix such as `0.1.0-rc.1` produces a GitHub prerelease. Runtime
 consumers continue to use image digests rather than tags. A failed run may leave
 diagnostic workflow state or unreferenced registry artifacts, but it cannot
