@@ -7,6 +7,7 @@ import test from "node:test";
 import type { EncryptedBackupManifest } from "../scripts/postgres-encrypted-backup.ts";
 import {
   publishEncryptedBackup,
+  retrieveEncryptedBackup,
   loadS3BackupConfiguration,
   type BackupObjectStore,
   type BackupObjectWrite,
@@ -42,6 +43,12 @@ class MemoryObjectStore implements BackupObjectStore {
     const stored = this.writes.find((candidate) => candidate.bucket === input.bucket && candidate.key === input.key);
     if (!stored) throw new Error("OBJECT_NOT_FOUND");
     return { bytes: stored.body.length, metadata: stored.metadata };
+  }
+
+  async get(input: { readonly bucket: string; readonly key: string; readonly destinationPath: string }) {
+    const stored = this.writes.find((candidate) => candidate.bucket === input.bucket && candidate.key === input.key);
+    if (!stored) throw new Error("OBJECT_NOT_FOUND");
+    await writeFile(input.destinationPath, stored.body, { flag: "wx", mode: 0o600 });
   }
 }
 
@@ -142,4 +149,52 @@ test("S3-compatible backup configuration is either absent or complete and HTTPS"
   await assert.rejects(() => loadS3BackupConfiguration({
     COMPANY_OS_BACKUP_S3_ENDPOINT: "https://user:secret@object-storage.example.test",
   }), /OFFSITE_BACKUP_CONFIGURATION_INVALID/);
+});
+
+test("off-site retrieval admits only a completed pair and verifies it before atomic local publication", async () => {
+  const fixture = await backupFixture();
+  const store = new MemoryObjectStore();
+  const published = await publishEncryptedBackup({
+    ciphertextPath: fixture.ciphertextPath,
+    manifestPath: fixture.manifestPath,
+    destination: { bucket: "company-os-staging-backup", prefix: "backups" },
+    store,
+  });
+  const destinationDirectory = await mkdtemp(join(tmpdir(), "company-os-offsite-restore-"));
+
+  const retrieved = await retrieveEncryptedBackup({
+    manifestKey: published.manifestKey,
+    destinationDirectory,
+    destination: { bucket: "company-os-staging-backup", prefix: "backups" },
+    store,
+  });
+
+  assert.equal(retrieved.status, "PASS");
+  assert.equal(retrieved.ciphertextDigest, fixture.manifest.ciphertextDigest);
+  assert.deepEqual(await readFile(retrieved.ciphertextPath), fixture.ciphertext);
+  assert.deepEqual(JSON.parse(await readFile(retrieved.manifestPath, "utf8")), fixture.manifest);
+});
+
+test("off-site retrieval rejects a changed remote ciphertext without publishing local files", async () => {
+  const fixture = await backupFixture();
+  const store = new MemoryObjectStore();
+  const published = await publishEncryptedBackup({
+    ciphertextPath: fixture.ciphertextPath,
+    manifestPath: fixture.manifestPath,
+    destination: { bucket: "company-os-staging-backup", prefix: "backups" },
+    store,
+  });
+  const ciphertext = store.writes.find(({ key }) => key === published.ciphertextKey);
+  if (!ciphertext) throw new Error("TEST_SETUP_FAILED");
+  ciphertext.body[0] = (ciphertext.body[0] ?? 0) ^ 1;
+  const destinationDirectory = await mkdtemp(join(tmpdir(), "company-os-offsite-restore-tampered-"));
+
+  await assert.rejects(() => retrieveEncryptedBackup({
+    manifestKey: published.manifestKey,
+    destinationDirectory,
+    destination: { bucket: "company-os-staging-backup", prefix: "backups" },
+    store,
+  }), /OFFSITE_BACKUP_REMOTE_OBJECT_INVALID/);
+  await assert.rejects(() => readFile(join(destinationDirectory, "company-os-20260826T010203000Z-a1b2c3d4.dump.enc")),
+    /ENOENT/);
 });

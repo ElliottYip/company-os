@@ -181,6 +181,22 @@ ciphertext and its critical manifest metadata before streaming a second
 decryption pass directly into `pg_restore`; it never creates a plaintext dump:
 
 ```sh
+COMPANY_OS_BACKUP_S3_ENDPOINT=https://object-storage.example.com \
+COMPANY_OS_BACKUP_S3_REGION=us-east-1 \
+COMPANY_OS_BACKUP_S3_BUCKET=<dedicated-private-bucket> \
+COMPANY_OS_BACKUP_S3_ACCESS_KEY_ID_FILE=/absolute/private/access-key-id \
+COMPANY_OS_BACKUP_S3_SECRET_ACCESS_KEY_FILE=/absolute/private/secret-access-key \
+COMPANY_OS_OFFSITE_BACKUP_MANIFEST_KEY=backups/YYYY/MM/DD/company-os-....dump.enc.json \
+COMPANY_OS_OFFSITE_RESTORE_DIRECTORY=/absolute/protected/restore-input \
+npm run ops:retrieve-offsite-backup
+```
+
+Retrieval begins from the completion manifest, verifies both remote objects,
+downloads to private partial files and publishes the pair locally only after
+the ciphertext digest matches. It does not connect to PostgreSQL. Database
+restore remains the separate, explicit empty-target command below:
+
+```sh
 COMPANY_OS_RESTORE_DATABASE_URL=<empty-drill-database-secret> \
 COMPANY_OS_ENCRYPTED_BACKUP_PATH=/absolute/protected/path/company-os.dump.enc \
 COMPANY_OS_BACKUP_ENCRYPTION_KEY=<deployment-secret> \

@@ -24,6 +24,7 @@
     "release:sbom": "npm sbom --omit=dev --omit=optional --sbom-format cyclonedx",
     "ops:restore-drill": "node --experimental-strip-types scripts/postgres-restore-drill.ts",
     "ops:encrypted-backup": "node --experimental-strip-types scripts/postgres-encrypted-backup.ts",
+    "ops:retrieve-offsite-backup": "node --experimental-strip-types scripts/retrieve-offsite-encrypted-backup.ts",
     "ops:encrypted-restore-drill": "node --experimental-strip-types scripts/postgres-encrypted-restore-drill.ts",
     "ops:provision-runtime-role": "node --experimental-strip-types scripts/provision-postgres-runtime-role.ts",
     "ops:provision-managed-admin": "node --experimental-strip-types scripts/provision-managed-instance-admin.ts",

@@ -82,6 +82,8 @@ test("self-hosted encrypted backups are opt-in, scheduled, and keep the key outs
     "node --experimental-strip-types scripts/postgres-encrypted-backup.ts");
   assert.equal(scripts["ops:encrypted-restore-drill"],
     "node --experimental-strip-types scripts/postgres-encrypted-restore-drill.ts");
+  assert.equal(scripts["ops:retrieve-offsite-backup"],
+    "node --experimental-strip-types scripts/retrieve-offsite-encrypted-backup.ts");
   assert.equal(scripts["test:encrypted-backup:postgres16"],
     "node scripts/run-postgres-encrypted-backup-admission.mjs");
   assert.match(workflow, /npm run test:encrypted-backup:postgres16/);

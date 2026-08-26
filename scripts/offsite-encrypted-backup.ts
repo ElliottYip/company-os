@@ -1,8 +1,9 @@
-import { createHash } from "node:crypto";
-import { createReadStream } from "node:fs";
-import { readFile, stat } from "node:fs/promises";
+import { createHash, randomBytes } from "node:crypto";
+import { createReadStream, createWriteStream } from "node:fs";
+import { link, lstat, mkdir, readFile, rm, stat } from "node:fs/promises";
 import { basename, isAbsolute } from "node:path";
-import { HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { pipeline } from "node:stream/promises";
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { parseEncryptedBackupManifest } from "./postgres-encrypted-backup.ts";
 
 const BUCKET = /^(?=.{3,63}$)[a-z0-9](?:[a-z0-9.-]*[a-z0-9])$/;
@@ -34,6 +35,7 @@ export interface BackupObjectStore {
     readonly bytes: number;
     readonly metadata: Readonly<Record<string, string>>;
   }>;
+  get(input: { readonly bucket: string; readonly key: string; readonly destinationPath: string }): Promise<void>;
 }
 
 async function privateCredential(path: string | undefined, pattern: RegExp): Promise<string> {
@@ -79,6 +81,7 @@ export class S3BackupObjectStore implements BackupObjectStore {
       credentials: configuration.credentials,
       forcePathStyle: true,
       maxAttempts: 3,
+      requestChecksumCalculation: "WHEN_REQUIRED",
     });
   }
 
@@ -91,6 +94,7 @@ export class S3BackupObjectStore implements BackupObjectStore {
         ContentLength: input.bytes,
         ContentType: input.contentType,
         Metadata: input.metadata,
+        IfNoneMatch: "*",
       }));
     } catch {
       throw new Error("OFFSITE_BACKUP_UPLOAD_FAILED");
@@ -107,6 +111,18 @@ export class S3BackupObjectStore implements BackupObjectStore {
     } catch (error) {
       if (error instanceof Error && error.message === "OFFSITE_BACKUP_REMOTE_VERIFICATION_FAILED") throw error;
       throw new Error("OFFSITE_BACKUP_REMOTE_VERIFICATION_FAILED");
+    }
+  }
+
+  async get(input: { readonly bucket: string; readonly key: string; readonly destinationPath: string }): Promise<void> {
+    try {
+      const result = await this.#client.send(new GetObjectCommand({ Bucket: input.bucket, Key: input.key }));
+      if (!result.Body) throw new Error("OFFSITE_BACKUP_DOWNLOAD_FAILED");
+      await pipeline(result.Body as NodeJS.ReadableStream,
+        createWriteStream(input.destinationPath, { flags: "wx", mode: 0o600 }));
+    } catch {
+      await rm(input.destinationPath, { force: true });
+      throw new Error("OFFSITE_BACKUP_DOWNLOAD_FAILED");
     }
   }
 
@@ -205,4 +221,83 @@ export async function publishEncryptedBackup(input: {
     ciphertextKey,
     manifestKey,
   };
+}
+
+export async function retrieveEncryptedBackup(input: {
+  readonly manifestKey: string;
+  readonly destinationDirectory: string;
+  readonly destination: { readonly bucket: string; readonly prefix: string };
+  readonly store: BackupObjectStore;
+}): Promise<{
+  readonly schemaVersion: 1;
+  readonly status: "PASS";
+  readonly ciphertextDigest: `sha256:${string}`;
+  readonly ciphertextPath: string;
+  readonly manifestPath: string;
+}> {
+  const { bucket, prefix } = input.destination;
+  const relative = input.manifestKey.startsWith(`${prefix}/`) ? input.manifestKey.slice(prefix.length + 1) : "";
+  const parts = relative.split("/");
+  const manifestFilename = parts[3] ?? "";
+  const filename = manifestFilename.endsWith(".json") ? manifestFilename.slice(0, -5) : "";
+  if (!BUCKET.test(bucket) || !PREFIX.test(prefix) || !isAbsolute(input.destinationDirectory) || parts.length !== 4 ||
+      !/^\d{4}$/.test(parts[0] ?? "") || !/^(?:0[1-9]|1[0-2])$/.test(parts[1] ?? "") ||
+      !/^(?:0[1-9]|[12]\d|3[01])$/.test(parts[2] ?? "") || !BACKUP_FILE.test(filename)) {
+    throw new Error("OFFSITE_BACKUP_CONFIGURATION_INVALID");
+  }
+  await mkdir(input.destinationDirectory, { recursive: true, mode: 0o700 });
+  const directory = await lstat(input.destinationDirectory);
+  if (!directory.isDirectory() || directory.isSymbolicLink() || (directory.mode & 0o027) !== 0) {
+    throw new Error("OFFSITE_BACKUP_DESTINATION_UNSAFE");
+  }
+
+  const nonce = randomBytes(6).toString("hex");
+  const ciphertextPath = `${input.destinationDirectory}/${filename}`;
+  const manifestPath = `${ciphertextPath}.json`;
+  const ciphertextPartial = `${input.destinationDirectory}/.${filename}.${nonce}.partial`;
+  const manifestPartial = `${ciphertextPartial}.json`;
+  const ciphertextKey = input.manifestKey.slice(0, -5);
+  try {
+    const manifestHead = await input.store.head({ bucket, key: input.manifestKey });
+    if (manifestHead.bytes < 1 || manifestHead.bytes > 16_384 ||
+        manifestHead.metadata["company-os-artifact"] !== "encrypted-postgres-backup-manifest") {
+      throw new Error("OFFSITE_BACKUP_REMOTE_OBJECT_INVALID");
+    }
+    await input.store.get({ bucket, key: input.manifestKey, destinationPath: manifestPartial });
+    const manifestFile = await stat(manifestPartial);
+    if (!manifestFile.isFile() || manifestFile.size !== manifestHead.bytes) {
+      throw new Error("OFFSITE_BACKUP_REMOTE_OBJECT_INVALID");
+    }
+    const manifest = parseEncryptedBackupManifest(await readFile(manifestPartial, "utf8"));
+    const digestHex = manifest.ciphertextDigest.slice("sha256:".length);
+    if (manifestHead.metadata["company-os-ciphertext-sha256"] !== digestHex) {
+      throw new Error("OFFSITE_BACKUP_REMOTE_OBJECT_INVALID");
+    }
+
+    const ciphertextHead = await input.store.head({ bucket, key: ciphertextKey });
+    if (ciphertextHead.bytes !== manifest.ciphertextBytes ||
+        ciphertextHead.metadata["company-os-artifact"] !== "encrypted-postgres-backup" ||
+        ciphertextHead.metadata["company-os-sha256"] !== digestHex) {
+      throw new Error("OFFSITE_BACKUP_REMOTE_OBJECT_INVALID");
+    }
+    await input.store.get({ bucket, key: ciphertextKey, destinationPath: ciphertextPartial });
+    const ciphertext = await digestFile(ciphertextPartial);
+    if (ciphertext.bytes !== manifest.ciphertextBytes || ciphertext.hex !== digestHex) {
+      throw new Error("OFFSITE_BACKUP_REMOTE_OBJECT_INVALID");
+    }
+
+    await link(ciphertextPartial, ciphertextPath);
+    try { await link(manifestPartial, manifestPath); } catch (error) {
+      await rm(ciphertextPath, { force: true });
+      throw error;
+    }
+    return { schemaVersion: 1, status: "PASS", ciphertextDigest: manifest.ciphertextDigest,
+      ciphertextPath, manifestPath };
+  } catch (error) {
+    if (error instanceof Error && ["OFFSITE_BACKUP_CONFIGURATION_INVALID", "OFFSITE_BACKUP_DESTINATION_UNSAFE"]
+      .includes(error.message)) throw error;
+    throw new Error("OFFSITE_BACKUP_REMOTE_OBJECT_INVALID");
+  } finally {
+    await Promise.all([rm(ciphertextPartial, { force: true }), rm(manifestPartial, { force: true })]);
+  }
 }
