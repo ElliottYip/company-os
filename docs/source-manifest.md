@@ -363,6 +363,23 @@ ADR 0033. Paperclip's pinned service-manager/run/update implementation was used
 only as the lifecycle-separation reference; no Paperclip code or runtime type
 was copied.
 
+## Paperclip service lifecycle reference (2026-08-26)
+
+At pinned MIT revision `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`,
+Company OS reviewed `cli/src/services/service-manager.ts`,
+`cli/src/commands/run.ts`, `cli/src/commands/update.ts`, and their representative
+service-manager, run and doctor tests. The independently authored staging
+operator adopts the generic separation of install, doctor, run and update
+lifecycles; validation before start; a single-writer guard; retained previous
+payloads; and explicit health/failure state.
+
+Company OS adds a release-manifest/image match, an external authorization
+reference, no-Secret state records, database-migration ambiguity handling and
+`STARTED_NOT_ACCEPTED` semantics. It does not copy Paperclip source, service
+names, process records, configuration, data schema, package, UI or update
+protocol. Paperclip remains an engineering reference, not a Company OS runtime
+or upgrade dependency.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

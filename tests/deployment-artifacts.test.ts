@@ -374,11 +374,12 @@ test("release qualification owns a sustained same-process HTTP soak gate", async
   assert.match(soak, /minimumDurationMilliseconds: 30_000/);
 });
 
-test("staging first install has a read-only doctor, exact handoff, and prepare-only release store", async () => {
-  const [packageJsonSource, doctor, bundle, installer, runbook] = await Promise.all([
+test("staging first install has a read-only doctor, exact handoff, prepare-only store, and authorized start", async () => {
+  const [packageJsonSource, doctor, bundle, installer, starter, runbook] = await Promise.all([
     read("package.json"), read("scripts/staging-deployment-doctor.ts"),
     read("scripts/create-staging-release-bundle.mjs"),
-    read("scripts/install-staging-release-bundle.mjs"), read("docs/staging-raft-xin.md"),
+    read("scripts/install-staging-release-bundle.mjs"), read("scripts/start-staging-release.mjs"),
+    read("docs/staging-raft-xin.md"),
   ]);
   const scripts = JSON.parse(packageJsonSource).scripts;
   assert.equal(scripts["ops:doctor:staging"],
@@ -402,4 +403,14 @@ test("staging first install has a read-only doctor, exact handoff, and prepare-o
   assert.match(runbook, /node scripts\/install-staging-release-bundle\.mjs/);
   assert.match(runbook, /--network none/);
   assert.match(runbook, /first-install-only and logically read-only/);
+  assert.equal(scripts["release:staging-start"],
+    "node --experimental-strip-types scripts/start-staging-release.mjs");
+  assert.match(starter, /STARTED_NOT_ACCEPTED/);
+  assert.match(starter, /START_FAILED_REQUIRES_REVIEW/);
+  assert.match(starter, /STAGING_START_ALREADY_RUNNING/);
+  assert.match(starter, /authorizationReference/);
+  assert.doesNotMatch(starter, /docker[^\n]*(?:down|rm)|down-migration|rollback\s*\(/i);
+  assert.match(runbook, /node --experimental-strip-types scripts\/start-staging-release\.mjs/);
+  assert.match(runbook, /--authorization change:/);
+  assert.match(runbook, /STARTED_NOT_ACCEPTED/);
 });

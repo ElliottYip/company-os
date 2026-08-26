@@ -136,9 +136,51 @@ Before any start:
 5. create the isolated ZOS bucket and restricted IAM principal;
 6. add new Nginx site files without modifying existing site files;
 7. issue new certificates through Certbot without copying private keys;
-8. run `docker compose --env-file deploy/staging.env -f deploy/compose.staging.yml config`;
-9. capture pre-deployment container, network, port and disk inventory;
-10. run migrations and runtime-role provisioning before starting API/Web.
+8. capture pre-deployment container, network, port and disk inventory;
+9. bind the exact prepared release ID and an approved, non-secret change-record
+   reference, render the non-mutating startup plan, then explicitly apply it:
+
+   ```sh
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/start-staging-release.mjs \
+     --root /srv/company-os/staging \
+     --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
+     --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
+     --secret-directory /etc/company-os/secrets \
+     --public-env-file /srv/company-os/staging/staging.env
+
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/start-staging-release.mjs \
+     --root /srv/company-os/staging \
+     --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
+     --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
+     --secret-directory /etc/company-os/secrets \
+     --public-env-file /srv/company-os/staging/staging.env \
+     --apply
+   ```
+
+   The first command only validates the prepared release, exact API/Web/Ops
+   image coordinates and proposed ordered actions. `--apply` acquires a
+   single-writer lock, runs the doctor again, validates Compose, pulls the exact
+   images, runs migration and runtime-role provisioning, starts API, waits for
+   readiness, starts Web, and performs Web/API smoke probes. Success is recorded
+   as `STARTED_NOT_ACCEPTED`, never as customer acceptance. Failure is recorded
+   as `START_FAILED_REQUIRES_REVIEW`; after migration begins the tool does not
+   attempt a down migration, delete the candidate or silently retry. An
+   operator must review and use the parallel-database rollback contract;
+10. retain `startup-state.json`, doctor output, immutable image attestations and
+    externally verified customer-acceptance evidence. Do not move ingress or
+    claim production readiness from the startup record alone.
 
 The doctor is deliberately first-install-only and logically read-only. It refuses an
 existing `company-os-staging` project/network, mutable image tags, unsafe Secret
@@ -147,6 +189,12 @@ does not issue a Docker mutation, print Secret contents or repair the host. Its
 container nevertheless receives a high-authority Docker socket, so image digest
 verification and short lifetime are part of the trust boundary. See
 [ADR 0032](adr/0032-read-only-staging-install-doctor.md).
+
+The authorized start container has the same daemon-level socket authority as
+the doctor and additionally has write access only to the exact staging root so
+it can retain its lock and state record. This authority belongs to the
+short-lived operator lifecycle and never crosses into a product service. See
+[ADR 0034](adr/0034-authorized-staging-start-lifecycle.md).
 
 The release handoff contains no OCI layers and no Secret files. Its
 `bundle-manifest.json` binds the exact source revision, five release image
