@@ -55,3 +55,8 @@ allowlist of Compose, license and runbook files, writes per-file SHA-256
 digests, declares that no Secret material is included, refuses an existing
 destination, and can verify the received directory before the doctor is run.
 It does not package images or credentials.
+
+The next boundary is defined separately by
+[ADR 0033](0033-versioned-staging-release-store.md): verification and atomic
+retention may prepare a release, but preparation must not be reported as a
+started service or successful cutover.

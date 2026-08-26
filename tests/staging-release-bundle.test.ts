@@ -40,3 +40,22 @@ test("staging release bundle detects a changed handoff file", async (context) =>
   await writeFile(join(output, "NOTICE"), "changed\n");
   await assert.rejects(verifyStagingReleaseBundle(output), /STAGING_BUNDLE_FILE_CHANGED/);
 });
+
+test("staging release bundle rejects undeclared files and duplicate file records", async (context) => {
+  const temporary = await mkdtemp(join(tmpdir(), "company-os-staging-bundle-shape-"));
+  context.after(() => rm(temporary, { recursive: true, force: true }));
+  const releasePath = join(temporary, "input-release.json"); const output = join(temporary, "bundle");
+  await writeFile(releasePath, `${JSON.stringify(release)}\n`);
+  await createStagingReleaseBundle({ root: new URL("../", import.meta.url).pathname,
+    releaseManifestPath: releasePath, outputDirectory: output });
+
+  await writeFile(join(output, "unlisted.env"), "SHOULD_NOT_BE_ACCEPTED=1\n");
+  await assert.rejects(verifyStagingReleaseBundle(output), /STAGING_BUNDLE_UNDECLARED_FILE/);
+  await rm(join(output, "unlisted.env"));
+
+  const manifestPath = join(output, "bundle-manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.files.push(manifest.files[0]);
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  await assert.rejects(verifyStagingReleaseBundle(output), /STAGING_BUNDLE_FILE_DUPLICATE/);
+});

@@ -366,10 +366,11 @@ test("release qualification owns a sustained same-process HTTP soak gate", async
   assert.match(soak, /minimumDurationMilliseconds: 30_000/);
 });
 
-test("staging first install has one read-only doctor and digest-bound handoff", async () => {
-  const [packageJsonSource, doctor, bundle, runbook] = await Promise.all([
+test("staging first install has a read-only doctor, exact handoff, and prepare-only release store", async () => {
+  const [packageJsonSource, doctor, bundle, installer, runbook] = await Promise.all([
     read("package.json"), read("scripts/staging-deployment-doctor.ts"),
-    read("scripts/create-staging-release-bundle.mjs"), read("docs/staging-raft-xin.md"),
+    read("scripts/create-staging-release-bundle.mjs"),
+    read("scripts/install-staging-release-bundle.mjs"), read("docs/staging-raft-xin.md"),
   ]);
   const scripts = JSON.parse(packageJsonSource).scripts;
   assert.equal(scripts["ops:doctor:staging"],
@@ -380,7 +381,13 @@ test("staging first install has one read-only doctor and digest-bound handoff", 
   assert.equal(scripts["release:staging-bundle"], "node scripts/create-staging-release-bundle.mjs");
   assert.match(bundle, /COMPANY_OS_STAGING_RELEASE_BUNDLE/);
   assert.match(bundle, /secretMaterialIncluded: false/);
+  assert.equal(scripts["release:staging-install"], "node scripts/install-staging-release-bundle.mjs");
+  assert.match(installer, /PLANNED_NOT_APPLIED/);
+  assert.match(installer, /INSTALLED_NOT_STARTED/);
+  assert.match(installer, /verifyStagingReleaseBundle/);
+  assert.doesNotMatch(installer, /(?:spawn|execFile|execSync|spawnSync)\s*\(/);
   assert.match(runbook, /npm run ops:doctor:staging/);
   assert.match(runbook, /npm run release:staging-bundle/);
+  assert.match(runbook, /npm run release:staging-install/);
   assert.match(runbook, /first-install-only and read-only/);
 });

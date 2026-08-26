@@ -80,7 +80,19 @@ Before any start:
 
 1. create and verify a release handoff with
    `npm run release:staging-bundle -- <release-manifest.json> <empty-output-directory>`;
-   transfer only that allowlisted, digest-bound directory;
+   transfer only that allowlisted, digest-bound directory. On the target, first
+   render the mutation-free install plan, then explicitly apply it:
+
+   ```sh
+   npm run release:staging-install -- --bundle /absolute/received-bundle --root /srv/company-os/staging
+   npm run release:staging-install -- --bundle /absolute/received-bundle --root /srv/company-os/staging --apply
+   ```
+
+   The first command does not write. The second writes the verified payload to
+   `releases/<version>-<source-sha-prefix>` through a same-filesystem partial
+   directory and rename, records `PREPARED_NOT_STARTED`, and preserves every
+   earlier immutable release. It does not pull images, read Secrets, migrate the
+   database, start services or move traffic;
 2. copy only the public `staging.env` and separately inject the required Secret
    files; run `npm run ops:doctor:staging` and retain its `READY` result;
 3. publish immutable API/Web image digests and verify SBOM/provenance;
@@ -100,8 +112,10 @@ does not print Secret contents or repair the host. See
 
 The release handoff contains no OCI layers and no Secret files. Its
 `bundle-manifest.json` binds the exact source revision, five release image
-digests and every included file. Any changed or missing handoff file fails
-verification; an existing output directory is never overwritten.
+digests and every included file. Missing, changed, duplicate, symlinked or
+undeclared handoff files fail verification; an existing output directory is
+never overwritten. Reinstalling the identical retained payload is idempotent,
+while a changed retained payload fails closed.
 
 Rollback uses the previous immutable image digests and a parallel restored
 database. It never runs a destructive down migration against the active data.
