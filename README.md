@@ -61,6 +61,7 @@ qualified immutable release manifest with:
 
 ```bash
 npm run release:staging-bundle -- release-manifest.json /absolute/empty/output
+npm run release:staging-archive -- /absolute/output /absolute/company-os-staging.tgz
 ```
 
 The command refuses to write inside the source tree or overwrite an existing

@@ -466,6 +466,7 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(doctor, /statfs\(root\)/);
   assert.doesNotMatch(doctor, /readFile\(`\$\{path\}\/\$\{name\}`/);
   assert.equal(scripts["release:staging-bundle"], "node scripts/create-staging-release-bundle.mjs");
+  assert.equal(scripts["release:staging-archive"], "node scripts/create-portable-staging-archive.mjs");
   assert.match(bundle, /COMPANY_OS_STAGING_RELEASE_BUNDLE/);
   assert.match(bundle, /secretMaterialIncluded: false/);
   assert.equal(scripts["release:staging-install"], "node scripts/install-staging-release-bundle.mjs");
@@ -476,6 +477,7 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(runbook, /COMPANY_OS_VERIFIED_OPS_IMAGE/);
   assert.match(runbook, /--mount type=bind,src=\/var\/run\/docker\.sock/);
   assert.match(runbook, /npm run release:staging-bundle/);
+  assert.match(runbook, /npm run release:staging-archive/);
   assert.match(runbook, /node scripts\/install-staging-release-bundle\.mjs/);
   assert.match(runbook, /--network none/);
   assert.match(runbook, /first-install-only and logically read-only/);

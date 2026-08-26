@@ -80,7 +80,13 @@ Before any start:
 
 1. create and verify a release handoff with
    `npm run release:staging-bundle -- <release-manifest.json> <empty-output-directory>`;
-   transfer only that allowlisted, digest-bound directory. The target does not
+   create a portable archive with
+   `npm run release:staging-archive -- <bundle-directory> <new-archive.tgz>`;
+   transfer only that digest-reported archive. The archive command first
+   verifies the exact bundle allowlist, disables macOS AppleDouble and extended
+   attribute emission, writes an atomic ustar archive, and verifies its entry
+   list before returning. Do not use an ad-hoc Finder or default macOS tar
+   archive: undeclared `._*` files correctly fail target admission. The target does not
    need the Company OS source tree, npm, or a host Node runtime. Obtain the
    attested Ops image digest from the protected release result—not from the
    unverified received directory—and bind it as
