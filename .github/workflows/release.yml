@@ -119,6 +119,9 @@ jobs:
           echo "codex_agent_node=ghcr.io/${repository}-codex-agent-node" >> "$GITHUB_OUTPUT"
           echo "vault_secret_broker=ghcr.io/${repository}-vault-secret-broker" >> "$GITHUB_OUTPUT"
 
+      - name: Set up the attestation-capable Buildx builder
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+
       - name: Log in to the GitHub Container Registry
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:

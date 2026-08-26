@@ -355,6 +355,9 @@ test("release automation publishes five digest-addressed images with SBOM and pr
   assert.match(workflow, /qualify:[\s\S]*npm run test:compose:managed-cloud/);
   assert.match(workflow, /qualify:[\s\S]*npm run test:soak:http/);
   assert.match(workflow, /publish:[\s\S]*packages: write/);
+  assert.match(workflow, /docker\/setup-buildx-action@[a-f0-9]{40}/);
+  assert.ok(workflow.indexOf("Set up the attestation-capable Buildx builder") <
+    workflow.indexOf("Build and publish API image"));
   assert.match(workflow, /test -f LICENSE/);
   assert.match(workflow, /deploy\/Dockerfile\.api/);
   assert.match(workflow, /deploy\/Dockerfile\.web/);
