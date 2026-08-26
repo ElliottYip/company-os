@@ -17,6 +17,8 @@ test("self-hosted admission exercises the production Compose profile through TLS
   assert.match(runner, /const identityHost = keycloakContainer/);
   assert.match(runner, /docker\("network", "create", externalNetwork\)/);
   assert.match(runner, /"--network", externalNetwork/);
+  assert.match(runner, /"127\.0\.0\.1:" \+ keycloakPort \+ ":" \+ keycloakPort/);
+  assert.match(runner, /"--https-port=" \+ keycloakPort/);
   assert.doesNotMatch(runner, /host-gateway/);
   assert.match(runner, /mkdtempSync\(join\(tmpdir\(\)/);
   assert.doesNotMatch(runner, /\/private\/tmp/);

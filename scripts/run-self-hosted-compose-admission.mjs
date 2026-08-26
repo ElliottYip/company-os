@@ -268,11 +268,11 @@ try {
   docker("run", "--detach", "--name", keycloakContainer, "--network", externalNetwork, "--memory", "1g",
     "--env", "KC_BOOTSTRAP_ADMIN_USERNAME=" + adminUsername,
     "--env", "KC_BOOTSTRAP_ADMIN_PASSWORD=" + adminPassword,
-    "--publish", "127.0.0.1:" + keycloakPort + ":8443",
+    "--publish", "127.0.0.1:" + keycloakPort + ":" + keycloakPort,
     "--volume", importDirectory + ":/opt/keycloak/data/import:ro",
     "--volume", tlsDirectory + ":/opt/keycloak/test-tls:ro", KEYCLOAK_IMAGE,
     "start-dev", "--import-realm", "--hostname=" + issuer.replace("/realms/" + realmName, ""),
-    "--http-enabled=false", "--https-port=8443",
+    "--http-enabled=false", "--https-port=" + keycloakPort,
     "--https-certificate-file=/opt/keycloak/test-tls/tls-cert.pem",
     "--https-certificate-key-file=/opt/keycloak/test-tls/tls-key.pem");
   await waitForKeycloak(keycloakPort);
