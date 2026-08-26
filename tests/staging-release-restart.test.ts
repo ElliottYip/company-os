@@ -164,3 +164,23 @@ test("start and restart share one lifecycle lock and operation IDs cannot be rep
     /STAGING_RESTART_OPERATION_ALREADY_RECORDED/);
   await assert.rejects(readFile(join(value.root, ".staging-lifecycle.lock")), /ENOENT/);
 });
+
+test("active release remains restartable after a newer candidate is staged", async (context) => {
+  const value = await fixture("company-os-restart-staged-candidate-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  const candidateManifest = { ...release, releaseVersion: "0.2.0-rc.1",
+    sourceRevision: "9".repeat(40), images: { ...release.images,
+      api: image("api", "8"), web: image("web", "7") } };
+  const candidatePath = join(value.temporary, "candidate.json");
+  const candidateBundle = join(value.temporary, "candidate-bundle");
+  await writeFile(candidatePath, `${JSON.stringify(candidateManifest)}\n`);
+  await createStagingReleaseBundle({ root: new URL("../", import.meta.url).pathname,
+    releaseManifestPath: candidatePath, outputDirectory: candidateBundle });
+  await installStagingReleaseBundle({ rootDirectory: value.root, bundleDirectory: candidateBundle });
+  const plan = await planStagingRestart(input(value), {
+    inspectRuntime: async () => ({ status: "RUNNING_NOT_ACCEPTED" }),
+  });
+  assert.equal(plan.releaseId, value.releaseId);
+  assert.match(plan.steps.find(({ id }) => id === "RESTART_API")?.argv.join(" ") ?? "",
+    new RegExp(`releases/${value.releaseId}/compose\\.staging\\.yml`));
+});

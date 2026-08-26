@@ -420,6 +420,8 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.equal(scripts["ops:status:staging"],
     "node --experimental-strip-types scripts/inspect-staging-runtime.mjs");
   assert.match(inspector, /evaluateStagingRuntimeStatus/);
+  assert.match(inspector, /resolveStagingReleaseRecord/);
+  assert.match(inspector, /candidate/);
   assert.match(inspector, /com\.docker\.compose\.project=company-os-staging/);
   assert.doesNotMatch(inspector,
     /\.Config\.Env|["']docker["']\s*,\s*["'](?:start|stop|restart|rm|kill)["']/);

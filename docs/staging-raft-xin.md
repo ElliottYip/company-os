@@ -203,6 +203,11 @@ does not inspect container environment variables or mount the Secret directory.
 drift, duplicate/missing containers, incomplete/failed start state or failed
 probes return a stable review-required status. The Docker socket remains
 daemon-level authority despite the command's read-only behavior.
+When a newer bundle has been installed but not cut over, `release` continues to
+describe the startup-bound active version and `candidate` reports the staged
+version separately. Staging a candidate therefore neither creates image drift
+nor prevents an authorized restart of the active release. See
+[ADR 0038](adr/0038-active-and-candidate-release-coordinates.md).
 
 The doctor is deliberately first-install-only and logically read-only. It refuses an
 existing `company-os-staging` project/network, mutable image tags, unsafe Secret

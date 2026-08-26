@@ -5,6 +5,10 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { evaluateStagingRuntimeStatus } from "../adapters/config/staging-runtime-status.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
+import {
+  readVerifiedStagingReleaseStore,
+  resolveStagingReleaseRecord,
+} from "./read-staging-release-store.mjs";
 
 const STORE_MARKER = "company-os staging release store v1\n";
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
@@ -13,14 +17,21 @@ const START_STATES = new Set(["STARTING", "STARTED_NOT_ACCEPTED", "START_FAILED_
 
 export async function inspectStagingRuntime(input, supplied = {}) {
   const rootDirectory = await validatedRoot(input.rootDirectory);
-  const prepared = await preparedRelease(rootDirectory);
-  await verifyStagingReleaseBundle(prepared.releaseDirectory);
-  const release = JSON.parse(await readFile(join(prepared.releaseDirectory, "release-manifest.json"), "utf8"));
-  const expected = { releaseId: prepared.releaseId, releaseVersion: prepared.releaseVersion,
-    sourceRevision: prepared.sourceRevision, images: { api: release.images.api, web: release.images.web } };
   const startupState = await readStartupState(rootDirectory);
-  if (!startupState) return evaluateStagingRuntimeStatus({ expected, startupState: null,
-    containers: [], probes: { apiReady: false, webReachable: false } });
+  const store = await readVerifiedStagingReleaseStore(rootDirectory);
+  const active = startupState
+    ? resolveStagingReleaseRecord(store, startupState.releaseId, startupState.sourceRevision)
+    : store.prepared;
+  await verifyStagingReleaseBundle(active.releaseDirectory);
+  const release = JSON.parse(await readFile(join(active.releaseDirectory, "release-manifest.json"), "utf8"));
+  const expected = { releaseId: active.releaseId, releaseVersion: active.releaseVersion,
+    sourceRevision: active.sourceRevision, images: { api: release.images.api, web: release.images.web } };
+  const candidate = store.prepared.releaseId === active.releaseId ? null : {
+    id: store.prepared.releaseId, version: store.prepared.releaseVersion,
+    sourceRevision: store.prepared.sourceRevision,
+  };
+  if (!startupState) return { ...evaluateStagingRuntimeStatus({ expected, startupState: null,
+    containers: [], probes: { apiReady: false, webReachable: false } }), candidate };
 
   const dependencies = { listContainers: defaultListContainers, probe: defaultProbe, ...supplied };
   const containers = await dependencies.listContainers();
@@ -28,8 +39,8 @@ export async function inspectStagingRuntime(input, supplied = {}) {
     dependencies.probe({ id: "API_READY", url: "http://127.0.0.1:4601/ready" }),
     dependencies.probe({ id: "WEB_REACHABLE", url: "http://127.0.0.1:4600/" }),
   ]);
-  return evaluateStagingRuntimeStatus({ expected, startupState, containers,
-    probes: { apiReady, webReachable } });
+  return { ...evaluateStagingRuntimeStatus({ expected, startupState, containers,
+    probes: { apiReady, webReachable } }), candidate };
 }
 
 async function validatedRoot(value) {
@@ -44,21 +55,6 @@ async function validatedRoot(value) {
   if (!marker.isFile() || marker.isSymbolicLink() || marker.nlink !== 1 || (marker.mode & 0o077) !== 0 ||
       await readFile(markerPath, "utf8") !== STORE_MARKER) throw new Error("STAGING_STATUS_STORE_MARKER_UNSAFE");
   return rootDirectory;
-}
-
-async function preparedRelease(rootDirectory) {
-  const path = join(rootDirectory, "release-store.json"); const valueStat = await lstat(path);
-  if (!valueStat.isFile() || valueStat.isSymbolicLink() || valueStat.nlink !== 1 || (valueStat.mode & 0o077) !== 0) {
-    throw new Error("STAGING_STATUS_RELEASE_STORE_UNSAFE");
-  }
-  const store = JSON.parse(await readFile(path, "utf8")); const prepared = store?.prepared;
-  if (store?.schemaVersion !== 1 || store.product !== "company-os" || store.state !== "PREPARED_NOT_STARTED" ||
-      !prepared || !RELEASE_ID.test(prepared.releaseId ?? "") || !REVISION.test(prepared.sourceRevision ?? "") ||
-      typeof prepared.releaseVersion !== "string" ||
-      resolve(prepared.releaseDirectory ?? "") !== join(rootDirectory, "releases", prepared.releaseId)) {
-    throw new Error("STAGING_STATUS_RELEASE_STORE_INVALID");
-  }
-  return prepared;
 }
 
 async function readStartupState(rootDirectory) {

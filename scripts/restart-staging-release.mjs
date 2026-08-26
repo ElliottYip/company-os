@@ -8,6 +8,10 @@ import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs"
 import { inspectDeploymentDrain } from "./inspect-deployment-drain.ts";
 import { inspectStagingRuntime } from "./inspect-staging-runtime.mjs";
 import { verifyDeploymentStateAdoption } from "./verify-deployment-state-adoption.ts";
+import {
+  readVerifiedStagingReleaseStore,
+  resolveStagingReleaseRecord,
+} from "./read-staging-release-store.mjs";
 
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const OPERATION_ID = /^restart-[a-z0-9][a-z0-9-]{2,95}$/;
@@ -195,17 +199,9 @@ async function validatedPaths(input) {
 }
 
 async function preparedRelease(rootDirectory, releaseId) {
-  const storePath = join(rootDirectory, "release-store.json"); const metadata = await lstat(storePath);
-  if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.nlink !== 1 || (metadata.mode & 0o077) !== 0) {
-    throw new Error("STAGING_RESTART_RELEASE_STORE_UNSAFE");
-  }
-  const store = JSON.parse(await readFile(storePath, "utf8")); const prepared = store?.prepared;
-  if (store?.schemaVersion !== 1 || store.product !== "company-os" || store.state !== "PREPARED_NOT_STARTED" ||
-      prepared?.releaseId !== releaseId || !Array.isArray(store.previous) ||
-      resolve(prepared.releaseDirectory ?? "") !== join(rootDirectory, "releases", releaseId)) {
-    throw new Error("STAGING_RESTART_PREPARED_RELEASE_MISMATCH");
-  }
-  return prepared;
+  const store = await readVerifiedStagingReleaseStore(rootDirectory);
+  try { return resolveStagingReleaseRecord(store, releaseId); }
+  catch { throw new Error("STAGING_RESTART_RELEASE_RECORD_NOT_FOUND"); }
 }
 
 async function validateStartedState(rootDirectory, prepared) {
