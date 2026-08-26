@@ -423,6 +423,8 @@ test("CI proves the customer IdP and neutral node boundary over verified TLS", a
   assert.match(workflow, /npm run test:customer-boundaries:tls/);
   assert.match(admission, /NODE_EXTRA_CA_CERTS/);
   assert.match(admission, /customer-boundary-preflight\.ts/);
+  assert.match(admission, /if \(result\.code !== 0\)/);
+  assert.doesNotMatch(admission, /result\.code !== 0 \|\| result\.stderr/);
   assert.doesNotMatch(admission, /NODE_TLS_REJECT_UNAUTHORIZED/);
 });
 

@@ -112,8 +112,13 @@ async function main() {
       COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: broker.origin,
       COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN: tokens.broker,
     });
-    if (result.code !== 0 || result.stderr) throw new Error("BOUNDARY_TLS_PREFLIGHT_FAILED");
-    const report = JSON.parse(result.stdout);
+    // Node 22 emits an ExperimentalWarning for strip-types on stderr. The
+    // contract is the child exit status plus the validated, secret-free JSON
+    // report; incidental runtime warnings are not protocol failures.
+    if (result.code !== 0) throw new Error("BOUNDARY_TLS_PREFLIGHT_FAILED");
+    let report;
+    try { report = JSON.parse(result.stdout); }
+    catch { throw new Error("BOUNDARY_TLS_REPORT_MALFORMED"); }
     const forbidden = [issuer, agent.origin, data.origin, broker.origin, ...Object.values(tokens)];
     if (report?.status !== "PASS" || forbidden.some((value) => result.stdout.includes(value))) {
       throw new Error("BOUNDARY_TLS_REPORT_INVALID");
