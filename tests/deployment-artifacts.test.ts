@@ -304,6 +304,11 @@ test("release automation publishes five digest-addressed images with SBOM and pr
     read("deploy/Dockerfile.ops"),
   ]);
   assert.match(workflow, /environment: production-release/);
+  assert.match(workflow, /push:\n\s+tags:\n\s+- "v\*"/);
+  assert.doesNotMatch(workflow, /release:\n\s+types: \[published\]/);
+  assert.match(workflow, /cancel-in-progress: false/);
+  assert.match(workflow, /Validate immutable release tag/);
+  assert.match(workflow, /git rev-list -n 1/);
   assert.match(workflow, /qualify:\n/);
   assert.match(workflow, /publish:\n\s+needs: qualify/);
   assert.match(workflow, /qualify:[\s\S]*permissions:\n\s+contents: read/);
@@ -324,6 +329,12 @@ test("release automation publishes five digest-addressed images with SBOM and pr
   assert.match(workflow, /deploy\/Dockerfile\.codex-agent-node/);
   assert.match(workflow, /deploy\/Dockerfile\.vault-secret-broker/);
   assert.equal((workflow.match(/docker\/build-push-action@/g) ?? []).length, 5);
+  assert.match(workflow, /Publish the GitHub release after all evidence exists/);
+  assert.match(workflow, /gh release create/);
+  assert.match(workflow, /--prerelease/);
+  assert.doesNotMatch(workflow, /gh release upload/);
+  assert.ok(workflow.indexOf("Generate release manifest and application SBOM") <
+    workflow.indexOf("Publish the GitHub release after all evidence exists"));
   assert.doesNotMatch(workflow, /uses: [^\n]+@(main|master|v\d+)\s*$/m);
   assert.doesNotMatch(workflow, /:latest\b/);
   assert.match(opsDockerfile, /FROM postgres:16(?:\.\d+)?-bookworm@sha256:[a-f0-9]{64} AS postgres-tools/);

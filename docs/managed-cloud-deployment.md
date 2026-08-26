@@ -88,12 +88,14 @@ The manifest contains no credentials and may be retained with public release
 provenance. The SBOM is produced by release automation rather than committed as
 a stale snapshot.
 
-The protected release workflow first runs a read-only `qualify` job against the
-exact release revision. It includes the complete repository gate, real
+An exact SemVer release tag starts the protected workflow. It first runs a
+read-only `qualify` job against the exact tagged revision. It includes the complete repository gate, real
 PostgreSQL recovery/upgrade/role checks, Keycloak, verified-TLS customer
 boundary preflight, the sustained HTTP soak and both Compose profiles. Only the
 dependent `publish` job receives package, attestation and release-write
-permissions.
+permissions. The five images, their attestations, the manifest and the SBOM are
+created before the GitHub Release is published; prerelease tags remain visibly
+marked as prereleases.
 
 ## Rollback and exit
 

@@ -1,8 +1,13 @@
 name: release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: company-os-release-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -34,6 +39,16 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+      - name: Validate immutable release tag
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ "$GITHUB_REF_TYPE" != "tag" ]] ||
+             [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.-]+)?$ ]] ||
+             [[ "$(git rev-list -n 1 "$GITHUB_REF_NAME")" != "$(git rev-parse HEAD)" ]]; then
+            echo "Release must run from an exact vMAJOR.MINOR.PATCH[-PRERELEASE] tag" >&2
+            exit 1
+          fi
       - name: Require the repository-wide open-source license decision
         run: test -f LICENSE
       - name: Use the release Node contract
@@ -238,7 +253,13 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-      - name: Attach evidence to the GitHub release
+      - name: Publish the GitHub release after all evidence exists
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload "$GITHUB_REF_NAME" release-manifest.json company-os.cdx.json
+        shell: bash
+        run: |
+          release_flags=(--verify-tag --title "Company OS ${GITHUB_REF_NAME}" --generate-notes)
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            release_flags+=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" release-manifest.json company-os.cdx.json "${release_flags[@]}"
