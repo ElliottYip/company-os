@@ -120,6 +120,13 @@ The gate fails for source-SHA drift, missing required architecture surfaces,
 README-only conclusions, absent license identity, or an unexplained product
 judgment. Fine-grained `PENDING` units do not fail this narrowed gate.
 
+Committed inventories are immutable evidence snapshots bound to their repository,
+full commit SHA, license finding, path count, and assessment coverage. Normal
+Company OS CI validates those snapshots without requiring competitor checkouts.
+Inventory refresh and audit-completion modes require the pinned source repositories
+and regenerate the evidence, so competitor source trees remain research inputs
+rather than Company OS build or runtime dependencies.
+
 ## Decision vocabulary
 
 Code-level judgments are:

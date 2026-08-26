@@ -100,10 +100,51 @@ function renderTarget(target) {
   };
 }
 
+function validateCommittedSnapshot(target) {
+  const inventoryPath = join(inventoryRoot, `${target.id}.json`);
+  const assessmentPath = join(assessmentRoot, `${target.id}.json`);
+  if (!existsSync(inventoryPath) || !existsSync(assessmentPath)) {
+    throw new Error(`${target.id}: committed inventory or assessment is missing`);
+  }
+  const inventory = JSON.parse(readFileSync(inventoryPath, "utf8"));
+  const assessments = JSON.parse(readFileSync(assessmentPath, "utf8"));
+  if (inventory.source?.id !== target.id || inventory.source?.repository !== target.repository) {
+    throw new Error(`${target.id}: committed inventory source identity drifted`);
+  }
+  if (inventory.source?.commit !== target.commit || inventory.source?.actualCommit !== target.commit) {
+    throw new Error(`${target.id}: committed inventory pin drifted`);
+  }
+  if (inventory.source?.license !== target.license || inventory.source?.licenseFile !== target.licenseFile) {
+    throw new Error(`${target.id}: committed license finding drifted`);
+  }
+  if (inventory.source?.trackedPathCount !== inventory.paths?.length) {
+    throw new Error(`${target.id}: committed path count is inconsistent`);
+  }
+  const unitIds = new Set((inventory.units ?? []).map(({ id }) => id));
+  if (!unitIds.size || (inventory.paths ?? []).some(({ path, unitId }) => !path || !unitIds.has(unitId))) {
+    throw new Error(`${target.id}: committed inventory has unassigned paths`);
+  }
+  if (new Set(inventory.paths.map(({ path }) => path)).size !== inventory.paths.length) {
+    throw new Error(`${target.id}: committed inventory contains duplicate paths`);
+  }
+  if (assessments.sourceCommit !== target.commit) {
+    throw new Error(`${target.id}: committed assessments pin drifted`);
+  }
+  const assessmentIds = new Set((assessments.units ?? []).map(({ id }) => id));
+  if (assessmentIds.size !== unitIds.size || [...unitIds].some((id) => !assessmentIds.has(id))) {
+    throw new Error(`${target.id}: committed assessment coverage drifted`);
+  }
+  console.log(`${target.id}: verified committed evidence for ${inventory.paths.length} tracked paths in ${unitIds.size} units`);
+}
+
 mkdirSync(inventoryRoot, { recursive: true });
 mkdirSync(assessmentRoot, { recursive: true });
 const confirmed = targets.openSource.filter((target) => target.identityStatus === "CONFIRMED" && target.id !== "paperclip");
 for (const target of confirmed) {
+  if (mode === "check") {
+    validateCommittedSnapshot(target);
+    continue;
+  }
   const inventory = renderTarget(target);
   const inventoryPath = join(inventoryRoot, `${target.id}.json`);
   const assessmentPath = join(assessmentRoot, `${target.id}.json`);
@@ -122,7 +163,7 @@ for (const target of confirmed) {
   };
   const renderedInventory = `${JSON.stringify(inventory, null, 2)}\n`;
   const renderedAssessments = `${JSON.stringify(assessments, null, 2)}\n`;
-  if (mode === "check" || mode === "complete") {
+  if (mode === "complete") {
     if (!existsSync(inventoryPath) || readFileSync(inventoryPath, "utf8") !== renderedInventory) throw new Error(`${relative(projectRoot, inventoryPath)} is stale`);
     if (!existsSync(assessmentPath) || readFileSync(assessmentPath, "utf8") !== renderedAssessments) throw new Error(`${relative(projectRoot, assessmentPath)} is stale`);
   } else {

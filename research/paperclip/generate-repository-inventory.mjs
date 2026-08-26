@@ -11,6 +11,39 @@ const assessmentPath = join(projectRoot, "research/paperclip/unit-assessments.js
 const batchesPath = join(projectRoot, "research/paperclip/audit-batches");
 const auditManifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 
+function validateCommittedSnapshot() {
+  const inventory = JSON.parse(readFileSync(outputPath, "utf8"));
+  const assessments = JSON.parse(readFileSync(assessmentPath, "utf8"));
+  if (inventory.source?.repository !== auditManifest.repository
+    || inventory.source?.commit !== auditManifest.commit
+    || inventory.source?.actualCommit !== auditManifest.commit) {
+    throw new Error("Paperclip committed inventory pin drifted");
+  }
+  if (inventory.source?.trackedPathCount !== inventory.paths?.length) {
+    throw new Error("Paperclip committed path count is inconsistent");
+  }
+  const unitIds = new Set((inventory.units ?? []).map(({ id }) => id));
+  if (!unitIds.size || (inventory.paths ?? []).some(({ path, unitId }) => !path || !unitIds.has(unitId))) {
+    throw new Error("Paperclip committed inventory has unassigned paths");
+  }
+  if (new Set(inventory.paths.map(({ path }) => path)).size !== inventory.paths.length) {
+    throw new Error("Paperclip committed inventory contains duplicate paths");
+  }
+  if (assessments.sourceCommit !== auditManifest.commit) {
+    throw new Error("Paperclip committed assessments pin drifted");
+  }
+  const assessmentIds = new Set((assessments.units ?? []).map(({ id }) => id));
+  if (assessmentIds.size !== unitIds.size || [...unitIds].some((id) => !assessmentIds.has(id))) {
+    throw new Error("Paperclip committed assessment coverage drifted");
+  }
+  console.log(`Paperclip committed evidence covers ${inventory.paths.length} tracked paths in ${unitIds.size} auditable units.`);
+}
+
+if (process.argv.includes("--check")) {
+  validateCommittedSnapshot();
+  process.exit(0);
+}
+
 function git(...args) {
   return execFileSync("git", args, { cwd: sourceRoot, encoding: "utf8" }).trim();
 }
@@ -232,20 +265,7 @@ const assessments = {
   }),
 };
 const renderedAssessments = `${JSON.stringify(assessments, null, 2)}\n`;
-if (process.argv.includes("--check")) {
-  const current = readFileSync(outputPath, "utf8");
-  if (current !== rendered) throw new Error(`${relative(projectRoot, outputPath)} is stale; run with --write`);
-  const currentAssessments = readFileSync(assessmentPath, "utf8");
-  if (currentAssessments !== renderedAssessments) {
-    throw new Error(`${relative(projectRoot, assessmentPath)} is stale; run with --write`);
-  }
-  const assessmentIds = new Set(assessments.units.map((unit) => unit.id));
-  const missing = inventory.units.filter((unit) => !assessmentIds.delete(unit.id));
-  if (missing.length || assessmentIds.size) {
-    throw new Error(`assessment coverage drift: ${missing.length} missing, ${assessmentIds.size} unexpected`);
-  }
-  console.log(`Paperclip inventory covers ${paths.length} tracked paths in ${units.size} auditable units.`);
-} else if (process.argv.includes("--complete")) {
+if (process.argv.includes("--complete")) {
   const incomplete = assessments.units.filter((unit) =>
     unit.auditStatus !== "COMPLETE" ||
     inventory.completionRule.completeUnitFields.some((field) => {
