@@ -9,6 +9,13 @@ lifecycles. The Web image is immutable: `COMPANY_OS_WEB_API_URL` and mode are
 injected by the Web server at container start, so changing an API hostname does
 not rebuild or fork the customer UI.
 
+The API source entry point defaults to `127.0.0.1` for direct local
+development. The production API image instead defaults `COMPANY_OS_HOST` to
+`0.0.0.0` so Docker bridge traffic can reach port 4310; deployment profiles
+still control host exposure through explicit `ports` bindings and a reverse
+proxy. Do not publish the API port broadly when a private proxy boundary is
+intended.
+
 ## Prerequisites
 
 - Docker Engine with Compose v2.

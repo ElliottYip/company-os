@@ -98,6 +98,8 @@ test("production images are pinned, non-root, health checked, and independently 
     assert.doesNotMatch(dockerfile, /COPY \.env/);
   }
   assert.match(api, /service-entry\.ts/);
+  assert.match(api, /^ENV COMPANY_OS_HOST=0\.0\.0\.0$/m,
+    "the API image must accept traffic arriving through the container network");
   assert.match(web, /serve-web\.mjs/);
   assert.match(api, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   assert.match(ops, /npm ci --omit=dev --omit=optional --ignore-scripts/);
