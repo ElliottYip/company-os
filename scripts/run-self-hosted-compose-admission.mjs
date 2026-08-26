@@ -29,7 +29,10 @@ const keyPath = tlsDirectory + "/tls-key.pem";
 const certificatePath = tlsDirectory + "/tls-cert.pem";
 const environmentPath = temporaryDirectory + "/compose.env";
 const overridePath = temporaryDirectory + "/compose.override.yml";
-const identityHost = "host.docker.internal";
+// Use one DNS name for both sides of the OIDC flow: Docker resolves the
+// Keycloak container on the admission network, while Playwright maps the same
+// hostname to the loopback-published TLS port.
+const identityHost = keycloakContainer;
 const apiHost = "127.0.0.1";
 const webHost = "127.0.0.1";
 const realmName = "company-os-compose";
@@ -176,10 +179,10 @@ async function cleanup() {
   }
   if (managedCloud) {
     try { docker("rm", "--force", postgresContainer); } catch { /* container may already be gone */ }
-    try { docker("network", "rm", externalNetwork); } catch { /* exact network may already be gone */ }
   }
   try { docker("image", "rm", apiImage, webImage); } catch { /* an interrupted build may not have produced both */ }
   try { docker("rm", "--force", keycloakContainer); } catch { /* container may already be gone */ }
+  try { docker("network", "rm", externalNetwork); } catch { /* exact network may already be gone */ }
   rmSync(temporaryDirectory, { recursive: true, force: true });
 }
 
@@ -248,8 +251,7 @@ try {
   ]));
   writeFileSync(environmentPath, environmentLines.join("\n") + "\n", { mode: 0o600 });
   const overrideLines = [
-    "services:", "  api:", "    extra_hosts:",
-    "      - \"" + identityHost + ":host-gateway\"",
+    "services:", "  api:",
     "    environment:", "      NODE_EXTRA_CA_CERTS: /company-os-test-tls/tls-cert.pem",
     "    volumes:", "      - \"" + tlsDirectory + ":/company-os-test-tls:ro\"",
   ];
@@ -257,12 +259,13 @@ try {
     overrideLines.push(
       "    ports:", "      - \"" + apiBackendPort + ":4310\"",
       "  web:", "    ports:", "      - \"" + webBackendPort + ":8080\"",
-      "networks:", "  default:", "    external: true", "    name: " + externalNetwork,
     );
   }
+  overrideLines.push("networks:", "  default:", "    external: true", "    name: " + externalNetwork);
   writeFileSync(overridePath, overrideLines.join("\n") + "\n", { mode: 0o600 });
 
-  docker("run", "--detach", "--name", keycloakContainer, "--memory", "1g",
+  docker("network", "create", externalNetwork);
+  docker("run", "--detach", "--name", keycloakContainer, "--network", externalNetwork, "--memory", "1g",
     "--env", "KC_BOOTSTRAP_ADMIN_USERNAME=" + adminUsername,
     "--env", "KC_BOOTSTRAP_ADMIN_PASSWORD=" + adminPassword,
     "--publish", "127.0.0.1:" + keycloakPort + ":8443",
@@ -275,7 +278,6 @@ try {
   await waitForKeycloak(keycloakPort);
 
   if (managedCloud) {
-    docker("network", "create", externalNetwork);
     docker("run", "--detach", "--name", postgresContainer, "--network", externalNetwork,
       "--env", "POSTGRES_DB=company_os", "--env", "POSTGRES_USER=" + databaseOwner,
       "--env", "POSTGRES_PASSWORD=" + databasePassword, POSTGRES_IMAGE);

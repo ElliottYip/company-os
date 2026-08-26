@@ -14,7 +14,10 @@ test("self-hosted admission exercises the production Compose profile through TLS
   assert.match(runner, /compose", "--project-name"/);
   assert.match(runner, /deploy\/compose\.self-hosted\.yml/);
   assert.match(runner, /NODE_EXTRA_CA_CERTS/);
-  assert.match(runner, /host-gateway/);
+  assert.match(runner, /const identityHost = keycloakContainer/);
+  assert.match(runner, /docker\("network", "create", externalNetwork\)/);
+  assert.match(runner, /"--network", externalNetwork/);
+  assert.doesNotMatch(runner, /host-gateway/);
   assert.match(runner, /mkdtempSync\(join\(tmpdir\(\)/);
   assert.doesNotMatch(runner, /\/private\/tmp/);
   assert.match(runner, /company-os-compose-realm\.json[\s\S]+mode: 0o644/);
