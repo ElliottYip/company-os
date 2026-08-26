@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
+import { tmpdir } from "node:os";
 import {
   normalizePublicApiUrl,
   parseWebRuntimeOptions,
@@ -34,9 +37,15 @@ test("runtime configuration source contains public coordinates but no executable
   assert.doesNotMatch(source, /clientSecret|sessionSigningKey|databaseUrl/);
 });
 
-test("static file resolution cannot escape the built Web root", () => {
-  assert.equal(resolveStaticFile("web/dist", "/assets/../index.html")?.endsWith("/web/dist/index.html"), true);
-  assert.equal(resolveStaticFile("web/dist", "/../../package.json"), null);
-  assert.equal(resolveStaticFile("web/dist", "/%2e%2e/%2e%2e/package.json"), null);
-  assert.equal(resolveStaticFile("web/dist", "/..\\package.json"), null);
+test("static file resolution rejects traversal without depending on prior build output", (context) => {
+  const root = mkdtempSync(join(tmpdir(), "company-os-web-static-"));
+  context.after(() => rmSync(root, { recursive: true, force: true }));
+  writeFileSync(join(root, "index.html"), "fixture-index");
+  writeFileSync(join(root, "package.json"), "fixture-sensitive-file");
+
+  assert.equal(resolveStaticFile(root, "/index.html"), join(root, "index.html"));
+  assert.equal(resolveStaticFile(root, "/assets/../index.html"), null);
+  assert.equal(resolveStaticFile(root, "/../../package.json"), null);
+  assert.equal(resolveStaticFile(root, "/%2e%2e/%2e%2e/package.json"), null);
+  assert.equal(resolveStaticFile(root, "/..\\package.json"), null);
 });

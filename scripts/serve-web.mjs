@@ -53,7 +53,9 @@ export function resolveStaticFile(distDirectory, requestPath) {
   } catch {
     return null;
   }
-  if (decoded.includes("\0") || decoded.includes("\\")) return null;
+  if (decoded.includes("\0") || decoded.includes("\\") || decoded.split("/").includes("..")) {
+    return null;
+  }
   const root = resolve(distDirectory);
   const relative = normalize(decoded).replace(/^[/\\]+/, "");
   const candidate = resolve(join(root, relative));
