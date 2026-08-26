@@ -12,7 +12,7 @@ source compatibility. Company OS remains independently owned and runnable.
 
 ## Evidence captured at baseline
 
-`npm test` passed on 2026-08-26 with 480 cases (476 passed and four explicit
+`npm test` passed on 2026-08-26 with 487 cases (483 passed and four explicit
 environment-gated live cases skipped in the credential-free run). The live
 PostgreSQL database, OIDC and reference Connector cases passed separately
 against disposable infrastructure. The complete `npm run verify` gate also ran
@@ -22,6 +22,11 @@ admission—one with the temporary HTTPS reference IdP, one with real,
 digest-pinned Keycloak 26.7.2, one with the full self-hosted Compose topology,
 and one with managed-cloud plus external PostgreSQL/OIDC—against isolated
 PostgreSQL environments.
+The staging operations path now also has a read-only runtime inspector. It
+reconciles retained startup state with exact digest-addressed API/Web images,
+container health and loopback probes, while keeping customer acceptance a
+separate authority. Partial or failed starts remain visible as stable
+operator-review states instead of being silently retried or promoted.
 Dependency-boundary, Paperclip-independence, asset,
 research-governance, secret, production-dependency, type, build, and Web
 performance checks. The production dependency audit has no moderate, high, or

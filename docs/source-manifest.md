@@ -380,6 +380,13 @@ names, process records, configuration, data schema, package, UI or update
 protocol. Paperclip remains an engineering reference, not a Company OS runtime
 or upgrade dependency.
 
+The subsequent Company OS runtime inspector also adapts the upstream distinction
+between supervisor status and HTTP health, while closing two audited gaps: it
+binds both observations to the exact retained release images and never treats a
+nullable preservation report or healthy process as customer acceptance. Docker
+inspection requests only service/image/status/health fields and never retrieves
+container environment variables.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

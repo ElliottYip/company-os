@@ -182,6 +182,28 @@ Before any start:
     externally verified customer-acceptance evidence. Do not move ingress or
     claim production readiness from the startup record alone.
 
+After preparation or any start attempt, inspect the retained state and actual
+Docker runtime through the same exact Ops image:
+
+```sh
+docker run --rm --network host --read-only --cap-drop ALL \
+  --security-opt no-new-privileges:true --user 0:0 \
+  --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging,readonly \
+  "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+  node --experimental-strip-types scripts/inspect-staging-runtime.mjs \
+  --root /srv/company-os/staging
+```
+
+The inspector is logically read-only. It reads only the release/start records,
+the API/Web container service label, configured image reference, process state
+and health status, then probes the loopback Web and API readiness endpoints. It
+does not inspect container environment variables or mount the Secret directory.
+`RUNNING_NOT_ACCEPTED` proves only exact runtime alignment and health. Image
+drift, duplicate/missing containers, incomplete/failed start state or failed
+probes return a stable review-required status. The Docker socket remains
+daemon-level authority despite the command's read-only behavior.
+
 The doctor is deliberately first-install-only and logically read-only. It refuses an
 existing `company-os-staging` project/network, mutable image tags, unsafe Secret
 metadata, unavailable host probes, and missing public HTTPS coordinates. It
@@ -195,6 +217,8 @@ the doctor and additionally has write access only to the exact staging root so
 it can retain its lock and state record. This authority belongs to the
 short-lived operator lifecycle and never crosses into a product service. See
 [ADR 0034](adr/0034-authorized-staging-start-lifecycle.md).
+Runtime reconciliation and the reason it remains separate from acceptance are
+recorded in [ADR 0035](adr/0035-read-only-staging-runtime-status.md).
 
 The release handoff contains no OCI layers and no Secret files. Its
 `bundle-manifest.json` binds the exact source revision, five release image
