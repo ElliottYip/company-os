@@ -374,6 +374,11 @@ test("release automation publishes five digest-addressed images with SBOM and pr
   assert.match(workflow, /deploy\/Dockerfile\.codex-agent-node/);
   assert.match(workflow, /deploy\/Dockerfile\.vault-secret-broker/);
   assert.equal((workflow.match(/docker\/build-push-action@/g) ?? []).length, 5);
+  assert.match(workflow, /npm run --silent release:manifest > release-manifest\.json/);
+  assert.match(workflow, /npm run --silent release:sbom > company-os\.cdx\.json/);
+  assert.match(workflow, /JSON\.parse\(readFileSync\(path, "utf8"\)\)/);
+  assert.ok(workflow.indexOf("Validate generated release JSON") <
+    workflow.indexOf("Attest release manifest"));
   assert.match(workflow, /Publish the GitHub release after all evidence exists/);
   assert.match(workflow, /gh release create/);
   assert.match(workflow, /--prerelease/);

@@ -243,8 +243,14 @@ jobs:
           COMPANY_OS_CODEX_AGENT_NODE_IMAGE: ${{ steps.coordinates.outputs.codex_agent_node }}@${{ steps.codex_agent_node.outputs.digest }}
           COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: ${{ steps.coordinates.outputs.vault_secret_broker }}@${{ steps.vault_secret_broker.outputs.digest }}
         run: |
-          npm run release:manifest > release-manifest.json
-          npm run release:sbom > company-os.cdx.json
+          npm run --silent release:manifest > release-manifest.json
+          npm run --silent release:sbom > company-os.cdx.json
+
+      - name: Validate generated release JSON
+        shell: bash
+        run: |
+          node -e 'const { readFileSync } = require("node:fs"); for (const path of process.argv.slice(1)) JSON.parse(readFileSync(path, "utf8"));' \
+            release-manifest.json company-os.cdx.json
 
       - name: Attest release manifest
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
