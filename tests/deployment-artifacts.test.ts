@@ -19,6 +19,9 @@ test("the open-source release carries the selected Apache-2.0 license and distin
   assert.match(notice, /Copyright 2026 Yilun Ye/);
   assert.match(thirdParty, /Raft visual subset/);
   assert.match(thirdParty, /skills\/agentboss-school/);
+  assert.match(thirdParty, /Docker CLI 29\.1\.3/);
+  assert.match(thirdParty, /Docker\s+Compose plugin 5\.0\.0/);
+  assert.match(thirdParty, /github\.com\/creack\/pty/);
   for (const source of [packageJsonSource, agentPackage, dataPackage, brokerPackage, vaultBrokerPackage]) {
     assert.equal(JSON.parse(source).license, "Apache-2.0");
   }
@@ -316,6 +319,11 @@ test("release automation publishes five digest-addressed images with SBOM and pr
   assert.doesNotMatch(workflow, /:latest\b/);
   assert.match(opsDockerfile, /FROM postgres:16(?:\.\d+)?-bookworm@sha256:[a-f0-9]{64} AS postgres-tools/);
   assert.match(opsDockerfile, /FROM postgres-tools AS runtime/);
+  assert.match(opsDockerfile,
+    /FROM docker:29\.1\.3-cli@sha256:4fa0ee1f3a7e4354c4ea34558b6d4ee32859baf4973d4c8ccc8e7fe3dd730c04 AS docker-cli/);
+  assert.match(opsDockerfile, /COPY --from=docker-cli \/usr\/local\/bin\/docker \/usr\/local\/bin\/docker/);
+  assert.match(opsDockerfile,
+    /COPY --from=docker-cli \/usr\/local\/libexec\/docker\/cli-plugins\/docker-compose \/usr\/local\/libexec\/docker\/cli-plugins\/docker-compose/);
   assert.match(opsDockerfile, /COPY --from=node-runtime \/usr\/local\/bin\/node/);
   assert.doesNotMatch(opsDockerfile, /apt-get install[^\n]*postgresql-client/);
   assert.match(opsDockerfile, /USER node/);
@@ -377,6 +385,8 @@ test("staging first install has a read-only doctor, exact handoff, and prepare-o
     "node --experimental-strip-types scripts/staging-deployment-doctor.ts");
   assert.match(doctor, /evaluateStagingDeploymentReadiness/);
   assert.match(doctor, /lstat/);
+  assert.match(doctor, /hostRuntime\(options\.root\)/);
+  assert.match(doctor, /statfs\(root\)/);
   assert.doesNotMatch(doctor, /readFile\(`\$\{path\}\/\$\{name\}`/);
   assert.equal(scripts["release:staging-bundle"], "node scripts/create-staging-release-bundle.mjs");
   assert.match(bundle, /COMPANY_OS_STAGING_RELEASE_BUNDLE/);
@@ -386,8 +396,10 @@ test("staging first install has a read-only doctor, exact handoff, and prepare-o
   assert.match(installer, /INSTALLED_NOT_STARTED/);
   assert.match(installer, /verifyStagingReleaseBundle/);
   assert.doesNotMatch(installer, /(?:spawn|execFile|execSync|spawnSync)\s*\(/);
-  assert.match(runbook, /npm run ops:doctor:staging/);
+  assert.match(runbook, /COMPANY_OS_VERIFIED_OPS_IMAGE/);
+  assert.match(runbook, /--mount type=bind,src=\/var\/run\/docker\.sock/);
   assert.match(runbook, /npm run release:staging-bundle/);
-  assert.match(runbook, /npm run release:staging-install/);
-  assert.match(runbook, /first-install-only and read-only/);
+  assert.match(runbook, /node scripts\/install-staging-release-bundle\.mjs/);
+  assert.match(runbook, /--network none/);
+  assert.match(runbook, /first-install-only and logically read-only/);
 });

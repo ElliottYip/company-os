@@ -15,7 +15,7 @@ const defaults = { root: "/srv/company-os/staging", secretDirectory: "/etc/compa
 async function main() {
   const options = argumentsFrom(process.argv.slice(2));
   const [root, secretDirectory, runtime, target, publicEnvironment] = await Promise.all([
-    directory(options.root), secretFiles(options.secretDirectory), hostRuntime(), targetState(),
+    directory(options.root), secretFiles(options.secretDirectory), hostRuntime(options.root), targetState(),
     publicEnvironmentFrom(options.environmentFile),
   ]);
   const snapshot: StagingDeploymentSnapshot = { root: { path: options.root, ...root },
@@ -32,7 +32,7 @@ function argumentsFrom(values: readonly string[]) {
     if (!value || !value.startsWith("/")) throw new Error("STAGING_DOCTOR_ABSOLUTE_PATH_REQUIRED");
     if (flag === "--root") result.root = value;
     else if (flag === "--secret-directory") result.secretDirectory = value;
-    else if (flag === "--env-file") result.environmentFile = value;
+    else if (flag === "--public-env-file") result.environmentFile = value;
     else throw new Error("STAGING_DOCTOR_ARGUMENT_INVALID");
   }
   return result;
@@ -67,8 +67,8 @@ async function publicEnvironmentFrom(path: string): Promise<Record<string, strin
   }
 }
 
-async function hostRuntime(): Promise<StagingDeploymentSnapshot["runtime"]> {
-  const disk = await statfs("/");
+async function hostRuntime(root: string): Promise<StagingDeploymentSnapshot["runtime"]> {
+  const disk = await statfs(root);
   return { dockerAvailable: command(["docker", "version", "--format", "{{.Server.Version}}"]),
     composeAvailable: command(["docker", "compose", "version", "--short"]), cpuCount: cpus().length,
     totalMemoryBytes: totalmem(), freeDiskBytes: Number(disk.bavail * disk.bsize) };

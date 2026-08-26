@@ -42,6 +42,14 @@ The doctor does not create directories, fix permissions, pull images, create
 networks, write configuration, start containers, request certificates or claim
 acceptance.
 
+On Docker-only hosts the doctor runs from the exact attested Company OS Ops
+image with host networking and the Docker socket. The socket is daemon-level
+authority even though the doctor performs only inspection calls. Therefore the
+container is short-lived, exact-digest, capability-dropped and explicitly
+authorized; no long-running Company OS service ever receives that socket. Disk
+capacity is measured on the mounted deployment root rather than the container
+overlay filesystem.
+
 ## Consequences
 
 Operators get a deterministic repair list before any staging side effect, and

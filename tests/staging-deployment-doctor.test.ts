@@ -28,6 +28,7 @@ function readySnapshot(): StagingDeploymentSnapshot {
       loopbackPorts: [{ port: 4600, status: "FREE" }, { port: 4601, status: "FREE" }] },
     publicEnvironment: {
       COMPANY_OS_API_IMAGE: digest("api"), COMPANY_OS_WEB_IMAGE: digest("web"),
+      COMPANY_OS_OPS_IMAGE: digest("ops"),
       COMPANY_OS_OIDC_ISSUER: "https://identity.staging.example",
       COMPANY_OS_OIDC_DISCOVERY_URL: "https://identity.staging.example/.well-known/openid-configuration",
       COMPANY_OS_OIDC_CLIENT_ID: "company-os-staging",
@@ -42,6 +43,15 @@ test("staging doctor admits an isolated immutable install without reading secret
   const result = evaluateStagingDeploymentReadiness(readySnapshot());
   assert.deepEqual(result, { schemaVersion: 1, mode: "INSTALL", status: "READY", findings: [] });
   assert.doesNotMatch(JSON.stringify(result), /database-url|client-secret|bearer-token|signing-key/);
+});
+
+test("staging doctor requires the privileged operator image by immutable digest", () => {
+  const snapshot = readySnapshot();
+  const { COMPANY_OS_OPS_IMAGE: _omitted, ...withoutOpsImage } = snapshot.publicEnvironment;
+  const result = evaluateStagingDeploymentReadiness({ ...snapshot, publicEnvironment: withoutOpsImage });
+  assert.deepEqual(result.findings, [
+    { code: "STAGING_IMAGE_NOT_IMMUTABLE", subject: "COMPANY_OS_OPS_IMAGE" },
+  ]);
 });
 
 test("staging doctor reports every actionable precondition with stable codes", () => {

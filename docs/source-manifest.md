@@ -343,6 +343,26 @@ The representative upstream paths and local differences are recorded in ADR
 0029. No Paperclip source line, package, schema, runtime type or service was
 copied into the Codex Agent Node.
 
+## Docker-only operations runtime dependency (2026-08-26)
+
+The staging target is not required to contain the Company OS source tree,
+Node.js, or npm. `deploy/Dockerfile.ops` therefore copies only the Docker CLI
+and Compose plugin from the following fixed official image:
+
+| Incorporated binary | Observed version | Exact build source | Upstream source | License | Local destination and purpose |
+|---|---:|---|---|---|---|
+| Docker CLI | 29.1.3, build `f52814d` | `docker:29.1.3-cli@sha256:4fa0ee1f3a7e4354c4ea34558b6d4ee32859baf4973d4c8ccc8e7fe3dd730c04` | `https://github.com/docker/cli/tree/v29.1.3` | Apache-2.0; upstream NOTICE retained | `/usr/local/bin/docker` in the operations image; invokes the target's separately operated Docker daemon |
+| Docker Compose plugin | 5.0.0 | same exact official image | `https://github.com/docker/compose/tree/v5.0.0` | Apache-2.0; upstream NOTICE retained | `/usr/local/libexec/docker/cli-plugins/docker-compose` in the operations image; validates and starts the Company OS Compose project |
+
+No Docker source file is copied into this repository. The Docker daemon is not
+distributed by Company OS. The prepare-only release installation does not
+receive a daemon socket or network. Later doctor/start stages may receive the
+socket only as a short-lived, exact-digest operator container with explicit
+authority; no long-running Company OS service receives it. See ADR 0032 and
+ADR 0033. Paperclip's pinned service-manager/run/update implementation was used
+only as the lifecycle-separation reference; no Paperclip code or runtime type
+was copied.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

@@ -25,7 +25,9 @@ identity worked, services became ready or traffic moved.
 
 ## Decision
 
-`release:staging-install` owns the prepare-only release-store lifecycle.
+`release:staging-install` owns the prepare-only release-store lifecycle. On a
+deployment host it runs from the exact attested Company OS Ops image, not from
+an ambient checkout, npm installation or host Node runtime.
 
 - Its default behavior is a read-only plan. Mutation requires `--apply`.
 - The deployment root must be an absolute, operator-owned, non-symlink
@@ -42,6 +44,8 @@ identity worked, services became ready or traffic moved.
   `PREPARED_NOT_STARTED`; the prior prepared record and payload remain intact.
 - The tool never reads Secret values, invokes Docker, pulls images, runs a
   migration, starts services, changes ingress or deletes a prior release.
+- Preparation runs with no network and no Docker socket. The received bundle is
+  read-only, and the exact staging root is the only writable mount.
 
 The filesystem implementation uses the Node 22 promise APIs documented for
 [`lstat`](https://nodejs.org/docs/latest-v22.x/api/fs.html#fspromiseslstatpath-options),

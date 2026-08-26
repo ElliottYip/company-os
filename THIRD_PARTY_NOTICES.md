@@ -25,6 +25,21 @@ listed in `docs/source-manifest.md`. The source repository is Apache-2.0 and the
 license copy is retained at `docs/licenses/RAFT-APACHE-2.0.txt`. Company OS does
 not import the Raft repository at runtime.
 
+### Docker CLI and Docker Compose plugin
+
+The Company OS operations image copies the Docker CLI 29.1.3 and Docker
+Compose plugin 5.0.0 binaries from the official, digest-pinned
+`docker:29.1.3-cli@sha256:4fa0ee1f3a7e4354c4ea34558b6d4ee32859baf4973d4c8ccc8e7fe3dd730c04`
+image. Both projects are distributed under Apache-2.0. Their source is
+available at `https://github.com/docker/cli/tree/v29.1.3` and
+`https://github.com/docker/compose/tree/v5.0.0`.
+
+The upstream notices are retained at `docs/licenses/DOCKER-CLI-NOTICE.txt`
+and `docs/licenses/DOCKER-COMPOSE-NOTICE.txt`. The CLI notice also identifies
+the bundled `github.com/creack/pty` work and its MIT license. Company OS ships
+operator client tooling only, not the Docker daemon, and makes no Docker
+trademark or endorsement claim.
+
 ## Audited but not incorporated
 
 Paperclip, AgentOS, OpenWorker, Operant, Preloop, AgentGate, JamJet, Agent Room,

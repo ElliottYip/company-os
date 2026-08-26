@@ -6,7 +6,7 @@ const REQUIRED_SECRET_FILES = [
   "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
   "data-node-bearer-token", "secret-broker-bearer-token",
 ] as const;
-const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE"] as const;
+const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE"] as const;
 const HTTPS_KEYS = ["COMPANY_OS_OIDC_ISSUER", "COMPANY_OS_OIDC_DISCOVERY_URL",
   "COMPANY_OS_HTTP_AGENT_NODE_BASE_URL", "COMPANY_OS_HTTP_DATA_NODE_BASE_URL",
   "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL"] as const;

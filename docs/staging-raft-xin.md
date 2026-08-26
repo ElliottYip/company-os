@@ -80,12 +80,29 @@ Before any start:
 
 1. create and verify a release handoff with
    `npm run release:staging-bundle -- <release-manifest.json> <empty-output-directory>`;
-   transfer only that allowlisted, digest-bound directory. On the target, first
-   render the mutation-free install plan, then explicitly apply it:
+   transfer only that allowlisted, digest-bound directory. The target does not
+   need the Company OS source tree, npm, or a host Node runtime. Obtain the
+   attested Ops image digest from the protected release result—not from the
+   unverified received directory—and bind it as
+   `COMPANY_OS_VERIFIED_OPS_IMAGE`. On the target, first render the
+   mutation-free install plan, then explicitly apply it through that image:
 
    ```sh
-   npm run release:staging-install -- --bundle /absolute/received-bundle --root /srv/company-os/staging
-   npm run release:staging-install -- --bundle /absolute/received-bundle --root /srv/company-os/staging --apply
+   docker run --rm --network none --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/absolute/received-bundle,dst=/handoff,readonly \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node scripts/install-staging-release-bundle.mjs \
+     --bundle /handoff --root /srv/company-os/staging
+
+   docker run --rm --network none --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/absolute/received-bundle,dst=/handoff,readonly \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node scripts/install-staging-release-bundle.mjs \
+     --bundle /handoff --root /srv/company-os/staging --apply
    ```
 
    The first command does not write. The second writes the verified payload to
@@ -94,7 +111,26 @@ Before any start:
    earlier immutable release. It does not pull images, read Secrets, migrate the
    database, start services or move traffic;
 2. copy only the public `staging.env` and separately inject the required Secret
-   files; run `npm run ops:doctor:staging` and retain its `READY` result;
+   files. Run the doctor from the same attested Ops image and retain its `READY`
+   result:
+
+   ```sh
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging,readonly \
+     --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/staging-deployment-doctor.ts \
+     --root /srv/company-os/staging \
+     --secret-directory /etc/company-os/secrets \
+     --public-env-file /srv/company-os/staging/staging.env
+   ```
+
+   The Docker socket grants daemon-level host authority even when mounted with
+   a read-only-looking bind option. It is allowed only for this short-lived,
+   exact-digest operator container after explicit deployment authorization; it
+   is never mounted into the API, Web, Agent Node, Data Node or Secret Broker;
 3. publish immutable API/Web image digests and verify SBOM/provenance;
 4. create external PostgreSQL 16, OIDC, Vault Broker, Agent Node and Data Node;
 5. create the isolated ZOS bucket and restricted IAM principal;
@@ -104,10 +140,12 @@ Before any start:
 9. capture pre-deployment container, network, port and disk inventory;
 10. run migrations and runtime-role provisioning before starting API/Web.
 
-The doctor is deliberately first-install-only and read-only. It refuses an
+The doctor is deliberately first-install-only and logically read-only. It refuses an
 existing `company-os-staging` project/network, mutable image tags, unsafe Secret
 metadata, unavailable host probes, and missing public HTTPS coordinates. It
-does not print Secret contents or repair the host. See
+does not issue a Docker mutation, print Secret contents or repair the host. Its
+container nevertheless receives a high-authority Docker socket, so image digest
+verification and short lifetime are part of the trust boundary. See
 [ADR 0032](adr/0032-read-only-staging-install-doctor.md).
 
 The release handoff contains no OCI layers and no Secret files. Its
