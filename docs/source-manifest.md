@@ -393,6 +393,12 @@ derives the decision from its own Work Attempt, approval, Connector outbox and
 Secret-lease records, blocks every non-terminal state by default, and emits a
 secret-free exact-source digest for later adoption comparison.
 
+The authorized staging restart state machine also adapts the sequencing idea
+from Paperclip's supervised service lifecycle, but independently requires a
+Company OS drain proof, exact immutable release status, shared lifecycle lock,
+explicit external change reference and post-restart adoption proof. No upstream
+service manager, state record, command implementation or schema is copied.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

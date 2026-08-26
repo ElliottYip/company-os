@@ -376,12 +376,13 @@ test("release qualification owns a sustained same-process HTTP soak gate", async
 
 test("staging first install has read-only diagnostics, exact handoff, prepare-only store, and authorized start", async () => {
   const [packageJsonSource, doctor, bundle, installer, starter, inspector, drainInspector,
-    adoptionVerifier, runbook] = await Promise.all([
+    adoptionVerifier, restarter, runbook] = await Promise.all([
     read("package.json"), read("scripts/staging-deployment-doctor.ts"),
     read("scripts/create-staging-release-bundle.mjs"),
     read("scripts/install-staging-release-bundle.mjs"), read("scripts/start-staging-release.mjs"),
     read("scripts/inspect-staging-runtime.mjs"), read("scripts/inspect-deployment-drain.ts"),
     read("scripts/verify-deployment-state-adoption.ts"),
+    read("scripts/restart-staging-release.mjs"),
     read("docs/staging-raft-xin.md"),
   ]);
   const scripts = JSON.parse(packageJsonSource).scripts;
@@ -434,4 +435,12 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(adoptionVerifier, /ADOPTION_VERIFIED/);
   assert.match(adoptionVerifier, /DURABLE_STATE_DIGEST_CHANGED/);
   assert.match(runbook, /verify-deployment-state-adoption\.ts/);
+  assert.equal(scripts["release:staging-restart"],
+    "node --experimental-strip-types scripts/restart-staging-release.mjs");
+  assert.match(restarter, /\.staging-lifecycle\.lock/);
+  assert.match(restarter, /RESTARTED_NOT_ACCEPTED/);
+  assert.match(restarter, /RESTART_FAILED_REQUIRES_REVIEW/);
+  assert.match(restarter, /STATE_ADOPTION/);
+  assert.doesNotMatch(restarter, /["'](?:down|up|pull|run|rm)["']/);
+  assert.match(runbook, /restart-staging-release\.mjs/);
 });

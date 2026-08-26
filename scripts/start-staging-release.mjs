@@ -10,7 +10,7 @@ const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const AUTHORIZATION_REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$/;
 const STORE_MARKER = "company-os staging release store v1\n";
 const STARTUP_STATE = "startup-state.json";
-const START_LOCK = ".staging-start.lock";
+const START_LOCK = ".staging-lifecycle.lock";
 
 export async function planStagingReleaseStart(input) {
   const paths = await validatedPaths(input);

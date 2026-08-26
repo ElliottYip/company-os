@@ -12,7 +12,7 @@ source compatibility. Company OS remains independently owned and runnable.
 
 ## Evidence captured at baseline
 
-`npm test` passed on 2026-08-26 with 487 cases (483 passed and four explicit
+`npm test` passed on 2026-08-26 with 498 cases (494 passed and four explicit
 environment-gated live cases skipped in the credential-free run). The live
 PostgreSQL database, OIDC and reference Connector cases passed separately
 against disposable infrastructure. The complete `npm run verify` gate also ran
@@ -27,6 +27,12 @@ reconciles retained startup state with exact digest-addressed API/Web images,
 container health and loopback probes, while keeping customer acceptance a
 separate authority. Partial or failed starts remain visible as stable
 operator-review states instead of being silently retried or promoted.
+Planned staging restart is now an explicit authorized state machine rather than
+a runbook-only command sequence. It requires a database-derived zero-blocker
+drain proof, serializes against first start, restarts only API and Web, verifies
+exact runtime health, compares the post-restart durable-state digest, and
+retains one private immutable record per operation. Failure never triggers an
+automatic database rollback or implies customer acceptance.
 Dependency-boundary, Paperclip-independence, asset,
 research-governance, secret, production-dependency, type, build, and Web
 performance checks. The production dependency audit has no moderate, high, or

@@ -110,11 +110,11 @@ test("a migration-stage failure is retained for review and never triggers automa
 test("staging start refuses concurrent writers and release-image drift", async (context) => {
   const value = await fixture("company-os-staging-start-guard-");
   context.after(() => rm(value.temporary, { recursive: true, force: true }));
-  await writeFile(join(value.root, ".staging-start.lock"), "occupied\n", { mode: 0o600 });
+  await writeFile(join(value.root, ".staging-lifecycle.lock"), "occupied\n", { mode: 0o600 });
   await assert.rejects(startStagingRelease(input(value), {
     runCommand: async () => ({ ok: true }), probe: async () => true, wait: async () => undefined,
   }), /STAGING_START_ALREADY_RUNNING/);
-  await rm(join(value.root, ".staging-start.lock"));
+  await rm(join(value.root, ".staging-lifecycle.lock"));
   const source = await readFile(value.environmentFile, "utf8");
   await writeFile(value.environmentFile, source.replace(release.images.api, image("different", "9")));
   await assert.rejects(planStagingReleaseStart(input(value)), /STAGING_START_RELEASE_IMAGE_MISMATCH/);

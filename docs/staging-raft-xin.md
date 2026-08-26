@@ -256,6 +256,32 @@ docker run --rm --network host --read-only --cap-drop ALL \
 Any new blocker, digest drift, malformed/redirected record, or non-private
 record mode fails closed and requires operator review.
 
+The supported restart path performs these checks as one authorized lifecycle.
+Run it without `--apply` first to inspect the exact plan, then repeat with
+`--apply` using the same release, operation and authorization references:
+
+```sh
+docker run --rm --network host --read-only --cap-drop ALL \
+  --security-opt no-new-privileges:true --user 0:0 \
+  --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+  --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
+  --env COMPANY_OS_DATABASE_URL_FILE=/etc/company-os/secrets/runtime-database-url \
+  "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+  node --experimental-strip-types scripts/restart-staging-release.mjs \
+  --root /srv/company-os/staging \
+  --public-env-file /srv/company-os/staging/staging.env \
+  --secret-directory /etc/company-os/secrets \
+  --release 0.1.0-rc.1-REPLACE_WITH_12_HEX \
+  --operation restart-staging-20260826-01 \
+  --authorization change:REPLACE_WITH_APPROVED_CHANGE
+```
+
+The apply invocation adds `--apply`. It never runs migrations, pulls images,
+restarts Connector/Data/Vault nodes, or performs an automatic rollback. It
+retains operation-specific evidence under `restart-records/`; reuse of an
+operation ID fails closed. See [ADR 0037](adr/0037-authorized-staging-restart-state-machine.md).
+
 The release handoff contains no OCI layers and no Secret files. Its
 `bundle-manifest.json` binds the exact source revision, five release image
 digests and every included file. Missing, changed, duplicate, symlinked or
