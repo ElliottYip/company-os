@@ -17,6 +17,8 @@ test("PostgreSQL support policy pins current 16 and 17 minors and proves a 16 to
   assert.match(runner, /pg_dump/);
   assert.match(runner, /pg_restore/);
   assert.match(runner, /ROLLBACK_SOURCE_PRESERVED/);
+  assert.match(runner, /sourceMigrationCount/);
+  assert.match(runner, /POSTGRES_MAJOR_ADMISSION_SOURCE_MIGRATIONS_INVALID/);
   assert.match(runner, /finally\s*\{/);
   assert.equal(JSON.parse(packageSource).scripts["test:upgrade:postgres-major"],
     "node scripts/run-postgres-major-version-admission.mjs");

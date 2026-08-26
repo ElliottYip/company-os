@@ -92,6 +92,11 @@ try {
     start(target, targetDatabase, POSTGRES_17_IMAGE)]);
   await Promise.all([waitForPostgres(source, sourceDatabase), waitForPostgres(target, targetDatabase)]);
   await migrate(source, sourceDatabase);
+  const sourceMigrationCount = Number((await psql(source, sourceDatabase,
+    "SELECT count(*) FROM drizzle.__drizzle_migrations;")).stdout.trim());
+  if (!Number.isSafeInteger(sourceMigrationCount) || sourceMigrationCount < 1) {
+    throw new Error("POSTGRES_MAJOR_ADMISSION_SOURCE_MIGRATIONS_INVALID");
+  }
   await psql(source, sourceDatabase, [
     "INSERT INTO company_os_auth_user (id,name,email,email_verified,created_at,updated_at)",
     `VALUES ('major-user','Major upgrade','major-${suffix}@integration.invalid',true,now(),now());`,
@@ -111,7 +116,7 @@ try {
 
   const upgraded = await psql(target, targetDatabase,
     "SELECT current_setting('server_version_num')::int / 10000, (SELECT count(*) FROM drizzle.__drizzle_migrations), payload->>'marker' FROM company_os_domain_event WHERE id='major-event';");
-  assert.deepEqual(upgraded.stdout.trim().split("|"), ["17", "5", marker]);
+  assert.deepEqual(upgraded.stdout.trim().split("|"), ["17", String(sourceMigrationCount), marker]);
   await psql(target, targetDatabase,
     "INSERT INTO company_os_domain_event (id,company_id,sequence,type,occurred_at,actor_id,payload,provenance) VALUES ('target-only','major-company',2,'database.major.target',now()::text,'major-user','{}'::jsonb,'PRODUCTION');");
 
@@ -121,7 +126,7 @@ try {
   process.stdout.write(`${JSON.stringify({ schemaVersion: 1, status: "PASS",
     source: "POSTGRESQL_16_15", target: "POSTGRESQL_17_11",
     method: "LOGICAL_DUMP_RESTORE", rollback: "ROLLBACK_SOURCE_PRESERVED",
-    migrations: 5, customerData: "SYNTHETIC_ONLY" })}\n`);
+    migrations: sourceMigrationCount, customerData: "SYNTHETIC_ONLY" })}\n`);
 } finally {
   await cleanup();
 }
