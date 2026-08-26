@@ -375,11 +375,14 @@ test("release qualification owns a sustained same-process HTTP soak gate", async
 });
 
 test("staging first install has read-only diagnostics, exact handoff, prepare-only store, and authorized start", async () => {
-  const [packageJsonSource, doctor, bundle, installer, starter, inspector, runbook] = await Promise.all([
+  const [packageJsonSource, doctor, bundle, installer, starter, inspector, drainInspector,
+    adoptionVerifier, runbook] = await Promise.all([
     read("package.json"), read("scripts/staging-deployment-doctor.ts"),
     read("scripts/create-staging-release-bundle.mjs"),
     read("scripts/install-staging-release-bundle.mjs"), read("scripts/start-staging-release.mjs"),
-    read("scripts/inspect-staging-runtime.mjs"), read("docs/staging-raft-xin.md"),
+    read("scripts/inspect-staging-runtime.mjs"), read("scripts/inspect-deployment-drain.ts"),
+    read("scripts/verify-deployment-state-adoption.ts"),
+    read("docs/staging-raft-xin.md"),
   ]);
   const scripts = JSON.parse(packageJsonSource).scripts;
   assert.equal(scripts["ops:doctor:staging"],
@@ -420,4 +423,15 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.doesNotMatch(inspector,
     /\.Config\.Env|["']docker["']\s*,\s*["'](?:start|stop|restart|rm|kill)["']/);
   assert.match(runbook, /RUNNING_NOT_ACCEPTED/);
+  assert.equal(scripts["ops:drain:staging"],
+    "node --experimental-strip-types scripts/inspect-deployment-drain.ts");
+  assert.match(drainInspector, /COMPANY_OS_DATABASE_URL/);
+  assert.match(drainInspector, /PostgresDeploymentDrainState/);
+  assert.doesNotMatch(drainInspector, /console\.(?:log|error)|process\.env\.COMPANY_OS_DATABASE_URL/);
+  assert.match(runbook, /Only `DRAINED` with `restartAllowed: true`/);
+  assert.equal(scripts["ops:adoption:staging"],
+    "node --experimental-strip-types scripts/verify-deployment-state-adoption.ts");
+  assert.match(adoptionVerifier, /ADOPTION_VERIFIED/);
+  assert.match(adoptionVerifier, /DURABLE_STATE_DIGEST_CHANGED/);
+  assert.match(runbook, /verify-deployment-state-adoption\.ts/);
 });

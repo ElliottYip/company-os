@@ -387,6 +387,12 @@ nullable preservation report or healthy process as customer acceptance. Docker
 inspection requests only service/image/status/health fields and never retrieves
 container environment variables.
 
+The deployment drain assessment adapts Paperclip's useful drain-before-restart
+idea, but not its service types or nullable preservation report. Company OS
+derives the decision from its own Work Attempt, approval, Connector outbox and
+Secret-lease records, blocks every non-terminal state by default, and emits a
+secret-free exact-source digest for later adoption comparison.
+
 ## Vault Secret Broker contract sources (2026-08-26)
 
 The maintained Vault adapter is independently authored against HashiCorp's

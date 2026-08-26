@@ -4,6 +4,7 @@ export * from "./content-digest-port.ts";
 export * from "./planning-store-port.ts";
 export * from "./agent-lifecycle-port.ts";
 export * from "./approval-publication-port.ts";
+export * from "./deployment-drain-state-port.ts";
 export * from "./connector-catalog-port.ts";
 export * from "./audit-evidence-port.ts";
 export * from "./data-connector-port.ts";

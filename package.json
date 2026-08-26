@@ -28,6 +28,8 @@
     "ops:preflight:customer-boundaries": "node --experimental-strip-types scripts/customer-boundary-preflight.ts",
     "ops:doctor:staging": "node --experimental-strip-types scripts/staging-deployment-doctor.ts",
     "ops:status:staging": "node --experimental-strip-types scripts/inspect-staging-runtime.mjs",
+    "ops:drain:staging": "node --experimental-strip-types scripts/inspect-deployment-drain.ts",
+    "ops:adoption:staging": "node --experimental-strip-types scripts/verify-deployment-state-adoption.ts",
     "ops:plan:customer-acceptance": "node scripts/prepare-customer-acceptance-plan.mjs",
     "ops:validate:customer-acceptance": "node scripts/validate-customer-acceptance-record.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.ts",

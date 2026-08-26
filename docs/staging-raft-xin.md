@@ -220,6 +220,42 @@ short-lived operator lifecycle and never crosses into a product service. See
 Runtime reconciliation and the reason it remains separate from acceptance are
 recorded in [ADR 0035](adr/0035-read-only-staging-runtime-status.md).
 
+Before any planned restart, capture the database-backed drain state using the
+runtime database role:
+
+```sh
+docker run --rm --network host --read-only --cap-drop ALL \
+  --security-opt no-new-privileges:true \
+  --mount type=bind,src=/etc/company-os/secrets,dst=/run/company-os/secrets,readonly \
+  --env COMPANY_OS_DATABASE_URL_FILE=/run/company-os/secrets/runtime-database-url \
+  "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+  node --experimental-strip-types scripts/inspect-deployment-drain.ts
+```
+
+Only `DRAINED` with `restartAllowed: true` admits the next maintenance phase.
+`NOT_DRAINED` identifies aggregate blockers without exposing tenant or Work
+records. Retain the output in the protected release store for post-restart
+digest comparison; do not treat the record as customer acceptance. See
+[ADR 0036](adr/0036-durable-deployment-drain-evidence.md).
+
+After the exact API/Web runtime is healthy again, compare the protected
+pre-restart record with a fresh authoritative capture:
+
+```sh
+docker run --rm --network host --read-only --cap-drop ALL \
+  --security-opt no-new-privileges:true \
+  --mount type=bind,src=/etc/company-os/secrets,dst=/run/company-os/secrets,readonly \
+  --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging,readonly \
+  --env COMPANY_OS_DATABASE_URL_FILE=/run/company-os/secrets/runtime-database-url \
+  "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+  node --experimental-strip-types scripts/verify-deployment-state-adoption.ts \
+  --before /srv/company-os/staging/pre-restart-drain.json
+```
+
+`ADOPTION_VERIFIED` means the exact drained durable source state is unchanged.
+Any new blocker, digest drift, malformed/redirected record, or non-private
+record mode fails closed and requires operator review.
+
 The release handoff contains no OCI layers and no Secret files. Its
 `bundle-manifest.json` binds the exact source revision, five release image
 digests and every included file. Missing, changed, duplicate, symlinked or
