@@ -1,5 +1,5 @@
 import { gzipSync } from "node:zlib";
-import { readdir, readFile, stat } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = process.cwd();
@@ -23,14 +23,12 @@ if (/\.glb\b|office-three-renderer|three\.module/i.test(initialSource)) {
 }
 const roomManifest = JSON.parse(await readFile(resolve(root, "web/public/assets/3d/rooms/manifest.json"), "utf8"));
 const detailManifest = JSON.parse(await readFile(resolve(root, "web/public/assets/3d/detail/rooms/manifest.json"), "utf8"));
+const environmentManifest = JSON.parse(await readFile(resolve(root, "web/public/assets/3d/environment/manifest.json"), "utf8"));
 const roomBytes = roomManifest.rooms.map((room) => room.bytes);
 const totalRoomBytes = roomBytes.reduce((total, bytes) => total + bytes, 0);
 const maximumRoomBytes = Math.max(...roomBytes);
 const receptionDetailBytes = detailManifest.rooms.find((room) => room.kind === "RECEPTION")?.bytes ?? Infinity;
-const candidateBytes = (await stat(resolve(
-  root,
-  "assets/3d/environment/web-candidates/reception-bell/v1/reception-bell.glb",
-))).size;
+const admittedPropBytes = environmentManifest.assets.find((asset) => asset.id === "reception-bell")?.bytes ?? Infinity;
 
 const limits = {
   // React Flow is the only substantial first-screen Web dependency. This
@@ -48,7 +46,7 @@ const limits = {
   focusedDetailRoom: 4_200_000,
   admittedGeneratedProp: 250_000,
 };
-const measurements = { initialSize, office3dSize, totalRoomBytes, maximumRoomBytes, receptionDetailBytes, candidateBytes };
+const measurements = { initialSize, office3dSize, totalRoomBytes, maximumRoomBytes, receptionDetailBytes, admittedPropBytes };
 
 for (const [value, limit, label] of [
   [initialSize.raw, limits.initialRaw, "initial JS raw"],
@@ -60,7 +58,7 @@ for (const [value, limit, label] of [
   [totalRoomBytes, limits.totalRooms, "eight room GLBs"],
   [maximumRoomBytes, limits.singleRoom, "largest room GLB"],
   [receptionDetailBytes, limits.focusedDetailRoom, "focused reception detail GLB"],
-  [candidateBytes, limits.admittedGeneratedProp, "admitted generated prop"],
+  [admittedPropBytes, limits.admittedGeneratedProp, "admitted generated prop"],
 ]) {
   if (value > limit) throw new Error(`${label} exceeds budget: ${value} > ${limit}`);
 }
