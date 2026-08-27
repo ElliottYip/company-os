@@ -280,6 +280,15 @@ resolution, projection materialization, and persistent Vault bootstrap executor
 are implemented and admitted. The existing aggregate product-start executor is
 therefore not yet evidence for the unchecked first-start task.
 
+The first local apply slice now admits only the target-generated source subset,
+renders a private JSON Dex configuration with S256 PKCE and durable SQLite
+storage, and atomically materializes candidate-scoped projections for services
+whose inputs already exist. Bootstrap-output files are not fabricated:
+Vault Secret Broker remains explicitly pending until real Vault initialization
+produces its AppRole identifiers. This slice creates no Docker network, volume,
+container, database, IdP process, or Vault process and does not make the overall
+dependency plan executable.
+
 ## Success criteria
 
 1. Hong Kong and Hangzhou renders are independently valid and contain no

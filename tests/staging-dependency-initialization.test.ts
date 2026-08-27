@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 
 import { createStagingReleaseBundle } from "../scripts/create-staging-release-bundle.mjs";
-import { planStagingDependencyInitialization } from
+import { materializeStagingDependencyConfiguration, planStagingDependencyInitialization } from
   "../scripts/initialize-staging-dependencies.mjs";
 import { adoptStagingSiteContract, installStagingReleaseBundle } from
   "../scripts/install-staging-release-bundle.mjs";
@@ -34,6 +34,8 @@ async function fixture(prefix: string, authorized = true) {
       productStart: "change:product-start-test-01",
       acceptance: "change:acceptance-test-01",
     } : undefined });
+  const dependencySecretSource = join(temporary, "dependency-secret-source");
+  artifacts.dependencySecretMetadata.directory = dependencySecretSource;
   const paths = {
     site: join(temporary, "site-runtime.json"), environment: join(temporary, "staging.env"),
     dependencies: join(temporary, "staging-dependencies.json"),
@@ -49,7 +51,7 @@ async function fixture(prefix: string, authorized = true) {
     productSecretDirectory: artifacts.productSecretDirectory, siteRuntimeFile: paths.site,
     publicEnvironmentFile: paths.environment, dependencyManifestFile: paths.dependencies,
     dependencySecretMetadataFile: paths.secrets });
-  return { temporary, root, releaseId: installed.releaseId };
+  return { temporary, root, releaseId: installed.releaseId, artifacts, dependencySecretSource };
 }
 
 test("dependency initialization defaults to a canonical non-mutating plan", async (context) => {
@@ -92,4 +94,57 @@ test("dependency initialization refuses canonical contract drift", async (contex
   await writeFile(canonical, '{"changed":true}\n', { mode: 0o600 });
   await assert.rejects(planStagingDependencyInitialization({ rootDirectory: value.root,
     releaseId: value.releaseId }), /STAGING_DEPENDENCY_SITE_CONTRACT_CHANGED/);
+});
+
+test("authorized materialization writes private config and least-privilege projections without runtime objects",
+  async (context) => {
+    const value = await fixture("company-os-dependency-materialize-");
+    context.after(() => rm(value.temporary, { recursive: true, force: true }));
+    await mkdir(value.dependencySecretSource, { mode: 0o700 });
+    const bootstrap = { schemaVersion: 1, email: "operator@company-os.test",
+      username: "company-os-operator", displayName: "Company OS staging operator",
+      userId: "company-os-staging-operator", passwordHash: `$2b$12$${"A".repeat(53)}` };
+    for (const entry of value.artifacts.dependencySecretMetadata.entries.filter(
+      ({ generationMethod }) => generationMethod === "GENERATED_ON_TARGET")) {
+      const content = entry.purpose === "OIDC_BOOTSTRAP" ? `${JSON.stringify(bootstrap)}\n` :
+        entry.purpose === "OIDC_CLIENT" ? "synthetic-client-secret-material-32-bytes\n" :
+          `synthetic-${entry.purpose.toLowerCase()}\n`;
+      await writeFile(join(value.dependencySecretSource, entry.filename), content, { mode: entry.mode });
+    }
+    const ownership: Array<{ path: string; uid: number; gid: number }> = [];
+    const result = await materializeStagingDependencyConfiguration({ rootDirectory: value.root,
+      releaseId: value.releaseId, authorizationReference: "change:dependency-init-test-01" }, {
+      resolveImageUser: async () => ({ uid: 1001, gid: 1001 }),
+      applyOwnership: async (path: string, uid: number, gid: number) => {
+        ownership.push({ path, uid, gid });
+      },
+    });
+    assert.equal(result.status, "PRE_BOOTSTRAP_CONFIGURATION_MATERIALIZED_NOT_STARTED");
+    assert.equal(result.runtimeObjectsCreated, false);
+    const privateConfig = JSON.parse(await readFile(join(result.privateConfigDirectory, "dex.json"), "utf8"));
+    assert.equal(privateConfig.staticClients[0].secret, "synthetic-client-secret-material-32-bytes");
+    assert.equal((await stat(join(result.privateConfigDirectory, "dex.json"))).mode & 0o777, 0o400);
+    const agentFiles = await readdir(join(result.candidateRoot, "secret-projections",
+      "codex-agent-node"));
+    assert.deepEqual(agentFiles.sort(),
+      ["agent-node-token-10", "broker-execution-token-8", "internal-tls-cert-12"]);
+    await assert.rejects(stat(join(result.candidateRoot, "secret-projections",
+      "vault-secret-broker")), /ENOENT/);
+    assert.deepEqual(result.pendingConsumers, ["VAULT_SECRET_BROKER"]);
+    const evidence = await readFile(join(result.candidateRoot, "materialization-evidence.json"), "utf8");
+    assert.doesNotMatch(evidence, /synthetic-|passwordHash|staticClients|secret-material/);
+    assert.ok(ownership.length >= 6);
+    assert.equal(ownership.every(({ uid, gid }) => uid === 1001 && gid === 1001), true);
+  });
+
+test("materialization fails before mutation when a required source file is unsafe", async (context) => {
+  const value = await fixture("company-os-dependency-materialize-unsafe-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await mkdir(value.dependencySecretSource, { mode: 0o700 });
+  await assert.rejects(materializeStagingDependencyConfiguration({ rootDirectory: value.root,
+    releaseId: value.releaseId, authorizationReference: "change:dependency-init-test-01" }, {
+      resolveImageUser: async () => ({ uid: 1001, gid: 1001 }),
+      applyOwnership: async () => undefined,
+    }), /STAGING_DEPENDENCY_SECRET_SOURCE_INVALID/);
+  await assert.rejects(stat(join(value.root, "dependency-runtime")), /ENOENT/);
 });

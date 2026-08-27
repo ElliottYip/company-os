@@ -37,6 +37,8 @@ test("reference dependencies are isolated, TLS-fronted, immutable and resource b
   assert.doesNotMatch(compose, /^\s+ports:/m);
   assert.doesNotMatch(compose, /start-dev|VAULT_DEV|POSTGRES_PASSWORD:\s|CLIENT_SECRET:\s|BEARER_TOKEN:\s/);
   assert.match(compose, /ssl=on/);
+  assert.match(compose, /COMPANY_OS_OIDC_VOLUME:[^}]+\}/);
+  assert.match(compose, /company_os_dependency_oidc:\/var\/dex/);
   assert.match(compose, /COMPANY_OS_VAULT_ADDRESS: https:\/\/\$\{COMPANY_OS_VAULT_TLS_HOST:[^}]+\}:8200/);
   assert.match(compose, /aliases: \["\$\{COMPANY_OS_VAULT_TLS_HOST:[^}]+\}"\]/);
   assert.match(caddy, /reverse_proxy oidc:5556/);

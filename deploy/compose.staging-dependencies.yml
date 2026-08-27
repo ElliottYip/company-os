@@ -54,9 +54,10 @@ services:
     cpus: 0.20
     mem_limit: 192m
     pids_limit: 64
-    command: [dex, serve, /run/dependency-private/dex.yaml]
+    command: [dex, serve, /run/dependency-private/dex.json]
     volumes:
       - ${COMPANY_OS_DEPENDENCY_PRIVATE_CONFIG_DIRECTORY:?set rendered private config directory}:/run/dependency-private:ro
+      - company_os_dependency_oidc:/var/dex
     networks: [dependencies]
     depends_on:
       postgres: { condition: service_healthy }
@@ -186,6 +187,8 @@ volumes:
     name: ${COMPANY_OS_POSTGRES_VOLUME:?set site PostgreSQL volume}
   company_os_dependency_vault:
     name: ${COMPANY_OS_VAULT_VOLUME:?set site Vault volume}
+  company_os_dependency_oidc:
+    name: ${COMPANY_OS_OIDC_VOLUME:?set site OIDC volume}
   company_os_dependency_broker:
     name: ${COMPANY_OS_BROKER_VOLUME:?set site Broker volume}
   company_os_dependency_agent_state:

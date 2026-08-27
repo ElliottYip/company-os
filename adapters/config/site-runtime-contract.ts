@@ -282,10 +282,12 @@ export function renderReferenceDependencyEnvironment(
   metadata: DependencySecretMetadata,
   publicConfigDirectory: string,
   privateConfigDirectory: string,
+  secretProjectionRootDirectory = `${manifest.site.deploymentRoot}/dependency-secret-projections`,
 ): string {
   if (metadata.siteId !== manifest.site.id || !safeAbsolutePath(publicConfigDirectory) ||
       !safeAbsolutePath(privateConfigDirectory) || publicConfigDirectory === privateConfigDirectory ||
-      publicConfigDirectory === "/" || privateConfigDirectory === "/") invalidSite();
+      !safeAbsolutePath(secretProjectionRootDirectory) || publicConfigDirectory === "/" ||
+      privateConfigDirectory === "/" || secretProjectionRootDirectory === "/") invalidSite();
   const filenames = new Map(metadata.entries.map(({ purpose, filename }) => [purpose, filename]));
   const file = (purpose: DependencySecretPurpose) => {
     const value = filenames.get(purpose);
@@ -299,15 +301,15 @@ export function renderReferenceDependencyEnvironment(
     COMPANY_OS_PRODUCT_NETWORK: manifest.site.productNetwork,
     COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY: metadata.directory,
     COMPANY_OS_POSTGRES_SECRET_PROJECTION_DIRECTORY:
-      `${manifest.site.deploymentRoot}/dependency-secret-projections/postgres`,
+      `${secretProjectionRootDirectory}/postgres`,
     COMPANY_OS_VAULT_SECRET_PROJECTION_DIRECTORY:
-      `${manifest.site.deploymentRoot}/dependency-secret-projections/vault`,
+      `${secretProjectionRootDirectory}/vault`,
     COMPANY_OS_BROKER_SECRET_PROJECTION_DIRECTORY:
-      `${manifest.site.deploymentRoot}/dependency-secret-projections/vault-secret-broker`,
+      `${secretProjectionRootDirectory}/vault-secret-broker`,
     COMPANY_OS_AGENT_SECRET_PROJECTION_DIRECTORY:
-      `${manifest.site.deploymentRoot}/dependency-secret-projections/codex-agent-node`,
+      `${secretProjectionRootDirectory}/codex-agent-node`,
     COMPANY_OS_TLS_GATEWAY_SECRET_PROJECTION_DIRECTORY:
-      `${manifest.site.deploymentRoot}/dependency-secret-projections/tls-gateway`,
+      `${secretProjectionRootDirectory}/tls-gateway`,
     COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY: publicConfigDirectory,
     COMPANY_OS_DEPENDENCY_PRIVATE_CONFIG_DIRECTORY: privateConfigDirectory,
     COMPANY_OS_OIDC_IMAGE: manifest.dependencies.oidc.image,
@@ -316,6 +318,7 @@ export function renderReferenceDependencyEnvironment(
     COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: manifest.dependencies.secretBroker.image,
     COMPANY_OS_CODEX_AGENT_NODE_IMAGE: manifest.dependencies.agentNode.image,
     COMPANY_OS_POSTGRES_VOLUME: manifest.dependencies.postgres.volume,
+    COMPANY_OS_OIDC_VOLUME: manifest.dependencies.oidc.volume,
     COMPANY_OS_VAULT_VOLUME: manifest.dependencies.vault.volume,
     COMPANY_OS_BROKER_VOLUME: `${manifest.site.id}-broker`,
     COMPANY_OS_AGENT_STATE_VOLUME: `${manifest.site.id}-agent-state`,
@@ -384,8 +387,10 @@ export function renderReferenceDependencyPublicConfiguration(
 export function planDependencySecretProjections(
   manifest: SiteRuntimeManifest,
   metadata: DependencySecretMetadata,
+  projectionRootDirectory = `${manifest.site.deploymentRoot}/dependency-secret-projections`,
 ): DependencySecretProjectionPlan {
-  if (metadata.siteId !== manifest.site.id) invalidSecretMetadata();
+  if (metadata.siteId !== manifest.site.id || !safeAbsolutePath(projectionRootDirectory) ||
+      projectionRootDirectory === "/") invalidSecretMetadata();
   const entries = new Map(metadata.entries.map((entry) => [entry.purpose, entry]));
   const entry = (purpose: DependencySecretPurpose) => {
     const value = entries.get(purpose);
@@ -408,7 +413,7 @@ export function planDependencySecretProjections(
   ];
   const slug = (consumer: DependencySecretProjectionConsumer) => consumer.toLowerCase().replaceAll("_", "-");
   const projections = definitions.map(([consumer, image, purposes]) => {
-    const directory = `${manifest.site.deploymentRoot}/dependency-secret-projections/${slug(consumer)}`;
+    const directory = `${projectionRootDirectory}/${slug(consumer)}`;
     return { consumer, image, runtimeOwnerResolution: "OCI_IMAGE_DECLARED_USER" as const, directory,
       files: purposes.map((purpose) => ({ purpose, sourcePath: source(purpose),
         targetPath: `${directory}/${entry(purpose).filename}`, mode: entry(purpose).mode })) };
