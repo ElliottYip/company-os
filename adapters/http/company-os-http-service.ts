@@ -73,6 +73,16 @@ export interface CompanyOsHttpServiceOptions {
   readonly formalApi?: {
     getAgentBoss(request: IncomingMessage, companyId: string): Promise<unknown>;
     getAdministration?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    listPortfolioAgents?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    synchronizePortfolioAgent?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    listPortfolioWork?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    registerObservedWork?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    synchronizeFederatedWork?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    getAgentCommercialState?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    synchronizeAgentSubscription?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    recordAgentCredentialStatus?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    importAgentUsage?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    requestAgentRenewal?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     getPlanning?(request: IncomingMessage, companyId: string): Promise<unknown>;
     replacePlanning?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     createGoal?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
@@ -1435,6 +1445,81 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (method === "GET" && administrationRoute) {
         if (!options.formalApi?.getAdministration) throw new Error("FORMAL_API_UNAVAILABLE");
         sendJson(res, 200, await options.formalApi.getAdministration(req, administrationRoute[1] as string));
+        return;
+      }
+      const portfolioAgentsRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/agent-portfolio$/,
+      );
+      if (method === "GET" && portfolioAgentsRoute) {
+        if (!options.formalApi?.listPortfolioAgents) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.listPortfolioAgents(
+          req, portfolioAgentsRoute[1] as string,
+        ));
+        return;
+      }
+      if (method === "POST" && portfolioAgentsRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.formalApi?.synchronizePortfolioAgent) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.synchronizePortfolioAgent(
+          req, portfolioAgentsRoute[1] as string, await readJson(req, maxBodyBytes),
+        ));
+        return;
+      }
+      const portfolioWorkRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/portfolio-work$/,
+      );
+      if (method === "GET" && portfolioWorkRoute) {
+        if (!options.formalApi?.listPortfolioWork) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.listPortfolioWork(
+          req, portfolioWorkRoute[1] as string,
+        ));
+        return;
+      }
+      const observedWorkRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/portfolio-work\/observed$/,
+      );
+      if (method === "POST" && observedWorkRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.formalApi?.registerObservedWork) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.registerObservedWork(
+          req, observedWorkRoute[1] as string, await readJson(req, maxBodyBytes),
+        ));
+        return;
+      }
+      const federatedWorkRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/portfolio-work\/federated$/,
+      );
+      if (method === "POST" && federatedWorkRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.formalApi?.synchronizeFederatedWork) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.synchronizeFederatedWork(
+          req, federatedWorkRoute[1] as string, await readJson(req, maxBodyBytes),
+        ));
+        return;
+      }
+      const commercialRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/agent-commercial(?:\/(subscriptions|credential-status|usage|renewals))?$/,
+      );
+      if (method === "GET" && commercialRoute && !commercialRoute[2]) {
+        if (!options.formalApi?.getAgentCommercialState) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getAgentCommercialState(
+          req, commercialRoute[1] as string,
+        ));
+        return;
+      }
+      if (method === "POST" && commercialRoute && commercialRoute[2]) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const handlers = {
+          subscriptions: options.formalApi?.synchronizeAgentSubscription,
+          "credential-status": options.formalApi?.recordAgentCredentialStatus,
+          usage: options.formalApi?.importAgentUsage,
+          renewals: options.formalApi?.requestAgentRenewal,
+        } as const;
+        const handler = handlers[commercialRoute[2] as keyof typeof handlers];
+        if (!handler) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        sendJson(res, 200, await handler(
+          req, commercialRoute[1] as string, await readJson(req, maxBodyBytes),
+        ));
         return;
       }
       const accountabilityLedgerRoute = path.match(

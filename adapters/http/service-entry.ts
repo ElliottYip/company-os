@@ -31,6 +31,10 @@ import { IssueSecretLease } from "../../application/issue-secret-lease.ts";
 import { PrepareWorkExecution } from "../../application/prepare-work-execution.ts";
 import { DecideHighRiskAction } from "../../application/decide-high-risk-action.ts";
 import { FormalAgentBossApi } from "../../application/formal-agent-boss-api.ts";
+import { FormalAgentPortfolioApi } from "../../application/formal-agent-portfolio-api.ts";
+import { ManageAgentPortfolio } from "../../application/manage-agent-portfolio.ts";
+import { RegisterExternalWork } from "../../application/register-external-work.ts";
+import { ManageAgentCommercialGovernance } from "../../application/manage-agent-commercial-governance.ts";
 import { ConnectorRegistry } from "../../application/connector-registry.ts";
 import { GovernanceRegistry } from "../../application/governance-registry.ts";
 import { ResponsibilityRegistry } from "../../application/responsibility-registry.ts";
@@ -422,6 +426,27 @@ async function formalPlanningRegistry(
     nextId: nextPostgresRecordId,
   });
 }
+
+async function formalPortfolioApi(
+  request: import("node:http").IncomingMessage,
+  companyId: string,
+): Promise<FormalAgentPortfolioApi> {
+  if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+  const context = await formalCompanyContext(request, companyId);
+  return new FormalAgentPortfolioApi({
+    identity: context.identity,
+    agents: new ManageAgentPortfolio({
+      identity: context.identity,
+      events: formalEvents,
+      nextId: nextPostgresRecordId,
+    }),
+    work: new RegisterExternalWork({ events: formalEvents, nextId: nextPostgresRecordId }),
+    commercial: new ManageAgentCommercialGovernance({
+      events: formalEvents,
+      nextId: nextPostgresRecordId,
+    }),
+  });
+}
 const server = createCompanyOsHttpService({
   runtime,
   publicDemoSessions,
@@ -492,6 +517,36 @@ const server = createCompanyOsHttpService({
       },
       async getAdministration(request, companyId) {
         return (await formalAgentBossApi(request, companyId)).getAdministration(companyId);
+      },
+      async listPortfolioAgents(request, companyId) {
+        return (await formalPortfolioApi(request, companyId)).listAgents(companyId);
+      },
+      async synchronizePortfolioAgent(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).synchronizeAgent(companyId, input);
+      },
+      async listPortfolioWork(request, companyId) {
+        return (await formalPortfolioApi(request, companyId)).listExternalWork(companyId);
+      },
+      async registerObservedWork(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).registerObservedWork(companyId, input);
+      },
+      async synchronizeFederatedWork(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).synchronizeFederatedWork(companyId, input);
+      },
+      async getAgentCommercialState(request, companyId) {
+        return (await formalPortfolioApi(request, companyId)).getCommercialState(companyId);
+      },
+      async synchronizeAgentSubscription(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).synchronizeSubscription(companyId, input);
+      },
+      async recordAgentCredentialStatus(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).recordCredentialStatus(companyId, input);
+      },
+      async importAgentUsage(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).importUsage(companyId, input);
+      },
+      async requestAgentRenewal(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).requestRenewal(companyId, input);
       },
       async getAccountabilityLedger(request, companyId) {
         const context = await formalCompanyContext(request, companyId);
