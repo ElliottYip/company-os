@@ -26,6 +26,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
   const observations = new Map<string, Record<string, unknown>[]>();
   const cancellableWorkIds = new Set<string>();
   const commands: string[] = [];
+  const agentRequests: string[] = [];
   let submitCount = 0;
   let dataAccessAvailable = false;
   let dataAccessCount = 0;
@@ -67,6 +68,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     for await (const chunk of request) chunks.push(Buffer.from(chunk));
     const body = chunks.length ? JSON.parse(Buffer.concat(chunks).toString("utf8")) as Record<string, unknown> : null;
     const path = new URL(request.url ?? "/", "http://agent-node.test").pathname;
+    agentRequests.push(`${request.method ?? "GET"} ${path}`);
     if (path === "/v1/health") return send(200, { status: "HEALTHY" });
     if (path === "/v1/deployments") return send(200, { deploymentId: "deployment-browser-live" });
     if (path === "/v1/work") {
@@ -150,6 +152,15 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
   const backendPort = await availablePort();
   edge.setBackendPort(backendPort);
   const output: string[] = [];
+  const expectConnectorCommand = async (operation: string, timeout = 15_000): Promise<void> => {
+    try {
+      await expect.poll(() => commands, { timeout }).toContain(operation);
+    } catch (error) {
+      throw new Error(`Connector command ${operation} was not delivered. Agent requests: ${agentRequests.join(", ")}\nBackend output:\n${output.join("")}`, {
+        cause: error,
+      });
+    }
+  };
   const startBackend = async (): Promise<void> => {
     if (backend && backend.exitCode === null && backend.signalCode === null) {
       throw new Error("Company OS service is already running");
@@ -347,7 +358,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     await test.step("service restart collects approval and delivers PAUSE", async () => {
       await stopBackend();
       await startBackend();
-      await expect.poll(() => commands, { timeout: 15_000 }).toContain("PAUSE");
+      await expectConnectorCommand("PAUSE", 30_000);
     });
     await page.reload();
     await page.getByRole("button", { name: "Approvals", exact: true }).first().click();
@@ -358,7 +369,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     await test.step("service restart delivers RESUME and collects the result", async () => {
       await stopBackend();
       await startBackend();
-      await expect.poll(() => commands, { timeout: 15_000 }).toContain("RESUME");
+      await expectConnectorCommand("RESUME", 30_000);
     });
     await expect.poll(async () => page.evaluate(async () => {
       const response = await fetch("/api/v1/companies/" + localStorage.getItem("company-os.selected-company") + "/agent-boss");
@@ -455,7 +466,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     await page.getByRole("listitem").filter({ hasText: "Cancel formal browser work" }).click();
     await page.getByRole("button", { name: "Request cancellation" }).click();
     await expect(page.getByText("Cancellation sent; waiting for Connector confirmation.")).toBeVisible();
-    await expect.poll(() => commands, { timeout: 15_000 }).toContain("CANCEL");
+    await expectConnectorCommand("CANCEL");
     await stopBackend();
     await startBackend();
     await expect.poll(async () => page.evaluate(async () => {

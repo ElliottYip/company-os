@@ -170,11 +170,31 @@ docker compose --env-file deploy/self-hosted.env \
 ```
 
 `COMPANY_OS_BACKUP_INTERVAL_SECONDS` defaults to 86400 and cannot be configured
-below one hour. The service does not automatically delete historical backups;
-retention and off-site replication belong to operator-controlled encrypted
-storage. The maintained encrypted restore drill authenticates the entire
+below one hour. The service does not automatically delete historical backups.
+When an S3-compatible destination is configured, it streams the encrypted
+ciphertext to object storage, verifies the remote length and digest metadata,
+then publishes the small completion manifest last. Access keys are accepted
+only from private mounted files, never inline Compose values. Object retention,
+versioning and deletion remain operator-owned policies. The maintained
+encrypted restore drill authenticates the entire
 ciphertext and its critical manifest metadata before streaming a second
 decryption pass directly into `pg_restore`; it never creates a plaintext dump:
+
+```sh
+COMPANY_OS_BACKUP_S3_ENDPOINT=https://object-storage.example.com \
+COMPANY_OS_BACKUP_S3_REGION=us-east-1 \
+COMPANY_OS_BACKUP_S3_BUCKET=<dedicated-private-bucket> \
+COMPANY_OS_BACKUP_S3_ACCESS_KEY_ID_FILE=/absolute/private/access-key-id \
+COMPANY_OS_BACKUP_S3_SECRET_ACCESS_KEY_FILE=/absolute/private/secret-access-key \
+COMPANY_OS_OFFSITE_BACKUP_MANIFEST_KEY=backups/YYYY/MM/DD/company-os-....dump.enc.json \
+COMPANY_OS_OFFSITE_RESTORE_DIRECTORY=/absolute/protected/restore-input \
+npm run ops:retrieve-offsite-backup
+```
+
+Retrieval begins from the completion manifest, verifies both remote objects,
+downloads to private partial files and publishes the pair locally only after
+the ciphertext digest matches. It does not connect to PostgreSQL. Database
+restore remains the separate, explicit empty-target command below:
 
 ```sh
 COMPANY_OS_RESTORE_DATABASE_URL=<empty-drill-database-secret> \
@@ -226,7 +246,7 @@ On 2026-08-26 both Dockerfiles built successfully with Node
 build and TypeScript checks passed, and focused deployment/runtime-config tests
 passed. Both containers were started as UID 1000; the Web returned its injected
 formal configuration and the API returned structured liveness. The full test
-gate also passed 468 cases (464 passed and four explicitly environment-gated
+gate also passed 527 cases (523 passed and four explicitly environment-gated
 live cases skipped in the credential-free run) plus 19 Chromium cases (15
 passed and four live-infrastructure gates skipped by default). The reference OIDC live
 gate passed separately with no route interception. A second compatibility gate

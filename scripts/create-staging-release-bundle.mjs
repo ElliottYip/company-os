@@ -92,7 +92,7 @@ function releaseManifest(value) {
       typeof value.releaseVersion !== "string" || !VERSION.test(value.releaseVersion) ||
       typeof value.sourceRevision !== "string" || !SHA.test(value.sourceRevision) ||
       !value.images || ![value.images.api, value.images.web, value.images.ops,
-        value.images.codexAgentNode, value.images.vaultSecretBroker]
+        value.images.codexAgentNode, value.images.vaultSecretBroker, value.images.referenceDataNode]
         .every((image) => typeof image === "string" && IMAGE.test(image))) {
     throw new Error("STAGING_BUNDLE_RELEASE_INVALID");
   }

@@ -15,6 +15,7 @@ export async function createReleaseManifest(environment = process.env) {
     const opsImage = required(environment, "COMPANY_OS_OPS_IMAGE", /@sha256:[a-f0-9]{64}$/);
     const codexAgentNodeImage = required(environment, "COMPANY_OS_CODEX_AGENT_NODE_IMAGE", /@sha256:[a-f0-9]{64}$/);
     const vaultSecretBrokerImage = required(environment, "COMPANY_OS_VAULT_SECRET_BROKER_IMAGE", /@sha256:[a-f0-9]{64}$/);
+    const referenceDataNodeImage = required(environment, "COMPANY_OS_REFERENCE_DATA_NODE_IMAGE", /@sha256:[a-f0-9]{64}$/);
     const releaseVersion = required(environment, "COMPANY_OS_RELEASE_VERSION", /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?$/);
     const sourceRepository = required(environment, "COMPANY_OS_SOURCE_REPOSITORY",
       /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/);
@@ -60,6 +61,7 @@ export async function createReleaseManifest(environment = process.env) {
         ops: opsImage,
         codexAgentNode: codexAgentNodeImage,
         vaultSecretBroker: vaultSecretBrokerImage,
+        referenceDataNode: referenceDataNodeImage,
       },
       contracts: {
         formalApi: "v1",

@@ -45,7 +45,7 @@ function release(manifest, manifestDigest) {
       typeof manifest.sourceRevision !== "string" || !REVISION.test(manifest.sourceRevision) ||
       !SHA256.test(manifestDigest) || !manifest.images || typeof manifest.images !== "object" ||
       ![manifest.images.api, manifest.images.web, manifest.images.ops, manifest.images.codexAgentNode,
-        manifest.images.vaultSecretBroker]
+        manifest.images.vaultSecretBroker, manifest.images.referenceDataNode]
         .every((value) => typeof value === "string" && IMAGE.test(value))) {
     throw new Error("ACCEPTANCE_PLAN_RELEASE_INVALID");
   }
@@ -59,6 +59,7 @@ function release(manifest, manifestDigest) {
       ops: `sha256:${manifest.images.ops.split("@sha256:")[1]}`,
       codexAgentNode: `sha256:${manifest.images.codexAgentNode.split("@sha256:")[1]}`,
       vaultSecretBroker: `sha256:${manifest.images.vaultSecretBroker.split("@sha256:")[1]}`,
+      referenceDataNode: `sha256:${manifest.images.referenceDataNode.split("@sha256:")[1]}`,
     },
   };
 }

@@ -9,7 +9,8 @@ import {
 const image = (name: string, digest: string) => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
 const expected = { releaseId: `0.1.0-rc.1-${"a".repeat(12)}`, releaseVersion: "0.1.0-rc.1",
   sourceRevision: "a".repeat(40), dependencyManifestDigest: `sha256:${"d".repeat(64)}`,
-  images: { api: image("api", "b"), web: image("web", "c") } };
+  images: { api: image("api", "b"), web: image("web", "c"),
+    referenceDataNode: image("reference-data-node", "d") } };
 
 function snapshot(overrides: Partial<StagingRuntimeSnapshot> = {}): StagingRuntimeSnapshot {
   return {
@@ -20,13 +21,15 @@ function snapshot(overrides: Partial<StagingRuntimeSnapshot> = {}): StagingRunti
     containers: [
       { service: "api", image: expected.images.api, status: "running", health: "healthy" },
       { service: "web", image: expected.images.web, status: "running", health: "healthy" },
+      { service: "reference-data-node", image: expected.images.referenceDataNode,
+        status: "running", health: "healthy" },
     ],
     probes: { apiReady: true, webReachable: true },
     ...overrides,
   };
 }
 
-test("runtime status proves exact healthy API/Web without promoting customer acceptance", () => {
+test("runtime status proves exact healthy API/Web/Data Node without promoting customer acceptance", () => {
   const result = evaluateStagingRuntimeStatus(snapshot());
   assert.equal(result.status, "RUNNING_NOT_ACCEPTED");
   assert.equal(result.acceptanceClaimed, false);
@@ -65,7 +68,7 @@ test("runtime status fails closed for image drift, duplicate services, health, a
   assert.equal(result.status, "DEGRADED_REQUIRES_REVIEW");
   assert.deepEqual(result.findings.map(({ code }) => code), [
     "STARTUP_RELEASE_MISMATCH", "STARTUP_SOURCE_MISMATCH", "DEPENDENCY_MANIFEST_MISMATCH", "CONTAINER_DUPLICATE",
-    "CONTAINER_IMAGE_MISMATCH", "CONTAINER_NOT_HEALTHY", "CONTAINER_MISSING",
+    "CONTAINER_IMAGE_MISMATCH", "CONTAINER_NOT_HEALTHY", "CONTAINER_MISSING", "CONTAINER_MISSING",
     "API_NOT_READY", "WEB_NOT_REACHABLE",
   ]);
   assert.doesNotMatch(JSON.stringify(result), /client.?secret|bearer.?token|database.?url/i);

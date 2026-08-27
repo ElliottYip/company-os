@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "fixtureOnly": true,
+  "dataSources": [
+    {
+      "id": "acceptance-fixtures",
+      "classification": "INTERNAL",
+      "allowedOperations": ["READ"],
+      "records": [
+        {
+          "fixtureId": "customer-001",
+          "segment": "pilot",
+          "status": "active"
+        },
+        {
+          "fixtureId": "customer-002",
+          "segment": "evaluation",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

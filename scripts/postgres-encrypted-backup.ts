@@ -5,60 +5,23 @@ import { isAbsolute, join } from "node:path";
 import { spawn } from "node:child_process";
 import { pipeline } from "node:stream/promises";
 import { setTimeout as delay } from "node:timers/promises";
+import { readSecretFileEnvironment } from "../adapters/config/secret-file-environment.ts";
+import {
+  backupManifestAuthenticatedData,
+  type EncryptedBackupManifest,
+} from "./encrypted-backup-manifest.ts";
 import { postgresCommandCoordinates } from "./postgres-restore-drill.ts";
+
+export {
+  backupManifestAuthenticatedData,
+  parseEncryptedBackupManifest,
+  type EncryptedBackupManifest,
+} from "./encrypted-backup-manifest.ts";
 
 const ALGORITHM = "aes-256-gcm" as const;
 const DEFAULT_INTERVAL_SECONDS = 86_400;
 const MINIMUM_INTERVAL_SECONDS = 3_600;
 const MAXIMUM_INTERVAL_SECONDS = 31 * 86_400;
-
-export interface EncryptedBackupManifest {
-  readonly schemaVersion: 1;
-  readonly algorithm: typeof ALGORITHM;
-  readonly iv: string;
-  readonly authenticationTag: string;
-  readonly ciphertextDigest: `sha256:${string}`;
-  readonly ciphertextBytes: number;
-  readonly createdAt: string;
-}
-
-const MANIFEST_KEYS = new Set([
-  "schemaVersion", "algorithm", "iv", "authenticationTag", "ciphertextDigest",
-  "ciphertextBytes", "createdAt",
-]);
-const SHA256 = /^sha256:[a-f0-9]{64}$/;
-
-function exactBase64(value: unknown, bytes: number): value is string {
-  if (typeof value !== "string" || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value)) {
-    return false;
-  }
-  const decoded = Buffer.from(value, "base64");
-  return decoded.length === bytes && decoded.toString("base64") === value;
-}
-
-export function backupManifestAuthenticatedData(manifest: Pick<EncryptedBackupManifest,
-  "schemaVersion" | "algorithm" | "iv" | "createdAt">): Buffer {
-  return Buffer.from(JSON.stringify([
-    manifest.schemaVersion, manifest.algorithm, manifest.iv, manifest.createdAt,
-  ]), "utf8");
-}
-
-export function parseEncryptedBackupManifest(source: string): EncryptedBackupManifest {
-  let value: unknown;
-  try { value = JSON.parse(source); } catch { throw new Error("BACKUP_MANIFEST_INVALID"); }
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("BACKUP_MANIFEST_INVALID");
-  const record = value as Record<string, unknown>;
-  if (Object.keys(record).some((key) => !MANIFEST_KEYS.has(key)) ||
-      Object.keys(record).length !== MANIFEST_KEYS.size ||
-      record.schemaVersion !== 1 || record.algorithm !== ALGORITHM ||
-      !exactBase64(record.iv, 12) || !exactBase64(record.authenticationTag, 16) ||
-      typeof record.ciphertextDigest !== "string" || !SHA256.test(record.ciphertextDigest) ||
-      !Number.isSafeInteger(record.ciphertextBytes) || (record.ciphertextBytes as number) < 1 ||
-      typeof record.createdAt !== "string" || !Number.isFinite(Date.parse(record.createdAt))) {
-    throw new Error("BACKUP_MANIFEST_INVALID");
-  }
-  return record as unknown as EncryptedBackupManifest;
-}
 
 export function backupEncryptionKey(value: string | undefined): Buffer {
   if (!value || !/^[A-Za-z0-9+/]{43}=$/.test(value)) throw new Error("BACKUP_ENCRYPTION_KEY_INVALID");
@@ -127,7 +90,13 @@ export async function createEncryptedPostgresBackup(input: {
   readonly outputDirectory: string;
   readonly encryptionKey: Buffer;
   readonly now?: () => Date;
-}): Promise<{ readonly schemaVersion: 1; readonly status: "PASS"; readonly ciphertextDigest: string }> {
+}): Promise<{
+  readonly schemaVersion: 1;
+  readonly status: "PASS";
+  readonly ciphertextDigest: string;
+  readonly ciphertextPath: string;
+  readonly manifestPath: string;
+}> {
   if (!isAbsolute(input.outputDirectory)) throw new Error("BACKUP_DIRECTORY_INVALID");
   if (input.encryptionKey.length !== 32) throw new Error("BACKUP_ENCRYPTION_KEY_INVALID");
   const coordinates = postgresCommandCoordinates(input.databaseUrl);
@@ -174,7 +143,8 @@ export async function createEncryptedPostgresBackup(input: {
     await writeFile(manifestPartialPath, `${JSON.stringify(manifest)}\n`, { flag: "wx", mode: 0o600 });
     await rename(partialPath, ciphertextPath);
     await rename(manifestPartialPath, manifestPath);
-    return { schemaVersion: 1, status: "PASS", ciphertextDigest: encrypted.digest };
+    return { schemaVersion: 1, status: "PASS", ciphertextDigest: encrypted.digest,
+      ciphertextPath, manifestPath };
   } catch (error) {
     child.kill("SIGTERM");
     await Promise.all([rm(partialPath, { force: true }), rm(manifestPartialPath, { force: true })]);
@@ -183,11 +153,14 @@ export async function createEncryptedPostgresBackup(input: {
 }
 
 async function main(): Promise<void> {
-  const databaseUrl = process.env.COMPANY_OS_DATABASE_URL;
+  const databaseUrl = await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL");
   const outputDirectory = process.env.COMPANY_OS_BACKUP_DIRECTORY;
   if (!databaseUrl || !outputDirectory) throw new Error("BACKUP_CONFIGURATION_REQUIRED");
-  const encryptionKey = backupEncryptionKey(process.env.COMPANY_OS_BACKUP_ENCRYPTION_KEY);
+  const encryptionKey = backupEncryptionKey(await readSecretFileEnvironment("COMPANY_OS_BACKUP_ENCRYPTION_KEY"));
   const intervalMs = scheduledBackupIntervalMs(process.env.COMPANY_OS_BACKUP_INTERVAL_SECONDS);
+  const offsiteModule = await import("./offsite-encrypted-backup.ts");
+  const offsiteConfiguration = await offsiteModule.loadS3BackupConfiguration(process.env);
+  const offsiteStore = offsiteConfiguration ? new offsiteModule.S3BackupObjectStore(offsiteConfiguration) : undefined;
   let stopping = false;
   const shutdown = new AbortController();
   process.once("SIGINT", () => { stopping = true; shutdown.abort(); });
@@ -195,7 +168,17 @@ async function main(): Promise<void> {
   do {
     try {
       const result = await createEncryptedPostgresBackup({ databaseUrl, outputDirectory, encryptionKey });
-      process.stdout.write(`${JSON.stringify({ event: "company_os.encrypted_backup_completed", ...result })}\n`);
+      if (offsiteConfiguration && offsiteStore) {
+        await offsiteModule.publishEncryptedBackup({
+          ciphertextPath: result.ciphertextPath,
+          manifestPath: result.manifestPath,
+          destination: offsiteConfiguration.destination,
+          store: offsiteStore,
+        });
+      }
+      process.stdout.write(`${JSON.stringify({ event: "company_os.encrypted_backup_completed",
+        schemaVersion: result.schemaVersion, status: result.status, ciphertextDigest: result.ciphertextDigest,
+        offsite: Boolean(offsiteConfiguration) })}\n`);
     } catch {
       process.stderr.write(`${JSON.stringify({ event: "company_os.encrypted_backup_failed", code: "ENCRYPTED_BACKUP_FAILED" })}\n`);
       if (process.env.COMPANY_OS_BACKUP_RUN_MODE === "once") process.exitCode = 1;
@@ -207,6 +190,7 @@ async function main(): Promise<void> {
       if (!(error instanceof Error) || error.name !== "AbortError") throw error;
     }
   } while (!stopping);
+  offsiteStore?.destroy();
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) await main();

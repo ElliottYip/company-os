@@ -6,10 +6,13 @@ const REQUIRED_SECRET_FILES = [
   "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
   "data-node-bearer-token", "secret-broker-bearer-token",
 ] as const;
-const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE"] as const;
+const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE",
+  "COMPANY_OS_REFERENCE_DATA_NODE_IMAGE"] as const;
 const HTTPS_KEYS = ["COMPANY_OS_OIDC_ISSUER", "COMPANY_OS_OIDC_DISCOVERY_URL",
   "COMPANY_OS_HTTP_AGENT_NODE_BASE_URL", "COMPANY_OS_HTTP_DATA_NODE_BASE_URL",
-  "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL"] as const;
+  "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL", "COMPANY_OS_BACKUP_S3_ENDPOINT"] as const;
+const REQUIRED_PUBLIC_KEYS = ["COMPANY_OS_OIDC_CLIENT_ID", "COMPANY_OS_BACKUP_S3_REGION",
+  "COMPANY_OS_BACKUP_S3_BUCKET"] as const;
 
 export interface StagingDeploymentSnapshot {
   readonly root: { readonly path: string; readonly exists: boolean; readonly mode: number | null };
@@ -19,7 +22,7 @@ export interface StagingDeploymentSnapshot {
   readonly runtime: { readonly dockerAvailable: boolean; readonly composeAvailable: boolean;
     readonly cpuCount: number; readonly totalMemoryBytes: number; readonly freeDiskBytes: number };
   readonly target: { readonly composeProjectExists: boolean; readonly targetNetworkExists: boolean;
-    readonly loopbackPorts: readonly { readonly port: 4600 | 4601;
+    readonly loopbackPorts: readonly { readonly port: 4322 | 4600 | 4601;
       readonly status: "FREE" | "OCCUPIED" | "UNKNOWN" }[] };
   readonly publicEnvironment: Readonly<Record<string, string>>;
 }
@@ -70,8 +73,8 @@ export function evaluateStagingDeploymentReadiness(snapshot: StagingDeploymentSn
   for (const key of IMAGE_KEYS) {
     if (!IMMUTABLE_IMAGE.test(snapshot.publicEnvironment[key] ?? "")) add("STAGING_IMAGE_NOT_IMMUTABLE", key);
   }
-  if (!snapshot.publicEnvironment.COMPANY_OS_OIDC_CLIENT_ID?.trim()) {
-    add("STAGING_PUBLIC_CONFIG_MISSING", "COMPANY_OS_OIDC_CLIENT_ID");
+  for (const key of REQUIRED_PUBLIC_KEYS) {
+    if (!snapshot.publicEnvironment[key]?.trim()) add("STAGING_PUBLIC_CONFIG_MISSING", key);
   }
   for (const key of HTTPS_KEYS) {
     if (!strictHttpsUrl(snapshot.publicEnvironment[key])) add("STAGING_HTTPS_COORDINATE_REQUIRED", key);
