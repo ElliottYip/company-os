@@ -10,12 +10,14 @@ export interface OciImageUserInspection {
   readonly groupContents: string;
 }
 
+const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
+
 export function createOciImageUserResolver(
   inspections: readonly OciImageUserInspection[],
 ): (image: string) => OciImageUser {
   const indexed = new Map<string, OciImageUser>();
   for (const inspection of inspections) {
-    if (typeof inspection.image !== "string" || inspection.image.length === 0 ||
+    if (typeof inspection.image !== "string" || !IMMUTABLE_IMAGE.test(inspection.image) ||
         indexed.has(inspection.image)) throw new Error("OCI_IMAGE_USER_INSPECTION_INVALID");
     indexed.set(inspection.image, resolveOciImageUser(
       inspection.declaredUser, inspection.passwdContents, inspection.groupContents));

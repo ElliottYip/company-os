@@ -64,4 +64,7 @@ test("OCI inspection resolver binds each result to an exact immutable image refe
     { image, declaredUser: "dex", passwdContents: passwd, groupContents: groups },
     { image, declaredUser: "agent", passwdContents: passwd, groupContents: groups },
   ]), /OCI_IMAGE_USER_INSPECTION_INVALID/);
+  assert.throws(() => createOciImageUserResolver([{ image: "ghcr.io/example/runtime:latest",
+    declaredUser: "dex", passwdContents: passwd, groupContents: groups }]),
+  /OCI_IMAGE_USER_INSPECTION_INVALID/);
 });
