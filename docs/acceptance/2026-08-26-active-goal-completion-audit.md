@@ -1,7 +1,7 @@
 # Active-goal completion audit — updated 2026-08-27
 
-Status: **NOT COMPLETE — post-RC4 source qualification passed; merge, later RC,
-first start and customer acceptance remain pending**.
+Status: **NOT COMPLETE — the exact Draft PR #3 head is qualified; merge, later
+RC, first start and customer acceptance remain pending**.
 
 This audit evaluates the active product goal against the current repository and
 external deployment evidence. It does not treat a passing fixture, an
@@ -27,13 +27,14 @@ unpublished commit, or a prepared-but-not-started host as production proof.
   evidence, but is `SUPERSEDED_FOR_START` because it has no Reference Data Node
   image.
 - Draft PR `ElliottYip/company-os#3` remains unmerged. Its exact head
-  `8e768359676b4d4d2facf3d329b241dd801f3eba` passed GitHub Actions run
-  `33043621353` on 2026-08-27. The run completed the full independent gate,
+  `93ea16d57b14978c8c4efc6afaecd64a64c40606` passed GitHub Actions run
+  `33045823187` on 2026-08-27. The run completed the full independent gate,
   real Keycloak, PostgreSQL backup/restore and least privilege, authenticated
   encrypted backup, bounded HTTP recovery, verified TLS, real Vault AppRole/KV
   v2, PostgreSQL 16 rollback and 16→17 migration, plus self-hosted and
-  managed-cloud Compose admissions. This is qualified source, not a release or
-  target-host execution.
+  managed-cloud Compose admissions. The same run also proves that the real
+  Keycloak gate no longer relies on collision-prone fixed host ports. This is
+  qualified source, not a release or target-host execution.
 
 ## Requirement-by-requirement evidence
 
@@ -48,8 +49,8 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 | Data authorization and export governance | Revisioned grants, default-deny egress, HTTP Data Node client, durable preparation references, and raw-data exclusion tests | **Reference vertical complete; real enterprise test source pending.** |
 | Complete self-service Web | Company-first onboarding, all accepted navigation surfaces, formal API client, English/Chinese switch, mobile/keyboard/state-matrix and no-dead-control gates | **Repository vertical complete; deployed browser acceptance pending.** |
 | Managed-cloud and self-hosted | One-codebase Compose profiles, separate migration/runtime identities, live profile admissions, non-root images, exact runtime configuration and the immutable six-image RC4 release | **Repository and release complete; target-host acceptance pending.** |
-| Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests; PR #3 adds candidate-scoped dependency/runtime materialization, hardened stable ingress, explicit route/observation/promotion, canonical active-pointer adoption, dynamic restart/status, and digest-bound upgrade acceptance handoff | **Repository upgrade vertical complete through external-verification handoff; customer-controlled backup target and two actual release upgrades pending.** |
-| Full quality gate | Exact PR #3 head `8e76835…` passed local `npm run verify`: 652 tests, 648 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. GitHub run `33043621353` then passed every repository, identity, database, backup, Vault, TLS, upgrade and both deployment-profile steps against the same SHA. | **Post-RC4 source candidate qualified.** This is not a merge, immutable release, deployment or customer-acceptance claim. |
+| Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests; PR #3 adds candidate-scoped dependency/runtime materialization, hardened stable ingress, explicit route/observation/promotion, canonical active-pointer adoption, dynamic restart/status, digest-bound upgrade acceptance handoff, and a durable `ACCEPTANCE_ONLY` maintenance window. Acceptance dispatch is limited to an exact plan digest and Company/Work allowlist. Independent acceptance confirmation and normal-dispatch reopening use separate authorization references and audit records; rejection returns to `DISPATCH_FROZEN`. | **Repository upgrade and acceptance-control vertical complete through independently confirmed dispatch disposition; customer-controlled backup target and two actual release upgrades pending.** |
+| Full quality gate | Exact PR #3 head `93ea16d…` passed local `npm run verify`: 661 tests, 657 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. The real Keycloak compatibility test also passed locally after the dynamic-port hardening. GitHub run `33045823187` then passed every repository, identity, database, backup, Vault, TLS, upgrade and both deployment-profile steps against the same SHA. | **Post-RC4 source candidate qualified.** This is not a merge, immutable release, deployment or customer-acceptance claim. |
 
 ## External state last proved to this audit
 
@@ -68,10 +69,12 @@ unpublished commit, or a prepared-but-not-started host as production proof.
   remain intentionally absent.
 - The source after RC4 now contains separately authorized dependency,
   migration/provision, product-start, restart, upgrade preparation, traffic,
-  rollback and acceptance-handoff executors. Draft PR #3 is source-qualified
-  but unmerged and **not** retroactively attributed to immutable RC4. Upgrade
-  traffic ends at `UPGRADE_OBSERVATION_COMPLETE_PENDING_ACCEPTANCE`; structural
-  acceptance binding keeps `acceptanceClaimed=false`,
+  rollback and acceptance-handoff executors. It also contains a revision-fenced
+  acceptance maintenance lifecycle that opens only an exact allowlist, binds an
+  independent decision without changing runtime state, and performs a separate
+  accepted/rejected dispatch disposition. Draft PR #3 is source-qualified but
+  unmerged and **not** retroactively attributed to immutable RC4. A structural
+  handoff alone still keeps `acceptanceClaimed=false`,
   `independentlyVerified=false`, and `dispatchReopened=false`.
 
 ## Remaining completion sequence
@@ -86,10 +89,11 @@ unpublished commit, or a prepared-but-not-started host as production proof.
    restart/recovery, responsibility-chain, and Web acceptance in staging.
 4. Prove encrypted backup and restore against the customer-controlled off-site
    target.
-5. Before dispatch can reopen after first start or upgrade, explicitly decide
-   which independently verified human role owns acceptance and which separate
-   authority owns the revision-fenced dispatch transition; do not infer either
-   decision from health or a structurally valid record.
+5. Execute the qualified bounded acceptance lifecycle after first start and
+   each upgrade: activate the exact Work allowlist, bind the independently
+   verified decision, then separately reopen dispatch or return to frozen. The
+   same human may hold both roles, but the authorization references and audit
+   records must remain distinct.
 6. Complete two actual immutable release upgrades with parallel rollback
    evidence.
 7. Keep Hong Kong active until the independent ICP/DNS cutover gate is
