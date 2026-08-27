@@ -63,6 +63,16 @@ candidate Secret projection read-only, publish no host ports, and join only the
 candidate product network. Vault is an explicitly supplied same-site HTTPS
 dependency; no credential is placed in the runtime contract or public env.
 
+Before any candidate runtime object is created, capacity admission binds the
+runtime contract to the active site manifest and evaluates active declared
+limits plus candidate declared limits plus the larger required host reserve.
+Both total and currently available memory must pass; CPU and PID capacity must
+also cover both stacks. Swap is reported as non-admitted and cannot turn a
+failure into a pass. This means the current Hong Kong 4 CPU shape is not
+pre-approved merely because it has 8 GB memory: its observed snapshot must
+pass, and the present declared 5.55 CPU parallel requirement does not fit 4
+logical CPUs.
+
 Planning is non-mutating. The preparation executor may freeze dispatch,
 reconcile work, create an encrypted backup, rehearse restore into an empty
 parallel database, migrate that candidate database, start candidate services

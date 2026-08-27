@@ -307,6 +307,15 @@ candidate-only volumes and the candidate product network. Their materialized
 configuration is validated alongside the candidate product Compose; creation,
 health verification, and evidence adapters remain pending.
 
+Candidate capacity admission is explicit and coordinate-free. It binds the
+active site identity, release, project, network, and ports to the candidate
+runtime contract, then requires host capacity for active declared limits plus
+candidate declared limits plus host reserve. It checks both total and currently
+available memory, CPU and PID ceilings, never counts swap, and produces only a
+non-mutating `READY_FOR_CANDIDATE_CREATION` or `NOT_READY` record. This is a
+prerequisite for a future candidate-creation adapter; it does not itself create
+containers, networks, volumes, databases, or Secret material.
+
 The dependency initialization planner is canonical-store-bound,
 authorization-bound, and non-mutating by default. Runtime owners are resolved
 only from image-bound account-database inspection evidence. Images that run as
