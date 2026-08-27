@@ -280,6 +280,14 @@ Before any start:
    `ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION`; it deliberately
    leaves `acceptanceClaimed=false` until the real OIDC, model, data, Secret,
    restart, and human-owner evidence is independently verified;
+   Before a later immutable release upgrade, run
+   `npm run release:staging-upgrade-plan -- --inspect-bindings --root <site-root>`.
+   This read-only command derives the active release from private startup state
+   and the candidate from the canonical prepared record. After an accountable
+   operator supplies a private ADR-0044 authorization file, run the same command
+   with `--authorization-file <absolute-path> --authorization <preparation-ref>`.
+   A successful result remains `PLANNED_NOT_APPLIED`; it does not freeze
+   dispatch, migrate, start candidate services, route traffic, or roll back;
 10. retain `startup-state.json`, doctor output, immutable image attestations and
     externally verified customer-acceptance evidence. Do not move ingress or
     claim production readiness from the startup record alone.
