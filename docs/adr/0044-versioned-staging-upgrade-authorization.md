@@ -78,6 +78,14 @@ it fails, because no active or candidate mutation has started. The retained
 capacity evidence digest is required by the cutover plan and must precede
 dispatch freeze, backup, restore, migration, or candidate creation.
 
+Capacity checks produce five-minute, append-only target evidence bound to the
+exact runtime contract and active site manifest. A private relative symlink may
+advance to a newer observation after resizing, but older records are retained;
+only a non-expired `READY_FOR_CANDIDATE_CREATION` record can satisfy the first
+preparation step. The preparation adapter then requires a named,
+outcome-bound evidence record for every operation instead of accepting an
+untyped shell success.
+
 Planning is non-mutating. The preparation executor may freeze dispatch,
 reconcile work, create an encrypted backup, rehearse restore into an empty
 parallel database, migrate that candidate database, start candidate services
@@ -89,6 +97,14 @@ Traffic movement is a second apply phase requiring the exact
 active route, observes bounded health/integrity thresholds, then atomically
 records the candidate as active. Installing a candidate never changes active
 runtime authority.
+
+The traffic executor consumes the exact digest of the completed, unrouted
+preparation state under the separate traffic authorization. It permits only
+`route-traffic` followed by `observe`. A route or observation failure retains
+whether traffic may have moved and stops in
+`TRAFFIC_CUTOVER_FAILED_REQUIRES_EXPLICIT_DECISION`; it never invokes rollback
+or claims acceptance. A successful observation ends only at
+`UPGRADE_OBSERVATION_COMPLETE_PENDING_ACCEPTANCE`.
 
 Rollback is never automatic. A failure after any possible database or service
 mutation records `UPGRADE_FAILED_REQUIRES_REVIEW`, the last attempted step, and

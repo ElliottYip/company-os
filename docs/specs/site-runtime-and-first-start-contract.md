@@ -316,6 +316,20 @@ non-mutating `READY_FOR_CANDIDATE_CREATION` or `NOT_READY` record. This is a
 prerequisite for a future candidate-creation adapter; it does not itself create
 containers, networks, volumes, databases, or Secret material.
 
+The target capacity command retains each observation append-only for five
+minutes and moves only a private relative symlink to the newest record. Its
+digest binds the runtime contract, active site manifest, and observed host
+snapshot. Failed or expired evidence cannot authorize candidate creation. The
+preparation step adapter also validates the exact expected outcome and evidence
+binding for each named operation before reporting `PASS` to the state machine.
+
+Traffic execution is a separate authorization and state file. It consumes the
+exact digest of `UPGRADE_PREPARATION_COMPLETE_NOT_ROUTED`, permits only routing
+then observation, and conservatively records that traffic may have moved even
+when the routing call itself reports failure. Observation failure stops for an
+explicit human decision; automatic rollback and acceptance claims remain
+forbidden.
+
 The dependency initialization planner is canonical-store-bound,
 authorization-bound, and non-mutating by default. Runtime owners are resolved
 only from image-bound account-database inspection evidence. Images that run as
