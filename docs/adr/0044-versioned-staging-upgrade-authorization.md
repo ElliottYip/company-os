@@ -152,6 +152,25 @@ Web and API entry points both return the exact candidate release ID. The header
 contains no credential or tenant data and is absent when a development runtime
 has not declared a release ID.
 
+The host-facing reverse proxy targets one small, stable Company OS ingress
+router rather than either product Compose project directly. That router owns a
+separate project and network, uses an immutable image, publishes only two
+loopback ports, and reaches active or candidate loopback upstreams through the
+explicit host-gateway alias. It never joins both product networks. A route
+generation contains only the selected Web/API ports, is validated before use,
+and becomes current through a same-filesystem atomic symlink replacement before
+the router reloads it. Caddy is the initial adapter implementation, not a core
+or application dependency; the route contract can be implemented by another
+proxy without changing Company OS domain types.
+
+The observation step samples both stable entry points for a bounded number of
+probes, requires the candidate release header on every successful probe,
+enforces a declared p95 latency and failure budget, and rechecks the exact
+source digest plus all nine responsibility-state control totals retained by
+preparation. Its evidence contains only aggregate counts, latency, release and
+content digests. It contains no endpoint coordinates, customer rows, session
+material, or Secrets.
+
 The traffic executor consumes the exact digest of the completed, unrouted
 preparation state under the separate traffic authorization. It permits only
 `route-traffic` followed by `observe`. A route or observation failure retains

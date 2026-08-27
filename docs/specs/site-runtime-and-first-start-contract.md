@@ -8,6 +8,15 @@ stable entry points; HTTP status, container health, or a successful proxy
 reload alone does not prove which release is serving traffic. Local development
 may omit the value, in which case the header is deliberately absent.
 
+Upgrade-capable sites additionally declare a Secret-free ingress-route
+contract. The stable router must have its own Compose project and network,
+immutable image, bounded resources, unique stable/internal ports, and the fixed
+`host.docker.internal` gateway alias. Its network, project, and ports cannot
+collide with either active or candidate runtime. Generated route configuration
+contains no public hostname, identity coordinate, database coordinate, or
+Secret. The host reverse proxy can therefore remain bound to stable loopback
+ports while Company OS atomically changes only the validated inner route.
+
 Status: **APPROVED — assumptions 1–5 confirmed by the product owner on
 2026-08-27; implementation proceeds test-first**.
 
