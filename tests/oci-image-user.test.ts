@@ -58,6 +58,7 @@ test("OCI inspection resolver binds each result to an exact immutable image refe
   const resolve = createOciImageUserResolver([{ image, declaredUser: "dex", passwdContents: passwd,
     groupContents: groups }]);
   assert.deepEqual(resolve(image), { uid: 1001, gid: 1002 });
+  assert.deepEqual(resolve(image, "1001:2000"), { uid: 1001, gid: 2000 });
   assert.throws(() => resolve(`ghcr.io/example/runtime@sha256:${"b".repeat(64)}`),
     /OCI_IMAGE_USER_INSPECTION_MISSING/);
   assert.throws(() => createOciImageUserResolver([

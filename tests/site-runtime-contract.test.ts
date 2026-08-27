@@ -300,7 +300,8 @@ test("dependency Secret projection plan gives each immutable service only its re
   assert.deepEqual(plan.bootstrapInputs.map(({ purpose }) => purpose),
     ["OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION", "AGENT_PROVIDER"]);
   assert.deepEqual(plan.projections.map(({ consumer }) => consumer),
-    ["POSTGRES", "VAULT", "VAULT_SECRET_BROKER", "CODEX_AGENT_NODE", "TLS_GATEWAY"]);
+    ["POSTGRES", "VAULT", "VAULT_SECRET_BROKER", "CODEX_AGENT_NODE", "TLS_GATEWAY",
+      "DEPENDENCY_VERIFIER"]);
   const postgres = plan.projections.find(({ consumer }) => consumer === "POSTGRES")!;
   assert.deepEqual(postgres.files.map(({ purpose }) => purpose),
     ["POSTGRES_BOOTSTRAP", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]);
@@ -308,6 +309,9 @@ test("dependency Secret projection plan gives each immutable service only its re
   assert.deepEqual(broker.files.map(({ purpose }) => purpose), ["VAULT_APPROLE_ROLE_ID",
     "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN", "BROKER_EXECUTION_TOKEN",
     "BROKER_SIGNING_KEY", "INTERNAL_TLS_CERT"]);
+  const verifier = plan.projections.find(({ consumer }) => consumer === "DEPENDENCY_VERIFIER")!;
+  assert.deepEqual(verifier.files.map(({ purpose }) => purpose),
+    ["BROKER_CONTROL_TOKEN", "AGENT_NODE_TOKEN", "INTERNAL_TLS_CERT"]);
   assert.equal(plan.projections.every(({ files }) => files.every(({ sourcePath, targetPath }) =>
     sourcePath.startsWith("/etc/company-os/dependency-secrets/") &&
     targetPath.includes("/dependency-secret-projections/"))), true);

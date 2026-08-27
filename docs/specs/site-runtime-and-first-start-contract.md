@@ -269,28 +269,25 @@ make the minimal implementation pass and run the complete gate.
 - [x] Add the versioned reference dependency Compose and resource admission.
 - [x] Make canonical release-store adoption idempotent and evidence-bound.
 - [ ] Split first start into authorization-bound dependency, migration,
-  product-start, and acceptance phases. Migration/provision and product-start
-  executors are complete; dependency bootstrap and acceptance remain open.
+  product-start, and acceptance phases. Dependency, migration/provision, and
+  product-start executors are complete; acceptance remains open.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
 
 The dependency initialization planner is canonical-store-bound,
-authorization-bound, and non-mutating by default. OCI declared users are
-resolved only from image-bound account-database inspection evidence; missing,
-ambiguous, root, and out-of-range identities are rejected. The planner remains
-explicitly non-executable until the persistent Vault bootstrap and phase-bound
-runtime executors are implemented and admitted. The existing aggregate
-product-start executor is therefore not yet evidence for the unchecked
-first-start task.
+authorization-bound, and non-mutating by default. Runtime owners are resolved
+only from image-bound account-database inspection evidence. Images that run as
+a declared non-root user use that identity; PostgreSQL and the TLS gateway use
+explicit accounts that must exist in the exact image account database. Missing,
+ambiguous, root, and out-of-range identities are rejected.
 
 The first local apply slice now admits only the target-generated source subset,
 renders a private JSON Dex configuration with S256 PKCE and durable SQLite
 storage, and atomically materializes candidate-scoped projections for services
 whose inputs already exist. Bootstrap-output files are not fabricated:
 Vault Secret Broker remains explicitly pending until real Vault initialization
-produces its AppRole identifiers. This slice creates no Docker network, volume,
-container, database, IdP process, or Vault process and does not make the overall
-dependency plan executable.
+produces its AppRole identifiers. This materialization slice itself creates no
+Docker network, volume, container, database, IdP process, or Vault process.
 
 After Vault bootstrap has produced the declared recovery and AppRole outputs,
 a second materializer validates the exact expanded source set and creates a
@@ -299,6 +296,18 @@ candidate. It adds the Broker-only AppRole projection, re-renders all paths for
 the derived candidate, records the predecessor evidence digest, and still
 creates no runtime object. Provider credentials remain Vault-managed and are
 never fabricated or copied into this source directory.
+
+The separately authorized dependency executor pulls only exact image digests,
+materializes the pre-bootstrap candidate, creates the site-owned product
+network, starts PostgreSQL, Dex, and Vault, and invokes a one-shot Ops service
+to initialize and unseal Vault. It installs KV v2 and a narrowly scoped AppRole,
+verifies AppRole login, revokes the initial root token, and replaces the
+recovery file with a root-token-free record. It then materializes the immutable
+post-bootstrap candidate, starts the Broker, Agent Node, and TLS gateway, and
+runs an authenticated TLS verifier from the dependency network. Only that full
+chain may write `DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED`. Any failure retains a
+review-required state and never deletes a network or volume, retries bootstrap,
+or claims rollback.
 
 Migration/provision and product start now have separate CLIs, authorization
 references, predecessor-evidence digests, state files, and shared lifecycle

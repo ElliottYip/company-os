@@ -19,6 +19,7 @@
     "release:staging-archive": "node scripts/create-portable-staging-archive.mjs",
     "release:staging-install": "node scripts/install-staging-release-bundle.mjs",
     "release:staging-start": "node --experimental-strip-types scripts/start-staging-release.mjs",
+    "release:staging-dependencies": "node --experimental-strip-types scripts/run-staging-dependency-phase.mjs",
     "release:staging-migrate": "node --experimental-strip-types scripts/run-staging-migration-phase.mjs",
     "release:staging-product-start": "node --experimental-strip-types scripts/run-staging-product-start-phase.mjs",
     "release:staging-restart": "node --experimental-strip-types scripts/restart-staging-release.mjs",

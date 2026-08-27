@@ -6,7 +6,7 @@ import test from "node:test";
 import { createServer } from "node:https";
 
 import { parseDependencySecretMetadata } from "../adapters/config/site-runtime-contract.ts";
-import { createVaultBootstrapSecretSink, createVaultHttpsTransport } from
+import { createVaultBootstrapSecretSink, createVaultHttpsTransport, waitForVaultInitializationEndpoint } from
   "../scripts/bootstrap-reference-vault.ts";
 import { startReferenceOidcServer } from "./support/reference-oidc-server.ts";
 
@@ -43,6 +43,18 @@ test("Vault bootstrap sink writes exclusive recovery/AppRole files then removes 
   await assert.rejects(sink.writeInitialization({ schemaVersion: 1, seal: "SHAMIR", secretShares: 1,
     secretThreshold: 1, unsealKeyBase64: "another-unseal-key", initialRootToken: "another-root-token" }),
   /VAULT_BOOTSTRAP_OUTPUT_EXISTS_REVIEW_REQUIRED/);
+});
+
+test("Vault bootstrap readiness retries only the non-mutating initialization status", async () => {
+  let requests = 0; let waits = 0;
+  await waitForVaultInitializationEndpoint({ async request(input) {
+    assert.deepEqual(input, { method: "GET", path: "/v1/sys/init" }); requests += 1;
+    if (requests === 1) throw new Error("not listening");
+    return { initialized: false };
+  } }, { attempts: 2, async wait() { waits += 1; } });
+  assert.equal(requests, 2); assert.equal(waits, 1);
+  await assert.rejects(waitForVaultInitializationEndpoint({ async request() { return {}; } },
+    { attempts: 1 }), /VAULT_BOOTSTRAP_NOT_READY/);
 });
 
 test("Vault HTTPS transport validates the supplied CA and bounded JSON response", async (context) => {

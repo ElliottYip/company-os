@@ -14,18 +14,21 @@ const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
 
 export function createOciImageUserResolver(
   inspections: readonly OciImageUserInspection[],
-): (image: string) => OciImageUser {
-  const indexed = new Map<string, OciImageUser>();
+): (image: string, explicitUser?: string | null) => OciImageUser {
+  const indexed = new Map<string, OciImageUserInspection>();
   for (const inspection of inspections) {
     if (typeof inspection.image !== "string" || !IMMUTABLE_IMAGE.test(inspection.image) ||
-        indexed.has(inspection.image)) throw new Error("OCI_IMAGE_USER_INSPECTION_INVALID");
-    indexed.set(inspection.image, resolveOciImageUser(
-      inspection.declaredUser, inspection.passwdContents, inspection.groupContents));
+        indexed.has(inspection.image) || typeof inspection.declaredUser !== "string" ||
+        typeof inspection.passwdContents !== "string" || typeof inspection.groupContents !== "string") {
+      throw new Error("OCI_IMAGE_USER_INSPECTION_INVALID");
+    }
+    indexed.set(inspection.image, inspection);
   }
-  return (image) => {
-    const resolved = indexed.get(image);
-    if (!resolved) throw new Error("OCI_IMAGE_USER_INSPECTION_MISSING");
-    return resolved;
+  return (image, explicitUser) => {
+    const inspection = indexed.get(image);
+    if (!inspection) throw new Error("OCI_IMAGE_USER_INSPECTION_MISSING");
+    return resolveOciImageUser(explicitUser ?? inspection.declaredUser,
+      inspection.passwdContents, inspection.groupContents);
   };
 }
 

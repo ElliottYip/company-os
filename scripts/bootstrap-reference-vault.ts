@@ -63,8 +63,28 @@ export async function runReferenceVaultBootstrap(input: {
     metadata.directory, "INTERNAL_TLS_CERT");
   await safeExisting(certificate.path, certificate.mode);
   const ca = await readFile(certificate.path);
-  return bootstrapReferenceVault({ siteId: input.siteId,
-    transport: createVaultHttpsTransport(input.origin, ca), secretSink: createVaultBootstrapSecretSink(metadata) });
+  const transport = createVaultHttpsTransport(input.origin, ca);
+  await waitForVaultInitializationEndpoint(transport);
+  return bootstrapReferenceVault({ siteId: input.siteId, transport,
+    secretSink: createVaultBootstrapSecretSink(metadata) });
+}
+
+export async function waitForVaultInitializationEndpoint(transport: VaultBootstrapTransport,
+  supplied: { attempts?: number; wait?: (milliseconds: number) => Promise<void> } = {}): Promise<void> {
+  const attempts = supplied.attempts ?? 30;
+  if (!Number.isSafeInteger(attempts) || attempts < 1 || attempts > 60) {
+    throw new Error("VAULT_BOOTSTRAP_READINESS_ATTEMPTS_INVALID");
+  }
+  const wait = supplied.wait ?? ((milliseconds) => new Promise<void>((resolve) => setTimeout(resolve, milliseconds)));
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const value = await transport.request({ method: "GET", path: "/v1/sys/init" });
+      if (value && typeof value === "object" && !Array.isArray(value) &&
+          typeof (value as Record<string, unknown>).initialized === "boolean") return;
+    } catch { /* A bounded readiness retry does not initialize or mutate Vault. */ }
+    if (attempt < attempts) await wait(2_000);
+  }
+  throw new Error("VAULT_BOOTSTRAP_NOT_READY");
 }
 
 async function requestJson(origin: URL, ca: Buffer, input: VaultBootstrapRequest): Promise<unknown> {

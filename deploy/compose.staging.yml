@@ -177,7 +177,7 @@ services:
 networks:
   internal:
     name: ${COMPANY_OS_PRODUCT_NETWORK:?set the site-scoped product network}
-    driver: bridge
+    external: true
 
 volumes:
   company_os_staging_backups:

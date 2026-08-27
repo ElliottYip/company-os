@@ -188,8 +188,46 @@ Before any start:
    dependency, migration, product-start, and acceptance change records. For a
    release carrying the phased first-start contract, do **not** use the legacy
    aggregate `start-staging-release.mjs` apply path. Dependency bootstrap must
-   first produce verified `DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED` evidence;
-   until its persistent Vault bootstrap executor is admitted, stop here.
+   first produce verified `DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED` evidence.
+
+   Plan the dependency phase first. Planning is read-only:
+
+   ```sh
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     --mount type=bind,src=/etc/company-os/dependency-secrets,dst=/etc/company-os/dependency-secrets \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/run-staging-dependency-phase.mjs \
+     --root /srv/company-os/staging \
+     --release REPLACE_WITH_RELEASE_ID \
+     --authorization change:REPLACE_WITH_APPROVED_DEPENDENCY_RECORD
+   ```
+
+   Apply only after reviewing that exact plan. The dependency Secret mount is
+   writable solely because the one-shot Vault bootstrap must atomically retain
+   its recovery record and AppRole outputs; it is never mounted into the
+   product API or Web:
+
+   ```sh
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     --mount type=bind,src=/etc/company-os/dependency-secrets,dst=/etc/company-os/dependency-secrets \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/run-staging-dependency-phase.mjs \
+     --root /srv/company-os/staging \
+     --release REPLACE_WITH_RELEASE_ID \
+     --authorization change:REPLACE_WITH_APPROVED_DEPENDENCY_RECORD \
+     --apply
+   ```
+
+   Success means only that the isolated dependencies are healthy and ready for
+   migration. A failure is retained as
+   `DEPENDENCY_INITIALIZATION_FAILED_REQUIRES_REVIEW`; the executor never
+   deletes volumes, retries Vault initialization, or claims rollback.
 
    Once exact dependency evidence exists, plan and then apply migration with
    only the migration authorization:

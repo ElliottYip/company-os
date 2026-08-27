@@ -144,7 +144,8 @@ export interface DependencySecretEntry {
 export type DependencySecretPurpose = typeof DEPENDENCY_SECRET_PURPOSES[number];
 
 export type DependencySecretProjectionConsumer =
-  | "POSTGRES" | "VAULT" | "VAULT_SECRET_BROKER" | "CODEX_AGENT_NODE" | "TLS_GATEWAY";
+  | "POSTGRES" | "VAULT" | "VAULT_SECRET_BROKER" | "CODEX_AGENT_NODE" | "TLS_GATEWAY"
+  | "DEPENDENCY_VERIFIER";
 
 export interface DependencySecretProjectionPlan {
   readonly schemaVersion: 1;
@@ -159,7 +160,8 @@ export interface DependencySecretProjectionPlan {
   readonly projections: readonly {
     readonly consumer: DependencySecretProjectionConsumer;
     readonly image: string;
-    readonly runtimeOwnerResolution: "OCI_IMAGE_DECLARED_USER";
+    readonly runtimeOwnerResolution: "OCI_IMAGE_DECLARED_USER" | "OCI_IMAGE_EXPLICIT_ACCOUNT";
+    readonly runtimeUser: string | null;
     readonly directory: string;
     readonly files: readonly {
       readonly purpose: DependencySecretPurpose;
@@ -296,10 +298,14 @@ export function renderReferenceDependencyEnvironment(
   };
   if (!portableName(manifest.site.dependencyNetwork)) invalidSite();
   const values: Readonly<Record<string, string>> = {
+    COMPANY_OS_SITE_ID: manifest.site.id,
+    COMPANY_OS_OPS_IMAGE: manifest.product.images.ops,
     COMPANY_OS_DEPENDENCY_COMPOSE_PROJECT: manifest.site.dependencyNetwork,
     COMPANY_OS_DEPENDENCY_NETWORK: manifest.site.dependencyNetwork,
     COMPANY_OS_PRODUCT_NETWORK: manifest.site.productNetwork,
     COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY: metadata.directory,
+    COMPANY_OS_DEPENDENCY_SECRET_METADATA_FILE:
+      `${manifest.site.deploymentRoot}/site-contracts/${manifest.site.id}/${manifest.product.releaseId}/dependency-secrets.json`,
     COMPANY_OS_POSTGRES_SECRET_PROJECTION_DIRECTORY:
       `${secretProjectionRootDirectory}/postgres`,
     COMPANY_OS_VAULT_SECRET_PROJECTION_DIRECTORY:
@@ -310,6 +316,8 @@ export function renderReferenceDependencyEnvironment(
       `${secretProjectionRootDirectory}/codex-agent-node`,
     COMPANY_OS_TLS_GATEWAY_SECRET_PROJECTION_DIRECTORY:
       `${secretProjectionRootDirectory}/tls-gateway`,
+    COMPANY_OS_VERIFIER_SECRET_PROJECTION_DIRECTORY:
+      `${secretProjectionRootDirectory}/dependency-verifier`,
     COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY: publicConfigDirectory,
     COMPANY_OS_DEPENDENCY_PRIVATE_CONFIG_DIRECTORY: privateConfigDirectory,
     COMPANY_OS_OIDC_IMAGE: manifest.dependencies.oidc.image,
@@ -326,8 +334,11 @@ export function renderReferenceDependencyEnvironment(
     COMPANY_OS_POSTGRES_TLS_SERVER_NAME: manifest.dependencies.postgres.tlsServerName,
     COMPANY_OS_OIDC_TLS_HOST: new URL(manifest.dependencies.oidc.issuer).hostname,
     COMPANY_OS_VAULT_TLS_HOST: new URL(manifest.dependencies.vault.baseUrl).hostname,
+    COMPANY_OS_VAULT_BASE_URL: manifest.dependencies.vault.baseUrl,
+    COMPANY_OS_OIDC_DISCOVERY_URL: manifest.dependencies.oidc.discoveryUrl,
     COMPANY_OS_BROKER_TLS_HOST: new URL(manifest.dependencies.secretBroker.baseUrl).hostname,
     COMPANY_OS_AGENT_TLS_HOST: new URL(manifest.dependencies.agentNode.baseUrl).hostname,
+    COMPANY_OS_AGENT_BASE_URL: manifest.dependencies.agentNode.baseUrl,
     COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: manifest.dependencies.secretBroker.baseUrl,
     COMPANY_OS_POSTGRES_BOOTSTRAP_FILENAME: file("POSTGRES_BOOTSTRAP"),
     COMPANY_OS_VAULT_APPROLE_ROLE_ID_FILENAME: file("VAULT_APPROLE_ROLE_ID"),
@@ -399,22 +410,25 @@ export function planDependencySecretProjections(
   };
   const source = (purpose: DependencySecretPurpose) =>
     `${metadata.directory}/${entry(purpose).filename}`;
-  const definitions: readonly [DependencySecretProjectionConsumer, string,
+  const definitions: readonly [DependencySecretProjectionConsumer, string, string | null,
     readonly DependencySecretPurpose[]][] = [
-    ["POSTGRES", manifest.dependencies.postgres.image,
+    ["POSTGRES", manifest.dependencies.postgres.image, "postgres",
       ["POSTGRES_BOOTSTRAP", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
-    ["VAULT", manifest.dependencies.vault.image, ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
-    ["VAULT_SECRET_BROKER", manifest.dependencies.secretBroker.image,
+    ["VAULT", manifest.dependencies.vault.image, null, ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+    ["VAULT_SECRET_BROKER", manifest.dependencies.secretBroker.image, null,
       ["VAULT_APPROLE_ROLE_ID", "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN",
         "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "INTERNAL_TLS_CERT"]],
-    ["CODEX_AGENT_NODE", manifest.dependencies.agentNode.image,
+    ["CODEX_AGENT_NODE", manifest.dependencies.agentNode.image, null,
       ["BROKER_EXECUTION_TOKEN", "AGENT_NODE_TOKEN", "INTERNAL_TLS_CERT"]],
-    ["TLS_GATEWAY", CADDY_IMAGE, ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+    ["TLS_GATEWAY", CADDY_IMAGE, "1000:1000", ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+    ["DEPENDENCY_VERIFIER", manifest.product.images.ops, null,
+      ["BROKER_CONTROL_TOKEN", "AGENT_NODE_TOKEN", "INTERNAL_TLS_CERT"]],
   ];
   const slug = (consumer: DependencySecretProjectionConsumer) => consumer.toLowerCase().replaceAll("_", "-");
-  const projections = definitions.map(([consumer, image, purposes]) => {
+  const projections = definitions.map(([consumer, image, runtimeUser, purposes]) => {
     const directory = `${projectionRootDirectory}/${slug(consumer)}`;
-    return { consumer, image, runtimeOwnerResolution: "OCI_IMAGE_DECLARED_USER" as const, directory,
+    return { consumer, image, runtimeOwnerResolution: runtimeUser === null ?
+      "OCI_IMAGE_DECLARED_USER" as const : "OCI_IMAGE_EXPLICIT_ACCOUNT" as const, runtimeUser, directory,
       files: purposes.map((purpose) => ({ purpose, sourcePath: source(purpose),
         targetPath: `${directory}/${entry(purpose).filename}`, mode: entry(purpose).mode })) };
   });

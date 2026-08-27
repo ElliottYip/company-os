@@ -85,6 +85,35 @@ services:
       dependencies:
         aliases: ["${COMPANY_OS_VAULT_TLS_HOST:?set Vault TLS host}"]
 
+  vault-bootstrap:
+    profiles: [operations]
+    image: ${COMPANY_OS_OPS_IMAGE:?set immutable Ops image digest}
+    restart: "no"
+    read_only: true
+    init: true
+    user: "0:0"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.10
+    mem_limit: 96m
+    pids_limit: 32
+    command:
+      - node
+      - --experimental-strip-types
+      - scripts/bootstrap-reference-vault.ts
+      - --site
+      - ${COMPANY_OS_SITE_ID:?set site ID}
+      - --origin
+      - ${COMPANY_OS_VAULT_BASE_URL:?set Vault HTTPS origin}
+      - --metadata
+      - ${COMPANY_OS_DEPENDENCY_SECRET_METADATA_FILE:?set canonical Secret metadata file}
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}
+      - ${COMPANY_OS_DEPENDENCY_SECRET_METADATA_FILE:?set canonical Secret metadata file}:${COMPANY_OS_DEPENDENCY_SECRET_METADATA_FILE:?set canonical Secret metadata file}:ro
+    networks: [dependencies]
+    depends_on: [vault]
+
   vault-secret-broker:
     image: ${COMPANY_OS_VAULT_SECRET_BROKER_IMAGE:?set immutable Vault Broker image digest}
     restart: unless-stopped
@@ -150,7 +179,9 @@ services:
     restart: unless-stopped
     read_only: true
     init: true
+    user: "1000:1000"
     cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
     security_opt: [no-new-privileges:true]
     tmpfs: [/tmp:size=16m,mode=1777, /data:size=16m,mode=0700, /config:size=16m,mode=0700]
     cpus: 0.15
@@ -173,6 +204,41 @@ services:
           - "${COMPANY_OS_BROKER_TLS_HOST:?set Broker TLS host}"
           - "${COMPANY_OS_AGENT_TLS_HOST:?set Agent TLS host}"
     depends_on: [oidc, vault-secret-broker, codex-agent-node]
+
+  dependency-verifier:
+    profiles: [operations]
+    image: ${COMPANY_OS_OPS_IMAGE:?set immutable Ops image digest}
+    restart: "no"
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.10
+    mem_limit: 96m
+    pids_limit: 32
+    command:
+      - node
+      - --experimental-strip-types
+      - scripts/verify-reference-dependency-health.ts
+      - --ca
+      - /run/dependency-secrets/${COMPANY_OS_INTERNAL_TLS_CERT_FILENAME:?set certificate filename}
+      - --oidc
+      - ${COMPANY_OS_OIDC_DISCOVERY_URL:?set OIDC discovery URL}
+      - --vault
+      - ${COMPANY_OS_VAULT_BASE_URL:?set Vault HTTPS origin}
+      - --broker
+      - ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:?set Broker HTTPS origin}
+      - --agent
+      - ${COMPANY_OS_AGENT_BASE_URL:?set Agent HTTPS origin}
+      - --broker-token
+      - /run/dependency-secrets/${COMPANY_OS_BROKER_CONTROL_TOKEN_FILENAME:?set Broker control token filename}
+      - --agent-token
+      - /run/dependency-secrets/${COMPANY_OS_AGENT_NODE_TOKEN_FILENAME:?set Agent token filename}
+    volumes:
+      - ${COMPANY_OS_VERIFIER_SECRET_PROJECTION_DIRECTORY:?set verifier Secret projection directory}:/run/dependency-secrets:ro
+    networks: [dependencies]
+    depends_on: [oidc, vault, vault-secret-broker, codex-agent-node, tls-gateway]
 
 networks:
   dependencies:

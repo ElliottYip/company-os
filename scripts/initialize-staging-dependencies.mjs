@@ -48,6 +48,13 @@ export async function planStagingDependencyInitialization(input) {
   const publicConfiguration = renderReferenceDependencyPublicConfiguration(manifest, metadata);
   const artifactDigests = Object.fromEntries(Object.entries({ "dependencies.env": environment,
     ...publicConfiguration }).map(([name, value]) => [name, sha256(value)]));
+  const projectionPlan = planDependencySecretProjections(manifest, metadata, secretProjectionRootDirectory);
+  const imageUsersRequired = [...new Set([manifest.dependencies.oidc.image,
+    ...projectionPlan.projections.map(({ image }) => image)])];
+  const dependencyImages = [...new Set([manifest.product.images.ops, manifest.dependencies.postgres.image,
+    manifest.dependencies.oidc.image, manifest.dependencies.vault.image,
+    manifest.dependencies.secretBroker.image, manifest.dependencies.agentNode.image,
+    ...projectionPlan.projections.map(({ image }) => image)])];
   const definitions = [
     ["VALIDATE_CANONICAL_SITE_CONTRACT", false],
     ["VALIDATE_DEPENDENCY_SECRET_SOURCES", false],
@@ -63,12 +70,13 @@ export async function planStagingDependencyInitialization(input) {
     ["VERIFY_TLS_AND_HEALTH", false],
   ];
   return { schemaVersion: 1, product: "company-os", status: "PLANNED_NOT_APPLIED",
-    executable: false, nonExecutableReason: "DEPENDENCY_INITIALIZER_APPLY_NOT_IMPLEMENTED",
-    siteId: manifest.site.id, releaseId: input.releaseId, oidcRuntime: manifest.dependencies.oidc.runtime,
+    executable: true,
+    siteId: manifest.site.id, releaseId: input.releaseId, productNetwork: manifest.site.productNetwork,
+    oidcRuntime: manifest.dependencies.oidc.runtime,
     authorizationReference: manifest.authorization.dependencyInitialization,
     rootDirectory, canonicalContractDirectory: contract.contractDirectory, candidateRoot, publicConfigDirectory,
-    privateConfigDirectory, secretProjectionRootDirectory, artifactDigests,
-    secretProjectionPlan: planDependencySecretProjections(manifest, metadata, secretProjectionRootDirectory),
+    privateConfigDirectory, secretProjectionRootDirectory, artifactDigests, dependencyImages,
+    imageUsersRequired, secretProjectionPlan: projectionPlan,
     steps: definitions.map(([id, mutating]) => ({ id, mutating,
       authorizationReference: mutating ? manifest.authorization.dependencyInitialization : null })) };
 }
@@ -101,7 +109,8 @@ export async function materializeStagingDependencyConfiguration(input, supplied 
   const applyOwnership = supplied.applyOwnership ?? chown;
   const resolved = new Map();
   for (const projection of readyProjections) {
-    resolved.set(projection.consumer, await validImageUser(resolveImageUser, projection.image));
+    resolved.set(projection.consumer, await validImageUser(resolveImageUser,
+      projection.image, projection.runtimeUser));
   }
   resolved.set("OIDC", await validImageUser(resolveImageUser, manifest.dependencies.oidc.image));
   await rejectExistingCandidate(plan.candidateRoot);
@@ -191,7 +200,8 @@ export async function materializePostBootstrapDependencyConfiguration(input, sup
   const applyOwnership = supplied.applyOwnership ?? chown;
   const resolved = new Map();
   for (const projection of projectionPlan.projections) {
-    resolved.set(projection.consumer, await validImageUser(resolveImageUser, projection.image));
+    resolved.set(projection.consumer, await validImageUser(resolveImageUser,
+      projection.image, projection.runtimeUser));
   }
   resolved.set("OIDC", await validImageUser(resolveImageUser, manifest.dependencies.oidc.image));
   await rejectExistingCandidate(candidateRoot);
@@ -313,8 +323,8 @@ async function safeReleaseFile(path) {
   return readFile(path, "utf8");
 }
 
-async function validImageUser(resolver, image) {
-  const value = await resolver(image);
+async function validImageUser(resolver, image, explicitUser = null) {
+  const value = await resolver(image, explicitUser);
   if (!value || !Number.isSafeInteger(value.uid) || !Number.isSafeInteger(value.gid) ||
       value.uid < 1 || value.uid > 65_535 || value.gid < 1 || value.gid > 65_535) {
     throw new Error("STAGING_DEPENDENCY_IMAGE_USER_INVALID");

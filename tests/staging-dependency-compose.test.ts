@@ -15,7 +15,9 @@ test("reference dependencies are isolated, TLS-fronted, immutable and resource b
     readFile(new URL("../deploy/staging-dependencies.Caddyfile", import.meta.url), "utf8"),
   ]);
   for (const service of ["postgres", "oidc", "vault", "vault-secret-broker", "codex-agent-node",
-    "tls-gateway"]) assert.match(compose, new RegExp(`^  ${service}:$`, "m"));
+    "tls-gateway", "vault-bootstrap", "dependency-verifier"]) {
+    assert.match(compose, new RegExp(`^  ${service}:$`, "m"));
+  }
   assert.match(compose,
     /postgres:16\.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825/);
   assert.match(compose,
@@ -44,6 +46,9 @@ test("reference dependencies are isolated, TLS-fronted, immutable and resource b
   assert.match(caddy, /reverse_proxy oidc:5556/);
   assert.match(caddy, /reverse_proxy vault-secret-broker:4321/);
   assert.match(caddy, /reverse_proxy codex-agent-node:4320/);
+  assert.match(compose, /profiles: \[operations\]/);
+  assert.match(compose, /scripts\/bootstrap-reference-vault\.ts/);
+  assert.match(compose, /scripts\/verify-reference-dependency-health\.ts/);
   assert.match(caddy, /tls \/run\/dependency-secrets\/\{\$COMPANY_OS_INTERNAL_TLS_CERT_FILENAME\}/);
   const memoryMiB = [...compose.matchAll(/^\s+mem_limit: (\d+)m$/gm)]
     .reduce((total, match) => total + Number(match[1]), 0);
