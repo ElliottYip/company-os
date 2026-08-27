@@ -8,6 +8,23 @@ async function enterDemo(page: Page): Promise<void> {
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeVisible();
 }
 
+test("runtime API configuration drives the public Demo client across origins", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as Window & { __COMPANY_OS_CONFIG__?: unknown }).__COMPANY_OS_CONFIG__ = {
+      apiBaseUrl: "http://127.0.0.1:4310",
+      mode: "demo",
+    };
+  });
+  const sessionRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().endsWith("/api/demo/v2/sessions")) sessionRequests.push(request.url());
+  });
+
+  await enterDemo(page);
+
+  expect(sessionRequests).toEqual(["http://127.0.0.1:4310/api/demo/v2/sessions"]);
+});
+
 test("first run creates a local company draft while formal capabilities remain gated", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Build an ANC where humans stay accountable." })).toBeVisible();

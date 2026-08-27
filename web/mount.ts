@@ -107,6 +107,7 @@ export interface CompanyOSHostContract {
   readonly mountElement: HTMLElement;
   readonly basePath?: string;
   readonly initialSection?: CompanyOSSection;
+  readonly publicDemoBaseUrl?: string;
   readonly onNavigate?: (path: string) => void;
 }
 
@@ -947,7 +948,7 @@ export function mountCompanyOS(
   let selectedFormalCompanyId: string | null = null;
   let formalOrganizationMissing = false;
   let explicitDemo = false;
-  const publicDemoClient = createPublicDemoClient("");
+  const publicDemoClient = createPublicDemoClient(host.publicDemoBaseUrl ?? "");
   let publicDemoSnapshot: PublicDemoPortfolioSnapshot | null = null;
   let openSetupAfterRender = false;
   let localSetupRequired = false;

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_CANDIDATE_ACCEPTANCE",
+  "recordedAt": "2026-08-27T10:26:05Z",
+  "candidate": {
+    "releaseTag": "v0.1.0-rc.10",
+    "releaseId": "0.1.0-rc.10-5d755eea93d8",
+    "sourceRevision": "5d755eea93d8bb8c3fcc004212ee107a38b321b0",
+    "qualificationRun": "https://github.com/ElliottYip/company-os/actions/runs/33061748863",
+    "releaseManifestDigest": "sha256:d8f605a1ca6de7f003a1b6abf4eec0dc63ad345a7ce0b3194cb9b9c3de1b8bec",
+    "bundleManifestDigest": "sha256:b3b12d163d5a1eee71813d278821a9930ddef71049555051dce6398220f3590d",
+    "portableArchiveDigest": "sha256:b5b5fa34586c72b810c097a269d439cf7680c81667c8bcbba233fb861b482e8f"
+  },
+  "environment": {
+    "site": "hong-kong",
+    "composeProject": "company-os-public-demo-rc10",
+    "exposure": "CLOSED_INGRESS_SSH_TUNNEL_ONLY",
+    "publicTrafficChanged": false,
+    "formalRuntimeStarted": false,
+    "externalConnectorsEnabled": false
+  },
+  "passed": [
+    "protected release qualification and publication",
+    "prepare-only installation with earlier releases retained",
+    "API and Web container health",
+    "three Agent classes and four management depths",
+    "two-visitor session isolation",
+    "Governed pause, human decision, evidence and result",
+    "renewal request and one-visitor reset",
+    "Demo identity denied on formal administration route"
+  ],
+  "failed": {
+    "gate": "PRODUCTION_WEB_CROSS_ORIGIN_BROWSER_JOURNEY",
+    "request": "POST http://127.0.0.1:4670/api/demo/v2/sessions",
+    "status": 405,
+    "cause": "The dynamic runtime config loaded before the module and contained the correct API origin, but mountCompanyOS constructed its public Demo client with an empty base URL instead of the injected runtime API URL."
+  },
+  "decision": "RETAIN_FAILED_CANDIDATE_DO_NOT_ROUTE",
+  "nextCandidateRequirement": "Inject the runtime API origin into the public Demo client, add a split-origin browser regression, publish a new immutable RC, and repeat the complete admission."
+}

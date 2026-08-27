@@ -1,7 +1,7 @@
 # ANC public exhibition Demo runbook
 
-Status: RC8 retained after browser admission failure; RC9 retained after qualification failure
-Target: RC10 or later with both production-Web and Web-image build fixes
+Status: RC8 and RC10 retained after browser admission failures; RC9 retained after qualification failure
+Target: RC11 or later with the complete production-Web runtime API injection
 
 ## Safety boundary
 
@@ -132,12 +132,26 @@ contract now copies that one checker explicitly, its Dockerfile assertion is
 covered by unit tests, and both self-hosted and managed-cloud Compose admissions
 pass locally. RC9 was never published or installed and remains immutable.
 
+RC10 included both earlier fixes, passed the complete protected qualification,
+published six attested images, and passed Hong Kong closed-ingress API,
+isolation, governance, reset, recovery-boundary, and formal-route-denial checks.
+Its production HTML also loaded the correct dynamic config before the module.
+The real browser gate nevertheless found that `mountCompanyOS` constructed the
+public Demo client with an empty base URL rather than the injected runtime API
+origin, so the session POST reached the static Web server and returned `405`.
+Public ingress was never opened. RC10 is retained as a failed candidate. The
+Web mount contract now receives the runtime API origin explicitly and a
+split-origin Playwright regression requires the session request to reach the
+API origin. A later immutable RC must repeat the entire admission.
+
 The authoritative RC8 failure record is
 [`2026-08-27-anc-alpha-hk-rc8-loopback-failure.json`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback-failure.json).
 The Secret-free closed-ingress environment is
 [`2026-08-27-anc-alpha-hk-rc8-loopback.env`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback.env).
 RC9 qualification evidence is
 [`2026-08-27-anc-alpha-rc9-qualification-failure.json`](acceptance/2026-08-27-anc-alpha-rc9-qualification-failure.json).
+RC10 browser failure evidence is
+[`2026-08-27-anc-alpha-hk-rc10-browser-failure.json`](acceptance/2026-08-27-anc-alpha-hk-rc10-browser-failure.json).
 
 ## Evidence to retain
 
@@ -151,6 +165,7 @@ RC9 qualification evidence is
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-The current state is `HK_RC8_LOOPBACK_ADMISSION_FAILED`, never publicly routed
-or production-ready. Retain RC8 and repeat the complete browser and recovery
-admission with the next immutable candidate before changing that state.
+The current state is `HK_RC10_CLOSED_INGRESS_BROWSER_ADMISSION_FAILED`, never
+publicly routed or production-ready. Retain RC8 through RC10 and repeat the
+complete browser and recovery admission with the next immutable candidate
+before changing that state.
