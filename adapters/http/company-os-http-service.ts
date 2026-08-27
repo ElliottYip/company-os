@@ -77,6 +77,11 @@ export interface CompanyOsHttpServiceOptions {
     getAdministration?(request: IncomingMessage, companyId: string): Promise<unknown>;
     listPortfolioAgents?(request: IncomingMessage, companyId: string): Promise<unknown>;
     synchronizePortfolioAgent?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    synchronizeFederatedSource?(
+      request: IncomingMessage,
+      companyId: string,
+      connectorId: string,
+    ): Promise<unknown>;
     listPortfolioWork?(request: IncomingMessage, companyId: string): Promise<unknown>;
     registerObservedWork?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     synchronizeFederatedWork?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
@@ -1102,6 +1107,10 @@ function formalError(error: unknown): { readonly status: number; readonly code: 
   if (["USAGE_BUDGET_REVISION_CONFLICT", "BUDGET_POLICY_SCOPE_CONFLICT"].includes(code)) return { status: 409, code };
   if (code === "BUDGET_HARD_STOP") return { status: 409, code };
   if (["BUDGET_SCOPE_NOT_FOUND", "COST_AGENT_NOT_FOUND"].includes(code)) return { status: 404, code };
+  if (code === "FEDERATED_SOURCE_NOT_FOUND") return { status: 404, code };
+  if (["FEDERATED_SOURCE_BATCH_TOO_LARGE", "FEDERATED_SOURCE_ANOMALY_INVALID"].includes(code)) {
+    return { status: 422, code };
+  }
   if (code === "INVALID_FORMAL_COMMAND") return { status: 422, code };
   if (code === "ORIGIN_NOT_ALLOWED") return { status: 403, code };
   if (code === "FORMAL_API_UNAVAILABLE" || code === "FORMAL_COMMAND_UNAVAILABLE" ||
@@ -1111,6 +1120,7 @@ function formalError(error: unknown): { readonly status: number; readonly code: 
       code === "DATA_CONNECTOR_UNAVAILABLE") {
     return { status: 503, code };
   }
+  if (code === "FEDERATED_SOURCE_UNAVAILABLE") return { status: 503, code };
   return { status: 409, code: "OPERATION_REJECTED" };
 }
 
@@ -1470,6 +1480,21 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         if (!options.formalApi?.synchronizePortfolioAgent) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
         sendJson(res, 200, await options.formalApi.synchronizePortfolioAgent(
           req, portfolioAgentsRoute[1] as string, await readJson(req, maxBodyBytes),
+        ));
+        return;
+      }
+      const federatedSourceSyncRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/portfolio-sources\/([a-z0-9][a-z0-9-]{0,63})\/synchronize$/,
+      );
+      if (method === "POST" && federatedSourceSyncRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.formalApi?.synchronizeFederatedSource) {
+          throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        }
+        sendJson(res, 200, await options.formalApi.synchronizeFederatedSource(
+          req,
+          federatedSourceSyncRoute[1] as string,
+          federatedSourceSyncRoute[2] as string,
         ));
         return;
       }

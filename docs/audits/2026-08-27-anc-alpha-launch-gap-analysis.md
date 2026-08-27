@@ -10,9 +10,11 @@ Baseline: RC7 / `HK_CANDIDATE_INSTALLED_NOT_STARTED`
 - RC7 is installed in Hong Kong but no Company OS container is running.
 - Public ingress, runtime coordinates, `staging.env`, and Secret files are
   absent.
-- No live external Agent platform is configured. Current demonstrations use
-  explicit fixtures; the Codex execution driver is real code but is not
-  installed or authenticated on the Hong Kong candidate.
+- A pinned Paperclip `v2026.817.0` adapter now implements credential-file-only
+  Agent inventory and Federated Issue synchronization behind an authorized
+  formal trigger. Current demonstrations still use explicit fixtures, and no
+  sandbox credential is installed on the Hong Kong candidate; the connector is
+  code-admitted but not live-accepted.
 - Therefore the system is a verified Alpha code candidate, not a running Alpha
   service and not a live multi-platform control plane.
 
@@ -41,9 +43,9 @@ Baseline: RC7 / `HK_CANDIDATE_INSTALLED_NOT_STARTED`
 
 | Gap | Required result |
 |---|---|
-| No external platform selected | Compare only official stable APIs and choose one platform whose exposed data matches a truthful ANC capability subset. |
+| External platform selected but not live-accepted | Paperclip `v2026.817.0` is pinned for private Alpha; retain a real sandbox acceptance before claiming it live. |
 | No sandbox credential | Obtain a minimum-scope, revocable test credential through the formal Secret boundary; never place it in Git, Demo, logs, or browser storage. |
-| No live adapter | Implement the selected vendor only under `adapters/connectors` or `connectors`, mapping into neutral inventory, identity/source, health/capability, Work, usage, and cost contracts. |
+| Adapter not target-accepted | Inventory and Federated Work are implemented under `adapters/connectors`; truthful Usage remains disabled because the official cost API is aggregate rather than event-level. |
 | No authenticated Alpha runtime | Configure OIDC and company membership separately from the anonymous Demo, with Connector access denied outside the bound company. |
 | No live acceptance | Prove at least one real inventory sync and one platform-supported Observed or Federated Work/usage round trip with source references and audit evidence. |
 

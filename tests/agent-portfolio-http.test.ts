@@ -25,6 +25,10 @@ test("formal HTTP exposes separate neutral portfolio synchronization routes", as
         calls.push({ operation: "federated", companyId, input });
         return { status: "UPDATED" };
       },
+      async synchronizeFederatedSource(_request, companyId, connectorId) {
+        calls.push({ operation: `source:${connectorId}`, companyId });
+        return { inventory: { recorded: 1 }, work: { recorded: 1 } };
+      },
       async importAgentUsage(_request, companyId, input) {
         calls.push({ operation: "usage", companyId, input });
         return { status: "RECORDED" };
@@ -38,6 +42,10 @@ test("formal HTTP exposes separate neutral portfolio synchronization routes", as
   const baseUrl = `http://127.0.0.1:${address.port}`;
   try {
     assert.equal((await fetch(`${baseUrl}/api/v1/companies/company-one/agent-portfolio`)).status, 200);
+    assert.equal((await fetch(
+      `${baseUrl}/api/v1/companies/company-one/portfolio-sources/paperclip-alpha/synchronize`,
+      { method: "POST", headers: { origin: "http://allowed.test" } },
+    )).status, 200);
     for (const [path, id] of [
       ["portfolio-work/observed", "work-observed"],
       ["portfolio-work/federated", "work-federated"],
@@ -52,6 +60,7 @@ test("formal HTTP exposes separate neutral portfolio synchronization routes", as
     }
     assert.deepEqual(calls, [
       { operation: "list-agents", companyId: "company-one" },
+      { operation: "source:paperclip-alpha", companyId: "company-one" },
       { operation: "observed", companyId: "company-one", input: { id: "work-observed" } },
       { operation: "federated", companyId: "company-one", input: { id: "work-federated" } },
       { operation: "usage", companyId: "company-one", input: { id: "usage-one" } },
