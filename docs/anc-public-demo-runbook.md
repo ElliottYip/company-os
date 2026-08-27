@@ -1,9 +1,10 @@
 # ANC public exhibition Demo runbook
 
 Status: RC12 passed Hong Kong closed-ingress API, browser, recovery and
-30-minute observation acceptance. RC11 is stopped but retained. Public ingress
-is not accepted because the selected DNS records do not target the Hong Kong
-host and matching TLS is absent.
+30-minute observation acceptance. RC11 is stopped but retained. The two
+approved `raft.xin` A records are stored and enabled with the Hong Kong address,
+but the authoritative service still rewrites all `raft.xin` A answers to
+`28.0.*`; matching TLS is absent and public ingress is not accepted.
 Target: route the accepted RC12 candidate only behind verified DNS/TLS and
 repeat the complete journey through the public origins
 
@@ -121,6 +122,28 @@ before reopening.
 9. Move Demo traffic only after bounded observation. Do not promote formal mode,
    initialize real Agents, or change Hangzhou/DNS/TLS under this Demo approval.
 
+## DNS authority failure gate
+
+The AliDNS console currently contains and enables both intended records:
+
+- `company-os.raft.xin A 47.242.52.235`;
+- `company-os-api.raft.xin A 47.242.52.235`.
+
+The stored records are not sufficient proof of public reachability. Before any
+certificate request or Nginx activation, query at least one AliDNS authority
+address and two independent public recursive resolvers. Every resolver must
+return `47.242.52.235` for both names, with no synthesized `28.0.*` response.
+The authority SOA serial must also reflect a zone version that contains the new
+records. A console status of `normal` does not waive this gate.
+
+If `raft.xin` remains rewritten, keep RC12 closed and either resolve the domain
+restriction with AliDNS or obtain explicit action-time authorization for a
+healthy alternate domain. An alternate-domain authorization must identify both
+new hostnames and their target address. It does not authorize certificate
+issuance, Nginx reload, or public traffic; obtain a separate confirmation for
+those security-sensitive network changes after DNS convergence. Do not reuse a
+certificate whose SAN set does not cover both selected hostnames.
+
 RC8 completed publication, prepare-only installation, closed-ingress container
 start, readiness, API journey, two-visitor isolation, reset, formal-route denial,
 and process-recovery admission. A real production-Web browser then found that
@@ -178,7 +201,7 @@ RC12 publication and Hong Kong prepare-only installation evidence is
 [`2026-08-27-anc-alpha-rc12-publication-hk-install.json`](acceptance/2026-08-27-anc-alpha-rc12-publication-hk-install.json).
 RC12 closed-ingress acceptance evidence is
 [`2026-08-27-anc-alpha-hk-rc12-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc12-closed-ingress.json).
-The prepared, unapplied DNS/TLS route and rollback contract is
+The applied-but-not-converged DNS and unapplied TLS/route contract is
 [`2026-08-27-anc-alpha-rc12-public-cutover-plan.json`](acceptance/2026-08-27-anc-alpha-rc12-public-cutover-plan.json),
 with its disabled Nginx candidate in
 [`2026-08-27-anc-alpha-rc12-public-nginx.candidate.conf`](acceptance/2026-08-27-anc-alpha-rc12-public-nginx.candidate.conf).
@@ -195,7 +218,7 @@ with its disabled Nginx candidate in
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-The current state is `HK_RC12_RUNNING_CLOSED_INGRESS_PUBLIC_TLS_PENDING`, never
-publicly routed or production-ready. Retain RC8 through RC12 and repeat the
-complete browser and recovery admission through verified TLS before changing
-that state.
+The current state is
+`HK_RC12_RUNNING_CLOSED_INGRESS_DNS_AUTHORITY_BLOCKED`, never publicly routed or
+production-ready. Retain RC8 through RC12 and repeat the complete browser and
+recovery admission through verified TLS before changing that state.
