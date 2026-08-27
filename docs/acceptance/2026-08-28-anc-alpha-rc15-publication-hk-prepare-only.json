@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC15_PUBLICATION_AND_HK_PREPARE_ONLY",
+  "recordedAt": "2026-08-27T21:37:24Z",
+  "release": {
+    "tag": "v0.1.0-rc.15",
+    "releaseId": "0.1.0-rc.15-a8e2fee52c4c",
+    "sourceRevision": "a8e2fee52c4ccf6e5b5c533c3c3476b22e721964",
+    "workflowRun": "https://github.com/ElliottYip/company-os/actions/runs/33087361595",
+    "qualify": "PASSED",
+    "publish": "PASSED",
+    "prerelease": true,
+    "releaseManifestDigest": "sha256:8a64b6b3603c43edd787b8a0674feadf518dc6073f3533091e7f738856af7910",
+    "sbomDigest": "sha256:a1c5607b534a6b29a6a1cbf370ea1794979221e908ab895c94da1d2dc200ae59",
+    "bundleManifestDigest": "sha256:1997c0813e90376a8e58d957929dbc16580f0561cdcc9d890ebc18d12dfa9e64",
+    "portableArchiveDigest": "sha256:faa716c380a9156416f0c526e9cae30b08f405152e2cc34bdb0a29e0ea516d2e",
+    "images": {
+      "api": "ghcr.io/elliottyip/company-os-api@sha256:2595dad5371335f757ec7d82533af3298f87f67e3f863cead2d05804a065ef37",
+      "web": "ghcr.io/elliottyip/company-os-web@sha256:fb1531276484c1e6cf794057c40e185ae0ee4bf6701aec67977b7c8d430d28b8",
+      "ops": "ghcr.io/elliottyip/company-os-ops@sha256:2a46a2c7810fb7f7d1fe6514f05ac09e4fc0ddcbcb8ae42dfe5708f95ac6b72e",
+      "codexAgentNode": "ghcr.io/elliottyip/company-os-codex-agent-node@sha256:2861ba3ec941fb3252abf6845ced5402b0c90087fdbc9ceff3ddb182234fccb5",
+      "vaultSecretBroker": "ghcr.io/elliottyip/company-os-vault-secret-broker@sha256:d57a891ff8cd57ae4613a86a09a371948529dbc19bca8a405bc9fa3ef4cf6f03",
+      "referenceDataNode": "ghcr.io/elliottyip/company-os-reference-data-node@sha256:8d26d06ecf601428373c1e65968067eb5d1562a47b8ec536248560c736dcb8ee"
+    }
+  },
+  "hongKong": {
+    "releaseDirectory": "/srv/company-os/staging/releases/0.1.0-rc.15-a8e2fee52c4c",
+    "installStatus": "INSTALLED_NOT_STARTED",
+    "releaseStoreState": "PREPARED_NOT_STARTED",
+    "previousReleaseId": "0.1.0-rc.14-74bd081c75df",
+    "rc14Web": "HEALTHY",
+    "rc14Api": "HEALTHY",
+    "publicApiHealth": "PASSED_DEMO_FIXTURE",
+    "publicTrafficChanged": false,
+    "tlsChanged": false,
+    "nginxReloaded": false,
+    "databaseMigrated": false,
+    "formalRuntimeStarted": false,
+    "paperclipCredentialInstalled": false,
+    "secretMaterialIncluded": false
+  },
+  "migrationPreflight": {
+    "status": "PLANNED_NOT_EXECUTED",
+    "cutoverId": "cutover-f5eae750e8f57736c671b7f1",
+    "previousRelease": "0.1.0-rc.14",
+    "currentRelease": "0.1.0-rc.15",
+    "migrationHistory": "EXACT_PREFIX",
+    "migrationAdded": false,
+    "postgresqlMajor": 16,
+    "publicContracts": "UNCHANGED",
+    "automaticDownMigration": false,
+    "rollbackStrategy": "RESTORE_PAIRED_BACKUP_TO_EMPTY_PARALLEL_DATABASE"
+  },
+  "packagingBoundary": {
+    "rc15ContainsPaperclipImplementation": true,
+    "rc15GeneralStagingBundleContainsPrivatePaperclipOverlay": false,
+    "followUpRequired": "INCLUDE_PRIVATE_ALPHA_OVERLAY_AND_RUNBOOK_IN_NEXT_IMMUTABLE_RELEASE",
+    "rc15MayStartPaperclipPrivateAlphaFromThisHandoff": false
+  },
+  "decision": "RC15_PUBLISHED_AND_HONG_KONG_PREPARED_NOT_STARTED_RC14_REMAINS_PUBLIC",
+  "notClaimed": [
+    "RC15 public traffic",
+    "RC15 runtime start",
+    "private OIDC Alpha start",
+    "customer-owned Paperclip sandbox acceptance",
+    "Paperclip usage or cost synchronization",
+    "homepage positioning commits after RC15"
+  ]
+}
