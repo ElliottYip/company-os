@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -11,6 +12,10 @@ import {
   planStagingReleaseStart,
   startStagingRelease,
 } from "../scripts/start-staging-release.mjs";
+import { planStagingMigrationProvision, runStagingMigrationProvision } from
+  "../scripts/run-staging-migration-phase.mjs";
+import { planStagingProductStart, runStagingProductStart } from
+  "../scripts/run-staging-product-start-phase.mjs";
 import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
 
 const image = (name: string, digest = "a") => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
@@ -65,6 +70,35 @@ const input = (value: Awaited<ReturnType<typeof fixture>>) => ({
   dependencyManifestFile: value.dependencyManifestFile,
   secretDirectory: value.secretDirectory,
 });
+
+const migrationInput = (value: Awaited<ReturnType<typeof fixture>>) => ({ ...input(value),
+  authorizationReference: "change:migration-test-01" });
+
+async function writeDependencyReadyEvidence(value: Awaited<ReturnType<typeof fixture>>) {
+  const directory = join(value.root, "dependency-runtime", "candidates", value.releaseId, "post-bootstrap");
+  await mkdir(directory, { recursive: true, mode: 0o750 });
+  const evidence = { schemaVersion: 1, product: "company-os",
+    status: "POST_BOOTSTRAP_CONFIGURATION_MATERIALIZED_NOT_STARTED",
+    siteId: "company-os-test-site", releaseId: value.releaseId,
+    authorizationReference: "change:dependency-init-test-01", pendingConsumers: [],
+    runtimeObjectsCreated: false };
+  const raw = `${JSON.stringify(evidence, null, 2)}\n`;
+  await writeFile(join(directory, "materialization-evidence.json"), raw, { mode: 0o600 });
+  const digest = `sha256:${createHash("sha256").update(raw).digest("hex")}`;
+  const state = { schemaVersion: 1, product: "company-os",
+    status: "DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED", siteId: "company-os-test-site",
+    releaseId: value.releaseId, authorizationReference: "change:dependency-init-test-01",
+    postBootstrapEvidenceDigest: digest, runtimeObjectsCreated: true, tlsAndHealthVerified: true };
+  await writeFile(join(value.root, "dependency-runtime-state.json"),
+    `${JSON.stringify(state, null, 2)}\n`, { mode: 0o600 });
+}
+
+async function completeMigration(value: Awaited<ReturnType<typeof fixture>>) {
+  await writeDependencyReadyEvidence(value);
+  await runStagingMigrationProvision(migrationInput(value), {
+    now: () => "2026-08-27T12:00:00.000Z", runCommand: async () => ({ ok: true }),
+  });
+}
 
 test("staging start defaults to a non-mutating plan bound to one prepared release and authorization", async (context) => {
   const value = await fixture("company-os-staging-start-plan-");
@@ -153,4 +187,110 @@ test("staging start refuses concurrent writers and release-image drift", async (
     `COMPANY_OS_SECRET_DIRECTORY=${join(value.root, "different-secrets")}`,
   ));
   await assert.rejects(planStagingReleaseStart(input(value)), /STAGING_START_SITE_CONTRACT_CHANGED/);
+});
+
+test("migration/provision phase is independently authorized and dependency-evidence bound", async (context) => {
+  const value = await fixture("company-os-staging-migration-plan-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await writeDependencyReadyEvidence(value);
+  const plan = await planStagingMigrationProvision(migrationInput(value));
+  assert.equal(plan.phase, "MIGRATION_PROVISION");
+  assert.equal(plan.authorizationReference, "change:migration-test-01");
+  assert.deepEqual(plan.steps.map(({ id }) => id), ["DOCTOR_PRODUCT", "COMPOSE_CONFIG",
+    "PULL_MIGRATION_IMAGE", "MIGRATE_DATABASE", "PROVISION_RUNTIME_ROLE"]);
+  await assert.rejects(planStagingMigrationProvision({ ...migrationInput(value),
+    authorizationReference: "change:product-start-test-01" }), /STAGING_MIGRATION_AUTHORIZATION_MISMATCH/);
+});
+
+test("migration/provision phase records completion without starting product services", async (context) => {
+  const value = await fixture("company-os-staging-migration-run-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await writeDependencyReadyEvidence(value);
+  const calls: string[] = [];
+  const result = await runStagingMigrationProvision(migrationInput(value), {
+    now: () => "2026-08-27T12:00:00.000Z",
+    runCommand: async ({ id }) => { calls.push(id); return { ok: true }; },
+  });
+  assert.equal(result.status, "MIGRATION_PROVISION_COMPLETE_NOT_STARTED");
+  assert.deepEqual(calls, ["DOCTOR_PRODUCT", "COMPOSE_CONFIG", "PULL_MIGRATION_IMAGE",
+    "MIGRATE_DATABASE", "PROVISION_RUNTIME_ROLE"]);
+  const state = JSON.parse(await readFile(join(value.root, "migration-provision-state.json"), "utf8"));
+  assert.equal(state.status, "MIGRATION_PROVISION_COMPLETE_NOT_STARTED");
+  assert.equal(state.databaseMigrationMayHaveRun, true);
+  assert.equal(state.automaticRollbackAttempted, false);
+  assert.doesNotMatch(JSON.stringify(state), /stdout|stderr|password|bearer|database.?url/i);
+});
+
+test("migration failure is retained and never automatically retried or rolled back", async (context) => {
+  const value = await fixture("company-os-staging-migration-fail-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await writeDependencyReadyEvidence(value);
+  await assert.rejects(runStagingMigrationProvision(migrationInput(value), {
+    now: () => "2026-08-27T12:00:00.000Z",
+    runCommand: async ({ id }) => ({ ok: id !== "MIGRATE_DATABASE" }),
+  }), /STAGING_MIGRATION_STEP_FAILED:MIGRATE_DATABASE/);
+  const state = JSON.parse(await readFile(join(value.root, "migration-provision-state.json"), "utf8"));
+  assert.equal(state.status, "MIGRATION_PROVISION_FAILED_REQUIRES_REVIEW");
+  assert.equal(state.databaseMigrationMayHaveRun, true);
+  assert.equal(state.automaticRollbackAttempted, false);
+  await assert.rejects(planStagingMigrationProvision(migrationInput(value)),
+    /STAGING_MIGRATION_REVIEW_REQUIRED/);
+});
+
+test("product start is separately authorized and uses each site's declared loopback ports", async (context) => {
+  const value = await fixture("company-os-staging-product-plan-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await completeMigration(value);
+  const plan = await planStagingProductStart({ ...input(value),
+    authorizationReference: "change:product-start-test-01" });
+  assert.equal(plan.phase, "PRODUCT_START");
+  assert.deepEqual(plan.steps.map(({ id }) => id), ["PULL_PRODUCT_IMAGES", "START_REFERENCE_DATA_NODE",
+    "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE"]);
+  assert.equal(plan.steps.find(({ id }) => id === "API_READY")?.url, "http://127.0.0.1:4601/ready");
+  assert.equal(plan.steps.find(({ id }) => id === "WEB_SMOKE")?.url, "http://127.0.0.1:4600/");
+  await assert.rejects(planStagingProductStart({ ...input(value),
+    authorizationReference: "change:migration-test-01" }), /STAGING_PRODUCT_START_AUTHORIZATION_MISMATCH/);
+});
+
+test("product start records restart-compatible started-not-accepted evidence", async (context) => {
+  const value = await fixture("company-os-staging-product-run-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await completeMigration(value);
+  const calls: string[] = [];
+  const result = await runStagingProductStart({ ...input(value),
+    authorizationReference: "change:product-start-test-01" }, {
+    now: () => "2026-08-27T12:05:00.000Z",
+    runCommand: async ({ id }) => { calls.push(id); return { ok: true }; },
+    probe: async ({ id }) => { calls.push(id); return true; }, wait: async () => undefined,
+  });
+  assert.equal(result.status, "STARTED_NOT_ACCEPTED");
+  assert.deepEqual(calls, ["PULL_PRODUCT_IMAGES", "START_REFERENCE_DATA_NODE", "START_API",
+    "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE"]);
+  const product = JSON.parse(await readFile(join(value.root, "product-start-state.json"), "utf8"));
+  const legacy = JSON.parse(await readFile(join(value.root, "startup-state.json"), "utf8"));
+  assert.equal(product.status, "STARTED_NOT_ACCEPTED");
+  assert.equal(product.acceptanceClaimed, false);
+  assert.equal(legacy.state, "STARTED_NOT_ACCEPTED");
+  assert.equal(legacy.acceptanceClaimed, false);
+  assert.doesNotMatch(JSON.stringify({ product, legacy }), /stdout|stderr|password|bearer|database.?url/i);
+});
+
+test("product start failure retains possible service mutation without automatic rollback", async (context) => {
+  const value = await fixture("company-os-staging-product-fail-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await completeMigration(value);
+  await assert.rejects(runStagingProductStart({ ...input(value),
+    authorizationReference: "change:product-start-test-01" }, {
+    now: () => "2026-08-27T12:05:00.000Z",
+    runCommand: async ({ id }) => ({ ok: id !== "START_API" }),
+    probe: async () => true, wait: async () => undefined,
+  }), /STAGING_PRODUCT_START_STEP_FAILED:START_API/);
+  const state = JSON.parse(await readFile(join(value.root, "product-start-state.json"), "utf8"));
+  const legacy = JSON.parse(await readFile(join(value.root, "startup-state.json"), "utf8"));
+  assert.equal(state.status, "PRODUCT_START_FAILED_REQUIRES_REVIEW");
+  assert.equal(state.serviceMutationMayHaveRun, true);
+  assert.equal(state.automaticRollbackAttempted, false);
+  assert.equal(legacy.state, "START_FAILED_REQUIRES_REVIEW");
+  await assert.rejects(planStagingProductStart({ ...input(value),
+    authorizationReference: "change:product-start-test-01" }), /STAGING_START_REVIEW_REQUIRED/);
 });

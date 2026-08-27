@@ -269,7 +269,8 @@ make the minimal implementation pass and run the complete gate.
 - [x] Add the versioned reference dependency Compose and resource admission.
 - [x] Make canonical release-store adoption idempotent and evidence-bound.
 - [ ] Split first start into authorization-bound dependency, migration,
-  product-start, and acceptance phases.
+  product-start, and acceptance phases. Migration/provision and product-start
+  executors are complete; dependency bootstrap and acceptance remain open.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
 
@@ -298,6 +299,13 @@ candidate. It adds the Broker-only AppRole projection, re-renders all paths for
 the derived candidate, records the predecessor evidence digest, and still
 creates no runtime object. Provider credentials remain Vault-managed and are
 never fabricated or copied into this source directory.
+
+Migration/provision and product start now have separate CLIs, authorization
+references, predecessor-evidence digests, state files, and shared lifecycle
+locking. Migration completion does not start a service. Product start consumes
+that exact migration state, uses the site's declared loopback ports, and emits
+restart-compatible `STARTED_NOT_ACCEPTED` evidence. Either phase retains
+partial-mutation evidence and never performs automatic rollback or retry.
 
 ## Success criteria
 

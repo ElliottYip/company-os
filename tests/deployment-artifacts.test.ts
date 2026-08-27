@@ -508,11 +508,12 @@ test("release qualification owns a sustained same-process HTTP soak gate", async
 });
 
 test("staging first install has read-only diagnostics, exact handoff, prepare-only store, and authorized start", async () => {
-  const [packageJsonSource, doctor, bundle, installer, starter, inspector, drainInspector,
-    adoptionVerifier, restarter, runbook] = await Promise.all([
+  const [packageJsonSource, doctor, bundle, installer, starter, migrationStarter, productStarter,
+    inspector, drainInspector, adoptionVerifier, restarter, runbook] = await Promise.all([
     read("package.json"), read("scripts/staging-deployment-doctor.ts"),
     read("scripts/create-staging-release-bundle.mjs"),
     read("scripts/install-staging-release-bundle.mjs"), read("scripts/start-staging-release.mjs"),
+    read("scripts/run-staging-migration-phase.mjs"), read("scripts/run-staging-product-start-phase.mjs"),
     read("scripts/inspect-staging-runtime.mjs"), read("scripts/inspect-deployment-drain.ts"),
     read("scripts/verify-deployment-state-adoption.ts"),
     read("scripts/restart-staging-release.mjs"),
@@ -549,7 +550,15 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(starter, /STAGING_START_ALREADY_RUNNING/);
   assert.match(starter, /authorizationReference/);
   assert.doesNotMatch(starter, /docker[^\n]*(?:down|rm)|down-migration|rollback\s*\(/i);
-  assert.match(runbook, /node --experimental-strip-types scripts\/start-staging-release\.mjs/);
+  assert.equal(scripts["release:staging-migrate"],
+    "node --experimental-strip-types scripts/run-staging-migration-phase.mjs");
+  assert.equal(scripts["release:staging-product-start"],
+    "node --experimental-strip-types scripts/run-staging-product-start-phase.mjs");
+  assert.match(migrationStarter, /MIGRATION_PROVISION_COMPLETE_NOT_STARTED/);
+  assert.match(productStarter, /STARTED_NOT_ACCEPTED/);
+  assert.match(runbook, /scripts\/run-staging-migration-phase\.mjs/);
+  assert.match(runbook, /scripts\/run-staging-product-start-phase\.mjs/);
+  assert.match(runbook, /do \*\*not\*\* use the legacy/);
   assert.match(runbook, /--authorization change:/);
   assert.match(runbook, /STARTED_NOT_ACCEPTED/);
   assert.equal(scripts["ops:status:staging"],

@@ -184,8 +184,15 @@ Before any start:
 6. add new Nginx site files without modifying existing site files;
 7. issue new certificates through Certbot without copying private keys;
 8. capture pre-deployment container, network, port and disk inventory;
-9. bind the exact prepared release ID and an approved, non-secret change-record
-   reference, render the non-mutating startup plan, then explicitly apply it:
+9. bind the exact prepared release ID and distinct approved, non-secret
+   dependency, migration, product-start, and acceptance change records. For a
+   release carrying the phased first-start contract, do **not** use the legacy
+   aggregate `start-staging-release.mjs` apply path. Dependency bootstrap must
+   first produce verified `DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED` evidence;
+   until its persistent Vault bootstrap executor is admitted, stop here.
+
+   Once exact dependency evidence exists, plan and then apply migration with
+   only the migration authorization:
 
    ```sh
    docker run --rm --network host --read-only --cap-drop ALL \
@@ -194,11 +201,11 @@ Before any start:
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node --experimental-strip-types scripts/start-staging-release.mjs \
+     node --experimental-strip-types scripts/run-staging-migration-phase.mjs \
      --root /srv/company-os/staging \
      --dependency-manifest /srv/company-os/staging/staging-dependencies.json \
      --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
-     --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
+     --authorization change:REPLACE_WITH_APPROVED_MIGRATION_RECORD \
      --secret-directory /etc/company-os/secrets \
      --public-env-file /srv/company-os/staging/staging.env
 
@@ -208,26 +215,24 @@ Before any start:
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node --experimental-strip-types scripts/start-staging-release.mjs \
+     node --experimental-strip-types scripts/run-staging-migration-phase.mjs \
      --root /srv/company-os/staging \
      --dependency-manifest /srv/company-os/staging/staging-dependencies.json \
      --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
-     --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
+     --authorization change:REPLACE_WITH_APPROVED_MIGRATION_RECORD \
      --secret-directory /etc/company-os/secrets \
      --public-env-file /srv/company-os/staging/staging.env \
      --apply
    ```
 
-   The first command only validates the prepared release, exact API/Web/Ops
-   image coordinates, dependency-manifest digest and proposed ordered actions.
-   `--apply` revalidates the dependency file before any Docker mutation,
-   acquires a
-   single-writer lock, runs the doctor again, validates Compose, pulls the exact
-   images, runs migration and runtime-role provisioning, starts API, waits for
-   readiness, starts Web, and performs Web/API smoke probes. Success is recorded
-   as `STARTED_NOT_ACCEPTED`, never as customer acceptance. Failure is recorded
-   as `START_FAILED_REQUIRES_REVIEW`; after migration begins the tool does not
-   attempt a down migration, delete the candidate or silently retry. An
+   Migration success is `MIGRATION_PROVISION_COMPLETE_NOT_STARTED`; it never
+   starts a product service. Then separately plan and apply product start with
+   the product-start authorization using
+   `scripts/run-staging-product-start-phase.mjs` and the same path arguments.
+   Product-start success is `STARTED_NOT_ACCEPTED`, never customer acceptance.
+   Either failure is retained for review; after a mutation may have begun, the
+   tools do not delete volumes, attempt a down migration, silently retry, or
+   claim automatic rollback. An
    operator must review and use the parallel-database rollback contract;
 10. retain `startup-state.json`, doctor output, immutable image attestations and
     externally verified customer-acceptance evidence. Do not move ingress or
