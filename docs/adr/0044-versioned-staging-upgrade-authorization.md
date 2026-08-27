@@ -121,6 +121,22 @@ candidate migration set once and validates the current schema. Each transition
 is append-only, ordered, digest-bound, and fails closed on target-reference or
 ciphertext drift.
 
+Candidate customer smoke is read-only and cannot use Demo as a substitute for
+formal product behavior. It loads a private, explicitly
+`SYNTHETIC_NON_PRODUCTION` smoke-case manifest and a private administrative
+session, then follows only the candidate API loopback through formal access,
+company directory, Agent Boss, and accountability-ledger projections. The
+existing synthetic case must prove one succeeded Work/Attempt with the exact
+Agent, accountable human, responsibility contract, approved high-risk action,
+evidence, and result. Retained evidence contains only a digest of that synthetic
+case and bounded pass counts; it excludes the cookie and all case identifiers.
+
+State comparison then re-captures the authoritative drain projection from the
+migrated candidate database and compares both its canonical source digest and
+all nine aggregate control totals with the frozen active-source baseline. It
+does not query selected customer rows, tolerate count drift, or infer success
+from connectivity alone.
+
 Traffic movement is a second apply phase requiring the exact
 `trafficCutover` reference and successful preparation evidence. It changes the
 active route, observes bounded health/integrity thresholds, then atomically

@@ -280,9 +280,9 @@ make the minimal implementation pass and run the complete gate.
   complete. Candidate product and execution-plane Compose operations now start
   dependency services in Broker → Data → Agent order before API readiness,
   bind exact image digests, retain normalized evidence, and keep ingress
-  closed. Dispatch freeze, paired backup/restore, migration, customer smoke,
-  state comparison, route control, and observation still need concrete target
-  implementations and disposable-infrastructure admission.
+  closed. Dispatch freeze, paired backup/restore, migration, read-only formal
+  customer smoke, and state comparison now have concrete target adapters.
+  Route control, observation, and disposable-infrastructure admission remain.
 
 Dispatch freeze and drain reconciliation now have concrete target adapters.
 Freeze uses only the active API loopback, a private session file, optimistic
@@ -302,13 +302,21 @@ Compose template fails closed before any runtime object is created.
 The preparation executor's evidence-retaining state machine is implemented: it
 accepts only the ordered pre-traffic steps, records a digest for each outcome,
 shares the lifecycle lock, stops at the first failure, and never claims a
-traffic move or automatic rollback. Concrete target adapters for dispatch
+traffic move or automatic rollback. Concrete target adapters now cover dispatch
 freeze, paired backup/restore, candidate Compose rendering, migration, smoke,
-and state comparison remain required before the complete executor is
-operational. The candidate Compose subset is no longer abstract: it executes
+and state comparison. The candidate Compose subset is no longer abstract: it executes
 fixed Compose commands, validates exact service/image/running/health state,
 probes candidate API and Web loopback endpoints, and retains only normalized,
 secret-free evidence.
+
+The smoke adapter accepts only a private manifest labelled
+`SYNTHETIC_NON_PRODUCTION`, uses a private session against candidate loopback,
+and verifies the formal access → company → Work/Attempt → approval → evidence
+and result chain without mutating it. Demo cannot satisfy this step. The state
+comparison adapter then requires the migrated candidate's canonical drain
+digest and nine aggregate control totals to exactly match the frozen active
+baseline. Neither adapter retains session material, case IDs, database
+coordinates, or customer records.
 
 The candidate execution-plane Compose and TLS gateway are now immutable
 release-bundle inputs. They run a candidate Vault Broker, Codex Agent Node,
