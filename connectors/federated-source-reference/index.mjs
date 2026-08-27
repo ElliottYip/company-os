@@ -1,5 +1,5 @@
 // connectors/federated-source-reference/source.ts
-import { readFileSync, statSync } from "node:fs";
+import { lstatSync, readFileSync } from "node:fs";
 import { isAbsolute } from "node:path";
 
 // core/agent-portfolio.ts
@@ -579,15 +579,25 @@ function deploymentAuthorization(environment) {
   if (!path || !isAbsolute(path) || path.includes("\0")) {
     throw new Error("PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
   }
-  const metadata = statSync(path);
-  if (!metadata.isFile() || metadata.size < 16 || metadata.size > 16384) {
-    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
-  }
-  const value = readFileSync(path, "utf8").trim();
-  if (value.length < 16 || value.length > 16384 || /[\r\n]/.test(value)) {
-    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
-  }
-  return value;
+  const read = () => {
+    const metadata = lstatSync(path);
+    if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.nlink !== 1 || metadata.size < 16 || metadata.size > 16384) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
+    }
+    if ((metadata.mode & 63) !== 0) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_PERMISSIONS_INVALID");
+    }
+    if (typeof process.getuid === "function" && metadata.uid !== process.getuid()) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_OWNER_INVALID");
+    }
+    const value = readFileSync(path, "utf8").trim();
+    if (value.length < 16 || value.length > 16384 || /[\r\n]/.test(value)) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
+    }
+    return value;
+  };
+  read();
+  return read;
 }
 function createFederatedPortfolioSource(environment = process.env) {
   const authorization = deploymentAuthorization(environment);
@@ -602,7 +612,7 @@ function createFederatedPortfolioSource(environment = process.env) {
       environment.COMPANY_OS_PAPERCLIP_AGENT_BINDINGS ?? ""
     ),
     synchronizedAt: () => (/* @__PURE__ */ new Date()).toISOString(),
-    authorizationHeader: async () => `Bearer ${authorization}`
+    authorizationHeader: async () => `Bearer ${authorization()}`
   }).portfolioSource();
 }
 export {

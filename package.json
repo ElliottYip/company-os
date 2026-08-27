@@ -13,6 +13,7 @@
     "start:web": "node scripts/serve-web.mjs",
     "start:managed-cloud": "COMPANY_OS_PROFILE=managed-cloud node --experimental-strip-types adapters/http/service-entry.ts",
     "start:self-hosted": "COMPANY_OS_PROFILE=self-hosted node --experimental-strip-types adapters/http/service-entry.ts",
+    "build:federated-source-reference": "node scripts/build-federated-source-reference.mjs --write",
     "db:migrate": "node --experimental-strip-types scripts/migrate-postgres.ts",
     "release:manifest": "node scripts/create-release-manifest.mjs",
     "release:staging-bundle": "node scripts/create-staging-release-bundle.mjs",
@@ -65,6 +66,7 @@
     "check:3d-performance": "node scripts/check-web-3d-performance-budget.mjs",
     "check:research": "node scripts/check-upstream-governance.mjs",
     "check:protocols": "node scripts/generate-execution-plane-openapi.mjs",
+    "check:connector-bundles": "node scripts/build-federated-source-reference.mjs",
     "check:web-interactions": "node scripts/check-web-interactions.mjs",
     "research:paperclip:inventory": "node research/paperclip/generate-repository-inventory.mjs --write",
     "research:paperclip:inventory:check": "node research/paperclip/generate-repository-inventory.mjs --check",
@@ -76,7 +78,7 @@
     "security:dependencies": "npm audit --omit=dev --omit=optional --audit-level=moderate",
     "security": "npm run security:secrets && npm run security:dependencies",
     "build": "vite build --config web/vite.config.mjs && node scripts/check-built-web-runtime-config-order.mjs",
-    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:3d-assets && npm run check:research && npm run check:protocols && npm run check:web-interactions && npm run security && npm run typecheck && npm run build && npm run check:3d-performance && npm run test:e2e"
+    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:3d-assets && npm run check:research && npm run check:protocols && npm run check:connector-bundles && npm run check:web-interactions && npm run security && npm run typecheck && npm run build && npm run check:3d-performance && npm run test:e2e"
   },
   "devDependencies": {
     "@playwright/test": "1.55.1",
@@ -84,6 +86,7 @@
     "@types/node": "^26.2.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "esbuild": "0.28.2",
     "typescript": "~6.0.0",
     "vite": "^8.0.0"
   },
