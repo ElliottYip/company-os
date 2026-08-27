@@ -1,11 +1,12 @@
 # ANC public exhibition Demo runbook
 
 Status: RC12 passed Hong Kong closed-ingress API, browser, recovery and
-30-minute observation acceptance. RC11 is stopped but retained. The two
-approved `raft.xin` A records are stored and enabled with the Hong Kong address,
-but the authoritative service still rewrites all `raft.xin` A answers to
-`28.0.*`; matching TLS is absent and public ingress is not accepted.
-Target: route the accepted RC12 candidate only behind verified DNS/TLS and
+30-minute observation acceptance. RC11 is stopped but retained. Independent
+Google and Cloudflare DNS-over-HTTPS queries, including one from the Hong Kong
+host, return `47.242.52.235` for both selected names. Earlier UDP/53 queries
+from the development network were transparently rewritten to `28.0.*` and are
+not authoritative evidence. Matching TLS is absent and public ingress is not
+accepted. Target: route the accepted candidate only behind verified DNS/TLS and
 repeat the complete journey through the public origins
 
 ## Safety boundary
@@ -122,7 +123,7 @@ before reopening.
 9. Move Demo traffic only after bounded observation. Do not promote formal mode,
    initialize real Agents, or change Hangzhou/DNS/TLS under this Demo approval.
 
-## DNS authority failure gate
+## DNS independence gate
 
 The AliDNS console currently contains and enables both intended records:
 
@@ -133,19 +134,17 @@ The earlier `company-os` records and RC12 cutover artifacts remain retained as
 historical evidence; they are not the selected public Alpha hostnames.
 
 The stored records are not sufficient proof of public reachability. Before any
-certificate request or Nginx activation, query at least one AliDNS authority
-address and two independent public recursive resolvers. Every resolver must
-return `47.242.52.235` for both names, with no synthesized `28.0.*` response.
-The authority SOA serial must also reflect a zone version that contains the new
-records. A console status of `normal` does not waive this gate.
+certificate request or Nginx activation, query at least Google and Cloudflare
+DNS-over-HTTPS from the operator network and one independent path such as the
+Hong Kong host. Every HTTPS resolver must return `47.242.52.235` for both names.
+Do not treat a UDP/53-only `28.0.*` response from the development network as an
+AliDNS authority result; that path is subject to transparent interception.
 
-If `raft.xin` remains rewritten, keep RC12 closed and either resolve the domain
-restriction with AliDNS or obtain explicit action-time authorization for a
-healthy alternate domain. An alternate-domain authorization must identify both
-new hostnames and their target address. It does not authorize certificate
-issuance, Nginx reload, or public traffic; obtain a separate confirmation for
-those security-sensitive network changes after DNS convergence. Do not reuse a
-certificate whose SAN set does not cover both selected hostnames.
+DNS independence is now accepted by
+[`2026-08-27-anc-alpha-anc-raft-xin-doh-verification.json`](acceptance/2026-08-27-anc-alpha-anc-raft-xin-doh-verification.json).
+This does not authorize certificate issuance, Nginx reload, or public traffic;
+obtain a separate confirmation for those security-sensitive network changes.
+Do not reuse a certificate whose SAN set does not cover both selected hostnames.
 
 The current prepare-only alternate-domain contract is
 [`2026-08-27-anc-alpha-rc12-bztiuzl-fallback-plan.json`](acceptance/2026-08-27-anc-alpha-rc12-bztiuzl-fallback-plan.json).

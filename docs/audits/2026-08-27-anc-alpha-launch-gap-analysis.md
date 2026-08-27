@@ -20,13 +20,12 @@ Baseline: RC12 / `HK_CLOSED_INGRESS_ACCEPTED`
   authenticated sandbox has accepted anonymous denial, official API sync and
   fail-closed key revocation, but the formal OIDC route is not live-accepted.
 - The two approved `raft.xin` A records were created and are enabled in the
-  AliDNS console. The console contains the intended `47.242.52.235` values,
-  but AliDNS authority and public resolvers still rewrite all `raft.xin` A
-  answers, including older records, to deterministic `28.0.*` addresses with a
-  one-second TTL. WHOIS and the registrar console report the domain as normal,
-  while a control domain in the same account resolves normally. Certificate
-  issuance and ingress activation remain stopped until the authority returns
-  the configured address or the owner approves a healthy alternate domain.
+  AliDNS console. Google and Cloudflare DNS-over-HTTPS, plus Google DoH from the
+  Hong Kong host, return the intended `47.242.52.235` values. Earlier UDP/53
+  answers in the development network were transparently rewritten to
+  deterministic `28.0.*` addresses and do not prove an AliDNS fault. DNS is
+  independently accepted; certificate issuance and ingress activation remain
+  stopped only because they require separate action-time authorization.
 - Therefore the system is a running closed-ingress Alpha candidate, not a
   publicly available service and not yet a customer-connected control plane.
 
@@ -47,7 +46,7 @@ Baseline: RC12 / `HK_CLOSED_INGRESS_ACCEPTED`
 | Formal staging is the only release topology | Ship the separate no-Secret, no-egress `public-demo` runtime profile. |
 | Anonymous session capacity is process-local and unbounded | Add bounded capacity, expiry collection, overload behavior, and request throttling before ingress. |
 | No host runtime is started | Install the next immutable RC, start exactly one Demo API and one Web replica, and retain runtime status evidence. |
-| `raft.xin` authority rewrites all A answers | Resolve the upstream domain hold/filter with AliDNS or obtain explicit authorization for a healthy alternate domain; do not request a certificate against rewritten DNS. |
+| DNS evidence was polluted by UDP/53 interception | Use independent HTTPS resolvers and a Hong Kong-host query; retained evidence now proves both names resolve to `47.242.52.235`. |
 | No TLS route | After DNS authority converges, obtain explicit TLS/traffic authorization, proxy only the two loopback services, and retain certificate/route evidence without exposing admin ports. |
 | No target-host browser evidence | Run the full three-minute journey, two-visitor isolation, reset, API restart/recovery, responsive bilingual checks, and formal-route rejection against the TLS URL. |
 | No observation | Record at least 30 minutes with zero P0/P1, bounded error/latency/resource metrics, and a tested withdrawal command. |
