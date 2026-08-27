@@ -123,6 +123,15 @@ function exposure(value: string | undefined): "private" | "public" {
   throw new Error("COMPANY_OS_EXPOSURE must be private or public");
 }
 
+function releaseId(value: string | undefined): string | undefined {
+  if (value === undefined || value.trim() === "") return undefined;
+  const normalized = value.trim();
+  if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/.test(normalized)) {
+    throw new Error("COMPANY_OS_RELEASE_ID_INVALID");
+  }
+  return normalized;
+}
+
 const profile = deploymentProfile(process.env.COMPANY_OS_PROFILE);
 const deploymentExposure = exposure(process.env.COMPANY_OS_EXPOSURE);
 const metricsEnabled = process.env.COMPANY_OS_METRICS_ENABLED === "true";
@@ -132,6 +141,7 @@ if (metricsEnabled && deploymentExposure !== "private") {
 }
 const host = process.env.COMPANY_OS_HOST?.trim() || "127.0.0.1";
 const listenPort = port(process.env.COMPANY_OS_PORT);
+const deployedReleaseId = releaseId(process.env.COMPANY_OS_RELEASE_ID);
 const trustedProxyCidrs = parseTrustedProxyCidrs(process.env.COMPANY_OS_TRUSTED_PROXY_CIDRS);
 const configuredRetentionPolicyId = resolveRetentionPolicyId(process.env.COMPANY_OS_RETENTION_POLICY_ID);
 const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicyId(
@@ -321,6 +331,7 @@ async function formalAgentBossApi(request: import("node:http").IncomingMessage, 
       now: context.now,
       nextId: nextPostgresRecordId,
       maintenance: instanceMaintenance!,
+      instanceAccess: companyAccessStore!,
       attemptScheduler: new ScheduleWorkAttempt({
         store: formalEvents,
         executionPorts: formalExecutionPorts,
@@ -403,6 +414,7 @@ async function formalPlanningRegistry(
 const server = createCompanyOsHttpService({
   runtime,
   deploymentProfile: profile,
+  ...(deployedReleaseId ? { releaseId: deployedReleaseId } : {}),
   serviceMode: isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",
   deploymentExposure,
   metricsEnabled,
@@ -448,10 +460,15 @@ const server = createCompanyOsHttpService({
       async get(request) { return (await formalInstanceMaintenance(request)).load(); },
       async change(request, input) {
         return (await formalInstanceMaintenance(request)).execute(input as {
-          mode: "OPEN" | "DISPATCH_FROZEN";
+          mode: "OPEN" | "DISPATCH_FROZEN" | "ACCEPTANCE_ONLY";
           expectedRevision: number;
           operationId: string;
           authorizationReference: string;
+          acceptance?: {
+            planId: string;
+            planDigest: `sha256:${string}`;
+            work: readonly { companyId: string; workId: string }[];
+          };
         });
       },
     },

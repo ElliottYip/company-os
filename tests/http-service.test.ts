@@ -61,7 +61,7 @@ async function withService(
   deploymentExposure: "private" | "public" = "private",
   operational?: Pick<
     import("../adapters/http/company-os-http-service.ts").CompanyOsHttpServiceOptions,
-    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance"
+    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance" | "releaseId"
   >,
 ) {
   const { runtime } = createDemoComposition();
@@ -991,6 +991,14 @@ test("HTTP service exposes bounded Demo, health, and security-header contracts",
   });
 });
 
+test("health and readiness identify an explicitly deployed immutable release", async () => {
+  const releaseId = `0.1.0-rc.5-${"b".repeat(12)}`;
+  await withService(async (baseUrl) => {
+    assert.equal((await fetch(`${baseUrl}/health`)).headers.get("x-company-os-release-id"), releaseId);
+    assert.equal((await fetch(`${baseUrl}/ready`)).headers.get("x-company-os-release-id"), releaseId);
+  }, undefined, undefined, undefined, undefined, "private", { releaseId });
+});
+
 test("readiness reports formal dependencies and refuses traffic when a required dependency fails", async () => {
   await withService(async (baseUrl) => {
     const health = await fetch(`${baseUrl}/health`);
@@ -1255,6 +1263,11 @@ test("formal command API validates and tenant-binds accountable work and exact a
           requestedBy: "human-one", actionIds: ["read-knowledge"], parentWorkId: null,
         },
         genericGoalId: null,
+        acceptance: {
+          operationId: "upgrade-staging-01",
+          planId: "acceptance-plan-rc4",
+          authorizationReference: "acceptance:approved-rc4-01",
+        },
         executionPreparation: {
           dataAccess: [{ requestId: "request-one", contractId: "data-contract-one",
             dataSourceId: "crm-one", operation: "READ", purpose: "customer-support",
@@ -1284,7 +1297,9 @@ test("formal command API validates and tenant-binds accountable work and exact a
             reasonCode: "WORK_EXECUTION", leaseDurationSeconds: 300 }],
           modelRouting: { companyId: "company-one", policyId: "default-models",
             classification: "CONFIDENTIAL", requiredResidency: "LOCAL" },
-        } },
+        },
+        acceptance: { operationId: "upgrade-staging-01", planId: "acceptance-plan-rc4",
+          authorizationReference: "acceptance:approved-rc4-01" } },
       { operation: "decide", companyId: "company-one", requestId: "approval-one", binding },
     ]);
   }, {
@@ -1295,6 +1310,7 @@ test("formal command API validates and tenant-binds accountable work and exact a
         companyId,
         draftCompanyId: (input as { draft: { companyId: string } }).draft.companyId,
         executionPreparation: (input as { executionPreparation?: unknown }).executionPreparation,
+        acceptance: (input as { acceptance?: unknown }).acceptance,
       });
       return { work: { id: "work-one" } };
     },
@@ -1450,6 +1466,34 @@ test("instance administrators can read and explicitly freeze dispatch through th
       operationId: "upgrade-staging-01",
       authorizationReference: "change:approved-01",
     }]);
+
+    const accepting = await fetch(`${baseUrl}/api/v1/instance/maintenance`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({
+        mode: "ACCEPTANCE_ONLY",
+        expectedRevision: 1,
+        operationId: "upgrade-staging-01",
+        authorizationReference: "acceptance:approved-rc4-01",
+        acceptance: {
+          planId: "acceptance-plan-rc4",
+          planDigest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          work: [{ companyId: "company-one", workId: "acceptance-work-oidc" }],
+        },
+      }),
+    });
+    assert.equal(accepting.status, 200);
+    assert.deepEqual(changes[1], {
+      mode: "ACCEPTANCE_ONLY",
+      expectedRevision: 1,
+      operationId: "upgrade-staging-01",
+      authorizationReference: "acceptance:approved-rc4-01",
+      acceptance: {
+        planId: "acceptance-plan-rc4",
+        planDigest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        work: [{ companyId: "company-one", workId: "acceptance-work-oidc" }],
+      },
+    });
 
     const invalid = await fetch(`${baseUrl}/api/v1/instance/maintenance`, {
       method: "PATCH",

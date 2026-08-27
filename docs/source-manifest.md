@@ -468,6 +468,51 @@ for checksum, advisory-lock, migration-safety and parallel-recovery discipline;
 its schema, migrations, embedded database defaults and backup format are not
 copied.
 
+## Caddy reference TLS gateway (2026-08-27)
+
+The staging-only reference dependency topology uses the official Caddy
+`2.11.4-alpine` multi-platform image solely as an HTTPS reverse-proxy boundary
+between the product network and the isolated OIDC, Vault Broker, and Agent Node
+network:
+
+- image: `caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648`
+- official image recipe revision:
+  `caddyserver/caddy-docker@fba2853501d36e8a72f946ac8cb7ff64d07e48f2`
+- official-image catalog:
+  https://github.com/docker-library/official-images/blob/master/library/caddy
+- Caddy source and Apache-2.0 license:
+  https://github.com/caddyserver/caddy and
+  https://github.com/caddyserver/caddy/blob/master/LICENSE
+
+The digest was verified from the OCI index before inclusion. Company OS copies
+no Caddy source, page, trademark, or configuration; its independently authored
+minimal Caddyfile disables the admin API and serves only target-generated TLS
+material mounted read-only. Caddy is not a Core/Application dependency and can
+be replaced with another contract-compatible TLS gateway.
+
+## Dex reference OIDC runtime contract (2026-08-27)
+
+The staging reference dependency topology identifies its OIDC runtime as
+`DEX` instead of accepting a generic image behind Dex-specific commands. The
+independently authored site contract and future target initializer were checked
+against these upstream sources:
+
+- Dex configuration parser and static-client environment support:
+  https://github.com/dexidp/dex/blob/master/cmd/dex/config.go and
+  https://github.com/dexidp/dex/blob/master/cmd/dex/serve.go
+- official image construction and unprivileged runtime user:
+  https://github.com/dexidp/dex/blob/master/Dockerfile
+- distributed configuration shape:
+  https://github.com/dexidp/dex/blob/master/config.yaml.dist
+- Apache-2.0 license:
+  https://github.com/dexidp/dex/blob/master/LICENSE
+
+No Dex source, trademark, page, or configuration file is copied. A target site
+must provide an immutable image digest and the authorized initializer must
+render its private client configuration without placing Secret values in
+Compose, retained evidence, or command arguments. Dex remains a replaceable
+deployment adapter and is not imported by Core/Application.
+
 ## Paperclip authorization behavior adoption (2026-08-24)
 
 At pinned MIT revision `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`,

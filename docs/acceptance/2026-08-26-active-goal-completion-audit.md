@@ -1,6 +1,7 @@
 # Active-goal completion audit — updated 2026-08-27
 
-Status: **NOT COMPLETE — RC4 released, target and customer acceptance pending**.
+Status: **NOT COMPLETE — the exact Draft PR #3 head is qualified; merge, later
+RC, first start and customer acceptance remain pending**.
 
 This audit evaluates the active product goal against the current repository and
 external deployment evidence. It does not treat a passing fixture, an
@@ -25,6 +26,15 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 - The historical five-image `v0.1.0-rc.3` remains immutable and retained as
   evidence, but is `SUPERSEDED_FOR_START` because it has no Reference Data Node
   image.
+- Draft PR `ElliottYip/company-os#3` remains unmerged. Its exact head
+  `93ea16d57b14978c8c4efc6afaecd64a64c40606` passed GitHub Actions run
+  `33045823187` on 2026-08-27. The run completed the full independent gate,
+  real Keycloak, PostgreSQL backup/restore and least privilege, authenticated
+  encrypted backup, bounded HTTP recovery, verified TLS, real Vault AppRole/KV
+  v2, PostgreSQL 16 rollback and 16→17 migration, plus self-hosted and
+  managed-cloud Compose admissions. The same run also proves that the real
+  Keycloak gate no longer relies on collision-prone fixed host ports. This is
+  qualified source, not a release or target-host execution.
 
 ## Requirement-by-requirement evidence
 
@@ -39,28 +49,39 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 | Data authorization and export governance | Revisioned grants, default-deny egress, HTTP Data Node client, durable preparation references, and raw-data exclusion tests | **Reference vertical complete; real enterprise test source pending.** |
 | Complete self-service Web | Company-first onboarding, all accepted navigation surfaces, formal API client, English/Chinese switch, mobile/keyboard/state-matrix and no-dead-control gates | **Repository vertical complete; deployed browser acceptance pending.** |
 | Managed-cloud and self-hosted | One-codebase Compose profiles, separate migration/runtime identities, live profile admissions, non-root images, exact runtime configuration and the immutable six-image RC4 release | **Repository and release complete; target-host acceptance pending.** |
-| Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests | **Repository complete; customer-controlled backup target and two actual release upgrades pending.** |
-| Full quality gate | Current `npm run verify`: 529 tests, 525 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. The formal PostgreSQL restart admission additionally passed 3/3 consecutive runs. RC4 qualification completed the live OIDC, database, backup, Vault, TLS, resilience, upgrade and both deployment-profile gates. | **Release source qualified.** This is not deployment or customer-acceptance evidence. |
+| Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests; PR #3 adds candidate-scoped dependency/runtime materialization, hardened stable ingress, explicit route/observation/promotion, canonical active-pointer adoption, dynamic restart/status, digest-bound upgrade acceptance handoff, and a durable `ACCEPTANCE_ONLY` maintenance window. Acceptance dispatch is limited to an exact plan digest and Company/Work allowlist. Independent acceptance confirmation and normal-dispatch reopening use separate authorization references and audit records; rejection returns to `DISPATCH_FROZEN`. | **Repository upgrade and acceptance-control vertical complete through independently confirmed dispatch disposition; customer-controlled backup target and two actual release upgrades pending.** |
+| Full quality gate | Exact PR #3 head `93ea16d…` passed local `npm run verify`: 661 tests, 657 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. The real Keycloak compatibility test also passed locally after the dynamic-port hardening. GitHub run `33045823187` then passed every repository, identity, database, backup, Vault, TLS, upgrade and both deployment-profile steps against the same SHA. | **Post-RC4 source candidate qualified.** This is not a merge, immutable release, deployment or customer-acceptance claim. |
 
 ## External state last proved to this audit
 
-- Hong Kong and Hangzhou 7 remain `PREPARED_NOT_STARTED`.
+- Hong Kong active and Hangzhou 7 standby remain `PREPARED_NOT_STARTED`.
+- Both sites completed content-level verification of all six RC4 images and
+  installed versioned RC4 release, site-contract, and evidence candidates.
+  Compose rendering, Secret-free lint, path/permission checks, site isolation,
+  and non-mutating doctor all passed. Neither site created a Company OS
+  container, network, volume, startup Secret, database, IdP, or Vault runtime.
 - RC3 artifacts and prepare-only evidence are retained; RC3 is not eligible for
   first start.
-- RC4 publication did not authorize or perform Company OS Secret injection,
-  runtime creation, database initialization, OIDC/Vault provisioning, DNS,
-  TLS, Nginx or security-group changes on either target.
+- The RC4 target admission did not authorize or perform Company OS Secret
+  injection, runtime creation, database initialization, OIDC/Vault
+  provisioning, DNS, TLS, Nginx or security-group changes on either target.
 - The eight startup Secret files and the separate opt-in backup Secret set
   remain intentionally absent.
-- A local, Secret-free RC4 staging bundle was independently verified with
-  bundle-manifest digest
-  `sha256:632dcef1a5c8a8e6a3822e3e64592c36876a913344e501e1d9a6e62d748414db`.
-  This is handoff evidence only; neither target has admitted that bundle yet.
+- The source after RC4 now contains separately authorized dependency,
+  migration/provision, product-start, restart, upgrade preparation, traffic,
+  rollback and acceptance-handoff executors. It also contains a revision-fenced
+  acceptance maintenance lifecycle that opens only an exact allowlist, binds an
+  independent decision without changing runtime state, and performs a separate
+  accepted/rejected dispatch disposition. Draft PR #3 is source-qualified but
+  unmerged and **not** retroactively attributed to immutable RC4. A structural
+  handoff alone still keeps `acceptanceClaimed=false`,
+  `independentlyVerified=false`, and `dispatchReopened=false`.
 
 ## Remaining completion sequence
 
-1. Verify all six content-addressed images, manifest, SBOM, provenance, and
-   release bundle in Hong Kong and Hangzhou 7; repeat prepare-only on both.
+1. Obtain explicit merge/release authority for already-qualified Draft PR #3,
+   publish a later immutable six-image RC, verify it content-by-content on both
+   sites, and repeat prepare-only without replacing or mutating RC4 evidence.
 2. Obtain a separate exact first-start authorization, then create each
    environment's isolated runtime objects, inject restricted-file Secrets,
    migrate, provision, and start without DNS cutover.
@@ -68,9 +89,14 @@ unpublished commit, or a prepared-but-not-started host as production proof.
    restart/recovery, responsibility-chain, and Web acceptance in staging.
 4. Prove encrypted backup and restore against the customer-controlled off-site
    target.
-5. Complete two actual immutable release upgrades with parallel rollback
+5. Execute the qualified bounded acceptance lifecycle after first start and
+   each upgrade: activate the exact Work allowlist, bind the independently
+   verified decision, then separately reopen dispatch or return to frozen. The
+   same human may hold both roles, but the authorization references and audit
+   records must remain distinct.
+6. Complete two actual immutable release upgrades with parallel rollback
    evidence.
-6. Keep Hong Kong active until the independent ICP/DNS cutover gate is
+7. Keep Hong Kong active until the independent ICP/DNS cutover gate is
    authorized; do not infer cutover authority from technical acceptance.
 
 The active goal must remain open until every remaining item has direct,

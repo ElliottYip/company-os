@@ -43,6 +43,13 @@
       "when": 1787561400000,
       "tag": "0006_instance_maintenance",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1787812200000,
+      "tag": "0007_instance_acceptance_window",
+      "breakpoints": true
     }
   ]
 }

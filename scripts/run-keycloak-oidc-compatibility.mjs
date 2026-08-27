@@ -2,14 +2,16 @@ import { randomBytes } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { request } from "node:https";
+import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak@sha256:831330513f55695572286e521f94fcd3c7e285250ed5b848090265a33192f669";
 const POSTGRES_IMAGE = "postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825";
-const keycloakPort = 58443;
-const edgePort = 58444;
-const postgresPort = 55440;
+const reservedPorts = new Set();
+const keycloakPort = await availablePort();
+const edgePort = await availablePort();
+const postgresPort = await availablePort();
 const suffix = `${process.pid}-${randomBytes(4).toString("hex")}`;
 const keycloakContainer = `company-os-keycloak-compat-${suffix}`;
 const postgresContainer = `company-os-keycloak-pg-${suffix}`;
@@ -30,6 +32,27 @@ let cleaned = false;
 
 function docker(...args) {
   return execFileSync("docker", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+}
+
+async function availablePort() {
+  while (true) {
+    const port = await new Promise((resolve, reject) => {
+      const server = createServer();
+      server.once("error", reject);
+      server.listen(0, "127.0.0.1", () => {
+        const address = server.address();
+        if (!address || typeof address === "string") {
+          server.close(() => reject(new Error("KEYCLOAK_COMPAT_PORT_RESERVATION_INVALID")));
+          return;
+        }
+        server.close((error) => error ? reject(error) : resolve(address.port));
+      });
+    });
+    if (!reservedPorts.has(port)) {
+      reservedPorts.add(port);
+      return port;
+    }
+  }
 }
 
 function cleanup() {

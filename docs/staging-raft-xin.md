@@ -184,8 +184,53 @@ Before any start:
 6. add new Nginx site files without modifying existing site files;
 7. issue new certificates through Certbot without copying private keys;
 8. capture pre-deployment container, network, port and disk inventory;
-9. bind the exact prepared release ID and an approved, non-secret change-record
-   reference, render the non-mutating startup plan, then explicitly apply it:
+9. bind the exact prepared release ID and distinct approved, non-secret
+   dependency, migration, product-start, and acceptance change records. For a
+   release carrying the phased first-start contract, do **not** use the legacy
+   aggregate `start-staging-release.mjs` apply path. Dependency bootstrap must
+   first produce verified `DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED` evidence.
+
+   Plan the dependency phase first. Planning is read-only:
+
+   ```sh
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     --mount type=bind,src=/etc/company-os/dependency-secrets,dst=/etc/company-os/dependency-secrets \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/run-staging-dependency-phase.mjs \
+     --root /srv/company-os/staging \
+     --release REPLACE_WITH_RELEASE_ID \
+     --authorization change:REPLACE_WITH_APPROVED_DEPENDENCY_RECORD
+   ```
+
+   Apply only after reviewing that exact plan. The dependency Secret mount is
+   writable solely because the one-shot Vault bootstrap must atomically retain
+   its recovery record and AppRole outputs; it is never mounted into the
+   product API or Web:
+
+   ```sh
+   docker run --rm --network host --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     --mount type=bind,src=/etc/company-os/dependency-secrets,dst=/etc/company-os/dependency-secrets \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/run-staging-dependency-phase.mjs \
+     --root /srv/company-os/staging \
+     --release REPLACE_WITH_RELEASE_ID \
+     --authorization change:REPLACE_WITH_APPROVED_DEPENDENCY_RECORD \
+     --apply
+   ```
+
+   Success means only that the isolated dependencies are healthy and ready for
+   migration. A failure is retained as
+   `DEPENDENCY_INITIALIZATION_FAILED_REQUIRES_REVIEW`; the executor never
+   deletes volumes, retries Vault initialization, or claims rollback.
+
+   Once exact dependency evidence exists, plan and then apply migration with
+   only the migration authorization:
 
    ```sh
    docker run --rm --network host --read-only --cap-drop ALL \
@@ -194,11 +239,11 @@ Before any start:
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node --experimental-strip-types scripts/start-staging-release.mjs \
+     node --experimental-strip-types scripts/run-staging-migration-phase.mjs \
      --root /srv/company-os/staging \
      --dependency-manifest /srv/company-os/staging/staging-dependencies.json \
      --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
-     --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
+     --authorization change:REPLACE_WITH_APPROVED_MIGRATION_RECORD \
      --secret-directory /etc/company-os/secrets \
      --public-env-file /srv/company-os/staging/staging.env
 
@@ -208,30 +253,84 @@ Before any start:
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      --mount type=bind,src=/etc/company-os/secrets,dst=/etc/company-os/secrets,readonly \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node --experimental-strip-types scripts/start-staging-release.mjs \
+     node --experimental-strip-types scripts/run-staging-migration-phase.mjs \
      --root /srv/company-os/staging \
      --dependency-manifest /srv/company-os/staging/staging-dependencies.json \
      --release 0.1.0-rc.1-REPLACE_WITH_SOURCE_PREFIX \
-     --authorization change:REPLACE_WITH_APPROVED_STAGING_RECORD \
+     --authorization change:REPLACE_WITH_APPROVED_MIGRATION_RECORD \
      --secret-directory /etc/company-os/secrets \
      --public-env-file /srv/company-os/staging/staging.env \
      --apply
    ```
 
-   The first command only validates the prepared release, exact API/Web/Ops
-   image coordinates, dependency-manifest digest and proposed ordered actions.
-   `--apply` revalidates the dependency file before any Docker mutation,
-   acquires a
-   single-writer lock, runs the doctor again, validates Compose, pulls the exact
-   images, runs migration and runtime-role provisioning, starts API, waits for
-   readiness, starts Web, and performs Web/API smoke probes. Success is recorded
-   as `STARTED_NOT_ACCEPTED`, never as customer acceptance. Failure is recorded
-   as `START_FAILED_REQUIRES_REVIEW`; after migration begins the tool does not
-   attempt a down migration, delete the candidate or silently retry. An
+   Migration success is `MIGRATION_PROVISION_COMPLETE_NOT_STARTED`; it never
+   starts a product service. Then separately plan and apply product start with
+   the product-start authorization using
+   `scripts/run-staging-product-start-phase.mjs` and the same path arguments.
+   Product-start success is `STARTED_NOT_ACCEPTED`, never customer acceptance.
+   Either failure is retained for review; after a mutation may have begun, the
+   tools do not delete volumes, attempt a down migration, silently retry, or
+   claim automatic rollback. An
    operator must review and use the parallel-database rollback contract;
+
+   After externally owned staging evidence has been assembled and structurally
+   validated, bind its coordinate-free record with the acceptance authorization
+   using `scripts/run-staging-acceptance-phase.mjs --record <absolute-path>`.
+   Run once without `--apply`, then repeat with `--apply`. This writes only
+   `ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION`; it deliberately
+   leaves `acceptanceClaimed=false` until the real OIDC, model, data, Secret,
+   restart, and human-owner evidence is independently verified;
+   Before a later immutable release upgrade, run
+   `npm run release:staging-upgrade-plan -- --inspect-bindings --root <site-root>`.
+   This read-only command derives the active release from private startup state
+   and the candidate from the canonical prepared record. After an accountable
+   operator supplies a private ADR-0044 authorization file, run the same command
+   with `--authorization-file <absolute-path> --authorization <preparation-ref>`.
+   A successful result remains `PLANNED_NOT_APPLIED`; it does not freeze
+   dispatch, migrate, start candidate services, route traffic, or roll back;
 10. retain `startup-state.json`, doctor output, immutable image attestations and
     externally verified customer-acceptance evidence. Do not move ingress or
     claim production readiness from the startup record alone.
+
+For a later N → N+1 traffic phase, deploy the immutable
+`deploy/compose.staging-ingress-router.yml` as a separate Compose project and
+keep the host reverse proxy on its two stable loopback ports. The private route
+contract binds its image, project, network, ports, resource ceiling, and bounded
+observation policy. After preparation has completed and separate traffic
+authority has been issued, the release-bound Ops image runs:
+
+```sh
+npm run release:staging-upgrade-traffic -- --apply \
+  --root /srv/company-os/staging \
+  --candidate-directory /srv/company-os/staging/upgrade-runtime/candidates/REPLACE_OPERATION \
+  --route-directory /srv/company-os/staging/ingress-route \
+  --authorization-file /run/company-os/upgrade-authorization.json \
+  --authorization change:REPLACE_TRAFFIC_AUTHORITY \
+  --runtime-contract /run/company-os/upgrade-runtime.json \
+  --route-contract /run/company-os/ingress-route.json
+```
+
+The command validates the hardened router container, installs one immutable
+route generation, switches the relative `current` symlink, verifies the exact
+candidate release on stable Web and API entry points, observes the declared
+latency/failure bounds, rechecks responsibility control totals, and only then
+records the candidate as active pending acceptance. It never automatically
+rolls back.
+
+After successful observation, bind—but do not self-approve—the external
+customer acceptance record using the candidate site's separate acceptance
+authority:
+
+```sh
+npm run release:staging-upgrade-acceptance-handoff -- --apply \
+  --root /srv/company-os/staging \
+  --operation upgrade-rc4-to-rc5 \
+  --authorization change:REPLACE_CUSTOMER_ACCEPTANCE_AUTHORITY \
+  --record /run/company-os/customer-acceptance-record.json
+```
+
+This command leaves `acceptanceClaimed=false` and `dispatchReopened=false`.
+Traffic health is not customer acceptance.
 
 After preparation or any start attempt, inspect the retained state and actual
 Docker runtime through the same exact Ops image:
@@ -328,9 +427,61 @@ Any new blocker, digest drift, malformed/redirected record, or non-private
 record mode fails closed and requires operator review.
 
 After adoption and operator review, the same instance administrator issues a
-second revision-checked maintenance command with `mode: "OPEN"`. Reopening is
+revision-checked `ACCEPTANCE_ONLY` command bound to the exact acceptance plan
+and Work allowlist. After independent acceptance confirmation, a separate
+revision-checked command with a new authorization reference may set `mode: "OPEN"`. Reopening is
 never automatic: a failed or ambiguous restart remains frozen for review. See
-[ADR 0039](adr/0039-persistent-instance-dispatch-freeze.md).
+[ADR 0039](adr/0039-persistent-instance-dispatch-freeze.md) and
+[ADR 0045](adr/0045-bounded-acceptance-only-dispatch.md).
+
+Use the same three actions for a first start or an upgrade. The scope file is a
+private, secret-free JSON record that binds `operationId`, `planId`, the exact
+SHA-256 acceptance-plan digest, the site's acceptance authorization reference,
+and one to 32 `{ companyId, workId }` pairs. Create those Work IDs before the
+window is opened; unrelated Work remains blocked.
+
+```sh
+npm run release:staging-acceptance-maintenance -- \
+  --action open --apply \
+  --root /srv/company-os/staging \
+  --evidence /srv/company-os/staging/acceptance-maintenance/upgrade-rc4-to-rc5 \
+  --origin http://127.0.0.1:4601 \
+  --session /run/company-os/operator/instance-admin-cookie \
+  --scope /run/company-os/operator/acceptance-scope.json
+```
+
+After the allowlisted Work has produced the externally owned evidence, bind
+the structurally validated acceptance-handoff state to a separate independent
+decision. The decision file must say `ACCEPTED` or `REJECTED`, bind the same
+operation/plan/record digests, use a new authorization reference, and assert
+`secretMaterialIncluded: false`.
+
+```sh
+npm run release:staging-acceptance-maintenance -- \
+  --action bind-decision --apply \
+  --root /srv/company-os/staging \
+  --evidence /srv/company-os/staging/acceptance-maintenance/upgrade-rc4-to-rc5 \
+  --scope /run/company-os/operator/acceptance-scope.json \
+  --handoff /srv/company-os/staging/upgrade-acceptance-handoff-state.json \
+  --decision /run/company-os/operator/independent-acceptance-decision.json
+```
+
+Binding the decision does not call the API and leaves dispatch closed. A final
+operator action uses a third authorization reference. `ACCEPTED` transitions
+to `OPEN`; `REJECTED` returns to `DISPATCH_FROZEN`.
+
+```sh
+npm run release:staging-acceptance-maintenance -- \
+  --action complete --apply \
+  --root /srv/company-os/staging \
+  --evidence /srv/company-os/staging/acceptance-maintenance/upgrade-rc4-to-rc5 \
+  --origin http://127.0.0.1:4601 \
+  --session /run/company-os/operator/instance-admin-cookie \
+  --authorization dispatch:reopen-approved-rc5
+```
+
+Omit `--apply` to confirm the selected action without mutation. Never pass the
+session cookie value on the command line; only its `0600` file path is accepted.
 
 The supported restart path performs these checks as one authorized lifecycle.
 Run it without `--apply` first to inspect the exact plan, then repeat with

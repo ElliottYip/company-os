@@ -32,6 +32,25 @@ User input, Agent output, evidence, and audit records retain their original
 language; later localization maps codes in the client without changing domain
 records.
 
+## Instance maintenance v1
+
+`GET /api/v1/instance/maintenance` and origin-checked `PATCH
+/api/v1/instance/maintenance` are Instance Administrator boundaries, not
+tenant-scoped company controls. The revisioned state supports `OPEN`,
+`DISPATCH_FROZEN`, and `ACCEPTANCE_ONLY`.
+
+`ACCEPTANCE_ONLY` requires an exact plan ID, SHA-256 plan digest, and one to 32
+Company/Work ID pairs. Formal Work submission in that mode must repeat the
+current operation, plan, and acceptance authorization references; the server
+also verifies that the initiating human is an Instance Administrator. The
+client cannot authorize acceptance merely by labelling a Work.
+
+The stable state transition is `OPEN -> DISPATCH_FROZEN -> ACCEPTANCE_ONLY ->
+OPEN`, with `ACCEPTANCE_ONLY -> DISPATCH_FROZEN` for rejection or incident
+review. Every transition is revision-fenced, retains the same operation ID,
+and uses a new external authorization reference. See [ADR
+0045](adr/0045-bounded-acceptance-only-dispatch.md).
+
 ## Human member directory v1
 
 `GET /api/v1/companies/{companyId}/human-members` returns the authenticated

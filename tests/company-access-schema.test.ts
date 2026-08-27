@@ -53,6 +53,18 @@ test("instance maintenance migration is additive, revisioned, and append-audited
   assert.doesNotMatch(sql, /^\s*(?:DROP|TRUNCATE|DELETE\s+FROM)\b/im);
 });
 
+test("acceptance-only maintenance persists a bounded binding on current and audit rows", async () => {
+  const sql = await readFile(new URL(
+    "../adapters/persistence/postgres/migrations/0007_instance_acceptance_window.sql",
+    import.meta.url,
+  ), "utf8");
+  assert.match(sql, /ADD COLUMN "acceptance_binding" jsonb/);
+  assert.match(sql, /ACCEPTANCE_ONLY/);
+  assert.match(sql, /company_os_instance_maintenance_acceptance_ck/);
+  assert.match(sql, /company_os_instance_maintenance_event_acceptance_ck/);
+  assert.doesNotMatch(sql, /\b(?:TRUNCATE|DELETE\s+FROM)\b/i);
+});
+
 test("durable outbox migration preserves atomic delivery and replay contracts", async () => {
   const sql = await readFile(new URL(
     "../adapters/persistence/postgres/migrations/0005_durable_control_plane.sql",

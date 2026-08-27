@@ -1,0 +1,19 @@
+{
+  auto_https disable_redirects
+  admin off
+}
+
+https://{$COMPANY_OS_OIDC_TLS_HOST} {
+  tls /run/dependency-secrets/{$COMPANY_OS_INTERNAL_TLS_CERT_FILENAME} /run/dependency-secrets/{$COMPANY_OS_INTERNAL_TLS_KEY_FILENAME}
+  reverse_proxy oidc:5556
+}
+
+https://{$COMPANY_OS_BROKER_TLS_HOST} {
+  tls /run/dependency-secrets/{$COMPANY_OS_INTERNAL_TLS_CERT_FILENAME} /run/dependency-secrets/{$COMPANY_OS_INTERNAL_TLS_KEY_FILENAME}
+  reverse_proxy vault-secret-broker:4321
+}
+
+https://{$COMPANY_OS_AGENT_TLS_HOST} {
+  tls /run/dependency-secrets/{$COMPANY_OS_INTERNAL_TLS_CERT_FILENAME} /run/dependency-secrets/{$COMPANY_OS_INTERNAL_TLS_KEY_FILENAME}
+  reverse_proxy codex-agent-node:4320
+}

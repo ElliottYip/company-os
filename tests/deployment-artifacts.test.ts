@@ -175,7 +175,7 @@ test("reference Data Node image is non-root, fixture-only, file-secret based and
   assert.match(runbook, /not an enterprise data connector/i);
   assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN_FILE:/);
   assert.match(compose, /company_os_staging_data_node:\/var\/lib\/company-os-data-node/);
-  assert.match(compose, /127\.0\.0\.1:4322:4321/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_REFERENCE_DATA_NODE_PORT:[^}]+\}:4321/);
   assert.doesNotMatch(compose, /COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN:\s*\S+/);
 });
 
@@ -274,7 +274,7 @@ test("managed-cloud profile reuses immutable API/Web artifacts and an external d
   assert.doesNotMatch(example, /sk-[A-Za-z0-9_-]{16,}/);
 });
 
-test("raft.xin staging is isolated, dependency-bound, resource bounded, and file-secret based", async () => {
+test("staging is site-rendered, isolated, dependency-bound, resource bounded, and file-secret based", async () => {
   const [compose, example, dependencies, runbook, packageJsonSource] = await Promise.all([
     read("deploy/compose.staging.yml"),
     read("deploy/staging.env.example"),
@@ -282,13 +282,14 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
     read("docs/staging-raft-xin.md"),
     read("package.json"),
   ]);
-  assert.match(compose, /^name: company-os-staging$/m);
-  assert.match(compose, /name: company-os-staging_internal/);
-  assert.match(compose, /127\.0\.0\.1:4600:8080/);
-  assert.match(compose, /127\.0\.0\.1:4601:4310/);
-  assert.match(compose, /127\.0\.0\.1:4322:4321/);
-  assert.match(compose, /company-os\.raft\.xin/);
-  assert.match(compose, /company-os-api\.raft\.xin/);
+  assert.match(compose, /^name: \$\{COMPANY_OS_COMPOSE_PROJECT:/m);
+  assert.match(compose, /name: \$\{COMPANY_OS_PRODUCT_NETWORK:/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_WEB_LOOPBACK_PORT:[^}]+\}:8080/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_API_LOOPBACK_PORT:[^}]+\}:4310/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_REFERENCE_DATA_NODE_PORT:[^}]+\}:4321/);
+  assert.match(compose, /COMPANY_OS_PUBLIC_URL: \$\{COMPANY_OS_PUBLIC_URL:/);
+  assert.match(compose, /COMPANY_OS_OIDC_REDIRECT_URI: \$\{COMPANY_OS_OIDC_REDIRECT_URI:/);
+  assert.doesNotMatch(compose, /company-os(?:-api)?\.raft\.xin/);
   assert.match(compose, /read_only: true/);
   assert.match(compose, /cap_drop: \[ALL\]/);
   assert.match(compose, /no-new-privileges:true/);
@@ -297,6 +298,10 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
   assert.match(compose, /COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN_FILE:/);
   assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:\?set the immutable acceptance Data Node image digest/);
   assert.match(example, /^COMPANY_OS_REFERENCE_DATA_NODE_IMAGE=.*@sha256:/m);
+  assert.match(example, /^COMPANY_OS_COMPOSE_PROJECT=CHANGE_ME_SITE_COMPOSE_PROJECT$/m);
+  assert.match(example, /^COMPANY_OS_PRODUCT_NETWORK=CHANGE_ME_SITE_PRODUCT_NETWORK$/m);
+  assert.match(example, /^COMPANY_OS_PUBLIC_URL=https:\/\/CHANGE_ME_SITE_API_ORIGIN$/m);
+  assert.match(example, /^COMPANY_OS_OIDC_REDIRECT_URI=https:\/\/CHANGE_ME_SITE_WEB_ORIGIN\/api\/auth\/oauth2\/callback\/enterprise-oidc$/m);
   assert.doesNotMatch(compose, /buzz-prod|generator001y|\/opt\/raft-relay|\/data\/raft-h3/);
   assert.doesNotMatch(compose, /^\s+postgres:\s*$/m);
   assert.doesNotMatch(example, /(?:password|secret|bearer)=\S+/i);
@@ -306,8 +311,19 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
   assert.doesNotMatch(dependencies, /(?:hvs\.|sk-)[A-Za-z0-9_-]{16,}/);
   assert.equal(JSON.parse(packageJsonSource).scripts["ops:validate:staging-dependencies"],
     "node --experimental-strip-types scripts/validate-staging-dependencies.ts");
+  assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-dependencies"],
+    "node --experimental-strip-types scripts/run-staging-dependency-phase.mjs");
+  assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-acceptance-handoff"],
+    "node --experimental-strip-types scripts/run-staging-acceptance-phase.mjs");
+  assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-upgrade-acceptance-handoff"],
+    "node --experimental-strip-types scripts/run-staging-upgrade-acceptance-handoff.ts");
+  assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-acceptance-maintenance"],
+    "node --experimental-strip-types scripts/staging-acceptance-maintenance-operation.ts");
+  assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-upgrade-plan"],
+    "node --experimental-strip-types scripts/plan-staging-upgrade.ts");
   assert.match(runbook, /generator001y.*forbidden/i);
   assert.match(runbook, /staging-dependencies\.json/);
+  assert.match(runbook, /DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED/);
   assert.match(runbook, /previous immutable image digests/);
 });
 
@@ -503,11 +519,12 @@ test("release qualification owns a sustained same-process HTTP soak gate", async
 });
 
 test("staging first install has read-only diagnostics, exact handoff, prepare-only store, and authorized start", async () => {
-  const [packageJsonSource, doctor, bundle, installer, starter, inspector, drainInspector,
-    adoptionVerifier, restarter, runbook] = await Promise.all([
+  const [packageJsonSource, doctor, bundle, installer, starter, migrationStarter, productStarter,
+    inspector, drainInspector, adoptionVerifier, restarter, runbook] = await Promise.all([
     read("package.json"), read("scripts/staging-deployment-doctor.ts"),
     read("scripts/create-staging-release-bundle.mjs"),
     read("scripts/install-staging-release-bundle.mjs"), read("scripts/start-staging-release.mjs"),
+    read("scripts/run-staging-migration-phase.mjs"), read("scripts/run-staging-product-start-phase.mjs"),
     read("scripts/inspect-staging-runtime.mjs"), read("scripts/inspect-deployment-drain.ts"),
     read("scripts/verify-deployment-state-adoption.ts"),
     read("scripts/restart-staging-release.mjs"),
@@ -544,7 +561,15 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(starter, /STAGING_START_ALREADY_RUNNING/);
   assert.match(starter, /authorizationReference/);
   assert.doesNotMatch(starter, /docker[^\n]*(?:down|rm)|down-migration|rollback\s*\(/i);
-  assert.match(runbook, /node --experimental-strip-types scripts\/start-staging-release\.mjs/);
+  assert.equal(scripts["release:staging-migrate"],
+    "node --experimental-strip-types scripts/run-staging-migration-phase.mjs");
+  assert.equal(scripts["release:staging-product-start"],
+    "node --experimental-strip-types scripts/run-staging-product-start-phase.mjs");
+  assert.match(migrationStarter, /MIGRATION_PROVISION_COMPLETE_NOT_STARTED/);
+  assert.match(productStarter, /STARTED_NOT_ACCEPTED/);
+  assert.match(runbook, /scripts\/run-staging-migration-phase\.mjs/);
+  assert.match(runbook, /scripts\/run-staging-product-start-phase\.mjs/);
+  assert.match(runbook, /do \*\*not\*\* use the legacy/);
   assert.match(runbook, /--authorization change:/);
   assert.match(runbook, /STARTED_NOT_ACCEPTED/);
   assert.equal(scripts["ops:status:staging"],
@@ -552,7 +577,9 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(inspector, /evaluateStagingRuntimeStatus/);
   assert.match(inspector, /resolveStagingReleaseRecord/);
   assert.match(inspector, /candidate/);
-  assert.match(inspector, /com\.docker\.compose\.project=company-os-staging/);
+  assert.match(inspector, /com\.docker\.compose\.project=\$\{composeProject\}/);
+  assert.match(inspector, /activeConfiguration/);
+  assert.match(inspector, /activeRuntime/);
   assert.doesNotMatch(inspector,
     /\.Config\.Env|["']docker["']\s*,\s*["'](?:start|stop|restart|rm|kill)["']/);
   assert.match(runbook, /RUNNING_NOT_ACCEPTED/);

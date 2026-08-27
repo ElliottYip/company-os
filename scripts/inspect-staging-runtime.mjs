@@ -5,7 +5,12 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { evaluateStagingRuntimeStatus } from "../adapters/config/staging-runtime-status.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
-import { raftXinStagingExpectation, validateStagingDependencies } from "./validate-staging-dependencies.ts";
+import {
+  stagingDependencyExpectationFromPublicEnvironment,
+  validateStagingDependencies,
+} from "./validate-staging-dependencies.ts";
+import { parsePublicStagingEnvironment } from
+  "../adapters/config/staging-deployment-doctor.ts";
 import {
   readVerifiedStagingReleaseStore,
   resolveStagingReleaseRecord,
@@ -26,10 +31,20 @@ export async function inspectStagingRuntime(input, supplied = {}) {
     : store.prepared;
   await verifyStagingReleaseBundle(active.releaseDirectory);
   const release = JSON.parse(await readFile(join(active.releaseDirectory, "release-manifest.json"), "utf8"));
-  const dependencyAdmission = startupState ? await validateStagingDependencies(
-    join(rootDirectory, "staging-dependencies.json"),
-    { ...raftXinStagingExpectation, deploymentRoot: rootDirectory },
-  ) : null;
+  const dependencyAdmission = startupState ? await (async () => {
+    const publicEnvironment = parsePublicStagingEnvironment(
+      await safeRuntimeFile(startupState.environmentFile));
+    if (publicEnvironment.COMPANY_OS_COMPOSE_PROJECT !== startupState.composeProject ||
+        publicEnvironment.COMPANY_OS_PRODUCT_NETWORK !== startupState.productNetwork ||
+        publicEnvironment.COMPANY_OS_API_LOOPBACK_PORT !== String(startupState.ports.api) ||
+        publicEnvironment.COMPANY_OS_WEB_LOOPBACK_PORT !== String(startupState.ports.web) ||
+        publicEnvironment.COMPANY_OS_REFERENCE_DATA_NODE_PORT !== String(startupState.ports.referenceDataNode)) {
+      throw new Error("STAGING_STATUS_ACTIVE_TOPOLOGY_MISMATCH");
+    }
+    await safeRuntimeFile(startupState.dependencyManifestFile);
+    return validateStagingDependencies(startupState.dependencyManifestFile,
+      stagingDependencyExpectationFromPublicEnvironment(publicEnvironment, rootDirectory));
+  })() : null;
   const expected = { releaseId: active.releaseId, releaseVersion: active.releaseVersion,
     sourceRevision: active.sourceRevision,
     dependencyManifestDigest: dependencyAdmission?.manifestDigest ?? `sha256:${"0".repeat(64)}`,
@@ -42,11 +57,12 @@ export async function inspectStagingRuntime(input, supplied = {}) {
   if (!startupState) return { ...evaluateStagingRuntimeStatus({ expected, startupState: null,
     containers: [], probes: { apiReady: false, webReachable: false } }), candidate };
 
-  const dependencies = { listContainers: defaultListContainers, probe: defaultProbe, ...supplied };
+  const dependencies = { listContainers: () => defaultListContainers(startupState.composeProject),
+    probe: defaultProbe, ...supplied };
   const containers = await dependencies.listContainers();
   const [apiReady, webReachable] = await Promise.all([
-    dependencies.probe({ id: "API_READY", url: "http://127.0.0.1:4601/ready" }),
-    dependencies.probe({ id: "WEB_REACHABLE", url: "http://127.0.0.1:4600/" }),
+    dependencies.probe({ id: "API_READY", url: `http://127.0.0.1:${startupState.ports.api}/ready` }),
+    dependencies.probe({ id: "WEB_REACHABLE", url: `http://127.0.0.1:${startupState.ports.web}/` }),
   ]);
   return { ...evaluateStagingRuntimeStatus({ expected, startupState, containers,
     probes: { apiReady, webReachable } }), candidate };
@@ -78,18 +94,26 @@ async function readStartupState(rootDirectory) {
         !RELEASE_ID.test(value.releaseId ?? "") || !REVISION.test(value.sourceRevision ?? "") ||
         !DIGEST.test(value.dependencyManifestDigest ?? "") ||
         typeof value.acceptanceClaimed !== "boolean") throw new Error("STAGING_STATUS_STATE_INVALID");
+    const runtime = activeRuntime(value.activeRuntime);
+    const configuration = activeConfiguration(value.activeConfiguration, rootDirectory);
     return { state: value.state, releaseId: value.releaseId, sourceRevision: value.sourceRevision,
       dependencyManifestDigest: value.dependencyManifestDigest,
-      acceptanceClaimed: value.acceptanceClaimed };
+      acceptanceClaimed: value.acceptanceClaimed,
+      composeProject: runtime?.composeProject ?? "company-os-staging",
+      productNetwork: runtime?.productNetwork ?? "company-os-staging_internal",
+      ports: runtime?.ports ?? { api: 4601, web: 4600, referenceDataNode: 4322 },
+      environmentFile: configuration?.environmentFile ?? join(rootDirectory, "staging.env"),
+      dependencyManifestFile: configuration?.dependencyManifestFile ??
+        join(rootDirectory, "staging-dependencies.json") };
   } catch (error) {
     if (isCode(error, "ENOENT")) return null;
     throw error;
   }
 }
 
-function defaultListContainers() {
+function defaultListContainers(composeProject) {
   const ids = command(["docker", "ps", "-a", "--filter",
-    "label=com.docker.compose.project=company-os-staging", "--format", "{{.ID}}"])
+    `label=com.docker.compose.project=${composeProject}`, "--format", "{{.ID}}"])
     .split(/\r?\n/).filter(Boolean);
   return Promise.resolve(ids.map((id) => {
     const template = "{\"service\":{{json (index .Config.Labels \"com.docker.compose.service\")}}," +
@@ -103,6 +127,49 @@ function defaultListContainers() {
     }
     return value;
   }));
+}
+
+function activeRuntime(value) {
+  if (value === undefined) return null;
+  const ports = value?.ports;
+  if (!value || typeof value !== "object" || Array.isArray(value) ||
+      typeof value.composeProject !== "string" || !/^[a-z0-9][a-z0-9-]{2,95}$/.test(value.composeProject) ||
+      typeof value.productNetwork !== "string" || !/^[a-z0-9][a-z0-9-]{2,95}$/.test(value.productNetwork) ||
+      !ports || typeof ports !== "object" || Array.isArray(ports) ||
+      ![ports.api, ports.web, ports.referenceDataNode].every((port) =>
+        Number.isSafeInteger(port) && port >= 1024 && port <= 65535) ||
+      new Set([ports.api, ports.web, ports.referenceDataNode]).size !== 3) {
+    throw new Error("STAGING_STATUS_ACTIVE_RUNTIME_INVALID");
+  }
+  return { composeProject: value.composeProject, productNetwork: value.productNetwork,
+    ports: { api: ports.api, web: ports.web,
+    referenceDataNode: ports.referenceDataNode } };
+}
+
+function activeConfiguration(value, rootDirectory) {
+  if (value === undefined) return null;
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("STAGING_STATUS_ACTIVE_CONFIGURATION_INVALID");
+  }
+  const environmentFile = safeContained(value.environmentFile, rootDirectory);
+  const dependencyManifestFile = safeContained(value.dependencyManifestFile, rootDirectory);
+  return { environmentFile, dependencyManifestFile };
+}
+
+function safeContained(value, rootDirectory) {
+  if (typeof value !== "string" || !isAbsolute(value)) throw new Error("STAGING_STATUS_ACTIVE_CONFIGURATION_INVALID");
+  const path = resolve(value); const suffix = path.slice(rootDirectory.length + 1);
+  if (!path.startsWith(`${rootDirectory}/`) || !suffix) throw new Error("STAGING_STATUS_ACTIVE_CONFIGURATION_INVALID");
+  return path;
+}
+
+async function safeRuntimeFile(path) {
+  const metadata = await lstat(path);
+  if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.nlink !== 1 ||
+      (metadata.mode & 0o077) !== 0 || metadata.size < 2 || metadata.size > 1_048_576) {
+    throw new Error("STAGING_STATUS_ACTIVE_CONFIGURATION_FILE_UNSAFE");
+  }
+  return readFile(path, "utf8");
 }
 
 function command(argv) {

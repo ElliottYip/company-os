@@ -10,9 +10,11 @@ const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_
   "COMPANY_OS_REFERENCE_DATA_NODE_IMAGE"] as const;
 const HTTPS_KEYS = ["COMPANY_OS_OIDC_ISSUER", "COMPANY_OS_OIDC_DISCOVERY_URL",
   "COMPANY_OS_HTTP_AGENT_NODE_BASE_URL", "COMPANY_OS_HTTP_DATA_NODE_BASE_URL",
-  "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL", "COMPANY_OS_BACKUP_S3_ENDPOINT"] as const;
-const REQUIRED_PUBLIC_KEYS = ["COMPANY_OS_OIDC_CLIENT_ID", "COMPANY_OS_BACKUP_S3_REGION",
-  "COMPANY_OS_BACKUP_S3_BUCKET"] as const;
+  "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL"] as const;
+const REQUIRED_PUBLIC_KEYS = ["COMPANY_OS_OIDC_CLIENT_ID", "COMPANY_OS_COMPOSE_PROJECT",
+  "COMPANY_OS_PRODUCT_NETWORK", "COMPANY_OS_REFERENCE_DATA_NODE_PORT",
+  "COMPANY_OS_WEB_LOOPBACK_PORT", "COMPANY_OS_API_LOOPBACK_PORT"] as const;
+const BACKUP_PUBLIC_KEYS = ["COMPANY_OS_BACKUP_S3_REGION", "COMPANY_OS_BACKUP_S3_BUCKET"] as const;
 
 export interface StagingDeploymentSnapshot {
   readonly root: { readonly path: string; readonly exists: boolean; readonly mode: number | null };
@@ -21,8 +23,9 @@ export interface StagingDeploymentSnapshot {
       readonly mode: number; readonly size: number }[] };
   readonly runtime: { readonly dockerAvailable: boolean; readonly composeAvailable: boolean;
     readonly cpuCount: number; readonly totalMemoryBytes: number; readonly freeDiskBytes: number };
-  readonly target: { readonly composeProjectExists: boolean; readonly targetNetworkExists: boolean;
-    readonly loopbackPorts: readonly { readonly port: 4322 | 4600 | 4601;
+  readonly target: { readonly composeProject: string; readonly network: string;
+    readonly composeProjectExists: boolean; readonly targetNetworkExists: boolean;
+    readonly loopbackPorts: readonly { readonly port: number;
       readonly status: "FREE" | "OCCUPIED" | "UNKNOWN" }[] };
   readonly publicEnvironment: Readonly<Record<string, string>>;
 }
@@ -64,8 +67,8 @@ export function evaluateStagingDeploymentReadiness(snapshot: StagingDeploymentSn
     add("HOST_COMPUTE_BUDGET_INSUFFICIENT", "host-compute");
   }
   if (snapshot.runtime.freeDiskBytes < 8_000_000_000) add("HOST_DISK_BUDGET_INSUFFICIENT", "host-disk");
-  if (snapshot.target.composeProjectExists) add("STAGING_PROJECT_ALREADY_EXISTS", "company-os-staging");
-  if (snapshot.target.targetNetworkExists) add("STAGING_NETWORK_ALREADY_EXISTS", "company-os-staging_internal");
+  if (snapshot.target.composeProjectExists) add("STAGING_PROJECT_ALREADY_EXISTS", snapshot.target.composeProject);
+  if (snapshot.target.targetNetworkExists) add("STAGING_NETWORK_ALREADY_EXISTS", snapshot.target.network);
   for (const port of snapshot.target.loopbackPorts) {
     if (port.status === "OCCUPIED") add("STAGING_PORT_OCCUPIED", `127.0.0.1:${port.port}`);
     if (port.status === "UNKNOWN") add("STAGING_PORT_PROBE_FAILED", `127.0.0.1:${port.port}`);
@@ -78,6 +81,17 @@ export function evaluateStagingDeploymentReadiness(snapshot: StagingDeploymentSn
   }
   for (const key of HTTPS_KEYS) {
     if (!strictHttpsUrl(snapshot.publicEnvironment[key])) add("STAGING_HTTPS_COORDINATE_REQUIRED", key);
+  }
+  const backupState = snapshot.publicEnvironment.COMPANY_OS_OFF_SITE_BACKUP;
+  if (backupState === "ENABLED") {
+    for (const key of BACKUP_PUBLIC_KEYS) {
+      if (!snapshot.publicEnvironment[key]?.trim()) add("STAGING_PUBLIC_CONFIG_MISSING", key);
+    }
+    if (!strictHttpsUrl(snapshot.publicEnvironment.COMPANY_OS_BACKUP_S3_ENDPOINT)) {
+      add("STAGING_HTTPS_COORDINATE_REQUIRED", "COMPANY_OS_BACKUP_S3_ENDPOINT");
+    }
+  } else if (backupState !== "DISABLED_PENDING_AUTHORIZATION" && backupState !== "EXTERNAL") {
+    add("STAGING_CAPABILITY_STATE_INVALID", "COMPANY_OS_OFF_SITE_BACKUP");
   }
   return { schemaVersion: 1, mode: "INSTALL", status: findings.length ? "NOT_READY" : "READY", findings };
 }

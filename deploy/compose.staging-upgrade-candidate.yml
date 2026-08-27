@@ -1,0 +1,128 @@
+name: ${COMPANY_OS_CANDIDATE_EXECUTION_COMPOSE_PROJECT:?set candidate execution Compose project}
+
+# Candidate-only execution plane. It joins only the candidate product network,
+# keeps ingress private, and uses a separate Secret projection and state set.
+services:
+  vault-secret-broker:
+    image: ${COMPANY_OS_VAULT_SECRET_BROKER_IMAGE:?set immutable candidate Broker image}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    environment:
+      COMPANY_OS_VAULT_ADDRESS: ${COMPANY_OS_CANDIDATE_VAULT_ADDRESS:?set existing site Vault HTTPS origin}
+      COMPANY_OS_VAULT_AUTH_MOUNT: approle
+      COMPANY_OS_VAULT_ROLE_ID_FILE: /run/candidate-secrets/vault-approle-role-id
+      COMPANY_OS_VAULT_SECRET_ID_FILE: /run/candidate-secrets/vault-approle-secret-id
+      COMPANY_OS_VAULT_BROKER_CONTROL_BEARER_TOKEN_FILE: /run/candidate-secrets/secret-broker-bearer-token
+      COMPANY_OS_VAULT_BROKER_EXECUTION_BEARER_TOKEN_FILE: /run/candidate-secrets/broker-execution-token
+      COMPANY_OS_VAULT_BROKER_MANAGEMENT_SIGNING_KEY_FILE: /run/candidate-secrets/broker-signing-key
+      COMPANY_OS_VAULT_BROKER_REFERENCES_FILE: /run/candidate-public/secret-references.json
+      COMPANY_OS_VAULT_BROKER_STATE_FILE: /var/lib/company-os-vault-broker/leases.json
+      COMPANY_OS_VAULT_BROKER_REFERENCE_STATE_FILE: /var/lib/company-os-vault-broker/references.json
+      COMPANY_OS_VAULT_BROKER_PUBLIC_URL: https://${COMPANY_OS_CANDIDATE_BROKER_HOST:?set candidate Broker host}
+      COMPANY_OS_VAULT_BROKER_HOST: 0.0.0.0
+      COMPANY_OS_VAULT_BROKER_PORT: 4321
+    volumes:
+      - ${COMPANY_OS_SECRET_DIRECTORY:?set candidate Secret projection}:/run/candidate-secrets:ro
+      - ${COMPANY_OS_CANDIDATE_PUBLIC_CONFIG_DIRECTORY:?set candidate public config}:/run/candidate-public:ro
+      - candidate_broker_state:/var/lib/company-os-vault-broker
+    networks: [candidate]
+
+  codex-agent-node:
+    image: ${COMPANY_OS_CODEX_AGENT_NODE_IMAGE:?set immutable candidate Agent image}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=32m,mode=1777]
+    cpus: 0.60
+    mem_limit: 640m
+    pids_limit: 128
+    environment:
+      COMPANY_OS_CODEX_STATE_DIRECTORY: /var/lib/company-os-codex
+      COMPANY_OS_CODEX_SECRET_BROKER_BASE_URL: https://${COMPANY_OS_CANDIDATE_BROKER_HOST:?set candidate Broker host}
+      COMPANY_OS_CODEX_SECRET_BROKER_REDEMPTION_BEARER_TOKEN_FILE: /run/candidate-secrets/broker-execution-token
+      COMPANY_OS_CODEX_SECRET_BROKER_ALLOW_INSECURE_LOOPBACK: "false"
+      COMPANY_OS_CODEX_BINARY: /usr/local/bin/codex
+      COMPANY_OS_CODEX_WORKSPACE: /work
+      COMPANY_OS_CODEX_NODE_BEARER_TOKEN_FILE: /run/candidate-secrets/agent-node-bearer-token
+      COMPANY_OS_CODEX_NODE_HOST: 0.0.0.0
+      COMPANY_OS_CODEX_NODE_PORT: 4320
+    volumes:
+      - ${COMPANY_OS_SECRET_DIRECTORY:?set candidate Secret projection}:/run/candidate-secrets:ro
+      - candidate_agent_state:/var/lib/company-os-codex
+      - candidate_agent_work:/work
+    networks: [candidate]
+    depends_on: [vault-secret-broker]
+
+  reference-data-node:
+    image: ${COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:?set immutable candidate Data image}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    environment:
+      COMPANY_OS_REFERENCE_DATA_NODE_HOST: 0.0.0.0
+      COMPANY_OS_REFERENCE_DATA_NODE_PORT: 4321
+      COMPANY_OS_REFERENCE_DATA_NODE_CATALOG_FILE: /app/connectors/http-data-node-reference/fixtures/acceptance-fixtures.json
+      COMPANY_OS_REFERENCE_DATA_NODE_STATE_FILE: /var/lib/company-os-data-node/protocol-state.json
+      COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN_FILE: /run/candidate-secrets/data-node-bearer-token
+    volumes:
+      - ${COMPANY_OS_SECRET_DIRECTORY:?set candidate Secret projection}:/run/candidate-secrets:ro
+      - candidate_data_state:/var/lib/company-os-data-node
+    networks: [candidate]
+
+  tls-gateway:
+    image: caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+    restart: unless-stopped
+    read_only: true
+    init: true
+    user: "1000:1000"
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777, /data:size=16m,mode=0700, /config:size=16m,mode=0700]
+    cpus: 0.15
+    mem_limit: 128m
+    pids_limit: 48
+    environment:
+      COMPANY_OS_CANDIDATE_BROKER_HOST: ${COMPANY_OS_CANDIDATE_BROKER_HOST:?set candidate Broker host}
+      COMPANY_OS_CANDIDATE_AGENT_HOST: ${COMPANY_OS_CANDIDATE_AGENT_HOST:?set candidate Agent host}
+      COMPANY_OS_CANDIDATE_DATA_HOST: ${COMPANY_OS_CANDIDATE_DATA_HOST:?set candidate Data host}
+    volumes:
+      - ${COMPANY_OS_CANDIDATE_PUBLIC_CONFIG_DIRECTORY:?set candidate public config}/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${COMPANY_OS_SECRET_DIRECTORY:?set candidate Secret projection}:/run/candidate-secrets:ro
+    networks:
+      candidate:
+        aliases:
+          - ${COMPANY_OS_CANDIDATE_BROKER_HOST:?set candidate Broker host}
+          - ${COMPANY_OS_CANDIDATE_AGENT_HOST:?set candidate Agent host}
+          - ${COMPANY_OS_CANDIDATE_DATA_HOST:?set candidate Data host}
+    depends_on: [vault-secret-broker, codex-agent-node, reference-data-node]
+
+networks:
+  candidate:
+    name: ${COMPANY_OS_PRODUCT_NETWORK:?set candidate product network}
+    external: true
+
+volumes:
+  candidate_broker_state:
+    name: ${COMPANY_OS_CANDIDATE_BROKER_VOLUME:?set candidate Broker volume}
+  candidate_agent_state:
+    name: ${COMPANY_OS_CANDIDATE_AGENT_STATE_VOLUME:?set candidate Agent state volume}
+  candidate_agent_work:
+    name: ${COMPANY_OS_CANDIDATE_AGENT_WORK_VOLUME:?set candidate Agent work volume}
+  candidate_data_state:
+    name: ${COMPANY_OS_DATA_NODE_VOLUME:?set candidate Data volume}

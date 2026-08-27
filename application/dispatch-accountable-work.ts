@@ -10,6 +10,7 @@ import type { ResponsibilityContractPort } from "../ports/responsibility-contrac
 import type { AgentLifecyclePort } from "../ports/agent-lifecycle-port.ts";
 import type { InstanceMaintenancePort } from "../ports/instance-maintenance-port.ts";
 import type { CompanyStructurePort } from "../ports/company-structure-port.ts";
+import type { CompanyAccessStorePort } from "../ports/company-access-store-port.ts";
 import { evaluateCompanyAgentEligibility } from "../core/agent-lifecycle.ts";
 import {
   validateWorkExecutionPreparationPlan,
@@ -21,6 +22,11 @@ export interface DispatchAccountableWorkInput {
   readonly draft: WorkDraft;
   readonly genericGoalId: Identifier | null;
   readonly executionPreparation?: WorkExecutionPreparationPlan;
+  readonly acceptance?: {
+    readonly operationId: Identifier;
+    readonly planId: Identifier;
+    readonly authorizationReference: string;
+  };
 }
 
 export interface DispatchAccountableWorkResult {
@@ -65,6 +71,7 @@ export class DispatchAccountableWork {
   };
   readonly #budgetAuthorization?: { execute(work: WorkItem): Promise<unknown> };
   readonly #maintenance: Pick<InstanceMaintenancePort, "load">;
+  readonly #instanceAccess?: Pick<CompanyAccessStorePort, "isInstanceAdmin">;
 
   constructor(dependencies: {
     readonly identity: IdentityPort;
@@ -100,6 +107,7 @@ export class DispatchAccountableWork {
     };
     readonly budgetAuthorization?: { execute(work: WorkItem): Promise<unknown> };
     readonly maintenance: Pick<InstanceMaintenancePort, "load">;
+    readonly instanceAccess?: Pick<CompanyAccessStorePort, "isInstanceAdmin">;
   }) {
     this.#identity = dependencies.identity;
     this.#organization = dependencies.organization;
@@ -116,6 +124,7 @@ export class DispatchAccountableWork {
     this.#commandDelivery = dependencies.commandDelivery;
     this.#budgetAuthorization = dependencies.budgetAuthorization;
     this.#maintenance = dependencies.maintenance;
+    this.#instanceAccess = dependencies.instanceAccess;
   }
 
   async execute(input: DispatchAccountableWorkInput): Promise<DispatchAccountableWorkResult> {
@@ -124,7 +133,26 @@ export class DispatchAccountableWork {
     if (!identity || identity.assurance === "LOCAL_DEMO") throw new Error("FORMAL_IDENTITY_REQUIRED");
     if (identity.organizationId !== draft.companyId) throw new Error("TENANT_MISMATCH");
     if (identity.actorId !== draft.requestedBy) throw new Error("WORK_INITIATOR_IDENTITY_MISMATCH");
-    if ((await this.#maintenance.load()).mode !== "OPEN") throw new Error("INSTANCE_DISPATCH_FROZEN");
+    const maintenance = await this.#maintenance.load();
+    const acceptance = input.acceptance;
+    if (maintenance.mode === "DISPATCH_FROZEN") throw new Error("INSTANCE_DISPATCH_FROZEN");
+    if (maintenance.mode === "OPEN" && acceptance) throw new Error("INSTANCE_ACCEPTANCE_CONTEXT_FORBIDDEN");
+    if (maintenance.mode === "ACCEPTANCE_ONLY") {
+      if (!acceptance) throw new Error("INSTANCE_ACCEPTANCE_CONTEXT_REQUIRED");
+      const binding = maintenance.acceptance;
+      if (!binding || maintenance.operationId !== acceptance.operationId ||
+          binding.planId !== acceptance.planId ||
+          maintenance.authorizationReference !== acceptance.authorizationReference) {
+        throw new Error("INSTANCE_ACCEPTANCE_BINDING_MISMATCH");
+      }
+      if (!binding.work.some(({ companyId, workId }) =>
+        companyId === draft.companyId && workId === draft.id)) {
+        throw new Error("INSTANCE_ACCEPTANCE_WORK_NOT_AUTHORIZED");
+      }
+      if (!this.#instanceAccess || !await this.#instanceAccess.isInstanceAdmin(identity.actorId)) {
+        throw new Error("INSTANCE_ADMIN_REQUIRED");
+      }
+    }
     const organization = await this.#organization.getOrganization(draft.companyId);
     if (!organization) throw new Error("ORGANIZATION_NOT_FOUND");
     const [structure, lifecycle] = await Promise.all([
@@ -171,6 +199,17 @@ export class DispatchAccountableWork {
         work, generic.value, responsibility.revision, receipt.id,
         requiresPreparation ? plan : null,
       );
+    }
+
+    if (maintenance.mode === "ACCEPTANCE_ONLY" && acceptance && maintenance.acceptance) {
+      await this.#append(draft.companyId, identity.actorId, "work.acceptance-scope-authorized", {
+        workId: work.id,
+        operationId: acceptance.operationId,
+        planId: acceptance.planId,
+        planDigest: maintenance.acceptance.planDigest,
+        authorizationReference: acceptance.authorizationReference,
+        maintenanceRevision: maintenance.revision,
+      });
     }
 
     await this.#append(draft.companyId, identity.actorId, "work.dispatch-requested", {

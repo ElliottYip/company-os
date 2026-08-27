@@ -27,10 +27,17 @@ export async function planStagingRestart(input, supplied = {}) {
   const prepared = await preparedRelease(paths.rootDirectory, input.releaseId);
   await verifyStagingReleaseBundle(prepared.releaseDirectory);
   const startedState = await validateStartedState(paths.rootDirectory, prepared);
-  const environment = await publicEnvironment(paths.environmentFile);
-  if (resolve(environment.COMPANY_OS_SECRET_DIRECTORY ?? "") !== paths.secretDirectory) {
+  const environmentFile = startedState.environmentFile ?? paths.environmentFile ??
+    join(paths.rootDirectory, "staging.env");
+  if (paths.environmentFile && resolve(paths.environmentFile) !== resolve(environmentFile)) {
+    throw new Error("STAGING_RESTART_ACTIVE_ENVIRONMENT_MISMATCH");
+  }
+  const environment = await publicEnvironment(environmentFile);
+  const secretDirectory = resolve(environment.COMPANY_OS_SECRET_DIRECTORY ?? "");
+  if (paths.secretDirectory && secretDirectory !== paths.secretDirectory) {
     throw new Error("STAGING_RESTART_SECRET_DIRECTORY_MISMATCH");
   }
+  await validateSecretDirectory(secretDirectory);
   const release = JSON.parse(await readFile(join(prepared.releaseDirectory, "release-manifest.json"), "utf8"));
   for (const [key, expected] of [["COMPANY_OS_API_IMAGE", release.images?.api],
     ["COMPANY_OS_WEB_IMAGE", release.images?.web],
@@ -41,7 +48,7 @@ export async function planStagingRestart(input, supplied = {}) {
   if ((await inspectRuntime()).status !== "RUNNING_NOT_ACCEPTED") {
     throw new Error("STAGING_RESTART_RUNTIME_REVIEW_REQUIRED");
   }
-  const compose = ["docker", "compose", "--env-file", paths.environmentFile,
+  const compose = ["docker", "compose", "--env-file", environmentFile,
     "-f", join(prepared.releaseDirectory, "compose.staging.yml")];
   return {
     schemaVersion: 1, status: "PLANNED_NOT_APPLIED", operationId: input.operationId,
@@ -53,9 +60,9 @@ export async function planStagingRestart(input, supplied = {}) {
     steps: [
       { id: "CAPTURE_DRAIN", kind: "DRAIN" },
       commandStep("RESTART_API", [...compose, "restart", "--timeout", "30", "api"]),
-      probeStep("API_READY", "http://127.0.0.1:4601/ready"),
+      probeStep("API_READY", `http://127.0.0.1:${startedState.ports?.api ?? 4601}/ready`),
       commandStep("RESTART_WEB", [...compose, "restart", "--timeout", "30", "web"]),
-      probeStep("WEB_READY", "http://127.0.0.1:4600/"),
+      probeStep("WEB_READY", `http://127.0.0.1:${startedState.ports?.web ?? 4600}/`),
       { id: "RUNTIME_RECONCILIATION", kind: "RUNTIME" },
       { id: "STATE_ADOPTION", kind: "ADOPTION" },
     ],
@@ -178,8 +185,10 @@ async function defaultProbe(step) {
 
 async function validatedPaths(input) {
   const rootDirectory = safeAbsolutePath(input.rootDirectory, "STAGING_RESTART_ROOT_ABSOLUTE_PATH_REQUIRED");
-  const environmentFile = safeAbsolutePath(input.environmentFile, "STAGING_RESTART_ENV_ABSOLUTE_PATH_REQUIRED");
-  const secretDirectory = safeAbsolutePath(input.secretDirectory, "STAGING_RESTART_SECRET_DIRECTORY_ABSOLUTE_PATH_REQUIRED");
+  const environmentFile = input.environmentFile === undefined ? undefined :
+    safeAbsolutePath(input.environmentFile, "STAGING_RESTART_ENV_ABSOLUTE_PATH_REQUIRED");
+  const secretDirectory = input.secretDirectory === undefined ? undefined :
+    safeAbsolutePath(input.secretDirectory, "STAGING_RESTART_SECRET_DIRECTORY_ABSOLUTE_PATH_REQUIRED");
   if (rootDirectory === "/" || rootDirectory === resolve(homedir())) throw new Error("STAGING_RESTART_ROOT_TOO_BROAD");
   if (!RELEASE_ID.test(input.releaseId ?? "")) throw new Error("STAGING_RESTART_RELEASE_ID_INVALID");
   if (!OPERATION_ID.test(input.operationId ?? "")) throw new Error("STAGING_RESTART_OPERATION_ID_INVALID");
@@ -194,10 +203,6 @@ async function validatedPaths(input) {
   if (!markerStat.isFile() || markerStat.isSymbolicLink() || markerStat.nlink !== 1 ||
       (markerStat.mode & 0o077) !== 0 || await readFile(marker, "utf8") !== STORE_MARKER) {
     throw new Error("STAGING_RESTART_STORE_MARKER_UNSAFE");
-  }
-  const secretStat = await lstat(secretDirectory);
-  if (!secretStat.isDirectory() || secretStat.isSymbolicLink() || (secretStat.mode & 0o077) !== 0) {
-    throw new Error("STAGING_RESTART_SECRET_DIRECTORY_UNSAFE");
   }
   return { rootDirectory, environmentFile, secretDirectory };
 }
@@ -218,7 +223,37 @@ async function validateStartedState(rootDirectory, prepared) {
       value.releaseId !== prepared.releaseId || value.sourceRevision !== prepared.sourceRevision ||
       !DIGEST.test(value.dependencyManifestDigest ?? "") ||
       value.acceptanceClaimed !== false) throw new Error("STAGING_RESTART_START_STATE_INVALID");
-  return value;
+  const environmentFile = value.activeConfiguration === undefined ? undefined :
+    activeEnvironmentPath(value.activeConfiguration, rootDirectory);
+  const ports = value.activeRuntime === undefined ? undefined : activePorts(value.activeRuntime);
+  return { ...value, environmentFile, ports };
+}
+
+function activeEnvironmentPath(value, rootDirectory) {
+  if (!value || typeof value !== "object" || Array.isArray(value) ||
+      typeof value.environmentFile !== "string" || !isAbsolute(value.environmentFile)) {
+    throw new Error("STAGING_RESTART_ACTIVE_CONFIGURATION_INVALID");
+  }
+  const path = resolve(value.environmentFile);
+  if (!path.startsWith(`${rootDirectory}/`)) throw new Error("STAGING_RESTART_ACTIVE_CONFIGURATION_INVALID");
+  return path;
+}
+
+function activePorts(value) {
+  const ports = value?.ports;
+  if (!value || typeof value !== "object" || Array.isArray(value) || !ports ||
+      ![ports.api, ports.web, ports.referenceDataNode].every((port) =>
+        Number.isSafeInteger(port) && port >= 1024 && port <= 65535)) {
+    throw new Error("STAGING_RESTART_ACTIVE_RUNTIME_INVALID");
+  }
+  return { api: ports.api, web: ports.web, referenceDataNode: ports.referenceDataNode };
+}
+
+async function validateSecretDirectory(path) {
+  const metadata = await lstat(path);
+  if (!metadata.isDirectory() || metadata.isSymbolicLink() || (metadata.mode & 0o077) !== 0) {
+    throw new Error("STAGING_RESTART_SECRET_DIRECTORY_UNSAFE");
+  }
 }
 
 async function publicEnvironment(path) {
@@ -285,8 +320,8 @@ class RestartStepError extends Error {
 }
 
 function argumentsFrom(values) {
-  const result = { rootDirectory: "/srv/company-os/staging", environmentFile: "/srv/company-os/staging/staging.env",
-    secretDirectory: "/etc/company-os/secrets", releaseId: undefined, operationId: undefined,
+  const result = { rootDirectory: "/srv/company-os/staging", environmentFile: undefined,
+    secretDirectory: undefined, releaseId: undefined, operationId: undefined,
     authorizationReference: undefined, apply: false };
   for (let index = 0; index < values.length; index += 1) {
     const flag = values[index];

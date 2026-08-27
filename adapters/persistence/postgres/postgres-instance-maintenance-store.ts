@@ -1,5 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
-import { openInstanceMaintenanceState, type InstanceMaintenanceState } from "../../../core/instance-maintenance.ts";
+import { openInstanceMaintenanceState, validateInstanceAcceptanceBinding,
+  type InstanceMaintenanceState } from "../../../core/instance-maintenance.ts";
 import type { InstanceMaintenancePort } from "../../../ports/instance-maintenance-port.ts";
 import type { createCompanyDatabase } from "./company-database.ts";
 import { instanceMaintenance, instanceMaintenanceEvents, instanceUserRoles } from "./company-access-schema.ts";
@@ -34,6 +35,7 @@ export class PostgresInstanceMaintenanceStore implements InstanceMaintenancePort
       if (!admin) throw new Error("INSTANCE_ADMIN_REQUIRED");
       const values = { id: SINGLETON_ID, mode: input.state.mode, revision: input.state.revision,
         operationId: input.state.operationId, authorizationReference: input.state.authorizationReference,
+        acceptanceBinding: input.state.acceptance ?? null,
         changedByUserId: input.state.changedBy, changedAt: input.state.changedAt };
       if (current) await transaction.update(instanceMaintenance).set(values)
         .where(eq(instanceMaintenance.id, SINGLETON_ID));
@@ -41,6 +43,7 @@ export class PostgresInstanceMaintenanceStore implements InstanceMaintenancePort
       await transaction.insert(instanceMaintenanceEvents).values({ id: input.eventId,
         revision: values.revision, mode: values.mode, operationId: values.operationId,
         authorizationReference: values.authorizationReference,
+        acceptanceBinding: values.acceptanceBinding,
         changedByUserId: values.changedByUserId, changedAt: values.changedAt });
       return structuredClone(input.state);
     });
@@ -48,11 +51,18 @@ export class PostgresInstanceMaintenanceStore implements InstanceMaintenancePort
 }
 
 function state(row: typeof instanceMaintenance.$inferSelect): InstanceMaintenanceState {
-  if (!["OPEN", "DISPATCH_FROZEN"].includes(row.mode) || !Number.isSafeInteger(row.revision) || row.revision < 1) {
+  if (!["OPEN", "DISPATCH_FROZEN", "ACCEPTANCE_ONLY"].includes(row.mode) ||
+      !Number.isSafeInteger(row.revision) || row.revision < 1) {
+    throw new Error("INSTANCE_MAINTENANCE_STATE_INVALID");
+  }
+  const acceptance = row.mode === "ACCEPTANCE_ONLY"
+    ? validateInstanceAcceptanceBinding(row.acceptanceBinding ?? undefined)
+    : null;
+  if (row.mode !== "ACCEPTANCE_ONLY" && row.acceptanceBinding !== null) {
     throw new Error("INSTANCE_MAINTENANCE_STATE_INVALID");
   }
   return { schemaVersion: 1, mode: row.mode as InstanceMaintenanceState["mode"],
     revision: row.revision, operationId: row.operationId,
-    authorizationReference: row.authorizationReference, changedBy: row.changedByUserId,
+    authorizationReference: row.authorizationReference, acceptance, changedBy: row.changedByUserId,
     changedAt: row.changedAt };
 }

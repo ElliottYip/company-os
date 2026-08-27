@@ -1,0 +1,39 @@
+name: ${COMPANY_OS_INGRESS_ROUTER_PROJECT:?ingress router project required}
+
+services:
+  ingress-router:
+    image: ${COMPANY_OS_INGRESS_ROUTER_IMAGE:?immutable ingress router image required}
+    container_name: ${COMPANY_OS_INGRESS_ROUTER_CONTAINER:?ingress router container required}
+    command:
+      - caddy
+      - run
+      - --config
+      - /etc/company-os-route/current/Caddyfile
+      - --adapter
+      - caddyfile
+    restart: unless-stopped
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: ${COMPANY_OS_INGRESS_ROUTER_PIDS:?ingress router PID limit required}
+    cpus: ${COMPANY_OS_INGRESS_ROUTER_CPU:?ingress router CPU limit required}
+    mem_limit: ${COMPANY_OS_INGRESS_ROUTER_MEMORY_BYTES:?ingress router memory limit required}
+    ports:
+      - "127.0.0.1:${COMPANY_OS_INGRESS_ROUTER_WEB_PORT:?stable Web port required}:8080"
+      - "127.0.0.1:${COMPANY_OS_INGRESS_ROUTER_API_PORT:?stable API port required}:8081"
+    volumes:
+      - type: bind
+        source: ${COMPANY_OS_INGRESS_ROUTER_ROUTE_DIRECTORY:?route directory required}
+        target: /etc/company-os-route
+        read_only: true
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - ingress-router
+
+networks:
+  ingress-router:
+    name: ${COMPANY_OS_INGRESS_ROUTER_NETWORK:?ingress router network required}
+    internal: true

@@ -1,0 +1,14 @@
+https://{$COMPANY_OS_CANDIDATE_BROKER_HOST} {
+  tls /run/candidate-secrets/internal-tls-cert /run/candidate-secrets/internal-tls-key
+  reverse_proxy vault-secret-broker:4321
+}
+
+https://{$COMPANY_OS_CANDIDATE_AGENT_HOST} {
+  tls /run/candidate-secrets/internal-tls-cert /run/candidate-secrets/internal-tls-key
+  reverse_proxy codex-agent-node:4320
+}
+
+https://{$COMPANY_OS_CANDIDATE_DATA_HOST} {
+  tls /run/candidate-secrets/internal-tls-cert /run/candidate-secrets/internal-tls-key
+  reverse_proxy reference-data-node:4321
+}

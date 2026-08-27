@@ -14,6 +14,7 @@ export interface DemoApplicationClient {
 export interface CompanyOsHttpServiceOptions {
   readonly runtime: DemoApplicationClient;
   readonly deploymentProfile: "managed-cloud" | "self-hosted";
+  readonly releaseId?: string;
   readonly serviceMode?: "DEMO_FIXTURE" | "LOCAL_DEVELOPMENT" | "FORMAL";
   readonly deploymentExposure?: "private" | "public";
   readonly allowedOrigins?: readonly string[];
@@ -111,10 +112,12 @@ const SECURITY_HEADERS = {
   "x-frame-options": "DENY",
 } as const;
 
-function sendJson(res: ServerResponse, status: number, body: unknown) {
+function sendJson(res: ServerResponse, status: number, body: unknown,
+  additionalHeaders: Readonly<Record<string, string>> = {}) {
   const encoded = JSON.stringify(body);
   res.writeHead(status, {
     ...SECURITY_HEADERS,
+    ...additionalHeaders,
     "content-type": "application/json; charset=utf-8",
     "content-length": Buffer.byteLength(encoded),
   });
@@ -183,18 +186,47 @@ function actionFromBody(value: unknown):
 const PORTABLE_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const MAINTENANCE_ID = /^[a-z0-9][a-z0-9-]{2,95}$/;
 const AUTHORIZATION_REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$/;
+const SHA256 = /^sha256:[a-f0-9]{64}$/;
+
+function instanceAcceptanceBinding(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (Object.keys(input).some((key) => !["planId", "planDigest", "work"].includes(key)) ||
+      typeof input.planId !== "string" || !MAINTENANCE_ID.test(input.planId) ||
+      typeof input.planDigest !== "string" || !SHA256.test(input.planDigest) ||
+      !Array.isArray(input.work) || input.work.length < 1 || input.work.length > 32) return null;
+  const seen = new Set<string>();
+  const work = input.work.flatMap((item) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return [];
+    const record = item as Record<string, unknown>;
+    if (Object.keys(record).some((key) => !["companyId", "workId"].includes(key)) ||
+        typeof record.companyId !== "string" || !MAINTENANCE_ID.test(record.companyId) ||
+        typeof record.workId !== "string" || !MAINTENANCE_ID.test(record.workId)) return [];
+    const key = `${record.companyId}:${record.workId}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+    return [{ companyId: record.companyId, workId: record.workId }];
+  });
+  if (work.length !== input.work.length) return null;
+  return { planId: input.planId, planDigest: input.planDigest, work };
+}
 
 function instanceMaintenanceCommand(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const input = value as Record<string, unknown>;
-  if (!["OPEN", "DISPATCH_FROZEN"].includes(String(input.mode)) ||
+  if (!["OPEN", "DISPATCH_FROZEN", "ACCEPTANCE_ONLY"].includes(String(input.mode)) ||
       !Number.isSafeInteger(input.expectedRevision) || Number(input.expectedRevision) < 0 ||
       typeof input.operationId !== "string" || !MAINTENANCE_ID.test(input.operationId) ||
       typeof input.authorizationReference !== "string" ||
       !AUTHORIZATION_REFERENCE.test(input.authorizationReference) ||
       Object.keys(input).some((key) => !["mode", "expectedRevision", "operationId",
-        "authorizationReference"].includes(key))) return null;
-  return structuredClone(input);
+        "authorizationReference", "acceptance"].includes(key))) return null;
+  const acceptance = instanceAcceptanceBinding(input.acceptance);
+  if ((input.mode === "ACCEPTANCE_ONLY" && !acceptance) ||
+      (input.mode !== "ACCEPTANCE_ONLY" && input.acceptance !== undefined)) return null;
+  return { mode: input.mode, expectedRevision: input.expectedRevision,
+    operationId: input.operationId, authorizationReference: input.authorizationReference,
+    ...(acceptance ? { acceptance } : {}) };
 }
 
 function optionalId(value: unknown): string | null | undefined {
@@ -294,6 +326,19 @@ function formalWorkCommand(value: unknown, companyId: string): unknown | null {
   const parentWorkId = optionalId(draft.parentWorkId);
   const genericGoalId = optionalId(input.genericGoalId);
   const executionPreparation = formalExecutionPreparation(input.executionPreparation, companyId);
+  let acceptance: Record<string, string> | undefined;
+  if (input.acceptance !== undefined) {
+    if (!input.acceptance || typeof input.acceptance !== "object" || Array.isArray(input.acceptance)) return null;
+    const context = input.acceptance as Record<string, unknown>;
+    if (Object.keys(context).some((key) =>
+      !["operationId", "planId", "authorizationReference"].includes(key)) ||
+        typeof context.operationId !== "string" || !MAINTENANCE_ID.test(context.operationId) ||
+        typeof context.planId !== "string" || !MAINTENANCE_ID.test(context.planId) ||
+        typeof context.authorizationReference !== "string" ||
+        !AUTHORIZATION_REFERENCE.test(context.authorizationReference)) return null;
+    acceptance = { operationId: context.operationId, planId: context.planId,
+      authorizationReference: context.authorizationReference };
+  }
   const scope = draft.scope;
   if (!id || !departmentId || !agentId || !requestedBy || projectId === undefined ||
       parentWorkId === undefined || genericGoalId === undefined || executionPreparation === null ||
@@ -317,6 +362,7 @@ function formalWorkCommand(value: unknown, companyId: string): unknown | null {
       parentWorkId,
     },
     genericGoalId,
+    ...(acceptance ? { acceptance } : {}),
     ...(executionPreparation === undefined ? {} : { executionPreparation }),
   };
 }
@@ -808,9 +854,16 @@ function formalError(error: unknown): { readonly status: number; readonly code: 
   if (code === "FORMAL_IDENTITY_REQUIRED") return { status: 401, code };
   if (code === "FIRST_ADMIN_ALREADY_CLAIMED") return { status: 409, code };
   if (code === "INSTANCE_ADMIN_REQUIRED") return { status: 403, code };
+  if (code === "INSTANCE_ACCEPTANCE_WORK_NOT_AUTHORIZED") return { status: 403, code };
   if (code === "INSTANCE_DISPATCH_FROZEN") return { status: 503, code };
   if (code === "INSTANCE_MAINTENANCE_REVISION_CONFLICT" ||
-      code === "INSTANCE_MAINTENANCE_MODE_UNCHANGED") return { status: 409, code };
+      code === "INSTANCE_MAINTENANCE_MODE_UNCHANGED" ||
+      code === "INSTANCE_MAINTENANCE_TRANSITION_INVALID" ||
+      code === "INSTANCE_MAINTENANCE_OPERATION_MISMATCH" ||
+      code === "INSTANCE_MAINTENANCE_AUTHORIZATION_REUSED" ||
+      code === "INSTANCE_ACCEPTANCE_CONTEXT_REQUIRED" ||
+      code === "INSTANCE_ACCEPTANCE_CONTEXT_FORBIDDEN" ||
+      code === "INSTANCE_ACCEPTANCE_BINDING_MISMATCH") return { status: 409, code };
   if (code.startsWith("INSTANCE_MAINTENANCE_") && code.endsWith("_INVALID")) {
     return { status: 422, code };
   }
@@ -1018,7 +1071,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
           mode: options.serviceMode ?? "DEMO_FIXTURE",
           deploymentProfile: options.deploymentProfile,
           uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
-        });
+        }, options.releaseId ? { "x-company-os-release-id": options.releaseId } : {});
         return;
       }
       if (method === "GET" && path === "/ready") {
@@ -1032,7 +1085,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
           service: "company-os",
           mode: options.serviceMode ?? "DEMO_FIXTURE",
           deploymentProfile: options.deploymentProfile,
-        });
+        }, options.releaseId ? { "x-company-os-release-id": options.releaseId } : {});
         return;
       }
       if (method === "GET" && path === "/api/v1/access") {

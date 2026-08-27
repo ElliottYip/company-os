@@ -6,7 +6,10 @@ import test from "node:test";
 
 import { parseStagingDependencyManifest } from
   "../adapters/config/staging-dependency-manifest.ts";
-import { validateStagingDependencies } from "../scripts/validate-staging-dependencies.ts";
+import {
+  stagingDependencyExpectationFromPublicEnvironment,
+  validateStagingDependencies,
+} from "../scripts/validate-staging-dependencies.ts";
 
 const expected = {
   deploymentId: "company-os-staging-raft-xin", webOrigin: "https://company-os.raft.xin",
@@ -69,9 +72,35 @@ test("staging dependency file produces a stable secret-free deployment admission
   const path = join(directory, "dependencies.json");
   await writeFile(path, `${JSON.stringify(manifest())}\n`, { mode: 0o600 });
   await chmod(path, 0o600);
-  const result = await validateStagingDependencies(path);
+  const result = await validateStagingDependencies(path, expected);
   assert.equal(result.status, "READY_FOR_STAGING_DEPLOYMENT");
   assert.match(result.manifestDigest, /^sha256:[a-f0-9]{64}$/);
   assert.equal(result.secretsPresent, false);
   assert.doesNotMatch(JSON.stringify(result), /identity\.staging|agent-node|bucket|token|password/i);
+});
+
+test("dependency expectations are derived from one site's rendered public configuration", () => {
+  const result = stagingDependencyExpectationFromPublicEnvironment({
+    COMPANY_OS_INSTANCE_ID: "company-os-hangzhou-7",
+    COMPANY_OS_WEB_ORIGINS: "https://web.company-os.hangzhou-7.internal",
+    COMPANY_OS_PUBLIC_URL: "https://api.company-os.hangzhou-7.internal",
+    COMPANY_OS_COMPOSE_PROJECT: "company-os-hangzhou-7",
+    COMPANY_OS_PRODUCT_NETWORK: "company-os-hangzhou-7-product",
+    COMPANY_OS_WEB_LOOPBACK_PORT: "5600",
+    COMPANY_OS_API_LOOPBACK_PORT: "5601",
+  }, "/data/company-os/staging");
+  assert.deepEqual(result, {
+    deploymentId: "company-os-hangzhou-7",
+    webOrigin: "https://web.company-os.hangzhou-7.internal",
+    apiOrigin: "https://api.company-os.hangzhou-7.internal",
+    deploymentRoot: "/data/company-os/staging",
+    composeProject: "company-os-hangzhou-7",
+    network: "company-os-hangzhou-7-product",
+    webLoopbackPort: 5600,
+    apiLoopbackPort: 5601,
+  });
+  assert.doesNotMatch(JSON.stringify(result), /raft\.xin|hong-kong/);
+  assert.throws(() => stagingDependencyExpectationFromPublicEnvironment({
+    COMPANY_OS_INSTANCE_ID: "company-os-hangzhou-7",
+  }, "/data/company-os/staging"), /STAGING_SITE_EXPECTATION_INVALID/);
 });
