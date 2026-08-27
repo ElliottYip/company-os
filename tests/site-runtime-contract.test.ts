@@ -41,9 +41,9 @@ function site(overrides: Record<string, unknown> = {}) {
     product: {
       releaseId: `0.1.0-rc.5-${"b".repeat(12)}`,
       exposure: "PUBLIC",
-      webOrigin: "https://company-os.raft.xin",
-      apiOrigin: "https://company-os-api.raft.xin",
-      oidcRedirectUri: "https://company-os-api.raft.xin/api/auth/oauth2/callback/enterprise-oidc",
+      webOrigin: "https://anc.raft.xin",
+      apiOrigin: "https://api.anc.raft.xin",
+      oidcRedirectUri: "https://api.anc.raft.xin/api/auth/oauth2/callback/enterprise-oidc",
       instanceId: "company-os-hong-kong",
       connectorIds: { agentNode: "codex-hong-kong", dataNode: "fixtures-hong-kong",
         secretBroker: "vault-hong-kong" },
@@ -62,7 +62,7 @@ function site(overrides: Record<string, unknown> = {}) {
         issuer: "https://identity.hk.internal",
         discoveryUrl: "https://identity.hk.internal/.well-known/openid-configuration",
         clientId: "company-os-hong-kong", callbackUri:
-          "https://company-os-api.raft.xin/api/auth/oauth2/callback/enterprise-oidc",
+          "https://api.anc.raft.xin/api/auth/oauth2/callback/enterprise-oidc",
         volume: "company-os-hong-kong-oidc", ownerReference: "team:identity",
         evidenceReference: "evidence:oidc-hk" },
       vault: { image: `hashicorp/vault@sha256:${"9".repeat(64)}`,
@@ -177,7 +177,7 @@ test("site contract renders complete site-owned public configuration without cro
   const hangzhou = renderSitePublicEnvironment(parseSiteRuntimeManifest(hangzhouSite()),
     "/etc/company-os/hangzhou-7-secrets");
 
-  assert.match(hongKong, /COMPANY_OS_PUBLIC_URL=https:\/\/company-os-api\.raft\.xin/);
+  assert.match(hongKong, /COMPANY_OS_PUBLIC_URL=https:\/\/api\.anc\.raft\.xin/);
   assert.match(hongKong, /COMPANY_OS_RELEASE_ID=0\.1\.0-rc\.5-b{12}/);
   assert.match(hongKong, /COMPANY_OS_COMPOSE_PROJECT=company-os-hong-kong/);
   assert.match(hangzhou, /COMPANY_OS_PUBLIC_URL=https:\/\/api\.company-os\.hangzhou-7\.internal/);
@@ -189,7 +189,7 @@ test("site contract renders complete site-owned public configuration without cro
 
 test("staging Compose consumes site variables and keeps opt-in backup out of base interpolation", async () => {
   const source = await readFile(new URL("../deploy/compose.staging.yml", import.meta.url), "utf8");
-  assert.doesNotMatch(source, /company-os(?:-api)?\.raft\.xin|company-os-staging-raft-xin/);
+  assert.doesNotMatch(source, /(?:api\.)?anc\.raft\.xin|company-os(?:-api)?\.raft\.xin|company-os-staging-raft-xin/);
   for (const variable of [
     "COMPANY_OS_COMPOSE_PROJECT", "COMPANY_OS_PRODUCT_NETWORK", "COMPANY_OS_PUBLIC_URL",
     "COMPANY_OS_RELEASE_ID",

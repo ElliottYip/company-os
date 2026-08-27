@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 
 async function enterDemo(page: Page): Promise<void> {
   await page.goto("/");
-  await page.getByRole("button", { name: "Explore the isolated demo instead" }).click();
+  await page.getByRole("button", { name: "Explore the live demo" }).click();
   await expect(page.getByRole("heading", { name: "Agent Portfolio" })).toBeVisible();
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeVisible();
 }
@@ -28,10 +28,10 @@ test("runtime API configuration drives the public Demo client across origins", a
 test("first run creates a local company draft while formal capabilities remain gated", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Build an ANC where humans stay accountable." })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Create a company/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Connect your organization/ })).toBeVisible();
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeHidden();
 
-  await page.getByRole("button", { name: /Create a company/ }).click();
+  await page.getByRole("button", { name: /Connect your organization/ }).click();
   await expect(page.getByRole("dialog", { name: "What is your company called?" })).toBeVisible();
   await page.getByLabel("Company name").fill("Northstar Studio");
   await page.getByLabel("Company mission").fill("Build reliable operations with accountable humans and Agents.");
@@ -67,7 +67,7 @@ test("first run creates a local company draft while formal capabilities remain g
   await expect(page.getByText("Local draft — formal capabilities are not connected")).toBeVisible();
 
   await page.reload();
-  await page.getByRole("button", { name: /Open an existing company/ }).click();
+  await page.getByRole("button", { name: /Sign in to ANC/ }).click();
   await expect(page.getByRole("heading", { name: "Connect enterprise identity" })).toBeVisible();
 });
 

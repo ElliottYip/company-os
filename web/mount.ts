@@ -788,15 +788,15 @@ function frontDoor(): string {
   return `<main class="company-front-door" aria-labelledby="front-door-title">
     <header><span class="front-door-mark" aria-hidden="true">C</span><strong>Company OS</strong></header>
     <section class="front-door-content">
-      <div class="front-door-copy"><p class="family-kicker">${copy("AI-NATIVE COMPANY CONTROL PLANE", "AI 原生公司控制平面")}</p><h1 id="front-door-title">${copy("Build an ANC where humans stay accountable.", "让真人和 Agent 一起工作，责任始终落到人。")}</h1><p>${copy("Create the company first. Then add accountable humans, Agent colleagues, permissions, approvals, evidence, and work.", "先创建公司和负责人，再配置 Agent、权限、审批和证据。")}</p></div>
+      <div class="front-door-copy"><p class="family-kicker">${copy("ENTERPRISE AGENT MANAGEMENT & GOVERNANCE", "企业 Agent 管理与治理")}</p><h1 id="front-door-title">${copy("Build an ANC where humans stay accountable.", "让真人和 Agent 一起工作，责任始终落到人。")}</h1><p>${copy("Create the company first. Then add accountable humans, Agent colleagues, permissions, approvals, evidence, and work.", "先创建公司和负责人，再配置 Agent、权限、审批和证据。")}</p></div>
       <div class="front-door-actions">
-        <button class="front-door-primary" type="button" data-enter-local><span>${copy("Create a company", "创建公司")}</span><small>${copy("Start locally; connect enterprise identity when ready", "先建立本地草稿，准备好后再连接企业身份")}</small></button>
-        <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Open an existing company", "打开现有公司")}</span><small>${copy("Sign in through your organization identity provider", "通过组织身份提供方登录")}</small></button>
+        <button class="front-door-primary" type="button" data-enter-local><span>${copy("Connect your organization", "接入企业")}</span><small>${copy("Start with your Agent inventory", "从企业 Agent 资产盘点开始")}</small></button>
+        <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Sign in to ANC", "登录 ANC")}</span><small>${copy("Use your organization identity provider", "使用企业身份登录")}</small></button>
       </div>
-      <button class="front-door-demo" type="button" data-enter-demo>${copy("Explore the isolated demo instead", "先看看隔离演示")}</button>
-      <p class="front-door-boundary">${copy("The demo is optional and isolated. It never creates credentials, calls models, or accesses enterprise systems.", "演示是可选且隔离的；不会创建凭据、调用模型或访问企业系统。")}</p>
+      <button class="front-door-demo" type="button" data-enter-demo>${copy("Explore the live demo", "体验公开 Demo")}</button>
+      <p class="front-door-boundary">${copy("No sign-in. Isolated demo data. No credentials, model calls, or enterprise-system access.", "无需登录，使用隔离演示数据；不会创建凭据、调用模型或访问企业系统。")}</p>
     </section>
-    <footer>${copy("Open source · Managed cloud and self-hosted profiles · Vendor-neutral Connectors", "开源 · Managed cloud 与 self-hosted Profile · 厂商中立 Connector")}</footer>
+    <footer>${copy("Personal · Shared · Federated — managed in one place", "个人 · 共享 · 联邦接入，一处统一管理")}</footer>
   </main>`;
 }
 

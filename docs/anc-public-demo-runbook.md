@@ -126,8 +126,11 @@ before reopening.
 
 The AliDNS console currently contains and enables both intended records:
 
-- `company-os.raft.xin A 47.242.52.235`;
-- `company-os-api.raft.xin A 47.242.52.235`.
+- `anc.raft.xin A 47.242.52.235`;
+- `api.anc.raft.xin A 47.242.52.235`.
+
+The earlier `company-os` records and RC12 cutover artifacts remain retained as
+historical evidence; they are not the selected public Alpha hostnames.
 
 The stored records are not sufficient proof of public reachability. Before any
 certificate request or Nginx activation, query at least one AliDNS authority

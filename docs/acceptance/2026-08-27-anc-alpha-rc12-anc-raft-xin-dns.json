@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PREFIXED_DOMAIN_DNS",
+  "recordedAt": "2026-08-27T13:34:33Z",
+  "lastVerifiedAt": "2026-08-27T13:39:36Z",
+  "status": "DNS_CREATED_AUTHORITY_REWRITTEN",
+  "target": {
+    "site": "hong-kong",
+    "publicIpv4": "47.242.52.235",
+    "webHostname": "anc.raft.xin",
+    "apiHostname": "api.anc.raft.xin"
+  },
+  "console": {
+    "provider": "AliDNS",
+    "recordsCreated": true,
+    "recordsEnabled": true,
+    "recordCountBefore": 17,
+    "recordCountAfter": 19,
+    "configuredTtlSeconds": 600
+  },
+  "observedDns": {
+    "authoritativeWebA": "28.0.77.132",
+    "authoritativeApiA": "28.0.77.133",
+    "publicResolversMatchAuthority": true,
+    "targetsHongKongHost": false
+  },
+  "ingress": {
+    "candidateFile": "docs/acceptance/2026-08-27-anc-alpha-rc12-anc-raft-xin-nginx.candidate.conf",
+    "candidateDigest": "sha256:b20ee99b148a774a8751ad34c7abcc4b747b11940f7a13272c357df16ea0de6f",
+    "enabled": false
+  },
+  "decision": "DO_NOT_ISSUE_TLS_OR_ENABLE_PUBLIC_INGRESS",
+  "requiredNextActions": [
+    "AliDNS support removes or explains the raft.xin authoritative A-response rewrite",
+    "both authoritative and independent public resolvers return 47.242.52.235",
+    "issue one certificate covering anc.raft.xin and api.anc.raft.xin",
+    "validate and atomically enable the prefixed Nginx candidate",
+    "repeat browser, isolation, reset, recovery and formal-route-denial acceptance through HTTPS"
+  ],
+  "secretMaterialIncluded": false
+}
