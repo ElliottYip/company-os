@@ -788,15 +788,15 @@ function frontDoor(): string {
   return `<main class="company-front-door" aria-labelledby="front-door-title">
     <header><span class="front-door-mark" aria-hidden="true">C</span><strong>Company OS</strong></header>
     <section class="front-door-content">
-      <div class="front-door-copy"><p class="family-kicker">${copy("ENTERPRISE AGENT MANAGEMENT & GOVERNANCE", "企业 Agent 管理与治理")}</p><h1 id="front-door-title">${copy("Build an ANC where humans stay accountable.", "让真人和 Agent 一起工作，责任始终落到人。")}</h1><p>${copy("Create the company first. Then add accountable humans, Agent colleagues, permissions, approvals, evidence, and work.", "先创建公司和负责人，再配置 Agent、权限、审批和证据。")}</p></div>
+      <div class="front-door-copy"><p class="family-kicker">COMPANY OS · ANC</p><h1 id="front-door-title">${copy("One control plane for every enterprise agent.", "一个控制平面，统一管理企业所有 Agent。")}</h1><p>${copy("Company OS delivers ANC: the management and governance layer for Agent identity, access, cost, risk, and human accountability across every runtime.", "Company OS 通过 ANC 统一管理不同 Runtime 中 Agent 的身份、权限、成本、风险与真人责任。")}</p></div>
       <div class="front-door-actions">
-        <button class="front-door-primary" type="button" data-enter-local><span>${copy("Connect your organization", "接入企业")}</span><small>${copy("Start with your Agent inventory", "从企业 Agent 资产盘点开始")}</small></button>
-        <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Sign in to ANC", "登录 ANC")}</span><small>${copy("Use your organization identity provider", "使用企业身份登录")}</small></button>
+        <button class="front-door-primary" type="button" data-enter-local><span>${copy("Set up Company OS", "配置 Company OS")}</span><small>${copy("Create your ANC control plane", "建立企业 ANC 控制平面")}</small></button>
+        <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Sign in to Company OS", "登录 Company OS")}</span><small>${copy("Open your organization's ANC workspace", "进入企业 ANC 工作区")}</small></button>
       </div>
-      <button class="front-door-demo" type="button" data-enter-demo>${copy("Explore the live demo", "体验公开 Demo")}</button>
+      <button class="front-door-demo" type="button" data-enter-demo>${copy("Explore the Company OS demo", "体验 Company OS 公开 Demo")}</button>
       <p class="front-door-boundary">${copy("No sign-in. Isolated demo data. No credentials, model calls, or enterprise-system access.", "无需登录，使用隔离演示数据；不会创建凭据、调用模型或访问企业系统。")}</p>
     </section>
-    <footer>${copy("Personal · Shared · Federated — managed in one place", "个人 · 共享 · 联邦接入，一处统一管理")}</footer>
+    <footer>${copy("ANC by Company OS · Inventory · Governance · Accountability", "Company OS 提供 ANC · 资产 · 治理 · 责任")}</footer>
   </main>`;
 }
 
