@@ -7,10 +7,11 @@ import type { StagingUpgradePreparationStepRecord } from
 
 interface MaintenanceState {
   readonly schemaVersion: 1;
-  readonly mode: "OPEN" | "DISPATCH_FROZEN";
+  readonly mode: "OPEN" | "DISPATCH_FROZEN" | "ACCEPTANCE_ONLY";
   readonly revision: number;
   readonly operationId: string | null;
   readonly authorizationReference: string | null;
+  readonly acceptance?: unknown;
 }
 
 export async function createStagingUpgradeDispatchFreezeOperation(input: {
@@ -79,11 +80,17 @@ async function readMaintenance(request: typeof fetch, origin: string, cookie: st
   return exactMaintenance(await response.json());
 }
 function exactMaintenance(value: unknown): MaintenanceState {
-  const record = exact(value, ["schemaVersion", "mode", "revision", "operationId",
-    "authorizationReference", "changedBy", "changedAt"]);
-  if (record.schemaVersion !== 1 || !["OPEN", "DISPATCH_FROZEN"].includes(String(record.mode)) ||
+  if (!value || typeof value !== "object" || Array.isArray(value)) invalidResponse();
+  const record = value as Record<string, unknown>;
+  const required = ["schemaVersion", "mode", "revision", "operationId",
+    "authorizationReference", "changedBy", "changedAt"];
+  const allowed = [...required, "acceptance"];
+  if (required.some((key) => !(key in record)) ||
+      Object.keys(record).some((key) => !allowed.includes(key)) ||
+      record.schemaVersion !== 1 || !["OPEN", "DISPATCH_FROZEN", "ACCEPTANCE_ONLY"].includes(String(record.mode)) ||
       !Number.isSafeInteger(record.revision) || Number(record.revision) < 0 ||
       !nullableText(record.operationId) || !nullableText(record.authorizationReference)) invalidResponse();
+  if (record.mode === "ACCEPTANCE_ONLY" ? !record.acceptance : record.acceptance != null) invalidResponse();
   return record as unknown as MaintenanceState;
 }
 function exactChanged(value: unknown) {

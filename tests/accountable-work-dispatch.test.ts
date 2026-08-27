@@ -73,6 +73,112 @@ test("formal dispatch fails before product side effects while instance dispatch 
   assert.equal((await events.read("demo-company")).length, 0);
 });
 
+const acceptanceMaintenance = {
+  schemaVersion: 1 as const,
+  mode: "ACCEPTANCE_ONLY" as const,
+  revision: 2,
+  operationId: "upgrade-staging-01",
+  authorizationReference: "acceptance:approved-rc4-01",
+  acceptance: {
+    planId: "acceptance-plan-rc4",
+    planDigest: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" as const,
+    work: [{ companyId: "demo-company", workId: "work-accountable" }],
+  },
+  changedBy: "instance-admin",
+  changedAt: "2026-08-26T18:00:00.000Z",
+};
+
+test("acceptance-only mode rejects ordinary dispatch before product side effects", async () => {
+  let organizationCalls = 0;
+  const events = new InMemoryEventStore();
+  const service = new DispatchAccountableWork({
+    identity: identity(),
+    organization: { async getOrganization() { organizationCalls += 1; return DEMO_COMPANY; },
+      async listPrincipals() { return []; } },
+    contracts: responsibilities,
+    genericWork: { async createWork() { throw new Error("must not run"); } } as unknown as GenericWorkPort,
+    events, structure: lifecycleDependencies.structure, lifecycle: lifecycleDependencies.lifecycle,
+    maintenance: { async load() { return acceptanceMaintenance; } },
+    instanceAccess: { async isInstanceAdmin() { return true; } },
+    now: () => "2026-08-26T18:01:00.000Z", nextId: () => "unused-event",
+  });
+  await assert.rejects(service.execute({ draft: draft(), genericGoalId: null }),
+    /INSTANCE_ACCEPTANCE_CONTEXT_REQUIRED/);
+  assert.equal(organizationCalls, 0);
+  assert.equal((await events.read("demo-company")).length, 0);
+});
+
+test("acceptance-only mode admits one allowlisted Work and records its exact scope", async () => {
+  const events = new InMemoryEventStore();
+  let genericCalls = 0;
+  let id = 0;
+  const service = new DispatchAccountableWork({
+    identity: identity(),
+    organization: { async getOrganization() { return DEMO_COMPANY; }, async listPrincipals() { return []; } },
+    contracts: responsibilities,
+    genericWork: {
+      async createWork(input) { genericCalls += 1; return { ok: true, value: {
+        id: input.id, companyId: input.companyId, title: input.title, goalId: input.goalId,
+        assigneeId: input.assigneeId, status: "READY", createdAt: "2026-08-26T18:01:00.000Z",
+        updatedAt: "2026-08-26T18:01:00.000Z",
+      } }; },
+    } as unknown as GenericWorkPort,
+    events, structure: lifecycleDependencies.structure, lifecycle: lifecycleDependencies.lifecycle,
+    maintenance: { async load() { return acceptanceMaintenance; } },
+    instanceAccess: { async isInstanceAdmin(actorId) { return actorId === "demo-boss"; } },
+    now: () => "2026-08-26T18:01:00.000Z", nextId: () => `acceptance-event-${++id}`,
+  });
+  const result = await service.execute({ draft: draft(), genericGoalId: null, acceptance: {
+    operationId: "upgrade-staging-01", planId: "acceptance-plan-rc4",
+    authorizationReference: "acceptance:approved-rc4-01",
+  } });
+  assert.equal(result.genericWork.status, "READY");
+  assert.equal(genericCalls, 1);
+  const recorded = await events.read("demo-company");
+  assert.deepEqual(recorded.map(({ type }) => type), [
+    "work.acceptance-scope-authorized", "work.dispatch-requested", "work.dispatched",
+  ]);
+  assert.deepEqual(recorded[0]?.payload, {
+    workId: "work-accountable",
+    operationId: "upgrade-staging-01",
+    planId: "acceptance-plan-rc4",
+    planDigest: acceptanceMaintenance.acceptance.planDigest,
+    authorizationReference: "acceptance:approved-rc4-01",
+    maintenanceRevision: 2,
+  });
+});
+
+test("acceptance-only scope fails closed for mismatched authority, Work, and administrator", async () => {
+  const build = (maintenance = acceptanceMaintenance, admin = true) => new DispatchAccountableWork({
+    identity: identity(),
+    organization: { async getOrganization() { throw new Error("must not run"); },
+      async listPrincipals() { return []; } },
+    contracts: responsibilities,
+    genericWork: { async createWork() { throw new Error("must not run"); } } as unknown as GenericWorkPort,
+    events: new InMemoryEventStore(), structure: lifecycleDependencies.structure,
+    lifecycle: lifecycleDependencies.lifecycle, maintenance: { async load() { return maintenance; } },
+    instanceAccess: { async isInstanceAdmin() { return admin; } },
+    now: () => "2026-08-26T18:01:00.000Z", nextId: () => "unused-event",
+  });
+  await assert.rejects(build().execute({ draft: draft(), genericGoalId: null, acceptance: {
+    operationId: "upgrade-staging-01", planId: "acceptance-plan-rc4",
+    authorizationReference: "acceptance:wrong-authority",
+  } }), /INSTANCE_ACCEPTANCE_BINDING_MISMATCH/);
+  await assert.rejects(build({ ...acceptanceMaintenance, acceptance: {
+    ...acceptanceMaintenance.acceptance,
+    work: [{ companyId: "demo-company", workId: "different-work" }],
+  } }).execute({ draft: draft(), genericGoalId: null, acceptance: {
+    operationId: "upgrade-staging-01", planId: "acceptance-plan-rc4",
+    authorizationReference: "acceptance:approved-rc4-01",
+  } }), /INSTANCE_ACCEPTANCE_WORK_NOT_AUTHORIZED/);
+  await assert.rejects(build(acceptanceMaintenance, false).execute({
+    draft: draft(), genericGoalId: null, acceptance: {
+      operationId: "upgrade-staging-01", planId: "acceptance-plan-rc4",
+      authorizationReference: "acceptance:approved-rc4-01",
+    },
+  }), /INSTANCE_ADMIN_REQUIRED/);
+});
+
 function identity(actorId = "demo-boss", companyId = "demo-company"): IdentityPort {
   return {
     async getCurrentIdentity() {

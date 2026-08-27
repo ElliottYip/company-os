@@ -1,4 +1,5 @@
-import { changeInstanceMaintenance, type InstanceMaintenanceMode } from "../core/instance-maintenance.ts";
+import { changeInstanceMaintenance, type InstanceAcceptanceBinding,
+  type InstanceMaintenanceMode } from "../core/instance-maintenance.ts";
 import type { CompanyAccessStorePort } from "../ports/company-access-store-port.ts";
 import type { IdentityPort } from "../ports/identity-port.ts";
 import type { InstanceMaintenancePort } from "../ports/instance-maintenance-port.ts";
@@ -29,12 +30,14 @@ export class ManageInstanceMaintenance {
     readonly expectedRevision: number;
     readonly operationId: Identifier;
     readonly authorizationReference: string;
+    readonly acceptance?: InstanceAcceptanceBinding;
   }) {
     const identity = await this.#administrator();
     const current = await this.#dependencies.maintenance.load();
     if (current.revision !== input.expectedRevision) throw new Error("INSTANCE_MAINTENANCE_REVISION_CONFLICT");
     const next = changeInstanceMaintenance(current, { mode: input.mode,
       operationId: input.operationId, authorizationReference: input.authorizationReference,
+      ...(input.acceptance ? { acceptance: input.acceptance } : {}),
       changedBy: identity.actorId, changedAt: this.#dependencies.now() });
     return this.#dependencies.maintenance.replace({ expectedRevision: current.revision,
       state: next, eventId: this.#dependencies.nextId() });

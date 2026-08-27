@@ -20,6 +20,8 @@ test("every PostgreSQL migration is ordered, split into executable statements, a
     assert.ok(statements.every(Boolean), `${entry.tag} contains an empty statement`);
     assert.ok(statements.every((statement) => /^(?:CREATE|ALTER|INSERT|UPDATE)\b/i.test(statement)),
       `${entry.tag} contains an unclassified migration statement`);
-    assert.doesNotMatch(sql, /\b(?:DROP|TRUNCATE)\b/i);
+    // Replacing a CHECK constraint is a metadata-only migration. Any other
+    // DROP, or any row-destructive statement, remains forbidden.
+    assert.doesNotMatch(sql, /\bDROP\s+(?!CONSTRAINT\b)|\bTRUNCATE\b|\bDELETE\s+FROM\b/i);
   }
 });

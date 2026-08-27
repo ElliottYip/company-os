@@ -427,9 +427,12 @@ Any new blocker, digest drift, malformed/redirected record, or non-private
 record mode fails closed and requires operator review.
 
 After adoption and operator review, the same instance administrator issues a
-second revision-checked maintenance command with `mode: "OPEN"`. Reopening is
+revision-checked `ACCEPTANCE_ONLY` command bound to the exact acceptance plan
+and Work allowlist. After independent acceptance confirmation, a separate
+revision-checked command with a new authorization reference may set `mode: "OPEN"`. Reopening is
 never automatic: a failed or ambiguous restart remains frozen for review. See
-[ADR 0039](adr/0039-persistent-instance-dispatch-freeze.md).
+[ADR 0039](adr/0039-persistent-instance-dispatch-freeze.md) and
+[ADR 0045](adr/0045-bounded-acceptance-only-dispatch.md).
 
 The supported restart path performs these checks as one authorized lifecycle.
 Run it without `--apply` first to inspect the exact plan, then repeat with

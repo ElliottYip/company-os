@@ -331,6 +331,7 @@ async function formalAgentBossApi(request: import("node:http").IncomingMessage, 
       now: context.now,
       nextId: nextPostgresRecordId,
       maintenance: instanceMaintenance!,
+      instanceAccess: companyAccessStore!,
       attemptScheduler: new ScheduleWorkAttempt({
         store: formalEvents,
         executionPorts: formalExecutionPorts,
@@ -459,10 +460,15 @@ const server = createCompanyOsHttpService({
       async get(request) { return (await formalInstanceMaintenance(request)).load(); },
       async change(request, input) {
         return (await formalInstanceMaintenance(request)).execute(input as {
-          mode: "OPEN" | "DISPATCH_FROZEN";
+          mode: "OPEN" | "DISPATCH_FROZEN" | "ACCEPTANCE_ONLY";
           expectedRevision: number;
           operationId: string;
           authorizationReference: string;
+          acceptance?: {
+            planId: string;
+            planDigest: `sha256:${string}`;
+            work: readonly { companyId: string; workId: string }[];
+          };
         });
       },
     },

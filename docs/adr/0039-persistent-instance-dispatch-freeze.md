@@ -18,7 +18,8 @@ process. No Paperclip schema, type, route or service-manager code is used.
 
 ## Decision
 
-Company OS owns a revisioned singleton maintenance state with two modes:
+Company OS owns a revisioned singleton maintenance state. This ADR originally
+defined two modes:
 `OPEN` and `DISPATCH_FROZEN`. Every transition requires:
 
 - a formally authenticated instance administrator;
@@ -46,6 +47,10 @@ the non-reversible source digest. A restart therefore follows this order:
 3. the drain inspector proves the frozen, empty boundary;
 4. API and Web restart and adopt the exact durable state;
 5. an administrator explicitly reopens dispatch after review.
+
+ADR 0045 supersedes only the two-state transition rule. Reopening now requires
+a bounded `ACCEPTANCE_ONLY` phase; the durable singleton, optimistic revision,
+append-only audit, and drain decisions in this ADR remain in force.
 
 Existing work is deliberately allowed to finish while dispatch is frozen; the
 freeze is not a kill switch and does not cancel Connector activity.

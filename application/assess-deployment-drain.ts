@@ -62,7 +62,7 @@ export function assessDeploymentDrain(input: DeploymentDrainInput): DeploymentDr
   const companyIds = new Set<string>();
   let invalidCount = Number.isFinite(Date.parse(input.observedAt)) ? 0 : 1;
   if (!Number.isSafeInteger(input.maintenance.revision) || input.maintenance.revision < 0 ||
-      !["OPEN", "DISPATCH_FROZEN"].includes(input.maintenance.mode)) invalidCount += 1;
+      !["OPEN", "DISPATCH_FROZEN", "ACCEPTANCE_ONLY"].includes(input.maintenance.mode)) invalidCount += 1;
   let eventCount = 0;
   let eventSequenceTotal = 0;
   let pendingPublicationCount = 0;

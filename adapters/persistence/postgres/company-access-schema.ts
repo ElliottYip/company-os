@@ -1,5 +1,6 @@
 import { index, integer, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { authUsers } from "./auth-schema.ts";
+import type { InstanceAcceptanceBinding } from "../../../core/instance-maintenance.ts";
 
 export const companies = pgTable("company_os_company", {
   id: text("id").primaryKey(),
@@ -47,6 +48,7 @@ export const instanceMaintenance = pgTable("company_os_instance_maintenance", {
   revision: integer("revision").notNull(),
   operationId: text("operation_id").notNull(),
   authorizationReference: text("authorization_reference").notNull(),
+  acceptanceBinding: jsonb("acceptance_binding").$type<InstanceAcceptanceBinding | null>(),
   changedByUserId: text("changed_by_user_id").notNull()
     .references(() => authUsers.id, { onDelete: "restrict" }),
   changedAt: text("changed_at").notNull(),
@@ -58,6 +60,7 @@ export const instanceMaintenanceEvents = pgTable("company_os_instance_maintenanc
   mode: text("mode").notNull(),
   operationId: text("operation_id").notNull(),
   authorizationReference: text("authorization_reference").notNull(),
+  acceptanceBinding: jsonb("acceptance_binding").$type<InstanceAcceptanceBinding | null>(),
   changedByUserId: text("changed_by_user_id").notNull()
     .references(() => authUsers.id, { onDelete: "restrict" }),
   changedAt: text("changed_at").notNull(),

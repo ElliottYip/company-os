@@ -51,8 +51,9 @@ formally authenticated instance administrator freezes new accountable work
 through a revision-fenced API command with an external authorization reference;
 the current state and every transition are retained in PostgreSQL. Drain proof
 fails while dispatch remains open, and post-restart adoption binds the exact
-frozen revision before an administrator may explicitly reopen it. Existing
-admitted work continues to drain, so the control is not misrepresented as a
+frozen revision before an administrator may open a Work-allowlisted
+`ACCEPTANCE_ONLY` window and then explicitly reopen it under a separate
+authorization. Existing admitted work continues to drain, so the control is not misrepresented as a
 Connector kill switch.
 Staging startup is now bound to a strictly validated, secret-free external
 dependency manifest. The manifest names the dedicated PostgreSQL, product-scoped
