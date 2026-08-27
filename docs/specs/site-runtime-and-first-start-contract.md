@@ -312,9 +312,18 @@ or claims rollback.
 Migration/provision and product start now have separate CLIs, authorization
 references, predecessor-evidence digests, state files, and shared lifecycle
 locking. Migration completion does not start a service. Product start consumes
-that exact migration state, uses the site's declared loopback ports, and emits
+the exact migration state, uses the site's declared loopback ports, and emits
 restart-compatible `STARTED_NOT_ACCEPTED` evidence. Either phase retains
 partial-mutation evidence and never performs automatic rollback or retry.
+
+The acceptance handoff likewise has a separate authorization. It validates a
+coordinate-free customer record against the exact release manifest and product
+start state, then retains only its digest and opaque record ID. Structural
+validation can produce only
+`ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION`; it never changes the
+startup state or claims acceptance. Real OIDC, model, data, Secret lifecycle,
+restart, and human-owner evidence must still be independently verified before
+any future `STAGING_ACCEPTED` transition.
 
 ## Success criteria
 
@@ -331,8 +340,10 @@ partial-mutation evidence and never performs automatic rollback or retry.
    completes bilateral prepare-only before first-start authorization is sought
    again.
 
-## Open decision
+## Resolved deployment assumptions
 
-Approve or revise assumptions 1–5, especially the same-host reference
-dependency topology and the requirement that Hangzhou use independent internal
-HTTPS/OIDC coordinates before public ingress is authorized.
+The user confirmed assumptions 1–5: active and standby sites are completely
+independent; reference dependencies may co-reside only behind separate trust
+and lifecycle boundaries; Hangzhou remains private before ICP and reuses no
+Hong Kong identity coordinate; ZOS backup remains disabled pending separate
+authorization; and RC4 remains immutable while this work qualifies a later RC.

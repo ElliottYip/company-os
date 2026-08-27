@@ -272,6 +272,14 @@ Before any start:
    tools do not delete volumes, attempt a down migration, silently retry, or
    claim automatic rollback. An
    operator must review and use the parallel-database rollback contract;
+
+   After externally owned staging evidence has been assembled and structurally
+   validated, bind its coordinate-free record with the acceptance authorization
+   using `scripts/run-staging-acceptance-phase.mjs --record <absolute-path>`.
+   Run once without `--apply`, then repeat with `--apply`. This writes only
+   `ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION`; it deliberately
+   leaves `acceptanceClaimed=false` until the real OIDC, model, data, Secret,
+   restart, and human-owner evidence is independently verified;
 10. retain `startup-state.json`, doctor output, immutable image attestations and
     externally verified customer-acceptance evidence. Do not move ingress or
     claim production readiness from the startup record alone.

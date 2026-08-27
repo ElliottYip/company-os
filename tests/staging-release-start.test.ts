@@ -16,6 +16,8 @@ import { planStagingMigrationProvision, runStagingMigrationProvision } from
   "../scripts/run-staging-migration-phase.mjs";
 import { planStagingProductStart, runStagingProductStart } from
   "../scripts/run-staging-product-start-phase.mjs";
+import { bindStagingAcceptanceHandoff, planStagingAcceptanceHandoff } from
+  "../scripts/run-staging-acceptance-phase.mjs";
 import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
 
 const image = (name: string, digest = "a") => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
@@ -294,3 +296,40 @@ test("product start failure retains possible service mutation without automatic 
   await assert.rejects(planStagingProductStart({ ...input(value),
     authorizationReference: "change:product-start-test-01" }), /STAGING_START_REVIEW_REQUIRED/);
 });
+
+test("acceptance handoff binds externally owned evidence without claiming customer acceptance",
+  async (context) => {
+    const value = await fixture("company-os-staging-acceptance-handoff-");
+    context.after(() => rm(value.temporary, { recursive: true, force: true }));
+    await completeMigration(value);
+    await runStagingProductStart({ ...input(value), authorizationReference: "change:product-start-test-01" }, {
+      now: () => "2026-08-27T12:05:00.000Z", runCommand: async () => ({ ok: true }),
+      probe: async () => true, wait: async () => undefined,
+    });
+    const manifestRaw = await readFile(join(value.root, "releases", value.releaseId, "release-manifest.json"));
+    const manifestDigest = `sha256:${createHash("sha256").update(manifestRaw).digest("hex")}`;
+    const digest = (character: string) => `sha256:${character.repeat(64)}`;
+    const stagingKeys = ["boundaryPreflight", "browserIdentity", "responsibilityContract", "agentExecution",
+      "modelExecution", "dataBoundary", "secretLifecycle", "idempotency", "restartRecovery"];
+    const record = { schemaVersion: 2, recordId: "acceptance-handoff-test", scope: "CUSTOMER_STAGING",
+      release: { version: release.releaseVersion, sourceRevision: release.sourceRevision, manifestDigest },
+      owners: { acceptance: "human-acceptance", identity: "human-identity", agentRuntime: "human-agent",
+        modelGovernance: "human-model", dataGovernance: "human-data", secretManagement: "human-secret",
+        backupRecovery: "human-backup", incidentResponse: "human-incident" },
+      stagingEvidence: Object.fromEntries(stagingKeys.map((key, index) => [key, digest(String(index + 1))])),
+      productionEvidence: null, approvedAt: "2026-08-27T12:10:00.000Z", approvalEvidenceDigest: digest("f") };
+    const recordFile = join(value.temporary, "acceptance-record.json");
+    await writeFile(recordFile, `${JSON.stringify(record)}\n`, { mode: 0o600 });
+    const acceptanceInput = { rootDirectory: value.root, releaseId: value.releaseId,
+      authorizationReference: "change:acceptance-test-01", recordFile };
+    const plan = await planStagingAcceptanceHandoff(acceptanceInput);
+    assert.equal(plan.status, "PLANNED_NOT_APPLIED"); assert.equal(plan.completion.acceptanceClaimed, false);
+    assert.equal(plan.completion.externalEvidenceRequired, true);
+    const result = await bindStagingAcceptanceHandoff(acceptanceInput,
+      { now: () => "2026-08-27T12:11:00.000Z" });
+    assert.equal(result.status, "ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION");
+    const state = JSON.parse(await readFile(join(value.root, "acceptance-handoff-state.json"), "utf8"));
+    assert.equal(state.acceptanceClaimed, false); assert.equal(state.independentlyVerified, false);
+    assert.equal(state.externalEvidenceRequired, true);
+    assert.doesNotMatch(JSON.stringify(state), /human-identity|browserIdentity|customer\.example/);
+  });
