@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PRIVATE_RUNTIME_READINESS_AUDIT",
+  "recordedAt": "2026-08-27T23:14:42Z",
+  "implementationRevision": "1c32a9241da34cc57f5da3e6cd96b507166fa885",
+  "publicAlpha": {
+    "releaseId": "0.1.0-rc.14-74bd081c75df",
+    "origin": "https://anc.raft.xin",
+    "status": "HEALTHY_DEMO_FIXTURE",
+    "twoVisitorIsolation": "PASSED",
+    "resetAndRecovery": "PASSED",
+    "formalRouteDenial": "PASSED",
+    "thirtyMinuteObservation": "PASSED_ZERO_P0_P1",
+    "externalCallsEnabled": false
+  },
+  "privateAlphaCandidate": {
+    "releaseId": "0.1.0-rc.16-31415279cc5f",
+    "releaseState": "PREPARED_NOT_STARTED",
+    "published": true,
+    "migrationPreflight": "PLANNED_NOT_EXECUTED",
+    "formalRuntimeStarted": false,
+    "publicTrafficChanged": false,
+    "privateCandidateConfigurationPresent": false,
+    "paperclipCredentialFilePresent": false,
+    "runtimeCoordinatesConfigured": false,
+    "secretMaterialPresent": false,
+    "deploymentFactoryPreflight": "PASSED_WITH_EXPLICIT_FAKE_FIXTURE_AND_NO_NETWORK"
+  },
+  "selectedExternalPlatform": {
+    "name": "Paperclip",
+    "pinnedVersion": "v2026.817.0",
+    "executionOwner": "EXTERNAL_PLATFORM",
+    "officialApiContractAudit": "PASSED",
+    "authenticatedSyntheticSandbox": "PASSED_AND_REMOVED",
+    "credentialRevocation": "PASSED",
+    "customerOwnedSandboxAcceptance": "MISSING",
+    "oidcProtectedCompanyOsSynchronization": "MISSING",
+    "usageOrCostCapability": "NOT_CLAIMED_UNSUPPORTED_BY_SELECTED_EVENT_CONTRACT"
+  },
+  "requiredExternalInputs": {
+    "enterpriseOidc": [
+      "issuer",
+      "discovery URL",
+      "product-scoped client ID",
+      "client Secret file",
+      "exact private Alpha HTTPS callback",
+      "authorized Owner identity and company membership"
+    ],
+    "paperclipSandbox": [
+      "customer-owned non-production HTTPS base URL",
+      "Paperclip company UUID",
+      "short-lived revocable board/API key installed as a runtime-owned file",
+      "external Agent UUID to ANC Agent and accountable-human mappings"
+    ],
+    "formalRuntime": [
+      "isolated PostgreSQL 16 migration and runtime coordinates",
+      "session-signing key file",
+      "private Alpha Web/API origins",
+      "site-scoped Agent Node, Data Node and Secret Broker coordinates and bearer-token files"
+    ]
+  },
+  "remainingAcceptance": [
+    "start the isolated private formal candidate without joining the public Demo runtime",
+    "complete enterprise OIDC sign-in and tenant membership authorization",
+    "synchronize real sandbox Agent inventory and at least one Federated Work record through the formal route",
+    "repeat an unchanged synchronization without duplicate Work",
+    "verify bounded fields, source references, accountability mapping and retained health in the Web",
+    "revoke the sandbox key, verify fail-closed behavior without portfolio loss, install a fresh key and recover",
+    "retain sanitized browser, API, audit, health and rollback evidence"
+  ],
+  "decision": "PUBLIC_ALPHA_AVAILABLE_PRIVATE_ALPHA_BLOCKED_ON_EXTERNAL_IDENTITY_RUNTIME_AND_SANDBOX_INPUTS",
+  "notClaimed": [
+    "private Alpha availability",
+    "customer-connected external platform",
+    "production Connector availability",
+    "Paperclip usage or cost synchronization",
+    "Agent execution through ANC"
+  ]
+}
