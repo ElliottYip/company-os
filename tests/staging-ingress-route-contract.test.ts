@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { parseStagingIngressRouteContract, renderStagingIngressRouteGeneration } from
+import { parseStagingIngressRouteContract, renderStagingIngressRouteGeneration,
+  renderStagingIngressRouterEnvironment } from
   "../adapters/config/staging-ingress-route-contract.ts";
 import { parseStagingUpgradeRuntimeContract } from
   "../adapters/config/staging-upgrade-runtime-contract.ts";
@@ -28,6 +29,8 @@ function runtimeValue() { return { schemaVersion: 1, product: "company-os", envi
       referenceDataNode: image("data", "6") } } } as const; }
 function routeValue() { return { schemaVersion: 1, product: "company-os", environment: "STAGING",
   siteId: "company-os-hong-kong", routeReference: "route:company-os-hong-kong-active",
+  observation: { sampleCount: 5, intervalMilliseconds: 1_000,
+    maximumP95Milliseconds: 500, maximumFailures: 0 },
   router: { image: image("ingress-router", "7"), composeProject: "company-os-ingress-router",
     containerId: "company-os-ingress-router", network: "company-os-ingress-router",
     stablePorts: { web: 4700, api: 4701 }, internalPorts: { web: 8080, api: 8081, admin: 2019 },
@@ -45,6 +48,11 @@ test("independent ingress router renders exact active and candidate upstream gen
   assert.match(candidate.caddyfile, /host\.docker\.internal:14601/);
   assert.doesNotMatch(candidate.caddyfile, /https?:\/\//);
   assert.notEqual(active.releaseId, candidate.releaseId);
+  const environment = renderStagingIngressRouterEnvironment(contract, runtime, "/srv/company-os/routes");
+  assert.match(environment, /COMPANY_OS_INGRESS_ROUTER_WEB_PORT=4700/);
+  assert.match(environment, /COMPANY_OS_INGRESS_ROUTER_API_PORT=4701/);
+  assert.match(environment, /COMPANY_OS_INGRESS_ROUTER_ROUTE_DIRECTORY=\/srv\/company-os\/routes/);
+  assert.doesNotMatch(environment, /client.?secret|bearer.?token|database.?url/i);
 });
 
 test("ingress router rejects mutable images, topology collisions, port reuse and route drift", () => {
@@ -58,4 +66,6 @@ test("ingress router rejects mutable images, topology collisions, port reuse and
   ]) { const value: any = structuredClone(routeValue()); mutate(value);
     assert.throws(() => parseStagingIngressRouteContract(value, runtime),
       /STAGING_INGRESS_ROUTE_CONTRACT_INVALID/); }
+  assert.throws(() => renderStagingIngressRouterEnvironment(routeValue(), runtime, "relative"),
+    /STAGING_INGRESS_ROUTE_CONTRACT_INVALID/);
 });

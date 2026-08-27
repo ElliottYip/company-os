@@ -24,6 +24,8 @@ function runtime() { return { schemaVersion: 1, product: "company-os", environme
       referenceDataNode: image("data", "6") } } } as const; }
 function route() { return { schemaVersion: 1, product: "company-os", environment: "STAGING",
   siteId: "company-os-hong-kong", routeReference: "route:company-os-hong-kong-active",
+  observation: { sampleCount: 5, intervalMilliseconds: 1_000,
+    maximumP95Milliseconds: 500, maximumFailures: 0 },
   router: { image: image("router", "7"), composeProject: "company-os-ingress-router",
     containerId: "company-os-ingress-router", network: "company-os-ingress-router",
     stablePorts: { web: 4700, api: 4701 }, internalPorts: { web: 8080, api: 8081, admin: 2019 },

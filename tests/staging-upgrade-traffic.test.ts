@@ -50,11 +50,11 @@ test("traffic phase moves ingress only after exact preparation and observes it",
   const { root, plan } = await prepared(context); const called: string[] = [];
   const result = await runStagingUpgradeTraffic(plan, { now: () => "2026-08-27T12:01:00.000Z",
     executeStep: async (step) => { called.push(step); return { status: "PASS", evidenceDigest: digest("a") }; } });
-  assert.deepEqual(called, ["route-traffic", "observe"]);
+  assert.deepEqual(called, ["route-traffic", "observe", "promote-active"]);
   assert.equal(result.status, "UPGRADE_OBSERVATION_COMPLETE_PENDING_ACCEPTANCE");
   assert.equal(result.trafficMoved, true);
   assert.equal(result.automaticRollbackAttempted, false);
-  assert.equal(JSON.parse(await readFile(join(root, "upgrade-traffic-state.json"), "utf8")).completedEvidence.length, 2);
+  assert.equal(JSON.parse(await readFile(join(root, "upgrade-traffic-state.json"), "utf8")).completedEvidence.length, 3);
 });
 
 test("failed observation retains routed state and requires an explicit decision", async (context) => {
@@ -67,6 +67,17 @@ test("failed observation retains routed state and requires an explicit decision"
   assert.equal(state.trafficMoved, true);
   assert.equal(state.automaticRollbackAttempted, false);
   assert.equal(state.rollback.authorizationReference, "change:rollback");
+});
+
+test("failed active promotion retains routed state and requires explicit recovery", async (context) => {
+  const { root, plan } = await prepared(context);
+  await assert.rejects(runStagingUpgradeTraffic(plan, { executeStep: async (step) => ({
+    status: step === "promote-active" ? "FAIL" : "PASS", evidenceDigest: digest("c") }) }),
+  /STAGING_UPGRADE_TRAFFIC_STEP_FAILED:promote-active/);
+  const state = JSON.parse(await readFile(join(root, "upgrade-traffic-state.json"), "utf8"));
+  assert.equal(state.status, "TRAFFIC_CUTOVER_FAILED_REQUIRES_EXPLICIT_DECISION");
+  assert.equal(state.failedStep, "promote-active"); assert.equal(state.trafficMoved, true);
+  assert.equal(state.completedEvidence.length, 2);
 });
 
 test("traffic planning rejects wrong authority and preparation drift", async (context) => {

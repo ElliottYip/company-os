@@ -5,9 +5,15 @@ import { join } from "node:path";
 
 import { renderStagingUpgradeCandidateEnvironment } from
   "../adapters/config/staging-upgrade-candidate-environment.ts";
+import { renderStagingUpgradeCandidateDependencies } from
+  "../adapters/config/staging-upgrade-candidate-dependencies.ts";
 import { readVerifiedStagingReleaseStore, resolveStagingReleaseRecord } from
   "./read-staging-release-store.mjs";
 import { planStagingUpgradeFromStore } from "./plan-staging-upgrade.ts";
+import { stagingDependencyExpectationFromPublicEnvironment, validateStagingDependencies } from
+  "./validate-staging-dependencies.ts";
+import { parsePublicStagingEnvironment } from
+  "../adapters/config/staging-deployment-doctor.ts";
 
 export async function materializeStagingUpgradeCandidate(input: {
   readonly rootDirectory: string;
@@ -15,6 +21,7 @@ export async function materializeStagingUpgradeCandidate(input: {
   readonly authorizationReference: string;
   readonly runtimeContractFile: string;
   readonly activeEnvironmentFile: string;
+  readonly activeDependencyManifestFile?: string;
   readonly secretProjectionDirectory: string;
   readonly vaultAddress: string;
   readonly now?: string;
@@ -39,19 +46,30 @@ export async function materializeStagingUpgradeCandidate(input: {
     "compose.staging-upgrade-candidate.yml"), "STAGING_UPGRADE_CANDIDATE_EXECUTION_COMPOSE_FILE_UNSAFE");
   const caddyRaw = await publicFile(join(candidate.releaseDirectory,
     "staging-upgrade-candidate.Caddyfile"), "STAGING_UPGRADE_CANDIDATE_CADDY_FILE_UNSAFE");
+  if (!candidate.siteContract) throw new Error("STAGING_UPGRADE_CANDIDATE_SITE_CONTRACT_MISSING");
+  const activeDependenciesRaw = await privateFile(input.activeDependencyManifestFile ??
+    join(input.rootDirectory, "staging-dependencies.json"),
+  "STAGING_UPGRADE_ACTIVE_DEPENDENCY_FILE_UNSAFE");
+  const candidateDependenciesRaw = renderStagingUpgradeCandidateDependencies(
+    JSON.parse(runtimeContractRaw), activeDependenciesRaw);
   const staging = await mkdtemp(join(parent, `.${plan.operationId}.partial-`));
   try {
     const environmentFile = join(staging, "candidate.env");
     const composeFile = join(staging, "compose.staging.yml");
     const executionComposeFile = join(staging, "compose.staging-upgrade-candidate.yml");
     const runtimeFile = join(staging, "runtime-contract.json");
+    const dependencyFile = join(staging, "staging-dependencies.json");
     await Promise.all([
       writeFile(environmentFile, rendered, { flag: "wx", mode: 0o600 }),
       writeFile(composeFile, composeRaw, { flag: "wx", mode: 0o600 }),
       writeFile(executionComposeFile, executionComposeRaw, { flag: "wx", mode: 0o600 }),
       writeFile(join(staging, "Caddyfile"), caddyRaw, { flag: "wx", mode: 0o600 }),
       writeFile(runtimeFile, runtimeContractRaw, { flag: "wx", mode: 0o600 }),
+      writeFile(dependencyFile, candidateDependenciesRaw, { flag: "wx", mode: 0o600 }),
     ]);
+    const dependencyAdmission = await validateStagingDependencies(dependencyFile,
+      stagingDependencyExpectationFromPublicEnvironment(parsePublicStagingEnvironment(rendered),
+        input.rootDirectory));
     const argv = ["docker", "compose", "--env-file", environmentFile, "-f", composeFile,
       "config", "--quiet"];
     const validateCompose = supplied.validateCompose ?? defaultValidateCompose;
@@ -68,7 +86,8 @@ export async function materializeStagingUpgradeCandidate(input: {
       authorizationReference: plan.authorizationReference,
       files: { environmentDigest: sha256(rendered), composeDigest: sha256(composeRaw),
         executionComposeDigest: sha256(executionComposeRaw), caddyDigest: sha256(caddyRaw),
-        runtimeContractDigest: sha256(runtimeContractRaw) },
+        runtimeContractDigest: sha256(runtimeContractRaw),
+        dependencyManifestDigest: dependencyAdmission.manifestDigest },
       composeValidated: true, secretMaterialIncluded: false, runtimeObjectsCreated: false,
       trafficMoved: false, automaticRollbackAttempted: false } as const;
     await writeFile(join(staging, "materialization-evidence.json"),

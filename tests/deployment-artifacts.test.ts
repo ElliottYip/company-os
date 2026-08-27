@@ -573,7 +573,9 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(inspector, /evaluateStagingRuntimeStatus/);
   assert.match(inspector, /resolveStagingReleaseRecord/);
   assert.match(inspector, /candidate/);
-  assert.match(inspector, /com\.docker\.compose\.project=company-os-staging/);
+  assert.match(inspector, /com\.docker\.compose\.project=\$\{composeProject\}/);
+  assert.match(inspector, /activeConfiguration/);
+  assert.match(inspector, /activeRuntime/);
   assert.doesNotMatch(inspector,
     /\.Config\.Env|["']docker["']\s*,\s*["'](?:start|stop|restart|rm|kill)["']/);
   assert.match(runbook, /RUNNING_NOT_ACCEPTED/);

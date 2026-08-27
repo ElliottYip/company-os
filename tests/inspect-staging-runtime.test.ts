@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -40,6 +40,7 @@ async function fixture(prefix: string) {
     "COMPANY_OS_PUBLIC_URL=https://company-os-api.raft.xin",
     "COMPANY_OS_COMPOSE_PROJECT=company-os-staging",
     "COMPANY_OS_PRODUCT_NETWORK=company-os-staging_internal",
+    "COMPANY_OS_REFERENCE_DATA_NODE_PORT=4322",
     "COMPANY_OS_WEB_LOOPBACK_PORT=4600",
     "COMPANY_OS_API_LOOPBACK_PORT=4601",
     "",
@@ -132,6 +133,49 @@ test("a staged candidate does not replace the startup-bound active runtime", asy
   assert.equal(result.candidate?.id, staged.releaseId);
   assert.equal(result.candidate?.sourceRevision, candidate.sourceRevision);
   assert.deepEqual(result.findings, []);
+});
+
+test("promoted startup state selects candidate configuration, project and loopback ports", async (context) => {
+  const value = await fixture("company-os-inspect-promoted-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  const staged = await install(value.root, value.temporary, candidate, "promoted-candidate");
+  const configuration = join(value.root, "upgrade-runtime", "active");
+  await mkdir(configuration, { recursive: true, mode: 0o700 });
+  const environmentFile = join(configuration, "candidate.env");
+  const dependencyFile = join(configuration, "staging-dependencies.json");
+  const environment = (await readFile(join(value.root, "staging.env"), "utf8"))
+    .replace("COMPANY_OS_COMPOSE_PROJECT=company-os-staging", "COMPANY_OS_COMPOSE_PROJECT=company-os-candidate")
+    .replace("COMPANY_OS_PRODUCT_NETWORK=company-os-staging_internal", "COMPANY_OS_PRODUCT_NETWORK=company-os-candidate")
+    .replace("COMPANY_OS_WEB_LOOPBACK_PORT=4600", "COMPANY_OS_WEB_LOOPBACK_PORT=14600")
+    .replace("COMPANY_OS_API_LOOPBACK_PORT=4601", "COMPANY_OS_API_LOOPBACK_PORT=14601");
+  await writeFile(environmentFile, environment, { mode: 0o600 });
+  const dependencies = JSON.parse(await readFile(join(value.root, "staging-dependencies.json"), "utf8"));
+  dependencies.isolation = { ...dependencies.isolation, composeProject: "company-os-candidate",
+    network: "company-os-candidate", webLoopbackPort: 14600, apiLoopbackPort: 14601 };
+  await writeFile(dependencyFile, `${JSON.stringify(dependencies)}\n`, { mode: 0o600 });
+  const admission = await validateStagingDependencies(dependencyFile, {
+    deploymentId: "company-os-staging-raft-xin", webOrigin: "https://company-os.raft.xin",
+    apiOrigin: "https://company-os-api.raft.xin", deploymentRoot: value.root,
+    composeProject: "company-os-candidate", network: "company-os-candidate",
+    webLoopbackPort: 14600, apiLoopbackPort: 14601 });
+  await writeFile(join(value.root, "startup-state.json"), `${JSON.stringify({ schemaVersion: 1,
+    product: "company-os", state: "STARTED_NOT_ACCEPTED", releaseId: staged.releaseId,
+    sourceRevision: candidate.sourceRevision, dependencyManifestDigest: admission.manifestDigest,
+    acceptanceClaimed: false, activeRuntime: { composeProject: "company-os-candidate",
+      productNetwork: "company-os-candidate", ports: { api: 14601, web: 14600, referenceDataNode: 4322 } },
+    activeConfiguration: { environmentFile, dependencyManifestFile: dependencyFile } })}\n`, { mode: 0o600 });
+  const probes: string[] = [];
+  const result = await inspectStagingRuntime({ rootDirectory: value.root }, {
+    listContainers: async () => [
+      { service: "api", image: candidate.images.api, status: "running", health: "healthy" },
+      { service: "web", image: candidate.images.web, status: "running", health: "healthy" },
+      { service: "reference-data-node", image: candidate.images.referenceDataNode,
+        status: "running", health: "healthy" },
+    ], probe: async ({ url }) => { probes.push(url); return true; },
+  });
+  assert.equal(result.release.id, staged.releaseId); assert.equal(result.status, "RUNNING_NOT_ACCEPTED");
+  assert.deepEqual(probes, ["http://127.0.0.1:14601/ready", "http://127.0.0.1:14600/"]);
+  assert.equal(result.candidate, null);
 });
 
 test("runtime inspection reports prepared-not-started without inventing Docker state", async (context) => {

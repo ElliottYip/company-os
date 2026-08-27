@@ -292,6 +292,31 @@ Before any start:
     externally verified customer-acceptance evidence. Do not move ingress or
     claim production readiness from the startup record alone.
 
+For a later N → N+1 traffic phase, deploy the immutable
+`deploy/compose.staging-ingress-router.yml` as a separate Compose project and
+keep the host reverse proxy on its two stable loopback ports. The private route
+contract binds its image, project, network, ports, resource ceiling, and bounded
+observation policy. After preparation has completed and separate traffic
+authority has been issued, the release-bound Ops image runs:
+
+```sh
+npm run release:staging-upgrade-traffic -- --apply \
+  --root /srv/company-os/staging \
+  --candidate-directory /srv/company-os/staging/upgrade-runtime/candidates/REPLACE_OPERATION \
+  --route-directory /srv/company-os/staging/ingress-route \
+  --authorization-file /run/company-os/upgrade-authorization.json \
+  --authorization change:REPLACE_TRAFFIC_AUTHORITY \
+  --runtime-contract /run/company-os/upgrade-runtime.json \
+  --route-contract /run/company-os/ingress-route.json
+```
+
+The command validates the hardened router container, installs one immutable
+route generation, switches the relative `current` symlink, verifies the exact
+candidate release on stable Web and API entry points, observes the declared
+latency/failure bounds, rechecks responsibility control totals, and only then
+records the candidate as active pending acceptance. It never automatically
+rolls back.
+
 After preparation or any start attempt, inspect the retained state and actual
 Docker runtime through the same exact Ops image:
 

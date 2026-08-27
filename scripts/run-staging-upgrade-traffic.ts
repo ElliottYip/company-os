@@ -42,7 +42,7 @@ export function createStagingUpgradeTrafficPlan(authorizationValue: unknown,
     active: preparation.active, candidate: preparation.candidate, cutover: preparation.cutover,
     preparationStateDigest: sha256(preparationStateRaw),
     authorizationReference: authorization.authorization.trafficCutover,
-    steps: ["route-traffic", "observe"] as const,
+    steps: ["route-traffic", "observe", "promote-active"] as const,
     rollback: { authorizationReference: authorization.authorization.rollback,
       automatic: false, strategy: preparation.rollback?.strategy },
     automaticRollbackAttempted: false } as const;
@@ -50,7 +50,7 @@ export function createStagingUpgradeTrafficPlan(authorizationValue: unknown,
 
 export async function runStagingUpgradeTraffic(planValue: ReturnType<typeof createStagingUpgradeTrafficPlan> &
   { readonly rootDirectory: string }, supplied: {
-    readonly executeStep: (step: "route-traffic" | "observe") => Promise<{
+    readonly executeStep: (step: "route-traffic" | "observe" | "promote-active") => Promise<{
       readonly status: "PASS" | "FAIL"; readonly evidenceDigest: string }>;
     readonly now?: () => string;
   }) {
@@ -65,7 +65,7 @@ export async function runStagingUpgradeTraffic(planValue: ReturnType<typeof crea
     throw error;
   }
   const startedAt = now(); const completedEvidence: Array<{ step: string; evidenceDigest: string }> = [];
-  let attemptedStep: "route-traffic" | "observe" = "route-traffic";
+  let attemptedStep: "route-traffic" | "observe" | "promote-active" = "route-traffic";
   try {
     for (const step of plan.steps) {
       attemptedStep = step;
@@ -99,7 +99,7 @@ export async function runStagingUpgradeTraffic(planValue: ReturnType<typeof crea
 async function validatePlan<T extends { readonly rootDirectory: string }>(value: T) {
   if (!value || value.schemaVersion !== 1 || value.product !== "company-os" ||
       value.status !== "PLANNED_NOT_APPLIED" || value.phase !== "TRAFFIC_CUTOVER" ||
-      JSON.stringify(value.steps) !== JSON.stringify(["route-traffic", "observe"]) ||
+      JSON.stringify(value.steps) !== JSON.stringify(["route-traffic", "observe", "promote-active"]) ||
       value.automaticRollbackAttempted !== false || !DIGEST.test(value.preparationStateDigest)) {
     throw new Error("STAGING_UPGRADE_TRAFFIC_PLAN_INVALID");
   }
@@ -170,10 +170,10 @@ function isCode(error: unknown, code: string): boolean {
   return error instanceof Error && "code" in error && error.code === code;
 }
 class TrafficStepError extends Error {
-  readonly step: "route-traffic" | "observe";
-  constructor(step: "route-traffic" | "observe") { super(step); this.step = step; }
+  readonly step: "route-traffic" | "observe" | "promote-active";
+  constructor(step: "route-traffic" | "observe" | "promote-active") { super(step); this.step = step; }
 }
 class TrafficEvidenceError extends Error {
-  readonly step: "route-traffic" | "observe";
-  constructor(step: "route-traffic" | "observe") { super(step); this.step = step; }
+  readonly step: "route-traffic" | "observe" | "promote-active";
+  constructor(step: "route-traffic" | "observe" | "promote-active") { super(step); this.step = step; }
 }

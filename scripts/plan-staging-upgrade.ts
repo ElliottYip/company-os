@@ -81,7 +81,7 @@ export function createStagingUpgradePreparationPlan(
     throw new Error("STAGING_UPGRADE_CUTOVER_PLAN_MISMATCH");
   }
   const steps = cutover.orderedSteps.map(({ id }) => id)
-    .filter((id) => id !== "route-traffic" && id !== "observe");
+    .filter((id) => id !== "route-traffic" && id !== "observe" && id !== "promote-active");
   return {
     schemaVersion: 1,
     product: "company-os",

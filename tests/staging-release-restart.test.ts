@@ -187,3 +187,41 @@ test("active release remains restartable after a newer candidate is staged", asy
   assert.match(plan.steps.find(({ id }) => id === "RESTART_API")?.argv.join(" ") ?? "",
     new RegExp(`releases/${value.releaseId}/compose\\.staging\\.yml`));
 });
+
+test("restart follows the promoted candidate environment and loopback topology", async (context) => {
+  const value = await fixture("company-os-restart-promoted-candidate-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  const promotedManifest = { ...release, releaseVersion: "0.2.0-rc.1", sourceRevision: "9".repeat(40),
+    images: { ...release.images, api: image("api", "8"), web: image("web", "7") } };
+  const manifestPath = join(value.temporary, "promoted.json"); const bundle = join(value.temporary, "promoted-bundle");
+  await writeFile(manifestPath, `${JSON.stringify(promotedManifest)}\n`);
+  await createStagingReleaseBundle({ root: new URL("../", import.meta.url).pathname,
+    releaseManifestPath: manifestPath, outputDirectory: bundle });
+  const installed = await installStagingReleaseBundle({ rootDirectory: value.root, bundleDirectory: bundle });
+  const environmentFile = join(value.root, "upgrade-runtime", "candidate.env");
+  await mkdir(join(value.root, "upgrade-runtime"), { mode: 0o700 });
+  const environment = (await readFile(value.environmentFile, "utf8"))
+    .replace(`COMPANY_OS_API_IMAGE=${release.images.api}`, `COMPANY_OS_API_IMAGE=${promotedManifest.images.api}`)
+    .replace(`COMPANY_OS_WEB_IMAGE=${release.images.web}`, `COMPANY_OS_WEB_IMAGE=${promotedManifest.images.web}`)
+    .replace("COMPANY_OS_OIDC_CLIENT_ID=company-os-staging",
+      "COMPANY_OS_COMPOSE_PROJECT=company-os-candidate\nCOMPANY_OS_PRODUCT_NETWORK=company-os-candidate\n" +
+      "COMPANY_OS_API_LOOPBACK_PORT=14601\nCOMPANY_OS_WEB_LOOPBACK_PORT=14600\n" +
+      "COMPANY_OS_REFERENCE_DATA_NODE_PORT=14322\nCOMPANY_OS_OIDC_CLIENT_ID=company-os-staging");
+  await writeFile(environmentFile, environment, { mode: 0o600 });
+  await writeFile(join(value.root, "startup-state.json"), `${JSON.stringify({ schemaVersion: 1,
+    product: "company-os", state: "STARTED_NOT_ACCEPTED", releaseId: installed.releaseId,
+    releaseVersion: promotedManifest.releaseVersion, sourceRevision: promotedManifest.sourceRevision,
+    dependencyManifestDigest, acceptanceClaimed: false,
+    activeRuntime: { composeProject: "company-os-candidate", productNetwork: "company-os-candidate",
+      ports: { api: 14601, web: 14600, referenceDataNode: 14322 } },
+    activeConfiguration: { environmentFile, dependencyManifestFile: join(value.root, "unused.json") } })}\n`,
+  { mode: 0o600 });
+  const plan = await planStagingRestart({ rootDirectory: value.root, releaseId: installed.releaseId,
+    operationId: "restart-staging-promoted-01", authorizationReference: "change:restart-promoted" }, {
+    inspectRuntime: async () => ({ status: "RUNNING_NOT_ACCEPTED" }),
+  });
+  const commands = plan.steps.filter(({ kind }) => kind === "COMMAND").map(({ argv }) => argv.join(" "));
+  assert.ok(commands.every((command) => command.includes(environmentFile)));
+  assert.match(plan.steps.find(({ id }) => id === "API_READY")?.url ?? "", /:14601\/ready$/);
+  assert.match(plan.steps.find(({ id }) => id === "WEB_READY")?.url ?? "", /:14600\/$/);
+});

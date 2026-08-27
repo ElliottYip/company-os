@@ -1,3 +1,6 @@
+import { homedir } from "node:os";
+import { isAbsolute, resolve } from "node:path";
+
 import type { StagingUpgradeRuntimeContract } from "./staging-upgrade-runtime-contract.ts";
 
 const PORTABLE = /^[a-z0-9][a-z0-9-]{2,95}$/;
@@ -10,6 +13,12 @@ export interface StagingIngressRouteContract {
   readonly environment: "STAGING";
   readonly siteId: string;
   readonly routeReference: string;
+  readonly observation: {
+    readonly sampleCount: number;
+    readonly intervalMilliseconds: number;
+    readonly maximumP95Milliseconds: number;
+    readonly maximumFailures: number;
+  };
   readonly router: {
     readonly image: string;
     readonly composeProject: string;
@@ -29,11 +38,17 @@ export interface StagingIngressRouteContract {
 export function parseStagingIngressRouteContract(value: unknown,
   runtime: StagingUpgradeRuntimeContract): StagingIngressRouteContract {
   const root = exact(value, ["schemaVersion", "product", "environment", "siteId",
-    "routeReference", "router"]);
+    "routeReference", "observation", "router"]);
   if (root.schemaVersion !== 1 || root.product !== "company-os" || root.environment !== "STAGING" ||
       root.siteId !== runtime.siteId || !text(root.siteId, PORTABLE) ||
       root.routeReference !== runtime.candidate.ingressRouteReference ||
       !text(root.routeReference, REFERENCE)) invalid();
+  const observation = exact(root.observation, ["sampleCount", "intervalMilliseconds",
+    "maximumP95Milliseconds", "maximumFailures"]);
+  if (!integer(observation.sampleCount, 3, 120) ||
+      !integer(observation.intervalMilliseconds, 0, 60_000) ||
+      !integer(observation.maximumP95Milliseconds, 1, 30_000) ||
+      !integer(observation.maximumFailures, 0, Number(observation.sampleCount) * 2 - 1)) invalid();
   const router = exact(root.router, ["image", "composeProject", "containerId", "network",
     "stablePorts", "internalPorts", "hostGatewayAlias", "resourceBudget"]);
   if (!text(router.image, IMAGE) || !text(router.composeProject, PORTABLE) ||
@@ -68,6 +83,27 @@ export function renderStagingIngressRouteGeneration(contract: StagingIngressRout
       `:${web} {\n\treverse_proxy ${host}:${selected.ports.web}\n}\n\n` +
       `:${api} {\n\treverse_proxy ${host}:${selected.ports.api}\n}\n`,
   } as const;
+}
+
+export function renderStagingIngressRouterEnvironment(contract: StagingIngressRouteContract,
+  runtime: StagingUpgradeRuntimeContract, routeDirectoryValue: string) {
+  const parsed = parseStagingIngressRouteContract(contract, runtime);
+  if (!isAbsolute(routeDirectoryValue)) invalid();
+  const routeDirectory = resolve(routeDirectoryValue);
+  if (routeDirectory === "/" || routeDirectory === resolve(homedir())) invalid();
+  const values = {
+    COMPANY_OS_INGRESS_ROUTER_IMAGE: parsed.router.image,
+    COMPANY_OS_INGRESS_ROUTER_PROJECT: parsed.router.composeProject,
+    COMPANY_OS_INGRESS_ROUTER_CONTAINER: parsed.router.containerId,
+    COMPANY_OS_INGRESS_ROUTER_NETWORK: parsed.router.network,
+    COMPANY_OS_INGRESS_ROUTER_ROUTE_DIRECTORY: routeDirectory,
+    COMPANY_OS_INGRESS_ROUTER_WEB_PORT: String(parsed.router.stablePorts.web),
+    COMPANY_OS_INGRESS_ROUTER_API_PORT: String(parsed.router.stablePorts.api),
+    COMPANY_OS_INGRESS_ROUTER_MEMORY_BYTES: String(parsed.router.resourceBudget.maximumMemoryBytes),
+    COMPANY_OS_INGRESS_ROUTER_CPU: String(parsed.router.resourceBudget.maximumCpu),
+    COMPANY_OS_INGRESS_ROUTER_PIDS: String(parsed.router.resourceBudget.maximumPids),
+  };
+  return `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join("\n")}\n`;
 }
 
 function ports(value: unknown, keys: readonly string[]) {

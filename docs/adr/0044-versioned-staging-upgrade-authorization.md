@@ -173,7 +173,14 @@ material, or Secrets.
 
 The traffic executor consumes the exact digest of the completed, unrouted
 preparation state under the separate traffic authorization. It permits only
-`route-traffic` followed by `observe`. A route or observation failure retains
+`route-traffic`, `observe`, then `promote-active`. Promotion first retains the
+previous private startup state, then atomically replaces the canonical startup
+record with the candidate release, candidate Compose/network/loopback topology,
+and candidate-specific environment/dependency-manifest paths. The canonical
+record remains `STARTED_NOT_ACCEPTED`; traffic health never invents customer
+acceptance. Runtime inspection and authorized restart follow those bound paths
+instead of falling back to the first release's project or ports. A route,
+observation, or promotion failure retains
 whether traffic may have moved and stops in
 `TRAFFIC_CUTOVER_FAILED_REQUIRES_EXPLICIT_DECISION`; it never invokes rollback
 or claims acceptance. A successful observation ends only at

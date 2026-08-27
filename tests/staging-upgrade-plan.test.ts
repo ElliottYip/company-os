@@ -212,6 +212,10 @@ test("store-bound upgrade inspection derives active and candidate authority with
     .replace(/^COMPANY_OS_WEB_LOOPBACK_PORT=.*$/m, "COMPANY_OS_WEB_LOOPBACK_PORT=4600")
     .replace(/^COMPANY_OS_REFERENCE_DATA_NODE_PORT=.*$/m, "COMPANY_OS_REFERENCE_DATA_NODE_PORT=4322");
   await writeFile(activeEnvironmentFile, activeEnvironment, { mode: 0o600 });
+  await writeFile(join(root, "staging-dependencies.json"), stable({ ...site.dependencyManifest,
+    isolation: { ...site.dependencyManifest.isolation,
+      composeProject: "company-os-test-site-active",
+      network: "company-os-test-site-active-product" } }), { mode: 0o600 });
   const candidateSecrets = join(temporary, "candidate-secrets");
   await mkdir(candidateSecrets, { mode: 0o700 });
   let composeArguments: readonly string[] = [];

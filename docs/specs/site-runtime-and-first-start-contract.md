@@ -17,6 +17,15 @@ contains no public hostname, identity coordinate, database coordinate, or
 Secret. The host reverse proxy can therefore remain bound to stable loopback
 ports while Company OS atomically changes only the validated inner route.
 
+An upgrade materializes a candidate-specific dependency manifest by preserving
+the site's ownership, evidence, identity, data, backup, and external dependency
+contracts while replacing only the isolated Compose project, product network,
+and loopback ports. After bounded observation passes, the candidate's private
+environment and dependency-manifest paths are recorded in `startup-state.json`
+with the candidate runtime topology. Inspect and restart resolve this canonical
+binding, while legacy first-start records continue to use the root files and
+original ports.
+
 Status: **APPROVED — assumptions 1–5 confirmed by the product owner on
 2026-08-27; implementation proceeds test-first**.
 
