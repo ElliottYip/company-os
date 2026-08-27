@@ -41,8 +41,11 @@ const validateManifest = (value, side) => {
   text(manifest.releaseVersion, version, `${side}_RELEASE_VERSION_INVALID`);
   text(manifest.sourceRevision, revision, `${side}_SOURCE_REVISION_INVALID`);
   const images = object(manifest.images, `${side}_IMAGES_INVALID`);
-  for (const image of ["api", "web", "ops", "codexAgentNode", "vaultSecretBroker", "referenceDataNode"]) {
+  for (const image of ["api", "web", "ops", "codexAgentNode", "vaultSecretBroker"]) {
     text(images[image], digestImage, `${side}_${image.toUpperCase()}_IMAGE_INVALID`);
+  }
+  if (side === "CURRENT" || images.referenceDataNode !== undefined) {
+    text(images.referenceDataNode, digestImage, `${side}_REFERENCEDATANODE_IMAGE_INVALID`);
   }
   const runtime = object(manifest.runtime, `${side}_RUNTIME_INVALID`);
   text(runtime.node, version, `${side}_NODE_RUNTIME_INVALID`);
@@ -121,6 +124,15 @@ export function createReleaseCutoverPlan(previousValue, currentValue) {
       migrationAdded,
       publicContracts: "UNCHANGED",
       previousBinaryOnCurrentSchema: "NOT_ASSUMED",
+      referenceDataNode: {
+        previous: previous.images.referenceDataNode ?? null,
+        current: current.images.referenceDataNode,
+        change: previous.images.referenceDataNode === undefined
+          ? "ADDED_FIXTURE_ONLY"
+          : previous.images.referenceDataNode === current.images.referenceDataNode
+            ? "UNCHANGED"
+            : "REPLACED",
+      },
     },
     orderedSteps: [
       { id: "freeze-dispatch", evidenceId: `${evidencePrefix}/01-freeze-dispatch`, outcome: "NEW_DISPATCH_DISABLED" },
@@ -142,6 +154,9 @@ export function createReleaseCutoverPlan(previousValue, currentValue) {
     rollback: {
       automaticDownMigration: false,
       reusePreviousBinaryOnCurrentDatabase: false,
+      previousReferenceDataNode: previous.images.referenceDataNode === undefined
+        ? "ABSENT_BY_RELEASE_CONTRACT"
+        : "RESTORE_PREVIOUS_DIGEST",
       strategy: "RESTORE_PAIRED_BACKUP_TO_EMPTY_PARALLEL_DATABASE",
       orderedSteps: [
         "close-current-ingress",

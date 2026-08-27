@@ -59,6 +59,40 @@ test("release cutover plan allows an application-only release without inventing 
   assert.equal(plan.orderedSteps.some((step) => step.id === "forward-migrate"), false);
 });
 
+test("release cutover plan admits a legacy five-image release without inventing a previous Data Node", () => {
+  const previous = manifest();
+  delete (previous.images as Record<string, unknown>).referenceDataNode;
+  const current = manifest({
+    releaseVersion: "1.0.1",
+    sourceRevision: "b".repeat(40),
+    images: { api: image("api", "d"), web: image("web", "e"), ops: image("ops", "f"),
+      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6"),
+      referenceDataNode: image("reference-data-node", "4") },
+  });
+
+  const plan = createReleaseCutoverPlan(previous, current);
+
+  assert.deepEqual(plan.compatibility.referenceDataNode, {
+    previous: null,
+    current: image("reference-data-node", "4"),
+    change: "ADDED_FIXTURE_ONLY",
+  });
+  assert.equal(plan.rollback.previousReferenceDataNode, "ABSENT_BY_RELEASE_CONTRACT");
+  assert.equal("referenceDataNode" in plan.releases.previous.images, false);
+  assert.equal(plan.orderedSteps.some(({ id }) => id === "start-candidate-data-node"), true);
+});
+
+test("release cutover plan still requires the current release to contain the Data Node image", () => {
+  const current = manifest({
+    releaseVersion: "1.0.1",
+    sourceRevision: "b".repeat(40),
+    images: { api: image("api", "d"), web: image("web", "e"), ops: image("ops", "f"),
+      codexAgentNode: image("codex-agent-node", "8"), vaultSecretBroker: image("vault-secret-broker", "6") },
+  });
+  assert.throws(() => createReleaseCutoverPlan(manifest(), current),
+    /CURRENT_REFERENCEDATANODE_IMAGE_INVALID/);
+});
+
 test("release cutover plan rejects a relabelled API image", () => {
   assert.throws(() => createReleaseCutoverPlan(manifest(), manifest({
     releaseVersion: "1.0.1",

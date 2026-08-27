@@ -233,6 +233,12 @@ plan with required evidence IDs and always says `PLANNED_NOT_EXECUTED`; it does
 not claim that the operator has frozen dispatch, taken a backup, moved ingress
 or completed the observation window. See ADR 0025.
 
+A five-image manifest from before RC4 may omit `referenceDataNode` only when it
+is the previous release. The plan preserves that historical topology as
+`ABSENT_BY_RELEASE_CONTRACT`, requires a digest-pinned Data Node on the current
+side and adds an explicit candidate Data Node evidence step. Missing the image
+from the current release remains a hard error.
+
 Application rollback to an older image is allowed only when that release is
 declared compatible with the migrated schema. Otherwise keep the new binary and
 restore the paired database backup into a parallel target before a controlled
