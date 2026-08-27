@@ -262,16 +262,23 @@ make the minimal implementation pass and run the complete gate.
 
 - [x] Define and test the exact site-runtime and dependency-secret metadata
   schemas.
-- [ ] Render site-specific public env, dependency manifest, and two isolated
+- [x] Render site-specific public env, dependency manifest, and two isolated
   Compose projects from that contract.
 - [x] Remove hard-coded Hong Kong expectations from doctor/start planning and
   make backup gating capability-aware.
-- [ ] Add the versioned reference dependency Compose and resource admission.
+- [x] Add the versioned reference dependency Compose and resource admission.
 - [x] Make canonical release-store adoption idempotent and evidence-bound.
 - [ ] Split first start into authorization-bound dependency, migration,
   product-start, and acceptance phases.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
+
+The dependency initialization planner is now canonical-store-bound,
+authorization-bound, non-mutating by default, and explicitly non-executable
+until the target Secret validation, private Dex rendering, OCI image-user
+resolution, projection materialization, and persistent Vault bootstrap executor
+are implemented and admitted. The existing aggregate product-start executor is
+therefore not yet evidence for the unchecked first-start task.
 
 ## Success criteria
 
