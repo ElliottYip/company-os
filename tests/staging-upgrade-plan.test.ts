@@ -75,8 +75,8 @@ function runtimeContract(activeId: string, candidateId: string,
       parallelDatabaseReference: "database:upgrade-rc5-empty-target",
       secretProjectionReference: "secret-projection:upgrade-rc5",
       ingressRouteReference: `route:${siteId}-active`,
-      resourceBudget: { maximumMemoryBytes: 2_147_483_648, maximumCpu: 2,
-        maximumPids: 512, requiredHostHeadroomBytes: 536_870_912 }, images } };
+      resourceBudget: { maximumMemoryBytes: 2_684_354_560, maximumCpu: 2.5,
+        maximumPids: 640, requiredHostHeadroomBytes: 1_073_741_824 }, images } };
 }
 
 test("upgrade preparation plan is non-mutating and separates traffic authority", () => {
@@ -217,6 +217,7 @@ test("store-bound upgrade inspection derives active and candidate authority with
   const materialized = await materializeStagingUpgradeCandidate({ rootDirectory: root,
     authorizationFile, runtimeContractFile, activeEnvironmentFile,
     secretProjectionDirectory: candidateSecrets,
+    vaultAddress: "https://vault.company-os.example",
     authorizationReference: "change:upgrade-preparation-01", now: "2026-08-27T12:00:00.000Z" }, {
     validateCompose: async (argv) => { composeArguments = argv; return true; },
   });
@@ -229,6 +230,7 @@ test("store-bound upgrade inspection derives active and candidate authority with
   await assert.rejects(materializeStagingUpgradeCandidate({ rootDirectory: root,
     authorizationFile, runtimeContractFile, activeEnvironmentFile,
     secretProjectionDirectory: candidateSecrets,
+    vaultAddress: "https://vault.company-os.example",
     authorizationReference: "change:upgrade-preparation-01", now: "2026-08-27T12:00:00.000Z" }, {
     validateCompose: async () => true,
   }), /STAGING_UPGRADE_CANDIDATE_ALREADY_MATERIALIZED/);

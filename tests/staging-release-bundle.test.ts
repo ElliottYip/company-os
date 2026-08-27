@@ -21,7 +21,7 @@ test("staging release bundle is digest-bound, secret-free, verifiable and refuse
   const created = await createStagingReleaseBundle({ root: new URL("../", import.meta.url).pathname,
     releaseManifestPath: releasePath, outputDirectory: output });
   assert.equal(created.secretMaterialIncluded, false);
-  assert.equal(created.files.length, 11);
+  assert.equal(created.files.length, 13);
   assert.deepEqual(await verifyStagingReleaseBundle(output), { schemaVersion: 1, status: "VERIFIED",
     releaseVersion: "0.1.0-rc.1", sourceRevision: "b".repeat(40),
     bundleManifestDigest: created.bundleManifestDigest });

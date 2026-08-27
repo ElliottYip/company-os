@@ -24,8 +24,8 @@ function contract() {
       parallelDatabaseReference: "database:upgrade-rc5-empty-target",
       secretProjectionReference: "secret-projection:upgrade-rc5",
       ingressRouteReference: "route:company-os-hong-kong-active",
-      resourceBudget: { maximumMemoryBytes: 2_147_483_648, maximumCpu: 2,
-        maximumPids: 512, requiredHostHeadroomBytes: 536_870_912 },
+      resourceBudget: { maximumMemoryBytes: 2_684_354_560, maximumCpu: 2.5,
+        maximumPids: 640, requiredHostHeadroomBytes: 1_073_741_824 },
       images: { api: image("api", "1"), web: image("web", "2"), ops: image("ops", "3"),
         codexAgentNode: image("agent", "4"), vaultSecretBroker: image("broker", "5"),
         referenceDataNode: image("data", "6") } } };
@@ -72,7 +72,8 @@ function activeEnvironment() {
 
 test("candidate environment preserves site identity while replacing every parallel runtime coordinate", () => {
   const rendered = renderStagingUpgradeCandidateEnvironment(contract(), activeEnvironment(),
-    "/etc/company-os/upgrade-rc5-secrets");
+    "/etc/company-os/upgrade-rc5-secrets", "/srv/company-os/upgrade-rc5-public",
+    "https://vault.company-os.internal");
   const value = parsePublicStagingEnvironment(rendered);
   assert.equal(value.COMPANY_OS_COMPOSE_PROJECT, "company-os-hong-kong-candidate-rc5");
   assert.equal(value.COMPANY_OS_PRODUCT_NETWORK, "company-os-hong-kong-candidate-rc5");
@@ -89,22 +90,32 @@ test("candidate environment preserves site identity while replacing every parall
   assert.equal(value.COMPANY_OS_PUBLIC_INGRESS, "DISABLED_PRE_CUTOVER");
   assert.equal(value.COMPANY_OS_OFF_SITE_BACKUP, "DISABLED_PENDING_AUTHORIZATION");
   assert.equal(value.COMPANY_OS_SECRET_DIRECTORY, "/etc/company-os/upgrade-rc5-secrets");
+  assert.equal(value.COMPANY_OS_CANDIDATE_EXECUTION_COMPOSE_PROJECT,
+    "company-os-hong-kong-candidate-rc5-execution");
+  assert.equal(value.COMPANY_OS_CANDIDATE_VAULT_ADDRESS, "https://vault.company-os.internal");
   assert.doesNotMatch(rendered, /client.?secret|bearer.?token|database.?url|password/i);
 });
 
 test("candidate environment rejects active topology drift and insufficient runtime budget", () => {
   assert.throws(() => renderStagingUpgradeCandidateEnvironment(contract(),
     activeEnvironment().replace("COMPANY_OS_API_LOOPBACK_PORT=4601", "COMPANY_OS_API_LOOPBACK_PORT=9999"),
-  "/etc/company-os/upgrade-rc5-secrets"), /STAGING_UPGRADE_ACTIVE_ENVIRONMENT_MISMATCH/);
+  "/etc/company-os/upgrade-rc5-secrets", "/srv/company-os/upgrade-rc5-public",
+  "https://vault.company-os.internal"), /STAGING_UPGRADE_ACTIVE_ENVIRONMENT_MISMATCH/);
   const low = contract(); low.candidate.resourceBudget.maximumMemoryBytes = 800_000_000;
   assert.throws(() => renderStagingUpgradeCandidateEnvironment(low, activeEnvironment(),
-    "/etc/company-os/upgrade-rc5-secrets"), /STAGING_UPGRADE_CANDIDATE_RESOURCE_BUDGET_INSUFFICIENT/);
+    "/etc/company-os/upgrade-rc5-secrets", "/srv/company-os/upgrade-rc5-public",
+    "https://vault.company-os.internal"), /STAGING_UPGRADE_RUNTIME_CONTRACT_INVALID/);
 });
 
 test("candidate environment rejects unsafe Secret projection paths and private input", () => {
-  assert.throws(() => renderStagingUpgradeCandidateEnvironment(contract(), activeEnvironment(), "relative"),
+  assert.throws(() => renderStagingUpgradeCandidateEnvironment(contract(), activeEnvironment(), "relative",
+    "/srv/company-os/upgrade-rc5-public", "https://vault.company-os.internal"),
     /STAGING_UPGRADE_SECRET_PROJECTION_PATH_INVALID/);
   assert.throws(() => renderStagingUpgradeCandidateEnvironment(contract(),
     `${activeEnvironment()}COMPANY_OS_DATABASE_URL=postgres://private\n`,
-  "/etc/company-os/upgrade-rc5-secrets"), /STAGING_PUBLIC_ENV_SECRET_KEY_FORBIDDEN/);
+  "/etc/company-os/upgrade-rc5-secrets", "/srv/company-os/upgrade-rc5-public",
+  "https://vault.company-os.internal"), /STAGING_PUBLIC_ENV_SECRET_KEY_FORBIDDEN/);
+  assert.throws(() => renderStagingUpgradeCandidateEnvironment(contract(), activeEnvironment(),
+    "/etc/company-os/upgrade-rc5-secrets", "/srv/company-os/upgrade-rc5-public", "http://vault"),
+  /STAGING_UPGRADE_CANDIDATE_VAULT_ADDRESS_INVALID/);
 });

@@ -53,6 +53,16 @@ until the traffic phase. Candidate smoke and state comparison use candidate
 loopback ports or a one-shot verifier on the candidate network, never the
 customer hostname.
 
+The candidate resource contract covers the complete parallel product and
+execution plane, not only API and Web. The current templates require at least
+2.5 GiB declared candidate memory, 2.5 CPU, 640 PIDs, and 1 GiB host headroom.
+Target preflight may require more to preserve the active site and host reserve;
+it must never treat swap as admitted capacity. The candidate Broker, Agent
+Node, fixture Data Node, and TLS gateway have distinct state volumes, mount one
+candidate Secret projection read-only, publish no host ports, and join only the
+candidate product network. Vault is an explicitly supplied same-site HTTPS
+dependency; no credential is placed in the runtime contract or public env.
+
 Planning is non-mutating. The preparation executor may freeze dispatch,
 reconcile work, create an encrypted backup, rehearse restore into an empty
 parallel database, migrate that candidate database, start candidate services

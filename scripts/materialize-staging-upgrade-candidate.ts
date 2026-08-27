@@ -16,6 +16,7 @@ export async function materializeStagingUpgradeCandidate(input: {
   readonly runtimeContractFile: string;
   readonly activeEnvironmentFile: string;
   readonly secretProjectionDirectory: string;
+  readonly vaultAddress: string;
   readonly now?: string;
 }, supplied: { readonly validateCompose?: (argv: readonly string[]) => Promise<boolean> } = {}) {
   const plan = await planStagingUpgradeFromStore(input);
@@ -23,8 +24,6 @@ export async function materializeStagingUpgradeCandidate(input: {
     privateFile(input.activeEnvironmentFile, "STAGING_UPGRADE_ACTIVE_ENVIRONMENT_FILE_UNSAFE"),
     privateFile(input.runtimeContractFile, "STAGING_UPGRADE_RUNTIME_CONTRACT_FILE_UNSAFE"),
   ]);
-  const rendered = renderStagingUpgradeCandidateEnvironment(JSON.parse(runtimeContractRaw),
-    activeEnvironmentRaw, input.secretProjectionDirectory);
   const store = await readVerifiedStagingReleaseStore(input.rootDirectory);
   const candidate = resolveStagingReleaseRecord(store, plan.candidate.releaseId,
     plan.candidate.sourceRevision);
@@ -34,26 +33,41 @@ export async function materializeStagingUpgradeCandidate(input: {
   await secureDirectories(input.rootDirectory, [join(input.rootDirectory, "upgrade-runtime"), parent]);
   const finalDirectory = join(parent, plan.operationId);
   await rejectExisting(finalDirectory);
+  const rendered = renderStagingUpgradeCandidateEnvironment(JSON.parse(runtimeContractRaw),
+    activeEnvironmentRaw, input.secretProjectionDirectory, finalDirectory, input.vaultAddress);
+  const executionComposeRaw = await publicFile(join(candidate.releaseDirectory,
+    "compose.staging-upgrade-candidate.yml"), "STAGING_UPGRADE_CANDIDATE_EXECUTION_COMPOSE_FILE_UNSAFE");
+  const caddyRaw = await publicFile(join(candidate.releaseDirectory,
+    "staging-upgrade-candidate.Caddyfile"), "STAGING_UPGRADE_CANDIDATE_CADDY_FILE_UNSAFE");
   const staging = await mkdtemp(join(parent, `.${plan.operationId}.partial-`));
   try {
     const environmentFile = join(staging, "candidate.env");
     const composeFile = join(staging, "compose.staging.yml");
+    const executionComposeFile = join(staging, "compose.staging-upgrade-candidate.yml");
     const runtimeFile = join(staging, "runtime-contract.json");
     await Promise.all([
       writeFile(environmentFile, rendered, { flag: "wx", mode: 0o600 }),
       writeFile(composeFile, composeRaw, { flag: "wx", mode: 0o600 }),
+      writeFile(executionComposeFile, executionComposeRaw, { flag: "wx", mode: 0o600 }),
+      writeFile(join(staging, "Caddyfile"), caddyRaw, { flag: "wx", mode: 0o600 }),
       writeFile(runtimeFile, runtimeContractRaw, { flag: "wx", mode: 0o600 }),
     ]);
     const argv = ["docker", "compose", "--env-file", environmentFile, "-f", composeFile,
       "config", "--quiet"];
     const validateCompose = supplied.validateCompose ?? defaultValidateCompose;
     if (!await validateCompose(argv)) throw new Error("STAGING_UPGRADE_CANDIDATE_COMPOSE_INVALID");
+    const executionArgv = ["docker", "compose", "--env-file", environmentFile, "-f",
+      executionComposeFile, "config", "--quiet"];
+    if (!await validateCompose(executionArgv)) {
+      throw new Error("STAGING_UPGRADE_CANDIDATE_EXECUTION_COMPOSE_INVALID");
+    }
     const evidence = { schemaVersion: 1, product: "company-os",
       status: "CANDIDATE_CONFIGURATION_MATERIALIZED_NOT_STARTED",
       operationId: plan.operationId, siteId: plan.siteId, active: plan.active,
       candidate: plan.candidate, cutover: plan.cutover,
       authorizationReference: plan.authorizationReference,
       files: { environmentDigest: sha256(rendered), composeDigest: sha256(composeRaw),
+        executionComposeDigest: sha256(executionComposeRaw), caddyDigest: sha256(caddyRaw),
         runtimeContractDigest: sha256(runtimeContractRaw) },
       composeValidated: true, secretMaterialIncluded: false, runtimeObjectsCreated: false,
       trafficMoved: false, automaticRollbackAttempted: false } as const;

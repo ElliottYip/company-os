@@ -5,6 +5,10 @@ const REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:-]{2,255}$/;
 const IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
 const IMAGE_KEYS = ["api", "web", "ops", "codexAgentNode", "vaultSecretBroker", "referenceDataNode"] as const;
 const SERVICE_KEYS = ["api", "web", "secretBroker", "agentNode", "dataNode"] as const;
+const MINIMUM_CANDIDATE_MEMORY_BYTES = 2_684_354_560;
+const MINIMUM_CANDIDATE_CPU = 2.5;
+const MINIMUM_CANDIDATE_PIDS = 640;
+const MINIMUM_HOST_HEADROOM_BYTES = 1_073_741_824;
 
 export interface StagingUpgradeRuntimeContract {
   readonly schemaVersion: 1;
@@ -56,11 +60,11 @@ export function parseStagingUpgradeRuntimeContract(value: unknown): StagingUpgra
   }
   const resourceBudget = exact(candidate.extra.resourceBudget,
     ["maximumMemoryBytes", "maximumCpu", "maximumPids", "requiredHostHeadroomBytes"]);
-  if (!safeInteger(resourceBudget.maximumMemoryBytes, 64 * 1024 * 1024, 68_719_476_736) ||
+  if (!safeInteger(resourceBudget.maximumMemoryBytes, MINIMUM_CANDIDATE_MEMORY_BYTES, 68_719_476_736) ||
       typeof resourceBudget.maximumCpu !== "number" || !Number.isFinite(resourceBudget.maximumCpu) ||
-      resourceBudget.maximumCpu < 0.1 || resourceBudget.maximumCpu > 64 ||
-      !safeInteger(resourceBudget.maximumPids, 16, 100_000) ||
-      !safeInteger(resourceBudget.requiredHostHeadroomBytes, 256 * 1024 * 1024, 68_719_476_736) ||
+      resourceBudget.maximumCpu < MINIMUM_CANDIDATE_CPU || resourceBudget.maximumCpu > 64 ||
+      !safeInteger(resourceBudget.maximumPids, MINIMUM_CANDIDATE_PIDS, 100_000) ||
+      !safeInteger(resourceBudget.requiredHostHeadroomBytes, MINIMUM_HOST_HEADROOM_BYTES, 68_719_476_736) ||
       Number(resourceBudget.maximumMemoryBytes) + Number(resourceBudget.requiredHostHeadroomBytes) >
         Number.MAX_SAFE_INTEGER) invalid();
   const images = exact(candidate.extra.images, IMAGE_KEYS);

@@ -36,9 +36,10 @@ test("portable staging archive contains only the verified handoff allowlist", as
   assert.equal(created.status, "PORTABLE_ARCHIVE_CREATED");
   assert.deepEqual(await listPortableStagingArchive(archive), [
     "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md", "bundle-manifest.json",
-    "compose.staging-dependencies.yml", "compose.staging.yml", "customer-boundary-acceptance.md",
+    "compose.staging-dependencies.yml", "compose.staging-upgrade-candidate.yml",
+    "compose.staging.yml", "customer-boundary-acceptance.md",
     "formal-identity-runbook.md", "release-manifest.json", "staging-dependencies.Caddyfile",
-    "staging-raft-xin.md", "staging.env.example",
+    "staging-raft-xin.md", "staging-upgrade-candidate.Caddyfile", "staging.env.example",
   ]);
 
   const extracted = join(temporary, "extracted");

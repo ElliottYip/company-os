@@ -300,6 +300,13 @@ traffic move or automatic rollback. Concrete target adapters for dispatch
 freeze, paired backup/restore, candidate Compose rendering, migration, smoke,
 and state comparison remain required before the executor is operational.
 
+The candidate execution-plane Compose and TLS gateway are now immutable
+release-bundle inputs. They run a candidate Vault Broker, Codex Agent Node,
+fixture-only Data Node, and TLS gateway without host-published ports, using
+candidate-only volumes and the candidate product network. Their materialized
+configuration is validated alongside the candidate product Compose; creation,
+health verification, and evidence adapters remain pending.
+
 The dependency initialization planner is canonical-store-bound,
 authorization-bound, and non-mutating by default. Runtime owners are resolved
 only from image-bound account-database inspection evidence. Images that run as
