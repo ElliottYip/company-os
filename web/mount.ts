@@ -788,7 +788,7 @@ function frontDoor(): string {
   return `<main class="company-front-door" aria-labelledby="front-door-title">
     <header><span class="front-door-mark" aria-hidden="true">C</span><strong>Company OS</strong></header>
     <section class="front-door-content">
-      <div class="front-door-copy"><p class="family-kicker">COMPANY OS · ANC</p><h1 id="front-door-title">${copy("One control plane for every enterprise agent.", "一个控制平面，统一管理企业所有 Agent。")}</h1><p>${copy("Company OS delivers ANC: the management and governance layer for Agent identity, access, cost, risk, and human accountability across every runtime.", "Company OS 通过 ANC 统一管理不同 Runtime 中 Agent 的身份、权限、成本、风险与真人责任。")}</p></div>
+      <div class="front-door-copy"><p class="family-kicker">COMPANY OS · AGENT NETWORK CONTROL (ANC)</p><h1 id="front-door-title">${copy("Enterprise management and governance for every AI agent.", "统一管理与治理企业中的每一个 AI Agent。")}</h1><p>${copy("Company OS provides ANC, a unified control layer for Agent identity, ownership, access, cost, risk, and lifecycle across teams, runtimes, and external platforms.", "Company OS 提供 ANC，作为统一控制层，跨团队、Runtime 与外部平台管理 Agent 的身份、归属、权限、成本、风险和生命周期。")}</p></div>
       <div class="front-door-actions">
         <button class="front-door-primary" type="button" data-enter-local><span>${copy("Set up Company OS", "配置 Company OS")}</span><small>${copy("Create your ANC control plane", "建立企业 ANC 控制平面")}</small></button>
         <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Sign in to Company OS", "登录 Company OS")}</span><small>${copy("Open your organization's ANC workspace", "进入企业 ANC 工作区")}</small></button>

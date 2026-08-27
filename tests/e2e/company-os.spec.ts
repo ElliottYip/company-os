@@ -27,7 +27,8 @@ test("runtime API configuration drives the public Demo client across origins", a
 
 test("first run creates a local company draft while formal capabilities remain gated", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "One control plane for every enterprise agent." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Enterprise management and governance for every AI agent." })).toBeVisible();
+  await expect(page.getByText("Company OS provides ANC, a unified control layer for Agent identity, ownership, access, cost, risk, and lifecycle across teams, runtimes, and external platforms.")).toBeVisible();
   await expect(page.getByRole("button", { name: /Set up Company OS/ })).toBeVisible();
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeHidden();
 
