@@ -55,6 +55,55 @@ export interface SiteRuntimeManifest {
   };
 }
 
+export type SiteFirstStartPhaseId =
+  | "VALIDATE_SITE_CONTRACT" | "VALIDATE_DEPENDENCY_SECRET_METADATA"
+  | "INITIALIZE_DEPENDENCIES" | "VERIFY_DEPENDENCY_TLS_AND_HEALTH" | "DOCTOR_PRODUCT"
+  | "MIGRATE_DATABASE" | "PROVISION_RUNTIME_ROLE" | "START_REFERENCE_DATA_NODE"
+  | "START_API" | "START_WEB" | "RUN_ACCEPTANCE";
+
+export type SiteAuthorizationKind = "DEPENDENCY_INITIALIZATION" | "MIGRATION_PROVISION" |
+  "PRODUCT_START" | "ACCEPTANCE";
+
+export interface SiteFirstStartPlan {
+  readonly schemaVersion: 1;
+  readonly siteId: string;
+  readonly releaseId: string;
+  readonly status: "BLOCKED_AUTHORIZATION" | "READY_TO_APPLY_BY_PHASE";
+  readonly missingAuthorizationKinds: readonly SiteAuthorizationKind[];
+  readonly phases: readonly {
+    readonly id: SiteFirstStartPhaseId;
+    readonly mutating: boolean;
+    readonly authorizationKind: SiteAuthorizationKind | null;
+    readonly authorizationReference: string | null;
+  }[];
+}
+
+export function planSiteFirstStart(manifest: SiteRuntimeManifest): SiteFirstStartPlan {
+  const authorization = manifest.authorization;
+  const definitions: readonly [SiteFirstStartPhaseId, boolean, SiteAuthorizationKind | null,
+    string | null][] = [
+    ["VALIDATE_SITE_CONTRACT", false, null, null],
+    ["VALIDATE_DEPENDENCY_SECRET_METADATA", false, null, null],
+    ["INITIALIZE_DEPENDENCIES", true, "DEPENDENCY_INITIALIZATION", authorization.dependencyInitialization],
+    ["VERIFY_DEPENDENCY_TLS_AND_HEALTH", false, null, null],
+    ["DOCTOR_PRODUCT", false, null, null],
+    ["MIGRATE_DATABASE", true, "MIGRATION_PROVISION", authorization.migrationProvision],
+    ["PROVISION_RUNTIME_ROLE", true, "MIGRATION_PROVISION", authorization.migrationProvision],
+    ["START_REFERENCE_DATA_NODE", true, "PRODUCT_START", authorization.productStart],
+    ["START_API", true, "PRODUCT_START", authorization.productStart],
+    ["START_WEB", true, "PRODUCT_START", authorization.productStart],
+    ["RUN_ACCEPTANCE", true, "ACCEPTANCE", authorization.acceptance],
+  ];
+  const phases = definitions.map(([id, mutating, authorizationKind, authorizationReference]) =>
+    ({ id, mutating, authorizationKind, authorizationReference }));
+  const missingAuthorizationKinds = [...new Set(phases
+    .filter(({ mutating, authorizationReference }) => mutating && authorizationReference === null)
+    .map(({ authorizationKind }) => authorizationKind as SiteAuthorizationKind))];
+  return { schemaVersion: 1, siteId: manifest.site.id, releaseId: manifest.product.releaseId,
+    status: missingAuthorizationKinds.length ? "BLOCKED_AUTHORIZATION" : "READY_TO_APPLY_BY_PHASE",
+    missingAuthorizationKinds, phases };
+}
+
 interface ProductImages {
   readonly api: string;
   readonly web: string;

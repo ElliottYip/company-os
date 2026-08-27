@@ -5,11 +5,13 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { createStagingReleaseBundle } from "../scripts/create-staging-release-bundle.mjs";
-import { installStagingReleaseBundle } from "../scripts/install-staging-release-bundle.mjs";
+import { adoptStagingSiteContract, installStagingReleaseBundle } from
+  "../scripts/install-staging-release-bundle.mjs";
 import {
   planStagingReleaseStart,
   startStagingRelease,
 } from "../scripts/start-staging-release.mjs";
+import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
 
 const image = (name: string, digest = "a") => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
@@ -28,59 +30,25 @@ async function fixture(prefix: string) {
   const installed = await installStagingReleaseBundle({ bundleDirectory: source, rootDirectory: root });
   const environmentFile = join(root, "staging.env"); const secretDirectory = join(root, "synthetic-secrets");
   await import("node:fs/promises").then(({ mkdir }) => mkdir(secretDirectory, { mode: 0o700 }));
-  await writeFile(environmentFile, [
-    `COMPANY_OS_API_IMAGE=${release.images.api}`,
-    `COMPANY_OS_WEB_IMAGE=${release.images.web}`,
-    `COMPANY_OS_OPS_IMAGE=${release.images.ops}`,
-    `COMPANY_OS_REFERENCE_DATA_NODE_IMAGE=${release.images.referenceDataNode}`,
-    `COMPANY_OS_SECRET_DIRECTORY=${secretDirectory}`,
-    "COMPANY_OS_INSTANCE_ID=company-os-staging-raft-xin",
-    "COMPANY_OS_WEB_ORIGINS=https://company-os.raft.xin",
-    "COMPANY_OS_PUBLIC_URL=https://company-os-api.raft.xin",
-    "COMPANY_OS_COMPOSE_PROJECT=company-os-staging",
-    "COMPANY_OS_PRODUCT_NETWORK=company-os-staging_internal",
-    "COMPANY_OS_WEB_LOOPBACK_PORT=4600",
-    "COMPANY_OS_API_LOOPBACK_PORT=4601",
-    "COMPANY_OS_OIDC_CLIENT_ID=company-os-staging",
-    "COMPANY_OS_OIDC_ISSUER=https://identity.example",
-    "COMPANY_OS_OIDC_DISCOVERY_URL=https://identity.example/.well-known/openid-configuration",
-    "COMPANY_OS_HTTP_AGENT_NODE_BASE_URL=https://agent.example",
-    "COMPANY_OS_HTTP_DATA_NODE_BASE_URL=https://data.example",
-    "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL=https://broker.example",
-    "",
-  ].join("\n"), { mode: 0o600 });
+  const artifacts = siteRuntimeFixture({ root, releaseId: installed.releaseId, images: release.images });
+  const publicEnvironment = artifacts.publicEnvironment.replace(
+    `COMPANY_OS_SECRET_DIRECTORY=${artifacts.productSecretDirectory}`,
+    `COMPANY_OS_SECRET_DIRECTORY=${secretDirectory}`);
+  await writeFile(environmentFile, publicEnvironment, { mode: 0o600 });
   const dependencyManifestFile = join(root, "staging-dependencies.json");
-  await writeFile(dependencyManifestFile, `${JSON.stringify(dependencyManifest(root))}\n`, { mode: 0o600 });
-  return { temporary, root, environmentFile, dependencyManifestFile, secretDirectory,
+  const siteRuntimeFile = join(root, "site-runtime.input.json");
+  const dependencySecretMetadataFile = join(root, "dependency-secrets.input.json");
+  await writeFile(dependencyManifestFile, `${JSON.stringify(artifacts.dependencyManifest)}\n`, { mode: 0o600 });
+  await writeFile(siteRuntimeFile, `${JSON.stringify(artifacts.site)}\n`, { mode: 0o600 });
+  await writeFile(dependencySecretMetadataFile,
+    `${JSON.stringify(artifacts.dependencySecretMetadata)}\n`, { mode: 0o600 });
+  const adopted = await adoptStagingSiteContract({ rootDirectory: root, releaseId: installed.releaseId,
+    productSecretDirectory: secretDirectory, siteRuntimeFile, publicEnvironmentFile: environmentFile,
+    dependencyManifestFile, dependencySecretMetadataFile });
+  return { temporary, root,
+    environmentFile: join(adopted.contractDirectory, "staging.env"),
+    dependencyManifestFile: join(adopted.contractDirectory, "staging-dependencies.json"), secretDirectory,
     releaseId: installed.releaseId };
-}
-
-function dependencyManifest(root: string) {
-  return {
-    schemaVersion: 1, environment: "STAGING", deploymentId: "company-os-staging-raft-xin",
-    ingress: { webOrigin: "https://company-os.raft.xin", apiOrigin: "https://company-os-api.raft.xin",
-      ownerReference: "team:infrastructure", dnsEvidenceReference: "evidence:dns-01",
-      tlsEvidenceReference: "evidence:tls-01" },
-    isolation: { deploymentRoot: root, composeProject: "company-os-staging",
-      network: "company-os-staging_internal", webLoopbackPort: 4600, apiLoopbackPort: 4601 },
-    postgres: { majorVersion: 16, ownership: "DEDICATED", tlsMode: "VERIFY_FULL",
-      coordinateSource: "SECRET_FILES", ownerReference: "team:database",
-      evidenceReference: "evidence:postgres-01" },
-    oidc: { issuer: "https://identity.staging.example",
-      discoveryUrl: "https://identity.staging.example/.well-known/openid-configuration",
-      clientId: "company-os-staging", ownership: "PRODUCT_SCOPED_CLIENT", pkce: "S256",
-      ownerReference: "team:identity", evidenceReference: "evidence:oidc-01" },
-    vaultBroker: { baseUrl: "https://vault.staging.example", ownership: "DEDICATED",
-      ownerReference: "team:secrets", evidenceReference: "evidence:vault-01" },
-    agentNode: { baseUrl: "https://agent.staging.example", ownership: "DEDICATED",
-      ownerReference: "team:agent", evidenceReference: "evidence:agent-01" },
-    dataNode: { baseUrl: "https://data.staging.example", ownership: "DEDICATED",
-      ownerReference: "team:data", evidenceReference: "evidence:data-01" },
-    backup: { provider: "ZOS_S3_COMPATIBLE", endpoint: "https://hangzhou7.zos.ctyun.cn",
-      region: "us-east-1", bucket: "company-os-staging-backup", ownership: "DEDICATED",
-      versioning: true, objectLock: "DISABLED", credentialSource: "VAULT_RENDERED_FILES",
-      ownerReference: "team:backup", evidenceReference: "evidence:backup-01" },
-  };
 }
 
 const input = (value: Awaited<ReturnType<typeof fixture>>) => ({
@@ -158,10 +126,10 @@ test("staging start refuses concurrent writers and release-image drift", async (
   await rm(join(value.root, ".staging-lifecycle.lock"));
   const source = await readFile(value.environmentFile, "utf8");
   await writeFile(value.environmentFile, source.replace(release.images.api, image("different", "9")));
-  await assert.rejects(planStagingReleaseStart(input(value)), /STAGING_START_RELEASE_IMAGE_MISMATCH/);
+  await assert.rejects(planStagingReleaseStart(input(value)), /STAGING_START_SITE_CONTRACT_CHANGED/);
   await writeFile(value.environmentFile, source.replace(
     `COMPANY_OS_SECRET_DIRECTORY=${value.secretDirectory}`,
     `COMPANY_OS_SECRET_DIRECTORY=${join(value.root, "different-secrets")}`,
   ));
-  await assert.rejects(planStagingReleaseStart(input(value)), /STAGING_START_SECRET_DIRECTORY_MISMATCH/);
+  await assert.rejects(planStagingReleaseStart(input(value)), /STAGING_START_SITE_CONTRACT_CHANGED/);
 });

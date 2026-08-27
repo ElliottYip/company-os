@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { lstat, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { isAbsolute, join, resolve } from "node:path";
@@ -20,6 +21,12 @@ export async function planStagingReleaseStart(input) {
   const paths = await validatedPaths(input);
   const prepared = await preparedRelease(paths.rootDirectory, input.releaseId);
   await verifyStagingReleaseBundle(prepared.releaseDirectory);
+  if (resolve(paths.environmentFile) !== join(prepared.siteContract.contractDirectory, "staging.env") ||
+      resolve(paths.dependencyManifestFile) !==
+        join(prepared.siteContract.contractDirectory, "staging-dependencies.json")) {
+    throw new Error("STAGING_START_NON_CANONICAL_SITE_ARTIFACT");
+  }
+  await verifyCanonicalSiteContract(prepared.siteContract);
   const environment = await publicEnvironment(paths.environmentFile);
   if (resolve(environment.COMPANY_OS_SECRET_DIRECTORY ?? "") !== paths.secretDirectory) {
     throw new Error("STAGING_START_SECRET_DIRECTORY_MISMATCH");
@@ -163,13 +170,34 @@ async function preparedRelease(rootDirectory, releaseId) {
     throw new Error("STAGING_START_RELEASE_STORE_UNSAFE");
   }
   const store = JSON.parse(await readFile(storePath, "utf8"));
-  if (store?.schemaVersion !== 1 || store.product !== "company-os" || store.state !== "PREPARED_NOT_STARTED" ||
-      store.prepared?.releaseId !== releaseId || !Array.isArray(store.previous)) {
+  if (store?.schemaVersion !== 2 || store.product !== "company-os" || store.state !== "PREPARED_NOT_STARTED" ||
+      store.prepared?.releaseId !== releaseId || !Array.isArray(store.previous) ||
+      store.prepared.siteContract?.releaseId !== releaseId) {
     throw new Error("STAGING_START_PREPARED_RELEASE_MISMATCH");
   }
   const expected = join(rootDirectory, "releases", releaseId);
   if (resolve(store.prepared.releaseDirectory ?? "") !== expected) throw new Error("STAGING_START_RELEASE_PATH_INVALID");
   return store.prepared;
+}
+
+async function verifyCanonicalSiteContract(contract) {
+  const names = ["site-runtime.json", "staging.env", "staging-dependencies.json", "dependency-secrets.json"];
+  if (contract?.schemaVersion !== 1 || typeof contract.siteId !== "string" ||
+      !isAbsolute(contract.contractDirectory ?? "") ||
+      JSON.stringify(Object.keys(contract.digests ?? {}).sort()) !== JSON.stringify([...names].sort())) {
+    throw new Error("STAGING_START_SITE_CONTRACT_INVALID");
+  }
+  for (const name of names) {
+    const path = join(contract.contractDirectory, name); const metadata = await lstat(path);
+    if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.nlink !== 1 ||
+        (metadata.mode & 0o077) !== 0 || sha256(await readFile(path)) !== contract.digests[name]) {
+      throw new Error("STAGING_START_SITE_CONTRACT_CHANGED");
+    }
+  }
+}
+
+function sha256(value) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
 }
 
 async function publicEnvironment(path) {

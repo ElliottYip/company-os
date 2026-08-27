@@ -6,9 +6,11 @@ import test from "node:test";
 
 import { createStagingReleaseBundle } from "../scripts/create-staging-release-bundle.mjs";
 import {
+  adoptStagingSiteContract,
   installStagingReleaseBundle,
   planStagingReleaseInstall,
 } from "../scripts/install-staging-release-bundle.mjs";
+import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
 
 const image = (name: string) => `ghcr.io/example/${name}@sha256:${"a".repeat(64)}`;
 const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.0-rc.1",
@@ -111,4 +113,44 @@ test("staging release install refuses an unmarked or redirected release store", 
   await writeFile(storePath, `${JSON.stringify(store)}\n`);
   await assert.rejects(planStagingReleaseInstall({ bundleDirectory: value.source,
     rootDirectory: value.root }), /STAGING_RELEASE_STORE_INVALID/);
+});
+
+test("canonical store adopts one digest-bound site contract idempotently", async (context) => {
+  const value = await fixture("company-os-staging-install-site-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  const installed = await installStagingReleaseBundle({ bundleDirectory: value.source,
+    rootDirectory: value.root });
+  const artifacts = siteRuntimeFixture({ root: value.root, releaseId: installed.releaseId,
+    images: release.images });
+  const paths = {
+    siteRuntimeFile: join(value.temporary, "site-runtime.json"),
+    publicEnvironmentFile: join(value.temporary, "staging.env"),
+    dependencyManifestFile: join(value.temporary, "staging-dependencies.json"),
+    dependencySecretMetadataFile: join(value.temporary, "dependency-secrets.json"),
+  };
+  await Promise.all([
+    writeFile(paths.siteRuntimeFile, `${JSON.stringify(artifacts.site)}\n`, { mode: 0o600 }),
+    writeFile(paths.publicEnvironmentFile, artifacts.publicEnvironment, { mode: 0o600 }),
+    writeFile(paths.dependencyManifestFile, `${JSON.stringify(artifacts.dependencyManifest)}\n`, { mode: 0o600 }),
+    writeFile(paths.dependencySecretMetadataFile,
+      `${JSON.stringify(artifacts.dependencySecretMetadata)}\n`, { mode: 0o600 }),
+  ]);
+  const adopted = await adoptStagingSiteContract({ rootDirectory: value.root,
+    releaseId: installed.releaseId, productSecretDirectory: artifacts.productSecretDirectory, ...paths });
+  assert.equal(adopted.status, "SITE_CONTRACT_ADOPTED_NOT_STARTED");
+  assert.equal(adopted.reused, false);
+  assert.equal(Object.keys(adopted.digests).length, 4);
+  assert.doesNotMatch(JSON.stringify(adopted), /client.?secret|bearer.?token|database.?url/i);
+  const store = JSON.parse(await readFile(join(value.root, "release-store.json"), "utf8"));
+  assert.equal(store.schemaVersion, 2);
+  assert.equal(store.prepared.siteContract.siteId, "company-os-test-site");
+  assert.equal(store.prepared.siteContract.releaseId, installed.releaseId);
+  const reused = await adoptStagingSiteContract({ rootDirectory: value.root,
+    releaseId: installed.releaseId, productSecretDirectory: artifacts.productSecretDirectory, ...paths });
+  assert.equal(reused.reused, true);
+
+  await writeFile(paths.publicEnvironmentFile, `${artifacts.publicEnvironment}EXTRA_PUBLIC_VALUE=changed\n`);
+  await assert.rejects(adoptStagingSiteContract({ rootDirectory: value.root,
+    releaseId: installed.releaseId, productSecretDirectory: artifacts.productSecretDirectory, ...paths }),
+  /STAGING_SITE_PUBLIC_ENVIRONMENT_MISMATCH/);
 });

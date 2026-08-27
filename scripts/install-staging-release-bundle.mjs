@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { constants } from "node:fs";
 import {
   chmod,
@@ -15,6 +16,11 @@ import { homedir } from "node:os";
 import { basename, isAbsolute, join, resolve } from "node:path";
 
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
+import { parsePublicStagingEnvironment } from "../adapters/config/staging-deployment-doctor.ts";
+import { parseDependencySecretMetadata, parseSiteRuntimeManifest,
+  renderSitePublicEnvironment } from "../adapters/config/site-runtime-contract.ts";
+import { stagingDependencyExpectationFromPublicEnvironment,
+  validateStagingDependencies } from "./validate-staging-dependencies.ts";
 
 const STORE_MARKER = "company-os staging release store v1\n";
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
@@ -107,6 +113,90 @@ export async function installStagingReleaseBundle(input) {
   return { ...plan, status: "INSTALLED_NOT_STARTED", reused };
 }
 
+export async function adoptStagingSiteContract(input) {
+  const rootDirectory = safeAbsolutePath(input.rootDirectory, "STAGING_RELEASE_ROOT_ABSOLUTE_PATH_REQUIRED");
+  const store = await readStore(rootDirectory);
+  if (!store || store.prepared.releaseId !== input.releaseId) {
+    throw new Error("STAGING_SITE_PREPARED_RELEASE_MISMATCH");
+  }
+  const sources = {
+    "site-runtime.json": safeAbsolutePath(input.siteRuntimeFile, "STAGING_SITE_RUNTIME_PATH_REQUIRED"),
+    "staging.env": safeAbsolutePath(input.publicEnvironmentFile, "STAGING_SITE_ENV_PATH_REQUIRED"),
+    "staging-dependencies.json": safeAbsolutePath(input.dependencyManifestFile,
+      "STAGING_SITE_DEPENDENCY_PATH_REQUIRED"),
+    "dependency-secrets.json": safeAbsolutePath(input.dependencySecretMetadataFile,
+      "STAGING_SITE_SECRET_METADATA_PATH_REQUIRED"),
+  };
+  const productSecretDirectory = safeAbsolutePath(input.productSecretDirectory,
+    "STAGING_SITE_PRODUCT_SECRET_DIRECTORY_REQUIRED");
+  const contents = Object.fromEntries(await Promise.all(Object.entries(sources).map(async ([name, path]) =>
+    [name, await readPublicArtifact(path)])));
+  const manifest = parseSiteRuntimeManifest(JSON.parse(contents["site-runtime.json"].toString("utf8")));
+  if (manifest.site.deploymentRoot !== rootDirectory || manifest.product.releaseId !== input.releaseId) {
+    throw new Error("STAGING_SITE_RELEASE_BINDING_MISMATCH");
+  }
+  const release = JSON.parse(await readFile(join(store.prepared.releaseDirectory, "release-manifest.json"), "utf8"));
+  if (JSON.stringify(manifest.product.images) !== JSON.stringify(release.images)) {
+    throw new Error("STAGING_SITE_RELEASE_IMAGE_MISMATCH");
+  }
+  const publicSource = contents["staging.env"].toString("utf8");
+  const environment = parsePublicStagingEnvironment(publicSource);
+  if (publicSource !== renderSitePublicEnvironment(manifest, productSecretDirectory)) {
+    throw new Error("STAGING_SITE_PUBLIC_ENVIRONMENT_MISMATCH");
+  }
+  const dependencyAdmission = await validateStagingDependencies(sources["staging-dependencies.json"],
+    stagingDependencyExpectationFromPublicEnvironment(environment, rootDirectory));
+  parseDependencySecretMetadata(JSON.parse(contents["dependency-secrets.json"].toString("utf8")),
+    manifest.site.id);
+
+  const digests = Object.fromEntries(Object.entries(contents).map(([name, value]) => [name, sha256(value)]));
+  const contractDirectory = join(rootDirectory, "site-contracts", manifest.site.id, input.releaseId);
+  let reused = false;
+  try {
+    const metadata = await lstat(contractDirectory);
+    if (!metadata.isDirectory() || metadata.isSymbolicLink()) throw new Error("STAGING_SITE_TARGET_UNSAFE");
+    for (const [name, digest] of Object.entries(digests)) {
+      if (sha256(await readPublicArtifact(join(contractDirectory, name))) !== digest) {
+        throw new Error("STAGING_SITE_TARGET_COLLISION");
+      }
+    }
+    reused = true;
+  } catch (error) {
+    if (!isCode(error, "ENOENT")) throw error;
+    const parent = join(rootDirectory, "site-contracts", manifest.site.id);
+    await mkdir(parent, { recursive: true, mode: 0o750 });
+    const staging = await mkdtemp(join(parent, `.${input.releaseId}.partial-`));
+    try {
+      await chmod(staging, 0o750);
+      for (const [name, source] of Object.entries(sources)) {
+        await copyFile(source, join(staging, name), constants.COPYFILE_EXCL);
+        await chmod(join(staging, name), 0o600);
+      }
+      await rename(staging, contractDirectory);
+    } finally { await rm(staging, { recursive: true, force: true }); }
+  }
+  const siteContract = { schemaVersion: 1, siteId: manifest.site.id, releaseId: input.releaseId,
+    contractDirectory, digests, dependencyManifestDigest: dependencyAdmission.manifestDigest };
+  const existingContract = store.prepared.siteContract;
+  if (existingContract && JSON.stringify(existingContract) !== JSON.stringify(siteContract)) {
+    throw new Error("STAGING_SITE_STORE_COLLISION");
+  }
+  await writeStoreAtomic(rootDirectory, { ...store, schemaVersion: 2,
+    prepared: { ...store.prepared, siteContract } });
+  const evidenceDirectory = join(rootDirectory, "evidence", "site-adoptions");
+  await mkdir(evidenceDirectory, { recursive: true, mode: 0o750 });
+  const evidencePath = join(evidenceDirectory, `${manifest.site.id}-${input.releaseId}.json`);
+  const evidence = `${JSON.stringify({ schemaVersion: 1, product: "company-os",
+    status: "SITE_CONTRACT_ADOPTED_NOT_STARTED", ...siteContract }, null, 2)}\n`;
+  try { await writeFile(evidencePath, evidence, { flag: "wx", mode: 0o600 }); }
+  catch (error) {
+    if (!isCode(error, "EEXIST") || await readFile(evidencePath, "utf8") !== evidence) throw error;
+  }
+  return { schemaVersion: 1, status: "SITE_CONTRACT_ADOPTED_NOT_STARTED",
+    siteId: manifest.site.id, releaseId: input.releaseId, contractDirectory, digests,
+    dependencyManifestDigest: dependencyAdmission.manifestDigest, reused };
+}
+
 function releaseRecord(plan) {
   return { releaseId: plan.releaseId, releaseVersion: plan.releaseVersion,
     sourceRevision: plan.sourceRevision, bundleManifestDigest: plan.bundleManifestDigest,
@@ -161,8 +251,10 @@ async function readStore(rootDirectory) {
     if (!valueStat.isFile() || valueStat.isSymbolicLink() || valueStat.nlink !== 1 ||
         (valueStat.mode & 0o077) !== 0) throw new Error("STAGING_RELEASE_STORE_UNSAFE");
     const value = JSON.parse(await readFile(path, "utf8"));
-    if (value?.schemaVersion !== 1 || value.product !== "company-os" ||
+    if (![1, 2].includes(value?.schemaVersion) || value.product !== "company-os" ||
         value.state !== "PREPARED_NOT_STARTED" || !validRecord(value.prepared, rootDirectory) ||
+        (value.schemaVersion === 2 && !validSiteContract(value.prepared.siteContract,
+          value.prepared, rootDirectory)) ||
         !Array.isArray(value.previous) || !value.previous.every((item) => validRecord(item, rootDirectory))) {
       throw new Error("STAGING_RELEASE_STORE_INVALID");
     }
@@ -171,6 +263,29 @@ async function readStore(rootDirectory) {
     if (isCode(error, "ENOENT")) return null;
     throw error;
   }
+}
+
+function validSiteContract(value, release, rootDirectory) {
+  const names = ["dependency-secrets.json", "site-runtime.json", "staging-dependencies.json", "staging.env"];
+  return value?.schemaVersion === 1 && typeof value.siteId === "string" &&
+    value.releaseId === release.releaseId && /^sha256:[a-f0-9]{64}$/.test(value.dependencyManifestDigest ?? "") &&
+    typeof value.contractDirectory === "string" && isAbsolute(value.contractDirectory) &&
+    resolve(value.contractDirectory) === join(rootDirectory, "site-contracts", value.siteId, value.releaseId) &&
+    JSON.stringify(Object.keys(value.digests ?? {}).sort()) === JSON.stringify(names) &&
+    names.every((name) => /^sha256:[a-f0-9]{64}$/.test(value.digests[name] ?? ""));
+}
+
+async function readPublicArtifact(path) {
+  const metadata = await lstat(path);
+  if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.nlink !== 1 ||
+      metadata.size < 2 || metadata.size > 256 * 1024 || (metadata.mode & 0o022) !== 0) {
+    throw new Error("STAGING_SITE_ARTIFACT_UNSAFE");
+  }
+  return readFile(path);
+}
+
+function sha256(value) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
 }
 
 async function writeStoreAtomic(rootDirectory, value) {

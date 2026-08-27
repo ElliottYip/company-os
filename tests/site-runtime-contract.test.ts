@@ -6,6 +6,7 @@ import {
   assertIndependentSites,
   parseDependencySecretMetadata,
   parseSiteRuntimeManifest,
+  planSiteFirstStart,
   renderSitePublicEnvironment,
 } from "../adapters/config/site-runtime-contract.ts";
 
@@ -238,4 +239,38 @@ test("dependency Secret metadata requires every purpose but never accepts a valu
   withValue.entries[0]!.value = "must-not-be-retained";
   assert.throws(() => parseDependencySecretMetadata(withValue, "company-os-hong-kong"),
     /DEPENDENCY_SECRET_METADATA_INVALID/);
+});
+
+test("first start separates dependency, migration, product, and acceptance authority", () => {
+  const blocked = planSiteFirstStart(parseSiteRuntimeManifest(site()));
+  assert.deepEqual(blocked.phases.map(({ id }) => id), [
+    "VALIDATE_SITE_CONTRACT", "VALIDATE_DEPENDENCY_SECRET_METADATA",
+    "INITIALIZE_DEPENDENCIES", "VERIFY_DEPENDENCY_TLS_AND_HEALTH", "DOCTOR_PRODUCT",
+    "MIGRATE_DATABASE", "PROVISION_RUNTIME_ROLE", "START_REFERENCE_DATA_NODE",
+    "START_API", "START_WEB", "RUN_ACCEPTANCE",
+  ]);
+  assert.equal(blocked.status, "BLOCKED_AUTHORIZATION");
+  assert.deepEqual(blocked.missingAuthorizationKinds,
+    ["DEPENDENCY_INITIALIZATION", "MIGRATION_PROVISION", "PRODUCT_START", "ACCEPTANCE"]);
+  assert.equal(blocked.phases[0]?.mutating, false);
+  assert.equal(blocked.phases[2]?.authorizationReference, null);
+
+  const approved = site();
+  approved.authorization = {
+    dependencyInitialization: "change:dependency-init-hk-01",
+    migrationProvision: "change:migrate-hk-01",
+    productStart: "change:start-hk-01",
+    acceptance: "change:accept-hk-01",
+  };
+  const ready = planSiteFirstStart(parseSiteRuntimeManifest(approved));
+  assert.equal(ready.status, "READY_TO_APPLY_BY_PHASE");
+  assert.deepEqual(ready.missingAuthorizationKinds, []);
+  assert.equal(ready.phases.find(({ id }) => id === "INITIALIZE_DEPENDENCIES")?.authorizationReference,
+    "change:dependency-init-hk-01");
+  assert.equal(ready.phases.find(({ id }) => id === "MIGRATE_DATABASE")?.authorizationReference,
+    "change:migrate-hk-01");
+  assert.equal(ready.phases.find(({ id }) => id === "START_API")?.authorizationReference,
+    "change:start-hk-01");
+  assert.equal(ready.phases.find(({ id }) => id === "RUN_ACCEPTANCE")?.authorizationReference,
+    "change:accept-hk-01");
 });

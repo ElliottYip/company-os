@@ -12,8 +12,10 @@ export async function readVerifiedStagingReleaseStore(rootDirectory) {
   let value;
   try { value = JSON.parse(await readFile(path, "utf8")); }
   catch { throw new Error("STAGING_RELEASE_STORE_INVALID"); }
-  if (value?.schemaVersion !== 1 || value.product !== "company-os" ||
+  if (![1, 2].includes(value?.schemaVersion) || value.product !== "company-os" ||
       value.state !== "PREPARED_NOT_STARTED" || !validRecord(value.prepared, rootDirectory) ||
+      (value.schemaVersion === 2 && !validSiteContract(value.prepared.siteContract,
+        value.prepared, rootDirectory)) ||
       !Array.isArray(value.previous) || !value.previous.every((item) => validRecord(item, rootDirectory))) {
     throw new Error("STAGING_RELEASE_STORE_INVALID");
   }
@@ -22,6 +24,16 @@ export async function readVerifiedStagingReleaseStore(rootDirectory) {
     throw new Error("STAGING_RELEASE_STORE_DUPLICATE_RELEASE");
   }
   return structuredClone(value);
+}
+
+function validSiteContract(value, release, rootDirectory) {
+  const names = ["dependency-secrets.json", "site-runtime.json", "staging-dependencies.json", "staging.env"];
+  return value?.schemaVersion === 1 && typeof value.siteId === "string" &&
+    value.releaseId === release.releaseId && DIGEST.test(value.dependencyManifestDigest ?? "") &&
+    typeof value.contractDirectory === "string" && isAbsolute(value.contractDirectory) &&
+    resolve(value.contractDirectory) === join(rootDirectory, "site-contracts", value.siteId, value.releaseId) &&
+    JSON.stringify(Object.keys(value.digests ?? {}).sort()) === JSON.stringify(names) &&
+    names.every((name) => DIGEST.test(value.digests[name] ?? ""));
 }
 
 export function resolveStagingReleaseRecord(store, releaseId, sourceRevision) {
