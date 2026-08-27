@@ -114,6 +114,14 @@ parallel database, validate the previous state, start the previous immutable
 images, and move traffic only by explicit operator action. It never performs a
 down migration or runs the previous binary against the candidate database.
 
+The rollback executor now enforces that decision. It accepts only a failed
+traffic state whose exact digest says traffic may have moved, and only the
+separate rollback authority. Its fixed sequence closes candidate ingress,
+retains the failed database, restores the paired backup into an empty parallel
+target, validates the previous state, starts previous immutable images, runs
+the previous smoke path, and moves ingress by explicit operator action. Even a
+successful rollback leaves dispatch closed and acceptance pending.
+
 Upgrade state and retained evidence contain only digests, opaque IDs, bounded
 status codes, and timestamps. Commands, output, database coordinates, identity
 coordinates, Secret values, and customer data are excluded.

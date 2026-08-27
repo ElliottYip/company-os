@@ -330,6 +330,13 @@ when the routing call itself reports failure. Observation failure stops for an
 explicit human decision; automatic rollback and acceptance claims remain
 forbidden.
 
+Rollback is likewise a separate authorization and state file. It is available
+only from a retained traffic failure that says traffic may have moved. The
+executor cannot reuse the candidate database, run a down migration, or start
+the previous binary against candidate state. Completion restores previous
+ingress but deliberately leaves dispatch closed and acceptance unclaimed;
+failure retains the last step for review.
+
 The dependency initialization planner is canonical-store-bound,
 authorization-bound, and non-mutating by default. Runtime owners are resolved
 only from image-bound account-database inspection evidence. Images that run as
