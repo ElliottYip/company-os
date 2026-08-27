@@ -186,6 +186,14 @@ whether traffic may have moved and stops in
 or claims acceptance. A successful observation ends only at
 `UPGRADE_OBSERVATION_COMPLETE_PENDING_ACCEPTANCE`.
 
+The upgrade acceptance handoff is a fourth, non-promoting boundary. It reuses
+the candidate site's existing `acceptance` authority—not preparation,
+traffic-cutover, or rollback authority—and binds the canonical active state,
+successful traffic state, promotion evidence, immutable release manifest, and
+customer-supplied acceptance record. The handoff records only
+`PENDING_EXTERNAL_VERIFICATION`: it does not claim independent verification,
+mark the release accepted, or reopen dispatch.
+
 Rollback is never automatic. A failure after any possible database or service
 mutation records `UPGRADE_FAILED_REQUIRES_REVIEW`, the last attempted step, and
 whether migration, service, or traffic mutation may have occurred. The

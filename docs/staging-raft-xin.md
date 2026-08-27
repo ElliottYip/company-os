@@ -317,6 +317,21 @@ latency/failure bounds, rechecks responsibility control totals, and only then
 records the candidate as active pending acceptance. It never automatically
 rolls back.
 
+After successful observation, bind—but do not self-approve—the external
+customer acceptance record using the candidate site's separate acceptance
+authority:
+
+```sh
+npm run release:staging-upgrade-acceptance-handoff -- --apply \
+  --root /srv/company-os/staging \
+  --operation upgrade-rc4-to-rc5 \
+  --authorization change:REPLACE_CUSTOMER_ACCEPTANCE_AUTHORITY \
+  --record /run/company-os/customer-acceptance-record.json
+```
+
+This command leaves `acceptanceClaimed=false` and `dispatchReopened=false`.
+Traffic health is not customer acceptance.
+
 After preparation or any start attempt, inspect the retained state and actual
 Docker runtime through the same exact Ops image:
 

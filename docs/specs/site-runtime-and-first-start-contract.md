@@ -433,6 +433,12 @@ startup state or claims acceptance. Real OIDC, model, data, Secret lifecycle,
 restart, and human-owner evidence must still be independently verified before
 any future `STAGING_ACCEPTED` transition.
 
+An upgraded release uses the same human acceptance authority through a
+separate upgrade handoff. That handoff additionally binds the successful
+traffic state and exact promotion evidence to the canonical upgraded startup
+record. It remains a digest-only, external-verification-pending record and
+cannot reopen dispatch or infer acceptance from health probes.
+
 ## Success criteria
 
 1. Hong Kong and Hangzhou renders are independently valid and contain no
