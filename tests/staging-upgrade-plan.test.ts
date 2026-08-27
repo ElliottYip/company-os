@@ -148,6 +148,12 @@ test("store-bound upgrade inspection derives active and candidate authority with
   assert.equal(plan.status, "PLANNED_NOT_APPLIED");
   assert.equal(plan.active.releaseId, activeInstalled.releaseId);
   assert.equal(plan.candidate.releaseId, candidateInstalled.releaseId);
+  const store = JSON.parse(await readFile(join(root, "release-store.json"), "utf8"));
+  const adoptedRuntime = join(store.prepared.siteContract.contractDirectory, "site-runtime.json");
+  await writeFile(adoptedRuntime, `${await readFile(adoptedRuntime, "utf8")} `);
+  await assert.rejects(planStagingUpgradeFromStore({ rootDirectory: root, authorizationFile,
+    authorizationReference: "change:upgrade-preparation-01", now: "2026-08-27T12:00:00.000Z" }),
+  /STAGING_UPGRADE_CANDIDATE_CONTRACT_CHANGED/);
   await chmod(authorizationFile, 0o644);
   await assert.rejects(planStagingUpgradeFromStore({ rootDirectory: root, authorizationFile,
     authorizationReference: "change:upgrade-preparation-01", now: "2026-08-27T12:00:00.000Z" }),

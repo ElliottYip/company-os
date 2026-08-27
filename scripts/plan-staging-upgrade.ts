@@ -141,6 +141,7 @@ async function gatherStoreEvidence(rootValue: string) {
   if (candidate.releaseId === active.releaseId || !candidate.siteContract) {
     throw new Error("STAGING_UPGRADE_CANDIDATE_NOT_PREPARED");
   }
+  await verifyAdoptedSiteContract(candidate.siteContract);
   await Promise.all([
     verifyStagingReleaseBundle(active.releaseDirectory),
     verifyStagingReleaseBundle(candidate.releaseDirectory),
@@ -160,6 +161,15 @@ async function gatherStoreEvidence(rootValue: string) {
   const cutoverBinding = { planId: cutover.cutoverId, planDigest: sha256(JSON.stringify(cutover)) };
   return { siteId: candidate.siteContract.siteId, activeBinding, candidateBinding, cutoverBinding,
     evidence: { activeRaw, candidateRaw, startupRaw, siteContractRaw } };
+}
+
+async function verifyAdoptedSiteContract(siteContract: { readonly contractDirectory: string;
+  readonly digests: Readonly<Record<string, string>> }) {
+  for (const [name, expected] of Object.entries(siteContract.digests)) {
+    const raw = await safePrivateFile(join(siteContract.contractDirectory, name),
+      "STAGING_UPGRADE_CANDIDATE_CONTRACT_FILE_UNSAFE");
+    if (sha256(raw) !== expected) throw new Error("STAGING_UPGRADE_CANDIDATE_CONTRACT_CHANGED");
+  }
 }
 
 function releaseBinding(value: unknown, expected: { readonly releaseId: string; readonly sourceRevision: string },
