@@ -76,30 +76,22 @@ async function hostRuntime(root: string): Promise<StagingDeploymentSnapshot["run
 }
 
 async function targetState(environment: Readonly<Record<string, string>>): Promise<StagingDeploymentSnapshot["target"]> {
-  const composeProject = requiredPublicValue(environment, "COMPANY_OS_COMPOSE_PROJECT");
-  const network = requiredPublicValue(environment, "COMPANY_OS_PRODUCT_NETWORK");
+  const composeProject = environment.COMPANY_OS_COMPOSE_PROJECT?.trim() ?? "";
+  const network = environment.COMPANY_OS_PRODUCT_NETWORK?.trim() ?? "";
   const ports = ["COMPANY_OS_REFERENCE_DATA_NODE_PORT", "COMPANY_OS_WEB_LOOPBACK_PORT",
-    "COMPANY_OS_API_LOOPBACK_PORT"].map((key) => requiredPort(environment, key));
-  const composeProjectExists = command(["docker", "ps", "-a", "--filter",
+    "COMPANY_OS_API_LOOPBACK_PORT"].map((key) => publicPort(environment, key))
+    .filter((value): value is number => value !== null);
+  const composeProjectExists = Boolean(composeProject) && command(["docker", "ps", "-a", "--filter",
     `label=com.docker.compose.project=${composeProject}`, "--quiet"], true);
-  const targetNetworkExists = command(["docker", "network", "inspect", network], true);
+  const targetNetworkExists = Boolean(network) && command(["docker", "network", "inspect", network], true);
   return { composeProject, network, composeProjectExists, targetNetworkExists,
     loopbackPorts: await Promise.all(ports.map(async (port) => ({ port,
       status: await portStatus(port) }))) };
 }
 
-function requiredPublicValue(environment: Readonly<Record<string, string>>, key: string): string {
-  const value = environment[key]?.trim();
-  if (!value) throw new Error(`STAGING_DOCTOR_PUBLIC_CONFIG_REQUIRED:${key}`);
-  return value;
-}
-
-function requiredPort(environment: Readonly<Record<string, string>>, key: string): number {
-  const value = Number(requiredPublicValue(environment, key));
-  if (!Number.isSafeInteger(value) || value < 1024 || value > 65_535) {
-    throw new Error(`STAGING_DOCTOR_PUBLIC_CONFIG_INVALID:${key}`);
-  }
-  return value;
+function publicPort(environment: Readonly<Record<string, string>>, key: string): number | null {
+  const value = Number(environment[key]);
+  return Number.isSafeInteger(value) && value >= 1024 && value <= 65_535 ? value : null;
 }
 
 function command(argv: readonly string[], requireOutput = false): boolean {
