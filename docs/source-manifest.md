@@ -468,6 +468,28 @@ for checksum, advisory-lock, migration-safety and parallel-recovery discipline;
 its schema, migrations, embedded database defaults and backup format are not
 copied.
 
+## Caddy reference TLS gateway (2026-08-27)
+
+The staging-only reference dependency topology uses the official Caddy
+`2.11.4-alpine` multi-platform image solely as an HTTPS reverse-proxy boundary
+between the product network and the isolated OIDC, Vault Broker, and Agent Node
+network:
+
+- image: `caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648`
+- official image recipe revision:
+  `caddyserver/caddy-docker@fba2853501d36e8a72f946ac8cb7ff64d07e48f2`
+- official-image catalog:
+  https://github.com/docker-library/official-images/blob/master/library/caddy
+- Caddy source and Apache-2.0 license:
+  https://github.com/caddyserver/caddy and
+  https://github.com/caddyserver/caddy/blob/master/LICENSE
+
+The digest was verified from the OCI index before inclusion. Company OS copies
+no Caddy source, page, trademark, or configuration; its independently authored
+minimal Caddyfile disables the admin API and serves only target-generated TLS
+material mounted read-only. Caddy is not a Core/Application dependency and can
+be replaced with another contract-compatible TLS gateway.
+
 ## Paperclip authorization behavior adoption (2026-08-24)
 
 At pinned MIT revision `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`,

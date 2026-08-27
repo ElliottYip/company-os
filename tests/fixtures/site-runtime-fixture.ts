@@ -95,13 +95,17 @@ export function siteRuntimeFixture(input: {
 
 function dependencySecrets() {
   const purposes = ["POSTGRES_BOOTSTRAP", "OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION",
-    "VAULT_APPROLE", "BROKER_VAULT", "AGENT_PROVIDER", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"];
+    "VAULT_APPROLE_ROLE_ID", "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN",
+    "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "AGENT_NODE_TOKEN", "AGENT_PROVIDER",
+    "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"];
   return { schemaVersion: 1, siteId: "company-os-test-site",
     directory: "/etc/company-os/dependency-secrets",
     entries: purposes.map((purpose, index) => ({ purpose,
       filename: `${purpose.toLowerCase().replaceAll("_", "-")}-${index + 1}`,
       ownerReference: "team:infrastructure", consumer: `dependency:${purpose.toLowerCase()}`,
-      generationMethod: purpose === "BROKER_VAULT" ? "VAULT_RENDERED" : "GENERATED_ON_TARGET",
+      generationMethod: purpose === "AGENT_PROVIDER" ? "VAULT_RENDERED" :
+        purpose.startsWith("VAULT_APPROLE_") || purpose === "VAULT_INITIALIZATION" ?
+          "BOOTSTRAP_OUTPUT" : "GENERATED_ON_TARGET",
       rotationClass: purpose.includes("TLS") ? "CERTIFICATE_LIFECYCLE" : "ROTATABLE",
       mode: purpose === "INTERNAL_TLS_CERT" ? 0o600 : 0o400 })),
   };

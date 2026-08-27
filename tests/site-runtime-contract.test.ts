@@ -7,6 +7,7 @@ import {
   parseDependencySecretMetadata,
   parseSiteRuntimeManifest,
   planSiteFirstStart,
+  renderReferenceDependencyEnvironment,
   renderSitePublicEnvironment,
 } from "../adapters/config/site-runtime-contract.ts";
 
@@ -136,7 +137,9 @@ function hangzhouSite() {
 function dependencySecrets() {
   const purpose = [
     "POSTGRES_BOOTSTRAP", "OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION",
-    "VAULT_APPROLE", "BROKER_VAULT", "AGENT_PROVIDER", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY",
+    "VAULT_APPROLE_ROLE_ID", "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN",
+    "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "AGENT_NODE_TOKEN", "AGENT_PROVIDER",
+    "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY",
   ] as const;
   return {
     schemaVersion: 1,
@@ -147,7 +150,9 @@ function dependencySecrets() {
       filename: `${item.toLowerCase().replaceAll("_", "-")}-${index + 1}`,
       ownerReference: "team:infrastructure",
       consumer: `dependency:${item.toLowerCase()}`,
-      generationMethod: item === "BROKER_VAULT" ? "VAULT_RENDERED" : "GENERATED_ON_TARGET",
+      generationMethod: item === "AGENT_PROVIDER" ? "VAULT_RENDERED" :
+        item.startsWith("VAULT_APPROLE_") || item === "VAULT_INITIALIZATION" ? "BOOTSTRAP_OUTPUT" :
+          "GENERATED_ON_TARGET",
       rotationClass: item.includes("TLS") ? "CERTIFICATE_LIFECYCLE" : "ROTATABLE",
       mode: item === "INTERNAL_TLS_CERT" ? 0o600 : 0o400,
     })),
@@ -226,7 +231,7 @@ test("site isolation rejects shared identity, networks, volumes, connectors and 
 
 test("dependency Secret metadata requires every purpose but never accepts a value", () => {
   const parsed = parseDependencySecretMetadata(dependencySecrets(), "company-os-hong-kong");
-  assert.equal(parsed.entries.length, 9);
+  assert.equal(parsed.entries.length, 13);
   assert.equal(parsed.entries.every(({ mode }) => mode === 0o400 || mode === 0o600), true);
   assert.doesNotMatch(JSON.stringify(parsed), /secretValue|tokenValue|passwordValue/);
 
@@ -239,6 +244,23 @@ test("dependency Secret metadata requires every purpose but never accepts a valu
   withValue.entries[0]!.value = "must-not-be-retained";
   assert.throws(() => parseDependencySecretMetadata(withValue, "company-os-hong-kong"),
     /DEPENDENCY_SECRET_METADATA_INVALID/);
+});
+
+test("dependency environment maps every service to site-owned images, networks, volumes and filenames", () => {
+  const manifest = parseSiteRuntimeManifest(site());
+  const metadata = parseDependencySecretMetadata(dependencySecrets(), manifest.site.id);
+  const rendered = renderReferenceDependencyEnvironment(manifest, metadata,
+    "/srv/company-os/staging/dependency-public", "/srv/company-os/staging/dependency-private");
+  assert.match(rendered, /COMPANY_OS_DEPENDENCY_COMPOSE_PROJECT=company-os-hong-kong-dependencies/);
+  assert.match(rendered, /COMPANY_OS_DEPENDENCY_NETWORK=company-os-hong-kong-dependencies/);
+  assert.match(rendered, /COMPANY_OS_OIDC_IMAGE=ghcr\.io\/dexidp\/dex@sha256:/);
+  assert.match(rendered, /COMPANY_OS_VAULT_IMAGE=hashicorp\/vault@sha256:/);
+  assert.match(rendered, /COMPANY_OS_VAULT_APPROLE_ROLE_ID_FILENAME=vault-approle-role-id-5/);
+  assert.match(rendered, /COMPANY_OS_BROKER_EXECUTION_TOKEN_FILENAME=broker-execution-token-8/);
+  assert.match(rendered, /COMPANY_OS_INTERNAL_TLS_KEY_FILENAME=internal-tls-key-13/);
+  assert.match(rendered, /COMPANY_OS_OIDC_TLS_HOST=identity\.hk\.internal/);
+  assert.match(rendered, /COMPANY_OS_AGENT_TLS_HOST=agent\.hk\.internal/);
+  assert.doesNotMatch(rendered, /CLIENT_SECRET=|BEARER_TOKEN=|PASSWORD=|PRIVATE_KEY=/);
 });
 
 test("first start separates dependency, migration, product, and acceptance authority", () => {

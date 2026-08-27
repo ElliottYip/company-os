@@ -49,6 +49,17 @@ the bundled `github.com/creack/pty` work and its MIT license. Company OS ships
 operator client tooling only, not the Docker daemon, and makes no Docker
 trademark or endorsement claim.
 
+### Caddy reference TLS gateway
+
+The staging-only reference dependency Compose pins the official Caddy
+2.11.4-alpine OCI index at
+`sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648`.
+Caddy is Copyright The Caddy Authors and distributed under Apache-2.0; source
+and license are available at `https://github.com/caddyserver/caddy`. Company OS
+does not copy Caddy source and does not expose its admin API. The image is an
+optional staging TLS boundary, not a Company OS domain or runtime-library
+dependency.
+
 ## Audited but not incorporated
 
 Paperclip, AgentOS, OpenWorker, Operant, Preloop, AgentGate, JamJet, Agent Room,

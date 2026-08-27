@@ -145,7 +145,9 @@ type DependencySecretPurpose = typeof DEPENDENCY_SECRET_PURPOSES[number];
 
 const DEPENDENCY_SECRET_PURPOSES = [
   "POSTGRES_BOOTSTRAP", "OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION",
-  "VAULT_APPROLE", "BROKER_VAULT", "AGENT_PROVIDER", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY",
+  "VAULT_APPROLE_ROLE_ID", "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN",
+  "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "AGENT_NODE_TOKEN", "AGENT_PROVIDER",
+  "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY",
 ] as const;
 const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
@@ -242,6 +244,56 @@ export function renderSitePublicEnvironment(
     COMPANY_OS_PUBLIC_INGRESS: manifest.capabilities.publicIngress,
     COMPANY_OS_OFF_SITE_BACKUP: manifest.capabilities.offSiteBackup,
     COMPANY_OS_SECRET_DIRECTORY: secretDirectory,
+  };
+  return `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join("\n")}\n`;
+}
+
+export function renderReferenceDependencyEnvironment(
+  manifest: SiteRuntimeManifest,
+  metadata: DependencySecretMetadata,
+  publicConfigDirectory: string,
+  privateConfigDirectory: string,
+): string {
+  if (metadata.siteId !== manifest.site.id || !safeAbsolutePath(publicConfigDirectory) ||
+      !safeAbsolutePath(privateConfigDirectory) || publicConfigDirectory === privateConfigDirectory ||
+      publicConfigDirectory === "/" || privateConfigDirectory === "/") invalidSite();
+  const filenames = new Map(metadata.entries.map(({ purpose, filename }) => [purpose, filename]));
+  const file = (purpose: DependencySecretPurpose) => {
+    const value = filenames.get(purpose);
+    if (!value) invalidSite();
+    return value;
+  };
+  if (!portableName(manifest.site.dependencyNetwork)) invalidSite();
+  const values: Readonly<Record<string, string>> = {
+    COMPANY_OS_DEPENDENCY_COMPOSE_PROJECT: manifest.site.dependencyNetwork,
+    COMPANY_OS_DEPENDENCY_NETWORK: manifest.site.dependencyNetwork,
+    COMPANY_OS_PRODUCT_NETWORK: manifest.site.productNetwork,
+    COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY: metadata.directory,
+    COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY: publicConfigDirectory,
+    COMPANY_OS_DEPENDENCY_PRIVATE_CONFIG_DIRECTORY: privateConfigDirectory,
+    COMPANY_OS_OIDC_IMAGE: manifest.dependencies.oidc.image,
+    COMPANY_OS_VAULT_IMAGE: manifest.dependencies.vault.image,
+    COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: manifest.dependencies.secretBroker.image,
+    COMPANY_OS_CODEX_AGENT_NODE_IMAGE: manifest.dependencies.agentNode.image,
+    COMPANY_OS_POSTGRES_VOLUME: manifest.dependencies.postgres.volume,
+    COMPANY_OS_VAULT_VOLUME: manifest.dependencies.vault.volume,
+    COMPANY_OS_BROKER_VOLUME: `${manifest.site.id}-broker`,
+    COMPANY_OS_AGENT_STATE_VOLUME: `${manifest.site.id}-agent-state`,
+    COMPANY_OS_AGENT_WORK_VOLUME: `${manifest.site.id}-agent-work`,
+    COMPANY_OS_POSTGRES_TLS_SERVER_NAME: manifest.dependencies.postgres.tlsServerName,
+    COMPANY_OS_OIDC_TLS_HOST: new URL(manifest.dependencies.oidc.issuer).hostname,
+    COMPANY_OS_BROKER_TLS_HOST: new URL(manifest.dependencies.secretBroker.baseUrl).hostname,
+    COMPANY_OS_AGENT_TLS_HOST: new URL(manifest.dependencies.agentNode.baseUrl).hostname,
+    COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: manifest.dependencies.secretBroker.baseUrl,
+    COMPANY_OS_POSTGRES_BOOTSTRAP_FILENAME: file("POSTGRES_BOOTSTRAP"),
+    COMPANY_OS_VAULT_APPROLE_ROLE_ID_FILENAME: file("VAULT_APPROLE_ROLE_ID"),
+    COMPANY_OS_VAULT_APPROLE_SECRET_ID_FILENAME: file("VAULT_APPROLE_SECRET_ID"),
+    COMPANY_OS_BROKER_CONTROL_TOKEN_FILENAME: file("BROKER_CONTROL_TOKEN"),
+    COMPANY_OS_BROKER_EXECUTION_TOKEN_FILENAME: file("BROKER_EXECUTION_TOKEN"),
+    COMPANY_OS_BROKER_SIGNING_KEY_FILENAME: file("BROKER_SIGNING_KEY"),
+    COMPANY_OS_AGENT_NODE_TOKEN_FILENAME: file("AGENT_NODE_TOKEN"),
+    COMPANY_OS_INTERNAL_TLS_CERT_FILENAME: file("INTERNAL_TLS_CERT"),
+    COMPANY_OS_INTERNAL_TLS_KEY_FILENAME: file("INTERNAL_TLS_KEY"),
   };
   return `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join("\n")}\n`;
 }

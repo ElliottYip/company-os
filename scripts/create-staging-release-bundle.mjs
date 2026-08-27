@@ -8,7 +8,8 @@ const IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
 const VERSION = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[a-z0-9.-]+)?$/;
 const FILES = [
   "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md",
-  "deploy/compose.staging.yml", "deploy/staging.env.example",
+  "deploy/compose.staging.yml", "deploy/compose.staging-dependencies.yml",
+  "deploy/staging-dependencies.Caddyfile", "deploy/staging.env.example",
   "docs/staging-raft-xin.md", "docs/customer-boundary-acceptance.md",
   "docs/formal-identity-runbook.md",
 ];

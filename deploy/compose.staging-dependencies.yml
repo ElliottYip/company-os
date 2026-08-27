@@ -1,0 +1,192 @@
+name: ${COMPANY_OS_DEPENDENCY_COMPOSE_PROJECT:?set the site dependency Compose project}
+
+# Reference acceptance topology only. It is a separate lifecycle/trust boundary
+# from the product Compose. Values are public coordinates or file paths; Secret
+# material is generated on the target and mounted read-only from the dedicated
+# dependency Secret directory.
+services:
+  postgres:
+    image: postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=32m,mode=1777, /var/run/postgresql:size=16m,mode=0775]
+    cpus: 0.40
+    mem_limit: 448m
+    pids_limit: 96
+    environment:
+      POSTGRES_DB: company_os
+      POSTGRES_USER: company_os_owner
+      POSTGRES_PASSWORD_FILE: /run/dependency-secrets/${COMPANY_OS_POSTGRES_BOOTSTRAP_FILENAME:?set metadata-derived filename}
+    command:
+      - postgres
+      - -c
+      - ssl=on
+      - -c
+      - ssl_cert_file=/run/dependency-secrets/${COMPANY_OS_INTERNAL_TLS_CERT_FILENAME:?set metadata-derived filename}
+      - -c
+      - ssl_key_file=/run/dependency-secrets/${COMPANY_OS_INTERNAL_TLS_KEY_FILENAME:?set metadata-derived filename}
+      - -c
+      - password_encryption=scram-sha-256
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - company_os_dependency_postgres:/var/lib/postgresql/data
+    networks:
+      dependencies: {}
+      product:
+        aliases: ["${COMPANY_OS_POSTGRES_TLS_SERVER_NAME:?set PostgreSQL TLS server name}"]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U company_os_owner -d company_os"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  oidc:
+    image: ${COMPANY_OS_OIDC_IMAGE:?set immutable OIDC image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    command: [dex, serve, /run/dependency-private/dex.yaml]
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_PRIVATE_CONFIG_DIRECTORY:?set rendered private config directory}:/run/dependency-private:ro
+    networks: [dependencies]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  vault:
+    image: ${COMPANY_OS_VAULT_IMAGE:?set immutable Vault image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    command: [server, -config=/run/dependency-public/vault.hcl]
+    environment:
+      VAULT_ADDR: https://127.0.0.1:8200
+      VAULT_CACERT: /run/dependency-secrets/${COMPANY_OS_INTERNAL_TLS_CERT_FILENAME:?set metadata-derived filename}
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}:/run/dependency-public:ro
+      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - company_os_dependency_vault:/var/lib/company-os-vault
+    networks: [dependencies]
+
+  vault-secret-broker:
+    image: ${COMPANY_OS_VAULT_SECRET_BROKER_IMAGE:?set immutable Vault Broker image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777]
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    environment:
+      COMPANY_OS_VAULT_ADDRESS: https://vault:8200
+      COMPANY_OS_VAULT_AUTH_MOUNT: approle
+      COMPANY_OS_VAULT_ROLE_ID_FILE: /run/dependency-secrets/${COMPANY_OS_VAULT_APPROLE_ROLE_ID_FILENAME:?set role ID filename}
+      COMPANY_OS_VAULT_SECRET_ID_FILE: /run/dependency-secrets/${COMPANY_OS_VAULT_APPROLE_SECRET_ID_FILENAME:?set Secret ID filename}
+      COMPANY_OS_VAULT_BROKER_CONTROL_BEARER_TOKEN_FILE: /run/dependency-secrets/${COMPANY_OS_BROKER_CONTROL_TOKEN_FILENAME:?set control token filename}
+      COMPANY_OS_VAULT_BROKER_EXECUTION_BEARER_TOKEN_FILE: /run/dependency-secrets/${COMPANY_OS_BROKER_EXECUTION_TOKEN_FILENAME:?set execution token filename}
+      COMPANY_OS_VAULT_BROKER_MANAGEMENT_SIGNING_KEY_FILE: /run/dependency-secrets/${COMPANY_OS_BROKER_SIGNING_KEY_FILENAME:?set signing key filename}
+      COMPANY_OS_VAULT_BROKER_REFERENCES_FILE: /run/dependency-public/secret-references.json
+      COMPANY_OS_VAULT_BROKER_STATE_FILE: /var/lib/company-os-vault-broker/leases.json
+      COMPANY_OS_VAULT_BROKER_REFERENCE_STATE_FILE: /var/lib/company-os-vault-broker/references.json
+      COMPANY_OS_VAULT_BROKER_PUBLIC_URL: ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:?set Broker HTTPS origin}
+      COMPANY_OS_VAULT_BROKER_HOST: 0.0.0.0
+      COMPANY_OS_VAULT_BROKER_PORT: 4321
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}:/run/dependency-public:ro
+      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - company_os_dependency_broker:/var/lib/company-os-vault-broker
+    networks: [dependencies]
+    depends_on: [vault]
+
+  codex-agent-node:
+    image: ${COMPANY_OS_CODEX_AGENT_NODE_IMAGE:?set immutable Codex Agent Node image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=32m,mode=1777]
+    cpus: 0.60
+    mem_limit: 640m
+    pids_limit: 128
+    environment:
+      COMPANY_OS_CODEX_STATE_DIRECTORY: /var/lib/company-os-codex
+      COMPANY_OS_CODEX_SECRET_BROKER_BASE_URL: ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:?set Broker HTTPS origin}
+      COMPANY_OS_CODEX_SECRET_BROKER_REDEMPTION_BEARER_TOKEN_FILE: /run/dependency-secrets/${COMPANY_OS_BROKER_EXECUTION_TOKEN_FILENAME:?set execution token filename}
+      COMPANY_OS_CODEX_SECRET_BROKER_ALLOW_INSECURE_LOOPBACK: "false"
+      COMPANY_OS_CODEX_BINARY: /usr/local/bin/codex
+      COMPANY_OS_CODEX_WORKSPACE: /work
+      COMPANY_OS_CODEX_NODE_BEARER_TOKEN_FILE: /run/dependency-secrets/${COMPANY_OS_AGENT_NODE_TOKEN_FILENAME:?set Agent Node token filename}
+      COMPANY_OS_CODEX_NODE_HOST: 0.0.0.0
+      COMPANY_OS_CODEX_NODE_PORT: 4320
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - company_os_dependency_agent_state:/var/lib/company-os-codex
+      - company_os_dependency_agent_work:/work
+    networks: [dependencies]
+    depends_on: [vault-secret-broker]
+
+  tls-gateway:
+    image: caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp:size=16m,mode=1777, /data:size=16m,mode=0700, /config:size=16m,mode=0700]
+    cpus: 0.15
+    mem_limit: 128m
+    pids_limit: 48
+    environment:
+      COMPANY_OS_OIDC_TLS_HOST: ${COMPANY_OS_OIDC_TLS_HOST:?set OIDC TLS host}
+      COMPANY_OS_BROKER_TLS_HOST: ${COMPANY_OS_BROKER_TLS_HOST:?set Broker TLS host}
+      COMPANY_OS_AGENT_TLS_HOST: ${COMPANY_OS_AGENT_TLS_HOST:?set Agent TLS host}
+      COMPANY_OS_INTERNAL_TLS_CERT_FILENAME: ${COMPANY_OS_INTERNAL_TLS_CERT_FILENAME:?set certificate filename}
+      COMPANY_OS_INTERNAL_TLS_KEY_FILENAME: ${COMPANY_OS_INTERNAL_TLS_KEY_FILENAME:?set key filename}
+    volumes:
+      - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+    networks:
+      dependencies: {}
+      product:
+        aliases:
+          - "${COMPANY_OS_OIDC_TLS_HOST:?set OIDC TLS host}"
+          - "${COMPANY_OS_BROKER_TLS_HOST:?set Broker TLS host}"
+          - "${COMPANY_OS_AGENT_TLS_HOST:?set Agent TLS host}"
+    depends_on: [oidc, vault-secret-broker, codex-agent-node]
+
+networks:
+  dependencies:
+    name: ${COMPANY_OS_DEPENDENCY_NETWORK:?set site dependency network}
+    internal: true
+  product:
+    name: ${COMPANY_OS_PRODUCT_NETWORK:?set site product network}
+    external: true
+
+volumes:
+  company_os_dependency_postgres:
+    name: ${COMPANY_OS_POSTGRES_VOLUME:?set site PostgreSQL volume}
+  company_os_dependency_vault:
+    name: ${COMPANY_OS_VAULT_VOLUME:?set site Vault volume}
+  company_os_dependency_broker:
+    name: ${COMPANY_OS_BROKER_VOLUME:?set site Broker volume}
+  company_os_dependency_agent_state:
+    name: ${COMPANY_OS_AGENT_STATE_VOLUME:?set site Agent state volume}
+  company_os_dependency_agent_work:
+    name: ${COMPANY_OS_AGENT_WORK_VOLUME:?set site Agent work volume}
