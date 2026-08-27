@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC16_PUBLICATION_AND_HK_PREPARE_ONLY",
+  "recordedAt": "2026-08-27T23:06:59Z",
+  "release": {
+    "tag": "v0.1.0-rc.16",
+    "releaseId": "0.1.0-rc.16-31415279cc5f",
+    "sourceRevision": "31415279cc5fcc17c1f740efd8d41034b2549c09",
+    "workflowRun": "https://github.com/ElliottYip/company-os/actions/runs/33124102947",
+    "qualify": "PASSED",
+    "publish": "PASSED",
+    "releaseManifestDigest": "sha256:cde27dc3f5805ead7de6bd2dad7abf4441167af4eda9f605257112e50b6eb6e5",
+    "sbomDigest": "sha256:d4ce720256e7d115f267a10552a1f2a43b20da71137c4c73104df8500646a866",
+    "bundleManifestDigest": "sha256:73cf6358a334ec63b88bda58b51c1ad8e2cb5938347043e817d14a887447a567",
+    "portableArchiveDigest": "sha256:f66685c802dc6e5e0fe394a27574a0b8593763f8db416826361d1b9e049b7523",
+    "images": {
+      "api": "ghcr.io/elliottyip/company-os-api@sha256:73988a3c69a6f47174939cad42d7108db67e436bbda537afecc088e11fa8e74e",
+      "web": "ghcr.io/elliottyip/company-os-web@sha256:d956b1e7fb7db5f18b106c381af9abdb7f9b8547a60d651b5736cb8a456e9f78",
+      "ops": "ghcr.io/elliottyip/company-os-ops@sha256:8137049291fae0deaa241a6b97d0c308307c1256a261b8f20b57e0fd459fa0e0",
+      "codexAgentNode": "ghcr.io/elliottyip/company-os-codex-agent-node@sha256:2e1e34a310cab31a8afe09cc6fdaa7cc5c2c52e9e62525b71115d84aab7d84d9",
+      "vaultSecretBroker": "ghcr.io/elliottyip/company-os-vault-secret-broker@sha256:4a3e63fcf87d7dc6199e65abda06d0e74dca7c700f9b5a5f7936e199bae5f89e",
+      "referenceDataNode": "ghcr.io/elliottyip/company-os-reference-data-node@sha256:45023e2ec69e03ae91ada0ac12a853ef94e81920b991f4b927740b7c8b75b848"
+    }
+  },
+  "hongKong": {
+    "releaseDirectory": "/srv/company-os/staging/releases/0.1.0-rc.16-31415279cc5f",
+    "installStatus": "INSTALLED_NOT_STARTED",
+    "releaseStoreState": "PREPARED_NOT_STARTED",
+    "previousReleaseId": "0.1.0-rc.15-a8e2fee52c4c",
+    "publicReleaseId": "0.1.0-rc.14-74bd081c75df",
+    "rc14Web": "HEALTHY",
+    "rc14Api": "HEALTHY_DEMO_FIXTURE",
+    "rc16ContainersStarted": false,
+    "publicTrafficChanged": false,
+    "tlsChanged": false,
+    "nginxReloaded": false,
+    "databaseMigrated": false,
+    "formalRuntimeStarted": false,
+    "paperclipCredentialInstalled": false,
+    "secretMaterialIncluded": false
+  },
+  "migrationPreflight": {
+    "status": "PLANNED_NOT_EXECUTED",
+    "cutoverId": "cutover-9bb8f55c45410bc7127fe7b8",
+    "previousRelease": "0.1.0-rc.15",
+    "currentRelease": "0.1.0-rc.16",
+    "migrationHistory": "EXACT_PREFIX",
+    "migrationAdded": false,
+    "postgresqlMajor": 16,
+    "codexCliChanged": false,
+    "publicContracts": "UNCHANGED",
+    "automaticDownMigration": false,
+    "rollbackStrategy": "RESTORE_PAIRED_BACKUP_TO_EMPTY_PARALLEL_DATABASE"
+  },
+  "privateAlphaPackaging": {
+    "federatedSourceImplementationInApiImage": true,
+    "privatePaperclipComposeOverlayBundled": true,
+    "paperclipAlphaRunbookBundled": true,
+    "publicDemoLoadsFederatedSource": false,
+    "customerCredentialIncluded": false
+  },
+  "decision": "RC16_PUBLISHED_AND_HONG_KONG_PREPARED_NOT_STARTED_RC14_REMAINS_PUBLIC",
+  "notClaimed": [
+    "RC16 runtime start",
+    "RC16 public traffic",
+    "private OIDC Alpha start",
+    "customer-owned Paperclip sandbox acceptance",
+    "Paperclip usage or cost synchronization",
+    "production Connector availability"
+  ]
+}
