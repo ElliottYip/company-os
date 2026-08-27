@@ -1,13 +1,15 @@
 # ANC public exhibition Demo runbook
 
-Status: RC12 passed Hong Kong closed-ingress API, browser, recovery and
-30-minute observation acceptance. RC11 is stopped but retained. Independent
+Status: RC13 is published and runs as a separate Hong Kong closed-ingress Alpha
+candidate. Its API/Web health, two-visitor isolation, governed approval/reset,
+formal-route denial and API-restart recovery checks pass. RC12 remains healthy
+and retained. Independent
 Google and Cloudflare DNS-over-HTTPS queries, including one from the Hong Kong
 host, return `47.242.52.235` for both selected names. Earlier UDP/53 queries
 from the development network were transparently rewritten to `28.0.*` and are
 not authoritative evidence. Matching TLS is absent and public ingress is not
 accepted. Target: route the accepted candidate only behind verified DNS/TLS and
-repeat the complete journey through the public origins
+repeat the complete journey through the public origins.
 
 ## Safety boundary
 
@@ -225,6 +227,9 @@ with its disabled Nginx candidate in
 - incident log and rollback/candidate-withdrawal decision, if used.
 
 The current state is
-`HK_RC12_RUNNING_CLOSED_INGRESS_DNS_AUTHORITY_BLOCKED`, never publicly routed or
-production-ready. Retain RC8 through RC12 and repeat the complete browser and
-recovery admission through verified TLS before changing that state.
+`HK_RC13_RUNNING_CLOSED_INGRESS_AWAITING_TLS_AND_PUBLIC_TRAFFIC_AUTHORIZATION`.
+RC13 evidence is retained in
+[`2026-08-27-anc-alpha-hk-rc13-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc13-closed-ingress.json).
+It is not publicly routed or production-ready. Retain RC8 through RC13 and
+repeat the complete browser and recovery admission through verified TLS before
+changing that state.

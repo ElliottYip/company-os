@@ -1,18 +1,19 @@
 # ANC Alpha launch gap analysis
 
 Date: 2026-08-27  
-Baseline: RC12 / `HK_CLOSED_INGRESS_ACCEPTED`
+Baseline: RC13 / `HK_CLOSED_INGRESS_ACCEPTED`
 
 ## Current truth
 
 - The Agent Portfolio and deterministic exhibition journey pass local browser
   admission.
-- RC12 is published and installed in Hong Kong. One API and one Web replica are
-  running behind closed ingress with fixed private bridge addresses; public
-  traffic, DNS and TLS remain unchanged.
-- The complete API/browser/recovery path and 30-minute 180-sample observation
-  passed with zero P0/P1. RC11 is stopped while its release and evidence remain
-  retained.
+- RC13 is published, installed and running in Hong Kong as a separate API/Web
+  pair behind closed ingress with fixed private bridge addresses. RC12 remains
+  healthy and retained; public traffic and TLS remain unchanged.
+- RC13 health/readiness, two-visitor isolation, governed pause/approval/reset,
+  formal-route denial and API restart/recovery pass. RC12 retains the earlier
+  complete browser and 30-minute 180-sample observation evidence; those checks
+  must be repeated against RC13 through the final HTTPS origins.
 - A pinned Paperclip `v2026.817.0` adapter now implements credential-file-only
   Agent inventory and Federated Issue synchronization behind an authorized
   formal trigger. Current demonstrations still use explicit fixtures, and no
