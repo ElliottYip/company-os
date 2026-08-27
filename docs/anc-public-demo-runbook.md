@@ -178,6 +178,10 @@ RC12 publication and Hong Kong prepare-only installation evidence is
 [`2026-08-27-anc-alpha-rc12-publication-hk-install.json`](acceptance/2026-08-27-anc-alpha-rc12-publication-hk-install.json).
 RC12 closed-ingress acceptance evidence is
 [`2026-08-27-anc-alpha-hk-rc12-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc12-closed-ingress.json).
+The prepared, unapplied DNS/TLS route and rollback contract is
+[`2026-08-27-anc-alpha-rc12-public-cutover-plan.json`](acceptance/2026-08-27-anc-alpha-rc12-public-cutover-plan.json),
+with its disabled Nginx candidate in
+[`2026-08-27-anc-alpha-rc12-public-nginx.candidate.conf`](acceptance/2026-08-27-anc-alpha-rc12-public-nginx.candidate.conf).
 
 ## Evidence to retain
 

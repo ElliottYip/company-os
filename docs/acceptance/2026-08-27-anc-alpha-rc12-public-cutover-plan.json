@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PUBLIC_CUTOVER_PLAN",
+  "recordedAt": "2026-08-27T12:32:00Z",
+  "status": "PREPARED_NOT_APPLIED",
+  "candidate": {
+    "releaseTag": "v0.1.0-rc.12",
+    "releaseId": "0.1.0-rc.12-a1358df74535",
+    "site": "hong-kong",
+    "publicIpv4": "47.242.52.235",
+    "webTarget": "172.31.11.3:8080",
+    "apiTarget": "172.31.11.2:4310"
+  },
+  "dns": [
+    {
+      "hostname": "company-os.raft.xin",
+      "recordType": "A",
+      "observedValue": "28.0.77.91",
+      "candidateValue": "47.242.52.235",
+      "rollbackValue": "28.0.77.91",
+      "applied": false
+    },
+    {
+      "hostname": "company-os-api.raft.xin",
+      "recordType": "A",
+      "observedValue": "28.0.77.92",
+      "candidateValue": "47.242.52.235",
+      "rollbackValue": "28.0.77.92",
+      "applied": false
+    }
+  ],
+  "tls": {
+    "certificateName": "company-os.raft.xin",
+    "subjectNames": ["company-os.raft.xin", "company-os-api.raft.xin"],
+    "issuer": "LetsEncrypt",
+    "issued": false,
+    "existingMatchingCertificate": false
+  },
+  "ingress": {
+    "candidateFile": "/srv/company-os/staging/config/candidates/company-os-public-demo-rc12.nginx.conf",
+    "enabledFile": "/etc/nginx/sites-enabled/company-os-staging",
+    "candidateDigest": "sha256:7311a670e207ba6733437317c061e846caab818c0fed7c04b220b0b8b972e94e",
+    "installedPrepareOnly": true,
+    "syntaxValidatedWithSubstituteCertificate": true,
+    "activeConfigurationReloaded": false,
+    "enabled": false
+  },
+  "orderedGates": [
+    "obtain authoritative AliDNS access",
+    "capture record identifiers and TTL before mutation",
+    "change both A records to the Hong Kong public IPv4",
+    "wait for authoritative and public resolver convergence",
+    "issue one certificate covering both hostnames",
+    "validate and atomically enable the RC12 Nginx candidate",
+    "repeat the full browser, isolation, reset, recovery and formal-route-denial acceptance through HTTPS",
+    "observe at least 30 minutes with zero P0/P1 before declaring the public Alpha available"
+  ],
+  "rollback": [
+    "withdraw the enabled Nginx candidate",
+    "restore both recorded DNS values",
+    "keep RC12 running behind closed ingress for diagnosis",
+    "retain all access, error and acceptance evidence"
+  ],
+  "blockingInputs": [
+    "authenticated AliDNS change authority",
+    "matching certificate issuance after DNS convergence"
+  ]
+}
