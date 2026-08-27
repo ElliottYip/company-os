@@ -16,6 +16,7 @@ export default defineConfig({
     channel: "chrome",
     headless: true,
     ignoreHTTPSErrors: false,
+    locale: "en-US",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     ...(resolverRules

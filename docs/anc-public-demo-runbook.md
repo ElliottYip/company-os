@@ -226,10 +226,17 @@ with its disabled Nginx candidate in
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-The current state is
-`HK_RC13_RUNNING_CLOSED_INGRESS_AWAITING_TLS_AND_PUBLIC_TRAFFIC_AUTHORIZATION`.
-RC13 evidence is retained in
-[`2026-08-27-anc-alpha-hk-rc13-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc13-closed-ingress.json).
-It is not publicly routed or production-ready. Retain RC8 through RC13 and
-repeat the complete browser and recovery admission through verified TLS before
-changing that state.
+RC13 was the first candidate routed through the authorized ANC-prefixed TLS
+entry and remains running as the immediate rollback candidate. RC14 preserves
+that deployment boundary, clarifies Company OS as the product and ANC as its
+Agent management and governance layer, and is now the publicly routed Demo.
+
+The current state is `HK_RC14_PUBLIC_ALPHA_DEMO_ACCEPTED`. RC13 closed-ingress
+evidence remains retained in
+[`2026-08-27-anc-alpha-hk-rc13-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc13-closed-ingress.json),
+and RC14 publication, TLS, browser, isolation, recovery and 30-minute public
+observation evidence is retained in
+[`2026-08-27-anc-alpha-rc14-public.json`](acceptance/2026-08-27-anc-alpha-rc14-public.json).
+This is a public fixture-only Alpha Demo, not a production or private OIDC
+runtime. Keep RC8 through RC14 immutable; enable a real external Connector only
+through the separately authenticated private Alpha path.

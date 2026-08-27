@@ -52,7 +52,10 @@ async function shot(page, name) {
 }
 
 try {
-  const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const desktop = await browser.newContext({
+    locale: "en-US",
+    viewport: { width: 1440, height: 900 },
+  });
   const page = await desktop.newPage();
   observe(page, "desktop");
   await page.goto(webOrigin, { waitUntil: "networkidle" });
@@ -64,7 +67,10 @@ try {
   await shot(page, "02-desktop-portfolio-en.png");
   await desktop.close();
 
-  const tablet = await browser.newContext({ viewport: { width: 768, height: 900 } });
+  const tablet = await browser.newContext({
+    locale: "en-US",
+    viewport: { width: 768, height: 900 },
+  });
   const tabletPage = await tablet.newPage();
   observe(tabletPage, "tablet");
   await tabletPage.goto(webOrigin, { waitUntil: "networkidle" });
