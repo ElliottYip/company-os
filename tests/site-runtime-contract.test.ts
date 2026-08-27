@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
   assertIndependentSites,
   parseDependencySecretMetadata,
   parseSiteRuntimeManifest,
+  renderSitePublicEnvironment,
 } from "../adapters/config/site-runtime-contract.ts";
 
 const digest = (name: string, character = "a") =>
@@ -159,6 +161,33 @@ test("site runtime contract admits independent active and private standby sites"
   assert.equal(hangzhou.capabilities.publicIngress, "DISABLED_PENDING_AUTHORIZATION");
   assert.doesNotMatch(JSON.stringify(hangzhou), /raft\.xin|hong-kong|\.hk\.internal/);
   assert.doesNotThrow(() => assertIndependentSites(hongKong, hangzhou));
+});
+
+test("site contract renders complete site-owned public configuration without cross-site coordinates", () => {
+  const hongKong = renderSitePublicEnvironment(parseSiteRuntimeManifest(site()),
+    "/etc/company-os/hong-kong-secrets");
+  const hangzhou = renderSitePublicEnvironment(parseSiteRuntimeManifest(hangzhouSite()),
+    "/etc/company-os/hangzhou-7-secrets");
+
+  assert.match(hongKong, /COMPANY_OS_PUBLIC_URL=https:\/\/company-os-api\.raft\.xin/);
+  assert.match(hongKong, /COMPANY_OS_COMPOSE_PROJECT=company-os-hong-kong/);
+  assert.match(hangzhou, /COMPANY_OS_PUBLIC_URL=https:\/\/api\.company-os\.hangzhou-7\.internal/);
+  assert.match(hangzhou, /COMPANY_OS_PUBLIC_INGRESS=DISABLED_PENDING_AUTHORIZATION/);
+  assert.match(hangzhou, /COMPANY_OS_OFF_SITE_BACKUP=DISABLED_PENDING_AUTHORIZATION/);
+  assert.doesNotMatch(hangzhou, /raft\.xin|hong-kong|\.hk\.internal/);
+  assert.doesNotMatch(`${hongKong}\n${hangzhou}`, /CLIENT_SECRET=|BEARER_TOKEN=|PASSWORD=|DATABASE_URL=/);
+});
+
+test("staging Compose consumes site variables and keeps opt-in backup out of base interpolation", async () => {
+  const source = await readFile(new URL("../deploy/compose.staging.yml", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /company-os(?:-api)?\.raft\.xin|company-os-staging-raft-xin/);
+  for (const variable of [
+    "COMPANY_OS_COMPOSE_PROJECT", "COMPANY_OS_PRODUCT_NETWORK", "COMPANY_OS_PUBLIC_URL",
+    "COMPANY_OS_WEB_ORIGINS", "COMPANY_OS_OIDC_REDIRECT_URI", "COMPANY_OS_INSTANCE_ID",
+    "COMPANY_OS_REFERENCE_DATA_NODE_PORT", "COMPANY_OS_WEB_LOOPBACK_PORT",
+    "COMPANY_OS_API_LOOPBACK_PORT", "COMPANY_OS_DATA_NODE_VOLUME", "COMPANY_OS_BACKUP_VOLUME",
+  ]) assert.match(source, new RegExp(`\\$\\{${variable}`));
+  assert.doesNotMatch(source, /COMPANY_OS_BACKUP_S3_(?:ENDPOINT|REGION|BUCKET):\?/);
 });
 
 test("site runtime contract rejects mutable images, callback drift, unknown keys and inadequate headroom", () => {

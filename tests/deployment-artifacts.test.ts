@@ -175,7 +175,7 @@ test("reference Data Node image is non-root, fixture-only, file-secret based and
   assert.match(runbook, /not an enterprise data connector/i);
   assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN_FILE:/);
   assert.match(compose, /company_os_staging_data_node:\/var\/lib\/company-os-data-node/);
-  assert.match(compose, /127\.0\.0\.1:4322:4321/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_REFERENCE_DATA_NODE_PORT:[^}]+\}:4321/);
   assert.doesNotMatch(compose, /COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN:\s*\S+/);
 });
 
@@ -274,7 +274,7 @@ test("managed-cloud profile reuses immutable API/Web artifacts and an external d
   assert.doesNotMatch(example, /sk-[A-Za-z0-9_-]{16,}/);
 });
 
-test("raft.xin staging is isolated, dependency-bound, resource bounded, and file-secret based", async () => {
+test("staging is site-rendered, isolated, dependency-bound, resource bounded, and file-secret based", async () => {
   const [compose, example, dependencies, runbook, packageJsonSource] = await Promise.all([
     read("deploy/compose.staging.yml"),
     read("deploy/staging.env.example"),
@@ -282,13 +282,14 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
     read("docs/staging-raft-xin.md"),
     read("package.json"),
   ]);
-  assert.match(compose, /^name: company-os-staging$/m);
-  assert.match(compose, /name: company-os-staging_internal/);
-  assert.match(compose, /127\.0\.0\.1:4600:8080/);
-  assert.match(compose, /127\.0\.0\.1:4601:4310/);
-  assert.match(compose, /127\.0\.0\.1:4322:4321/);
-  assert.match(compose, /company-os\.raft\.xin/);
-  assert.match(compose, /company-os-api\.raft\.xin/);
+  assert.match(compose, /^name: \$\{COMPANY_OS_COMPOSE_PROJECT:/m);
+  assert.match(compose, /name: \$\{COMPANY_OS_PRODUCT_NETWORK:/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_WEB_LOOPBACK_PORT:[^}]+\}:8080/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_API_LOOPBACK_PORT:[^}]+\}:4310/);
+  assert.match(compose, /127\.0\.0\.1:\$\{COMPANY_OS_REFERENCE_DATA_NODE_PORT:[^}]+\}:4321/);
+  assert.match(compose, /COMPANY_OS_PUBLIC_URL: \$\{COMPANY_OS_PUBLIC_URL:/);
+  assert.match(compose, /COMPANY_OS_OIDC_REDIRECT_URI: \$\{COMPANY_OS_OIDC_REDIRECT_URI:/);
+  assert.doesNotMatch(compose, /company-os(?:-api)?\.raft\.xin/);
   assert.match(compose, /read_only: true/);
   assert.match(compose, /cap_drop: \[ALL\]/);
   assert.match(compose, /no-new-privileges:true/);
@@ -297,6 +298,10 @@ test("raft.xin staging is isolated, dependency-bound, resource bounded, and file
   assert.match(compose, /COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN_FILE:/);
   assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:\?set the immutable acceptance Data Node image digest/);
   assert.match(example, /^COMPANY_OS_REFERENCE_DATA_NODE_IMAGE=.*@sha256:/m);
+  assert.match(example, /^COMPANY_OS_COMPOSE_PROJECT=CHANGE_ME_SITE_COMPOSE_PROJECT$/m);
+  assert.match(example, /^COMPANY_OS_PRODUCT_NETWORK=CHANGE_ME_SITE_PRODUCT_NETWORK$/m);
+  assert.match(example, /^COMPANY_OS_PUBLIC_URL=https:\/\/CHANGE_ME_SITE_API_ORIGIN$/m);
+  assert.match(example, /^COMPANY_OS_OIDC_REDIRECT_URI=https:\/\/CHANGE_ME_SITE_WEB_ORIGIN\/api\/auth\/oauth2\/callback\/enterprise-oidc$/m);
   assert.doesNotMatch(compose, /buzz-prod|generator001y|\/opt\/raft-relay|\/data\/raft-h3/);
   assert.doesNotMatch(compose, /^\s+postgres:\s*$/m);
   assert.doesNotMatch(example, /(?:password|secret|bearer)=\S+/i);

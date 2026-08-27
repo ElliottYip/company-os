@@ -153,6 +153,50 @@ export function assertIndependentSites(left: SiteRuntimeManifest, right: SiteRun
   }
 }
 
+export function renderSitePublicEnvironment(
+  manifest: SiteRuntimeManifest,
+  secretDirectory: string,
+): string {
+  if (!safeAbsolutePath(secretDirectory) || secretDirectory === "/") invalidSite();
+  const values: Readonly<Record<string, string>> = {
+    COMPANY_OS_API_IMAGE: manifest.product.images.api,
+    COMPANY_OS_WEB_IMAGE: manifest.product.images.web,
+    COMPANY_OS_OPS_IMAGE: manifest.product.images.ops,
+    COMPANY_OS_CODEX_AGENT_NODE_IMAGE: manifest.product.images.codexAgentNode,
+    COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: manifest.product.images.vaultSecretBroker,
+    COMPANY_OS_REFERENCE_DATA_NODE_IMAGE: manifest.product.images.referenceDataNode,
+    COMPANY_OS_COMPOSE_PROJECT: manifest.site.composeProject,
+    COMPANY_OS_PRODUCT_NETWORK: manifest.site.productNetwork,
+    COMPANY_OS_REFERENCE_DATA_NODE_PORT: String(manifest.site.ports.referenceDataNode),
+    COMPANY_OS_WEB_LOOPBACK_PORT: String(manifest.site.ports.web),
+    COMPANY_OS_API_LOOPBACK_PORT: String(manifest.site.ports.api),
+    COMPANY_OS_DATA_NODE_VOLUME: `${manifest.site.id}-data-node`,
+    COMPANY_OS_BACKUP_VOLUME: `${manifest.site.id}-backups`,
+    COMPANY_OS_PUBLIC_URL: manifest.product.apiOrigin,
+    COMPANY_OS_WEB_ORIGINS: manifest.product.webOrigin,
+    COMPANY_OS_OIDC_REDIRECT_URI: manifest.product.oidcRedirectUri,
+    COMPANY_OS_INSTANCE_ID: manifest.product.instanceId,
+    COMPANY_OS_OIDC_ISSUER: manifest.dependencies.oidc.issuer,
+    COMPANY_OS_OIDC_DISCOVERY_URL: manifest.dependencies.oidc.discoveryUrl,
+    COMPANY_OS_OIDC_CLIENT_ID: manifest.dependencies.oidc.clientId,
+    COMPANY_OS_HTTP_AGENT_NODE_ID: manifest.dependencies.agentNode.id,
+    COMPANY_OS_HTTP_AGENT_NODE_NAME: `Agent Node ${manifest.site.id}`,
+    COMPANY_OS_HTTP_AGENT_NODE_BASE_URL: manifest.dependencies.agentNode.baseUrl,
+    COMPANY_OS_HTTP_DATA_NODE_ID: manifest.dependencies.referenceDataNode.id,
+    COMPANY_OS_HTTP_DATA_NODE_NAME: `Fixture Data Node ${manifest.site.id}`,
+    COMPANY_OS_HTTP_DATA_NODE_BASE_URL: manifest.dependencies.referenceDataNode.baseUrl,
+    COMPANY_OS_HTTP_DATA_NODE_SOURCES: "acceptance-fixtures",
+    COMPANY_OS_HTTP_DATA_NODE_OPERATIONS: "READ",
+    COMPANY_OS_HTTP_SECRET_BROKER_ID: manifest.dependencies.secretBroker.id,
+    COMPANY_OS_HTTP_SECRET_BROKER_NAME: `Secret Broker ${manifest.site.id}`,
+    COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: manifest.dependencies.secretBroker.baseUrl,
+    COMPANY_OS_PUBLIC_INGRESS: manifest.capabilities.publicIngress,
+    COMPANY_OS_OFF_SITE_BACKUP: manifest.capabilities.offSiteBackup,
+    COMPANY_OS_SECRET_DIRECTORY: secretDirectory,
+  };
+  return `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join("\n")}\n`;
+}
+
 export function parseDependencySecretMetadata(
   value: unknown,
   expectedSiteId?: string,
