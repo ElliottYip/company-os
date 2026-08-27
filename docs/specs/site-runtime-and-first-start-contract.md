@@ -278,7 +278,15 @@ make the minimal implementation pass and run the complete gate.
   runtime contract, and preparation/traffic state machines without changing
   RC4 site schema v1. Authorization parsing, candidate runtime contract
   validation, and canonical-store-bound non-mutating preparation planning are
-  complete; parallel runtime rendering and both executors remain open.
+  complete; parallel runtime rendering, concrete preparation step adapters,
+  and the traffic executor remain open.
+
+The preparation executor's evidence-retaining state machine is implemented: it
+accepts only the ordered pre-traffic steps, records a digest for each outcome,
+shares the lifecycle lock, stops at the first failure, and never claims a
+traffic move or automatic rollback. Concrete target adapters for dispatch
+freeze, paired backup/restore, candidate Compose rendering, migration, smoke,
+and state comparison remain required before the executor is operational.
 
 The dependency initialization planner is canonical-store-bound,
 authorization-bound, and non-mutating by default. Runtime owners are resolved
