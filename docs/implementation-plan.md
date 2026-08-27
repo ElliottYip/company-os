@@ -23,40 +23,40 @@ behavior changes.
 
 ## Phase 1 — neutral Portfolio contract
 
-- Add Agent class, management depth, execution owner, external identity/source,
+- [x] Add Agent class, management depth, execution owner, external identity/source,
   visibility, and privacy-boundary types.
-- Add truthful Connector data/control capabilities with v1 compatibility.
-- Add a Portfolio projection that can show legacy Governed Agents unchanged.
+- [x] Add truthful Connector data/control capabilities with v1 compatibility.
+- [x] Add a Portfolio projection that can show legacy Governed Agents unchanged.
 
 Verification: focused core/SDK tests, typecheck, boundaries.
 
 ## Phase 2 — cross-source Work
 
-- Add a neutral source envelope and Observed/Governed/Federated modes.
-- Implement idempotent Observed registration without dispatch.
-- Implement monotonic Federated directory/workspace/Work/Run/artifact sync
+- [x] Add a neutral source envelope and Observed/Governed/Federated modes.
+- [x] Implement idempotent Observed registration without dispatch.
+- [x] Implement monotonic Federated directory/workspace/Work/Run/artifact sync
   without runtime proxying.
-- Project legacy Work as Governed.
+- [x] Project legacy Work as Governed.
 
 Verification: domain, application, event-store, HTTP, idempotency, tenant, and
 no-dispatch tests.
 
 ## Phase 3 — commercial and credential governance
 
-- Add idempotent external usage import and allocation dimensions.
-- Add subscription, seat, quota, renewal date, and renewal request lifecycle.
-- Add Token/credential reference status and expiry metadata without material.
-- Bind real approvals only where policy requires one.
+- [x] Add idempotent external usage import and allocation dimensions.
+- [x] Add subscription, seat, quota, renewal date, and renewal request lifecycle.
+- [x] Add Token/credential reference status and expiry metadata without material.
+- [x] Bind real approvals only where policy requires one.
 
 Verification: domain/application/API/projection tests plus Secret scan.
 
 ## Phase 4 — isolated exhibition Demo
 
-- Create server-owned temporary Demo Sessions and deterministic Coral Labs
+- [x] Create server-owned temporary Demo Sessions and deterministic Coral Labs
   portfolio fixtures.
-- Add create/read/reset/recover routes that derive tenant from the session.
-- Prove two visitors cannot observe or mutate one another.
-- Keep formal administration, data, Secret, restore, and execution composition
+- [x] Add create/read/reset/recover routes that derive tenant from the session.
+- [x] Prove two visitors cannot observe or mutate one another.
+- [x] Keep formal administration, data, Secret, restore, and execution composition
   unreachable from Demo identity.
 
 Verification: integration, concurrency, reset, failure-recovery, and security
@@ -64,11 +64,11 @@ boundary tests.
 
 ## Phase 5 — existing Web, new information architecture
 
-- Reuse the current shell, tokens, Paperclip-inspired interactions, and i18n.
-- Update Dashboard, Agents, Work, Approvals, Governance, and Usage & Billing.
-- Add source return links, fixture labels, management-depth badges, privacy copy,
+- [x] Reuse the current shell, tokens, Paperclip-inspired interactions, and i18n.
+- [x] Update Dashboard, Agents, Work, Approvals, Governance, and Usage & Billing.
+- [x] Add source return links, fixture labels, management-depth badges, privacy copy,
   sync state, commercial state, and responsibility gaps.
-- Complete the three-minute guided Demo on desktop and tablet.
+- [x] Complete the three-minute guided Demo on desktop and tablet.
 
 Verification: Web state tests, interaction checks, bilingual browser E2E,
 accessibility/console/network inspection, concurrent sessions.
@@ -78,7 +78,7 @@ accessibility/console/network inspection, concurrent sessions.
 - Run focused and full unit/integration/E2E, migration, type, build, boundary,
   independence, Secret, dependency, performance, backup/restore, and upgrade
   admissions.
-- Add a public Demo deployment profile and on-site runbook.
+- [x] Add a public Demo deployment profile and on-site runbook.
 - Prepare the next immutable candidate after RC5 (default RC6) and Hong Kong
   candidate steps without overwriting RC4/RC5 or prepare-only evidence.
 

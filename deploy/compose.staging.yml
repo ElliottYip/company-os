@@ -79,6 +79,7 @@ services:
       COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
       COMPANY_OS_PROFILE: managed-cloud
       COMPANY_OS_EXPOSURE: public
+      COMPANY_OS_PUBLIC_DEMO_ENABLED: ${COMPANY_OS_PUBLIC_DEMO_ENABLED:-false}
       COMPANY_OS_HOST: 0.0.0.0
       COMPANY_OS_PORT: 4310
       COMPANY_OS_PUBLIC_URL: ${COMPANY_OS_PUBLIC_URL:?set the site API origin}

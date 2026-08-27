@@ -130,6 +130,12 @@ function exposure(value: string | undefined): "private" | "public" {
   throw new Error("COMPANY_OS_EXPOSURE must be private or public");
 }
 
+function enabled(value: string | undefined, name: string): boolean {
+  if (value === undefined || value === "false") return false;
+  if (value === "true") return true;
+  throw new Error(`${name} must be true or false`);
+}
+
 function releaseId(value: string | undefined): string | undefined {
   if (value === undefined || value.trim() === "") return undefined;
   const normalized = value.trim();
@@ -141,6 +147,10 @@ function releaseId(value: string | undefined): string | undefined {
 
 const profile = deploymentProfile(process.env.COMPANY_OS_PROFILE);
 const deploymentExposure = exposure(process.env.COMPANY_OS_EXPOSURE);
+const publicDemoEnabled = enabled(
+  process.env.COMPANY_OS_PUBLIC_DEMO_ENABLED,
+  "COMPANY_OS_PUBLIC_DEMO_ENABLED",
+);
 const metricsEnabled = process.env.COMPANY_OS_METRICS_ENABLED === "true";
 const runtimeMetrics = metricsEnabled ? new BoundedHttpMetrics() : null;
 if (metricsEnabled && deploymentExposure !== "private") {
@@ -155,14 +165,14 @@ const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicy
   process.env.COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID,
 );
 const { runtime } = createDemoComposition();
-const publicDemoSessions = new DemoPortfolioSessions({
+const publicDemoSessions = publicDemoEnabled ? new DemoPortfolioSessions({
   store: new InMemoryDemoSessionStore(),
   createFixture: createDemoPortfolioFixture,
   nextSessionId: () => randomBytes(32).toString("base64url"),
   nextCompanyId: () => `demo-company-${randomBytes(12).toString("hex")}`,
   now: () => new Date().toISOString(),
   timeToLiveMilliseconds: 4 * 60 * 60 * 1_000,
-});
+}) : undefined;
 const formalConfiguration = {
   publicBaseUrl: process.env.COMPANY_OS_PUBLIC_URL,
   issuer: process.env.COMPANY_OS_OIDC_ISSUER,
@@ -449,7 +459,7 @@ async function formalPortfolioApi(
 }
 const server = createCompanyOsHttpService({
   runtime,
-  publicDemoSessions,
+  ...(publicDemoSessions ? { publicDemoSessions } : {}),
   deploymentProfile: profile,
   ...(deployedReleaseId ? { releaseId: deployedReleaseId } : {}),
   serviceMode: isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",

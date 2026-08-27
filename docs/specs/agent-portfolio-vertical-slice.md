@@ -165,27 +165,27 @@ Secret, data, Connector execution, restore, archive, or administration services.
 
 ## Ordered implementation tasks
 
-- [ ] Add neutral Agent Portfolio and capability contracts.
+- [x] Add neutral Agent Portfolio and capability contracts.
   - Accept: all three classes and four management depths validate; invalid
     control claims fail closed.
   - Verify: focused core/SDK tests, typecheck, boundary check.
-- [ ] Add additive persistence and projections.
+- [x] Add additive persistence and projections.
   - Accept: old Agents/Connectors/Work migrate without loss; RC5 backups remain
     inspectable.
   - Verify: migration, event replay, backup/restore compatibility tests.
-- [ ] Add Observed Work registration and Federated sync.
+- [x] Add Observed Work registration and Federated sync.
   - Accept: idempotent registration, monotonic sync, bounded references, no
     dispatch.
   - Verify: application, HTTP, event/outbox, and tenant tests.
-- [ ] Add subscription, credential status, usage allocation, and renewal.
+- [x] Add subscription, credential status, usage allocation, and renewal.
   - Accept: no Secret material; renewal lifecycle and real approval linkage are
     explicit.
   - Verify: domain/application/API/projection tests.
-- [ ] Add isolated deterministic Demo Sessions.
+- [x] Add isolated deterministic Demo Sessions.
   - Accept: concurrent sessions do not cross; reset and recovery are scoped;
     formal routes reject Demo identity.
   - Verify: integration and concurrency tests.
-- [ ] Adjust existing Web pages.
+- [x] Adjust existing Web pages.
   - Accept: Portfolio Dashboard, Agents, Work, Approvals, Governance, and Usage
     display source, management depth, fixture status, and safe return links.
   - Verify: component tests, interaction checks, browser E2E, tablet viewport.
@@ -205,4 +205,3 @@ permission, credential status, subscription, renewal, usage, cost, Work,
 approval, evidence, and responsibility project together; the public Demo is
 isolated, resettable, bilingual, responsive, deterministic, and formally
 separated; and the complete repository admission passes.
-

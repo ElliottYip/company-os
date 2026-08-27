@@ -99,3 +99,21 @@ Portfolio snapshot, register one Observed Work idempotently, synchronize one
 Federated Work without dispatch, and project both beside an unchanged Governed
 Work. Commercial records and Demo isolation follow as separate verified slices.
 
+## Implemented status
+
+The vertical slice is now implemented on `codex/anc-agent-portfolio` without
+rewriting the retained control plane:
+
+- neutral Agent Portfolio validation and durable formal synchronization;
+- Connector capability v2 and SDK records while v1 execution remains valid;
+- idempotent Observed Work and monotonic Federated Work synchronization;
+- subscription, credential-reference status, usage allocation, and renewal;
+- isolated, expiring, resettable public Demo Sessions and formal-route denial;
+- bilingual responsive Portfolio pages and the approval/renewal/reset journey;
+- explicit `COMPANY_OS_PUBLIC_DEMO_ENABLED` opt-in, defaulting to disabled.
+
+The event additions use the existing append-only event store, so this slice
+does not require a destructive SQL shape change. The existing ordered migration
+chain must still be preflighted for the RC6 candidate. Publication, immutable
+image digests, Hong Kong installation, and target-host acceptance remain open
+external gates and must not be inferred from local verification.
