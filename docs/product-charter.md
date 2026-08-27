@@ -1,134 +1,212 @@
-# Company OS product charter
+# ANC / Company OS product charter
 
 Status: Active product constitution  
-Last updated: 2026-08-18
+Last updated: 2026-08-27
 
 ## Product thesis
 
-Company OS is an independent AI Native Company operating system and control
-plane. It is neither a Raft Agent feature nor a traditional agent-monitoring
-dashboard. Agents can become colleagues, but cannot carry legal, business, or
-organizational responsibility. Company OS therefore places humans, agents,
-permissions, approvals, evidence, and responsibility chains inside one company
-structure. A real employee acting as Agent Boss manages agents and remains
-organizationally accountable for outcomes.
+ANC is the enterprise management and governance layer between companies,
+humans, Agents, model providers, and external Agent platforms. The repository
+and deployable product remain named Company OS; ANC is the product model, not a
+second codebase or a vendor-specific runtime.
 
-The working hypothesis is that one Agent Boss can safely manage roughly 3–10
-agents. Enterprise pilots must validate this; it is not a promise or hard limit.
+ANC is not an Agent frontend, chat client, IDE, replacement for a federated
+workspace, or the only Agent runtime. It is the enterprise system of record for
+Agent identity, ownership, authority, data access, usage, cost, subscriptions,
+credential-reference status, lifecycle, approvals, evidence, risk, and human
+accountability.
 
-## Core product objects
+Agents can perform work but cannot carry legal, organizational, or business
+responsibility. Every managed Agent therefore has an accountable human or an
+explicitly visible responsibility gap. ANC never invents visibility or control
+that a Connector cannot actually provide.
 
-1. Companies, departments, roles, projects, and workspaces.
-2. Human identities, accountable human owners, agents, agent roles, and
-   reporting relationships.
-3. Equal multi-vendor connectors for Raft Agent, Codex, DeepSeek, and
-   enterprise-owned agents. Raft Agent is optional.
-4. Company data sources, data-authorization contracts, permission scopes, and a
-   data-egress firewall.
-5. Goals, task plans, tool activity, evidence, results, and complete
-   responsibility records.
-6. Autonomy and risk levels. High-risk actions pause for a matching human to
-   approve or reject.
-7. An Agent Boss workspace for assigning work, observing state, resolving
-   approvals, reviewing evidence, and tracing anomalies and responsibility.
-8. Future training/certification for Agent Bosses, human owners, roles, and
-   agent safety, permission, and business capability.
-9. Enterprise pilots that validate management ratios, automation boundaries,
-   actual cost, and later industry templates.
+## The three Agent classes
 
-## Responsibility is the primary product record
+### Personal Agent
 
-Every executable work item must answer who proposed the goal, which human is
-accountable, which agent executed it, which permissions/data were used, who
-approved each high-risk action, what evidence supports the work, and what the
-result was. This responsibility chain is first-class, not a log attachment.
+A Personal Agent is bound to one employee, such as that employee's coding or
+desktop Agent. ANC manages the Agent as an enterprise asset: identity, provider
+and runtime references, human and company binding, permissions, enterprise-data
+eligibility, usage and cost, subscription or quota, credential-reference
+status, renewal, lifecycle, and policy compliance.
 
-## First-run experience: deterministic Demo Mode
+The default management depth is `INVENTORY`. ANC does not ingest private task
+content, complete conversations, local files, private sessions, or private
+reasoning. A Connector must not imply that those data are available.
 
-The highest-priority experience is a zero-configuration Demo Mode, comparable
-to a real product test mode rather than a static tour. Without an account,
-NIP-07, relay, model key, or production identity, a user enters a running demo
-company.
+### Shared Agent
 
-The demo is deterministic and event-driven. It never calls a real model, relay,
-MCP server, shell, filesystem, enterprise system, or paid API; creates no real
-private key; and never mixes production data.
+A Shared Agent serves a channel, group, team, or business function. It supports
+two distinct Work modes:
 
-The target three-minute loop is inspect an agent's role/manager/permissions/
-goal/state → assign a simulated task → observe plan/tool activity/evidence/
-result → pause for high-risk approval → approve or reject → inspect the full
-responsibility chain → reset in one action.
+- `OBSERVED`: ANC idempotently records initiator, Agent, external source
+  reference, bounded summary, state, result reference, usage, and cost. The
+  source system owns dispatch. Approval and full execution control are not
+  implied.
+- `GOVERNED`: ANC admits the work through a responsibility contract, freezes
+  permission and data authority, can pause exact high-risk actions, records the
+  human decision, evidence, result, cost, and complete responsibility chain.
 
-Demo cannot weaken production identity gates. Promotion may copy only a
-sanitized organization template; identity, agents, permissions, and
-responsibility contracts must be rebound.
+Policy selects the mode based on risk, data, tools, and business context. ANC
+does not require all shared work to become Governed Work.
 
-## Virtual office and brand direction
+### Federated Runtime
 
-Company OS should feel like a company at work, not a generic SaaS dashboard.
-The system compiles organizations into an office-like space with department
-rooms, cross-functional project rooms, meeting rooms, reception, pantry,
-restroom, and corridors. Agent states include working, waiting, blocked,
-awaiting approval, and complete.
+A Federated Runtime is an external company-level Agent platform that owns its
+workspace, sessions, memory, sandbox, files, native task execution, and
+collaboration UI. ANC does not proxy every execution or recreate that runtime.
 
-Raft's three clay fish form the initial agent brand family; humans will receive
-diverse, intentional clay-character choices. The experience is warm, alive,
-playful, restrained, clear, and actionable—not generic AI gradients,
-interchangeable card grids, or cheap cartoon avatars.
+The platform synchronizes neutral records for Agent directory entries, human
+identity mappings, scopes/workspaces, Work/Runs, state, artifacts, cost,
+approval events, evidence references, anomalies, and lifecycle. External IDs
+and source links remain references. Vendor sessions, credentials, private
+reasoning, and raw files do not become ANC domain records.
 
-Reusable 3D assets, rigs, interactions, and action sequences are an explicit
-future direction. The current Pre-3D phase defines spatial compilation, entity
-state, and an `OfficeRendererPort` so business logic is not coupled to 2D DOM.
-It does not implement Blender, GLB, Three.js, or 3D production.
+## Management depth and execution ownership
 
-Company OS owns its design tokens, base components, and legal asset copies.
-Runtime imports from Raft are forbidden. Each copied asset records source,
-worktree state, dependency, license, and hash.
+Every Agent declares both what ANC can manage and who executes work:
 
-## Deployment and identity constitution
+- `INVENTORY`: identity, ownership, permissions, usage, subscription, and
+  lifecycle metadata only.
+- `OBSERVED`: Inventory plus bounded external Work state and result references.
+- `GOVERNED`: ANC can enforce admitted permissions, approval pauses, lifecycle
+  control, and responsibility chains through a capable Connector.
+- `FEDERATED`: an external platform executes; ANC synchronizes the declared
+  management record through a stable contract.
 
-One codebase produces `managed-cloud` and `self-hosted` profiles. Managed cloud
-is product-operated for fast trials/SMBs. Self-hosted keeps data, credentials,
-and execution in the customer environment. A hybrid cloud control plane plus
-customer-local nodes is a likely direction, but core code assumes neither
-connectivity nor Raft-operated cloud control.
+Management depth is not a maturity score. It is a truthful capability boundary.
+The execution owner is independently declared as `HUMAN_ENDPOINT`,
+`ANC_CONNECTOR`, or `EXTERNAL_PLATFORM`. Invalid combinations fail closed.
 
-Managed cloud may default to unified Raft Identity through `IdentityPort` and
-standard OIDC/SSO boundaries. Product token audiences, permissions, and audits
-remain separate: same account never means shared authority. Self-hosted may use
-enterprise OIDC, SAML, or LDAP. NIP-07/Nostr belongs only in a Raft adapter.
+## Unified portfolio records
 
-The production product ultimately owns its frontend domain, backend service,
-database schema, configuration, and data lifecycle. Raft Web may link or mount
-through a narrow host contract and cannot own Company OS business logic.
+ANC manages one cross-source Agent Portfolio containing:
+
+1. Companies, departments, humans, membership, and external identity mappings.
+2. Agents, providers, models, runtimes, external identities, source references,
+   management depth, execution ownership, visibility, lifecycle, and owner.
+3. Permissions, enterprise-data authorization, policy compliance, and opaque
+   Secret or Token references with status and expiry metadata only.
+4. Subscriptions, seats, quotas, renewal dates, renewal requests, usage, cost,
+   budget, and anomaly records.
+5. Goals, Projects, Work, Attempts, Runs, approvals, evidence, artifacts,
+   results, anomalies, and responsibility records across all sources.
+6. Connector capability and health declarations that separately describe data
+   visibility and control authority.
+
+## Work is a cross-source projection
+
+ANC is not the only task system. The Work portfolio contains:
+
+- Observed Work registered by a source Connector without ANC dispatch;
+- Governed Work dispatched through ANC's existing responsibility and execution
+  contracts; and
+- Federated Work/Run projections synchronized from an external runtime.
+
+Each Work record identifies its mode, initiator when known, executing Agent,
+source system, external ID, channel/thread or workspace reference, sync state,
+result/evidence references, usage/cost, and a safe return link. Private Personal
+Agent activity is outside this projection by default.
+
+## Connector truthfulness
+
+Connector contracts declare capabilities instead of assuming a full runtime.
+Declarations cover inventory, identity mapping, usage, subscription state,
+credential status, observed Work, federated sync, artifacts, approvals,
+evidence, dispatch, progress, pause/resume, cancellation, result, and lifecycle
+control. Catalog registration and live health remain separate facts.
+
+Provider and protocol names belong only in adapters and Connector packages.
+`core`, `ports`, and `application` use neutral types. A missing capability
+is a hard boundary, not a feature that the UI may simulate as live.
+
+## Responsibility remains a primary product record
+
+Governed Work must answer who initiated it, which human is accountable, which
+Agent executed it, which permissions and data were used, who decided each
+high-risk action, what evidence supports the work, what the result was, and what
+it cost. The existing responsibility contract, Approval, Evidence, Result,
+Event Store, Projection, and Outbox capabilities remain canonical.
+
+Observed and Federated records must not be presented as having this complete
+chain unless the source supplied and ANC admitted every required binding.
+
+## Public exhibition Demo
+
+The highest-priority first-run experience is `Explore a live demo company`.
+It creates an isolated, temporary server-side Demo Session without registration,
+OIDC, enterprise credentials, model keys, or production identity. Each session
+receives a deterministic Coral Labs fixture and cannot read or mutate another
+visitor's data.
+
+The three-minute loop covers:
+
+1. inspect Personal, Shared, and Federated Agents and their management depth;
+2. inspect an externally sourced Observed Work item;
+3. inspect a deterministic Federated workspace and synchronization state;
+4. start Governed Work, reach a high-risk pause, and approve or reject it;
+5. inspect evidence, cost, and responsibility chain;
+6. submit a Token or subscription renewal request; and
+7. reset the isolated Demo Session.
+
+All Demo records are visibly labelled `DEMO_FIXTURE`. Demo never calls a paid
+model, Slack-like service, federated platform, enterprise data source, shell,
+filesystem, or production Secret broker. Failure recovery resets only that
+session. The public Demo surface cannot access formal administration routes.
+Formal mode continues to require OIDC and fails closed.
+
+## Web product surface
+
+The existing Paperclip-inspired layout, owned visual system, responsive shell,
+and Chinese/English support remain. Information architecture changes
+incrementally:
+
+- Dashboard: Agent Portfolio totals, management depth, activity, cost, pending
+  approvals, renewals, credential expiry, anomalies, and responsibility gaps.
+- Agents: the unified asset directory and actual management boundary.
+- Work: cross-source Observed, Governed, and Federated Work with return links.
+- Approvals: only actions that truly require ANC governance.
+- Governance: identity, Connectors, models, data, credential references,
+  permissions, policy, management depth, and external sync.
+- Usage & Billing: employee/Agent/department/provider views, subscription seats,
+  quotas, renewals, budgets, and anomalous usage.
+
+The office/3D experience remains an optional presentation surface. It cannot
+define the domain model or block the Portfolio vertical slice.
+
+## Deployment, release, and identity constitution
+
+One codebase produces `managed-cloud` and `self-hosted` profiles. Managed
+cloud may use a replaceable OIDC adapter; self-hosted may use enterprise
+identity. Same account never means shared authority across products.
+
+RC4 and RC5 images, release digests, Hong Kong/Hangzhou site directories,
+prepare-only evidence, backup/restore, migration, upgrade, rollback, resource,
+and isolation contracts are retained and immutable. The Agent Portfolio change
+ships as the next unique release candidate; because `v0.1.0-rc.5` already
+exists, the default next candidate is RC6. Hong Kong receives a separate public
+Demo Profile first. Formal first start, DNS/TLS cutover, real OIDC/Vault data,
+and Hangzhou production cutover require their own authorization and do not
+block the local product vertical slice.
 
 ## Architecture constitution
 
-`core` and `application` never depend on Raft Agent, Buzz/Raft UI, NIP-07,
-Nostr event kinds, a relay, model vendor, database, React, or browser runtime.
+The required dependency direction is:
 
-Replaceable ports cover identity; organization/principal directory; event/data
-store; agent execution; model provider; data connector/egress; approval
-publication; audit/evidence; and asset/office rendering. Raft/Nostr, Raft ACP,
-Codex, DeepSeek, enterprise agents, cloud DBs, and local DBs are adapters only.
+`core <- ports <- application <- adapters/web`
 
-Connector contracts must evolve to express capabilities, identity binding,
-health, task input, progress, approval pause/resume, evidence/result,
-cancellation, timeout, idempotency, protocol version, and runtime proof. Vendor
-sessions, credentials, secrets, and private reasoning never enter the control
-plane.
-
-## Migration discipline
-
-Legacy Raft `company-os/` and related Web/ACP/Core changes are read-only
-migration candidates, not a development location. Never move, delete, modify,
-import, or depend on them. Neutral code may migrate after review. Raft/Nostr/
-ACP/identity/Web mount code remains in Raft or an explicit Raft adapter. Nothing
-is deleted until both sides build and verify independently.
+`core` imports no Company OS layer or vendor SDK. `ports` imports domain
+types from `core` only. `application` imports `core` and `ports` only.
+Adapters, Web, and Connector SDK may depend inward. Raft Agent, Codex, DeepSeek,
+Slack-like channels, federated platform names, NIP-07, Nostr event kinds, relay
+concepts, database libraries, React, and browser APIs never enter inward layers.
 
 ## Current program boundary
 
-Build the independent Pre-3D foundation, model/data boundary foundation, and a
-runnable Agent Boss/Demo vertical slice. Defer certification, ACMM, paid-agent
-calls, production data/credentials, and 3D asset production.
+Deliver the Agent Portfolio vertical slice and the isolated exhibition Demo.
+Do not recreate external workspaces, sandboxes, memory, files, or native Agent
+frontends; require all tasks to pass through ANC; collect Personal Agent private
+activity; invent unavailable provider data; use production credentials or
+data; overwrite immutable release evidence; or perform a broad backend rewrite.
 
