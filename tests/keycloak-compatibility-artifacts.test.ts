@@ -16,6 +16,9 @@ test("Keycloak compatibility admission pins providers and creates credentials on
   assert.match(runner, /mkdtempSync\(join\(tmpdir\(\)/);
   assert.doesNotMatch(runner, /\/private\/tmp/);
   assert.match(runner, /company-os-compat-realm\.json[\s\S]+mode: 0o644/);
+  assert.match(runner, /createServer/);
+  assert.match(runner, /listen\(0, "127\.0\.0\.1"/);
+  assert.doesNotMatch(runner, /const (?:keycloak|edge|postgres)Port = \d{5}/);
   assert.match(workflow, /npm run test:oidc:keycloak/);
 });
 
