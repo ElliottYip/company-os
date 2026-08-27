@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_HOMEPAGE_POSITIONING_PRE_RELEASE",
+  "recordedAt": "2026-08-27T15:40:17Z",
+  "implementationRevision": "0092c9007caa68c7d30912557f431cd9f02acb10",
+  "positioning": {
+    "product": "Company OS",
+    "serviceLayer": "Agent Network Control (ANC)",
+    "englishHeadline": "Enterprise management and governance for every AI agent.",
+    "simplifiedChineseHeadline": "统一管理与治理企业中的每一个 AI Agent。",
+    "visualSystemChanged": false,
+    "entryFlowsChanged": false
+  },
+  "verification": {
+    "repositoryTests": {
+      "total": 721,
+      "passed": 717,
+      "failed": 0,
+      "skipped": 4
+    },
+    "browserE2E": {
+      "total": 21,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 4
+    },
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "PASSED_ZERO_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED",
+    "web3dPerformanceBudget": "PASSED"
+  },
+  "releaseState": {
+    "includedInRc15": false,
+    "remoteBranchUpdated": false,
+    "published": false,
+    "deployed": false
+  },
+  "notClaimed": [
+    "RC15 publication",
+    "public Demo traffic update",
+    "private OIDC runtime start",
+    "customer-owned Paperclip sandbox acceptance"
+  ]
+}
