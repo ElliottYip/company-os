@@ -3,22 +3,47 @@ import { lstat, readFile } from "node:fs/promises";
 
 import { parseStagingDependencyManifest } from
   "../adapters/config/staging-dependency-manifest.ts";
+import type { StagingDependencyExpectation } from
+  "../adapters/config/staging-dependency-manifest.ts";
+import { parsePublicStagingEnvironment } from
+  "../adapters/config/staging-deployment-doctor.ts";
 
 const MAX_BYTES = 64 * 1024;
-export const raftXinStagingExpectation = {
-  deploymentId: "company-os-staging-raft-xin",
-  webOrigin: "https://company-os.raft.xin",
-  apiOrigin: "https://company-os-api.raft.xin",
-  deploymentRoot: "/srv/company-os/staging",
-  composeProject: "company-os-staging",
-  network: "company-os-staging_internal",
-  webLoopbackPort: 4600,
-  apiLoopbackPort: 4601,
-} as const;
+
+export function stagingDependencyExpectationFromPublicEnvironment(
+  environment: Readonly<Record<string, string>>,
+  deploymentRoot: string,
+): StagingDependencyExpectation {
+  const required = (key: string) => {
+    const value = environment[key]?.trim();
+    if (!value) throw new Error("STAGING_SITE_EXPECTATION_INVALID");
+    return value;
+  };
+  const port = (key: string) => {
+    const value = Number(required(key));
+    if (!Number.isSafeInteger(value) || value < 1024 || value > 65_535) {
+      throw new Error("STAGING_SITE_EXPECTATION_INVALID");
+    }
+    return value;
+  };
+  if (!deploymentRoot.startsWith("/") || deploymentRoot.includes("..")) {
+    throw new Error("STAGING_SITE_EXPECTATION_INVALID");
+  }
+  return {
+    deploymentId: required("COMPANY_OS_INSTANCE_ID"),
+    webOrigin: required("COMPANY_OS_WEB_ORIGINS"),
+    apiOrigin: required("COMPANY_OS_PUBLIC_URL"),
+    deploymentRoot,
+    composeProject: required("COMPANY_OS_COMPOSE_PROJECT"),
+    network: required("COMPANY_OS_PRODUCT_NETWORK"),
+    webLoopbackPort: port("COMPANY_OS_WEB_LOOPBACK_PORT"),
+    apiLoopbackPort: port("COMPANY_OS_API_LOOPBACK_PORT"),
+  };
+}
 
 export async function validateStagingDependencies(
   path: string,
-  expectation = raftXinStagingExpectation,
+  expectation: StagingDependencyExpectation,
 ) {
   if (!path.startsWith("/")) throw new Error("STAGING_DEPENDENCY_PATH_ABSOLUTE_REQUIRED");
   const metadata = await lstat(path);
@@ -47,6 +72,9 @@ function canonicalJson(value: unknown): string {
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) {
-  if (process.argv.length !== 3) throw new Error("STAGING_DEPENDENCY_ARGUMENTS_INVALID");
-  process.stdout.write(`${JSON.stringify(await validateStagingDependencies(process.argv[2]!), null, 2)}\n`);
+  if (process.argv.length !== 5) throw new Error("STAGING_DEPENDENCY_ARGUMENTS_INVALID");
+  const environment = parsePublicStagingEnvironment(await readFile(process.argv[3]!, "utf8"));
+  const expectation = stagingDependencyExpectationFromPublicEnvironment(environment, process.argv[4]!);
+  process.stdout.write(`${JSON.stringify(await validateStagingDependencies(
+    process.argv[2]!, expectation), null, 2)}\n`);
 }

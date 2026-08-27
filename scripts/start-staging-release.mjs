@@ -5,7 +5,10 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { parsePublicStagingEnvironment } from "../adapters/config/staging-deployment-doctor.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
-import { raftXinStagingExpectation, validateStagingDependencies } from "./validate-staging-dependencies.ts";
+import {
+  stagingDependencyExpectationFromPublicEnvironment,
+  validateStagingDependencies,
+} from "./validate-staging-dependencies.ts";
 
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const AUTHORIZATION_REFERENCE = /^[A-Za-z0-9][A-Za-z0-9._:/-]{2,255}$/;
@@ -27,16 +30,18 @@ export async function planStagingReleaseStart(input) {
     ["COMPANY_OS_REFERENCE_DATA_NODE_IMAGE", release.images?.referenceDataNode]]) {
     if (environment[key] !== expected) throw new Error(`STAGING_START_RELEASE_IMAGE_MISMATCH:${key}`);
   }
-  const dependencyAdmission = await validateStagingDependencies(paths.dependencyManifestFile, {
-    ...raftXinStagingExpectation, deploymentRoot: paths.rootDirectory,
-  });
+  const dependencyExpectation = stagingDependencyExpectationFromPublicEnvironment(
+    environment, paths.rootDirectory);
+  const dependencyAdmission = await validateStagingDependencies(
+    paths.dependencyManifestFile, dependencyExpectation);
   await rejectExistingStartupState(paths.rootDirectory);
 
   const compose = ["docker", "compose", "--env-file", paths.environmentFile,
     "-f", join(prepared.releaseDirectory, "compose.staging.yml")];
   const steps = [
     commandStep("VALIDATE_DEPENDENCIES", ["node", "--experimental-strip-types",
-      "scripts/validate-staging-dependencies.ts", paths.dependencyManifestFile]),
+      "scripts/validate-staging-dependencies.ts", paths.dependencyManifestFile,
+      paths.environmentFile, paths.rootDirectory]),
     commandStep("DOCTOR", ["node", "--experimental-strip-types", "scripts/staging-deployment-doctor.ts",
       "--root", paths.rootDirectory, "--secret-directory", paths.secretDirectory,
       "--public-env-file", paths.environmentFile]),

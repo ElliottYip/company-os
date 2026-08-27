@@ -7,7 +7,7 @@ import test from "node:test";
 import { createStagingReleaseBundle } from "../scripts/create-staging-release-bundle.mjs";
 import { installStagingReleaseBundle } from "../scripts/install-staging-release-bundle.mjs";
 import { inspectStagingRuntime } from "../scripts/inspect-staging-runtime.mjs";
-import { raftXinStagingExpectation, validateStagingDependencies } from
+import { validateStagingDependencies } from
   "../scripts/validate-staging-dependencies.ts";
 
 const image = (name: string, digest: string) => `ghcr.io/example/${name}@sha256:${digest.repeat(64)}`;
@@ -34,6 +34,16 @@ async function fixture(prefix: string) {
     releaseManifestPath: manifest, outputDirectory: source });
   await import("node:fs/promises").then(({ mkdir }) => mkdir(root, { mode: 0o750 }));
   const installed = await installStagingReleaseBundle({ rootDirectory: root, bundleDirectory: source });
+  await writeFile(join(root, "staging.env"), [
+    "COMPANY_OS_INSTANCE_ID=company-os-staging-raft-xin",
+    "COMPANY_OS_WEB_ORIGINS=https://company-os.raft.xin",
+    "COMPANY_OS_PUBLIC_URL=https://company-os-api.raft.xin",
+    "COMPANY_OS_COMPOSE_PROJECT=company-os-staging",
+    "COMPANY_OS_PRODUCT_NETWORK=company-os-staging_internal",
+    "COMPANY_OS_WEB_LOOPBACK_PORT=4600",
+    "COMPANY_OS_API_LOOPBACK_PORT=4601",
+    "",
+  ].join("\n"), { mode: 0o600 });
   const dependencyManifestDigest = await writeDependencies(root);
   return { temporary, root, releaseId: installed.releaseId, dependencyManifestDigest };
 }
@@ -65,8 +75,16 @@ async function writeDependencies(root: string) {
       versioning: true, objectLock: "DISABLED", credentialSource: "VAULT_RENDERED_FILES",
       ownerReference: "team:backup", evidenceReference: "evidence:backup-01" },
   })}\n`, { mode: 0o600 });
-  return (await validateStagingDependencies(path,
-    { ...raftXinStagingExpectation, deploymentRoot: root })).manifestDigest;
+  return (await validateStagingDependencies(path, {
+    deploymentId: "company-os-staging-raft-xin",
+    webOrigin: "https://company-os.raft.xin",
+    apiOrigin: "https://company-os-api.raft.xin",
+    deploymentRoot: root,
+    composeProject: "company-os-staging",
+    network: "company-os-staging_internal",
+    webLoopbackPort: 4600,
+    apiLoopbackPort: 4601,
+  })).manifestDigest;
 }
 
 test("read-only runtime inspection binds retained startup state to exact container images", async (context) => {

@@ -5,7 +5,12 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { evaluateStagingRuntimeStatus } from "../adapters/config/staging-runtime-status.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
-import { raftXinStagingExpectation, validateStagingDependencies } from "./validate-staging-dependencies.ts";
+import {
+  stagingDependencyExpectationFromPublicEnvironment,
+  validateStagingDependencies,
+} from "./validate-staging-dependencies.ts";
+import { parsePublicStagingEnvironment } from
+  "../adapters/config/staging-deployment-doctor.ts";
 import {
   readVerifiedStagingReleaseStore,
   resolveStagingReleaseRecord,
@@ -26,10 +31,12 @@ export async function inspectStagingRuntime(input, supplied = {}) {
     : store.prepared;
   await verifyStagingReleaseBundle(active.releaseDirectory);
   const release = JSON.parse(await readFile(join(active.releaseDirectory, "release-manifest.json"), "utf8"));
-  const dependencyAdmission = startupState ? await validateStagingDependencies(
-    join(rootDirectory, "staging-dependencies.json"),
-    { ...raftXinStagingExpectation, deploymentRoot: rootDirectory },
-  ) : null;
+  const dependencyAdmission = startupState ? await (async () => {
+    const publicEnvironment = parsePublicStagingEnvironment(
+      await readFile(join(rootDirectory, "staging.env"), "utf8"));
+    return validateStagingDependencies(join(rootDirectory, "staging-dependencies.json"),
+      stagingDependencyExpectationFromPublicEnvironment(publicEnvironment, rootDirectory));
+  })() : null;
   const expected = { releaseId: active.releaseId, releaseVersion: active.releaseVersion,
     sourceRevision: active.sourceRevision,
     dependencyManifestDigest: dependencyAdmission?.manifestDigest ?? `sha256:${"0".repeat(64)}`,
