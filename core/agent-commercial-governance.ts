@@ -72,6 +72,13 @@ export interface PortfolioUsageRecord {
   readonly provenance: CompanyDomainEvent["provenance"];
 }
 
+export interface AgentCommercialProjection {
+  readonly subscriptions: readonly AgentSubscriptionRecord[];
+  readonly credentials: readonly AgentCredentialStatusRecord[];
+  readonly renewals: readonly RenewalRequestRecord[];
+  readonly usage: readonly PortfolioUsageRecord[];
+}
+
 const SUBSCRIPTION_KEYS = [
   "id", "companyId", "agentId", "humanId", "providerReference", "planReference",
   "status", "seatCount", "quotaUnits", "quotaUnit", "periodCostCents", "renewalAt",
@@ -261,4 +268,3 @@ export function validatePortfolioUsage(input: PortfolioUsageRecord): PortfolioUs
     provenance: provenance(input.provenance),
   };
 }
-

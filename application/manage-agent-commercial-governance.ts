@@ -5,19 +5,13 @@ import {
   validatePortfolioUsage,
   validateRenewalRequest,
   type AgentCredentialStatusRecord,
+  type AgentCommercialProjection,
   type AgentSubscriptionRecord,
   type PortfolioUsageRecord,
   type RenewalRequestInput,
   type RenewalRequestRecord,
 } from "../core/agent-commercial-governance.ts";
 import type { EventDataStorePort } from "../ports/event-data-store-port.ts";
-
-export interface AgentCommercialProjection {
-  readonly subscriptions: readonly AgentSubscriptionRecord[];
-  readonly credentials: readonly AgentCredentialStatusRecord[];
-  readonly renewals: readonly RenewalRequestRecord[];
-  readonly usage: readonly PortfolioUsageRecord[];
-}
 
 export interface CommercialOutcome<T> {
   readonly status: "RECORDED" | "REPLAYED" | "UPDATED";
@@ -205,4 +199,3 @@ export class ManageAgentCommercialGovernance {
     }, events.length);
   }
 }
-
