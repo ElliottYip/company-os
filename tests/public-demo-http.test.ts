@@ -16,12 +16,13 @@ async function withService(
   let session = 0;
   let company = 0;
   let formalCalls = 0;
+  const now = () => "2026-08-27T10:00:00.000Z";
   const demo = new DemoPortfolioSessions({
-    store: new InMemoryDemoSessionStore(),
+    store: new InMemoryDemoSessionStore({ now }),
     createFixture: createDemoPortfolioFixture,
     nextSessionId: () => `demo_session_${++session}_opaque_0123456789abcdef`,
     nextCompanyId: () => `demo-company-${++company}`,
-    now: () => "2026-08-27T10:00:00.000Z",
+    now,
     timeToLiveMilliseconds: 60_000,
   });
   const server = createCompanyOsHttpService({

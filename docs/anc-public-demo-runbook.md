@@ -1,7 +1,7 @@
 # ANC public exhibition Demo runbook
 
-Status: `v0.1.0-rc.8` retained after a closed-ingress browser admission failure
-Target: next immutable RC with the production-Web runtime configuration fix
+Status: RC8 retained after browser admission failure; RC9 retained after qualification failure
+Target: RC10 or later with both production-Web and Web-image build fixes
 
 ## Safety boundary
 
@@ -124,10 +124,20 @@ document head and `npm run build` mechanically rejects any built HTML where it
 does not precede the module bundle. Publish and independently admit a later
 immutable RC before changing traffic.
 
+RC9 included that product fix, and its repository, identity, database, TLS,
+Vault, soak, and browser qualification gates passed. Publication was correctly
+skipped when both release-shaped profiles reached the Web image build: the
+new build checker was not copied into `Dockerfile.web`'s build stage. The image
+contract now copies that one checker explicitly, its Dockerfile assertion is
+covered by unit tests, and both self-hosted and managed-cloud Compose admissions
+pass locally. RC9 was never published or installed and remains immutable.
+
 The authoritative RC8 failure record is
 [`2026-08-27-anc-alpha-hk-rc8-loopback-failure.json`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback-failure.json).
 The Secret-free closed-ingress environment is
 [`2026-08-27-anc-alpha-hk-rc8-loopback.env`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback.env).
+RC9 qualification evidence is
+[`2026-08-27-anc-alpha-rc9-qualification-failure.json`](acceptance/2026-08-27-anc-alpha-rc9-qualification-failure.json).
 
 ## Evidence to retain
 

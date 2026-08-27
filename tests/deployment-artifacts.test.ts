@@ -133,6 +133,7 @@ test("production images are pinned, non-root, health checked, and independently 
   assert.match(api, /^ENV COMPANY_OS_HOST=0\.0\.0\.0$/m,
     "the API image must accept traffic arriving through the container network");
   assert.match(web, /serve-web\.mjs/);
+  assert.match(web, /COPY scripts\/check-built-web-runtime-config-order\.mjs/);
   assert.match(api, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   assert.match(ops, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   const packageJson = JSON.parse(packageJsonSource);
