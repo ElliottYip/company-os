@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
   "recordType": "ANC_ALPHA_PUBLIC_CUTOVER_PLAN",
-  "recordedAt": "2026-08-27T12:32:00Z",
-  "status": "PREPARED_NOT_APPLIED",
+  "recordedAt": "2026-08-27T13:02:52Z",
+  "status": "DNS_CREATED_AUTHORITY_NOT_CONVERGED",
   "dnsPreflight": {
     "authenticatedConsoleAccess": true,
     "zoneVisibleInMainAccount": true,
-    "recordCount": 15,
-    "targetRecordsExist": false,
+    "recordCountBefore": 15,
+    "recordCountAfter": 17,
+    "targetRecordsExist": true,
     "authoritativeMissingNameSynthesis": true,
     "synthesisEvidence": {
       "company-os.raft.xin": "28.0.77.91",
@@ -15,7 +16,30 @@
       "randomMissingNamesAlsoReturned28NetworkAddresses": true,
       "authoritativeTtlSeconds": 1
     },
-    "interpretation": "The 28.0.77.* answers are synthesized parking responses for absent names, not stored records and not rollback values."
+    "interpretationBeforeCreate": "The 28.0.77.* answers were initially treated as synthesized responses for absent names, not stored records and not rollback values.",
+    "postCreateFinding": {
+      "consoleRecordsCorrectAndEnabled": true,
+      "companyOsCreatedAtUtcPlus8": "2026-08-27T20:56:18+08:00",
+      "companyOsApiCreatedAtUtcPlus8": "2026-08-27T20:58:51+08:00",
+      "configuredValue": "47.242.52.235",
+      "configuredTtlSeconds": 600,
+      "authoritativeCompanyOsAnswer": "28.0.77.91",
+      "authoritativeCompanyOsApiAnswer": "28.0.77.92",
+      "publicResolversAlsoReturn28NetworkAddresses": true,
+      "allExistingRaftXinARecordsAlsoRewritten": true,
+      "txtRecordsRemainAuthoritative": true,
+      "whoisDomainStatus": "ok",
+      "whoisExpiry": "2027-03-17T08:46:35Z",
+      "consoleDomainStatus": "normal",
+      "dnsSecurityDefenseEnabled": false,
+      "soaSerialObserved": "2026081710",
+      "controlDomainCheck": {
+        "hostname": "api.bztiuzl.cn",
+        "answer": "47.242.52.235",
+        "status": "NORMAL"
+      },
+      "conclusion": "The two records are stored correctly, but raft.xin A responses are being rewritten upstream. TLS issuance and public cutover are prohibited until the authoritative answer equals the configured address."
+    }
   },
   "candidate": {
     "releaseTag": "v0.1.0-rc.12",
@@ -35,7 +59,10 @@
       "candidateValue": "47.242.52.235",
       "ttlSeconds": 600,
       "rollbackAction": "DELETE_CREATED_RECORD",
-      "applied": false
+      "applied": true,
+      "consoleEnabled": true,
+      "authorityConverged": false,
+      "createdAt": "2026-08-27T12:56:18Z"
     },
     {
       "hostname": "company-os-api.raft.xin",
@@ -46,7 +73,10 @@
       "candidateValue": "47.242.52.235",
       "ttlSeconds": 600,
       "rollbackAction": "DELETE_CREATED_RECORD",
-      "applied": false
+      "applied": true,
+      "consoleEnabled": true,
+      "authorityConverged": false,
+      "createdAt": "2026-08-27T12:58:51Z"
     }
   ],
   "tls": {
@@ -66,8 +96,9 @@
     "enabled": false
   },
   "orderedGates": [
-    "obtain explicit action-time confirmation to create both records",
-    "create both A records at the Hong Kong public IPv4 with a 10-minute TTL",
+    "DNS action-time confirmation obtained on 2026-08-27",
+    "both A records created at the Hong Kong public IPv4 with a 10-minute TTL",
+    "resolve the raft.xin upstream A-response rewrite or obtain explicit approval for a healthy alternate domain",
     "wait for authoritative and public resolver convergence",
     "issue one certificate covering both hostnames",
     "validate and atomically enable the RC12 Nginx candidate",
@@ -81,7 +112,7 @@
     "retain all access, error and acceptance evidence"
   ],
   "blockingInputs": [
-    "explicit action-time confirmation for the DNS network change",
+    "raft.xin authoritative A answers must stop returning rewritten 28.0.* addresses, or a healthy alternate domain must be explicitly approved",
     "matching certificate issuance after DNS convergence"
   ]
 }
