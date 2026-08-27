@@ -285,6 +285,14 @@ make the minimal implementation pass and run the complete gate.
   disabled. Candidate execution-plane composition, concrete preparation step
   adapters, and the traffic executor remain open.
 
+The candidate product configuration materializer is canonical-store-bound and
+authorization-bound. It copies the verified candidate release's retained
+Compose template into an operation-specific private directory, renders the
+candidate environment, runs only `docker compose config --quiet`, and retains
+their digests with `runtimeObjectsCreated: false`. Reusing an operation ID or
+changing the runtime contract, authorization, release, active environment, or
+Compose template fails closed before any runtime object is created.
+
 The preparation executor's evidence-retaining state machine is implemented: it
 accepts only the ordered pre-traffic steps, records a digest for each outcome,
 shares the lifecycle lock, stops at the first failure, and never claims a

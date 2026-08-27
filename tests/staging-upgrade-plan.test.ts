@@ -9,6 +9,8 @@ import { createStagingReleaseBundle } from "../scripts/create-staging-release-bu
 import { adoptStagingSiteContract, installStagingReleaseBundle } from
   "../scripts/install-staging-release-bundle.mjs";
 import { createReleaseCutoverPlan } from "../scripts/plan-release-cutover.mjs";
+import { materializeStagingUpgradeCandidate } from
+  "../scripts/materialize-staging-upgrade-candidate.ts";
 import { createStagingUpgradePreparationPlan, inspectStagingUpgradeBindings,
   parseStagingUpgradeArguments, planStagingUpgradeFromStore } from "../scripts/plan-staging-upgrade.ts";
 import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
@@ -201,6 +203,35 @@ test("store-bound upgrade inspection derives active and candidate authority with
   assert.equal(plan.status, "PLANNED_NOT_APPLIED");
   assert.equal(plan.active.releaseId, activeInstalled.releaseId);
   assert.equal(plan.candidate.releaseId, candidateInstalled.releaseId);
+  const activeEnvironmentFile = join(temporary, "active.env");
+  const activeEnvironment = publicEnvironment
+    .replace(/^COMPANY_OS_COMPOSE_PROJECT=.*$/m, "COMPANY_OS_COMPOSE_PROJECT=company-os-test-site-active")
+    .replace(/^COMPANY_OS_PRODUCT_NETWORK=.*$/m, "COMPANY_OS_PRODUCT_NETWORK=company-os-test-site-active-product")
+    .replace(/^COMPANY_OS_API_LOOPBACK_PORT=.*$/m, "COMPANY_OS_API_LOOPBACK_PORT=4601")
+    .replace(/^COMPANY_OS_WEB_LOOPBACK_PORT=.*$/m, "COMPANY_OS_WEB_LOOPBACK_PORT=4600")
+    .replace(/^COMPANY_OS_REFERENCE_DATA_NODE_PORT=.*$/m, "COMPANY_OS_REFERENCE_DATA_NODE_PORT=4322");
+  await writeFile(activeEnvironmentFile, activeEnvironment, { mode: 0o600 });
+  const candidateSecrets = join(temporary, "candidate-secrets");
+  await mkdir(candidateSecrets, { mode: 0o700 });
+  let composeArguments: readonly string[] = [];
+  const materialized = await materializeStagingUpgradeCandidate({ rootDirectory: root,
+    authorizationFile, runtimeContractFile, activeEnvironmentFile,
+    secretProjectionDirectory: candidateSecrets,
+    authorizationReference: "change:upgrade-preparation-01", now: "2026-08-27T12:00:00.000Z" }, {
+    validateCompose: async (argv) => { composeArguments = argv; return true; },
+  });
+  assert.equal(materialized.status, "CANDIDATE_CONFIGURATION_MATERIALIZED_NOT_STARTED");
+  assert.equal(materialized.runtimeObjectsCreated, false);
+  assert.equal(materialized.trafficMoved, false);
+  assert.deepEqual(composeArguments.slice(-2), ["config", "--quiet"]);
+  assert.equal(JSON.parse(await readFile(join(materialized.candidateDirectory,
+    "materialization-evidence.json"), "utf8")).secretMaterialIncluded, false);
+  await assert.rejects(materializeStagingUpgradeCandidate({ rootDirectory: root,
+    authorizationFile, runtimeContractFile, activeEnvironmentFile,
+    secretProjectionDirectory: candidateSecrets,
+    authorizationReference: "change:upgrade-preparation-01", now: "2026-08-27T12:00:00.000Z" }, {
+    validateCompose: async () => true,
+  }), /STAGING_UPGRADE_CANDIDATE_ALREADY_MATERIALIZED/);
   const store = JSON.parse(await readFile(join(root, "release-store.json"), "utf8"));
   const adoptedRuntime = join(store.prepared.siteContract.contractDirectory, "site-runtime.json");
   const adoptedRuntimeOriginal = await readFile(adoptedRuntime, "utf8");

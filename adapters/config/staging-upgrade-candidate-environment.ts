@@ -9,6 +9,13 @@ const INHERITED_KEYS = ["COMPANY_OS_PUBLIC_URL", "COMPANY_OS_WEB_ORIGINS",
   "COMPANY_OS_TRUSTED_PROXY_CIDRS", "COMPANY_OS_RETENTION_POLICY_ID",
   "COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID", "COMPANY_OS_HTTP_DATA_NODE_SOURCES",
   "COMPANY_OS_HTTP_DATA_NODE_OPERATIONS"] as const;
+const SAFE_DEFAULTS: Readonly<Record<string, string>> = {
+  COMPANY_OS_TRUSTED_PROXY_CIDRS: "127.0.0.1/32,::1/128",
+  COMPANY_OS_RETENTION_POLICY_ID: "standard-retention",
+  COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID: "standard-accountability-export",
+  COMPANY_OS_HTTP_DATA_NODE_SOURCES: "acceptance-fixtures",
+  COMPANY_OS_HTTP_DATA_NODE_OPERATIONS: "READ",
+};
 
 export function renderStagingUpgradeCandidateEnvironment(
   contractValue: unknown,
@@ -26,7 +33,7 @@ export function renderStagingUpgradeCandidateEnvironment(
     throw new Error("STAGING_UPGRADE_CANDIDATE_RESOURCE_BUDGET_INSUFFICIENT");
   }
   const inherited = Object.fromEntries(INHERITED_KEYS.map((key) => {
-    const value = active[key];
+    const value = active[key] ?? SAFE_DEFAULTS[key];
     if (!value) throw new Error(`STAGING_UPGRADE_ACTIVE_ENVIRONMENT_MISSING:${key}`);
     return [key, value];
   }));
