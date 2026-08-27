@@ -1,7 +1,10 @@
 # ANC public exhibition Demo runbook
 
-Status: RC8 and RC10 retained after browser admission failures; RC9 retained after qualification failure
-Target: RC11 or later with the complete production-Web runtime API injection
+Status: RC11 passed closed-ingress browser and API admission; public ingress is
+not accepted because Docker 29 suppressed its internal-network loopback
+publications and the selected DNS records do not target the Hong Kong host
+Target: RC12 or later with fixed bridge-address ingress, verified DNS/TLS and
+the complete RC11 journey repeated through the public origins
 
 ## Safety boundary
 
@@ -105,6 +108,10 @@ before reopening.
 5. Render `deploy/compose.public-demo.yml` with `COMPANY_OS_RUNTIME_MODE=public-demo`
    and `COMPANY_OS_PUBLIC_DEMO_ENABLED=true`. Do not supply or mount formal
    OIDC, Vault, database, model, data, or Agent Connector configuration.
+   Assign a dedicated non-overlapping RFC1918 subnet plus fixed API and Web
+   bridge addresses. On Docker engines that suppress published loopback ports
+   for `internal` networks, point the host TLS proxy at those fixed addresses;
+   never make the application network non-internal as a workaround.
 6. Run database migration planning/preflight against the candidate contract.
    This slice adds event types but no destructive SQL migration.
 7. Start the public Demo candidate only after its distinct start authorization.
@@ -144,6 +151,16 @@ Web mount contract now receives the runtime API origin explicitly and a
 split-origin Playwright regression requires the session request to reach the
 API origin. A later immutable RC must repeat the entire admission.
 
+RC11 contains that fix and passed the complete protected release workflow,
+Hong Kong API acceptance, a real split-origin production-Web browser journey,
+two-visitor isolation, reset, API restart recovery, bilingual tablet checks and
+formal-route denial. It remains closed ingress. The Hong Kong Docker 29 engine
+retained the requested loopback `PortBindings` but did not create runtime port
+listeners for either service on the `internal` network. The SSH acceptance
+therefore reached the container bridge addresses directly. The next release
+adds explicit fixed bridge addresses so host Nginx can route without granting
+the fixture services egress. DNS and TLS are still unchanged.
+
 The authoritative RC8 failure record is
 [`2026-08-27-anc-alpha-hk-rc8-loopback-failure.json`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback-failure.json).
 The Secret-free closed-ingress environment is
@@ -152,6 +169,10 @@ RC9 qualification evidence is
 [`2026-08-27-anc-alpha-rc9-qualification-failure.json`](acceptance/2026-08-27-anc-alpha-rc9-qualification-failure.json).
 RC10 browser failure evidence is
 [`2026-08-27-anc-alpha-hk-rc10-browser-failure.json`](acceptance/2026-08-27-anc-alpha-hk-rc10-browser-failure.json).
+RC11 closed-ingress evidence is
+[`2026-08-27-anc-alpha-hk-rc11-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc11-closed-ingress.json).
+The current DNS, TLS and Docker 29 ingress preflight is
+[`2026-08-27-anc-alpha-public-ingress-preflight.json`](acceptance/2026-08-27-anc-alpha-public-ingress-preflight.json).
 
 ## Evidence to retain
 
@@ -165,7 +186,7 @@ RC10 browser failure evidence is
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-The current state is `HK_RC10_CLOSED_INGRESS_BROWSER_ADMISSION_FAILED`, never
-publicly routed or production-ready. Retain RC8 through RC10 and repeat the
-complete browser and recovery admission with the next immutable candidate
-before changing that state.
+The current state is `HK_RC11_CLOSED_INGRESS_ACCEPTED_PUBLIC_INGRESS_PENDING`,
+never publicly routed or production-ready. Retain RC8 through RC11 and repeat
+the complete browser and recovery admission through verified TLS with the next
+immutable candidate before changing that state.

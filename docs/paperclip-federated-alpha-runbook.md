@@ -1,7 +1,8 @@
 # Paperclip Federated Connector — private Alpha runbook
 
-Status: code-admitted against official `v2026.817.0` contracts; live sandbox
-credential acceptance pending
+Status: code-admitted against official `v2026.817.0` contracts; official API
+transport accepted against a private local sandbox with synthetic zero-budget
+records; authenticated remote sandbox and private OIDC Alpha acceptance pending
 
 ## Boundary
 
@@ -61,7 +62,15 @@ if any Federated Source package is selected.
 
 ## Current stop condition
 
-Do not mark this connector live-accepted until a user-authorized sandbox URL,
-company ID, Agent mappings and credential file are available and the sequence
-above has retained sanitized evidence. Do not use production Agent data or a
-personal credential for Alpha admission.
+The retained local acceptance proves real official Agent and Issue API reads,
+neutral inventory/Work projection, bounded fields and stable replay. It does
+not prove credential rejection because Paperclip `local_trusted` mode accepts
+private-loopback requests without enforcing the board API key. The temporary
+key was revoked and its files removed after the exercise.
+
+Do not mark this connector production-ready or private-Alpha live until an
+authenticated non-production Paperclip URL, company ID, Agent mappings and
+credential file are available and the complete sequence above has retained
+sanitized evidence through the OIDC-protected Company OS formal route. Do not
+use production Agent data or a personal credential for Alpha admission. See
+`docs/acceptance/2026-08-27-paperclip-federated-connector-sandbox.json`.

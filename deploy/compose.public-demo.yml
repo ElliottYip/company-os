@@ -2,8 +2,10 @@ name: ${COMPANY_OS_DEMO_COMPOSE_PROJECT:?set the Demo-scoped Compose project}
 
 # Fixture-only public exhibition profile. It deliberately has no Secret,
 # database, OIDC, model, Data Node, Agent Node, or external Connector mount.
-# The internal network blocks container egress; host ingress terminates TLS and
-# proxies only to the two loopback ports below.
+# The internal network blocks container egress. Host ingress may use the
+# loopback publications where the Docker engine supports them, or the explicit
+# fixed bridge addresses on engines that suppress published ports for an
+# internal-only network.
 services:
   api:
     image: ${COMPANY_OS_API_IMAGE:?set the immutable API image digest}
@@ -17,7 +19,9 @@ services:
     cpus: 0.40
     mem_limit: 512m
     pids_limit: 96
-    networks: [demo_internal]
+    networks:
+      demo_internal:
+        ipv4_address: ${COMPANY_OS_DEMO_API_ADDRESS:?set the fixed Demo API bridge address}
     environment:
       COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
       COMPANY_OS_PROFILE: managed-cloud
@@ -47,7 +51,9 @@ services:
     cpus: 0.20
     mem_limit: 192m
     pids_limit: 64
-    networks: [demo_internal]
+    networks:
+      demo_internal:
+        ipv4_address: ${COMPANY_OS_DEMO_WEB_ADDRESS:?set the fixed Demo Web bridge address}
     environment:
       COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
       COMPANY_OS_WEB_HOST: 0.0.0.0
@@ -63,3 +69,6 @@ services:
 networks:
   demo_internal:
     internal: true
+    ipam:
+      config:
+        - subnet: ${COMPANY_OS_DEMO_INTERNAL_SUBNET:?set the dedicated Demo bridge subnet}

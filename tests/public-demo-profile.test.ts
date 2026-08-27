@@ -18,6 +18,9 @@ test("public Demo is an explicit deployment opt-in and browser admission enables
   assert.match(demoCompose, /COMPANY_OS_RUNTIME_MODE: public-demo/);
   assert.match(demoCompose, /COMPANY_OS_PUBLIC_DEMO_ENABLED: "true"/);
   assert.match(demoCompose, /COMPANY_OS_WEB_MODE: demo/);
+  assert.match(demoCompose, /ipv4_address: \$\{COMPANY_OS_DEMO_API_ADDRESS:\?/);
+  assert.match(demoCompose, /ipv4_address: \$\{COMPANY_OS_DEMO_WEB_ADDRESS:\?/);
+  assert.match(demoCompose, /subnet: \$\{COMPANY_OS_DEMO_INTERNAL_SUBNET:\?/);
   assert.doesNotMatch(demoCompose,
     /COMPANY_OS_(?:OIDC|DATABASE_URL|SECRET_DIRECTORY|CONNECTOR_PACKAGES)/);
   assert.doesNotMatch(demoCompose, /reference-data-node|codex-agent-node|vault/);
