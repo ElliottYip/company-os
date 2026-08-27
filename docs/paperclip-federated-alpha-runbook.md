@@ -1,8 +1,9 @@
 # Paperclip Federated Connector — private Alpha runbook
 
 Status: code-admitted against official `v2026.817.0` contracts; official API
-transport accepted against a private local sandbox with synthetic zero-budget
-records; authenticated remote sandbox and private OIDC Alpha acceptance pending
+transport and API-key revocation accepted in a private authenticated local
+sandbox with synthetic zero-budget records; private OIDC Alpha acceptance and
+a customer-owned non-production tenant remain pending
 
 ## Boundary
 
@@ -62,15 +63,17 @@ if any Federated Source package is selected.
 
 ## Current stop condition
 
-The retained local acceptance proves real official Agent and Issue API reads,
-neutral inventory/Work projection, bounded fields and stable replay. It does
-not prove credential rejection because Paperclip `local_trusted` mode accepts
-private-loopback requests without enforcing the board API key. The temporary
-key was revoked and its files removed after the exercise.
+The retained authenticated acceptance proves real official Agent and Issue API
+reads, neutral inventory/Work projection, anonymous denial, short-lived board
+key use, and fail-closed `401` behavior after revocation. The earlier
+`local_trusted` exercise remains useful for stable-replay and exact bounded-field
+coverage, but is not used as authentication evidence. All temporary credentials
+and local sandbox state were removed after the authenticated exercise.
 
-Do not mark this connector production-ready or private-Alpha live until an
-authenticated non-production Paperclip URL, company ID, Agent mappings and
+Do not mark this connector production-ready or private-Alpha live until a
+customer-owned non-production Paperclip URL, company ID, Agent mappings and
 credential file are available and the complete sequence above has retained
 sanitized evidence through the OIDC-protected Company OS formal route. Do not
 use production Agent data or a personal credential for Alpha admission. See
-`docs/acceptance/2026-08-27-paperclip-federated-connector-sandbox.json`.
+`docs/acceptance/2026-08-27-paperclip-federated-connector-sandbox.json` and
+`docs/acceptance/2026-08-27-paperclip-federated-connector-authenticated.json`.

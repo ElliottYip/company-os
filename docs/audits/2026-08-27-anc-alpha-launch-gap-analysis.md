@@ -1,22 +1,26 @@
 # ANC Alpha launch gap analysis
 
 Date: 2026-08-27  
-Baseline: RC7 / `HK_CANDIDATE_INSTALLED_NOT_STARTED`
+Baseline: RC12 / `HK_CLOSED_INGRESS_ACCEPTED`
 
 ## Current truth
 
 - The Agent Portfolio and deterministic exhibition journey pass local browser
   admission.
-- RC7 is installed in Hong Kong but no Company OS container is running.
-- Public ingress, runtime coordinates, `staging.env`, and Secret files are
-  absent.
+- RC12 is published and installed in Hong Kong. One API and one Web replica are
+  running behind closed ingress with fixed private bridge addresses; public
+  traffic, DNS and TLS remain unchanged.
+- The complete API/browser/recovery path and 30-minute 180-sample observation
+  passed with zero P0/P1. RC11 is stopped while its release and evidence remain
+  retained.
 - A pinned Paperclip `v2026.817.0` adapter now implements credential-file-only
   Agent inventory and Federated Issue synchronization behind an authorized
   formal trigger. Current demonstrations still use explicit fixtures, and no
-  sandbox credential is installed on the Hong Kong candidate; the connector is
-  code-admitted but not live-accepted.
-- Therefore the system is a verified Alpha code candidate, not a running Alpha
-  service and not a live multi-platform control plane.
+  sandbox credential is installed on the Hong Kong candidate. A separate local
+  authenticated sandbox has accepted anonymous denial, official API sync and
+  fail-closed key revocation, but the formal OIDC route is not live-accepted.
+- Therefore the system is a running closed-ingress Alpha candidate, not a
+  publicly available service and not yet a customer-connected control plane.
 
 ## Retain
 
@@ -43,8 +47,8 @@ Baseline: RC7 / `HK_CANDIDATE_INSTALLED_NOT_STARTED`
 
 | Gap | Required result |
 |---|---|
-| External platform selected but not live-accepted | Paperclip `v2026.817.0` is pinned for private Alpha; retain a real sandbox acceptance before claiming it live. |
-| No sandbox credential | Obtain a minimum-scope, revocable test credential through the formal Secret boundary; never place it in Git, Demo, logs, or browser storage. |
+| External platform selected but not customer-accepted | Paperclip `v2026.817.0` official API and key revocation pass an authenticated synthetic sandbox; repeat through a customer-owned non-production tenant before claiming it live. |
+| No formal-runtime sandbox credential | Obtain a minimum-scope, revocable test credential through the formal Secret boundary; never place it in Git, Demo, logs, or browser storage. |
 | Adapter not target-accepted | Inventory and Federated Work are implemented under `adapters/connectors`; truthful Usage remains disabled because the official cost API is aggregate rather than event-level. |
 | No authenticated Alpha runtime | Configure OIDC and company membership separately from the anonymous Demo, with Connector access denied outside the bound company. |
 | No live acceptance | Prove at least one real inventory sync and one platform-supported Observed or Federated Work/usage round trip with source references and audit evidence. |

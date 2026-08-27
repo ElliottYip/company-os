@@ -1,11 +1,11 @@
 # ANC public exhibition Demo runbook
 
-Status: RC11 passed closed-ingress browser, API and 30-minute observation;
-RC12 with fixed bridge-address ingress is published and installed prepare-only
-in Hong Kong. Public ingress is not accepted because the selected DNS records
-do not target the Hong Kong host and matching TLS is absent.
-Target: start RC12 only behind verified DNS/TLS and repeat the complete RC11
-journey through the public origins
+Status: RC12 passed Hong Kong closed-ingress API, browser, recovery and
+30-minute observation acceptance. RC11 is stopped but retained. Public ingress
+is not accepted because the selected DNS records do not target the Hong Kong
+host and matching TLS is absent.
+Target: route the accepted RC12 candidate only behind verified DNS/TLS and
+repeat the complete journey through the public origins
 
 ## Safety boundary
 
@@ -176,6 +176,8 @@ The current DNS, TLS and Docker 29 ingress preflight is
 [`2026-08-27-anc-alpha-public-ingress-preflight.json`](acceptance/2026-08-27-anc-alpha-public-ingress-preflight.json).
 RC12 publication and Hong Kong prepare-only installation evidence is
 [`2026-08-27-anc-alpha-rc12-publication-hk-install.json`](acceptance/2026-08-27-anc-alpha-rc12-publication-hk-install.json).
+RC12 closed-ingress acceptance evidence is
+[`2026-08-27-anc-alpha-hk-rc12-closed-ingress.json`](acceptance/2026-08-27-anc-alpha-hk-rc12-closed-ingress.json).
 
 ## Evidence to retain
 
@@ -189,7 +191,7 @@ RC12 publication and Hong Kong prepare-only installation evidence is
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-The current state is `HK_RC12_INSTALLED_NOT_STARTED_PUBLIC_INGRESS_PENDING`,
-never publicly routed or production-ready. Retain RC8 through RC12 and repeat
-the complete browser and recovery admission through verified TLS before
-changing that state.
+The current state is `HK_RC12_RUNNING_CLOSED_INGRESS_PUBLIC_TLS_PENDING`, never
+publicly routed or production-ready. Retain RC8 through RC12 and repeat the
+complete browser and recovery admission through verified TLS before changing
+that state.

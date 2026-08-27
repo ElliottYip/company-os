@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_CANDIDATE_ACCEPTANCE",
+  "recordedAt": "2026-08-27T12:25:37Z",
+  "candidate": {
+    "releaseTag": "v0.1.0-rc.12",
+    "releaseId": "0.1.0-rc.12-a1358df74535",
+    "sourceRevision": "a1358df7453519e8456e44ada5fcdd01217cc58c",
+    "qualificationRun": "https://github.com/ElliottYip/company-os/actions/runs/33067211934",
+    "releaseManifestDigest": "sha256:1a92f01b5cab3ed5661e3e85c5a07118b23278f82e8605ffc3bc0338367c936f",
+    "bundleManifestDigest": "sha256:470878435e37d009bcde8cc1e64848004871cb326270951c3a81353bec2b5982",
+    "portableArchiveDigest": "sha256:36aacbbd3d1379d5a3fc799d2afc0c76a7db0793e035ca515301d57a79fe411d"
+  },
+  "environment": {
+    "site": "hong-kong",
+    "composeProject": "company-os-public-demo-rc12",
+    "replicas": { "api": 1, "web": 1 },
+    "exposure": "CLOSED_INGRESS_SSH_TUNNEL_ONLY",
+    "dockerNetworkInternal": true,
+    "internalSubnet": "172.31.11.0/28",
+    "apiAddress": "172.31.11.2",
+    "webAddress": "172.31.11.3",
+    "publicTrafficChanged": false,
+    "dnsChanged": false,
+    "tlsChanged": false,
+    "formalRuntimeStarted": false,
+    "externalConnectorsEnabledInDemo": false
+  },
+  "admission": {
+    "readiness": "PASSED",
+    "productionWebSplitOrigin": "PASSED",
+    "portfolioClasses": ["PERSONAL", "SHARED", "FEDERATED_RUNTIME"],
+    "managementDepths": ["INVENTORY", "OBSERVED", "GOVERNED", "FEDERATED"],
+    "personalPrivacyBoundary": "PASSED",
+    "observedAndFederatedSourceLinks": "PASSED",
+    "governedPauseDecisionEvidence": "PASSED",
+    "renewalAndReset": "PASSED",
+    "twoVisitorIsolation": "PASSED",
+    "formalRouteDenial": "PASSED",
+    "apiProcessRecovery": "PASSED",
+    "bilingualDesktopAndTablet": "PASSED",
+    "browserConsoleErrors": 0,
+    "federatedConnectorPackagePresentInImage": "PASSED",
+    "observation30Minutes": {
+      "status": "PASSED",
+      "startedAt": "2026-08-27T11:49:13Z",
+      "durationSeconds": 1800,
+      "samples": 180,
+      "p0": 0,
+      "p1": 0
+    },
+    "runtimeSnapshot": {
+      "api": { "health": "healthy", "restartCount": 0, "oomKilled": false, "memoryMiB": 76.7, "pids": 12, "errorLogMatches": 0 },
+      "web": { "health": "healthy", "restartCount": 0, "oomKilled": false, "memoryMiB": 15.96, "pids": 12, "errorLogMatches": 0 }
+    }
+  },
+  "supersededCandidate": {
+    "releaseTag": "v0.1.0-rc.11",
+    "runtimeStopped": true,
+    "containersRetained": true,
+    "releaseAndEvidenceRetained": true
+  },
+  "releaseDisposition": "CLOSED_INGRESS_ALPHA_CANDIDATE_ACCEPTED",
+  "notClaimed": [
+    "public URL availability",
+    "DNS or TLS cutover",
+    "private OIDC Alpha runtime",
+    "customer or production external-platform connection",
+    "production data or paid model execution"
+  ]
+}
