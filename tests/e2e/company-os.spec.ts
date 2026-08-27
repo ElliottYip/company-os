@@ -663,6 +663,62 @@ test("Demo Work projects Observed and Federated sources without claiming dispatc
   await expect(page.getByRole("link", { name: "Open source fixture" })).toHaveCount(2);
 });
 
+test("formal Governance renders an installed Federated Source capability and retained health", async ({ page }) => {
+  const organization = {
+    company: { id: "company-one", name: "Company One", purpose: "Operate", locale: "en-US" },
+    departments: [{ id: "operations", name: "Operations", mandate: "Operate" }],
+    projects: [], workspaces: [],
+    humans: [{ id: "human-one", name: "Human One", title: "Boss", departmentId: "operations", avatarId: "human-one" }],
+    agents: [],
+  };
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const json = (body: unknown) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    if (url.endsWith("/access")) return json({ schemaVersion: 1, mode: "FORMAL", deploymentProfile: "self-hosted",
+      entryState: "READY", identityProvider: { protocol: "OIDC", configured: true }, session: { authenticated: true },
+      capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,
+        execution: true, approval: true, governance: true }, blockers: [] });
+    if (url.endsWith("/companies")) return json({ schemaVersion: 1,
+      companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }], isInstanceAdmin: true });
+    if (url.endsWith("/human-members")) return json({ schemaVersion: 1, members: [{ userId: "human-one",
+      displayName: "Human One", email: "human@example.com", role: "owner", status: "active",
+      createdAt: "2026-08-25T00:00:00.000Z", updatedAt: "2026-08-25T00:00:00.000Z" }] });
+    if (url.endsWith("/administration")) return json({ schemaVersion: 1, mode: "PRODUCTION",
+      viewer: { actorId: "human-one", displayName: "Human One" }, retentionPolicyId: "standard-retention",
+      connectorCatalog: { revision: 0, connectors: [] }, runtimeConnectors: [], secretBrokerRuntime: null,
+      runtimeModelProviders: [], runtimeDataConnectors: [], runtimeFederatedSources: [{
+        connectorId: "paperclip-alpha", protocolVersion: "2.0",
+        dataCapabilities: ["AGENT_INVENTORY", "FEDERATED_WORK", "RESULT_REFERENCES"],
+        controlCapabilities: ["SYNCHRONIZE_FEDERATED_RECORDS"], maximumBatchSize: 200,
+        health: "HEALTHY", checkedAt: "2026-08-25T00:10:00.000Z",
+        lastSuccessfulAt: "2026-08-25T00:10:00.000Z",
+      }],
+      governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
+      toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
+      usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
+        policySummaries: [], totalReportedCostCents: 0, unpricedEventCount: 0 },
+      egressDecisions: [], generatedAt: "2026-08-25T00:10:00.000Z" });
+    if (url.endsWith("/planning-catalog")) return json({ companyId: "company-one", revision: 0, goals: [], projects: [] });
+    if (url.endsWith("/accountability-ledger")) return json({ schemaVersion: 1, companyId: "company-one",
+      approvals: [], evidence: [], generatedAt: "2026-08-25T00:10:00.000Z" });
+    if (url.includes("/work?")) return json({ schemaVersion: 1, items: [], nextCursor: null });
+    if (url.includes("/activity?")) return json({ schemaVersion: 1, items: [], nextSequence: null });
+    return json({ schemaVersion: 1, mode: "PRODUCTION", viewer: { actorId: "human-one", displayName: "Human One" },
+      retentionPolicyId: "standard-retention", organization,
+      responsibilities: { revision: 0, contracts: [] }, agentLifecycle: { revision: 0, agents: [] },
+      work: [], attempts: [], pendingApprovals: [], generatedAt: "2026-08-25T00:10:00.000Z" });
+  });
+
+  await page.goto("/?mode=formal");
+  await page.getByRole("button", { name: "Governance" }).click();
+  await expect(page.getByRole("heading", { name: "Federated sources" })).toBeVisible();
+  const source = page.getByRole("article").filter({ hasText: "paperclip-alpha" });
+  await expect(source).toContainText("AGENT_INVENTORY");
+  await expect(source).toContainText("SYNCHRONIZE_FEDERATED_RECORDS");
+  await expect(source).toContainText("HEALTHY");
+  await expect(source).toContainText("2026-08-25T00:10:00.000Z");
+});
+
 test("formal running Work requests cancellation and waits for Connector confirmation", async ({ page }) => {
   let attemptStatus = "RUNNING";
   let attemptId = "attempt-one";

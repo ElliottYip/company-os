@@ -9,6 +9,7 @@
     "administrationReadCallsExternalPlatform": false,
     "formalWebDisplaysDeclaredCapabilities": true,
     "formalWebDisplaysRetainedHealth": true,
+    "formalGovernanceBrowserJourneyVerified": true,
     "rawVendorErrorsRetained": false,
     "credentialOrReferenceExposed": false
   },
@@ -38,8 +39,8 @@
       "skipped": 4
     },
     "browserE2E": {
-      "total": 21,
-      "passed": 17,
+      "total": 22,
+      "passed": 18,
       "failed": 0,
       "skipped": 4
     },
