@@ -1,7 +1,7 @@
 # ANC public exhibition Demo runbook
 
-Status: `v0.1.0-rc.7` published; Hong Kong candidate installed but not started
-Target: next immutable RC with the isolated public Demo runtime profile
+Status: `v0.1.0-rc.8` retained after a closed-ingress browser admission failure
+Target: next immutable RC with the production-Web runtime configuration fix
 
 ## Safety boundary
 
@@ -113,14 +113,21 @@ before reopening.
 9. Move Demo traffic only after bounded observation. Do not promote formal mode,
    initialize real Agents, or change Hangzhou/DNS/TLS under this Demo approval.
 
-The equivalent RC7 preparation steps 1–6 are complete. Steps 7–9 remain
-intentionally unexecuted until the isolated profile ships in the next RC:
-there is no candidate start authorization in this admission, public ingress is
-disabled, no `staging.env` or Secret file exists, and no Company OS container is
-running on the Hong Kong host. The authoritative non-secret record is
-[`2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json`](acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json).
-The corresponding deliberately incomplete, non-startable overlay is
-[`2026-08-27-anc-agent-portfolio-hk-rc7-demo-profile.nonsecret.env`](acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-demo-profile.nonsecret.env).
+RC8 completed publication, prepare-only installation, closed-ingress container
+start, readiness, API journey, two-visitor isolation, reset, formal-route denial,
+and process-recovery admission. A real production-Web browser then found that
+Vite moved the application module ahead of `/company-os-config.js`; the Web
+therefore sent Demo requests to its own static server and received `405`.
+Public ingress was never opened. RC8 is retained as a failed candidate and must
+not be routed. The application source now places runtime configuration in the
+document head and `npm run build` mechanically rejects any built HTML where it
+does not precede the module bundle. Publish and independently admit a later
+immutable RC before changing traffic.
+
+The authoritative RC8 failure record is
+[`2026-08-27-anc-alpha-hk-rc8-loopback-failure.json`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback-failure.json).
+The Secret-free closed-ingress environment is
+[`2026-08-27-anc-alpha-hk-rc8-loopback.env`](acceptance/2026-08-27-anc-alpha-hk-rc8-loopback.env).
 
 ## Evidence to retain
 
@@ -134,7 +141,6 @@ The corresponding deliberately incomplete, non-startable overlay is
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-The current state is `HK_CANDIDATE_INSTALLED_NOT_STARTED`, never deployed,
-publicly reachable, or production-ready. After a distinct start authorization,
-retain the remaining target-host health, browser, recovery, and observation
-records before changing that state.
+The current state is `HK_RC8_LOOPBACK_ADMISSION_FAILED`, never publicly routed
+or production-ready. Retain RC8 and repeat the complete browser and recovery
+admission with the next immutable candidate before changing that state.

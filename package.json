@@ -75,7 +75,7 @@
     "security:secrets": "node scripts/check-company-os-secrets.mjs",
     "security:dependencies": "npm audit --omit=dev --omit=optional --audit-level=moderate",
     "security": "npm run security:secrets && npm run security:dependencies",
-    "build": "vite build --config web/vite.config.mjs",
+    "build": "vite build --config web/vite.config.mjs && node scripts/check-built-web-runtime-config-order.mjs",
     "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:3d-assets && npm run check:research && npm run check:protocols && npm run check:web-interactions && npm run security && npm run typecheck && npm run build && npm run check:3d-performance && npm run test:e2e"
   },
   "devDependencies": {
