@@ -108,6 +108,19 @@ cross-company drain projection and admits only zero non-terminal Attempts,
 pending approvals/publications, and unrevoked leases; retained evidence contains
 aggregate counts and a source digest, never customer records.
 
+The database preparation adapter composes the maintained streaming
+AES-256-GCM PostgreSQL backup and authenticated restore implementation. It
+reads the active URL, parallel-target URL, and encryption key only from private
+target-owned files and never retains those coordinates or any digest derived
+from them. The target is bound by a separately supplied opaque runtime-contract
+reference. Restore first authenticates the ciphertext and streams the previous
+schema into an explicitly empty parallel restore target using connectivity-only
+validation; it does not incorrectly compare that previous schema with the
+candidate schema. A separate forward-migration operation then applies the
+candidate migration set once and validates the current schema. Each transition
+is append-only, ordered, digest-bound, and fails closed on target-reference or
+ciphertext drift.
+
 Traffic movement is a second apply phase requiring the exact
 `trafficCutover` reference and successful preparation evidence. It changes the
 active route, observes bounded health/integrity thresholds, then atomically

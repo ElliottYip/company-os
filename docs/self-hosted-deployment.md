@@ -158,6 +158,15 @@ The command returns only a stable pass envelope and backup SHA-256 digest. It
 does not delete a failed/partial target or the backup; cleanup remains an
 explicit operator action.
 
+The versioned staging-upgrade path reuses this same backup implementation. Its
+database operation adapter requires private files for the active database URL,
+the empty parallel-target URL, and the 256-bit backup key. The previous release
+schema is restored with connectivity-only validation and retained; current
+schema validation occurs only after a distinct, once-only forward migration.
+Evidence contains the authenticated ciphertext digest, candidate migration-set
+digest, and an opaque parallel-database reference. It excludes database URLs,
+credentials, encryption material, and digests derived from Secret coordinates.
+
 The self-hosted Compose file also provides an opt-in `backup` profile. It uses
 the same release-bound operations image, runs `pg_dump` without a shell, streams
 the dump directly through AES-256-GCM, writes ciphertext plus a small

@@ -65,9 +65,14 @@ export async function runEncryptedPostgresRestoreDrill(input: {
   readonly targetUrl: string;
   readonly backupPath: string;
   readonly encryptionKey: Buffer;
+  readonly schemaValidation?: "CURRENT" | "CONNECTIVITY_ONLY";
 }): Promise<{ readonly schemaVersion: 1; readonly status: "PASS"; readonly ciphertextDigest: string }> {
   assertEncryptedRestoreTarget(input.targetUrl, input.backupPath);
   if (input.encryptionKey.length !== 32) throw new Error("BACKUP_ENCRYPTION_KEY_INVALID");
+  if (input.schemaValidation !== undefined &&
+      input.schemaValidation !== "CURRENT" && input.schemaValidation !== "CONNECTIVITY_ONLY") {
+    throw new Error("ENCRYPTED_RESTORE_SCHEMA_VALIDATION_INVALID");
+  }
   const manifest = parseEncryptedBackupManifest(await readFile(`${input.backupPath}.json`, "utf8"));
   const details = await stat(input.backupPath);
   if (!details.isFile() || details.size !== manifest.ciphertextBytes) throw new Error("BACKUP_CIPHERTEXT_INVALID");
@@ -96,7 +101,10 @@ export async function runEncryptedPostgresRestoreDrill(input: {
     throw error;
   }
   const restored = createCompanyDatabase(input.targetUrl);
-  try { await restored.ping(); await restored.checkSchema(); } finally { await restored.close(); }
+  try {
+    await restored.ping();
+    if ((input.schemaValidation ?? "CURRENT") === "CURRENT") await restored.checkSchema();
+  } finally { await restored.close(); }
   return { schemaVersion: 1, status: "PASS", ciphertextDigest: manifest.ciphertextDigest };
 }
 
