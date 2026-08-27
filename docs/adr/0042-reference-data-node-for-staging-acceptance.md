@@ -59,3 +59,9 @@ The release manifest gains the additive `images.referenceDataNode` field. RC3
 therefore remains immutable and incomplete for the new full-stack definition;
 a later release candidate must be built and qualified from the new source
 revision.
+
+The cutover planner may accept the field as absent only on the previous side
+of a five-image legacy release. It records that absence as
+`ABSENT_BY_RELEASE_CONTRACT`, requires the current release to contain the
+digest-bound image, and labels the topology change `ADDED_FIXTURE_ONLY`. It
+never invents a prior image or weakens the six-image current-release contract.

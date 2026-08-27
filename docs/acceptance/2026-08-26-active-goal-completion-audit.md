@@ -1,6 +1,6 @@
-# Active-goal completion audit — 2026-08-26
+# Active-goal completion audit — updated 2026-08-27
 
-Status: **NOT COMPLETE — source candidate qualified, external acceptance pending**.
+Status: **NOT COMPLETE — RC4 released, target and customer acceptance pending**.
 
 This audit evaluates the active product goal against the current repository and
 external deployment evidence. It does not treat a passing fixture, an
@@ -8,19 +8,23 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 
 ## Exact implementation baseline
 
-- Last code-bearing commit:
-  `e4bf9af33a88d7bd4f0d0c43c71cc01e0a845f4a`. A documentation-only successor
-  may become the pull-request head; the eventual release manifest must bind its
-  own exact source SHA rather than inheriting this coordinate.
-- Pull request: `ElliottYip/company-os#1`, draft, not merged.
-- GitHub Actions qualification:
-  `https://github.com/ElliottYip/company-os/actions/runs/32960311842`, success,
-  exact head SHA above.
-- Published release status: no release points to this commit. The historical
-  five-image `v0.1.0-rc.3` is retained as evidence but is
-  `SUPERSEDED_FOR_START` because it has no Reference Data Node image.
-- Candidate image contract: six product images — API, Web, operations, Codex
-  Agent Node, Vault Broker, and the fixture-only Reference Data Node.
+- Pull request `ElliottYip/company-os#1` is merged. Its merge commit and the
+  exact RC4 source revision are
+  `b9e58335eabab94de94b528b4cdb8834cf8faeae`.
+- The immutable annotated tag `v0.1.0-rc.4` resolves to that commit. The public
+  prerelease is <https://github.com/ElliottYip/company-os/releases/tag/v0.1.0-rc.4>.
+- The protected qualification and publish workflow
+  <https://github.com/ElliottYip/company-os/actions/runs/33028743993> completed
+  successfully. It published six independently attested images: API, Web,
+  operations, Codex Agent Node, Vault Broker and the fixture-only Reference
+  Data Node.
+- The downloaded release manifest digest is
+  `sha256:375cdbd5abfc5196e01ee8abbfb67925153783ee4203f1f6b9611616e0802389`;
+  the CycloneDX SBOM digest is
+  `sha256:aa780403607fd0d60d339faa55f12500f55899d78285f941c3ec755a0c5ce137`.
+- The historical five-image `v0.1.0-rc.3` remains immutable and retained as
+  evidence, but is `SUPERSEDED_FOR_START` because it has no Reference Data Node
+  image.
 
 ## Requirement-by-requirement evidence
 
@@ -34,37 +38,39 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 | Exact approval, evidence, and responsibility | Exact-action binding, accountable-human decision, digest-only evidence, accountability export, restart recovery, and formal browser admission | **Repository vertical complete; external handling acceptance pending.** |
 | Data authorization and export governance | Revisioned grants, default-deny egress, HTTP Data Node client, durable preparation references, and raw-data exclusion tests | **Reference vertical complete; real enterprise test source pending.** |
 | Complete self-service Web | Company-first onboarding, all accepted navigation surfaces, formal API client, English/Chinese switch, mobile/keyboard/state-matrix and no-dead-control gates | **Repository vertical complete; deployed browser acceptance pending.** |
-| Managed-cloud and self-hosted | One-codebase Compose profiles, separate migration/runtime identities, live profile admissions, non-root images, exact runtime configuration | **Repository complete; six-image release and target-host acceptance pending.** |
+| Managed-cloud and self-hosted | One-codebase Compose profiles, separate migration/runtime identities, live profile admissions, non-root images, exact runtime configuration and the immutable six-image RC4 release | **Repository and release complete; target-host acceptance pending.** |
 | Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests | **Repository complete; customer-controlled backup target and two actual release upgrades pending.** |
-| Full quality gate | Local `npm run verify`: 527 tests, 523 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. The formal PostgreSQL restart admission additionally passed 3/3 consecutive runs. CI run above completed all live infrastructure gates successfully. | **Candidate source qualified.** This is not release, deployment, or customer-acceptance evidence. |
+| Full quality gate | Current `npm run verify`: 529 tests, 525 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. The formal PostgreSQL restart admission additionally passed 3/3 consecutive runs. RC4 qualification completed the live OIDC, database, backup, Vault, TLS, resilience, upgrade and both deployment-profile gates. | **Release source qualified.** This is not deployment or customer-acceptance evidence. |
 
-## External state proved at this audit
+## External state last proved to this audit
 
 - Hong Kong and Hangzhou 7 remain `PREPARED_NOT_STARTED`.
 - RC3 artifacts and prepare-only evidence are retained; RC3 is not eligible for
   first start.
-- No Company OS Secret, runtime container, network, volume, database, OIDC,
-  Vault, DNS, TLS, Nginx, or security-group change was made for the six-image
-  candidate.
+- RC4 publication did not authorize or perform Company OS Secret injection,
+  runtime creation, database initialization, OIDC/Vault provisioning, DNS,
+  TLS, Nginx or security-group changes on either target.
 - The eight startup Secret files and the separate opt-in backup Secret set
   remain intentionally absent.
+- A local, Secret-free RC4 staging bundle was independently verified with
+  bundle-manifest digest
+  `sha256:632dcef1a5c8a8e6a3822e3e64592c36876a913344e501e1d9a6e62d748414db`.
+  This is handoff evidence only; neither target has admitted that bundle yet.
 
 ## Remaining completion sequence
 
-1. Obtain explicit authorization to merge the draft pull request and publish a
-   new immutable six-image release candidate.
-2. Verify all six content-addressed images, manifest, SBOM, provenance, and
+1. Verify all six content-addressed images, manifest, SBOM, provenance, and
    release bundle in Hong Kong and Hangzhou 7; repeat prepare-only on both.
-3. Obtain a separate exact first-start authorization, then create each
+2. Obtain a separate exact first-start authorization, then create each
    environment's isolated runtime objects, inject restricted-file Secrets,
    migrate, provision, and start without DNS cutover.
-4. Complete real OIDC, Vault/Broker, Agent Node, Data Node, model Provider,
+3. Complete real OIDC, Vault/Broker, Agent Node, Data Node, model Provider,
    restart/recovery, responsibility-chain, and Web acceptance in staging.
-5. Prove encrypted backup and restore against the customer-controlled off-site
+4. Prove encrypted backup and restore against the customer-controlled off-site
    target.
-6. Complete two actual immutable release upgrades with parallel rollback
+5. Complete two actual immutable release upgrades with parallel rollback
    evidence.
-7. Keep Hong Kong active until the independent ICP/DNS cutover gate is
+6. Keep Hong Kong active until the independent ICP/DNS cutover gate is
    authorized; do not infer cutover authority from technical acceptance.
 
 The active goal must remain open until every remaining item has direct,

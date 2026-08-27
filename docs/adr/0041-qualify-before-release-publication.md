@@ -23,7 +23,8 @@ workflow serializes by tag and refuses cancellation in progress. It then:
 2. runs the complete credential-free and disposable-infrastructure
    qualification job with read-only repository permission;
 3. enters the protected `production-release` environment;
-4. builds and publishes five independently attested images;
+4. builds and publishes every release-manifest image as an independently
+   attested artifact (six images as of RC4);
 5. creates the digest-bound release manifest and application SBOM; and
 6. creates the GitHub Release only after all earlier evidence exists.
 
