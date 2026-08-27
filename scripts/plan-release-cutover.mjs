@@ -135,6 +135,7 @@ export function createReleaseCutoverPlan(previousValue, currentValue) {
       },
     },
     orderedSteps: [
+      { id: "capacity-admission", evidenceId: `${evidencePrefix}/00-capacity-admission`, outcome: "ACTIVE_CANDIDATE_AND_HOST_RESERVE_ADMITTED_WITHOUT_SWAP" },
       { id: "freeze-dispatch", evidenceId: `${evidencePrefix}/01-freeze-dispatch`, outcome: "NEW_DISPATCH_DISABLED" },
       { id: "reconcile-attempts", evidenceId: `${evidencePrefix}/02-attempt-reconciliation`, outcome: "EVERY_IN_FLIGHT_ATTEMPT_DRAINED_CANCELLED_OR_DURABLY_RECOVERABLE" },
       { id: "encrypted-backup", evidenceId: `${evidencePrefix}/03-encrypted-backup`, outcome: "PAIRED_BACKUP_AND_MANIFEST_RETAINED" },
@@ -173,6 +174,7 @@ export function createReleaseCutoverPlan(previousValue, currentValue) {
       reason: "PLAN_REQUIRES_OPERATOR_EXECUTION_AND_RETAINED_EVIDENCE",
       requiredEvidenceIds: [
         ...new Set([
+          `${evidencePrefix}/00-capacity-admission`,
           `${evidencePrefix}/01-freeze-dispatch`,
           `${evidencePrefix}/02-attempt-reconciliation`,
           `${evidencePrefix}/03-encrypted-backup`,

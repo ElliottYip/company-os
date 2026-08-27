@@ -89,6 +89,7 @@ test("upgrade preparation plan is non-mutating and separates traffic authority",
   assert.equal(plan.phase, "UPGRADE_PREPARATION");
   assert.equal(plan.trafficMoved, false);
   assert.equal(plan.automaticRollbackAttempted, false);
+  assert.equal(plan.steps[0], "capacity-admission");
   assert.ok(plan.steps.includes("encrypted-backup"));
   assert.ok(plan.steps.includes("start-candidate-web"));
   assert.equal(plan.steps.includes("route-traffic"), false);

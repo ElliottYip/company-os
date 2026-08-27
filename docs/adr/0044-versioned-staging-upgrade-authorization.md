@@ -73,6 +73,11 @@ pre-approved merely because it has 8 GB memory: its observed snapshot must
 pass, and the present declared 5.55 CPU parallel requirement does not fit 4
 logical CPUs.
 
+Capacity admission is the first preparation step. Dispatch remains open when
+it fails, because no active or candidate mutation has started. The retained
+capacity evidence digest is required by the cutover plan and must precede
+dispatch freeze, backup, restore, migration, or candidate creation.
+
 Planning is non-mutating. The preparation executor may freeze dispatch,
 reconcile work, create an encrypted backup, rehearse restore into an empty
 parallel database, migrate that candidate database, start candidate services

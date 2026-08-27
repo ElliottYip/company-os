@@ -4,11 +4,11 @@ import { isAbsolute, join, resolve } from "node:path";
 
 const DIGEST = /^sha256:[a-f0-9]{64}$/;
 const OPERATION = /^upgrade-[a-z0-9][a-z0-9-]{2,87}$/;
-const ALLOWED_STEPS = new Set(["freeze-dispatch", "reconcile-attempts", "encrypted-backup",
+const ALLOWED_STEPS = new Set(["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
   "parallel-restore-rehearsal", "forward-migrate", "start-candidate-api",
   "candidate-readiness", "start-candidate-secret-broker", "start-candidate-agent-node",
   "start-candidate-data-node", "customer-smoke", "state-comparison", "start-candidate-web"]);
-const ORDER_WITHOUT_MIGRATION = ["freeze-dispatch", "reconcile-attempts", "encrypted-backup",
+const ORDER_WITHOUT_MIGRATION = ["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
   "parallel-restore-rehearsal", "start-candidate-api", "candidate-readiness",
   "start-candidate-secret-broker", "start-candidate-agent-node", "start-candidate-data-node",
   "customer-smoke", "state-comparison", "start-candidate-web"];
@@ -123,7 +123,7 @@ async function validatePlan(value: UpgradePreparationPlan): Promise<UpgradePrepa
 function validStepOrder(steps: readonly string[]): boolean {
   if (steps.some((step) => !ALLOWED_STEPS.has(step))) return false;
   const expected = steps.includes("forward-migrate")
-    ? [...ORDER_WITHOUT_MIGRATION.slice(0, 4), "forward-migrate", ...ORDER_WITHOUT_MIGRATION.slice(4)]
+    ? [...ORDER_WITHOUT_MIGRATION.slice(0, 5), "forward-migrate", ...ORDER_WITHOUT_MIGRATION.slice(5)]
     : ORDER_WITHOUT_MIGRATION;
   return JSON.stringify(steps) === JSON.stringify(expected);
 }

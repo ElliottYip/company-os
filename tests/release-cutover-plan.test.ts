@@ -41,6 +41,7 @@ test("release cutover plan binds two real versions and never claims execution ev
   assert.equal(plan.rollback.strategy, "RESTORE_PAIRED_BACKUP_TO_EMPTY_PARALLEL_DATABASE");
   assert.equal(plan.completion.executable, false);
   assert.ok(plan.orderedSteps.some((step) => step.id === "forward-migrate"));
+  assert.equal(plan.orderedSteps[0].id, "capacity-admission");
   assert.ok(plan.orderedSteps.every((step) => plan.completion.requiredEvidenceIds.includes(step.evidenceId)));
   assert.doesNotMatch(JSON.stringify(plan), /password|clientSecret|bearerToken/i);
 });

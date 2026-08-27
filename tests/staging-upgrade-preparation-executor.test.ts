@@ -8,7 +8,7 @@ import { runStagingUpgradePreparation } from
   "../scripts/run-staging-upgrade-preparation.ts";
 
 const digest = (value: string) => `sha256:${value.repeat(64)}`;
-const steps = ["freeze-dispatch", "reconcile-attempts", "encrypted-backup",
+const steps = ["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
   "parallel-restore-rehearsal", "forward-migrate", "start-candidate-api",
   "candidate-readiness", "start-candidate-secret-broker", "start-candidate-agent-node",
   "start-candidate-data-node", "customer-smoke", "state-comparison", "start-candidate-web"];
