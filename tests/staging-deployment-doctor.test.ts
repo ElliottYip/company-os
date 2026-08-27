@@ -25,7 +25,8 @@ function readySnapshot(): StagingDeploymentSnapshot {
     },
     runtime: { dockerAvailable: true, composeAvailable: true, cpuCount: 2,
       totalMemoryBytes: 3_500_000_000, freeDiskBytes: 12_000_000_000 },
-    target: { composeProjectExists: false, targetNetworkExists: false,
+    target: { composeProject: "company-os-hong-kong", network: "company-os-hong-kong-product",
+      composeProjectExists: false, targetNetworkExists: false,
       loopbackPorts: [{ port: 4322, status: "FREE" }, { port: 4600, status: "FREE" },
         { port: 4601, status: "FREE" }] },
     publicEnvironment: {
@@ -38,9 +39,7 @@ function readySnapshot(): StagingDeploymentSnapshot {
       COMPANY_OS_HTTP_AGENT_NODE_BASE_URL: "https://agent.staging.example",
       COMPANY_OS_HTTP_DATA_NODE_BASE_URL: "https://data.staging.example",
       COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: "https://broker.staging.example",
-      COMPANY_OS_BACKUP_S3_ENDPOINT: "https://object-storage.staging.example",
-      COMPANY_OS_BACKUP_S3_REGION: "us-east-1",
-      COMPANY_OS_BACKUP_S3_BUCKET: "company-os-staging-backup",
+      COMPANY_OS_OFF_SITE_BACKUP: "DISABLED_PENDING_AUTHORIZATION",
     },
   };
 }
@@ -49,6 +48,18 @@ test("staging doctor admits an isolated immutable install without reading secret
   const result = evaluateStagingDeploymentReadiness(readySnapshot());
   assert.deepEqual(result, { schemaVersion: 1, mode: "INSTALL", status: "READY", findings: [] });
   assert.doesNotMatch(JSON.stringify(result), /database-url|client-secret|bearer-token|signing-key/);
+});
+
+test("off-site backup is capability-gated instead of blocking first start", () => {
+  const snapshot = readySnapshot();
+  const enabled = evaluateStagingDeploymentReadiness({ ...snapshot, publicEnvironment: {
+    ...snapshot.publicEnvironment, COMPANY_OS_OFF_SITE_BACKUP: "ENABLED",
+  } });
+  assert.deepEqual(enabled.findings, [
+    { code: "STAGING_PUBLIC_CONFIG_MISSING", subject: "COMPANY_OS_BACKUP_S3_REGION" },
+    { code: "STAGING_PUBLIC_CONFIG_MISSING", subject: "COMPANY_OS_BACKUP_S3_BUCKET" },
+    { code: "STAGING_HTTPS_COORDINATE_REQUIRED", subject: "COMPANY_OS_BACKUP_S3_ENDPOINT" },
+  ]);
 });
 
 test("initial staging start does not require opt-in backup credentials", () => {
@@ -80,7 +91,7 @@ test("staging doctor reports every actionable precondition with stable codes", (
         ? { ...file, kind: "symlink" as const, mode: 0o644, size: 0 }
         : file).filter(({ name }) => name !== "secret-broker-bearer-token") },
     runtime: { ...snapshot.runtime, composeAvailable: false, freeDiskBytes: 2_000_000_000 },
-    target: { composeProjectExists: true, targetNetworkExists: true,
+    target: { ...snapshot.target, composeProjectExists: true, targetNetworkExists: true,
       loopbackPorts: [{ port: 4600, status: "OCCUPIED" }, { port: 4601, status: "FREE" }] },
     publicEnvironment: { ...snapshot.publicEnvironment, COMPANY_OS_API_IMAGE: "ghcr.io/example/api:latest",
       COMPANY_OS_OIDC_ISSUER: "http://identity.staging.example" },
@@ -92,6 +103,10 @@ test("staging doctor reports every actionable precondition with stable codes", (
     "STAGING_PROJECT_ALREADY_EXISTS", "STAGING_NETWORK_ALREADY_EXISTS", "STAGING_PORT_OCCUPIED",
     "STAGING_IMAGE_NOT_IMMUTABLE", "STAGING_HTTPS_COORDINATE_REQUIRED",
   ]);
+  assert.equal(result.findings.find(({ code }) => code === "STAGING_PROJECT_ALREADY_EXISTS")?.subject,
+    "company-os-hong-kong");
+  assert.equal(result.findings.find(({ code }) => code === "STAGING_NETWORK_ALREADY_EXISTS")?.subject,
+    "company-os-hong-kong-product");
 });
 
 test("public staging environment rejects secret-shaped keys before retaining configuration", () => {
