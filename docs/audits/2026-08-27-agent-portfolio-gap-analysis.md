@@ -113,7 +113,11 @@ rewriting the retained control plane:
 - explicit `COMPANY_OS_PUBLIC_DEMO_ENABLED` opt-in, defaulting to disabled.
 
 The event additions use the existing append-only event store, so this slice
-does not require a destructive SQL shape change. The existing ordered migration
-chain must still be preflighted for the RC6 candidate. Publication, immutable
-image digests, Hong Kong installation, and target-host acceptance remain open
-external gates and must not be inferred from local verification.
+does not require a destructive SQL shape change. The RC6-to-RC7 release plan
+confirmed PostgreSQL 16, `EXACT_PREFIX` migration history, no added migration,
+and unchanged public contracts without connecting to or mutating a database.
+RC7 publication, six immutable image digests, and the Hong Kong prepare-only
+install are recorded in
+[`../acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json`](../acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json).
+Runtime start, traffic, and target-host browser acceptance remain deliberately
+open and must not be inferred from candidate installation.

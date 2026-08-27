@@ -181,14 +181,15 @@ One codebase produces `managed-cloud` and `self-hosted` profiles. Managed
 cloud may use a replaceable OIDC adapter; self-hosted may use enterprise
 identity. Same account never means shared authority across products.
 
-RC4 and RC5 images, release digests, Hong Kong/Hangzhou site directories,
+RC4, RC5, and RC6 images, release digests, Hong Kong/Hangzhou site directories,
 prepare-only evidence, backup/restore, migration, upgrade, rollback, resource,
 and isolation contracts are retained and immutable. The Agent Portfolio change
-ships as the next unique release candidate; because `v0.1.0-rc.5` already
-exists, the default next candidate is RC6. Hong Kong receives a separate public
-Demo Profile first. Formal first start, DNS/TLS cutover, real OIDC/Vault data,
-and Hangzhou production cutover require their own authorization and do not
-block the local product vertical slice.
+shipped in RC6, followed by corrective RC7 after target-host preflight found a
+Node 22 installer invocation defect. Hong Kong now holds RC7 as a separate
+fixture-only Demo candidate in `PREPARED_NOT_STARTED`; it has no startable
+environment, Secret material, Company OS container, or public ingress. Formal
+first start, Demo start/traffic, DNS/TLS cutover, real OIDC/Vault data, and
+Hangzhou production cutover require their own authorization.
 
 ## Architecture constitution
 
@@ -209,4 +210,3 @@ Do not recreate external workspaces, sandboxes, memory, files, or native Agent
 frontends; require all tasks to pass through ANC; collect Personal Agent private
 activity; invent unavailable provider data; use production credentials or
 data; overwrite immutable release evidence; or perform a broad backend rewrite.
-

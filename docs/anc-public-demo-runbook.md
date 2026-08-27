@@ -99,6 +99,8 @@ there is no candidate start authorization in this admission, public ingress is
 disabled, no `staging.env` or Secret file exists, and no Company OS container is
 running on the Hong Kong host. The authoritative non-secret record is
 [`2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json`](acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json).
+The corresponding deliberately incomplete, non-startable overlay is
+[`2026-08-27-anc-agent-portfolio-hk-rc7-demo-profile.nonsecret.env`](acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-demo-profile.nonsecret.env).
 
 ## Evidence to retain
 
