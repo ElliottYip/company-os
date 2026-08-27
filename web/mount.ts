@@ -80,6 +80,11 @@ import {
   usagePage,
   type InboxFilter,
 } from "./pages/operational-pages.ts";
+import { agentPortfolioPage } from "./pages/agent-portfolio-pages.ts";
+import {
+  createPublicDemoClient,
+  type PublicDemoPortfolioSnapshot,
+} from "./public-demo-client.ts";
 
 export type CompanyOSSection =
   | "office"
@@ -942,6 +947,8 @@ export function mountCompanyOS(
   let selectedFormalCompanyId: string | null = null;
   let formalOrganizationMissing = false;
   let explicitDemo = false;
+  const publicDemoClient = createPublicDemoClient("");
+  let publicDemoSnapshot: PublicDemoPortfolioSnapshot | null = null;
   let openSetupAfterRender = false;
   let localSetupRequired = false;
   let selectedWorkId: string | null = null;
@@ -1053,10 +1060,12 @@ export function mountCompanyOS(
 
   function bindFrontDoor(): void {
     root.querySelector<HTMLButtonElement>("[data-enter-demo]")?.addEventListener("click", () => {
-      explicitDemo = true;
-      frontDoorVisible = false;
-      onboardingVisible = false;
-      void render();
+      void runAction(async () => {
+        publicDemoSnapshot = await publicDemoClient.create();
+        explicitDemo = true;
+        frontDoorVisible = false;
+        onboardingVisible = false;
+      });
     });
     root.querySelector<HTMLButtonElement>("[data-enter-local]")?.addEventListener("click", () => {
       explicitDemo = false;
@@ -1294,7 +1303,11 @@ export function mountCompanyOS(
       ? workStateForCatalogItem(state, selectedCatalogItem, runTimeline)
       : state;
     let main: string;
-    switch (section) {
+    const portfolioSection = (["office", "agents", "work", "approvals", "connectors", "usage"] as const)
+      .find((candidate) => candidate === section);
+    if (isDemo && publicDemoSnapshot && portfolioSection) {
+      main = agentPortfolioPage(portfolioSection, publicDemoSnapshot, locale);
+    } else switch (section) {
       case "office": main = officeView(pageState, organization, activeWorkTitle); break;
       case "inbox": main = inboxPage(pageState, organization, locale, activeInboxFilter, workCatalog, accountabilityLedger, activeWorkTitle); break;
       case "work": main = workView(visibleWorkState, organization, selectedWorkId !== null, workCatalog, {
@@ -1355,6 +1368,33 @@ export function mountCompanyOS(
     root.querySelectorAll<HTMLButtonElement>("[data-section-target]").forEach((button) => {
       button.addEventListener("click", () => {
         navigateTo(button.dataset.sectionTarget as CompanyOSSection);
+      });
+    });
+    root.querySelector<HTMLButtonElement>("[data-demo-trigger-governed]")?.addEventListener("click", () => {
+      void runAction(async () => {
+        publicDemoSnapshot = await publicDemoClient.action({ action: "TRIGGER_GOVERNED" });
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-demo-decision]").forEach((button) => {
+      button.addEventListener("click", () => {
+        void runAction(async () => {
+          publicDemoSnapshot = await publicDemoClient.action({
+            action: "DECIDE",
+            decision: button.dataset.demoDecision as "APPROVED" | "REJECTED",
+          });
+        });
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-demo-renewal-target]").forEach((button) => {
+      button.addEventListener("click", () => {
+        void runAction(async () => {
+          publicDemoSnapshot = await publicDemoClient.action({
+            action: "REQUEST_RENEWAL",
+            targetType: button.dataset.demoRenewalType as "CREDENTIAL",
+            targetId: button.dataset.demoRenewalTarget ?? "",
+            reason: locale === "zh-CN" ? "展会演示前完成续期。" : "Renew before the exhibition demo.",
+          });
+        });
       });
     });
     const companyMenu = root.querySelector<HTMLElement>("[data-company-menu]");
@@ -1479,7 +1519,13 @@ export function mountCompanyOS(
       options[next]?.focus();
     });
     root.querySelector<HTMLButtonElement>("[data-global-reset]")?.addEventListener("click", () => {
-      void runAction(() => application.resetFixture());
+      void runAction(async () => {
+        if (isDemo && publicDemoSnapshot) {
+          publicDemoSnapshot = await publicDemoClient.action({ action: "RESET" });
+          return;
+        }
+        await application.resetFixture();
+      });
     });
 
     root.querySelector<HTMLButtonElement>("[data-onboarding-dismiss]")?.addEventListener("click", () => {
