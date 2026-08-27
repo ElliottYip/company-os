@@ -1,5 +1,8 @@
 import { createHash, randomBytes } from "node:crypto";
 import { createDemoComposition } from "../demo/create-demo-composition.ts";
+import { createDemoPortfolioFixture } from "../demo/create-demo-portfolio-fixture.ts";
+import { InMemoryDemoSessionStore } from "../storage/in-memory-demo-session-store.ts";
+import { DemoPortfolioSessions } from "../../application/demo-portfolio-sessions.ts";
 import { getFormalAccessStatus } from "../../application/get-formal-access-status.ts";
 import {
   createCompanyAuth,
@@ -148,6 +151,14 @@ const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicy
   process.env.COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID,
 );
 const { runtime } = createDemoComposition();
+const publicDemoSessions = new DemoPortfolioSessions({
+  store: new InMemoryDemoSessionStore(),
+  createFixture: createDemoPortfolioFixture,
+  nextSessionId: () => randomBytes(32).toString("base64url"),
+  nextCompanyId: () => `demo-company-${randomBytes(12).toString("hex")}`,
+  now: () => new Date().toISOString(),
+  timeToLiveMilliseconds: 4 * 60 * 60 * 1_000,
+});
 const formalConfiguration = {
   publicBaseUrl: process.env.COMPANY_OS_PUBLIC_URL,
   issuer: process.env.COMPANY_OS_OIDC_ISSUER,
@@ -413,6 +424,7 @@ async function formalPlanningRegistry(
 }
 const server = createCompanyOsHttpService({
   runtime,
+  publicDemoSessions,
   deploymentProfile: profile,
   ...(deployedReleaseId ? { releaseId: deployedReleaseId } : {}),
   serviceMode: isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",

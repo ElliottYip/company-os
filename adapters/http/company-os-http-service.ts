@@ -1,5 +1,6 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type { CompanyWorkState } from "../../application/company-operations.ts";
+import type { DemoPortfolioSnapshot } from "../../core/demo-portfolio.ts";
 import type { OrganizationDraft } from "../../core/organization.ts";
 import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
 
@@ -22,6 +23,20 @@ export interface CompanyOsHttpServiceOptions {
   readonly maxPortabilityBytes?: number;
   readonly metricsEnabled?: boolean;
   readonly metrics?: BoundedHttpMetrics;
+  readonly publicDemoSessions?: {
+    create(): Promise<DemoPortfolioSnapshot>;
+    read(sessionId: string): Promise<DemoPortfolioSnapshot>;
+    recover(sessionId: string | null): Promise<DemoPortfolioSnapshot>;
+    reset(sessionId: string): Promise<DemoPortfolioSnapshot>;
+    requestRenewal(sessionId: string, input: {
+      readonly targetType: "SUBSCRIPTION" | "CREDENTIAL" | "QUOTA";
+      readonly targetId: string;
+      readonly reason: string;
+    }): Promise<DemoPortfolioSnapshot>;
+    triggerGovernedWork(sessionId: string): Promise<DemoPortfolioSnapshot>;
+    decide(sessionId: string, decision: "APPROVED" | "REJECTED"): Promise<DemoPortfolioSnapshot>;
+  };
+  readonly demoCookieMaxAgeSeconds?: number;
   readonly formalAccess?: {
     getStatus(request: IncomingMessage): Promise<unknown>;
   };
@@ -135,6 +150,78 @@ function sendStructuredError(
   parameters: Readonly<Record<string, string | number | boolean | null>> = {},
 ) {
   sendJson(res, status, { error: { code, parameters } });
+}
+
+function publicDemoSnapshot(snapshot: DemoPortfolioSnapshot): Omit<DemoPortfolioSnapshot, "sessionId"> {
+  const { sessionId: _sessionId, ...publicValue } = snapshot;
+  return publicValue;
+}
+
+function demoSessionCookie(request: IncomingMessage): string | null {
+  const matches = String(request.headers.cookie ?? "").split(";")
+    .map((value) => value.trim())
+    .filter((value) => value.startsWith("company-os-demo-session="));
+  if (!matches.length) return null;
+  if (matches.length !== 1) throw new Error("DEMO_SESSION_COOKIE_INVALID");
+  const value = matches[0]!.slice("company-os-demo-session=".length);
+  if (!/^[A-Za-z0-9_-]{32,160}$/.test(value)) throw new Error("DEMO_SESSION_COOKIE_INVALID");
+  return value;
+}
+
+function hasDemoSessionCookie(request: IncomingMessage): boolean {
+  return String(request.headers.cookie ?? "")
+    .split(";")
+    .some((value) => value.trim().startsWith("company-os-demo-session="));
+}
+
+function demoCookieHeader(
+  snapshot: DemoPortfolioSnapshot,
+  secure: boolean,
+  maximumAgeSeconds: number,
+): string {
+  return [
+    `company-os-demo-session=${snapshot.sessionId}`,
+    "Path=/api/demo/v2",
+    "HttpOnly",
+    "SameSite=Lax",
+    secure ? "Secure" : "",
+    `Max-Age=${maximumAgeSeconds}`,
+  ].filter(Boolean).join("; ");
+}
+
+function publicDemoAction(value: unknown):
+  | { readonly action: "RESET" }
+  | { readonly action: "TRIGGER_GOVERNED" }
+  | { readonly action: "DECIDE"; readonly decision: "APPROVED" | "REJECTED" }
+  | {
+    readonly action: "REQUEST_RENEWAL";
+    readonly targetType: "SUBSCRIPTION" | "CREDENTIAL" | "QUOTA";
+    readonly targetId: string;
+    readonly reason: string;
+  }
+  | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  const keys = Object.keys(input);
+  if ((input.action === "RESET" || input.action === "TRIGGER_GOVERNED") &&
+      keys.length === 1) return { action: input.action };
+  if (input.action === "DECIDE" &&
+      (input.decision === "APPROVED" || input.decision === "REJECTED") &&
+      keys.length === 2) return { action: input.action, decision: input.decision };
+  if (input.action === "REQUEST_RENEWAL" &&
+      ["SUBSCRIPTION", "CREDENTIAL", "QUOTA"].includes(String(input.targetType)) &&
+      typeof input.targetId === "string" && /^[a-z0-9][a-z0-9-]{0,127}$/.test(input.targetId) &&
+      typeof input.reason === "string" && input.reason.trim() &&
+      [...input.reason.trim()].length <= 1_000 &&
+      keys.length === 4) {
+    return {
+      action: input.action,
+      targetType: input.targetType as "SUBSCRIPTION" | "CREDENTIAL" | "QUOTA",
+      targetId: input.targetId,
+      reason: input.reason.trim(),
+    };
+  }
+  return null;
 }
 
 function sendMetrics(res: ServerResponse, body: string) {
@@ -1019,6 +1106,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
   const allowedOrigins = options.allowedOrigins ?? [];
   const maxBodyBytes = options.maxBodyBytes ?? 64 * 1024;
   const maxPortabilityBytes = options.maxPortabilityBytes ?? 8 * 1024 * 1024;
+  const demoCookieMaxAgeSeconds = options.demoCookieMaxAgeSeconds ?? 14_400;
   const startedAt = Date.now();
   const metrics = options.metrics ?? (options.metricsEnabled ? new BoundedHttpMetrics() : null);
 
@@ -1060,6 +1148,10 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         await options.authHandler(req, res);
         return;
       }
+      if (path.startsWith("/api/v1/") && hasDemoSessionCookie(req)) {
+        sendStructuredError(res, 403, "DEMO_IDENTITY_FORBIDDEN");
+        return;
+      }
       if (method === "GET" && path === "/metrics" && metrics) {
         sendMetrics(res, metrics.render());
         return;
@@ -1091,6 +1183,63 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (method === "GET" && path === "/api/v1/access") {
         if (!options.formalAccess) throw new Error("FORMAL_ACCESS_UNAVAILABLE");
         sendJson(res, 200, await options.formalAccess.getStatus(req));
+        return;
+      }
+      if (method === "POST" && path === "/api/demo/v2/sessions") {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
+        const snapshot = await options.publicDemoSessions.create();
+        sendJson(res, 201, publicDemoSnapshot(snapshot), {
+          "set-cookie": demoCookieHeader(
+            snapshot,
+            (options.deploymentExposure ?? "private") === "public",
+            demoCookieMaxAgeSeconds,
+          ),
+        });
+        return;
+      }
+      if (method === "GET" && path === "/api/demo/v2/session") {
+        if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
+        const sessionId = demoSessionCookie(req);
+        if (!sessionId) throw new Error("DEMO_SESSION_REQUIRED");
+        sendJson(res, 200, publicDemoSnapshot(await options.publicDemoSessions.read(sessionId)));
+        return;
+      }
+      if (method === "POST" && path === "/api/demo/v2/recover") {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
+        const snapshot = await options.publicDemoSessions.recover(demoSessionCookie(req));
+        sendJson(res, 200, publicDemoSnapshot(snapshot), {
+          "set-cookie": demoCookieHeader(
+            snapshot,
+            (options.deploymentExposure ?? "private") === "public",
+            demoCookieMaxAgeSeconds,
+          ),
+        });
+        return;
+      }
+      if (method === "POST" && path === "/api/demo/v2/actions") {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
+        const sessionId = demoSessionCookie(req);
+        if (!sessionId) throw new Error("DEMO_SESSION_REQUIRED");
+        const action = publicDemoAction(await readJson(req, maxBodyBytes));
+        if (!action) throw new Error("INVALID_DEMO_ACTION");
+        let snapshot: DemoPortfolioSnapshot;
+        if (action.action === "RESET") {
+          snapshot = await options.publicDemoSessions.reset(sessionId);
+        } else if (action.action === "TRIGGER_GOVERNED") {
+          snapshot = await options.publicDemoSessions.triggerGovernedWork(sessionId);
+        } else if (action.action === "DECIDE") {
+          snapshot = await options.publicDemoSessions.decide(sessionId, action.decision);
+        } else {
+          snapshot = await options.publicDemoSessions.requestRenewal(sessionId, {
+            targetType: action.targetType,
+            targetId: action.targetId,
+            reason: action.reason,
+          });
+        }
+        sendJson(res, 200, publicDemoSnapshot(snapshot));
         return;
       }
       if (method === "GET" && path === "/api/v1/instance/maintenance") {
@@ -1836,6 +1985,18 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (path.startsWith("/api/v1/")) {
         const response = formalError(error);
         sendStructuredError(res, response.status, response.code);
+        return;
+      }
+      if (path.startsWith("/api/demo/v2/")) {
+        const code = error instanceof Error ? error.message : "INTERNAL_ERROR";
+        const status = code === "ORIGIN_NOT_ALLOWED" ? 403
+          : ["DEMO_SESSION_REQUIRED", "DEMO_SESSION_NOT_FOUND", "DEMO_SESSION_EXPIRED"]
+            .includes(code) ? 401
+          : code === "DEMO_RENEWAL_TARGET_NOT_FOUND" ? 404
+          : ["INVALID_DEMO_ACTION", "DEMO_SESSION_COOKIE_INVALID"].includes(code) ? 422
+          : code === "PUBLIC_DEMO_UNAVAILABLE" ? 503
+          : 409;
+        sendStructuredError(res, status, code);
         return;
       }
       if (error instanceof Error && error.message === "REQUEST_BODY_TOO_LARGE") {
