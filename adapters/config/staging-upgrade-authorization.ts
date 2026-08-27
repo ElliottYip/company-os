@@ -17,7 +17,10 @@ export interface StagingUpgradeAuthorization {
     readonly expiresAt: string;
   };
   readonly active: UpgradeReleaseAuthority & { readonly startupStateDigest: string };
-  readonly candidate: UpgradeReleaseAuthority & { readonly siteContractDigest: string };
+  readonly candidate: UpgradeReleaseAuthority & {
+    readonly siteContractDigest: string;
+    readonly runtimeContractDigest: string;
+  };
   readonly cutover: { readonly planId: string; readonly planDigest: string };
   readonly authorization: {
     readonly preparation: string;
@@ -41,8 +44,8 @@ export function parseStagingUpgradeAuthorization(value: unknown): StagingUpgrade
   if (!text(operation.id, OPERATION_ID) || !text(operation.siteId, SITE_ID) ||
       !text(operation.accountableOperatorReference, REFERENCE) ||
       !isoTimestamp(operation.expiresAt)) invalid();
-  const active = releaseAuthority(root.active, "startupStateDigest");
-  const candidate = releaseAuthority(root.candidate, "siteContractDigest");
+  const active = releaseAuthority(root.active, ["startupStateDigest"]);
+  const candidate = releaseAuthority(root.candidate, ["siteContractDigest", "runtimeContractDigest"]);
   if (active.releaseId === candidate.releaseId || active.sourceRevision === candidate.sourceRevision) invalid();
   const cutover = exactRecord(root.cutover, ["planId", "planDigest"]);
   if (!text(cutover.planId, CUTOVER_ID) || !text(cutover.planDigest, DIGEST)) invalid();
@@ -55,11 +58,13 @@ export function parseStagingUpgradeAuthorization(value: unknown): StagingUpgrade
   return structuredClone(root) as unknown as StagingUpgradeAuthorization;
 }
 
-function releaseAuthority(value: unknown, extraDigest: "startupStateDigest" | "siteContractDigest") {
+function releaseAuthority(value: unknown,
+  extraDigests: readonly ("startupStateDigest" | "siteContractDigest" | "runtimeContractDigest")[]) {
   const record = exactRecord(value,
-    ["releaseId", "sourceRevision", "releaseManifestDigest", extraDigest]);
+    ["releaseId", "sourceRevision", "releaseManifestDigest", ...extraDigests]);
   if (!text(record.releaseId, RELEASE_ID) || !text(record.sourceRevision, REVISION) ||
-      !text(record.releaseManifestDigest, DIGEST) || !text(record[extraDigest], DIGEST)) invalid();
+      !text(record.releaseManifestDigest, DIGEST) ||
+      !extraDigests.every((key) => text(record[key], DIGEST))) invalid();
   return record as Record<string, string>;
 }
 

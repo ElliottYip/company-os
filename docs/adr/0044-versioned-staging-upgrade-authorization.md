@@ -36,6 +36,23 @@ operation. The exact contract binds:
 - an expiry time and accountable operator reference, neither of which is a
   credential or customer coordinate.
 
+The authorization also binds the digest of a separate, Secret-free candidate
+runtime contract. That runtime contract is rendered from the active site and
+candidate release but has its own Compose project, container/service names,
+network aliases, loopback ports, candidate database reference, and resource
+budget. It must not reuse active `api`, `web`, Broker, Agent Node, or Data Node
+DNS aliases on the same Docker network. When any execution-plane image changes,
+the candidate service runs beside the active service under a candidate-specific
+ID until cutover; an installed image alone is not readiness evidence.
+
+The candidate database credential set lives in a separate target-owned Secret
+projection and points only to the empty parallel restore target. Neither the
+authorization nor the runtime contract contains that coordinate or Secret.
+The active public reverse proxy continues to target the active loopback ports
+until the traffic phase. Candidate smoke and state comparison use candidate
+loopback ports or a one-shot verifier on the candidate network, never the
+customer hostname.
+
 Planning is non-mutating. The preparation executor may freeze dispatch,
 reconcile work, create an encrypted backup, rehearse restore into an empty
 parallel database, migrate that candidate database, start candidate services
@@ -85,6 +102,13 @@ responsibilities into one broad ticket.
 Rejected because a compatibility plan is evidence, not authority. It has no
 site binding, expiry, accountable operator, or phase-separated permission.
 
+### Reuse the active Compose project and product network
+
+Rejected because Compose service aliases such as `api` and `web` would collide,
+the same host ports cannot be bound twice, and replacing an active container is
+already a traffic mutation. It would make pre-cutover smoke and rollback
+ambiguous.
+
 ## Consequences
 
 - Later Ops images can upgrade immutable RC4 without rewriting or relaxing its
@@ -94,6 +118,6 @@ site binding, expiry, accountable operator, or phase-separated permission.
 - Actual upgrade completion still requires two published releases, target
   Secrets, a running site, and external operator authorization; repository
   tests cannot fabricate that evidence.
-- The next implementation must first add exact parser and plan tests, then
-  separate preparation and traffic executors. It must not modify the existing
-  first-start or restart authority semantics.
+- The next implementation must define and resource-check the candidate runtime
+  contract before adding separate preparation and traffic executors. It must
+  not modify the existing first-start or restart authority semantics.

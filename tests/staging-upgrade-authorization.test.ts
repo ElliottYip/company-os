@@ -29,6 +29,7 @@ function authorization() {
       sourceRevision: "b".repeat(40),
       releaseManifestDigest: digest("3"),
       siteContractDigest: digest("4"),
+      runtimeContractDigest: digest("6"),
     },
     cutover: {
       planId: "cutover-0123456789abcdef01234567",

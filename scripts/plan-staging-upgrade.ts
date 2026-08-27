@@ -5,6 +5,8 @@ import { isAbsolute, join, resolve } from "node:path";
 
 import { parseStagingUpgradeAuthorization } from
   "../adapters/config/staging-upgrade-authorization.ts";
+import { parseStagingUpgradeRuntimeContract } from
+  "../adapters/config/staging-upgrade-runtime-contract.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
 import { createReleaseCutoverPlan } from "./plan-release-cutover.mjs";
 import { readVerifiedStagingReleaseStore, resolveStagingReleaseRecord } from
@@ -17,6 +19,7 @@ export interface StagingUpgradeEvidence {
   readonly candidateRaw: string;
   readonly startupRaw: string;
   readonly siteContractRaw: string;
+  readonly runtimeContractRaw: string;
 }
 
 export function createStagingUpgradePreparationPlan(
@@ -60,6 +63,18 @@ export function createStagingUpgradePreparationPlan(
       siteContract.releaseId !== authorization.candidate.releaseId) {
     throw new Error("STAGING_UPGRADE_CANDIDATE_CONTRACT_INVALID");
   }
+  if (sha256(evidence.runtimeContractRaw) !== authorization.candidate.runtimeContractDigest) {
+    throw new Error("STAGING_UPGRADE_RUNTIME_CONTRACT_MISMATCH");
+  }
+  const runtimeContract = parseStagingUpgradeRuntimeContract(
+    json(evidence.runtimeContractRaw, "STAGING_UPGRADE_RUNTIME_CONTRACT_INVALID"));
+  if (runtimeContract.operationId !== authorization.operation.id ||
+      runtimeContract.siteId !== authorization.operation.siteId ||
+      runtimeContract.active.releaseId !== authorization.active.releaseId ||
+      runtimeContract.candidate.releaseId !== authorization.candidate.releaseId ||
+      !sameImages(runtimeContract.candidate.images, candidate?.images)) {
+    throw new Error("STAGING_UPGRADE_RUNTIME_CONTRACT_INVALID");
+  }
   const cutover = createReleaseCutoverPlan(active, candidate);
   if (cutover.cutoverId !== authorization.cutover.planId ||
       sha256(JSON.stringify(cutover)) !== authorization.cutover.planDigest) {
@@ -83,7 +98,8 @@ export function createStagingUpgradePreparationPlan(
     candidate: { releaseId: authorization.candidate.releaseId,
       sourceRevision: authorization.candidate.sourceRevision,
       releaseManifestDigest: authorization.candidate.releaseManifestDigest,
-      siteContractDigest: authorization.candidate.siteContractDigest },
+      siteContractDigest: authorization.candidate.siteContractDigest,
+      runtimeContractDigest: authorization.candidate.runtimeContractDigest },
     cutover: { planId: cutover.cutoverId, planDigest: authorization.cutover.planDigest },
     authorizationReference: authorization.authorization.preparation,
     steps,
@@ -97,8 +113,15 @@ export function createStagingUpgradePreparationPlan(
   } as const;
 }
 
-export async function inspectStagingUpgradeBindings(input: { readonly rootDirectory: string }) {
-  const gathered = await gatherStoreEvidence(input.rootDirectory);
+export async function inspectStagingUpgradeBindings(input: {
+  readonly rootDirectory: string;
+  readonly runtimeContractFile: string;
+}) {
+  const runtimeContractPath = safeAbsolute(input.runtimeContractFile,
+    "STAGING_UPGRADE_RUNTIME_CONTRACT_PATH_REQUIRED");
+  const runtimeContractRaw = await safePrivateFile(runtimeContractPath,
+    "STAGING_UPGRADE_RUNTIME_CONTRACT_FILE_UNSAFE");
+  const gathered = await gatherStoreEvidence(input.rootDirectory, runtimeContractRaw);
   return {
     schemaVersion: 1,
     product: "company-os",
@@ -115,6 +138,7 @@ export async function inspectStagingUpgradeBindings(input: { readonly rootDirect
 export async function planStagingUpgradeFromStore(input: {
   readonly rootDirectory: string;
   readonly authorizationFile: string;
+  readonly runtimeContractFile: string;
   readonly authorizationReference: string;
   readonly now?: string;
 }) {
@@ -122,15 +146,19 @@ export async function planStagingUpgradeFromStore(input: {
     "STAGING_UPGRADE_AUTHORIZATION_PATH_REQUIRED");
   const authorizationRaw = await safePrivateFile(authorizationPath,
     "STAGING_UPGRADE_AUTHORIZATION_FILE_UNSAFE");
+  const runtimeContractPath = safeAbsolute(input.runtimeContractFile,
+    "STAGING_UPGRADE_RUNTIME_CONTRACT_PATH_REQUIRED");
+  const runtimeContractRaw = await safePrivateFile(runtimeContractPath,
+    "STAGING_UPGRADE_RUNTIME_CONTRACT_FILE_UNSAFE");
   const authorization = json(authorizationRaw, "STAGING_UPGRADE_AUTHORIZATION_INVALID");
-  const gathered = await gatherStoreEvidence(input.rootDirectory);
+  const gathered = await gatherStoreEvidence(input.rootDirectory, runtimeContractRaw);
   return createStagingUpgradePreparationPlan(authorization, gathered.evidence, {
     now: input.now ?? new Date().toISOString(),
     authorizationReference: input.authorizationReference,
   });
 }
 
-async function gatherStoreEvidence(rootValue: string) {
+async function gatherStoreEvidence(rootValue: string, runtimeContractRaw: string) {
   const rootDirectory = await safeRoot(rootValue);
   const store = await readVerifiedStagingReleaseStore(rootDirectory);
   const startupRaw = await safePrivateFile(join(rootDirectory, "startup-state.json"),
@@ -153,14 +181,31 @@ async function gatherStoreEvidence(rootValue: string) {
   const activeManifest = json(activeRaw, "STAGING_UPGRADE_ACTIVE_RELEASE_INVALID");
   const candidateManifest = json(candidateRaw, "STAGING_UPGRADE_CANDIDATE_RELEASE_INVALID");
   const siteContractRaw = `${JSON.stringify(candidate.siteContract)}\n`;
+  const runtimeContract = parseStagingUpgradeRuntimeContract(
+    json(runtimeContractRaw, "STAGING_UPGRADE_RUNTIME_CONTRACT_INVALID"));
+  if (runtimeContract.siteId !== candidate.siteContract.siteId ||
+      runtimeContract.active.releaseId !== active.releaseId ||
+      runtimeContract.candidate.releaseId !== candidate.releaseId ||
+      !sameImages(runtimeContract.candidate.images, candidateManifest?.images)) {
+    throw new Error("STAGING_UPGRADE_RUNTIME_CONTRACT_INVALID");
+  }
   const cutover = createReleaseCutoverPlan(activeManifest, candidateManifest);
   const activeBinding = { releaseId: active.releaseId, sourceRevision: active.sourceRevision,
     releaseManifestDigest: sha256(activeRaw), startupStateDigest: sha256(startupRaw) };
   const candidateBinding = { releaseId: candidate.releaseId, sourceRevision: candidate.sourceRevision,
-    releaseManifestDigest: sha256(candidateRaw), siteContractDigest: sha256(siteContractRaw) };
+    releaseManifestDigest: sha256(candidateRaw), siteContractDigest: sha256(siteContractRaw),
+    runtimeContractDigest: sha256(runtimeContractRaw) };
   const cutoverBinding = { planId: cutover.cutoverId, planDigest: sha256(JSON.stringify(cutover)) };
   return { siteId: candidate.siteContract.siteId, activeBinding, candidateBinding, cutoverBinding,
-    evidence: { activeRaw, candidateRaw, startupRaw, siteContractRaw } };
+    evidence: { activeRaw, candidateRaw, startupRaw, siteContractRaw, runtimeContractRaw } };
+}
+
+function sameImages(left: Readonly<Record<string, string>>, right: unknown): boolean {
+  if (!right || typeof right !== "object" || Array.isArray(right)) return false;
+  const rightRecord = right as Record<string, unknown>;
+  const leftEntries = Object.entries(left);
+  return Object.keys(rightRecord).length === leftEntries.length &&
+    leftEntries.every(([key, value]) => rightRecord[key] === value);
 }
 
 async function verifyAdoptedSiteContract(siteContract: { readonly contractDirectory: string;
@@ -233,7 +278,7 @@ function safeAbsolute(value: string, code: string): string {
 
 export function parseStagingUpgradeArguments(values: readonly string[]) {
   const result: { rootDirectory: string; authorizationFile?: string;
-    authorizationReference?: string; inspectBindings: boolean } = {
+    authorizationReference?: string; runtimeContractFile?: string; inspectBindings: boolean } = {
       rootDirectory: "/srv/company-os/staging", inspectBindings: false,
     };
   for (let index = 0; index < values.length; index += 1) {
@@ -242,8 +287,10 @@ export function parseStagingUpgradeArguments(values: readonly string[]) {
     else if (flag === "--root") result.rootDirectory = values[++index] ?? "";
     else if (flag === "--authorization-file") result.authorizationFile = values[++index];
     else if (flag === "--authorization") result.authorizationReference = values[++index];
+    else if (flag === "--runtime-contract") result.runtimeContractFile = values[++index];
     else throw new Error("STAGING_UPGRADE_ARGUMENT_INVALID");
   }
+  if (!result.runtimeContractFile) throw new Error("STAGING_UPGRADE_RUNTIME_CONTRACT_ARGUMENT_REQUIRED");
   if (!result.inspectBindings && (!result.authorizationFile || !result.authorizationReference)) {
     throw new Error("STAGING_UPGRADE_AUTHORIZATION_ARGUMENTS_REQUIRED");
   }
@@ -256,9 +303,11 @@ export function parseStagingUpgradeArguments(values: readonly string[]) {
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) {
   const options = parseStagingUpgradeArguments(process.argv.slice(2));
   const result = options.inspectBindings
-    ? await inspectStagingUpgradeBindings({ rootDirectory: options.rootDirectory })
+    ? await inspectStagingUpgradeBindings({ rootDirectory: options.rootDirectory,
+      runtimeContractFile: options.runtimeContractFile! })
     : await planStagingUpgradeFromStore({ rootDirectory: options.rootDirectory,
       authorizationFile: options.authorizationFile!,
+      runtimeContractFile: options.runtimeContractFile!,
       authorizationReference: options.authorizationReference! });
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 }

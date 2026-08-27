@@ -274,8 +274,11 @@ make the minimal implementation pass and run the complete gate.
   leaves independent customer verification open.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
-- [ ] Implement ADR 0044's separate upgrade-authorization contract and
-  preparation/traffic state machines without changing RC4 site schema v1.
+- [ ] Implement ADR 0044's separate upgrade-authorization contract, candidate
+  runtime contract, and preparation/traffic state machines without changing
+  RC4 site schema v1. Authorization parsing, candidate runtime contract
+  validation, and canonical-store-bound non-mutating preparation planning are
+  complete; parallel runtime rendering and both executors remain open.
 
 The dependency initialization planner is canonical-store-bound,
 authorization-bound, and non-mutating by default. Runtime owners are resolved
