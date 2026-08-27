@@ -1032,6 +1032,9 @@ function assertSanitizedProjection(value: unknown, expectedCompanyId: string, de
 }
 
 function administrationProjection(payload: unknown, expectedCompanyId: string): AdministrationProjection {
+  const runtimeFederatedSources = recordValue(payload) && payload.runtimeFederatedSources === undefined
+    ? []
+    : recordValue(payload) ? payload.runtimeFederatedSources : undefined;
   if (!recordValue(payload) || payload.schemaVersion !== 1 || payload.mode !== "PRODUCTION" ||
       !recordValue(payload.viewer) || !portableWebId(payload.viewer.actorId) || !boundedText(payload.viewer.displayName, 160) ||
       !portableWebId(payload.retentionPolicyId) ||
@@ -1039,6 +1042,7 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
       Number(payload.connectorCatalog.revision) < 0 || !Array.isArray(payload.connectorCatalog.connectors) ||
       !Array.isArray(payload.runtimeConnectors) || !(payload.secretBrokerRuntime === null || recordValue(payload.secretBrokerRuntime)) ||
       !Array.isArray(payload.runtimeModelProviders) || !Array.isArray(payload.runtimeDataConnectors) ||
+      !Array.isArray(runtimeFederatedSources) ||
       !recordValue(payload.governance) || !Number.isSafeInteger(payload.governance.revision) ||
       !Array.isArray(payload.governance.modelRoutingPolicies) || !Array.isArray(payload.governance.dataAuthorizationContracts) ||
       !recordValue(payload.toolAccess) || payload.toolAccess.companyId !== expectedCompanyId ||
@@ -1062,6 +1066,19 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
       throw new Error("ADMINISTRATION_PROJECTION_INVALID");
     }
   }
+  const federatedHealth = new Set(["NOT_CHECKED", "HEALTHY", "UNAVAILABLE"]);
+  for (const source of runtimeFederatedSources) {
+    if (!recordValue(source) || !portableWebId(source.connectorId) || source.protocolVersion !== "2.0" ||
+        !Array.isArray(source.dataCapabilities) || !Array.isArray(source.controlCapabilities) ||
+        source.dataCapabilities.some((value) => !boundedText(value, 80)) ||
+        source.controlCapabilities.some((value) => !boundedText(value, 80)) ||
+        !Number.isSafeInteger(source.maximumBatchSize) || Number(source.maximumBatchSize) < 1 ||
+        Number(source.maximumBatchSize) > 200 || !federatedHealth.has(String(source.health)) ||
+        !(source.checkedAt === null || validDate(source.checkedAt)) ||
+        !(source.lastSuccessfulAt === null || validDate(source.lastSuccessfulAt))) {
+      throw new Error("ADMINISTRATION_PROJECTION_INVALID");
+    }
+  }
   for (const provider of payload.runtimeModelProviders) {
     if (!recordValue(provider) || !portableWebId(provider.providerAdapterId) || !boundedText(provider.displayName, 160) ||
         !boundedText(provider.protocolVersion, 32) || !Array.isArray(provider.modelReferences) ||
@@ -1075,7 +1092,7 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
         !health.has(String(connector.health))) throw new Error("ADMINISTRATION_PROJECTION_INVALID");
   }
   assertSanitizedProjection(payload, expectedCompanyId);
-  return structuredClone(payload) as unknown as AdministrationProjection;
+  return structuredClone({ ...payload, runtimeFederatedSources }) as unknown as AdministrationProjection;
 }
 
 export function createFormalApplicationClient(

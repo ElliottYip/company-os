@@ -185,6 +185,11 @@ export function createPaperclipFederatedConnector(options: PaperclipFederatedCon
   );
   const fetchImplementation = options.fetch ?? fetch;
   const bindings = new Map<string, PaperclipAgentBinding>();
+  let healthState = {
+    status: "NOT_CHECKED" as "NOT_CHECKED" | "HEALTHY" | "UNAVAILABLE",
+    checkedAt: null as string | null,
+    lastSuccessfulAt: null as string | null,
+  };
   for (const binding of options.agentBindings) {
     const externalAgentId = externalId(binding.externalAgentId, "PAPERCLIP_AGENT_BINDING_INVALID");
     if (bindings.has(externalAgentId)) throw new Error("PAPERCLIP_AGENT_BINDING_DUPLICATE");
@@ -236,11 +241,14 @@ export function createPaperclipFederatedConnector(options: PaperclipFederatedCon
   }
 
   async function synchronize(): Promise<PaperclipFederatedSyncSnapshot> {
-    const synchronizedAt = instant(options.synchronizedAt(), "PAPERCLIP_SYNCHRONIZED_AT_INVALID");
-    const [agentValue, issueValue] = await Promise.all([
+    let checkedAt: string | null = null;
+    try {
+      checkedAt = instant(options.synchronizedAt(), "PAPERCLIP_SYNCHRONIZED_AT_INVALID");
+      const synchronizedAt = checkedAt;
+      const [agentValue, issueValue] = await Promise.all([
       request(`/api/companies/${externalCompanyId}/agents`),
       request(`/api/companies/${externalCompanyId}/issues?limit=200&offset=0&sortField=updated&sortDir=desc`),
-    ]);
+      ]);
     if (!Array.isArray(agentValue) || !agentValue.every(isAgent) ||
         !Array.isArray(issueValue) || !issueValue.every(isIssue)) {
       throw new Error("PAPERCLIP_RESPONSE_INVALID");
@@ -357,19 +365,35 @@ export function createPaperclipFederatedConnector(options: PaperclipFederatedCon
       });
     }
 
-    return {
-      sourceVersion: PAPERCLIP_SOURCE_VERSION,
-      synchronizedAt,
-      inventory,
-      work,
-      anomalies,
-    };
+      const snapshot = {
+        sourceVersion: PAPERCLIP_SOURCE_VERSION,
+        synchronizedAt,
+        inventory,
+        work,
+        anomalies,
+      };
+      healthState = { status: "HEALTHY", checkedAt, lastSuccessfulAt: checkedAt };
+      return snapshot;
+    } catch (error) {
+      healthState = {
+        status: "UNAVAILABLE",
+        checkedAt,
+        lastSuccessfulAt: healthState.lastSuccessfulAt,
+      };
+      throw error;
+    }
+  }
+
+  async function health() {
+    return { ...healthState };
   }
 
   function portfolioSource() {
     return {
       connectorId,
       companyId,
+      async capabilities() { return capabilityDeclaration(); },
+      health,
       async synchronize() {
         const snapshot = await synchronize();
         return {
@@ -381,7 +405,7 @@ export function createPaperclipFederatedConnector(options: PaperclipFederatedCon
     };
   }
 
-  return { capabilityDeclaration, synchronize, portfolioSource };
+  return { capabilityDeclaration, health, synchronize, portfolioSource };
 }
 
 function deploymentAuthorization(environment: NodeJS.ProcessEnv): () => string {

@@ -389,6 +389,11 @@ function createPaperclipFederatedConnector(options) {
   );
   const fetchImplementation = options.fetch ?? fetch;
   const bindings = /* @__PURE__ */ new Map();
+  let healthState = {
+    status: "NOT_CHECKED",
+    checkedAt: null,
+    lastSuccessfulAt: null
+  };
   for (const binding of options.agentBindings) {
     const externalAgentId = externalId(binding.externalAgentId, "PAPERCLIP_AGENT_BINDING_INVALID");
     if (bindings.has(externalAgentId)) throw new Error("PAPERCLIP_AGENT_BINDING_DUPLICATE");
@@ -437,128 +442,148 @@ function createPaperclipFederatedConnector(options) {
     };
   }
   async function synchronize() {
-    const synchronizedAt = instant(options.synchronizedAt(), "PAPERCLIP_SYNCHRONIZED_AT_INVALID");
-    const [agentValue, issueValue] = await Promise.all([
-      request(`/api/companies/${externalCompanyId}/agents`),
-      request(`/api/companies/${externalCompanyId}/issues?limit=200&offset=0&sortField=updated&sortDir=desc`)
-    ]);
-    if (!Array.isArray(agentValue) || !agentValue.every(isAgent) || !Array.isArray(issueValue) || !issueValue.every(isIssue)) {
-      throw new Error("PAPERCLIP_RESPONSE_INVALID");
-    }
-    const anomalies = [];
-    const inventory = [validateAgentPortfolioRecord({
-      id: runtimeAgentId,
-      companyId,
-      displayName: "Paperclip federated runtime",
-      accountableHumanId: runtimeAccountableHumanId,
-      providerReference: "paperclip",
-      runtimeReference: "paperclip-v2026-817-0",
-      source: {
-        connectorId,
-        externalId: `company:${externalCompanyId}`,
-        externalUrl: baseUrl.protocol === "https:" ? new URL(`/api/companies/${externalCompanyId}`, baseUrl).toString() : null
-      },
-      permissionIds: [],
-      dataAuthorizationIds: [],
-      lifecycleStatus: "ACTIVE",
-      connectorHealth: "HEALTHY",
-      synchronizedAt,
-      agentClass: "FEDERATED_RUNTIME",
-      managementDepth: "FEDERATED",
-      executionOwner: "EXTERNAL_PLATFORM",
-      workVisibility: "SUMMARY_AND_REFERENCES",
-      privacyBoundary: "BOUNDED_SOURCE_RECORDS"
-    })];
-    for (const agent of agentValue) {
-      if (agent.companyId !== externalCompanyId) throw new Error("PAPERCLIP_TENANT_MISMATCH");
-      const binding = bindings.get(agent.id);
-      if (!binding) {
-        anomalies.push({ code: "EXTERNAL_AGENT_BINDING_MISSING", externalId: agent.id });
-        continue;
+    let checkedAt = null;
+    try {
+      checkedAt = instant(options.synchronizedAt(), "PAPERCLIP_SYNCHRONIZED_AT_INVALID");
+      const synchronizedAt = checkedAt;
+      const [agentValue, issueValue] = await Promise.all([
+        request(`/api/companies/${externalCompanyId}/agents`),
+        request(`/api/companies/${externalCompanyId}/issues?limit=200&offset=0&sortField=updated&sortDir=desc`)
+      ]);
+      if (!Array.isArray(agentValue) || !agentValue.every(isAgent) || !Array.isArray(issueValue) || !issueValue.every(isIssue)) {
+        throw new Error("PAPERCLIP_RESPONSE_INVALID");
       }
-      const lifecycleStatus = AGENT_STATUS.get(agent.status);
-      if (!lifecycleStatus) {
-        anomalies.push({ code: "EXTERNAL_AGENT_STATUS_UNSUPPORTED", externalId: agent.id });
-        continue;
-      }
-      inventory.push(validateAgentPortfolioRecord({
-        id: binding.agentId,
+      const anomalies = [];
+      const inventory = [validateAgentPortfolioRecord({
+        id: runtimeAgentId,
         companyId,
-        displayName: agent.name,
-        accountableHumanId: binding.accountableHumanId,
+        displayName: "Paperclip federated runtime",
+        accountableHumanId: runtimeAccountableHumanId,
         providerReference: "paperclip",
         runtimeReference: "paperclip-v2026-817-0",
         source: {
           connectorId,
-          externalId: `agent:${agent.id}`,
-          externalUrl: baseUrl.protocol === "https:" ? new URL(`/api/agents/${agent.id}`, baseUrl).toString() : null
+          externalId: `company:${externalCompanyId}`,
+          externalUrl: baseUrl.protocol === "https:" ? new URL(`/api/companies/${externalCompanyId}`, baseUrl).toString() : null
         },
         permissionIds: [],
         dataAuthorizationIds: [],
-        lifecycleStatus,
+        lifecycleStatus: "ACTIVE",
         connectorHealth: "HEALTHY",
-        synchronizedAt: agent.updatedAt,
-        agentClass: "SHARED",
-        managementDepth: "OBSERVED",
+        synchronizedAt,
+        agentClass: "FEDERATED_RUNTIME",
+        managementDepth: "FEDERATED",
         executionOwner: "EXTERNAL_PLATFORM",
         workVisibility: "SUMMARY_AND_REFERENCES",
         privacyBoundary: "BOUNDED_SOURCE_RECORDS"
-      }));
-    }
-    const work = [];
-    for (const issue of issueValue) {
-      if (issue.companyId !== externalCompanyId) throw new Error("PAPERCLIP_TENANT_MISMATCH");
-      if (!issue.assigneeAgentId || !bindings.has(issue.assigneeAgentId)) {
-        anomalies.push({ code: "EXTERNAL_WORK_AGENT_BINDING_MISSING", externalId: issue.id });
-        continue;
+      })];
+      for (const agent of agentValue) {
+        if (agent.companyId !== externalCompanyId) throw new Error("PAPERCLIP_TENANT_MISMATCH");
+        const binding = bindings.get(agent.id);
+        if (!binding) {
+          anomalies.push({ code: "EXTERNAL_AGENT_BINDING_MISSING", externalId: agent.id });
+          continue;
+        }
+        const lifecycleStatus = AGENT_STATUS.get(agent.status);
+        if (!lifecycleStatus) {
+          anomalies.push({ code: "EXTERNAL_AGENT_STATUS_UNSUPPORTED", externalId: agent.id });
+          continue;
+        }
+        inventory.push(validateAgentPortfolioRecord({
+          id: binding.agentId,
+          companyId,
+          displayName: agent.name,
+          accountableHumanId: binding.accountableHumanId,
+          providerReference: "paperclip",
+          runtimeReference: "paperclip-v2026-817-0",
+          source: {
+            connectorId,
+            externalId: `agent:${agent.id}`,
+            externalUrl: baseUrl.protocol === "https:" ? new URL(`/api/agents/${agent.id}`, baseUrl).toString() : null
+          },
+          permissionIds: [],
+          dataAuthorizationIds: [],
+          lifecycleStatus,
+          connectorHealth: "HEALTHY",
+          synchronizedAt: agent.updatedAt,
+          agentClass: "SHARED",
+          managementDepth: "OBSERVED",
+          executionOwner: "EXTERNAL_PLATFORM",
+          workVisibility: "SUMMARY_AND_REFERENCES",
+          privacyBoundary: "BOUNDED_SOURCE_RECORDS"
+        }));
       }
-      const status = WORK_STATUS.get(issue.status);
-      if (!status) {
-        anomalies.push({ code: "EXTERNAL_WORK_STATUS_UNSUPPORTED", externalId: issue.id });
-        continue;
+      const work = [];
+      for (const issue of issueValue) {
+        if (issue.companyId !== externalCompanyId) throw new Error("PAPERCLIP_TENANT_MISMATCH");
+        if (!issue.assigneeAgentId || !bindings.has(issue.assigneeAgentId)) {
+          anomalies.push({ code: "EXTERNAL_WORK_AGENT_BINDING_MISSING", externalId: issue.id });
+          continue;
+        }
+        const status = WORK_STATUS.get(issue.status);
+        if (!status) {
+          anomalies.push({ code: "EXTERNAL_WORK_STATUS_UNSUPPORTED", externalId: issue.id });
+          continue;
+        }
+        const validatedRecord = validateExternalWork({
+          id: `paperclip-work-${issue.id}`,
+          companyId,
+          agentId: bindings.get(issue.assigneeAgentId).agentId,
+          initiatedBy: null,
+          title: issue.title,
+          summary: `External issue status: ${issue.status}; priority: ${issue.priority}.`,
+          status,
+          source: {
+            connectorId,
+            externalId: `issue:${issue.id}`,
+            channelReference: null,
+            threadReference: null,
+            workspaceReference: `company:${externalCompanyId}`,
+            returnUrl: baseUrl.protocol === "https:" ? new URL(`/api/issues/${issue.id}`, baseUrl).toString() : null
+          },
+          evidenceReferences: [],
+          resultReference: status === "COMPLETED" ? resultReference(issue.id) : null,
+          costCents: 0,
+          sourceRevision: sourceRevision(issue.updatedAt),
+          synchronizedAt: issue.updatedAt,
+          provenance: "PRODUCTION"
+        }, "FEDERATED");
+        const { mode: _validatedMode, ...record } = validatedRecord;
+        work.push({
+          mode: "FEDERATED",
+          idempotencyKey: `${connectorId}:${issue.id}:${validatedRecord.sourceRevision}`,
+          record
+        });
       }
-      const validatedRecord = validateExternalWork({
-        id: `paperclip-work-${issue.id}`,
-        companyId,
-        agentId: bindings.get(issue.assigneeAgentId).agentId,
-        initiatedBy: null,
-        title: issue.title,
-        summary: `External issue status: ${issue.status}; priority: ${issue.priority}.`,
-        status,
-        source: {
-          connectorId,
-          externalId: `issue:${issue.id}`,
-          channelReference: null,
-          threadReference: null,
-          workspaceReference: `company:${externalCompanyId}`,
-          returnUrl: baseUrl.protocol === "https:" ? new URL(`/api/issues/${issue.id}`, baseUrl).toString() : null
-        },
-        evidenceReferences: [],
-        resultReference: status === "COMPLETED" ? resultReference(issue.id) : null,
-        costCents: 0,
-        sourceRevision: sourceRevision(issue.updatedAt),
-        synchronizedAt: issue.updatedAt,
-        provenance: "PRODUCTION"
-      }, "FEDERATED");
-      const { mode: _validatedMode, ...record } = validatedRecord;
-      work.push({
-        mode: "FEDERATED",
-        idempotencyKey: `${connectorId}:${issue.id}:${validatedRecord.sourceRevision}`,
-        record
-      });
+      const snapshot = {
+        sourceVersion: PAPERCLIP_SOURCE_VERSION,
+        synchronizedAt,
+        inventory,
+        work,
+        anomalies
+      };
+      healthState = { status: "HEALTHY", checkedAt, lastSuccessfulAt: checkedAt };
+      return snapshot;
+    } catch (error) {
+      healthState = {
+        status: "UNAVAILABLE",
+        checkedAt,
+        lastSuccessfulAt: healthState.lastSuccessfulAt
+      };
+      throw error;
     }
-    return {
-      sourceVersion: PAPERCLIP_SOURCE_VERSION,
-      synchronizedAt,
-      inventory,
-      work,
-      anomalies
-    };
+  }
+  async function health() {
+    return { ...healthState };
   }
   function portfolioSource() {
     return {
       connectorId,
       companyId,
+      async capabilities() {
+        return capabilityDeclaration();
+      },
+      health,
       async synchronize() {
         const snapshot = await synchronize();
         return {
@@ -569,7 +594,7 @@ function createPaperclipFederatedConnector(options) {
       }
     };
   }
-  return { capabilityDeclaration, synchronize, portfolioSource };
+  return { capabilityDeclaration, health, synchronize, portfolioSource };
 }
 function deploymentAuthorization(environment) {
   if (environment.COMPANY_OS_PAPERCLIP_AUTHORIZATION?.trim()) {

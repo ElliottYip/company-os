@@ -414,6 +414,7 @@ async function formalAgentBossApi(request: import("node:http").IncomingMessage, 
       executionPorts: formalExecutionPorts, secretBroker: formalSecretBroker,
       modelProviders: formalModelProviders, toolAccess, usageBudget,
       dataConnectors: formalDataConnectors,
+      federatedSources: formalFederatedSources,
       retentionPolicyId: configuredRetentionPolicyId,
     }),
     dispatch: new DispatchAccountableWork({

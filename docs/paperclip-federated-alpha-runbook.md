@@ -77,12 +77,21 @@ if any Federated Source package is selected.
    `/api/v1/companies/<anc-company-id>/portfolio-sources/paperclip-alpha/synchronize`.
 6. Confirm response counts and bounded anomalies. A second unchanged sync must
    replay Work rather than duplicate it.
-7. Confirm external execution ownership, management depth, source return links
+7. Open Governance → Agent Connectors and confirm the installed Federated
+   Source shows its declared inventory/Work capabilities and retained
+   `HEALTHY` last-check state. This view does not make a new upstream request.
+8. Confirm external execution ownership, management depth, source return links
    and accountable-human mappings in Agents and Work.
-8. Confirm no Issue description, adapter config, external user/run/session ID,
+9. Confirm no Issue description, adapter config, external user/run/session ID,
    raw response, credential or private log appears in responses, events or logs.
-9. Revoke/rotate the sandbox key and confirm sync fails without changing prior
+10. Revoke/rotate the sandbox key and confirm sync fails without changing prior
    portfolio state; restore a fresh key and repeat.
+
+The retained source health is process-local observability, not proof of current
+upstream availability. It starts as `NOT_CHECKED`, becomes `HEALTHY` after a
+successful synchronization, and becomes `UNAVAILABLE` after a failed one while
+retaining only bounded timestamps. Restarting the API resets it to
+`NOT_CHECKED`. No raw Paperclip error or credential is retained.
 
 ## Current stop condition
 

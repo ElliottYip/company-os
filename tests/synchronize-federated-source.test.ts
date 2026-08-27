@@ -14,6 +14,10 @@ test("federated source synchronization applies a bounded idempotent batch throug
     sources: [{
       connectorId: "source-one",
       companyId: "company-one",
+      async capabilities() { return { connectorId: "source-one", protocolVersion: "2.0" as const,
+        capabilities: { data: ["FEDERATED_WORK" as const], control: ["SYNCHRONIZE_FEDERATED_RECORDS" as const] },
+        maximumBatchSize: 200 }; },
+      async health() { return { status: "NOT_CHECKED" as const, checkedAt: null, lastSuccessfulAt: null }; },
       async synchronize() {
         return {
           inventory: [agent],
@@ -46,6 +50,10 @@ test("federated source synchronization fails before reads on connector or tenant
     sources: [{
       connectorId: "source-one",
       companyId: "company-one",
+      async capabilities() { return { connectorId: "source-one", protocolVersion: "2.0" as const,
+        capabilities: { data: ["FEDERATED_WORK" as const], control: ["SYNCHRONIZE_FEDERATED_RECORDS" as const] },
+        maximumBatchSize: 200 }; },
+      async health() { return { status: "NOT_CHECKED" as const, checkedAt: null, lastSuccessfulAt: null }; },
       async synchronize() { calls += 1; return { inventory: [], work: [], anomalies: [] }; },
     }],
     agents: { async synchronize() { throw new Error("unexpected"); } },
@@ -68,6 +76,10 @@ test("federated source synchronization hides vendor failures behind one stable b
     sources: [{
       connectorId: "source-one",
       companyId: "company-one",
+      async capabilities() { return { connectorId: "source-one", protocolVersion: "2.0" as const,
+        capabilities: { data: ["FEDERATED_WORK" as const], control: ["SYNCHRONIZE_FEDERATED_RECORDS" as const] },
+        maximumBatchSize: 200 }; },
+      async health() { return { status: "UNAVAILABLE" as const, checkedAt: null, lastSuccessfulAt: null }; },
       async synchronize() { throw new Error("VENDOR_TOKEN_AND_COORDINATE_DETAIL"); },
     }],
     agents: { async synchronize() { throw new Error("unexpected"); } },

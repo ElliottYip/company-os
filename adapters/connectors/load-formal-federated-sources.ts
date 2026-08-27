@@ -1,4 +1,5 @@
 import type { FederatedPortfolioSourcePort } from "../../ports/federated-portfolio-source-port.ts";
+import { validateConnectorCapabilities } from "../../core/connector-capabilities.ts";
 
 const PACKAGE = /^(?:@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*|[a-z0-9][a-z0-9._-]*)$/;
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
@@ -32,7 +33,25 @@ export async function loadFormalFederatedSources(
     }
     const source = await module.createFederatedPortfolioSource();
     if (!source || typeof source !== "object" || !ID.test(source.connectorId) ||
-        !ID.test(source.companyId) || typeof source.synchronize !== "function") {
+        !ID.test(source.companyId) || typeof source.capabilities !== "function" ||
+        typeof source.health !== "function" || typeof source.synchronize !== "function") {
+      throw new Error("FEDERATED_SOURCE_PORT_INVALID");
+    }
+    let capabilities: Awaited<ReturnType<FederatedPortfolioSourcePort["capabilities"]>>;
+    let health: Awaited<ReturnType<FederatedPortfolioSourcePort["health"]>>;
+    try {
+      capabilities = await source.capabilities();
+      health = await source.health();
+      validateConnectorCapabilities(capabilities.capabilities);
+    } catch {
+      throw new Error("FEDERATED_SOURCE_PORT_INVALID");
+    }
+    if (capabilities.connectorId !== source.connectorId || capabilities.protocolVersion !== "2.0" ||
+        !Number.isSafeInteger(capabilities.maximumBatchSize) || capabilities.maximumBatchSize < 1 ||
+        capabilities.maximumBatchSize > 200 ||
+        !["NOT_CHECKED", "HEALTHY", "UNAVAILABLE"].includes(health.status) ||
+        (health.checkedAt !== null && !Number.isFinite(Date.parse(health.checkedAt))) ||
+        (health.lastSuccessfulAt !== null && !Number.isFinite(Date.parse(health.lastSuccessfulAt)))) {
       throw new Error("FEDERATED_SOURCE_PORT_INVALID");
     }
     if (connectorIds.has(source.connectorId)) throw new Error("FEDERATED_SOURCE_CONNECTOR_DUPLICATE");

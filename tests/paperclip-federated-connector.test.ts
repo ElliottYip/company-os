@@ -104,6 +104,35 @@ test("Paperclip connector fetches the pinned official inventory and issue APIs i
   assert.equal(JSON.stringify(snapshot).includes("external-user-sensitive"), false);
   assert.equal(JSON.stringify(snapshot).includes("external-run-sensitive"), false);
   assert.equal(JSON.stringify(snapshot).includes("codex_local"), false);
+  assert.deepEqual(await connector.health(), {
+    status: "HEALTHY",
+    checkedAt: "2026-08-27T10:00:00.000Z",
+    lastSuccessfulAt: "2026-08-27T10:00:00.000Z",
+  });
+});
+
+test("Paperclip runtime health starts unverified and records a bounded failed check", async () => {
+  const connector = createPaperclipFederatedConnector({
+    baseUrl: "https://paperclip.alpha.example",
+    externalCompanyId: EXTERNAL_COMPANY,
+    companyId: "coral-labs",
+    connectorId: "paperclip-alpha",
+    runtimeAgentId: "paperclip-runtime",
+    runtimeAccountableHumanId: "human-owner",
+    synchronizedAt: () => "2026-08-27T10:00:00.000Z",
+    authorizationHeader: async () => AUTHORIZATION,
+    agentBindings: [],
+    fetch: (async () => Response.json({ error: "unavailable" }, { status: 503 })) as typeof fetch,
+  });
+  assert.deepEqual(await connector.health(), {
+    status: "NOT_CHECKED", checkedAt: null, lastSuccessfulAt: null,
+  });
+  await assert.rejects(connector.synchronize(), /PAPERCLIP_HTTP_503/);
+  assert.deepEqual(await connector.health(), {
+    status: "UNAVAILABLE",
+    checkedAt: "2026-08-27T10:00:00.000Z",
+    lastSuccessfulAt: null,
+  });
 });
 
 test("Paperclip connector reports unmapped Agents without importing falsely attributed Work", async () => {
