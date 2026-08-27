@@ -1,6 +1,6 @@
 # Active-goal completion audit — updated 2026-08-27
 
-Status: **NOT COMPLETE — RC4 released, target and customer acceptance pending**.
+Status: **NOT COMPLETE — RC4 target prepare-only passed; first start and customer acceptance pending**.
 
 This audit evaluates the active product goal against the current repository and
 external deployment evidence. It does not treat a passing fixture, an
@@ -44,23 +44,31 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 
 ## External state last proved to this audit
 
-- Hong Kong and Hangzhou 7 remain `PREPARED_NOT_STARTED`.
+- Hong Kong active and Hangzhou 7 standby remain `PREPARED_NOT_STARTED`.
+- Both sites completed content-level verification of all six RC4 images and
+  installed versioned RC4 release, site-contract, and evidence candidates.
+  Compose rendering, Secret-free lint, path/permission checks, site isolation,
+  and non-mutating doctor all passed. Neither site created a Company OS
+  container, network, volume, startup Secret, database, IdP, or Vault runtime.
 - RC3 artifacts and prepare-only evidence are retained; RC3 is not eligible for
   first start.
-- RC4 publication did not authorize or perform Company OS Secret injection,
-  runtime creation, database initialization, OIDC/Vault provisioning, DNS,
-  TLS, Nginx or security-group changes on either target.
+- The RC4 target admission did not authorize or perform Company OS Secret
+  injection, runtime creation, database initialization, OIDC/Vault
+  provisioning, DNS, TLS, Nginx or security-group changes on either target.
 - The eight startup Secret files and the separate opt-in backup Secret set
   remain intentionally absent.
-- A local, Secret-free RC4 staging bundle was independently verified with
-  bundle-manifest digest
-  `sha256:632dcef1a5c8a8e6a3822e3e64592c36876a913344e501e1d9a6e62d748414db`.
-  This is handoff evidence only; neither target has admitted that bundle yet.
+- The source after RC4 now contains separately authorized dependency,
+  migration/provision, product-start, and acceptance-handoff executors. These
+  changes are under qualification in Draft PR #3 and are **not** retroactively
+  attributed to immutable RC4. Structural acceptance binding can produce only
+  `ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION`; it cannot claim
+  customer acceptance.
 
 ## Remaining completion sequence
 
-1. Verify all six content-addressed images, manifest, SBOM, provenance, and
-   release bundle in Hong Kong and Hangzhou 7; repeat prepare-only on both.
+1. Finish Draft PR #3 qualification, publish a later immutable six-image RC,
+   verify it content-by-content on both sites, and repeat prepare-only without
+   replacing or mutating RC4 evidence.
 2. Obtain a separate exact first-start authorization, then create each
    environment's isolated runtime objects, inject restricted-file Secrets,
    migrate, provision, and start without DNS cutover.

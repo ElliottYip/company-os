@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -332,4 +332,50 @@ test("acceptance handoff binds externally owned evidence without claiming custom
     assert.equal(state.acceptanceClaimed, false); assert.equal(state.independentlyVerified, false);
     assert.equal(state.externalEvidenceRequired, true);
     assert.doesNotMatch(JSON.stringify(state), /human-identity|browserIdentity|customer\.example/);
+  });
+
+test("acceptance handoff rejects wrong authority, release drift, unsafe files, and duplicate binding",
+  async (context) => {
+    const value = await fixture("company-os-staging-acceptance-guards-");
+    context.after(() => rm(value.temporary, { recursive: true, force: true }));
+    await completeMigration(value);
+    await runStagingProductStart({ ...input(value), authorizationReference: "change:product-start-test-01" }, {
+      now: () => "2026-08-27T13:00:00.000Z", runCommand: async () => ({ ok: true }),
+      probe: async () => true, wait: async () => undefined,
+    });
+    const manifestRaw = await readFile(join(value.root, "releases", value.releaseId, "release-manifest.json"));
+    const manifestDigest = `sha256:${createHash("sha256").update(manifestRaw).digest("hex")}`;
+    const digest = (character: string) => `sha256:${character.repeat(64)}`;
+    const stagingKeys = ["boundaryPreflight", "browserIdentity", "responsibilityContract", "agentExecution",
+      "modelExecution", "dataBoundary", "secretLifecycle", "idempotency", "restartRecovery"];
+    const record = { schemaVersion: 2, recordId: "acceptance-guard-test", scope: "CUSTOMER_STAGING",
+      release: { version: release.releaseVersion, sourceRevision: release.sourceRevision, manifestDigest },
+      owners: { acceptance: "owner-acceptance", identity: "owner-identity", agentRuntime: "owner-agent",
+        modelGovernance: "owner-model", dataGovernance: "owner-data", secretManagement: "owner-secret",
+        backupRecovery: "owner-backup", incidentResponse: "owner-incident" },
+      stagingEvidence: Object.fromEntries(stagingKeys.map((key, index) => [key, digest(String(index + 1))])),
+      productionEvidence: null, approvedAt: "2026-08-27T13:05:00.000Z",
+      approvalEvidenceDigest: digest("f") };
+    const recordFile = join(value.temporary, "acceptance-record.json");
+    await writeFile(recordFile, `${JSON.stringify(record)}\n`, { mode: 0o600 });
+    const acceptanceInput = { rootDirectory: value.root, releaseId: value.releaseId,
+      authorizationReference: "change:acceptance-test-01", recordFile };
+
+    await assert.rejects(planStagingAcceptanceHandoff({ ...acceptanceInput,
+      authorizationReference: "change:wrong-authority" }), /STAGING_ACCEPTANCE_AUTHORIZATION_MISMATCH/);
+    await writeFile(recordFile, `${JSON.stringify({ ...record, release: {
+      ...record.release, manifestDigest: digest("e") } })}\n`, { mode: 0o600 });
+    await assert.rejects(planStagingAcceptanceHandoff(acceptanceInput),
+      /STAGING_ACCEPTANCE_RECORD_RELEASE_MISMATCH/);
+    await writeFile(recordFile, `${JSON.stringify(record)}\n`);
+    await chmod(recordFile, 0o644);
+    await assert.rejects(planStagingAcceptanceHandoff(acceptanceInput), /STAGING_ACCEPTANCE_FILE_UNSAFE/);
+    await chmod(recordFile, 0o600);
+
+    await bindStagingAcceptanceHandoff(acceptanceInput, { now: () => "2026-08-27T13:06:00.000Z" });
+    await assert.rejects(planStagingAcceptanceHandoff(acceptanceInput), /STAGING_ACCEPTANCE_REVIEW_REQUIRED/);
+    const state = JSON.parse(await readFile(join(value.root, "acceptance-handoff-state.json"), "utf8"));
+    assert.equal(state.status, "ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION");
+    assert.equal(state.acceptanceClaimed, false);
+    assert.equal(state.independentlyVerified, false);
   });

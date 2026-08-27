@@ -268,9 +268,10 @@ make the minimal implementation pass and run the complete gate.
   make backup gating capability-aware.
 - [x] Add the versioned reference dependency Compose and resource admission.
 - [x] Make canonical release-store adoption idempotent and evidence-bound.
-- [ ] Split first start into authorization-bound dependency, migration,
-  product-start, and acceptance phases. Dependency, migration/provision, and
-  product-start executors are complete; acceptance remains open.
+- [x] Split first start into authorization-bound dependency,
+  migration/provision, product-start, and acceptance-handoff phases. The
+  handoff binds only a structurally valid external record and deliberately
+  leaves independent customer verification open.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
 
