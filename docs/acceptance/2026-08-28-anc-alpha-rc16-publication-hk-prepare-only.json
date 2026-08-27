@@ -54,6 +54,9 @@
   },
   "privateAlphaPackaging": {
     "federatedSourceImplementationInApiImage": true,
+    "exactPublishedApiImageImportVerifiedOnHongKongHost": true,
+    "imageImportVerificationNetwork": "NONE",
+    "imageImportVerificationContainerRetained": false,
     "privatePaperclipComposeOverlayBundled": true,
     "paperclipAlphaRunbookBundled": true,
     "publicDemoLoadsFederatedSource": false,
