@@ -1,6 +1,7 @@
 # Active-goal completion audit — updated 2026-08-27
 
-Status: **NOT COMPLETE — RC4 target prepare-only passed; first start and customer acceptance pending**.
+Status: **NOT COMPLETE — post-RC4 source qualification passed; merge, later RC,
+first start and customer acceptance remain pending**.
 
 This audit evaluates the active product goal against the current repository and
 external deployment evidence. It does not treat a passing fixture, an
@@ -25,6 +26,14 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 - The historical five-image `v0.1.0-rc.3` remains immutable and retained as
   evidence, but is `SUPERSEDED_FOR_START` because it has no Reference Data Node
   image.
+- Draft PR `ElliottYip/company-os#3` remains unmerged. Its exact head
+  `8e768359676b4d4d2facf3d329b241dd801f3eba` passed GitHub Actions run
+  `33043621353` on 2026-08-27. The run completed the full independent gate,
+  real Keycloak, PostgreSQL backup/restore and least privilege, authenticated
+  encrypted backup, bounded HTTP recovery, verified TLS, real Vault AppRole/KV
+  v2, PostgreSQL 16 rollback and 16→17 migration, plus self-hosted and
+  managed-cloud Compose admissions. This is qualified source, not a release or
+  target-host execution.
 
 ## Requirement-by-requirement evidence
 
@@ -39,8 +48,8 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 | Data authorization and export governance | Revisioned grants, default-deny egress, HTTP Data Node client, durable preparation references, and raw-data exclusion tests | **Reference vertical complete; real enterprise test source pending.** |
 | Complete self-service Web | Company-first onboarding, all accepted navigation surfaces, formal API client, English/Chinese switch, mobile/keyboard/state-matrix and no-dead-control gates | **Repository vertical complete; deployed browser acceptance pending.** |
 | Managed-cloud and self-hosted | One-codebase Compose profiles, separate migration/runtime identities, live profile admissions, non-root images, exact runtime configuration and the immutable six-image RC4 release | **Repository and release complete; target-host acceptance pending.** |
-| Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests | **Repository complete; customer-controlled backup target and two actual release upgrades pending.** |
-| Full quality gate | Current `npm run verify`: 529 tests, 525 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. The formal PostgreSQL restart admission additionally passed 3/3 consecutive runs. RC4 qualification completed the live OIDC, database, backup, Vault, TLS, resilience, upgrade and both deployment-profile gates. | **Release source qualified.** This is not deployment or customer-acceptance evidence. |
+| Upgrade, backup, recovery, and observability | PostgreSQL minor/major upgrade gates, parallel rollback, encrypted streaming backup/restore, bounded metrics/logs, soak and resilience tests; PR #3 adds candidate-scoped dependency/runtime materialization, hardened stable ingress, explicit route/observation/promotion, canonical active-pointer adoption, dynamic restart/status, and digest-bound upgrade acceptance handoff | **Repository upgrade vertical complete through external-verification handoff; customer-controlled backup target and two actual release upgrades pending.** |
+| Full quality gate | Exact PR #3 head `8e76835…` passed local `npm run verify`: 652 tests, 648 passed, four explicit external skips, zero failures; 15 browser cases passed and four external cases skipped. GitHub run `33043621353` then passed every repository, identity, database, backup, Vault, TLS, upgrade and both deployment-profile steps against the same SHA. | **Post-RC4 source candidate qualified.** This is not a merge, immutable release, deployment or customer-acceptance claim. |
 
 ## External state last proved to this audit
 
@@ -58,17 +67,18 @@ unpublished commit, or a prepared-but-not-started host as production proof.
 - The eight startup Secret files and the separate opt-in backup Secret set
   remain intentionally absent.
 - The source after RC4 now contains separately authorized dependency,
-  migration/provision, product-start, and acceptance-handoff executors. These
-  changes are under qualification in Draft PR #3 and are **not** retroactively
-  attributed to immutable RC4. Structural acceptance binding can produce only
-  `ACCEPTANCE_RECORD_BOUND_PENDING_EXTERNAL_VERIFICATION`; it cannot claim
-  customer acceptance.
+  migration/provision, product-start, restart, upgrade preparation, traffic,
+  rollback and acceptance-handoff executors. Draft PR #3 is source-qualified
+  but unmerged and **not** retroactively attributed to immutable RC4. Upgrade
+  traffic ends at `UPGRADE_OBSERVATION_COMPLETE_PENDING_ACCEPTANCE`; structural
+  acceptance binding keeps `acceptanceClaimed=false`,
+  `independentlyVerified=false`, and `dispatchReopened=false`.
 
 ## Remaining completion sequence
 
-1. Finish Draft PR #3 qualification, publish a later immutable six-image RC,
-   verify it content-by-content on both sites, and repeat prepare-only without
-   replacing or mutating RC4 evidence.
+1. Obtain explicit merge/release authority for already-qualified Draft PR #3,
+   publish a later immutable six-image RC, verify it content-by-content on both
+   sites, and repeat prepare-only without replacing or mutating RC4 evidence.
 2. Obtain a separate exact first-start authorization, then create each
    environment's isolated runtime objects, inject restricted-file Secrets,
    migrate, provision, and start without DNS cutover.
@@ -76,9 +86,13 @@ unpublished commit, or a prepared-but-not-started host as production proof.
    restart/recovery, responsibility-chain, and Web acceptance in staging.
 4. Prove encrypted backup and restore against the customer-controlled off-site
    target.
-5. Complete two actual immutable release upgrades with parallel rollback
+5. Before dispatch can reopen after first start or upgrade, explicitly decide
+   which independently verified human role owns acceptance and which separate
+   authority owns the revision-fenced dispatch transition; do not infer either
+   decision from health or a structurally valid record.
+6. Complete two actual immutable release upgrades with parallel rollback
    evidence.
-6. Keep Hong Kong active until the independent ICP/DNS cutover gate is
+7. Keep Hong Kong active until the independent ICP/DNS cutover gate is
    authorized; do not infer cutover authority from technical acceptance.
 
 The active goal must remain open until every remaining item has direct,
