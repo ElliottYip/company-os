@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "profileType": "ANC_PUBLIC_DEMO_CANDIDATE",
+  "siteId": "hong-kong-active",
+  "release": {
+    "releaseId": "0.1.0-rc.7-aaee3b5e3016",
+    "releaseVersion": "0.1.0-rc.7",
+    "sourceRevision": "aaee3b5e3016a130148d03ce908503c360c6e4f8",
+    "releaseManifestDigest": "sha256:311b0a99eba6a355c4a36370c822c0c506edfbdebffddf7d9650e6c2f66494b8",
+    "bundleManifestDigest": "sha256:cb8574dc1e0379f6c5b946a73bf04685e90c1b3784fed29fdeee36ca4deb116b",
+    "portableArchiveDigest": "sha256:670c71c07504b200c5946b69c243cc94b8fb724ef826dac225e05597f8a9e4d9"
+  },
+  "publication": {
+    "workflowRunId": "33054453443",
+    "workflowUri": "https://github.com/ElliottYip/company-os/actions/runs/33054453443",
+    "qualification": "PASSED",
+    "qualificationDuration": "7m24s",
+    "protectedEnvironmentApproval": "APPROVED",
+    "publish": "PASSED",
+    "publishDuration": "3m09s"
+  },
+  "migrationPreflight": {
+    "status": "PLANNED_NOT_EXECUTED",
+    "cutoverId": "cutover-0ff28e08c6dbf4f72683d4bd",
+    "basis": "v0.1.0-rc.6_to_v0.1.0-rc.7",
+    "postgresqlMajor": 16,
+    "migrationHistory": "EXACT_PREFIX",
+    "migrationAdded": false,
+    "publicContracts": "UNCHANGED",
+    "databaseConnectionAttempted": false,
+    "databaseMutationPerformed": false
+  },
+  "candidate": {
+    "state": "INSTALLED_NOT_STARTED",
+    "demoMode": "FIXTURE_ONLY",
+    "demoOptIn": "COMPANY_OS_PUBLIC_DEMO_ENABLED=true",
+    "publicIngressEnabled": false,
+    "runtimeCoordinatesConfigured": false,
+    "secretMaterialPresent": false,
+    "formalEntryPoint": "FAIL_CLOSED_UNCONFIGURED",
+    "formalModeStartAuthorized": false,
+    "externalCallsAllowed": false,
+    "paidApiCallsAllowed": false,
+    "productionDataAllowed": false
+  },
+  "images": {
+    "api": "ghcr.io/elliottyip/company-os-api@sha256:4d3004c8d48d9278cb6c943b52e5cd12bf3695cce91d9380a1cb74e12dc83265",
+    "web": "ghcr.io/elliottyip/company-os-web@sha256:73fcc4490fa536c43e6bedfdc135f21467475cb320e49edca7d335d4e56e3c29",
+    "ops": "ghcr.io/elliottyip/company-os-ops@sha256:e57e327443cae2886ed6c137754b9b56405640cde24034bc9085688ee3f3a800",
+    "codexAgentNode": "ghcr.io/elliottyip/company-os-codex-agent-node@sha256:875a6f8a6123e69e59cdc6a934e6f6fe8296aa46872314d5ebef64abe09f688f",
+    "vaultSecretBroker": "ghcr.io/elliottyip/company-os-vault-secret-broker@sha256:59b4dccb7c3803a1647b0c8db874faf39323be4b405899c6492939ef439ef851",
+    "referenceDataNode": "ghcr.io/elliottyip/company-os-reference-data-node@sha256:727aef6fe3dece2723f8ccb7ad65365e8bd027eacc479e212fcaf6ddf7ba0bb2"
+  },
+  "preservation": {
+    "rc4Retained": true,
+    "rc6Retained": true,
+    "hangzhouChanged": false,
+    "dnsChanged": false,
+    "tlsChanged": false,
+    "companyOsContainersStarted": false
+  },
+  "capturedAt": "2026-08-27T08:49:40Z"
+}

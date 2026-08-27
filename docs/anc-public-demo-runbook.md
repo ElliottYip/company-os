@@ -1,7 +1,7 @@
 # ANC public exhibition Demo runbook
 
-Status: local candidate runbook; no remote deployment is claimed  
-Target: next immutable release after `v0.1.0-rc.5` (`v0.1.0-rc.6` by default)
+Status: `v0.1.0-rc.7` published; Hong Kong candidate installed but not started
+Target: immutable `v0.1.0-rc.7` exhibition candidate
 
 ## Safety boundary
 
@@ -12,9 +12,10 @@ must be set to `true` only in the separately approved Demo candidate
 environment. Formal routes still require enterprise OIDC. A Demo cookie is
 rejected before any `/api/v1` handler.
 
-RC4 and RC5 releases, both sites' prepare-only stores, image verification, and
-operations evidence are immutable inputs. Do not replace their directories,
-tags, manifests, images, or evidence. RC6 must install as a new candidate.
+RC4, RC5, and RC6 releases, both sites' prepare-only evidence, image
+verification, and operations evidence are immutable inputs. Do not replace
+their directories, tags, manifests, images, or evidence. RC7 is installed as a
+new Hong Kong candidate and remains `PREPARED_NOT_STARTED`.
 
 ## Local admission
 
@@ -73,7 +74,7 @@ The current Demo Session adapter is process-local by design. Run exactly one
 Demo API replica for the exhibition candidate. Horizontal scaling requires a
 shared session-store adapter and is not silently assumed by this runbook.
 
-## RC6 candidate sequence
+## RC7 candidate sequence
 
 1. Merge the verified branch and create a new immutable RC tag only after
    release authorization.
@@ -93,6 +94,12 @@ shared session-store adapter and is not silently assumed by this runbook.
 9. Move Demo traffic only after bounded observation. Do not promote formal mode,
    initialize real Agents, or change Hangzhou/DNS/TLS under this Demo approval.
 
+Steps 1–6 are complete for RC7. Steps 7–9 remain intentionally unexecuted:
+there is no candidate start authorization in this admission, public ingress is
+disabled, no `staging.env` or Secret file exists, and no Company OS container is
+running on the Hong Kong host. The authoritative non-secret record is
+[`2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json`](acceptance/2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json).
+
 ## Evidence to retain
 
 - source revision and RC6 tag;
@@ -105,5 +112,7 @@ shared session-store adapter and is not silently assumed by this runbook.
 - explicit confirmation that Demo endpoints cannot reach formal administration;
 - incident log and rollback/candidate-withdrawal decision, if used.
 
-Until those target-host records exist, report the state as
-`LOCAL_VERIFIED_NOT_PUBLISHED`, never as deployed or production-ready.
+The current state is `HK_CANDIDATE_INSTALLED_NOT_STARTED`, never deployed,
+publicly reachable, or production-ready. After a distinct start authorization,
+retain the remaining target-host health, browser, recovery, and observation
+records before changing that state.

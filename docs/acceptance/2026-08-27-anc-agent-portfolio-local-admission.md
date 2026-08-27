@@ -51,3 +51,12 @@ RC4 and RC5 remain immutable. RC6 publication and Hong Kong candidate mutation
 must create new evidence and must follow
 `docs/anc-public-demo-runbook.md`. Until the protected release and target-host
 records pass, this implementation remains `LOCAL_VERIFIED_NOT_PUBLISHED`.
+
+## Subsequent release evidence
+
+This file remains the historical local-admission record. The corrective RC7
+publication, migration compatibility plan, and Hong Kong prepare-only install
+are recorded separately in
+[`2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json`](2026-08-27-anc-agent-portfolio-hk-rc7-candidate.json).
+That later record does not retroactively claim that this local gate performed a
+remote deployment or candidate start.
