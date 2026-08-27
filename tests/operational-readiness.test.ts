@@ -60,3 +60,34 @@ test("required database or formal configuration failure keeps public traffic out
     { status: "fail", code: "DATABASE_OR_SCHEMA_UNAVAILABLE" });
   assert.doesNotMatch(JSON.stringify(readiness), /private database failure/);
 });
+
+test("public Demo readiness passes only with every formal and external runtime disabled", async () => {
+  const ready = await getOperationalReadiness({
+    runtimeMode: "public-demo",
+    formalRequired: false,
+    formalConfigured: false,
+    database: null,
+    connectors: [], modelProviders: [], secretBroker: null, dataConnectors: [],
+  });
+  assert.equal(ready.status, "ready");
+  assert.deepEqual(ready.checks, {
+    configuration: { status: "pass", code: "PUBLIC_DEMO_CONFIGURATION_READY" },
+    connectorRuntime: { status: "pass", code: "EXTERNAL_CONNECTOR_RUNTIME_DISABLED" },
+    modelRuntime: { status: "pass", code: "EXTERNAL_MODEL_RUNTIME_DISABLED" },
+    secretBroker: { status: "pass", code: "SECRET_BROKER_DISABLED" },
+    dataRuntime: { status: "pass", code: "DATA_RUNTIME_DISABLED" },
+    database: { status: "pass", code: "FORMAL_DATABASE_DISABLED" },
+  });
+
+  const unsafe = await getOperationalReadiness({
+    runtimeMode: "public-demo",
+    formalRequired: false,
+    formalConfigured: false,
+    database: null,
+    connectors: [{ async health() { return "HEALTHY" as const; } }],
+    modelProviders: [], secretBroker: null, dataConnectors: [],
+  });
+  assert.equal(unsafe.status, "not_ready");
+  assert.deepEqual(unsafe.checks.connectorRuntime,
+    { status: "fail", code: "PUBLIC_DEMO_EXTERNAL_CONNECTOR_FORBIDDEN" });
+});

@@ -1,7 +1,7 @@
 # ANC public exhibition Demo runbook
 
 Status: `v0.1.0-rc.7` published; Hong Kong candidate installed but not started
-Target: immutable `v0.1.0-rc.7` exhibition candidate
+Target: next immutable RC with the isolated public Demo runtime profile
 
 ## Safety boundary
 
@@ -29,6 +29,7 @@ admission:
 
 ```sh
 COMPANY_OS_PORT=4310 \
+COMPANY_OS_RUNTIME_MODE=public-demo \
 COMPANY_OS_PUBLIC_DEMO_ENABLED=true \
 COMPANY_OS_WEB_ORIGINS=http://127.0.0.1:4173 \
 npm start
@@ -74,7 +75,7 @@ The current Demo Session adapter is process-local by design. Run exactly one
 Demo API replica for the exhibition candidate. Horizontal scaling requires a
 shared session-store adapter and is not silently assumed by this runbook.
 
-## RC7 candidate sequence
+## Next-RC public Demo sequence
 
 1. Merge the verified branch and create a new immutable RC tag only after
    release authorization.
@@ -83,9 +84,9 @@ shared session-store adapter and is not silently assumed by this runbook.
 3. Build and independently verify a Secret-free staging handoff bundle.
 4. Transfer and install it into a new Hong Kong release directory using the
    existing prepare-only installer. Preserve RC4/RC5 and the active pointer.
-5. Render a candidate environment with
-   `COMPANY_OS_PUBLIC_DEMO_ENABLED=true`; keep formal OIDC, Vault, database, and
-   execution dependencies fail-closed unless separately initialized.
+5. Render `deploy/compose.public-demo.yml` with `COMPANY_OS_RUNTIME_MODE=public-demo`
+   and `COMPANY_OS_PUBLIC_DEMO_ENABLED=true`. Do not supply or mount formal
+   OIDC, Vault, database, model, data, or Agent Connector configuration.
 6. Run database migration planning/preflight against the candidate contract.
    This slice adds event types but no destructive SQL migration.
 7. Start the public Demo candidate only after its distinct start authorization.
@@ -94,7 +95,8 @@ shared session-store adapter and is not silently assumed by this runbook.
 9. Move Demo traffic only after bounded observation. Do not promote formal mode,
    initialize real Agents, or change Hangzhou/DNS/TLS under this Demo approval.
 
-Steps 1–6 are complete for RC7. Steps 7–9 remain intentionally unexecuted:
+The equivalent RC7 preparation steps 1–6 are complete. Steps 7–9 remain
+intentionally unexecuted until the isolated profile ships in the next RC:
 there is no candidate start authorization in this admission, public ingress is
 disabled, no `staging.env` or Secret file exists, and no Company OS container is
 running on the Hong Kong host. The authoritative non-secret record is
@@ -104,7 +106,7 @@ The corresponding deliberately incomplete, non-startable overlay is
 
 ## Evidence to retain
 
-- source revision and RC6 tag;
+- source revision and next immutable RC tag;
 - six image digests, release manifest, SBOM, and attestations;
 - handoff bundle digest and new candidate release ID;
 - migration preflight and candidate health output;

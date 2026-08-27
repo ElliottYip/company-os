@@ -13,7 +13,7 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: [{
-    command: "COMPANY_OS_PORT=4310 COMPANY_OS_PUBLIC_DEMO_ENABLED=true COMPANY_OS_WEB_ORIGINS=http://127.0.0.1:4173 npm start",
+    command: "COMPANY_OS_PORT=4310 COMPANY_OS_RUNTIME_MODE=public-demo COMPANY_OS_PUBLIC_DEMO_ENABLED=true COMPANY_OS_WEB_ORIGINS=http://127.0.0.1:4173 npm start",
     url: "http://127.0.0.1:4310/health",
     reuseExistingServer: false,
     timeout: 30_000,

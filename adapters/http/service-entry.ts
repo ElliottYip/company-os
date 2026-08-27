@@ -109,6 +109,10 @@ import {
   configuredRetentionPolicyId as resolveRetentionPolicyId,
 } from "./retention-policy-configuration.ts";
 import { readSecretFileEnvironment } from "../config/secret-file-environment.ts";
+import {
+  parseServiceRuntimeMode,
+  validateServiceRuntimeBoundary,
+} from "./service-runtime-mode.ts";
 
 function deploymentProfile(value: string | undefined): "managed-cloud" | "self-hosted" {
   if (value === undefined || value === "self-hosted") return "self-hosted";
@@ -151,6 +155,7 @@ const publicDemoEnabled = enabled(
   process.env.COMPANY_OS_PUBLIC_DEMO_ENABLED,
   "COMPANY_OS_PUBLIC_DEMO_ENABLED",
 );
+const runtimeMode = parseServiceRuntimeMode(process.env.COMPANY_OS_RUNTIME_MODE);
 const metricsEnabled = process.env.COMPANY_OS_METRICS_ENABLED === "true";
 const runtimeMetrics = metricsEnabled ? new BoundedHttpMetrics() : null;
 if (metricsEnabled && deploymentExposure !== "private") {
@@ -183,6 +188,25 @@ const formalConfiguration = {
   sessionSigningKey: await readSecretFileEnvironment("COMPANY_OS_SESSION_SIGNING_KEY"),
   databaseUrl: await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL"),
 };
+validateServiceRuntimeBoundary({
+  mode: runtimeMode,
+  publicDemoEnabled,
+  formalConfigurationPresent: [
+    formalConfiguration.issuer,
+    formalConfiguration.discoveryUrl,
+    formalConfiguration.clientId,
+    formalConfiguration.clientSecret,
+    formalConfiguration.redirectUri,
+    formalConfiguration.sessionSigningKey,
+    formalConfiguration.databaseUrl,
+  ].some((value) => Boolean(value?.trim())),
+  connectorConfigurationPresent: [
+    process.env.COMPANY_OS_CONNECTOR_PACKAGES,
+    process.env.COMPANY_OS_SECRET_BROKER_PACKAGE,
+    process.env.COMPANY_OS_MODEL_PROVIDER_PACKAGES,
+    process.env.COMPANY_OS_DATA_CONNECTOR_PACKAGES,
+  ].some((value) => Boolean(value?.trim())),
+});
 const allowedWebOrigins = parseAllowedWebOrigins(
   process.env.COMPANY_OS_WEB_ORIGINS,
   formalConfiguration.publicBaseUrl,
@@ -462,7 +486,9 @@ const server = createCompanyOsHttpService({
   ...(publicDemoSessions ? { publicDemoSessions } : {}),
   deploymentProfile: profile,
   ...(deployedReleaseId ? { releaseId: deployedReleaseId } : {}),
-  serviceMode: isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",
+  serviceMode: runtimeMode === "public-demo"
+    ? "DEMO_FIXTURE"
+    : isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",
   deploymentExposure,
   metricsEnabled,
   ...(runtimeMetrics ? { metrics: runtimeMetrics } : {}),
@@ -473,7 +499,8 @@ const server = createCompanyOsHttpService({
   operationalReadiness: {
     async getStatus() {
       return getOperationalReadiness({
-        formalRequired: deploymentExposure === "public",
+        runtimeMode,
+        formalRequired: runtimeMode === "formal" && deploymentExposure === "public",
         formalConfigured: isFormalConfigured,
         database,
         connectors: formalExecutionPorts,
