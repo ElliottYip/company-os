@@ -434,6 +434,55 @@ never automatic: a failed or ambiguous restart remains frozen for review. See
 [ADR 0039](adr/0039-persistent-instance-dispatch-freeze.md) and
 [ADR 0045](adr/0045-bounded-acceptance-only-dispatch.md).
 
+Use the same three actions for a first start or an upgrade. The scope file is a
+private, secret-free JSON record that binds `operationId`, `planId`, the exact
+SHA-256 acceptance-plan digest, the site's acceptance authorization reference,
+and one to 32 `{ companyId, workId }` pairs. Create those Work IDs before the
+window is opened; unrelated Work remains blocked.
+
+```sh
+npm run release:staging-acceptance-maintenance -- \
+  --action open --apply \
+  --root /srv/company-os/staging \
+  --evidence /srv/company-os/staging/acceptance-maintenance/upgrade-rc4-to-rc5 \
+  --origin http://127.0.0.1:4601 \
+  --session /run/company-os/operator/instance-admin-cookie \
+  --scope /run/company-os/operator/acceptance-scope.json
+```
+
+After the allowlisted Work has produced the externally owned evidence, bind
+the structurally validated acceptance-handoff state to a separate independent
+decision. The decision file must say `ACCEPTED` or `REJECTED`, bind the same
+operation/plan/record digests, use a new authorization reference, and assert
+`secretMaterialIncluded: false`.
+
+```sh
+npm run release:staging-acceptance-maintenance -- \
+  --action bind-decision --apply \
+  --root /srv/company-os/staging \
+  --evidence /srv/company-os/staging/acceptance-maintenance/upgrade-rc4-to-rc5 \
+  --scope /run/company-os/operator/acceptance-scope.json \
+  --handoff /srv/company-os/staging/upgrade-acceptance-handoff-state.json \
+  --decision /run/company-os/operator/independent-acceptance-decision.json
+```
+
+Binding the decision does not call the API and leaves dispatch closed. A final
+operator action uses a third authorization reference. `ACCEPTED` transitions
+to `OPEN`; `REJECTED` returns to `DISPATCH_FROZEN`.
+
+```sh
+npm run release:staging-acceptance-maintenance -- \
+  --action complete --apply \
+  --root /srv/company-os/staging \
+  --evidence /srv/company-os/staging/acceptance-maintenance/upgrade-rc4-to-rc5 \
+  --origin http://127.0.0.1:4601 \
+  --session /run/company-os/operator/instance-admin-cookie \
+  --authorization dispatch:reopen-approved-rc5
+```
+
+Omit `--apply` to confirm the selected action without mutation. Never pass the
+session cookie value on the command line; only its `0600` file path is accepted.
+
 The supported restart path performs these checks as one authorized lifecycle.
 Run it without `--apply` first to inspect the exact plan, then repeat with
 `--apply` using the same release, operation and authorization references:

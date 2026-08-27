@@ -317,6 +317,8 @@ test("staging is site-rendered, isolated, dependency-bound, resource bounded, an
     "node --experimental-strip-types scripts/run-staging-acceptance-phase.mjs");
   assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-upgrade-acceptance-handoff"],
     "node --experimental-strip-types scripts/run-staging-upgrade-acceptance-handoff.ts");
+  assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-acceptance-maintenance"],
+    "node --experimental-strip-types scripts/staging-acceptance-maintenance-operation.ts");
   assert.equal(JSON.parse(packageJsonSource).scripts["release:staging-upgrade-plan"],
     "node --experimental-strip-types scripts/plan-staging-upgrade.ts");
   assert.match(runbook, /generator001y.*forbidden/i);

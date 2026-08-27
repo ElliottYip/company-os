@@ -26,6 +26,7 @@
     "release:staging-upgrade-plan": "node --experimental-strip-types scripts/plan-staging-upgrade.ts",
     "release:staging-upgrade-traffic": "node --experimental-strip-types scripts/execute-staging-upgrade-traffic.ts",
     "release:staging-upgrade-acceptance-handoff": "node --experimental-strip-types scripts/run-staging-upgrade-acceptance-handoff.ts",
+    "release:staging-acceptance-maintenance": "node --experimental-strip-types scripts/staging-acceptance-maintenance-operation.ts",
     "release:staging-restart": "node --experimental-strip-types scripts/restart-staging-release.mjs",
     "release:cutover-plan": "node scripts/plan-release-cutover.mjs",
     "release:sbom": "npm sbom --omit=dev --omit=optional --sbom-format cyclonedx",
