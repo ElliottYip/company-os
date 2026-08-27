@@ -231,7 +231,7 @@ function safeAbsolute(value: string, code: string): string {
   return resolve(value);
 }
 
-function argumentsFrom(values: readonly string[]) {
+export function parseStagingUpgradeArguments(values: readonly string[]) {
   const result: { rootDirectory: string; authorizationFile?: string;
     authorizationReference?: string; inspectBindings: boolean } = {
       rootDirectory: "/srv/company-os/staging", inspectBindings: false,
@@ -254,7 +254,7 @@ function argumentsFrom(values: readonly string[]) {
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) {
-  const options = argumentsFrom(process.argv.slice(2));
+  const options = parseStagingUpgradeArguments(process.argv.slice(2));
   const result = options.inspectBindings
     ? await inspectStagingUpgradeBindings({ rootDirectory: options.rootDirectory })
     : await planStagingUpgradeFromStore({ rootDirectory: options.rootDirectory,

@@ -10,7 +10,7 @@ import { adoptStagingSiteContract, installStagingReleaseBundle } from
   "../scripts/install-staging-release-bundle.mjs";
 import { createReleaseCutoverPlan } from "../scripts/plan-release-cutover.mjs";
 import { createStagingUpgradePreparationPlan, inspectStagingUpgradeBindings,
-  planStagingUpgradeFromStore } from "../scripts/plan-staging-upgrade.ts";
+  parseStagingUpgradeArguments, planStagingUpgradeFromStore } from "../scripts/plan-staging-upgrade.ts";
 import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
 
 const digest = (value: string) => `sha256:${value.repeat(64)}`;
@@ -91,6 +91,23 @@ test("upgrade preparation plan rejects expiry, wrong phase authority, and any di
   assert.throws(() => createStagingUpgradePreparationPlan(value.authorization,
     { ...value, candidateRaw: value.candidateRaw.replace("0.1.0-rc.5", "0.1.0-rc.6") }, options),
   /STAGING_UPGRADE_CANDIDATE_RELEASE_MISMATCH/);
+});
+
+test("upgrade CLI keeps read-only inspection separate from authorized preparation planning", () => {
+  assert.deepEqual(parseStagingUpgradeArguments(["--inspect-bindings", "--root", "/srv/company-os/staging"]),
+    { rootDirectory: "/srv/company-os/staging", inspectBindings: true });
+  assert.deepEqual(parseStagingUpgradeArguments(["--root", "/srv/company-os/staging",
+    "--authorization-file", "/run/company-os/upgrade-authorization.json",
+    "--authorization", "change:upgrade-preparation-01"]), {
+    rootDirectory: "/srv/company-os/staging", inspectBindings: false,
+    authorizationFile: "/run/company-os/upgrade-authorization.json",
+    authorizationReference: "change:upgrade-preparation-01",
+  });
+  assert.throws(() => parseStagingUpgradeArguments(["--inspect-bindings",
+    "--authorization-file", "/run/company-os/upgrade-authorization.json"]),
+  /STAGING_UPGRADE_INSPECTION_MUST_BE_UNAUTHORIZED/);
+  assert.throws(() => parseStagingUpgradeArguments(["--root", "/srv/company-os/staging"]),
+    /STAGING_UPGRADE_AUTHORIZATION_ARGUMENTS_REQUIRED/);
 });
 
 test("store-bound upgrade inspection derives active and candidate authority without mutation", async (context) => {
