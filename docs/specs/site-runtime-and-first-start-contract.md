@@ -248,14 +248,14 @@ make the minimal implementation pass and run the complete gate.
 
 ## Implementation tasks
 
-- [ ] Define and test the exact site-runtime and dependency-secret metadata
+- [x] Define and test the exact site-runtime and dependency-secret metadata
   schemas.
 - [ ] Render site-specific public env, dependency manifest, and two isolated
   Compose projects from that contract.
-- [ ] Remove hard-coded Hong Kong expectations from doctor/start planning and
+- [x] Remove hard-coded Hong Kong expectations from doctor/start planning and
   make backup gating capability-aware.
 - [ ] Add the versioned reference dependency Compose and resource admission.
-- [ ] Make canonical release-store adoption idempotent and evidence-bound.
+- [x] Make canonical release-store adoption idempotent and evidence-bound.
 - [ ] Split first start into authorization-bound dependency, migration,
   product-start, and acceptance phases.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
