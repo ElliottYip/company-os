@@ -37,6 +37,29 @@ adds the `Bearer` scheme in memory. Inline
 only by the API runtime identity and must not be included in a release bundle,
 Compose interpolation, command argument, log or evidence record.
 
+Use [`compose.private-alpha-paperclip.yml`](../deploy/compose.private-alpha-paperclip.yml)
+as an overlay on exactly one formal profile. Do not combine it with
+`compose.public-demo.yml`. Set `COMPANY_OS_PAPERCLIP_SECRET_DIRECTORY` to a
+private directory owned by the API runtime UID (`1000` in the release image).
+The directory should use mode `0700`; `paperclip-board-key` must be a regular,
+single-link file owned by that UID with mode `0400` or `0600`. Symbolic links,
+group/world access, an inline credential and a credential owned by another UID
+all fail closed.
+
+Preflight the merged deployment without starting it:
+
+```text
+docker compose --env-file <private-alpha.env> \
+  -f deploy/compose.self-hosted.yml \
+  -f deploy/compose.private-alpha-paperclip.yml config --quiet
+```
+
+For managed cloud, replace the first profile with
+`deploy/compose.managed-cloud.yml`. The merged configuration contains only the
+credential file path, never the credential value. The adapter re-reads that
+file for each upstream request, so an operator can atomically replace a revoked
+key without rebuilding or restarting Company OS.
+
 The installed-package selector and all eight adapter fields are required.
 Partial configuration fails process startup. Formal PostgreSQL/OIDC
 configuration must already be complete. The public Demo runtime fails closed

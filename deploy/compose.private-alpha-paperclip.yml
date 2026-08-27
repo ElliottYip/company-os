@@ -1,0 +1,16 @@
+# Formal-only overlay for the first private Federated Connector Alpha.
+# Combine with exactly one formal profile. Never combine with public Demo.
+services:
+  api:
+    environment:
+      COMPANY_OS_FEDERATED_SOURCE_PACKAGES: "@company-os/federated-source-reference"
+      COMPANY_OS_PAPERCLIP_BASE_URL: ${COMPANY_OS_PAPERCLIP_BASE_URL:?set the HTTPS Paperclip sandbox URL}
+      COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID: ${COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID:?set the ANC company ID}
+      COMPANY_OS_PAPERCLIP_COMPANY_ID: ${COMPANY_OS_PAPERCLIP_COMPANY_ID:?set the Paperclip company UUID}
+      COMPANY_OS_PAPERCLIP_CONNECTOR_ID: ${COMPANY_OS_PAPERCLIP_CONNECTOR_ID:-paperclip-alpha}
+      COMPANY_OS_PAPERCLIP_RUNTIME_AGENT_ID: ${COMPANY_OS_PAPERCLIP_RUNTIME_AGENT_ID:?set the ANC Federated Runtime Agent ID}
+      COMPANY_OS_PAPERCLIP_ACCOUNTABLE_HUMAN_ID: ${COMPANY_OS_PAPERCLIP_ACCOUNTABLE_HUMAN_ID:?set the ANC accountable human ID}
+      COMPANY_OS_PAPERCLIP_AGENT_BINDINGS: ${COMPANY_OS_PAPERCLIP_AGENT_BINDINGS:?set explicit external-to-ANC Agent bindings}
+      COMPANY_OS_PAPERCLIP_AUTHORIZATION_FILE: /run/company-os/federated-source-secrets/paperclip-board-key
+    volumes:
+      - ${COMPANY_OS_PAPERCLIP_SECRET_DIRECTORY:?set a private Paperclip Secret directory}:/run/company-os/federated-source-secrets:ro

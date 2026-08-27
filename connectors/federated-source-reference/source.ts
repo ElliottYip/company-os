@@ -1,5 +1,5 @@
 import type { AgentPortfolioRecord } from "../../core/agent-portfolio.ts";
-import { readFileSync, statSync } from "node:fs";
+import { lstatSync, readFileSync } from "node:fs";
 import { isAbsolute } from "node:path";
 import { validateAgentPortfolioRecord } from "../../core/agent-portfolio.ts";
 import type { ExternalWorkInput, ExternalWorkRecord } from "../../core/cross-source-work.ts";
@@ -384,7 +384,7 @@ export function createPaperclipFederatedConnector(options: PaperclipFederatedCon
   return { capabilityDeclaration, synchronize, portfolioSource };
 }
 
-function deploymentAuthorization(environment: NodeJS.ProcessEnv): string {
+function deploymentAuthorization(environment: NodeJS.ProcessEnv): () => string {
   if (environment.COMPANY_OS_PAPERCLIP_AUTHORIZATION?.trim()) {
     throw new Error("PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
   }
@@ -392,15 +392,26 @@ function deploymentAuthorization(environment: NodeJS.ProcessEnv): string {
   if (!path || !isAbsolute(path) || path.includes("\0")) {
     throw new Error("PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
   }
-  const metadata = statSync(path);
-  if (!metadata.isFile() || metadata.size < 16 || metadata.size > 16_384) {
-    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
-  }
-  const value = readFileSync(path, "utf8").trim();
-  if (value.length < 16 || value.length > 16_384 || /[\r\n]/.test(value)) {
-    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
-  }
-  return value;
+  const read = () => {
+    const metadata = lstatSync(path);
+    if (!metadata.isFile() || metadata.isSymbolicLink() || metadata.nlink !== 1 ||
+        metadata.size < 16 || metadata.size > 16_384) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
+    }
+    if ((metadata.mode & 0o077) !== 0) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_PERMISSIONS_INVALID");
+    }
+    if (typeof process.getuid === "function" && metadata.uid !== process.getuid()) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_OWNER_INVALID");
+    }
+    const value = readFileSync(path, "utf8").trim();
+    if (value.length < 16 || value.length > 16_384 || /[\r\n]/.test(value)) {
+      throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
+    }
+    return value;
+  };
+  read();
+  return read;
 }
 
 /** Installed-package factory consumed by the provider-neutral API loader. */
@@ -417,6 +428,6 @@ export function createFederatedPortfolioSource(environment: NodeJS.ProcessEnv = 
       environment.COMPANY_OS_PAPERCLIP_AGENT_BINDINGS ?? "",
     ),
     synchronizedAt: () => new Date().toISOString(),
-    authorizationHeader: async () => `Bearer ${authorization}`,
+    authorizationHeader: async () => `Bearer ${authorization()}`,
   }).portfolioSource();
 }
