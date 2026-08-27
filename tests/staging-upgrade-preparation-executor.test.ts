@@ -9,9 +9,9 @@ import { runStagingUpgradePreparation } from
 
 const digest = (value: string) => `sha256:${value.repeat(64)}`;
 const steps = ["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
-  "parallel-restore-rehearsal", "forward-migrate", "start-candidate-api",
-  "candidate-readiness", "start-candidate-secret-broker", "start-candidate-agent-node",
-  "start-candidate-data-node", "customer-smoke", "state-comparison", "start-candidate-web"];
+  "parallel-restore-rehearsal", "forward-migrate", "start-candidate-secret-broker",
+  "start-candidate-data-node", "start-candidate-agent-node", "start-candidate-api",
+  "candidate-readiness", "customer-smoke", "state-comparison", "start-candidate-web"];
 
 function plan(rootDirectory: string) {
   return { schemaVersion: 1 as const, product: "company-os" as const,

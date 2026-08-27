@@ -274,16 +274,15 @@ make the minimal implementation pass and run the complete gate.
   leaves independent customer verification open.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
-- [ ] Implement ADR 0044's separate upgrade-authorization contract, candidate
-  runtime contract, and preparation/traffic state machines without changing
-  RC4 site schema v1. Authorization parsing, candidate runtime contract
-  validation, and canonical-store-bound non-mutating preparation planning are
-  complete. Candidate product environment rendering is also complete: it
-  verifies the active topology, preserves only required same-site public
-  identity settings, replaces every parallel runtime coordinate, enforces the
-  declared resource budget, and keeps public ingress and off-site backup
-  disabled. Candidate execution-plane composition, concrete preparation step
-  adapters, and the traffic executor remain open.
+- [ ] Complete ADR 0044's target operation adapters without changing RC4 site
+  schema v1. Authorization, runtime contract, planning, capacity,
+  preparation, traffic/observation, and explicit rollback state machines are
+  complete. Candidate product and execution-plane Compose operations now start
+  dependency services in Broker → Data → Agent order before API readiness,
+  bind exact image digests, retain normalized evidence, and keep ingress
+  closed. Dispatch freeze, paired backup/restore, migration, customer smoke,
+  state comparison, route control, and observation still need concrete target
+  implementations and disposable-infrastructure admission.
 
 The candidate product configuration materializer is canonical-store-bound and
 authorization-bound. It copies the verified candidate release's retained
@@ -298,14 +297,19 @@ accepts only the ordered pre-traffic steps, records a digest for each outcome,
 shares the lifecycle lock, stops at the first failure, and never claims a
 traffic move or automatic rollback. Concrete target adapters for dispatch
 freeze, paired backup/restore, candidate Compose rendering, migration, smoke,
-and state comparison remain required before the executor is operational.
+and state comparison remain required before the complete executor is
+operational. The candidate Compose subset is no longer abstract: it executes
+fixed Compose commands, validates exact service/image/running/health state,
+probes candidate API and Web loopback endpoints, and retains only normalized,
+secret-free evidence.
 
 The candidate execution-plane Compose and TLS gateway are now immutable
 release-bundle inputs. They run a candidate Vault Broker, Codex Agent Node,
 fixture-only Data Node, and TLS gateway without host-published ports, using
 candidate-only volumes and the candidate product network. Their materialized
-configuration is validated alongside the candidate product Compose; creation,
-health verification, and evidence adapters remain pending.
+configuration is validated alongside the candidate product Compose. Candidate
+Broker, fixture Data Node, Agent Node, API, readiness and Web creation/health
+evidence adapters are implemented; disposable live admission remains pending.
 
 Candidate capacity admission is explicit and coordinate-free. It binds the
 active site identity, release, project, network, and ports to the candidate

@@ -92,6 +92,13 @@ parallel database, migrate that candidate database, start candidate services
 with ingress closed, and retain readiness/state-comparison evidence. It may not
 route customer traffic.
 
+Candidate dependency order is explicit: Secret Broker first, fixture Data Node
+second, Agent Node third, then API and dependency-aware readiness. Checking API
+readiness before its execution dependencies is forbidden. The Compose adapter
+uses fixed service commands, verifies exact immutable images and running/health
+state, probes only candidate loopback endpoints, and writes normalized private
+evidence without retaining command output.
+
 Traffic movement is a second apply phase requiring the exact
 `trafficCutover` reference and successful preparation evidence. It changes the
 active route, observes bounded health/integrity thresholds, then atomically

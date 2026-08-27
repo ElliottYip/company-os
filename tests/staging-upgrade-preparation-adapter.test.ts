@@ -11,8 +11,8 @@ const operationId = "upgrade-rc4-to-rc5";
 const siteId = "company-os-hong-kong";
 const candidateReleaseId = `0.1.0-rc.5-${"b".repeat(12)}`;
 const ordered = ["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
-  "parallel-restore-rehearsal", "forward-migrate", "start-candidate-api", "candidate-readiness",
-  "start-candidate-secret-broker", "start-candidate-agent-node", "start-candidate-data-node",
+  "parallel-restore-rehearsal", "forward-migrate", "start-candidate-secret-broker",
+  "start-candidate-data-node", "start-candidate-agent-node", "start-candidate-api", "candidate-readiness",
   "customer-smoke", "state-comparison", "start-candidate-web"] as const;
 const outcomes: Record<ConcreteStagingUpgradePreparationStep, string> = {
   "freeze-dispatch": "NEW_DISPATCH_DISABLED",

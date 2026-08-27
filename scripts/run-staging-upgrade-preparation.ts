@@ -5,12 +5,12 @@ import { isAbsolute, join, resolve } from "node:path";
 const DIGEST = /^sha256:[a-f0-9]{64}$/;
 const OPERATION = /^upgrade-[a-z0-9][a-z0-9-]{2,87}$/;
 const ALLOWED_STEPS = new Set(["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
-  "parallel-restore-rehearsal", "forward-migrate", "start-candidate-api",
-  "candidate-readiness", "start-candidate-secret-broker", "start-candidate-agent-node",
-  "start-candidate-data-node", "customer-smoke", "state-comparison", "start-candidate-web"]);
+  "parallel-restore-rehearsal", "forward-migrate", "start-candidate-secret-broker",
+  "start-candidate-data-node", "start-candidate-agent-node", "start-candidate-api",
+  "candidate-readiness", "customer-smoke", "state-comparison", "start-candidate-web"]);
 const ORDER_WITHOUT_MIGRATION = ["capacity-admission", "freeze-dispatch", "reconcile-attempts", "encrypted-backup",
-  "parallel-restore-rehearsal", "start-candidate-api", "candidate-readiness",
-  "start-candidate-secret-broker", "start-candidate-agent-node", "start-candidate-data-node",
+  "parallel-restore-rehearsal", "start-candidate-secret-broker", "start-candidate-data-node",
+  "start-candidate-agent-node", "start-candidate-api", "candidate-readiness",
   "customer-smoke", "state-comparison", "start-candidate-web"];
 const MUTATING_STEPS = new Set(["freeze-dispatch", "encrypted-backup", "parallel-restore-rehearsal",
   "forward-migrate", "start-candidate-api", "start-candidate-secret-broker",
