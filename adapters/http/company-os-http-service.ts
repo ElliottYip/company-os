@@ -3,6 +3,7 @@ import type { CompanyWorkState } from "../../application/company-operations.ts";
 import type { DemoPortfolioSnapshot } from "../../core/demo-portfolio.ts";
 import type { OrganizationDraft } from "../../core/organization.ts";
 import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
+import type { PublicDemoRequestLimiter } from "./public-demo-request-limiter.ts";
 
 export interface DemoApplicationClient {
   snapshot(): Promise<CompanyWorkState>;
@@ -36,6 +37,7 @@ export interface CompanyOsHttpServiceOptions {
     triggerGovernedWork(sessionId: string): Promise<DemoPortfolioSnapshot>;
     decide(sessionId: string, decision: "APPROVED" | "REJECTED"): Promise<DemoPortfolioSnapshot>;
   };
+  readonly publicDemoRequestLimiter?: PublicDemoRequestLimiter;
   readonly demoCookieMaxAgeSeconds?: number;
   readonly formalAccess?: {
     getStatus(request: IncomingMessage): Promise<unknown>;
@@ -1198,6 +1200,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (method === "POST" && path === "/api/demo/v2/sessions") {
         if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
         if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
+        options.publicDemoRequestLimiter?.consumeCreation();
         const snapshot = await options.publicDemoSessions.create();
         sendJson(res, 201, publicDemoSnapshot(snapshot), {
           "set-cookie": demoCookieHeader(
@@ -1212,13 +1215,17 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
         const sessionId = demoSessionCookie(req);
         if (!sessionId) throw new Error("DEMO_SESSION_REQUIRED");
+        options.publicDemoRequestLimiter?.consumeSession(sessionId);
         sendJson(res, 200, publicDemoSnapshot(await options.publicDemoSessions.read(sessionId)));
         return;
       }
       if (method === "POST" && path === "/api/demo/v2/recover") {
         if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
         if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
-        const snapshot = await options.publicDemoSessions.recover(demoSessionCookie(req));
+        const priorSessionId = demoSessionCookie(req);
+        if (priorSessionId) options.publicDemoRequestLimiter?.consumeSession(priorSessionId);
+        else options.publicDemoRequestLimiter?.consumeCreation();
+        const snapshot = await options.publicDemoSessions.recover(priorSessionId);
         sendJson(res, 200, publicDemoSnapshot(snapshot), {
           "set-cookie": demoCookieHeader(
             snapshot,
@@ -1233,6 +1240,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         if (!options.publicDemoSessions) throw new Error("PUBLIC_DEMO_UNAVAILABLE");
         const sessionId = demoSessionCookie(req);
         if (!sessionId) throw new Error("DEMO_SESSION_REQUIRED");
+        options.publicDemoRequestLimiter?.consumeSession(sessionId);
         const action = publicDemoAction(await readJson(req, maxBodyBytes));
         if (!action) throw new Error("INVALID_DEMO_ACTION");
         let snapshot: DemoPortfolioSnapshot;
@@ -2079,8 +2087,10 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
             .includes(code) ? 401
           : code === "DEMO_RENEWAL_TARGET_NOT_FOUND" ? 404
           : ["INVALID_DEMO_ACTION", "DEMO_SESSION_COOKIE_INVALID"].includes(code) ? 422
+          : code === "PUBLIC_DEMO_RATE_LIMITED" ? 429
           : code === "PUBLIC_DEMO_UNAVAILABLE" ? 503
           : 409;
+        if (status === 429) res.setHeader("retry-after", "60");
         sendStructuredError(res, status, code);
         return;
       }

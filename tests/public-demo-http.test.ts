@@ -5,10 +5,14 @@ import test from "node:test";
 import { createDemoPortfolioFixture } from "../adapters/demo/create-demo-portfolio-fixture.ts";
 import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
 import { createCompanyOsHttpService } from "../adapters/http/company-os-http-service.ts";
+import { PublicDemoRequestLimiter } from "../adapters/http/public-demo-request-limiter.ts";
 import { InMemoryDemoSessionStore } from "../adapters/storage/in-memory-demo-session-store.ts";
 import { DemoPortfolioSessions } from "../application/demo-portfolio-sessions.ts";
 
-async function withService(run: (baseUrl: string) => Promise<void>) {
+async function withService(
+  run: (baseUrl: string) => Promise<void>,
+  input: { createLimit?: number; sessionLimit?: number } = {},
+) {
   let session = 0;
   let company = 0;
   let formalCalls = 0;
@@ -27,6 +31,12 @@ async function withService(run: (baseUrl: string) => Promise<void>) {
     serviceMode: "FORMAL",
     allowedOrigins: ["https://demo.example"],
     publicDemoSessions: demo,
+    publicDemoRequestLimiter: new PublicDemoRequestLimiter({
+      maximumCreationsPerWindow: input.createLimit ?? 100,
+      maximumRequestsPerSessionPerWindow: input.sessionLimit ?? 100,
+      windowMilliseconds: 60_000,
+      now: () => 1_000,
+    }),
     formalApi: {
       async getAgentBoss() { formalCalls += 1; return {}; },
       async getAdministration() { formalCalls += 1; return { forbidden: false }; },
@@ -139,3 +149,34 @@ test("Demo mutations reject an unapproved origin", async () => {
   });
 });
 
+test("Demo returns 429 when anonymous creation capacity is consumed", async () => {
+  await withService(async (baseUrl) => {
+    const headers = { origin: "https://demo.example" };
+    assert.equal((await fetch(`${baseUrl}/api/demo/v2/sessions`, { method: "POST", headers })).status, 201);
+    const limited = await fetch(`${baseUrl}/api/demo/v2/sessions`, { method: "POST", headers });
+    assert.equal(limited.status, 429);
+    assert.equal(limited.headers.get("retry-after"), "60");
+    assert.equal((await limited.json() as { error: { code: string } }).error.code,
+      "PUBLIC_DEMO_RATE_LIMITED");
+  }, { createLimit: 1 });
+});
+
+test("Demo limits one session without consuming another visitor budget", async () => {
+  await withService(async (baseUrl) => {
+    const headers = { origin: "https://demo.example" };
+    const first = await fetch(`${baseUrl}/api/demo/v2/sessions`, { method: "POST", headers });
+    const second = await fetch(`${baseUrl}/api/demo/v2/sessions`, { method: "POST", headers });
+    const firstCookie = cookie(first);
+    const secondCookie = cookie(second);
+
+    assert.equal((await fetch(`${baseUrl}/api/demo/v2/session`, {
+      headers: { cookie: firstCookie },
+    })).status, 200);
+    assert.equal((await fetch(`${baseUrl}/api/demo/v2/session`, {
+      headers: { cookie: firstCookie },
+    })).status, 429);
+    assert.equal((await fetch(`${baseUrl}/api/demo/v2/session`, {
+      headers: { cookie: secondCookie },
+    })).status, 200);
+  }, { sessionLimit: 1 });
+});

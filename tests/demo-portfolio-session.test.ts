@@ -5,12 +5,15 @@ import { createDemoPortfolioFixture } from "../adapters/demo/create-demo-portfol
 import { InMemoryDemoSessionStore } from "../adapters/storage/in-memory-demo-session-store.ts";
 import { DemoPortfolioSessions } from "../application/demo-portfolio-sessions.ts";
 
-function sessions() {
+function sessions(input: { maximumSessions?: number } = {}) {
   let session = 0;
   let company = 0;
   let now = Date.parse("2026-08-27T10:00:00.000Z");
   const service = new DemoPortfolioSessions({
-    store: new InMemoryDemoSessionStore(),
+    store: new InMemoryDemoSessionStore({
+      maximumSessions: input.maximumSessions ?? 500,
+      now: () => new Date(now).toISOString(),
+    }),
     createFixture: createDemoPortfolioFixture,
     nextSessionId: () => `demo_session_${++session}_opaque_0123456789abcdef`,
     nextCompanyId: () => `demo-company-${++company}`,
@@ -91,3 +94,13 @@ test("an expired or unknown session recovers as a fresh isolated Demo company", 
   assert.equal(recovered.governed.phase, "READY");
 });
 
+test("Demo session capacity is bounded and expired sessions are reclaimed", async () => {
+  const { service, advance } = sessions({ maximumSessions: 2 });
+  await service.create();
+  await service.create();
+  await assert.rejects(service.create(), /DEMO_SESSION_CAPACITY_EXCEEDED/);
+
+  advance(60_001);
+  const replacement = await service.create();
+  assert.equal(replacement.company.id, "demo-company-4");
+});

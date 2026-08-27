@@ -89,6 +89,7 @@ import {
 } from "../connectors/load-formal-connectors.ts";
 import { createCompanyOsHttpService } from "./company-os-http-service.ts";
 import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
+import { PublicDemoRequestLimiter } from "./public-demo-request-limiter.ts";
 import {
   loadFormalSecretBroker,
   parseFormalSecretBrokerPackage,
@@ -140,6 +141,17 @@ function enabled(value: string | undefined, name: string): boolean {
   throw new Error(`${name} must be true or false`);
 }
 
+function boundedInteger(
+  value: string | undefined,
+  input: { readonly name: string; readonly defaultValue: number; readonly minimum: number; readonly maximum: number },
+): number {
+  const parsed = value === undefined ? input.defaultValue : Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < input.minimum || parsed > input.maximum) {
+    throw new Error(`${input.name} must be an integer from ${input.minimum} to ${input.maximum}`);
+  }
+  return parsed;
+}
+
 function releaseId(value: string | undefined): string | undefined {
   if (value === undefined || value.trim() === "") return undefined;
   const normalized = value.trim();
@@ -154,6 +166,21 @@ const deploymentExposure = exposure(process.env.COMPANY_OS_EXPOSURE);
 const publicDemoEnabled = enabled(
   process.env.COMPANY_OS_PUBLIC_DEMO_ENABLED,
   "COMPANY_OS_PUBLIC_DEMO_ENABLED",
+);
+const demoMaximumSessions = boundedInteger(process.env.COMPANY_OS_DEMO_MAX_SESSIONS, {
+  name: "COMPANY_OS_DEMO_MAX_SESSIONS", defaultValue: 500, minimum: 1, maximum: 10_000,
+});
+const demoCreationsPerMinute = boundedInteger(process.env.COMPANY_OS_DEMO_CREATIONS_PER_MINUTE, {
+  name: "COMPANY_OS_DEMO_CREATIONS_PER_MINUTE", defaultValue: 120, minimum: 1, maximum: 10_000,
+});
+const demoRequestsPerSessionPerMinute = boundedInteger(
+  process.env.COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE,
+  {
+    name: "COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE",
+    defaultValue: 240,
+    minimum: 1,
+    maximum: 100_000,
+  },
 );
 const runtimeMode = parseServiceRuntimeMode(process.env.COMPANY_OS_RUNTIME_MODE);
 const metricsEnabled = process.env.COMPANY_OS_METRICS_ENABLED === "true";
@@ -170,13 +197,20 @@ const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicy
   process.env.COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID,
 );
 const { runtime } = createDemoComposition();
+const demoNow = () => new Date().toISOString();
 const publicDemoSessions = publicDemoEnabled ? new DemoPortfolioSessions({
-  store: new InMemoryDemoSessionStore(),
+  store: new InMemoryDemoSessionStore({ maximumSessions: demoMaximumSessions, now: demoNow }),
   createFixture: createDemoPortfolioFixture,
   nextSessionId: () => randomBytes(32).toString("base64url"),
   nextCompanyId: () => `demo-company-${randomBytes(12).toString("hex")}`,
-  now: () => new Date().toISOString(),
+  now: demoNow,
   timeToLiveMilliseconds: 4 * 60 * 60 * 1_000,
+}) : undefined;
+const publicDemoRequestLimiter = publicDemoEnabled ? new PublicDemoRequestLimiter({
+  maximumCreationsPerWindow: demoCreationsPerMinute,
+  maximumRequestsPerSessionPerWindow: demoRequestsPerSessionPerMinute,
+  maximumTrackedSessions: demoMaximumSessions,
+  windowMilliseconds: 60_000,
 }) : undefined;
 const formalConfiguration = {
   publicBaseUrl: process.env.COMPANY_OS_PUBLIC_URL,
@@ -484,6 +518,7 @@ async function formalPortfolioApi(
 const server = createCompanyOsHttpService({
   runtime,
   ...(publicDemoSessions ? { publicDemoSessions } : {}),
+  ...(publicDemoRequestLimiter ? { publicDemoRequestLimiter } : {}),
   deploymentProfile: profile,
   ...(deployedReleaseId ? { releaseId: deployedReleaseId } : {}),
   serviceMode: runtimeMode === "public-demo"

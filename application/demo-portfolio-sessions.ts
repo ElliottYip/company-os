@@ -56,6 +56,7 @@ export class DemoPortfolioSessions {
     const snapshot = await this.#dependencies.store.load(sessionId);
     if (!snapshot) throw new Error("DEMO_SESSION_NOT_FOUND");
     if (Date.parse(snapshot.expiresAt) <= Date.parse(this.#dependencies.now())) {
+      await this.#dependencies.store.delete(sessionId);
       throw new Error("DEMO_SESSION_EXPIRED");
     }
     return snapshot;
@@ -169,4 +170,3 @@ export class DemoPortfolioSessions {
     return structuredClone(next);
   }
 }
-

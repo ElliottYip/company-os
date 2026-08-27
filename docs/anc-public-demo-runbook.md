@@ -75,6 +75,24 @@ The current Demo Session adapter is process-local by design. Run exactly one
 Demo API replica for the exhibition candidate. Horizontal scaling requires a
 shared session-store adapter and is not silently assumed by this runbook.
 
+The API applies a second safety boundary independent of the TLS proxy:
+
+- `COMPANY_OS_DEMO_MAX_SESSIONS` defaults to 500 process-local sessions;
+- `COMPANY_OS_DEMO_CREATIONS_PER_MINUTE` defaults to 120 new or anonymous
+  recovery requests;
+- `COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE` defaults to 240 requests
+  per opaque session token;
+- rate-limit state retains only a process-random salted SHA-256 digest of a
+  session token, never a visitor IP or the raw cookie;
+- expired sessions and limiter windows are reclaimed before admitting new
+  entries, and the tracked-key set is capped at the session capacity.
+
+Capacity or request-rate rejection returns `429 PUBLIC_DEMO_RATE_LIMITED` or
+`409 DEMO_SESSION_CAPACITY_EXCEEDED`. Do not increase these values during an
+incident. Withdraw ingress, verify memory and request-rate evidence, restart
+the disposable Demo API if necessary, and repeat isolation/recovery admission
+before reopening.
+
 ## Next-RC public Demo sequence
 
 1. Merge the verified branch and create a new immutable RC tag only after
