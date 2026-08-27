@@ -278,8 +278,12 @@ make the minimal implementation pass and run the complete gate.
   runtime contract, and preparation/traffic state machines without changing
   RC4 site schema v1. Authorization parsing, candidate runtime contract
   validation, and canonical-store-bound non-mutating preparation planning are
-  complete; parallel runtime rendering, concrete preparation step adapters,
-  and the traffic executor remain open.
+  complete. Candidate product environment rendering is also complete: it
+  verifies the active topology, preserves only required same-site public
+  identity settings, replaces every parallel runtime coordinate, enforces the
+  declared resource budget, and keeps public ingress and off-site backup
+  disabled. Candidate execution-plane composition, concrete preparation step
+  adapters, and the traffic executor remain open.
 
 The preparation executor's evidence-retaining state machine is implemented: it
 accepts only the ordered pre-traffic steps, records a digest for each outcome,
