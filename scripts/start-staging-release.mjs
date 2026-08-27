@@ -5,6 +5,8 @@ import { homedir } from "node:os";
 import { isAbsolute, join, resolve } from "node:path";
 
 import { parsePublicStagingEnvironment } from "../adapters/config/staging-deployment-doctor.ts";
+import { parseSiteRuntimeManifest, planSiteFirstStart } from
+  "../adapters/config/site-runtime-contract.ts";
 import { verifyStagingReleaseBundle } from "./create-staging-release-bundle.mjs";
 import {
   stagingDependencyExpectationFromPublicEnvironment,
@@ -27,6 +29,13 @@ export async function planStagingReleaseStart(input) {
     throw new Error("STAGING_START_NON_CANONICAL_SITE_ARTIFACT");
   }
   await verifyCanonicalSiteContract(prepared.siteContract);
+  const siteManifest = parseSiteRuntimeManifest(JSON.parse(await readFile(
+    join(prepared.siteContract.contractDirectory, "site-runtime.json"), "utf8")));
+  const firstStartAuthorization = planSiteFirstStart(siteManifest);
+  if (firstStartAuthorization.status !== "READY_TO_APPLY_BY_PHASE") {
+    throw new Error(`STAGING_START_PHASE_AUTHORIZATION_MISSING:${
+      firstStartAuthorization.missingAuthorizationKinds.join(",")}`);
+  }
   const environment = await publicEnvironment(paths.environmentFile);
   if (resolve(environment.COMPANY_OS_SECRET_DIRECTORY ?? "") !== paths.secretDirectory) {
     throw new Error("STAGING_START_SECRET_DIRECTORY_MISMATCH");
@@ -66,7 +75,8 @@ export async function planStagingReleaseStart(input) {
   return { schemaVersion: 1, status: "PLANNED_NOT_APPLIED", releaseId: prepared.releaseId,
     releaseVersion: prepared.releaseVersion, sourceRevision: prepared.sourceRevision,
     dependencyManifestDigest: dependencyAdmission.manifestDigest,
-    authorizationReference: input.authorizationReference, rootDirectory: paths.rootDirectory, steps };
+    authorizationReference: input.authorizationReference, firstStartAuthorization,
+    rootDirectory: paths.rootDirectory, steps };
 }
 
 export async function startStagingRelease(input, supplied = {}) {
@@ -222,10 +232,13 @@ async function rejectExistingStartupState(rootDirectory) {
 }
 
 function state(plan, details) {
+  const phaseAuthorizationReferences = Object.fromEntries(plan.firstStartAuthorization.phases
+    .filter(({ authorizationKind }) => authorizationKind !== null)
+    .map(({ authorizationKind, authorizationReference }) => [authorizationKind, authorizationReference]));
   return { schemaVersion: 1, product: "company-os", releaseId: plan.releaseId,
     releaseVersion: plan.releaseVersion, sourceRevision: plan.sourceRevision,
     dependencyManifestDigest: plan.dependencyManifestDigest,
-    authorizationReference: plan.authorizationReference, ...details };
+    authorizationReference: plan.authorizationReference, phaseAuthorizationReferences, ...details };
 }
 
 async function writeStartupState(rootDirectory, value) {

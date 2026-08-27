@@ -6,6 +6,8 @@ export function siteRuntimeFixture(input: {
   releaseId: string;
   images: { api: string; web: string; ops: string; codexAgentNode: string;
     vaultSecretBroker: string; referenceDataNode: string };
+  authorization?: { dependencyInitialization: string | null; migrationProvision: string | null;
+    productStart: string | null; acceptance: string | null };
 }) {
   const site = {
     schemaVersion: 1, environment: "STAGING",
@@ -56,7 +58,7 @@ export function siteRuntimeFixture(input: {
     capabilities: { publicIngress: "DISABLED_PENDING_AUTHORIZATION",
       offSiteBackup: "DISABLED_PENDING_AUTHORIZATION", modelInference: "EXTERNAL",
       enterpriseData: "EXTERNAL" },
-    authorization: { dependencyInitialization: null, migrationProvision: null,
+    authorization: input.authorization ?? { dependencyInitialization: null, migrationProvision: null,
       productStart: null, acceptance: null },
   };
   const productSecretDirectory = `${input.root}/product-secrets`;

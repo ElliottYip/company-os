@@ -19,7 +19,7 @@ const release = { schemaVersion: 1, product: "company-os", releaseVersion: "0.1.
     ops: image("ops", "d"), codexAgentNode: image("codex", "e"), vaultSecretBroker: image("vault", "f"),
     referenceDataNode: image("data", "1") } };
 
-async function fixture(prefix: string) {
+async function fixture(prefix: string, authorized = true) {
   const temporary = await mkdtemp(join(tmpdir(), prefix));
   const source = join(temporary, "source"); const root = join(temporary, "target");
   const releasePath = join(temporary, "release.json");
@@ -30,7 +30,13 @@ async function fixture(prefix: string) {
   const installed = await installStagingReleaseBundle({ bundleDirectory: source, rootDirectory: root });
   const environmentFile = join(root, "staging.env"); const secretDirectory = join(root, "synthetic-secrets");
   await import("node:fs/promises").then(({ mkdir }) => mkdir(secretDirectory, { mode: 0o700 }));
-  const artifacts = siteRuntimeFixture({ root, releaseId: installed.releaseId, images: release.images });
+  const artifacts = siteRuntimeFixture({ root, releaseId: installed.releaseId, images: release.images,
+    authorization: authorized ? {
+      dependencyInitialization: "change:dependency-init-test-01",
+      migrationProvision: "change:migration-test-01",
+      productStart: "change:product-start-test-01",
+      acceptance: "change:acceptance-test-01",
+    } : undefined });
   const publicEnvironment = artifacts.publicEnvironment.replace(
     `COMPANY_OS_SECRET_DIRECTORY=${artifacts.productSecretDirectory}`,
     `COMPANY_OS_SECRET_DIRECTORY=${secretDirectory}`);
@@ -67,11 +73,20 @@ test("staging start defaults to a non-mutating plan bound to one prepared releas
   assert.equal(plan.status, "PLANNED_NOT_APPLIED");
   assert.equal(plan.releaseId, value.releaseId);
   assert.equal(plan.authorizationReference, "change:staging-acceptance-2026-08-26");
+  assert.equal(plan.firstStartAuthorization.status, "READY_TO_APPLY_BY_PHASE");
+  assert.equal(plan.firstStartAuthorization.phases.length, 11);
   assert.deepEqual(plan.steps.map(({ id }) => id), [
     "VALIDATE_DEPENDENCIES", "DOCTOR", "COMPOSE_CONFIG", "PULL_IMAGES", "MIGRATE", "PROVISION_RUNTIME_ROLE",
     "START_DATA_NODE", "START_API", "API_READY", "START_WEB", "WEB_SMOKE", "API_SMOKE",
   ]);
   await assert.rejects(readFile(join(value.root, "startup-state.json")), /ENOENT/);
+});
+
+test("staging start cannot use one operation ticket to replace missing phase authority", async (context) => {
+  const value = await fixture("company-os-staging-start-phase-auth-", false);
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  await assert.rejects(planStagingReleaseStart(input(value)),
+    /STAGING_START_PHASE_AUTHORIZATION_MISSING:DEPENDENCY_INITIALIZATION,MIGRATION_PROVISION,PRODUCT_START,ACCEPTANCE/);
 });
 
 test("authorized staging start runs the ordered path and records started-not-accepted without command output", async (context) => {
@@ -91,6 +106,12 @@ test("authorized staging start runs the ordered path and records started-not-acc
   assert.equal(state.state, "STARTED_NOT_ACCEPTED");
   assert.equal(state.automaticRollbackAttempted, false);
   assert.equal(state.acceptanceClaimed, false);
+  assert.deepEqual(state.phaseAuthorizationReferences, {
+    DEPENDENCY_INITIALIZATION: "change:dependency-init-test-01",
+    MIGRATION_PROVISION: "change:migration-test-01",
+    PRODUCT_START: "change:product-start-test-01",
+    ACCEPTANCE: "change:acceptance-test-01",
+  });
   assert.doesNotMatch(JSON.stringify(state), /stdout|stderr|client.?secret|bearer.?token|database.?url/i);
 });
 
