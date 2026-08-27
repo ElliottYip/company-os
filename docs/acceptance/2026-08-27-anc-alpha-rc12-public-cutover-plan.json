@@ -3,6 +3,20 @@
   "recordType": "ANC_ALPHA_PUBLIC_CUTOVER_PLAN",
   "recordedAt": "2026-08-27T12:32:00Z",
   "status": "PREPARED_NOT_APPLIED",
+  "dnsPreflight": {
+    "authenticatedConsoleAccess": true,
+    "zoneVisibleInMainAccount": true,
+    "recordCount": 15,
+    "targetRecordsExist": false,
+    "authoritativeMissingNameSynthesis": true,
+    "synthesisEvidence": {
+      "company-os.raft.xin": "28.0.77.91",
+      "company-os-api.raft.xin": "28.0.77.92",
+      "randomMissingNamesAlsoReturned28NetworkAddresses": true,
+      "authoritativeTtlSeconds": 1
+    },
+    "interpretation": "The 28.0.77.* answers are synthesized parking responses for absent names, not stored records and not rollback values."
+  },
   "candidate": {
     "releaseTag": "v0.1.0-rc.12",
     "releaseId": "0.1.0-rc.12-a1358df74535",
@@ -15,17 +29,23 @@
     {
       "hostname": "company-os.raft.xin",
       "recordType": "A",
-      "observedValue": "28.0.77.91",
+      "hostRecord": "company-os",
+      "action": "CREATE",
+      "recordExists": false,
       "candidateValue": "47.242.52.235",
-      "rollbackValue": "28.0.77.91",
+      "ttlSeconds": 600,
+      "rollbackAction": "DELETE_CREATED_RECORD",
       "applied": false
     },
     {
       "hostname": "company-os-api.raft.xin",
       "recordType": "A",
-      "observedValue": "28.0.77.92",
+      "hostRecord": "company-os-api",
+      "action": "CREATE",
+      "recordExists": false,
       "candidateValue": "47.242.52.235",
-      "rollbackValue": "28.0.77.92",
+      "ttlSeconds": 600,
+      "rollbackAction": "DELETE_CREATED_RECORD",
       "applied": false
     }
   ],
@@ -46,9 +66,8 @@
     "enabled": false
   },
   "orderedGates": [
-    "obtain authoritative AliDNS access",
-    "capture record identifiers and TTL before mutation",
-    "change both A records to the Hong Kong public IPv4",
+    "obtain explicit action-time confirmation to create both records",
+    "create both A records at the Hong Kong public IPv4 with a 10-minute TTL",
     "wait for authoritative and public resolver convergence",
     "issue one certificate covering both hostnames",
     "validate and atomically enable the RC12 Nginx candidate",
@@ -57,12 +76,12 @@
   ],
   "rollback": [
     "withdraw the enabled Nginx candidate",
-    "restore both recorded DNS values",
+    "delete the two created DNS records to restore the prior absent-name behavior",
     "keep RC12 running behind closed ingress for diagnosis",
     "retain all access, error and acceptance evidence"
   ],
   "blockingInputs": [
-    "authenticated AliDNS change authority",
+    "explicit action-time confirmation for the DNS network change",
     "matching certificate issuance after DNS convergence"
   ]
 }
