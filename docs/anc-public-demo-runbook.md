@@ -144,6 +144,10 @@ issuance, Nginx reload, or public traffic; obtain a separate confirmation for
 those security-sensitive network changes after DNS convergence. Do not reuse a
 certificate whose SAN set does not cover both selected hostnames.
 
+The current prepare-only alternate-domain contract is
+[`2026-08-27-anc-alpha-rc12-bztiuzl-fallback-plan.json`](acceptance/2026-08-27-anc-alpha-rc12-bztiuzl-fallback-plan.json).
+Its presence is not approval to create records or change traffic.
+
 RC8 completed publication, prepare-only installation, closed-ingress container
 start, readiness, API journey, two-visitor isolation, reset, formal-route denial,
 and process-recovery admission. A real production-Web browser then found that
