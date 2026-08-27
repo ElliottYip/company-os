@@ -99,6 +99,15 @@ uses fixed service commands, verifies exact immutable images and running/health
 state, probes only candidate loopback endpoints, and writes normalized private
 evidence without retaining command output.
 
+Active dispatch freeze uses the existing instance-maintenance API over a
+loopback-only origin. The administrative session is read from a private file,
+held only in memory, and omitted from evidence. The operation uses optimistic
+revision, is idempotent only for the same operation and authority, and confirms
+the stored state after mutation. Drain reconciliation then uses the durable
+cross-company drain projection and admits only zero non-terminal Attempts,
+pending approvals/publications, and unrevoked leases; retained evidence contains
+aggregate counts and a source digest, never customer records.
+
 Traffic movement is a second apply phase requiring the exact
 `trafficCutover` reference and successful preparation evidence. It changes the
 active route, observes bounded health/integrity thresholds, then atomically

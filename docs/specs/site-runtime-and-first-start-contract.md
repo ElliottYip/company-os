@@ -284,6 +284,13 @@ make the minimal implementation pass and run the complete gate.
   state comparison, route control, and observation still need concrete target
   implementations and disposable-infrastructure admission.
 
+Dispatch freeze and drain reconciliation now have concrete target adapters.
+Freeze uses only the active API loopback, a private session file, optimistic
+revision and post-write confirmation. Drain reads the durable PostgreSQL
+projection and requires all accountable execution, approval, publication and
+Secret-lease state to be quiescent. Their evidence is normalized and excludes
+session material and customer identifiers.
+
 The candidate product configuration materializer is canonical-store-bound and
 authorization-bound. It copies the verified candidate release's retained
 Compose template into an operation-specific private directory, renders the
