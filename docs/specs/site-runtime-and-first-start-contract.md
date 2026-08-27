@@ -273,12 +273,14 @@ make the minimal implementation pass and run the complete gate.
 - [ ] Run focused, full, live disposable-infrastructure, and browser gates;
   publish a new immutable release only after all pass.
 
-The dependency initialization planner is now canonical-store-bound,
-authorization-bound, non-mutating by default, and explicitly non-executable
-until the target Secret validation, private Dex rendering, OCI image-user
-resolution, projection materialization, and persistent Vault bootstrap executor
-are implemented and admitted. The existing aggregate product-start executor is
-therefore not yet evidence for the unchecked first-start task.
+The dependency initialization planner is canonical-store-bound,
+authorization-bound, and non-mutating by default. OCI declared users are
+resolved only from image-bound account-database inspection evidence; missing,
+ambiguous, root, and out-of-range identities are rejected. The planner remains
+explicitly non-executable until the persistent Vault bootstrap and phase-bound
+runtime executors are implemented and admitted. The existing aggregate
+product-start executor is therefore not yet evidence for the unchecked
+first-start task.
 
 The first local apply slice now admits only the target-generated source subset,
 renders a private JSON Dex configuration with S256 PKCE and durable SQLite
@@ -288,6 +290,14 @@ Vault Secret Broker remains explicitly pending until real Vault initialization
 produces its AppRole identifiers. This slice creates no Docker network, volume,
 container, database, IdP process, or Vault process and does not make the overall
 dependency plan executable.
+
+After Vault bootstrap has produced the declared recovery and AppRole outputs,
+a second materializer validates the exact expanded source set and creates a
+new `post-bootstrap` candidate rather than rewriting the pre-bootstrap
+candidate. It adds the Broker-only AppRole projection, re-renders all paths for
+the derived candidate, records the predecessor evidence digest, and still
+creates no runtime object. Provider credentials remain Vault-managed and are
+never fabricated or copied into this source directory.
 
 ## Success criteria
 

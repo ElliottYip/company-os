@@ -5,7 +5,8 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { createStagingReleaseBundle } from "../scripts/create-staging-release-bundle.mjs";
-import { materializeStagingDependencyConfiguration, planStagingDependencyInitialization } from
+import { materializePostBootstrapDependencyConfiguration, materializeStagingDependencyConfiguration,
+  planStagingDependencyInitialization } from
   "../scripts/initialize-staging-dependencies.mjs";
 import { adoptStagingSiteContract, installStagingReleaseBundle } from
   "../scripts/install-staging-release-bundle.mjs";
@@ -54,6 +55,21 @@ async function fixture(prefix: string, authorized = true) {
   return { temporary, root, releaseId: installed.releaseId, artifacts, dependencySecretSource };
 }
 
+async function writeSecretSources(value: Awaited<ReturnType<typeof fixture>>, includeBootstrapOutputs = false) {
+  await mkdir(value.dependencySecretSource, { mode: 0o700 });
+  const bootstrap = { schemaVersion: 1, email: "operator@company-os.test",
+    username: "company-os-operator", displayName: "Company OS staging operator",
+    userId: "company-os-staging-operator", passwordHash: `$2b$12$${"A".repeat(53)}` };
+  for (const entry of value.artifacts.dependencySecretMetadata.entries.filter(
+    ({ generationMethod }) => generationMethod === "GENERATED_ON_TARGET" ||
+      (includeBootstrapOutputs && generationMethod === "BOOTSTRAP_OUTPUT"))) {
+    const content = entry.purpose === "OIDC_BOOTSTRAP" ? `${JSON.stringify(bootstrap)}\n` :
+      entry.purpose === "OIDC_CLIENT" ? "synthetic-client-secret-material-32-bytes\n" :
+        `synthetic-${entry.purpose.toLowerCase()}\n`;
+    await writeFile(join(value.dependencySecretSource, entry.filename), content, { mode: entry.mode });
+  }
+}
+
 test("dependency initialization defaults to a canonical non-mutating plan", async (context) => {
   const value = await fixture("company-os-dependency-init-plan-");
   context.after(() => rm(value.temporary, { recursive: true, force: true }));
@@ -100,17 +116,7 @@ test("authorized materialization writes private config and least-privilege proje
   async (context) => {
     const value = await fixture("company-os-dependency-materialize-");
     context.after(() => rm(value.temporary, { recursive: true, force: true }));
-    await mkdir(value.dependencySecretSource, { mode: 0o700 });
-    const bootstrap = { schemaVersion: 1, email: "operator@company-os.test",
-      username: "company-os-operator", displayName: "Company OS staging operator",
-      userId: "company-os-staging-operator", passwordHash: `$2b$12$${"A".repeat(53)}` };
-    for (const entry of value.artifacts.dependencySecretMetadata.entries.filter(
-      ({ generationMethod }) => generationMethod === "GENERATED_ON_TARGET")) {
-      const content = entry.purpose === "OIDC_BOOTSTRAP" ? `${JSON.stringify(bootstrap)}\n` :
-        entry.purpose === "OIDC_CLIENT" ? "synthetic-client-secret-material-32-bytes\n" :
-          `synthetic-${entry.purpose.toLowerCase()}\n`;
-      await writeFile(join(value.dependencySecretSource, entry.filename), content, { mode: entry.mode });
-    }
+    await writeSecretSources(value);
     const ownership: Array<{ path: string; uid: number; gid: number }> = [];
     const result = await materializeStagingDependencyConfiguration({ rootDirectory: value.root,
       releaseId: value.releaseId, authorizationReference: "change:dependency-init-test-01" }, {
@@ -148,3 +154,55 @@ test("materialization fails before mutation when a required source file is unsaf
     }), /STAGING_DEPENDENCY_SECRET_SOURCE_INVALID/);
   await assert.rejects(stat(join(value.root, "dependency-runtime")), /ENOENT/);
 });
+
+test("post-bootstrap materialization creates a complete immutable candidate with Broker AppRole projection",
+  async (context) => {
+    const value = await fixture("company-os-dependency-post-bootstrap-");
+    context.after(() => rm(value.temporary, { recursive: true, force: true }));
+    await writeSecretSources(value);
+    const ownership: Array<{ path: string; uid: number; gid: number }> = [];
+    const supplied = { resolveImageUser: async () => ({ uid: 1001, gid: 1001 }),
+      applyOwnership: async (path: string, uid: number, gid: number) => {
+        ownership.push({ path, uid, gid });
+      } };
+    const input = { rootDirectory: value.root, releaseId: value.releaseId,
+      authorizationReference: "change:dependency-init-test-01" };
+    const pre = await materializeStagingDependencyConfiguration(input, supplied);
+    const preEvidenceBefore = await readFile(join(pre.candidateRoot, "materialization-evidence.json"));
+    for (const entry of value.artifacts.dependencySecretMetadata.entries.filter(
+      ({ generationMethod }) => generationMethod === "BOOTSTRAP_OUTPUT")) {
+      await writeFile(join(value.dependencySecretSource, entry.filename),
+        `synthetic-${entry.purpose.toLowerCase()}\n`, { mode: entry.mode });
+    }
+
+    const result = await materializePostBootstrapDependencyConfiguration(input, supplied);
+    assert.equal(result.status, "POST_BOOTSTRAP_CONFIGURATION_MATERIALIZED_NOT_STARTED");
+    assert.equal(result.runtimeObjectsCreated, false);
+    assert.deepEqual(result.pendingConsumers, []);
+    assert.equal(result.candidateRoot, join(pre.candidateRoot, "post-bootstrap"));
+    const broker = join(result.secretProjectionRootDirectory, "vault-secret-broker");
+    assert.deepEqual((await readdir(broker)).sort(), ["broker-control-token-7",
+      "broker-execution-token-8", "broker-signing-key-9", "internal-tls-cert-12",
+      "vault-approle-role-id-5", "vault-approle-secret-id-6"]);
+    assert.deepEqual(await readFile(join(pre.candidateRoot, "materialization-evidence.json")),
+      preEvidenceBefore);
+    const evidence = await readFile(join(result.candidateRoot, "materialization-evidence.json"), "utf8");
+    assert.doesNotMatch(evidence, /synthetic-|passwordHash|staticClients|secret-material/);
+    assert.match(evidence, /previousMaterializationEvidenceDigest/);
+    assert.ok(ownership.length >= 13);
+  });
+
+test("post-bootstrap materialization fails before mutation when Vault outputs are incomplete",
+  async (context) => {
+    const value = await fixture("company-os-dependency-post-bootstrap-missing-");
+    context.after(() => rm(value.temporary, { recursive: true, force: true }));
+    await writeSecretSources(value);
+    const supplied = { resolveImageUser: async () => ({ uid: 1001, gid: 1001 }),
+      applyOwnership: async () => undefined };
+    const input = { rootDirectory: value.root, releaseId: value.releaseId,
+      authorizationReference: "change:dependency-init-test-01" };
+    const pre = await materializeStagingDependencyConfiguration(input, supplied);
+    await assert.rejects(materializePostBootstrapDependencyConfiguration(input, supplied),
+      /STAGING_DEPENDENCY_SECRET_SOURCE_INVALID/);
+    await assert.rejects(stat(join(pre.candidateRoot, "post-bootstrap")), /ENOENT/);
+  });
