@@ -117,7 +117,7 @@ Before any start:
      --mount type=bind,src=/absolute/received-bundle,dst=/handoff,readonly \
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node scripts/install-staging-release-bundle.mjs \
+     node --experimental-strip-types scripts/install-staging-release-bundle.mjs \
      --bundle /handoff --root /srv/company-os/staging
 
    docker run --rm --network none --read-only --cap-drop ALL \
@@ -125,7 +125,7 @@ Before any start:
      --mount type=bind,src=/absolute/received-bundle,dst=/handoff,readonly \
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node scripts/install-staging-release-bundle.mjs \
+     node --experimental-strip-types scripts/install-staging-release-bundle.mjs \
      --bundle /handoff --root /srv/company-os/staging --apply
    ```
 
