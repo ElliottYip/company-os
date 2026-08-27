@@ -18,6 +18,7 @@ usage/cost support. The source remains the execution owner.
 Supply the following non-secret values to the formal API runtime:
 
 ```text
+COMPANY_OS_FEDERATED_SOURCE_PACKAGES=@company-os/federated-source-reference
 COMPANY_OS_PAPERCLIP_BASE_URL=https://paperclip-sandbox.example
 COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID=<existing-anc-company-id>
 COMPANY_OS_PAPERCLIP_COMPANY_ID=<external-paperclip-company-uuid>
@@ -34,10 +35,10 @@ adds the `Bearer` scheme in memory. Inline
 only by the API runtime identity and must not be included in a release bundle,
 Compose interpolation, command argument, log or evidence record.
 
-All eight configuration fields are required together. Partial configuration
-fails process startup. Formal PostgreSQL/OIDC configuration must already be
-complete. The public Demo runtime fails closed if any Paperclip configuration
-is present.
+The installed-package selector and all eight adapter fields are required.
+Partial configuration fails process startup. Formal PostgreSQL/OIDC
+configuration must already be complete. The public Demo runtime fails closed
+if any Federated Source package is selected.
 
 ## Admission sequence
 

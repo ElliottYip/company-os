@@ -114,11 +114,11 @@ import {
   parseServiceRuntimeMode,
   validateServiceRuntimeBoundary,
 } from "./service-runtime-mode.ts";
-import {
-  createPaperclipFederatedConnector,
-  parsePaperclipAgentBindings,
-} from "../connectors/paperclip-federated-connector.ts";
 import { SynchronizeFederatedSource } from "../../application/synchronize-federated-source.ts";
+import {
+  loadFormalFederatedSources,
+  parseFormalFederatedSourcePackages,
+} from "../connectors/load-formal-federated-sources.ts";
 
 function deploymentProfile(value: string | undefined): "managed-cloud" | "self-hosted" {
   if (value === undefined || value === "self-hosted") return "self-hosted";
@@ -227,19 +227,6 @@ const formalConfiguration = {
   sessionSigningKey: await readSecretFileEnvironment("COMPANY_OS_SESSION_SIGNING_KEY"),
   databaseUrl: await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL"),
 };
-const paperclipConfiguration = {
-  baseUrl: process.env.COMPANY_OS_PAPERCLIP_BASE_URL?.trim(),
-  ancCompanyId: process.env.COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID?.trim(),
-  externalCompanyId: process.env.COMPANY_OS_PAPERCLIP_COMPANY_ID?.trim(),
-  connectorId: process.env.COMPANY_OS_PAPERCLIP_CONNECTOR_ID?.trim(),
-  runtimeAgentId: process.env.COMPANY_OS_PAPERCLIP_RUNTIME_AGENT_ID?.trim(),
-  runtimeAccountableHumanId: process.env.COMPANY_OS_PAPERCLIP_ACCOUNTABLE_HUMAN_ID?.trim(),
-  agentBindings: process.env.COMPANY_OS_PAPERCLIP_AGENT_BINDINGS?.trim(),
-};
-const paperclipAuthorizationConfigured = Boolean(
-  process.env.COMPANY_OS_PAPERCLIP_AUTHORIZATION?.trim() ||
-  process.env.COMPANY_OS_PAPERCLIP_AUTHORIZATION_FILE?.trim(),
-);
 validateServiceRuntimeBoundary({
   mode: runtimeMode,
   publicDemoEnabled,
@@ -257,8 +244,7 @@ validateServiceRuntimeBoundary({
     process.env.COMPANY_OS_SECRET_BROKER_PACKAGE,
     process.env.COMPANY_OS_MODEL_PROVIDER_PACKAGES,
     process.env.COMPANY_OS_DATA_CONNECTOR_PACKAGES,
-    ...Object.values(paperclipConfiguration),
-    paperclipAuthorizationConfigured ? "configured" : undefined,
+    process.env.COMPANY_OS_FEDERATED_SOURCE_PACKAGES,
   ].some((value) => Boolean(value?.trim())),
 });
 const allowedWebOrigins = parseAllowedWebOrigins(
@@ -266,31 +252,13 @@ const allowedWebOrigins = parseAllowedWebOrigins(
   formalConfiguration.publicBaseUrl,
 );
 const isFormalConfigured = Object.values(formalConfiguration).every((value) => value?.trim());
-const paperclipValuesPresent = Object.values(paperclipConfiguration).filter(Boolean).length +
-  (paperclipAuthorizationConfigured ? 1 : 0);
-if (paperclipValuesPresent !== 0 && paperclipValuesPresent !== 8) {
-  throw new Error("PAPERCLIP_CONFIGURATION_INCOMPLETE");
+const federatedSourcePackages = parseFormalFederatedSourcePackages(
+  process.env.COMPANY_OS_FEDERATED_SOURCE_PACKAGES,
+);
+if (federatedSourcePackages.length && !isFormalConfigured) {
+  throw new Error("FEDERATED_SOURCE_FORMAL_RUNTIME_REQUIRED");
 }
-if (process.env.COMPANY_OS_PAPERCLIP_AUTHORIZATION?.trim()) {
-  throw new Error("PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
-}
-if (paperclipValuesPresent > 0 && !isFormalConfigured) {
-  throw new Error("PAPERCLIP_FORMAL_RUNTIME_REQUIRED");
-}
-const paperclipAuthorization = paperclipValuesPresent > 0
-  ? await readSecretFileEnvironment("COMPANY_OS_PAPERCLIP_AUTHORIZATION")
-  : undefined;
-const paperclipConnector = paperclipValuesPresent > 0 ? createPaperclipFederatedConnector({
-  baseUrl: paperclipConfiguration.baseUrl!,
-  externalCompanyId: paperclipConfiguration.externalCompanyId!,
-  connectorId: paperclipConfiguration.connectorId!,
-  companyId: paperclipConfiguration.ancCompanyId!,
-  runtimeAgentId: paperclipConfiguration.runtimeAgentId!,
-  runtimeAccountableHumanId: paperclipConfiguration.runtimeAccountableHumanId!,
-  agentBindings: parsePaperclipAgentBindings(paperclipConfiguration.agentBindings!),
-  synchronizedAt: () => new Date().toISOString(),
-  authorizationHeader: async () => `Bearer ${paperclipAuthorization!}`,
-}) : null;
+const formalFederatedSources = await loadFormalFederatedSources(federatedSourcePackages);
 const database = isFormalConfigured
   ? createCompanyDatabase(formalConfiguration.databaseUrl as string)
   : null;
@@ -654,7 +622,7 @@ const server = createCompanyOsHttpService({
         }
         const api = await formalPortfolioApi(request, companyId);
         return new SynchronizeFederatedSource({
-          sources: paperclipConnector ? [paperclipConnector.portfolioSource()] : [],
+          sources: formalFederatedSources,
           agents: {
             async synchronize(record) {
               return await api.synchronizeAgent(companyId, record) as {

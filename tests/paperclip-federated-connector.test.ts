@@ -4,7 +4,7 @@ import test from "node:test";
 import {
   createPaperclipFederatedConnector,
   parsePaperclipAgentBindings,
-} from "../adapters/connectors/paperclip-federated-connector.ts";
+} from "../connectors/federated-source-reference/source.ts";
 
 const EXTERNAL_COMPANY = "51d31986-beb3-4f65-a1df-bdbe63ddf98c";
 const EXTERNAL_AGENT = "64975d0e-ed6f-47c8-93be-ddae44c4af8e";

@@ -1,4 +1,6 @@
 import type { AgentPortfolioRecord } from "../../core/agent-portfolio.ts";
+import { readFileSync, statSync } from "node:fs";
+import { isAbsolute } from "node:path";
 import { validateAgentPortfolioRecord } from "../../core/agent-portfolio.ts";
 import type { ExternalWorkInput, ExternalWorkRecord } from "../../core/cross-source-work.ts";
 import { validateExternalWork } from "../../core/cross-source-work.ts";
@@ -380,4 +382,41 @@ export function createPaperclipFederatedConnector(options: PaperclipFederatedCon
   }
 
   return { capabilityDeclaration, synchronize, portfolioSource };
+}
+
+function deploymentAuthorization(environment: NodeJS.ProcessEnv): string {
+  if (environment.COMPANY_OS_PAPERCLIP_AUTHORIZATION?.trim()) {
+    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
+  }
+  const path = environment.COMPANY_OS_PAPERCLIP_AUTHORIZATION_FILE?.trim();
+  if (!path || !isAbsolute(path) || path.includes("\0")) {
+    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
+  }
+  const metadata = statSync(path);
+  if (!metadata.isFile() || metadata.size < 16 || metadata.size > 16_384) {
+    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
+  }
+  const value = readFileSync(path, "utf8").trim();
+  if (value.length < 16 || value.length > 16_384 || /[\r\n]/.test(value)) {
+    throw new Error("PAPERCLIP_AUTHORIZATION_FILE_INVALID");
+  }
+  return value;
+}
+
+/** Installed-package factory consumed by the provider-neutral API loader. */
+export function createFederatedPortfolioSource(environment: NodeJS.ProcessEnv = process.env) {
+  const authorization = deploymentAuthorization(environment);
+  return createPaperclipFederatedConnector({
+    baseUrl: environment.COMPANY_OS_PAPERCLIP_BASE_URL ?? "",
+    externalCompanyId: environment.COMPANY_OS_PAPERCLIP_COMPANY_ID ?? "",
+    companyId: environment.COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID ?? "",
+    connectorId: environment.COMPANY_OS_PAPERCLIP_CONNECTOR_ID ?? "",
+    runtimeAgentId: environment.COMPANY_OS_PAPERCLIP_RUNTIME_AGENT_ID ?? "",
+    runtimeAccountableHumanId: environment.COMPANY_OS_PAPERCLIP_ACCOUNTABLE_HUMAN_ID ?? "",
+    agentBindings: parsePaperclipAgentBindings(
+      environment.COMPANY_OS_PAPERCLIP_AGENT_BINDINGS ?? "",
+    ),
+    synchronizedAt: () => new Date().toISOString(),
+    authorizationHeader: async () => `Bearer ${authorization}`,
+  }).portfolioSource();
 }

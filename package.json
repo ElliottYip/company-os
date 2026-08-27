@@ -91,6 +91,7 @@
     "@aws-sdk/client-s3": "3.1118.0",
     "@company-os/http-agent-node-connector": "file:connectors/http-agent-node",
     "@company-os/http-data-node-connector": "file:connectors/http-data-node",
+    "@company-os/federated-source-reference": "file:connectors/federated-source-reference",
     "@company-os/http-secret-broker": "file:brokers/http-secret-broker",
     "@dagrejs/dagre": "^1.1.5",
     "@types/three": "^0.185.4",

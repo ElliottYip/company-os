@@ -22,8 +22,10 @@ tag `v2026.817.0`, commit
 ## Decision
 
 The first private Alpha connector targets that exact Paperclip release and is
-implemented only in `adapters/connectors`. `core`, `ports`, and `application`
-remain provider-neutral.
+implemented as the separately installed
+`@company-os/federated-source-reference` package under `connectors`. The main
+API loads only the provider-neutral `FederatedPortfolioSourcePort`; `core`,
+`ports`, `application`, `adapters`, and the Web remain provider-independent.
 
 The connector:
 
