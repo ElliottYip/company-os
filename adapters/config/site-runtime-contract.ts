@@ -32,7 +32,7 @@ export interface SiteRuntimeManifest {
   readonly dependencies: {
     readonly postgres: ImageOwned & { readonly majorVersion: 16; readonly volume: string;
       readonly tlsServerName: string };
-    readonly oidc: ImageOwned & { readonly issuer: string; readonly discoveryUrl: string;
+    readonly oidc: ImageOwned & { readonly runtime: "DEX"; readonly issuer: string; readonly discoveryUrl: string;
       readonly clientId: string; readonly callbackUri: string; readonly volume: string };
     readonly vault: ImageOwned & { readonly baseUrl: string; readonly volume: string };
     readonly secretBroker: ImageOwned & { readonly id: string; readonly baseUrl: string };
@@ -141,7 +141,34 @@ export interface DependencySecretEntry {
   readonly mode: 256 | 384;
 }
 
-type DependencySecretPurpose = typeof DEPENDENCY_SECRET_PURPOSES[number];
+export type DependencySecretPurpose = typeof DEPENDENCY_SECRET_PURPOSES[number];
+
+export type DependencySecretProjectionConsumer =
+  | "POSTGRES" | "VAULT" | "VAULT_SECRET_BROKER" | "CODEX_AGENT_NODE" | "TLS_GATEWAY";
+
+export interface DependencySecretProjectionPlan {
+  readonly schemaVersion: 1;
+  readonly siteId: string;
+  readonly status: "PLANNED_NOT_APPLIED";
+  readonly sourceDirectory: string;
+  readonly bootstrapInputs: readonly {
+    readonly purpose: DependencySecretPurpose;
+    readonly sourcePath: string;
+    readonly consumedBy: "OIDC_PRIVATE_CONFIG" | "VAULT_BOOTSTRAP";
+  }[];
+  readonly projections: readonly {
+    readonly consumer: DependencySecretProjectionConsumer;
+    readonly image: string;
+    readonly runtimeOwnerResolution: "OCI_IMAGE_DECLARED_USER";
+    readonly directory: string;
+    readonly files: readonly {
+      readonly purpose: DependencySecretPurpose;
+      readonly sourcePath: string;
+      readonly targetPath: string;
+      readonly mode: 256 | 384;
+    }[];
+  }[];
+}
 
 const DEPENDENCY_SECRET_PURPOSES = [
   "POSTGRES_BOOTSTRAP", "OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION",
@@ -149,6 +176,8 @@ const DEPENDENCY_SECRET_PURPOSES = [
   "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "AGENT_NODE_TOKEN", "AGENT_PROVIDER",
   "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY",
 ] as const;
+const CADDY_IMAGE =
+  "caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648";
 const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const PORTABLE_NAME = /^[a-z0-9][a-z0-9-]{2,95}$/;
@@ -269,9 +298,20 @@ export function renderReferenceDependencyEnvironment(
     COMPANY_OS_DEPENDENCY_NETWORK: manifest.site.dependencyNetwork,
     COMPANY_OS_PRODUCT_NETWORK: manifest.site.productNetwork,
     COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY: metadata.directory,
+    COMPANY_OS_POSTGRES_SECRET_PROJECTION_DIRECTORY:
+      `${manifest.site.deploymentRoot}/dependency-secret-projections/postgres`,
+    COMPANY_OS_VAULT_SECRET_PROJECTION_DIRECTORY:
+      `${manifest.site.deploymentRoot}/dependency-secret-projections/vault`,
+    COMPANY_OS_BROKER_SECRET_PROJECTION_DIRECTORY:
+      `${manifest.site.deploymentRoot}/dependency-secret-projections/vault-secret-broker`,
+    COMPANY_OS_AGENT_SECRET_PROJECTION_DIRECTORY:
+      `${manifest.site.deploymentRoot}/dependency-secret-projections/codex-agent-node`,
+    COMPANY_OS_TLS_GATEWAY_SECRET_PROJECTION_DIRECTORY:
+      `${manifest.site.deploymentRoot}/dependency-secret-projections/tls-gateway`,
     COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY: publicConfigDirectory,
     COMPANY_OS_DEPENDENCY_PRIVATE_CONFIG_DIRECTORY: privateConfigDirectory,
     COMPANY_OS_OIDC_IMAGE: manifest.dependencies.oidc.image,
+    COMPANY_OS_OIDC_RUNTIME: manifest.dependencies.oidc.runtime,
     COMPANY_OS_VAULT_IMAGE: manifest.dependencies.vault.image,
     COMPANY_OS_VAULT_SECRET_BROKER_IMAGE: manifest.dependencies.secretBroker.image,
     COMPANY_OS_CODEX_AGENT_NODE_IMAGE: manifest.dependencies.agentNode.image,
@@ -282,6 +322,7 @@ export function renderReferenceDependencyEnvironment(
     COMPANY_OS_AGENT_WORK_VOLUME: `${manifest.site.id}-agent-work`,
     COMPANY_OS_POSTGRES_TLS_SERVER_NAME: manifest.dependencies.postgres.tlsServerName,
     COMPANY_OS_OIDC_TLS_HOST: new URL(manifest.dependencies.oidc.issuer).hostname,
+    COMPANY_OS_VAULT_TLS_HOST: new URL(manifest.dependencies.vault.baseUrl).hostname,
     COMPANY_OS_BROKER_TLS_HOST: new URL(manifest.dependencies.secretBroker.baseUrl).hostname,
     COMPANY_OS_AGENT_TLS_HOST: new URL(manifest.dependencies.agentNode.baseUrl).hostname,
     COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: manifest.dependencies.secretBroker.baseUrl,
@@ -296,6 +337,90 @@ export function renderReferenceDependencyEnvironment(
     COMPANY_OS_INTERNAL_TLS_KEY_FILENAME: file("INTERNAL_TLS_KEY"),
   };
   return `${Object.entries(values).map(([key, value]) => `${key}=${value}`).join("\n")}\n`;
+}
+
+export function renderReferenceDependencyPublicConfiguration(
+  manifest: SiteRuntimeManifest,
+  metadata: DependencySecretMetadata,
+): Readonly<Record<"vault.hcl" | "secret-references.json", string>> {
+  if (metadata.siteId !== manifest.site.id) invalidSite();
+  const filenames = new Map(metadata.entries.map(({ purpose, filename }) => [purpose, filename]));
+  const file = (purpose: DependencySecretPurpose) => {
+    const value = filenames.get(purpose);
+    if (!value) invalidSite();
+    return value;
+  };
+  const vaultHost = new URL(manifest.dependencies.vault.baseUrl).hostname;
+  const vault = [
+    "ui = false",
+    "disable_mlock = true",
+    'storage "file" {',
+    '  path = "/var/lib/company-os-vault"',
+    "}",
+    'listener "tcp" {',
+    '  address = "0.0.0.0:8200"',
+    `  tls_cert_file = "/run/dependency-secrets/${file("INTERNAL_TLS_CERT")}"`,
+    `  tls_key_file = "/run/dependency-secrets/${file("INTERNAL_TLS_KEY")}"`,
+    '  tls_min_version = "tls12"',
+    "}",
+    `api_addr = "https://${vaultHost}:8200"`,
+    `cluster_addr = "https://${vaultHost}:8201"`,
+    "",
+  ].join("\n");
+  const references = {
+    schemaVersion: 1,
+    references: [],
+    managementProfiles: [{ purpose: "MODEL_PROVIDER",
+      providerAdapterId: manifest.dependencies.provider.registrationId, mount: "company-os",
+      pathPrefix: `${manifest.site.id}/model-providers`, field: "api_key",
+      environmentVariable: "MODEL_PROVIDER_API_KEY" }],
+  };
+  const result = { "vault.hcl": vault,
+    "secret-references.json": `${JSON.stringify(references)}\n` } as const;
+  rejectMaterial(result, invalidSite);
+  return result;
+}
+
+export function planDependencySecretProjections(
+  manifest: SiteRuntimeManifest,
+  metadata: DependencySecretMetadata,
+): DependencySecretProjectionPlan {
+  if (metadata.siteId !== manifest.site.id) invalidSecretMetadata();
+  const entries = new Map(metadata.entries.map((entry) => [entry.purpose, entry]));
+  const entry = (purpose: DependencySecretPurpose) => {
+    const value = entries.get(purpose);
+    if (!value) invalidSecretMetadata();
+    return value;
+  };
+  const source = (purpose: DependencySecretPurpose) =>
+    `${metadata.directory}/${entry(purpose).filename}`;
+  const definitions: readonly [DependencySecretProjectionConsumer, string,
+    readonly DependencySecretPurpose[]][] = [
+    ["POSTGRES", manifest.dependencies.postgres.image,
+      ["POSTGRES_BOOTSTRAP", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+    ["VAULT", manifest.dependencies.vault.image, ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+    ["VAULT_SECRET_BROKER", manifest.dependencies.secretBroker.image,
+      ["VAULT_APPROLE_ROLE_ID", "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN",
+        "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "INTERNAL_TLS_CERT"]],
+    ["CODEX_AGENT_NODE", manifest.dependencies.agentNode.image,
+      ["BROKER_EXECUTION_TOKEN", "AGENT_NODE_TOKEN", "INTERNAL_TLS_CERT"]],
+    ["TLS_GATEWAY", CADDY_IMAGE, ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+  ];
+  const slug = (consumer: DependencySecretProjectionConsumer) => consumer.toLowerCase().replaceAll("_", "-");
+  const projections = definitions.map(([consumer, image, purposes]) => {
+    const directory = `${manifest.site.deploymentRoot}/dependency-secret-projections/${slug(consumer)}`;
+    return { consumer, image, runtimeOwnerResolution: "OCI_IMAGE_DECLARED_USER" as const, directory,
+      files: purposes.map((purpose) => ({ purpose, sourcePath: source(purpose),
+        targetPath: `${directory}/${entry(purpose).filename}`, mode: entry(purpose).mode })) };
+  });
+  const bootstrapInputs = ([
+    ["OIDC_BOOTSTRAP", "OIDC_PRIVATE_CONFIG"], ["OIDC_CLIENT", "OIDC_PRIVATE_CONFIG"],
+    ["VAULT_INITIALIZATION", "VAULT_BOOTSTRAP"], ["AGENT_PROVIDER", "VAULT_BOOTSTRAP"],
+  ] as const).map(([purpose, consumedBy]) => ({ purpose, sourcePath: source(purpose), consumedBy }));
+  const result = { schemaVersion: 1, siteId: manifest.site.id, status: "PLANNED_NOT_APPLIED",
+    sourceDirectory: metadata.directory, bootstrapInputs, projections } satisfies DependencySecretProjectionPlan;
+  rejectMaterial(result, invalidSecretMetadata);
+  return result;
 }
 
 export function parseDependencySecretMetadata(
@@ -380,10 +505,12 @@ function parseDependencies(value: unknown): SiteRuntimeManifest["dependencies"] 
   const postgres = imageOwned(root.postgres, ["majorVersion", "volume", "tlsServerName"]);
   if (postgres.extra.majorVersion !== 16 || !portableName(postgres.extra.volume) ||
       typeof postgres.extra.tlsServerName !== "string" || !TLS_SERVER_NAME.test(postgres.extra.tlsServerName)) invalidSite();
-  const oidc = imageOwned(root.oidc, ["issuer", "discoveryUrl", "clientId", "callbackUri", "volume"]);
+  const oidc = imageOwned(root.oidc,
+    ["runtime", "issuer", "discoveryUrl", "clientId", "callbackUri", "volume"]);
   const oidcIssuer = httpsOrigin(oidc.extra.issuer); const discovery = httpsUrl(oidc.extra.discoveryUrl);
   const callback = httpsUrl(oidc.extra.callbackUri);
-  if (discovery.origin !== oidcIssuer || discovery.pathname !== "/.well-known/openid-configuration" ||
+  if (oidc.extra.runtime !== "DEX" || discovery.origin !== oidcIssuer ||
+      discovery.pathname !== "/.well-known/openid-configuration" ||
       !portableName(oidc.extra.clientId) || !portableName(oidc.extra.volume)) invalidSite();
   const vault = imageOwned(root.vault, ["baseUrl", "volume"]);
   const vaultBaseUrl = httpsOrigin(vault.extra.baseUrl);
@@ -405,7 +532,7 @@ function parseDependencies(value: unknown): SiteRuntimeManifest["dependencies"] 
   return {
     postgres: { ...postgres.owned, majorVersion: 16, volume: String(postgres.extra.volume),
       tlsServerName: String(postgres.extra.tlsServerName) },
-    oidc: { ...oidc.owned, issuer: oidcIssuer, discoveryUrl: discovery.href,
+    oidc: { ...oidc.owned, runtime: "DEX", issuer: oidcIssuer, discoveryUrl: discovery.href,
       clientId: String(oidc.extra.clientId), callbackUri: callback.href, volume: String(oidc.extra.volume) },
     vault: { ...vault.owned, baseUrl: vaultBaseUrl, volume: String(vault.extra.volume) },
     secretBroker, agentNode,

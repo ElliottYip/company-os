@@ -31,7 +31,7 @@ export function siteRuntimeFixture(input: {
       postgres: { image: `postgres@sha256:${"7".repeat(64)}`, majorVersion: 16,
         volume: "company-os-test-site-postgres", tlsServerName: "postgres.test.internal",
         ownerReference: "team:database", evidenceReference: "evidence:postgres-test" },
-      oidc: { image: `ghcr.io/dexidp/dex@sha256:${"8".repeat(64)}`,
+      oidc: { runtime: "DEX", image: `ghcr.io/dexidp/dex@sha256:${"8".repeat(64)}`,
         issuer: "https://identity.test.internal",
         discoveryUrl: "https://identity.test.internal/.well-known/openid-configuration",
         clientId: "company-os-test-site",

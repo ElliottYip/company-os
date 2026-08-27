@@ -490,6 +490,29 @@ minimal Caddyfile disables the admin API and serves only target-generated TLS
 material mounted read-only. Caddy is not a Core/Application dependency and can
 be replaced with another contract-compatible TLS gateway.
 
+## Dex reference OIDC runtime contract (2026-08-27)
+
+The staging reference dependency topology identifies its OIDC runtime as
+`DEX` instead of accepting a generic image behind Dex-specific commands. The
+independently authored site contract and future target initializer were checked
+against these upstream sources:
+
+- Dex configuration parser and static-client environment support:
+  https://github.com/dexidp/dex/blob/master/cmd/dex/config.go and
+  https://github.com/dexidp/dex/blob/master/cmd/dex/serve.go
+- official image construction and unprivileged runtime user:
+  https://github.com/dexidp/dex/blob/master/Dockerfile
+- distributed configuration shape:
+  https://github.com/dexidp/dex/blob/master/config.yaml.dist
+- Apache-2.0 license:
+  https://github.com/dexidp/dex/blob/master/LICENSE
+
+No Dex source, trademark, page, or configuration file is copied. A target site
+must provide an immutable image digest and the authorized initializer must
+render its private client configuration without placing Secret values in
+Compose, retained evidence, or command arguments. Dex remains a replaceable
+deployment adapter and is not imported by Core/Application.
+
 ## Paperclip authorization behavior adoption (2026-08-24)
 
 At pinned MIT revision `213dabab4f8e1f3bb1803a2924c0fea1289fcd4c`,

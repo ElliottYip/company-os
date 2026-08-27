@@ -28,10 +28,17 @@ test("reference dependencies are isolated, TLS-fronted, immutable and resource b
   assert.match(compose, /name: \$\{COMPANY_OS_DEPENDENCY_NETWORK:/);
   assert.match(compose, /name: \$\{COMPANY_OS_PRODUCT_NETWORK:/);
   assert.match(compose, /external: true/);
-  assert.match(compose, /COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:[^}]+\}:\/run\/dependency-secrets:ro/);
+  assert.doesNotMatch(compose,
+    /COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:[^}]+\}:\/run\/dependency-secrets:ro/);
+  for (const variable of ["POSTGRES", "VAULT", "BROKER", "AGENT", "TLS_GATEWAY"]) {
+    assert.match(compose,
+      new RegExp(`COMPANY_OS_${variable}_SECRET_PROJECTION_DIRECTORY:[^}]+\\}:/run/dependency-secrets:ro`));
+  }
   assert.doesNotMatch(compose, /^\s+ports:/m);
   assert.doesNotMatch(compose, /start-dev|VAULT_DEV|POSTGRES_PASSWORD:\s|CLIENT_SECRET:\s|BEARER_TOKEN:\s/);
   assert.match(compose, /ssl=on/);
+  assert.match(compose, /COMPANY_OS_VAULT_ADDRESS: https:\/\/\$\{COMPANY_OS_VAULT_TLS_HOST:[^}]+\}:8200/);
+  assert.match(compose, /aliases: \["\$\{COMPANY_OS_VAULT_TLS_HOST:[^}]+\}"\]/);
   assert.match(caddy, /reverse_proxy oidc:5556/);
   assert.match(caddy, /reverse_proxy vault-secret-broker:4321/);
   assert.match(caddy, /reverse_proxy codex-agent-node:4320/);

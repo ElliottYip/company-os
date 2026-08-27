@@ -31,7 +31,7 @@ services:
       - -c
       - password_encryption=scram-sha-256
     volumes:
-      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - ${COMPANY_OS_POSTGRES_SECRET_PROJECTION_DIRECTORY:?set PostgreSQL Secret projection directory}:/run/dependency-secrets:ro
       - company_os_dependency_postgres:/var/lib/postgresql/data
     networks:
       dependencies: {}
@@ -78,9 +78,11 @@ services:
       VAULT_CACERT: /run/dependency-secrets/${COMPANY_OS_INTERNAL_TLS_CERT_FILENAME:?set metadata-derived filename}
     volumes:
       - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}:/run/dependency-public:ro
-      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - ${COMPANY_OS_VAULT_SECRET_PROJECTION_DIRECTORY:?set Vault Secret projection directory}:/run/dependency-secrets:ro
       - company_os_dependency_vault:/var/lib/company-os-vault
-    networks: [dependencies]
+    networks:
+      dependencies:
+        aliases: ["${COMPANY_OS_VAULT_TLS_HOST:?set Vault TLS host}"]
 
   vault-secret-broker:
     image: ${COMPANY_OS_VAULT_SECRET_BROKER_IMAGE:?set immutable Vault Broker image digest}
@@ -94,7 +96,7 @@ services:
     mem_limit: 192m
     pids_limit: 64
     environment:
-      COMPANY_OS_VAULT_ADDRESS: https://vault:8200
+      COMPANY_OS_VAULT_ADDRESS: https://${COMPANY_OS_VAULT_TLS_HOST:?set Vault TLS host}:8200
       COMPANY_OS_VAULT_AUTH_MOUNT: approle
       COMPANY_OS_VAULT_ROLE_ID_FILE: /run/dependency-secrets/${COMPANY_OS_VAULT_APPROLE_ROLE_ID_FILENAME:?set role ID filename}
       COMPANY_OS_VAULT_SECRET_ID_FILE: /run/dependency-secrets/${COMPANY_OS_VAULT_APPROLE_SECRET_ID_FILENAME:?set Secret ID filename}
@@ -109,7 +111,7 @@ services:
       COMPANY_OS_VAULT_BROKER_PORT: 4321
     volumes:
       - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}:/run/dependency-public:ro
-      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - ${COMPANY_OS_BROKER_SECRET_PROJECTION_DIRECTORY:?set Broker Secret projection directory}:/run/dependency-secrets:ro
       - company_os_dependency_broker:/var/lib/company-os-vault-broker
     networks: [dependencies]
     depends_on: [vault]
@@ -136,7 +138,7 @@ services:
       COMPANY_OS_CODEX_NODE_HOST: 0.0.0.0
       COMPANY_OS_CODEX_NODE_PORT: 4320
     volumes:
-      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - ${COMPANY_OS_AGENT_SECRET_PROJECTION_DIRECTORY:?set Agent Secret projection directory}:/run/dependency-secrets:ro
       - company_os_dependency_agent_state:/var/lib/company-os-codex
       - company_os_dependency_agent_work:/work
     networks: [dependencies]
@@ -161,7 +163,7 @@ services:
       COMPANY_OS_INTERNAL_TLS_KEY_FILENAME: ${COMPANY_OS_INTERNAL_TLS_KEY_FILENAME:?set key filename}
     volumes:
       - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ${COMPANY_OS_DEPENDENCY_SECRET_DIRECTORY:?set dependency Secret directory}:/run/dependency-secrets:ro
+      - ${COMPANY_OS_TLS_GATEWAY_SECRET_PROJECTION_DIRECTORY:?set TLS gateway Secret projection directory}:/run/dependency-secrets:ro
     networks:
       dependencies: {}
       product:

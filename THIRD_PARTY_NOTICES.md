@@ -60,6 +60,17 @@ does not copy Caddy source and does not expose its admin API. The image is an
 optional staging TLS boundary, not a Company OS domain or runtime-library
 dependency.
 
+### Dex reference OIDC runtime
+
+The staging-only reference dependency contract can run an operator-selected,
+immutable official Dex image as an OIDC adapter. Dex is distributed under the
+Apache License 2.0; source and license are available at
+`https://github.com/dexidp/dex` and
+`https://github.com/dexidp/dex/blob/master/LICENSE`. Company OS does not copy or
+modify Dex source, configuration, trademarks, or UI. The image is not bundled
+inside the Company OS source repository and remains a replaceable deployment
+dependency.
+
 ## Audited but not incorporated
 
 Paperclip, AgentOS, OpenWorker, Operant, Preloop, AgentGate, JamJet, Agent Room,

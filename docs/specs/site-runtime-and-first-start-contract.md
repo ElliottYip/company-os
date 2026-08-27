@@ -100,9 +100,16 @@ value. PostgreSQL bootstrap, OIDC bootstrap, Vault initialization/AppRole,
 Broker-to-Vault, Agent-to-Provider, and internal TLS material must have explicit
 entries before dependency initialization can be planned.
 
-Secret directories are `0700`; files are regular, single-link, non-empty,
-bounded, and `0400` or `0600`. Values never appear in Compose interpolation,
-command arguments, logs, retained JSON, startup state, or evidence.
+The target-owned source Secret directory is `0700`; source files are regular,
+single-link, non-empty, bounded, and `0400` or `0600`. It is never mounted into
+a runtime container. Authorized initialization creates a separate minimal
+projection directory for PostgreSQL, Vault, Vault Secret Broker, Codex Agent
+Node, and the TLS gateway. Each projection contains only that immutable
+image's required files and resolves ownership from the image's declared user;
+OIDC and Vault bootstrap-only inputs are consumed by their initializer and are
+not mounted into unrelated runtimes. Values never appear in Compose
+interpolation, command arguments, logs, retained JSON, startup state, or
+evidence.
 
 ### Reference dependency topology
 
@@ -114,6 +121,11 @@ bounded resources for:
 - dedicated Vault plus Vault Secret Broker;
 - dedicated Codex Agent Node and Provider registration boundary;
 - internal TLS termination or native verified TLS for every HTTP dependency.
+
+The reference OIDC topology is explicitly typed `DEX`; a generic immutable
+image is not accepted behind a Dex-specific command or configuration shape.
+Other enterprise OIDC implementations remain valid adapters but require their
+own explicit runtime renderer rather than silently reusing the Dex contract.
 
 The product Compose remains separate. It consumes only verified HTTPS/file
 contracts and joins no existing Raft/Buzz/Generator/H3 network or volume.

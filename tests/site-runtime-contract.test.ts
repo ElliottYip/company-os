@@ -6,8 +6,10 @@ import {
   assertIndependentSites,
   parseDependencySecretMetadata,
   parseSiteRuntimeManifest,
+  planDependencySecretProjections,
   planSiteFirstStart,
   renderReferenceDependencyEnvironment,
+  renderReferenceDependencyPublicConfiguration,
   renderSitePublicEnvironment,
 } from "../adapters/config/site-runtime-contract.ts";
 
@@ -56,7 +58,7 @@ function site(overrides: Record<string, unknown> = {}) {
       postgres: { image: `postgres@sha256:${"7".repeat(64)}`, majorVersion: 16,
         volume: "company-os-hong-kong-postgres", tlsServerName: "postgres.hk.internal",
         ownerReference: "team:database", evidenceReference: "evidence:postgres-hk" },
-      oidc: { image: `ghcr.io/dexidp/dex@sha256:${"8".repeat(64)}`,
+      oidc: { runtime: "DEX", image: `ghcr.io/dexidp/dex@sha256:${"8".repeat(64)}`,
         issuer: "https://identity.hk.internal",
         discoveryUrl: "https://identity.hk.internal/.well-known/openid-configuration",
         clientId: "company-os-hong-kong", callbackUri:
@@ -203,6 +205,9 @@ test("site runtime contract rejects mutable images, callback drift, unknown keys
   const callbackDrift = site(); callbackDrift.dependencies.oidc.callbackUri = "https://wrong.example/callback";
   assert.throws(() => parseSiteRuntimeManifest(callbackDrift), /SITE_RUNTIME_MANIFEST_INVALID/);
 
+  const unsupportedOidc = site(); unsupportedOidc.dependencies.oidc.runtime = "GENERIC";
+  assert.throws(() => parseSiteRuntimeManifest(unsupportedOidc), /SITE_RUNTIME_MANIFEST_INVALID/);
+
   const unknown = site() as ReturnType<typeof site> & { unexpected?: boolean }; unknown.unexpected = true;
   assert.throws(() => parseSiteRuntimeManifest(unknown), /SITE_RUNTIME_MANIFEST_INVALID/);
 
@@ -254,13 +259,62 @@ test("dependency environment maps every service to site-owned images, networks, 
   assert.match(rendered, /COMPANY_OS_DEPENDENCY_COMPOSE_PROJECT=company-os-hong-kong-dependencies/);
   assert.match(rendered, /COMPANY_OS_DEPENDENCY_NETWORK=company-os-hong-kong-dependencies/);
   assert.match(rendered, /COMPANY_OS_OIDC_IMAGE=ghcr\.io\/dexidp\/dex@sha256:/);
+  assert.match(rendered, /COMPANY_OS_OIDC_RUNTIME=DEX/);
   assert.match(rendered, /COMPANY_OS_VAULT_IMAGE=hashicorp\/vault@sha256:/);
+  assert.match(rendered, /COMPANY_OS_VAULT_TLS_HOST=vault\.hk\.internal/);
   assert.match(rendered, /COMPANY_OS_VAULT_APPROLE_ROLE_ID_FILENAME=vault-approle-role-id-5/);
   assert.match(rendered, /COMPANY_OS_BROKER_EXECUTION_TOKEN_FILENAME=broker-execution-token-8/);
   assert.match(rendered, /COMPANY_OS_INTERNAL_TLS_KEY_FILENAME=internal-tls-key-13/);
+  assert.match(rendered, /COMPANY_OS_POSTGRES_SECRET_PROJECTION_DIRECTORY=\/srv\/company-os\/staging\/dependency-secret-projections\/postgres/);
+  assert.match(rendered, /COMPANY_OS_VAULT_SECRET_PROJECTION_DIRECTORY=\/srv\/company-os\/staging\/dependency-secret-projections\/vault/);
+  assert.match(rendered, /COMPANY_OS_BROKER_SECRET_PROJECTION_DIRECTORY=\/srv\/company-os\/staging\/dependency-secret-projections\/vault-secret-broker/);
+  assert.match(rendered, /COMPANY_OS_AGENT_SECRET_PROJECTION_DIRECTORY=\/srv\/company-os\/staging\/dependency-secret-projections\/codex-agent-node/);
+  assert.match(rendered, /COMPANY_OS_TLS_GATEWAY_SECRET_PROJECTION_DIRECTORY=\/srv\/company-os\/staging\/dependency-secret-projections\/tls-gateway/);
   assert.match(rendered, /COMPANY_OS_OIDC_TLS_HOST=identity\.hk\.internal/);
   assert.match(rendered, /COMPANY_OS_AGENT_TLS_HOST=agent\.hk\.internal/);
   assert.doesNotMatch(rendered, /CLIENT_SECRET=|BEARER_TOKEN=|PASSWORD=|PRIVATE_KEY=/);
+});
+
+test("dependency public configuration is Secret-free and binds Vault and Broker to the site", () => {
+  const manifest = parseSiteRuntimeManifest(site());
+  const metadata = parseDependencySecretMetadata(dependencySecrets(), manifest.site.id);
+  const rendered = renderReferenceDependencyPublicConfiguration(manifest, metadata);
+  assert.deepEqual(Object.keys(rendered).sort(), ["secret-references.json", "vault.hcl"]);
+  assert.match(rendered["vault.hcl"], /storage "file"/);
+  assert.match(rendered["vault.hcl"], /tls_cert_file = "\/run\/dependency-secrets\/internal-tls-cert-12"/);
+  assert.match(rendered["vault.hcl"], /api_addr = "https:\/\/vault\.hk\.internal:8200"/);
+  const references = JSON.parse(rendered["secret-references.json"]);
+  assert.deepEqual(references, { schemaVersion: 1, references: [], managementProfiles: [{
+    purpose: "MODEL_PROVIDER", providerAdapterId: "provider-hong-kong", mount: "company-os",
+    pathPrefix: "company-os-hong-kong/model-providers", field: "api_key",
+    environmentVariable: "MODEL_PROVIDER_API_KEY",
+  }] });
+  assert.doesNotMatch(JSON.stringify(rendered), /CLIENT_SECRET|BEARER_TOKEN|PASSWORD|PRIVATE KEY/);
+});
+
+test("dependency Secret projection plan gives each immutable service only its required files", () => {
+  const manifest = parseSiteRuntimeManifest(site());
+  const metadata = parseDependencySecretMetadata(dependencySecrets(), manifest.site.id);
+  const plan = planDependencySecretProjections(manifest, metadata);
+  assert.equal(plan.status, "PLANNED_NOT_APPLIED");
+  assert.deepEqual(plan.bootstrapInputs.map(({ purpose }) => purpose),
+    ["OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION", "AGENT_PROVIDER"]);
+  assert.deepEqual(plan.projections.map(({ consumer }) => consumer),
+    ["POSTGRES", "VAULT", "VAULT_SECRET_BROKER", "CODEX_AGENT_NODE", "TLS_GATEWAY"]);
+  const postgres = plan.projections.find(({ consumer }) => consumer === "POSTGRES")!;
+  assert.deepEqual(postgres.files.map(({ purpose }) => purpose),
+    ["POSTGRES_BOOTSTRAP", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]);
+  const broker = plan.projections.find(({ consumer }) => consumer === "VAULT_SECRET_BROKER")!;
+  assert.deepEqual(broker.files.map(({ purpose }) => purpose), ["VAULT_APPROLE_ROLE_ID",
+    "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN", "BROKER_EXECUTION_TOKEN",
+    "BROKER_SIGNING_KEY", "INTERNAL_TLS_CERT"]);
+  assert.equal(plan.projections.every(({ files }) => files.every(({ sourcePath, targetPath }) =>
+    sourcePath.startsWith("/etc/company-os/dependency-secrets/") &&
+    targetPath.includes("/dependency-secret-projections/"))), true);
+  assert.equal(plan.projections.flatMap(({ files }) => files)
+    .some(({ purpose }) => ["OIDC_BOOTSTRAP", "OIDC_CLIENT", "VAULT_INITIALIZATION",
+      "AGENT_PROVIDER"].includes(purpose)), false);
+  assert.doesNotMatch(JSON.stringify(plan), /secretValue|tokenValue|passwordValue/);
 });
 
 test("first start separates dependency, migration, product, and acceptance authority", () => {
