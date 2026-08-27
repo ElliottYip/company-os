@@ -24,7 +24,17 @@ export function parseWebRuntimeOptions(environment = process.env) {
   const mode = environment.COMPANY_OS_WEB_MODE?.trim() || "formal";
   if (mode !== "formal" && mode !== "demo") throw new Error("COMPANY_OS_WEB_MODE_INVALID");
   const apiBaseUrl = normalizePublicApiUrl(environment.COMPANY_OS_WEB_API_URL);
-  return { host, port: parsedPort, mode, apiBaseUrl };
+  const releaseId = normalizeReleaseId(environment.COMPANY_OS_RELEASE_ID);
+  return { host, port: parsedPort, mode, apiBaseUrl, ...(releaseId ? { releaseId } : {}) };
+}
+
+export function normalizeReleaseId(value) {
+  if (value === undefined || String(value).trim() === "") return undefined;
+  const normalized = String(value).trim();
+  if (!/^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/.test(normalized)) {
+    throw new Error("COMPANY_OS_RELEASE_ID_INVALID");
+  }
+  return normalized;
 }
 
 export function normalizePublicApiUrl(value) {
@@ -64,7 +74,7 @@ export function resolveStaticFile(distDirectory, requestPath) {
   return null;
 }
 
-export function createCompanyOsWebServer({ distDirectory, apiBaseUrl, mode = "formal" }) {
+export function createCompanyOsWebServer({ distDirectory, apiBaseUrl, mode = "formal", releaseId }) {
   const root = resolve(distDirectory);
   const indexFile = join(root, "index.html");
   if (!existsSync(indexFile)) throw new Error("COMPANY_OS_WEB_DIST_MISSING");
@@ -76,6 +86,7 @@ export function createCompanyOsWebServer({ distDirectory, apiBaseUrl, mode = "fo
     "referrer-policy": "no-referrer",
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY",
+    ...(releaseId ? { "x-company-os-release-id": normalizeReleaseId(releaseId) } : {}),
   };
 
   return createServer((request, response) => {
@@ -119,6 +130,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     distDirectory,
     apiBaseUrl: runtime.apiBaseUrl,
     mode: runtime.mode,
+    releaseId: runtime.releaseId,
   });
   server.listen(runtime.port, runtime.host, () => {
     process.stdout.write(JSON.stringify({

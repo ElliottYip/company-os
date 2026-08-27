@@ -76,6 +76,7 @@ services:
     mem_limit: 640m
     pids_limit: 128
     environment:
+      COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
       COMPANY_OS_PROFILE: managed-cloud
       COMPANY_OS_EXPOSURE: public
       COMPANY_OS_HOST: 0.0.0.0
@@ -134,6 +135,7 @@ services:
     pids_limit: 64
     networks: [internal]
     environment:
+      COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
       COMPANY_OS_WEB_HOST: 0.0.0.0
       COMPANY_OS_WEB_PORT: 8080
       COMPANY_OS_WEB_MODE: formal

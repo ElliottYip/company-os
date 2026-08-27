@@ -14,6 +14,7 @@ export interface DemoApplicationClient {
 export interface CompanyOsHttpServiceOptions {
   readonly runtime: DemoApplicationClient;
   readonly deploymentProfile: "managed-cloud" | "self-hosted";
+  readonly releaseId?: string;
   readonly serviceMode?: "DEMO_FIXTURE" | "LOCAL_DEVELOPMENT" | "FORMAL";
   readonly deploymentExposure?: "private" | "public";
   readonly allowedOrigins?: readonly string[];
@@ -111,10 +112,12 @@ const SECURITY_HEADERS = {
   "x-frame-options": "DENY",
 } as const;
 
-function sendJson(res: ServerResponse, status: number, body: unknown) {
+function sendJson(res: ServerResponse, status: number, body: unknown,
+  additionalHeaders: Readonly<Record<string, string>> = {}) {
   const encoded = JSON.stringify(body);
   res.writeHead(status, {
     ...SECURITY_HEADERS,
+    ...additionalHeaders,
     "content-type": "application/json; charset=utf-8",
     "content-length": Buffer.byteLength(encoded),
   });
@@ -1018,7 +1021,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
           mode: options.serviceMode ?? "DEMO_FIXTURE",
           deploymentProfile: options.deploymentProfile,
           uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
-        });
+        }, options.releaseId ? { "x-company-os-release-id": options.releaseId } : {});
         return;
       }
       if (method === "GET" && path === "/ready") {
@@ -1032,7 +1035,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
           service: "company-os",
           mode: options.serviceMode ?? "DEMO_FIXTURE",
           deploymentProfile: options.deploymentProfile,
-        });
+        }, options.releaseId ? { "x-company-os-release-id": options.releaseId } : {});
         return;
       }
       if (method === "GET" && path === "/api/v1/access") {

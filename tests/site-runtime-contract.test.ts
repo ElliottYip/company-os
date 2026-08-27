@@ -178,6 +178,7 @@ test("site contract renders complete site-owned public configuration without cro
     "/etc/company-os/hangzhou-7-secrets");
 
   assert.match(hongKong, /COMPANY_OS_PUBLIC_URL=https:\/\/company-os-api\.raft\.xin/);
+  assert.match(hongKong, /COMPANY_OS_RELEASE_ID=0\.1\.0-rc\.5-b{12}/);
   assert.match(hongKong, /COMPANY_OS_COMPOSE_PROJECT=company-os-hong-kong/);
   assert.match(hangzhou, /COMPANY_OS_PUBLIC_URL=https:\/\/api\.company-os\.hangzhou-7\.internal/);
   assert.match(hangzhou, /COMPANY_OS_PUBLIC_INGRESS=DISABLED_PENDING_AUTHORIZATION/);
@@ -191,6 +192,7 @@ test("staging Compose consumes site variables and keeps opt-in backup out of bas
   assert.doesNotMatch(source, /company-os(?:-api)?\.raft\.xin|company-os-staging-raft-xin/);
   for (const variable of [
     "COMPANY_OS_COMPOSE_PROJECT", "COMPANY_OS_PRODUCT_NETWORK", "COMPANY_OS_PUBLIC_URL",
+    "COMPANY_OS_RELEASE_ID",
     "COMPANY_OS_WEB_ORIGINS", "COMPANY_OS_OIDC_REDIRECT_URI", "COMPANY_OS_INSTANCE_ID",
     "COMPANY_OS_REFERENCE_DATA_NODE_PORT", "COMPANY_OS_WEB_LOOPBACK_PORT",
     "COMPANY_OS_API_LOOPBACK_PORT", "COMPANY_OS_DATA_NODE_VOLUME", "COMPANY_OS_BACKUP_VOLUME",

@@ -61,7 +61,7 @@ async function withService(
   deploymentExposure: "private" | "public" = "private",
   operational?: Pick<
     import("../adapters/http/company-os-http-service.ts").CompanyOsHttpServiceOptions,
-    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance"
+    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance" | "releaseId"
   >,
 ) {
   const { runtime } = createDemoComposition();
@@ -989,6 +989,14 @@ test("HTTP service exposes bounded Demo, health, and security-header contracts",
     assert.equal(assigned.status, 200);
     assert.equal((await assigned.json() as { phase: string }).phase, "PLANNING");
   });
+});
+
+test("health and readiness identify an explicitly deployed immutable release", async () => {
+  const releaseId = `0.1.0-rc.5-${"b".repeat(12)}`;
+  await withService(async (baseUrl) => {
+    assert.equal((await fetch(`${baseUrl}/health`)).headers.get("x-company-os-release-id"), releaseId);
+    assert.equal((await fetch(`${baseUrl}/ready`)).headers.get("x-company-os-release-id"), releaseId);
+  }, undefined, undefined, undefined, undefined, "private", { releaseId });
 });
 
 test("readiness reports formal dependencies and refuses traffic when a required dependency fails", async () => {

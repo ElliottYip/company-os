@@ -81,6 +81,7 @@ test("candidate environment preserves site identity while replacing every parall
   assert.equal(value.COMPANY_OS_WEB_LOOPBACK_PORT, "14600");
   assert.equal(value.COMPANY_OS_REFERENCE_DATA_NODE_PORT, "14322");
   assert.equal(value.COMPANY_OS_API_IMAGE, contract().candidate.images.api);
+  assert.equal(value.COMPANY_OS_RELEASE_ID, contract().candidate.releaseId);
   assert.equal(value.COMPANY_OS_HTTP_AGENT_NODE_ID, "agent-candidate-rc5");
   assert.equal(value.COMPANY_OS_HTTP_AGENT_NODE_BASE_URL, "https://agent-candidate-rc5");
   assert.equal(value.COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL, "https://broker-candidate-rc5");

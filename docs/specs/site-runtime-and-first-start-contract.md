@@ -1,5 +1,13 @@
 # Spec: site runtime and first-start contract
 
+Release-shaped environments inject the exact immutable
+`COMPANY_OS_RELEASE_ID` from the site manifest into both API and Web services.
+The API `/health` and `/ready` responses and all Web responses return it as
+`x-company-os-release-id`. Upgrade routing must verify that header at both
+stable entry points; HTTP status, container health, or a successful proxy
+reload alone does not prove which release is serving traffic. Local development
+may omit the value, in which case the header is deliberately absent.
+
 Status: **APPROVED — assumptions 1–5 confirmed by the product owner on
 2026-08-27; implementation proceeds test-first**.
 

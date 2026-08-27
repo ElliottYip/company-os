@@ -38,6 +38,7 @@ export function renderStagingUpgradeCandidateEnvironment(
   const candidate = contract.candidate;
   const values: Record<string, string> = {
     COMPANY_OS_API_IMAGE: candidate.images.api,
+    COMPANY_OS_RELEASE_ID: candidate.releaseId,
     COMPANY_OS_WEB_IMAGE: candidate.images.web,
     COMPANY_OS_OPS_IMAGE: candidate.images.ops,
     COMPANY_OS_CODEX_AGENT_NODE_IMAGE: candidate.images.codexAgentNode,

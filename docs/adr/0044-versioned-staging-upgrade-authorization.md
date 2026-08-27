@@ -143,6 +143,15 @@ active route, observes bounded health/integrity thresholds, then atomically
 records the candidate as active. Installing a candidate never changes active
 runtime authority.
 
+Route verification must identify the serving release, not merely observe an
+HTTP success after an ingress reload. Every release-shaped API liveness and
+readiness response and every Web response therefore exposes the immutable
+`x-company-os-release-id` header derived from the release-bound public
+environment. Traffic cutover may proceed to observation only after the stable
+Web and API entry points both return the exact candidate release ID. The header
+contains no credential or tenant data and is absent when a development runtime
+has not declared a release ID.
+
 The traffic executor consumes the exact digest of the completed, unrouted
 preparation state under the separate traffic authorization. It permits only
 `route-traffic` followed by `observe`. A route or observation failure retains

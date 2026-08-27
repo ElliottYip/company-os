@@ -242,6 +242,7 @@ export function renderSitePublicEnvironment(
   if (!safeAbsolutePath(secretDirectory) || secretDirectory === "/") invalidSite();
   const values: Readonly<Record<string, string>> = {
     COMPANY_OS_API_IMAGE: manifest.product.images.api,
+    COMPANY_OS_RELEASE_ID: manifest.product.releaseId,
     COMPANY_OS_WEB_IMAGE: manifest.product.images.web,
     COMPANY_OS_OPS_IMAGE: manifest.product.images.ops,
     COMPANY_OS_CODEX_AGENT_NODE_IMAGE: manifest.product.images.codexAgentNode,
