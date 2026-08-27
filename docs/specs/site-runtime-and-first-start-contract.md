@@ -1,6 +1,7 @@
 # Spec: site runtime and first-start contract
 
-Status: **PROPOSED — implementation requires product-owner review**.
+Status: **APPROVED — assumptions 1–5 confirmed by the product owner on
+2026-08-27; implementation proceeds test-first**.
 
 ## Assumptions to review
 
