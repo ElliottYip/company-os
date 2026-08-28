@@ -46,6 +46,10 @@ runtime credential.
 - The Ops image is a privileged operator boundary because it receives the
   Docker socket during an explicitly authorized run; no long-lived product
   service receives that authority.
+- Only the dependency apply operator receives `CAP_CHOWN`, solely to assign
+  generated `0400` OIDC configuration and Secret projections to the non-root
+  identities resolved from exact images. Planning, later phases, and long-lived
+  containers retain `cap-drop ALL` without that capability.
 - PostgreSQL and Caddy account names/IDs are checked against the exact image
   rather than guessed from the host.
 - Off-site backup and public ingress remain separate capabilities and are not
