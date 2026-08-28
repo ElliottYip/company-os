@@ -276,10 +276,13 @@ test("managed-cloud profile reuses immutable API/Web artifacts and an external d
 });
 
 test("staging is site-rendered, isolated, dependency-bound, resource bounded, and file-secret based", async () => {
-  const [compose, example, dependencies, runbook, packageJsonSource] = await Promise.all([
+  const [compose, example, dependencies, dependencyCompose, upgradeCandidateCompose,
+    runbook, packageJsonSource] = await Promise.all([
     read("deploy/compose.staging.yml"),
     read("deploy/staging.env.example"),
     read("deploy/staging-dependencies.example.json"),
+    read("deploy/compose.staging-dependencies.yml"),
+    read("deploy/compose.staging-upgrade-candidate.yml"),
     read("docs/staging-raft-xin.md"),
     read("package.json"),
   ]);
@@ -337,6 +340,8 @@ test("staging is site-rendered, isolated, dependency-bound, resource bounded, an
   assert.match(runbook, /previous immutable image digests/);
   assert.equal((runbook.match(/--cap-add CHOWN/g) ?? []).length, 1);
   assert.match(runbook, /CAP_CHOWN.*dependency apply operator/);
+  assert.doesNotMatch(dependencyCompose, /tmpfs:\s*\[[^\]]*,mode=/);
+  assert.doesNotMatch(upgradeCandidateCompose, /tmpfs:\s*\[[^\]]*,mode=/);
 });
 
 test("release manifest binds source, immutable images, lockfile and ordered migrations", async () => {
