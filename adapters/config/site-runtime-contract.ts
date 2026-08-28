@@ -180,7 +180,8 @@ const DEPENDENCY_SECRET_PURPOSES = [
 ] as const;
 const CADDY_IMAGE =
   "caddy:2.11.4-alpine@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648";
-const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
+const IMMUTABLE_IMAGE =
+  /^[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9_][A-Za-z0-9_.-]{0,127})?@sha256:[a-f0-9]{64}$/;
 const RELEASE_ID = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.-]+)?-[a-f0-9]{12}$/;
 const PORTABLE_NAME = /^[a-z0-9][a-z0-9-]{2,95}$/;
 const NETWORK_NAME = /^[a-z0-9][a-z0-9_-]{2,95}$/;

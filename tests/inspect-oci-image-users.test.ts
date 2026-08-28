@@ -20,6 +20,16 @@ test("OCI image user inspection binds declared user and account databases to the
   assert.equal(calls.slice(1).every((call) => call.includes(image)), true);
 });
 
+test("OCI image user inspection accepts a tag plus digest immutable reference", async () => {
+  const taggedImage = `caddy:2.11.4-alpine@sha256:${"b".repeat(64)}`;
+  const result = await inspectOciImageUsers([taggedImage], { async run(argv: string[]) {
+    return { ok: true, stdout: argv.includes("inspect") ? '"1000:1000"\n' :
+      argv.at(-1) === "/etc/passwd" ? "caddy:x:1000:1000::/:/sbin/nologin\n" : "caddy:x:1000:\n" };
+  } });
+  assert.equal(result[0]?.image, taggedImage);
+  assert.equal(result[0]?.declaredUser, "1000:1000");
+});
+
 test("OCI image user inspection rejects mutable and incomplete evidence while retaining explicit-root evidence", async () => {
   await assert.rejects(inspectOciImageUsers(["ghcr.io/example/runtime:latest"], { async run() {
     return { ok: true, stdout: "root" };

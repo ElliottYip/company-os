@@ -1,4 +1,5 @@
-const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
+const IMMUTABLE_IMAGE =
+  /^[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9_][A-Za-z0-9_.-]{0,127})?@sha256:[a-f0-9]{64}$/;
 const SECRET_KEY = /(?:^|_)(?:CLIENT_SECRET|SESSION_SIGNING_KEY|BEARER_TOKEN|PASSWORD|DATABASE_URL|PRIVATE_KEY|CREDENTIALS?)$/i;
 const PUBLIC_KEY = /^[A-Z][A-Z0-9_]{0,127}$/;
 const REQUIRED_SECRET_FILES = [
