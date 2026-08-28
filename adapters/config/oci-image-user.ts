@@ -10,7 +10,8 @@ export interface OciImageUserInspection {
   readonly groupContents: string;
 }
 
-const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
+const IMMUTABLE_IMAGE =
+  /^[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9_][A-Za-z0-9_.-]{0,127})?@sha256:[a-f0-9]{64}$/;
 
 export function createOciImageUserResolver(
   inspections: readonly OciImageUserInspection[],

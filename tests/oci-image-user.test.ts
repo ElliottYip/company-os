@@ -54,7 +54,7 @@ test("OCI image user rejects malformed declarations and account databases", () =
 });
 
 test("OCI inspection resolver binds each result to an exact immutable image reference", () => {
-  const image = `ghcr.io/example/runtime@sha256:${"a".repeat(64)}`;
+  const image = `ghcr.io/example/runtime:1.2.3@sha256:${"a".repeat(64)}`;
   const resolve = createOciImageUserResolver([{ image, declaredUser: "dex", passwdContents: passwd,
     groupContents: groups }]);
   assert.deepEqual(resolve(image), { uid: 1001, gid: 1002 });

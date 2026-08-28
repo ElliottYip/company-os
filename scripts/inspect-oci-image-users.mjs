@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 
-const IMMUTABLE_IMAGE = /^[a-z0-9][a-z0-9./_-]*@sha256:[a-f0-9]{64}$/;
+const IMMUTABLE_IMAGE =
+  /^[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9_][A-Za-z0-9_.-]{0,127})?@sha256:[a-f0-9]{64}$/;
 
 export async function inspectOciImageUsers(images, supplied = {}) {
   if (!Array.isArray(images) || images.length < 1 || images.length > 16 ||
