@@ -295,6 +295,9 @@ test("staging is site-rendered, isolated, dependency-bound, resource bounded, an
   assert.match(compose, /cap_drop: \[ALL\]/);
   assert.match(compose, /no-new-privileges:true/);
   assert.match(compose, /COMPANY_OS_DATABASE_URL_FILE:/);
+  assert.equal((compose.match(/NODE_EXTRA_CA_CERTS:/g) ?? []).length, 4);
+  assert.match(compose, /NODE_EXTRA_CA_CERTS: \/run\/company-os\/secrets\/internal-ca-cert\.pem/);
+  assert.match(compose, /NODE_EXTRA_CA_CERTS: \/run\/company-os\/backup-secrets\/internal-ca-cert\.pem/);
   assert.match(compose, /COMPANY_OS_OIDC_CLIENT_SECRET_FILE:/);
   assert.match(compose, /COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN_FILE:/);
   assert.match(compose, /COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:\?set the immutable acceptance Data Node image digest/);

@@ -19,7 +19,8 @@ function readySnapshot(): StagingDeploymentSnapshot {
       files: [
         "migration-database-url", "runtime-database-url", "runtime-database-password",
         "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
-        "data-node-bearer-token", "secret-broker-bearer-token", "backup-encryption-key",
+        "data-node-bearer-token", "secret-broker-bearer-token", "internal-ca-cert.pem",
+        "backup-encryption-key",
         "zos-access-key-id", "zos-secret-access-key",
       ].map((name) => ({ name, kind: "file" as const, mode: 0o400, size: 64 })),
     },

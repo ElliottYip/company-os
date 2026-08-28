@@ -2,8 +2,12 @@
 
 Status: code-admitted against official `v2026.817.0` contracts; official API
 transport and API-key revocation accepted in a private authenticated local
-sandbox with synthetic zero-budget records; private OIDC Alpha acceptance and
-a customer-owned non-production tenant remain pending
+sandbox with synthetic zero-budget records. A 2026-08-28 repeat against the
+operator's current private `local_trusted` workspace accepted real Agent and
+Issue reads, bounded projection and stable replay, but correctly did not claim
+authorization enforcement because that Paperclip mode bypasses Board-key
+checks. Private OIDC Alpha acceptance and a customer-owned non-production
+tenant remain pending.
 
 ## Boundary
 
@@ -109,3 +113,5 @@ sanitized evidence through the OIDC-protected Company OS formal route. Do not
 use production Agent data or a personal credential for Alpha admission. See
 `docs/acceptance/2026-08-27-paperclip-federated-connector-sandbox.json` and
 `docs/acceptance/2026-08-27-paperclip-federated-connector-authenticated.json`.
+The current-workspace boundary is retained separately in
+`docs/acceptance/2026-08-28-paperclip-local-trusted-alpha.json`.

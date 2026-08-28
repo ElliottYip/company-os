@@ -4,7 +4,7 @@ const PUBLIC_KEY = /^[A-Z][A-Z0-9_]{0,127}$/;
 const REQUIRED_SECRET_FILES = [
   "migration-database-url", "runtime-database-url", "runtime-database-password",
   "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
-  "data-node-bearer-token", "secret-broker-bearer-token",
+  "data-node-bearer-token", "secret-broker-bearer-token", "internal-ca-cert.pem",
 ] as const;
 const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE",
   "COMPANY_OS_REFERENCE_DATA_NODE_IMAGE"] as const;

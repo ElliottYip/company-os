@@ -109,7 +109,7 @@ No code path may import a hard-coded `raftXinStagingExpectation`.
 
 ### Secret contract
 
-The eight product startup files remain:
+The product startup files are:
 
 1. `migration-database-url`
 2. `runtime-database-url`
@@ -119,6 +119,8 @@ The eight product startup files remain:
 6. `agent-node-bearer-token`
 7. `data-node-bearer-token`
 8. `secret-broker-bearer-token`
+9. `internal-ca-cert.pem` (public CA certificate only; used by Node TLS to
+   verify the dedicated PostgreSQL server name)
 
 Add a separate dependency-secret manifest containing filenames, owner,
 consumer, generation method, rotation class, and required mode, but never the
