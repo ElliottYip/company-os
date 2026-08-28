@@ -77,10 +77,11 @@ services:
     environment:
       VAULT_ADDR: https://127.0.0.1:8200
       VAULT_CACERT: /run/dependency-secrets/${COMPANY_OS_INTERNAL_TLS_CERT_FILENAME:?set metadata-derived filename}
+      SKIP_SETCAP: "true"
     volumes:
       - ${COMPANY_OS_DEPENDENCY_PUBLIC_CONFIG_DIRECTORY:?set rendered public config directory}:/run/dependency-public:ro
       - ${COMPANY_OS_VAULT_SECRET_PROJECTION_DIRECTORY:?set Vault Secret projection directory}:/run/dependency-secrets:ro
-      - company_os_dependency_vault:/var/lib/company-os-vault
+      - company_os_dependency_vault:/vault/file
     networks:
       dependencies:
         aliases: ["${COMPANY_OS_VAULT_TLS_HOST:?set Vault TLS host}"]
