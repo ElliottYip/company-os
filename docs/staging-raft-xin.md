@@ -266,7 +266,7 @@ Before any start:
    product API or Web:
 
    ```sh
-   docker run --rm --network host --read-only --cap-drop ALL \
+   docker run --rm --network host --read-only --cap-drop ALL --cap-add CHOWN \
      --security-opt no-new-privileges:true --user 0:0 \
      --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
@@ -278,6 +278,13 @@ Before any start:
      --authorization change:REPLACE_WITH_APPROVED_DEPENDENCY_RECORD \
      --apply
    ```
+
+   `CAP_CHOWN` is admitted only for this dependency apply operator. It is
+   required to transfer the generated `0400` OIDC configuration and
+   consumer-specific Secret projections to the non-root identities resolved
+   from the exact runtime images. The read-only plan, every later phase, and
+   every long-lived dependency or product container retain `cap-drop ALL`
+   without this capability.
 
    Success means only that the isolated dependencies are healthy and ready for
    migration. A failure is retained as

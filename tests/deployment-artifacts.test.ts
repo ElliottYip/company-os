@@ -335,6 +335,8 @@ test("staging is site-rendered, isolated, dependency-bound, resource bounded, an
   assert.match(runbook, /staging-dependencies\.json/);
   assert.match(runbook, /DEPENDENCIES_READY_NOT_PRODUCT_MIGRATED/);
   assert.match(runbook, /previous immutable image digests/);
+  assert.equal((runbook.match(/--cap-add CHOWN/g) ?? []).length, 1);
+  assert.match(runbook, /CAP_CHOWN.*dependency apply operator/);
 });
 
 test("release manifest binds source, immutable images, lockfile and ordered migrations", async () => {
