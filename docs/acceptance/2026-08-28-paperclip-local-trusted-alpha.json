@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "product": "company-os",
+  "status": "PARTIAL",
+  "acceptedAt": "2026-08-28T11:51:24.903Z",
+  "upstream": {
+    "product": "Paperclip",
+    "version": "2026.817.0",
+    "exposure": "PRIVATE_LOCAL_TRUSTED_TEST_WORKSPACE"
+  },
+  "connector": {
+    "id": "paperclip-alpha",
+    "capabilities": {
+      "connectorId": "paperclip-alpha",
+      "protocolVersion": "2.0",
+      "capabilities": {
+        "data": [
+          "AGENT_INVENTORY",
+          "FEDERATED_WORK",
+          "RESULT_REFERENCES"
+        ],
+        "control": [
+          "SYNCHRONIZE_FEDERATED_RECORDS"
+        ]
+      },
+      "maximumBatchSize": 200
+    },
+    "inventoryRecords": 4,
+    "federatedWorkRecords": 1,
+    "anomalies": 0,
+    "replayStable": true,
+    "boundedPrivateFieldsExcluded": true,
+    "credentialRevokedAfterAcceptance": true,
+    "authorizationEnforcement": "NOT_APPLICABLE_LOCAL_TRUSTED"
+  },
+  "limitations": [
+    "This acceptance used a private local_trusted Paperclip test workspace, not a customer-owned remote tenant.",
+    "It proves real official Agent and Issue API transport, bounded projection, and stable replay, but local_trusted mode bypasses Board key enforcement and cannot prove fail-closed revocation.",
+    "The earlier authenticated disposable-sandbox evidence remains the authorization/revocation proof; this current workspace is not production ready.",
+    "Usage remains unsupported because the upstream exposes an aggregate snapshot rather than idempotent usage events."
+  ]
+}

@@ -52,6 +52,7 @@ services:
     command: ["node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]
     environment:
       COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/migration-database-url
+      NODE_EXTRA_CA_CERTS: /run/company-os/secrets/internal-ca-cert.pem
 
   provision-runtime:
     <<: *api-security
@@ -64,6 +65,7 @@ services:
       COMPANY_OS_MIGRATION_DATABASE_URL_FILE: /run/company-os/secrets/migration-database-url
       COMPANY_OS_RUNTIME_DATABASE_USER: ${COMPANY_OS_RUNTIME_DATABASE_USER:-company_os_runtime}
       COMPANY_OS_RUNTIME_DATABASE_PASSWORD_FILE: /run/company-os/secrets/runtime-database-password
+      NODE_EXTRA_CA_CERTS: /run/company-os/secrets/internal-ca-cert.pem
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -86,6 +88,7 @@ services:
       COMPANY_OS_PUBLIC_URL: ${COMPANY_OS_PUBLIC_URL:?set the site API origin}
       COMPANY_OS_WEB_ORIGINS: ${COMPANY_OS_WEB_ORIGINS:?set the exact site Web origins}
       COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/runtime-database-url
+      NODE_EXTRA_CA_CERTS: /run/company-os/secrets/internal-ca-cert.pem
       COMPANY_OS_OIDC_ISSUER: ${COMPANY_OS_OIDC_ISSUER:?set the staging OIDC issuer}
       COMPANY_OS_OIDC_DISCOVERY_URL: ${COMPANY_OS_OIDC_DISCOVERY_URL:?set the staging OIDC discovery URL}
       COMPANY_OS_OIDC_CLIENT_ID: ${COMPANY_OS_OIDC_CLIENT_ID:?set the product-scoped OIDC client ID}
@@ -165,6 +168,7 @@ services:
     command: ["node", "--experimental-strip-types", "scripts/postgres-encrypted-backup.ts"]
     environment:
       COMPANY_OS_DATABASE_URL_FILE: /run/company-os/backup-secrets/runtime-database-url
+      NODE_EXTRA_CA_CERTS: /run/company-os/backup-secrets/internal-ca-cert.pem
       COMPANY_OS_BACKUP_DIRECTORY: /backup
       COMPANY_OS_BACKUP_ENCRYPTION_KEY_FILE: /run/company-os/backup-secrets/backup-encryption-key
       COMPANY_OS_BACKUP_INTERVAL_SECONDS: ${COMPANY_OS_BACKUP_INTERVAL_SECONDS:-86400}

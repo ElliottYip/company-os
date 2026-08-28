@@ -60,7 +60,7 @@ preparation evidence only; it is not backup or staging acceptance.
 
 ## Secret files
 
-An operator or Vault Agent renders the following eight files required for the
+An operator or Vault Agent renders the following files required for the
 initial API/Web/Data Node start under
 `/etc/company-os/secrets` with directory mode `0700` and file mode `0400` or
 `0600`. Values never enter Compose YAML, image layers, Git, chat, or command
@@ -74,6 +74,12 @@ arguments:
 - `agent-node-bearer-token`
 - `data-node-bearer-token`
 - `secret-broker-bearer-token`
+- `internal-ca-cert.pem` (public CA certificate only; no private key)
+
+The migration, runtime API, runtime-role provisioner, and optional backup
+process load this CA with `NODE_EXTRA_CA_CERTS`. PostgreSQL URLs must retain
+`sslmode=verify-full`; the server certificate must match the manifest's
+`tlsServerName`. Do not replace this with `sslmode=require`.
 
 The opt-in backup profile is a separate readiness gate. Before that profile is
 started, render these additional files under the same policy:
