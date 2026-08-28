@@ -12,8 +12,8 @@ import {
 } from "../scripts/validate-staging-dependencies.ts";
 
 const expected = {
-  deploymentId: "company-os-staging-raft-xin", webOrigin: "https://company-os.raft.xin",
-  apiOrigin: "https://company-os-api.raft.xin", deploymentRoot: "/srv/company-os/staging",
+  deploymentId: "company-os-staging-raft-xin", webOrigin: "https://anc.raft.xin",
+  apiOrigin: "https://api.anc.raft.xin", deploymentRoot: "/srv/company-os/staging",
   composeProject: "company-os-staging", network: "company-os-staging_internal",
   webLoopbackPort: 4600, apiLoopbackPort: 4601,
 } as const;

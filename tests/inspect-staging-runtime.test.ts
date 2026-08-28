@@ -36,8 +36,8 @@ async function fixture(prefix: string) {
   const installed = await installStagingReleaseBundle({ rootDirectory: root, bundleDirectory: source });
   await writeFile(join(root, "staging.env"), [
     "COMPANY_OS_INSTANCE_ID=company-os-staging-raft-xin",
-    "COMPANY_OS_WEB_ORIGINS=https://company-os.raft.xin",
-    "COMPANY_OS_PUBLIC_URL=https://company-os-api.raft.xin",
+    "COMPANY_OS_WEB_ORIGINS=https://anc.raft.xin",
+    "COMPANY_OS_PUBLIC_URL=https://api.anc.raft.xin",
     "COMPANY_OS_COMPOSE_PROJECT=company-os-staging",
     "COMPANY_OS_PRODUCT_NETWORK=company-os-staging_internal",
     "COMPANY_OS_REFERENCE_DATA_NODE_PORT=4322",
@@ -53,7 +53,7 @@ async function writeDependencies(root: string) {
   const path = join(root, "staging-dependencies.json");
   await writeFile(path, `${JSON.stringify({
     schemaVersion: 1, environment: "STAGING", deploymentId: "company-os-staging-raft-xin",
-    ingress: { webOrigin: "https://company-os.raft.xin", apiOrigin: "https://company-os-api.raft.xin",
+    ingress: { webOrigin: "https://anc.raft.xin", apiOrigin: "https://api.anc.raft.xin",
       ownerReference: "team:infra", dnsEvidenceReference: "evidence:dns-01",
       tlsEvidenceReference: "evidence:tls-01" },
     isolation: { deploymentRoot: root, composeProject: "company-os-staging",
@@ -78,8 +78,8 @@ async function writeDependencies(root: string) {
   })}\n`, { mode: 0o600 });
   return (await validateStagingDependencies(path, {
     deploymentId: "company-os-staging-raft-xin",
-    webOrigin: "https://company-os.raft.xin",
-    apiOrigin: "https://company-os-api.raft.xin",
+    webOrigin: "https://anc.raft.xin",
+    apiOrigin: "https://api.anc.raft.xin",
     deploymentRoot: root,
     composeProject: "company-os-staging",
     network: "company-os-staging_internal",
@@ -154,8 +154,8 @@ test("promoted startup state selects candidate configuration, project and loopba
     network: "company-os-candidate", webLoopbackPort: 14600, apiLoopbackPort: 14601 };
   await writeFile(dependencyFile, `${JSON.stringify(dependencies)}\n`, { mode: 0o600 });
   const admission = await validateStagingDependencies(dependencyFile, {
-    deploymentId: "company-os-staging-raft-xin", webOrigin: "https://company-os.raft.xin",
-    apiOrigin: "https://company-os-api.raft.xin", deploymentRoot: value.root,
+    deploymentId: "company-os-staging-raft-xin", webOrigin: "https://anc.raft.xin",
+    apiOrigin: "https://api.anc.raft.xin", deploymentRoot: value.root,
     composeProject: "company-os-candidate", network: "company-os-candidate",
     webLoopbackPort: 14600, apiLoopbackPort: 14601 });
   await writeFile(join(value.root, "startup-state.json"), `${JSON.stringify({ schemaVersion: 1,

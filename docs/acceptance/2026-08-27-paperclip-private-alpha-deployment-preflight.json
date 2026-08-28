@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "recordType": "PAPERCLIP_PRIVATE_ALPHA_DEPLOYMENT_PREFLIGHT",
+  "recordedAt": "2026-08-27T15:19:54Z",
+  "implementationRevision": "9f5d05e2d9d64052a85690b94280c33085563ae6",
+  "connector": {
+    "package": "@company-os/federated-source-reference",
+    "sourceVersion": "v2026.817.0",
+    "sourceRevision": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+    "officialAgentApi": "GET /api/companies/{companyId}/agents",
+    "officialWorkApi": "GET /api/companies/{companyId}/issues",
+    "usageCapability": "UNSUPPORTED_AGGREGATE_ONLY",
+    "executionOwner": "EXTERNAL_PLATFORM"
+  },
+  "deployment": {
+    "overlay": "deploy/compose.private-alpha-paperclip.yml",
+    "selfHostedComposeMerge": "PASSED",
+    "managedCloudComposeMerge": "PASSED",
+    "publicDemoContainsConnectorConfiguration": false,
+    "formalRuntimeRequired": true,
+    "credentialTransport": "ABSOLUTE_RUNTIME_FILE_PATH_ONLY"
+  },
+  "credentialBoundary": {
+    "inlineCredentialRejected": true,
+    "symbolicLinkRejected": true,
+    "multipleHardLinksRejected": true,
+    "groupOrWorldPermissionsRejected": true,
+    "runtimeOwnerRequired": true,
+    "maximumBytes": 16384,
+    "readBeforeEveryUpstreamRequest": true,
+    "rotationWithoutApiRestart": "PASSED",
+    "credentialRecorded": false
+  },
+  "verification": {
+    "focusedTests": { "passed": 7, "failed": 0, "skipped": 0 },
+    "repositoryTests": { "total": 721, "passed": 717, "failed": 0, "skipped": 4 },
+    "browserE2E": { "total": 21, "passed": 17, "failed": 0, "skipped": 4 },
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "upstreamPin": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "PASSED_ZERO_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED"
+  },
+  "disposition": "PRIVATE_ALPHA_DEPLOYMENT_CONTRACT_READY_CUSTOMER_SANDBOX_ACCEPTANCE_PENDING",
+  "notClaimed": [
+    "customer-owned Paperclip tenant acceptance",
+    "OIDC-protected live synchronization on the Hong Kong formal runtime",
+    "production connector availability",
+    "usage or cost synchronization",
+    "Agent execution through ANC"
+  ]
+}

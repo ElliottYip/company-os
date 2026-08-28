@@ -1,5 +1,8 @@
 import { createHash, randomBytes } from "node:crypto";
 import { createDemoComposition } from "../demo/create-demo-composition.ts";
+import { createDemoPortfolioFixture } from "../demo/create-demo-portfolio-fixture.ts";
+import { InMemoryDemoSessionStore } from "../storage/in-memory-demo-session-store.ts";
+import { DemoPortfolioSessions } from "../../application/demo-portfolio-sessions.ts";
 import { getFormalAccessStatus } from "../../application/get-formal-access-status.ts";
 import {
   createCompanyAuth,
@@ -28,6 +31,10 @@ import { IssueSecretLease } from "../../application/issue-secret-lease.ts";
 import { PrepareWorkExecution } from "../../application/prepare-work-execution.ts";
 import { DecideHighRiskAction } from "../../application/decide-high-risk-action.ts";
 import { FormalAgentBossApi } from "../../application/formal-agent-boss-api.ts";
+import { FormalAgentPortfolioApi } from "../../application/formal-agent-portfolio-api.ts";
+import { ManageAgentPortfolio } from "../../application/manage-agent-portfolio.ts";
+import { RegisterExternalWork } from "../../application/register-external-work.ts";
+import { ManageAgentCommercialGovernance } from "../../application/manage-agent-commercial-governance.ts";
 import { ConnectorRegistry } from "../../application/connector-registry.ts";
 import { GovernanceRegistry } from "../../application/governance-registry.ts";
 import { ResponsibilityRegistry } from "../../application/responsibility-registry.ts";
@@ -82,6 +89,7 @@ import {
 } from "../connectors/load-formal-connectors.ts";
 import { createCompanyOsHttpService } from "./company-os-http-service.ts";
 import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
+import { PublicDemoRequestLimiter } from "./public-demo-request-limiter.ts";
 import {
   loadFormalSecretBroker,
   parseFormalSecretBrokerPackage,
@@ -102,6 +110,15 @@ import {
   configuredRetentionPolicyId as resolveRetentionPolicyId,
 } from "./retention-policy-configuration.ts";
 import { readSecretFileEnvironment } from "../config/secret-file-environment.ts";
+import {
+  parseServiceRuntimeMode,
+  validateServiceRuntimeBoundary,
+} from "./service-runtime-mode.ts";
+import { SynchronizeFederatedSource } from "../../application/synchronize-federated-source.ts";
+import {
+  loadFormalFederatedSources,
+  parseFormalFederatedSourcePackages,
+} from "../connectors/load-formal-federated-sources.ts";
 
 function deploymentProfile(value: string | undefined): "managed-cloud" | "self-hosted" {
   if (value === undefined || value === "self-hosted") return "self-hosted";
@@ -123,6 +140,23 @@ function exposure(value: string | undefined): "private" | "public" {
   throw new Error("COMPANY_OS_EXPOSURE must be private or public");
 }
 
+function enabled(value: string | undefined, name: string): boolean {
+  if (value === undefined || value === "false") return false;
+  if (value === "true") return true;
+  throw new Error(`${name} must be true or false`);
+}
+
+function boundedInteger(
+  value: string | undefined,
+  input: { readonly name: string; readonly defaultValue: number; readonly minimum: number; readonly maximum: number },
+): number {
+  const parsed = value === undefined ? input.defaultValue : Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < input.minimum || parsed > input.maximum) {
+    throw new Error(`${input.name} must be an integer from ${input.minimum} to ${input.maximum}`);
+  }
+  return parsed;
+}
+
 function releaseId(value: string | undefined): string | undefined {
   if (value === undefined || value.trim() === "") return undefined;
   const normalized = value.trim();
@@ -134,6 +168,26 @@ function releaseId(value: string | undefined): string | undefined {
 
 const profile = deploymentProfile(process.env.COMPANY_OS_PROFILE);
 const deploymentExposure = exposure(process.env.COMPANY_OS_EXPOSURE);
+const publicDemoEnabled = enabled(
+  process.env.COMPANY_OS_PUBLIC_DEMO_ENABLED,
+  "COMPANY_OS_PUBLIC_DEMO_ENABLED",
+);
+const demoMaximumSessions = boundedInteger(process.env.COMPANY_OS_DEMO_MAX_SESSIONS, {
+  name: "COMPANY_OS_DEMO_MAX_SESSIONS", defaultValue: 500, minimum: 1, maximum: 10_000,
+});
+const demoCreationsPerMinute = boundedInteger(process.env.COMPANY_OS_DEMO_CREATIONS_PER_MINUTE, {
+  name: "COMPANY_OS_DEMO_CREATIONS_PER_MINUTE", defaultValue: 120, minimum: 1, maximum: 10_000,
+});
+const demoRequestsPerSessionPerMinute = boundedInteger(
+  process.env.COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE,
+  {
+    name: "COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE",
+    defaultValue: 240,
+    minimum: 1,
+    maximum: 100_000,
+  },
+);
+const runtimeMode = parseServiceRuntimeMode(process.env.COMPANY_OS_RUNTIME_MODE);
 const metricsEnabled = process.env.COMPANY_OS_METRICS_ENABLED === "true";
 const runtimeMetrics = metricsEnabled ? new BoundedHttpMetrics() : null;
 if (metricsEnabled && deploymentExposure !== "private") {
@@ -148,6 +202,21 @@ const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicy
   process.env.COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID,
 );
 const { runtime } = createDemoComposition();
+const demoNow = () => new Date().toISOString();
+const publicDemoSessions = publicDemoEnabled ? new DemoPortfolioSessions({
+  store: new InMemoryDemoSessionStore({ maximumSessions: demoMaximumSessions, now: demoNow }),
+  createFixture: createDemoPortfolioFixture,
+  nextSessionId: () => randomBytes(32).toString("base64url"),
+  nextCompanyId: () => `demo-company-${randomBytes(12).toString("hex")}`,
+  now: demoNow,
+  timeToLiveMilliseconds: 4 * 60 * 60 * 1_000,
+}) : undefined;
+const publicDemoRequestLimiter = publicDemoEnabled ? new PublicDemoRequestLimiter({
+  maximumCreationsPerWindow: demoCreationsPerMinute,
+  maximumRequestsPerSessionPerWindow: demoRequestsPerSessionPerMinute,
+  maximumTrackedSessions: demoMaximumSessions,
+  windowMilliseconds: 60_000,
+}) : undefined;
 const formalConfiguration = {
   publicBaseUrl: process.env.COMPANY_OS_PUBLIC_URL,
   issuer: process.env.COMPANY_OS_OIDC_ISSUER,
@@ -158,11 +227,38 @@ const formalConfiguration = {
   sessionSigningKey: await readSecretFileEnvironment("COMPANY_OS_SESSION_SIGNING_KEY"),
   databaseUrl: await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL"),
 };
+validateServiceRuntimeBoundary({
+  mode: runtimeMode,
+  publicDemoEnabled,
+  formalConfigurationPresent: [
+    formalConfiguration.issuer,
+    formalConfiguration.discoveryUrl,
+    formalConfiguration.clientId,
+    formalConfiguration.clientSecret,
+    formalConfiguration.redirectUri,
+    formalConfiguration.sessionSigningKey,
+    formalConfiguration.databaseUrl,
+  ].some((value) => Boolean(value?.trim())),
+  connectorConfigurationPresent: [
+    process.env.COMPANY_OS_CONNECTOR_PACKAGES,
+    process.env.COMPANY_OS_SECRET_BROKER_PACKAGE,
+    process.env.COMPANY_OS_MODEL_PROVIDER_PACKAGES,
+    process.env.COMPANY_OS_DATA_CONNECTOR_PACKAGES,
+    process.env.COMPANY_OS_FEDERATED_SOURCE_PACKAGES,
+  ].some((value) => Boolean(value?.trim())),
+});
 const allowedWebOrigins = parseAllowedWebOrigins(
   process.env.COMPANY_OS_WEB_ORIGINS,
   formalConfiguration.publicBaseUrl,
 );
 const isFormalConfigured = Object.values(formalConfiguration).every((value) => value?.trim());
+const federatedSourcePackages = parseFormalFederatedSourcePackages(
+  process.env.COMPANY_OS_FEDERATED_SOURCE_PACKAGES,
+);
+if (federatedSourcePackages.length && !isFormalConfigured) {
+  throw new Error("FEDERATED_SOURCE_FORMAL_RUNTIME_REQUIRED");
+}
+const formalFederatedSources = await loadFormalFederatedSources(federatedSourcePackages);
 const database = isFormalConfigured
   ? createCompanyDatabase(formalConfiguration.databaseUrl as string)
   : null;
@@ -318,6 +414,7 @@ async function formalAgentBossApi(request: import("node:http").IncomingMessage, 
       executionPorts: formalExecutionPorts, secretBroker: formalSecretBroker,
       modelProviders: formalModelProviders, toolAccess, usageBudget,
       dataConnectors: formalDataConnectors,
+      federatedSources: formalFederatedSources,
       retentionPolicyId: configuredRetentionPolicyId,
     }),
     dispatch: new DispatchAccountableWork({
@@ -411,11 +508,36 @@ async function formalPlanningRegistry(
     nextId: nextPostgresRecordId,
   });
 }
+
+async function formalPortfolioApi(
+  request: import("node:http").IncomingMessage,
+  companyId: string,
+): Promise<FormalAgentPortfolioApi> {
+  if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+  const context = await formalCompanyContext(request, companyId);
+  return new FormalAgentPortfolioApi({
+    identity: context.identity,
+    agents: new ManageAgentPortfolio({
+      identity: context.identity,
+      events: formalEvents,
+      nextId: nextPostgresRecordId,
+    }),
+    work: new RegisterExternalWork({ events: formalEvents, nextId: nextPostgresRecordId }),
+    commercial: new ManageAgentCommercialGovernance({
+      events: formalEvents,
+      nextId: nextPostgresRecordId,
+    }),
+  });
+}
 const server = createCompanyOsHttpService({
   runtime,
+  ...(publicDemoSessions ? { publicDemoSessions } : {}),
+  ...(publicDemoRequestLimiter ? { publicDemoRequestLimiter } : {}),
   deploymentProfile: profile,
   ...(deployedReleaseId ? { releaseId: deployedReleaseId } : {}),
-  serviceMode: isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",
+  serviceMode: runtimeMode === "public-demo"
+    ? "DEMO_FIXTURE"
+    : isFormalConfigured ? "FORMAL" : "LOCAL_DEVELOPMENT",
   deploymentExposure,
   metricsEnabled,
   ...(runtimeMetrics ? { metrics: runtimeMetrics } : {}),
@@ -426,7 +548,8 @@ const server = createCompanyOsHttpService({
   operationalReadiness: {
     async getStatus() {
       return getOperationalReadiness({
-        formalRequired: deploymentExposure === "public",
+        runtimeMode,
+        formalRequired: runtimeMode === "formal" && deploymentExposure === "public",
         formalConfigured: isFormalConfigured,
         database,
         connectors: formalExecutionPorts,
@@ -480,6 +603,66 @@ const server = createCompanyOsHttpService({
       },
       async getAdministration(request, companyId) {
         return (await formalAgentBossApi(request, companyId)).getAdministration(companyId);
+      },
+      async listPortfolioAgents(request, companyId) {
+        return (await formalPortfolioApi(request, companyId)).listAgents(companyId);
+      },
+      async synchronizePortfolioAgent(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).synchronizeAgent(companyId, input);
+      },
+      async synchronizeFederatedSource(request, companyId, connectorId) {
+        const context = await formalCompanyContext(request, companyId);
+        const authorization = await context.identity.authorize({
+          companyId,
+          action: "portfolio-work:federated-sync",
+          resourceId: connectorId,
+          reason: "Synchronize one configured federated Agent platform",
+        });
+        if (authorization.principalId !== context.session.user.id) {
+          throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
+        }
+        const api = await formalPortfolioApi(request, companyId);
+        return new SynchronizeFederatedSource({
+          sources: formalFederatedSources,
+          agents: {
+            async synchronize(record) {
+              return await api.synchronizeAgent(companyId, record) as {
+                readonly status: "RECORDED" | "REPLAYED" | "UPDATED";
+              };
+            },
+          },
+          work: {
+            async synchronizeFederated(record) {
+              return await api.synchronizeFederatedWork(companyId, record) as {
+                readonly status: "RECORDED" | "REPLAYED" | "UPDATED";
+              };
+            },
+          },
+        }).execute({ companyId, connectorId });
+      },
+      async listPortfolioWork(request, companyId) {
+        return (await formalPortfolioApi(request, companyId)).listExternalWork(companyId);
+      },
+      async registerObservedWork(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).registerObservedWork(companyId, input);
+      },
+      async synchronizeFederatedWork(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).synchronizeFederatedWork(companyId, input);
+      },
+      async getAgentCommercialState(request, companyId) {
+        return (await formalPortfolioApi(request, companyId)).getCommercialState(companyId);
+      },
+      async synchronizeAgentSubscription(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).synchronizeSubscription(companyId, input);
+      },
+      async recordAgentCredentialStatus(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).recordCredentialStatus(companyId, input);
+      },
+      async importAgentUsage(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).importUsage(companyId, input);
+      },
+      async requestAgentRenewal(request, companyId, input) {
+        return (await formalPortfolioApi(request, companyId)).requestRenewal(companyId, input);
       },
       async getAccountabilityLedger(request, companyId) {
         const context = await formalCompanyContext(request, companyId);

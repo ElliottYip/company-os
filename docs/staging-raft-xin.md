@@ -6,8 +6,8 @@ network, volume, database, bucket, queue, or H3 runtime.
 
 ## Fixed coordinates
 
-- Web: `https://company-os.raft.xin` -> `127.0.0.1:4600`
-- API: `https://company-os-api.raft.xin` -> `127.0.0.1:4601`
+- Web: `https://anc.raft.xin` -> `127.0.0.1:4600`
+- API: `https://api.anc.raft.xin` -> `127.0.0.1:4601`
 - fixture-only reference Data Node ingress -> `127.0.0.1:4322`
 - deployment root: `/srv/company-os/staging`
 - Compose project/network: `company-os-staging` / `company-os-staging_internal`
@@ -117,7 +117,7 @@ Before any start:
      --mount type=bind,src=/absolute/received-bundle,dst=/handoff,readonly \
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node scripts/install-staging-release-bundle.mjs \
+     node --experimental-strip-types scripts/install-staging-release-bundle.mjs \
      --bundle /handoff --root /srv/company-os/staging
 
    docker run --rm --network none --read-only --cap-drop ALL \
@@ -125,7 +125,7 @@ Before any start:
      --mount type=bind,src=/absolute/received-bundle,dst=/handoff,readonly \
      --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
      "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
-     node scripts/install-staging-release-bundle.mjs \
+     node --experimental-strip-types scripts/install-staging-release-bundle.mjs \
      --bundle /handoff --root /srv/company-os/staging --apply
    ```
 

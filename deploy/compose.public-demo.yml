@@ -1,0 +1,74 @@
+name: ${COMPANY_OS_DEMO_COMPOSE_PROJECT:?set the Demo-scoped Compose project}
+
+# Fixture-only public exhibition profile. It deliberately has no Secret,
+# database, OIDC, model, Data Node, Agent Node, or external Connector mount.
+# The internal network blocks container egress. Host ingress may use the
+# loopback publications where the Docker engine supports them, or the explicit
+# fixed bridge addresses on engines that suppress published ports for an
+# internal-only network.
+services:
+  api:
+    image: ${COMPANY_OS_API_IMAGE:?set the immutable API image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cpus: 0.40
+    mem_limit: 512m
+    pids_limit: 96
+    networks:
+      demo_internal:
+        ipv4_address: ${COMPANY_OS_DEMO_API_ADDRESS:?set the fixed Demo API bridge address}
+    environment:
+      COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
+      COMPANY_OS_PROFILE: managed-cloud
+      COMPANY_OS_EXPOSURE: public
+      COMPANY_OS_RUNTIME_MODE: public-demo
+      COMPANY_OS_PUBLIC_DEMO_ENABLED: "true"
+      COMPANY_OS_DEMO_MAX_SESSIONS: ${COMPANY_OS_DEMO_MAX_SESSIONS:-500}
+      COMPANY_OS_DEMO_CREATIONS_PER_MINUTE: ${COMPANY_OS_DEMO_CREATIONS_PER_MINUTE:-120}
+      COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE: ${COMPANY_OS_DEMO_REQUESTS_PER_SESSION_PER_MINUTE:-240}
+      COMPANY_OS_HOST: 0.0.0.0
+      COMPANY_OS_PORT: 4310
+      COMPANY_OS_PUBLIC_URL: ${COMPANY_OS_DEMO_API_URL:?set the public Demo API origin}
+      COMPANY_OS_WEB_ORIGINS: ${COMPANY_OS_DEMO_WEB_URL:?set the exact public Demo Web origin}
+      COMPANY_OS_METRICS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:${COMPANY_OS_DEMO_API_LOOPBACK_PORT:?set the Demo API loopback port}:4310"
+
+  web:
+    image: ${COMPANY_OS_WEB_IMAGE:?set the immutable Web image digest}
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cpus: 0.20
+    mem_limit: 192m
+    pids_limit: 64
+    networks:
+      demo_internal:
+        ipv4_address: ${COMPANY_OS_DEMO_WEB_ADDRESS:?set the fixed Demo Web bridge address}
+    environment:
+      COMPANY_OS_RELEASE_ID: ${COMPANY_OS_RELEASE_ID:?set the immutable release ID}
+      COMPANY_OS_WEB_HOST: 0.0.0.0
+      COMPANY_OS_WEB_PORT: 8080
+      COMPANY_OS_WEB_MODE: demo
+      COMPANY_OS_WEB_API_URL: ${COMPANY_OS_DEMO_API_URL:?set the public Demo API origin}
+    ports:
+      - "127.0.0.1:${COMPANY_OS_DEMO_WEB_LOOPBACK_PORT:?set the Demo Web loopback port}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+networks:
+  demo_internal:
+    internal: true
+    ipam:
+      config:
+        - subnet: ${COMPANY_OS_DEMO_INTERNAL_SUBNET:?set the dedicated Demo bridge subnet}

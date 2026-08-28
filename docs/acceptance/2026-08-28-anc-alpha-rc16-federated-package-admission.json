@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC16_FEDERATED_PACKAGE_ADMISSION",
+  "recordedAt": "2026-08-27T22:25:57Z",
+  "implementationRevision": "363a152",
+  "finding": {
+    "code": "FEDERATED_SOURCE_SHIPPING_BUNDLE_STALE",
+    "sourceContractCurrent": true,
+    "shippingPackagePreviouslyCurrent": false,
+    "previousPackageRejectedSymbolicLinkCredential": false,
+    "previousPackageReloadedRotatedCredential": false
+  },
+  "remediation": {
+    "shippingPackageRegeneratedFromReviewedTypeScript": true,
+    "symbolicLinkCredentialRejected": true,
+    "groupOrWorldReadableCredentialRejected": true,
+    "credentialOwnerChecked": true,
+    "credentialReloadedForEveryUpstreamRequest": true,
+    "deterministicBundleDriftGateAddedToVerify": true,
+    "credentialMaterialRecorded": false
+  },
+  "tdd": {
+    "red": {
+      "tests": 2,
+      "passed": 0,
+      "failed": 2
+    },
+    "greenFocused": {
+      "tests": 12,
+      "passed": 12,
+      "failed": 0
+    }
+  },
+  "verification": {
+    "repositoryTests": {
+      "total": 724,
+      "passed": 720,
+      "failed": 0,
+      "skipped": 4
+    },
+    "browserE2E": {
+      "total": 21,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 4
+    },
+    "connectorBundle": "CURRENT",
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "PASSED_ZERO_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED",
+    "web3dPerformanceBudget": "PASSED"
+  },
+  "upstreamCostBoundary": {
+    "pinnedSourceVersion": "v2026.817.0",
+    "aggregateCostReadsAvailable": true,
+    "idempotentCostEventListOrCursorAvailable": false,
+    "usageCostCapabilityClaimed": false,
+    "reason": "Aggregated mutable totals cannot be appended to the ANC usage ledger without duplication or silent replacement."
+  },
+  "releaseState": {
+    "candidateRevisionChanged": true,
+    "rc16TagCreated": false,
+    "published": false,
+    "deployed": false
+  },
+  "notClaimed": [
+    "customer-owned Paperclip sandbox acceptance",
+    "private OIDC runtime start",
+    "Paperclip usage or cost synchronization",
+    "production connector availability"
+  ]
+}

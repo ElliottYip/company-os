@@ -14,6 +14,7 @@ import type { ToolAccessCatalog } from "../core/tool-access.ts";
 import { summarizeBudgetPolicies, type UsageBudgetLedger, type BudgetPolicySummary } from "../core/usage-budget.ts";
 import type { UsageBudgetStorePort } from "../ports/usage-budget-store-port.ts";
 import type { DataConnectorPort } from "../ports/data-connector-port.ts";
+import type { FederatedPortfolioSourcePort } from "../ports/federated-portfolio-source-port.ts";
 
 interface SanitizedConnector extends Omit<ConnectorRegistration, "secretReferenceId"> {
   readonly secretConfigured: boolean;
@@ -82,6 +83,16 @@ export interface AdministrationProjection {
     readonly supportedOperations: readonly string[];
     readonly health: "HEALTHY" | "DEGRADED" | "UNAVAILABLE";
   }[];
+  readonly runtimeFederatedSources: readonly {
+    readonly connectorId: Identifier;
+    readonly protocolVersion: "2.0";
+    readonly dataCapabilities: readonly string[];
+    readonly controlCapabilities: readonly string[];
+    readonly maximumBatchSize: number;
+    readonly health: "NOT_CHECKED" | "HEALTHY" | "UNAVAILABLE";
+    readonly checkedAt: string | null;
+    readonly lastSuccessfulAt: string | null;
+  }[];
   readonly governance: {
     readonly revision: number;
     readonly modelRoutingPolicies: readonly SanitizedModelPolicy[];
@@ -109,6 +120,7 @@ interface AdministrationProjectionDependencies {
   readonly toolAccess: ToolAccessCatalogPort;
   readonly usageBudget: UsageBudgetStorePort;
   readonly dataConnectors?: readonly DataConnectorPort[];
+  readonly federatedSources?: readonly FederatedPortfolioSourcePort[];
   readonly retentionPolicyId: Identifier;
 }
 
@@ -128,7 +140,7 @@ export class GetAdministrationProjection {
       reason: "Read sanitized Connector, model, data, and egress administration projection",
     });
     if (receipt.principalId !== identity.actorId) throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
-    const [connectorCatalog, governance, toolAccess, usageBudget, events, executionPorts, secretBrokerRuntime, runtimeModelProviders, runtimeDataConnectors] = await Promise.all([
+    const [connectorCatalog, governance, toolAccess, usageBudget, events, executionPorts, secretBrokerRuntime, runtimeModelProviders, runtimeDataConnectors, runtimeFederatedSources] = await Promise.all([
       this.#dependencies.connectors.load(companyId),
       this.#dependencies.governance.load(companyId),
       this.#dependencies.toolAccess.load(companyId),
@@ -171,6 +183,16 @@ export class GetAdministrationProjection {
           let health: "HEALTHY" | "DEGRADED" | "UNAVAILABLE" = "UNAVAILABLE";
           try { health = await connector.health(); } catch { /* visible as unavailable */ }
           return { ...capabilities, health };
+        } catch { return null; }
+      })),
+      Promise.all((this.#dependencies.federatedSources ?? []).map(async (source) => {
+        try {
+          const capabilities = await source.capabilities();
+          let health: Awaited<ReturnType<FederatedPortfolioSourcePort["health"]>> = {
+            status: "UNAVAILABLE", checkedAt: null, lastSuccessfulAt: null,
+          };
+          try { health = await source.health(); } catch { /* visible as unavailable */ }
+          return { capabilities, health };
         } catch { return null; }
       })),
     ]);
@@ -216,6 +238,17 @@ export class GetAdministrationProjection {
       secretBrokerRuntime,
       runtimeModelProviders: runtimeModelProviders.filter((entry) => entry !== null),
       runtimeDataConnectors: runtimeDataConnectors.filter((entry) => entry !== null),
+      runtimeFederatedSources: runtimeFederatedSources.filter((entry) => entry !== null)
+        .map(({ capabilities, health }) => ({
+          connectorId: capabilities.connectorId,
+          protocolVersion: capabilities.protocolVersion,
+          dataCapabilities: [...capabilities.capabilities.data],
+          controlCapabilities: [...capabilities.capabilities.control],
+          maximumBatchSize: capabilities.maximumBatchSize,
+          health: health.status,
+          checkedAt: health.checkedAt,
+          lastSuccessfulAt: health.lastSuccessfulAt,
+        })),
       governance: {
         revision: governance.revision,
         modelRoutingPolicies: governance.modelRoutingPolicies.map((policy) => ({

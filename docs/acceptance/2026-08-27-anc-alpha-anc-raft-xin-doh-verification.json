@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PREFIXED_DOMAIN_DOH_VERIFICATION",
+  "recordedAt": "2026-08-27T13:47:06Z",
+  "status": "DNS_INDEPENDENTLY_VERIFIED",
+  "target": {
+    "site": "hong-kong",
+    "publicIpv4": "47.242.52.235",
+    "webHostname": "anc.raft.xin",
+    "apiHostname": "api.anc.raft.xin"
+  },
+  "observations": [
+    {
+      "path": "GOOGLE_DOH_OPERATOR_NETWORK",
+      "webA": "47.242.52.235",
+      "apiA": "47.242.52.235",
+      "ttlSeconds": 600,
+      "authorityComment": "Response from 140.205.1.2."
+    },
+    {
+      "path": "CLOUDFLARE_DOH_OPERATOR_NETWORK",
+      "webA": "47.242.52.235",
+      "apiA": "47.242.52.235",
+      "ttlSeconds": 600
+    },
+    {
+      "path": "GOOGLE_DOH_HONG_KONG_HOST",
+      "webA": "47.242.52.235",
+      "apiA": "47.242.52.235",
+      "ttlSeconds": 600,
+      "authorityComment": "Response from 140.205.1.2."
+    }
+  ],
+  "supersedesInterpretationOf": [
+    "docs/acceptance/2026-08-27-anc-alpha-rc12-anc-raft-xin-dns.json",
+    "docs/acceptance/2026-08-27-anc-alpha-rc12-public-cutover-plan.json"
+  ],
+  "diagnosis": "UDP_53_TRANSPARENT_INTERCEPTION_ON_DEVELOPMENT_NETWORK",
+  "decision": "DNS_GATE_PASSED_TLS_AND_TRAFFIC_STILL_REQUIRE_SEPARATE_AUTHORIZATION",
+  "secretMaterialIncluded": false
+}

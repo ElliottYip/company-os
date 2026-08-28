@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PUBLIC_DOMAIN_FALLBACK_PLAN",
+  "recordedAt": "2026-08-27T13:08:00Z",
+  "status": "AWAITING_EXPLICIT_DNS_AUTHORIZATION",
+  "reason": "raft.xin stores the intended records but its authoritative service rewrites all A answers to 28.0.* addresses",
+  "candidate": {
+    "releaseTag": "v0.1.0-rc.12",
+    "site": "hong-kong",
+    "publicIpv4": "47.242.52.235",
+    "runtimeState": "RUNNING_CLOSED_INGRESS",
+    "webTarget": "172.31.11.3:8080",
+    "apiTarget": "172.31.11.2:4310"
+  },
+  "controlDomainEvidence": {
+    "zone": "bztiuzl.cn",
+    "registrarConsoleStatus": "normal",
+    "knownRecord": "api.bztiuzl.cn",
+    "knownRecordAnswer": "47.242.52.235",
+    "randomMissingNameReturnedNoAAnswer": true,
+    "soaSerialObserved": "2026082509"
+  },
+  "proposedDns": [
+    {
+      "hostname": "company-os.bztiuzl.cn",
+      "recordType": "A",
+      "hostRecord": "company-os",
+      "candidateValue": "47.242.52.235",
+      "ttlSeconds": 600,
+      "applied": false,
+      "rollbackAction": "DELETE_CREATED_RECORD"
+    },
+    {
+      "hostname": "company-os-api.bztiuzl.cn",
+      "recordType": "A",
+      "hostRecord": "company-os-api",
+      "candidateValue": "47.242.52.235",
+      "ttlSeconds": 600,
+      "applied": false,
+      "rollbackAction": "DELETE_CREATED_RECORD"
+    }
+  ],
+  "authorizationBoundary": {
+    "dnsAuthorized": false,
+    "certificateAuthorized": false,
+    "nginxReloadAuthorized": false,
+    "publicTrafficAuthorized": false,
+    "formalModeStartAuthorized": false,
+    "customerCredentialAuthorized": false
+  },
+  "orderedGates": [
+    "obtain explicit action-time authorization naming both proposed DNS records and 47.242.52.235",
+    "create both records without changing the existing raft.xin records",
+    "require one authoritative and two independent public resolvers to return 47.242.52.235 for both names",
+    "render and syntax-check a disabled Nginx candidate with the selected SAN set",
+    "obtain separate action-time authorization for certificate issuance, Nginx activation and public traffic",
+    "issue one certificate covering both names and atomically activate the candidate",
+    "repeat health, full browser journey, two-visitor isolation, reset, recovery, formal-route denial and bilingual tablet checks through HTTPS",
+    "observe at least 30 minutes with zero P0/P1 before declaring the public Alpha available"
+  ],
+  "nonGoals": [
+    "do not delete or modify the two raft.xin records",
+    "do not expose the formal OIDC runtime",
+    "do not install customer credentials in the fixture Demo",
+    "do not call external Agent platforms or paid APIs from the public Demo",
+    "do not modify Hangzhou or RC4 through RC11 evidence"
+  ]
+}

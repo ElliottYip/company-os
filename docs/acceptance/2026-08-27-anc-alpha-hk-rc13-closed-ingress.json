@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC13_CLOSED_INGRESS_ADMISSION",
+  "recordedAt": "2026-08-27T14:06:58Z",
+  "release": {
+    "tag": "v0.1.0-rc.13",
+    "releaseId": "0.1.0-rc.13-6668f4f5bd25",
+    "sourceRevision": "6668f4f5bd252176a11a7ff3fcf181282c87d943",
+    "workflowRun": "https://github.com/ElliottYip/company-os/actions/runs/33078196459",
+    "publication": "PASSED",
+    "prerelease": true,
+    "releaseManifestDigest": "sha256:3f3f33540f59c0db3c1d10881de7f63896a2487d73faf4a65594d1946da88c3e",
+    "sbomDigest": "sha256:cde60cc20d7d512886520f7e640db5636aa1d96bdad551f40f8f63d08e9caaa9",
+    "bundleManifestDigest": "sha256:4fdb8687a3b248de59a04cd4c9bff8d47e593556c24b852670a2c8ba37f5e6b5",
+    "portableArchiveDigest": "sha256:56c042c31eda210f804f60600fc43ddb068930096262ef2eb90950f930472da3"
+  },
+  "hongKong": {
+    "releaseDirectory": "/srv/company-os/staging/releases/0.1.0-rc.13-6668f4f5bd25",
+    "previousReleaseId": "0.1.0-rc.12-a1358df74535",
+    "installStatus": "INSTALLED_AND_RUNNING_CLOSED_INGRESS",
+    "composeProject": "company-os-public-demo-rc13",
+    "internalSubnet": "172.31.12.0/28",
+    "apiAddress": "172.31.12.2",
+    "webAddress": "172.31.12.3",
+    "publicTrafficChanged": false,
+    "tlsChanged": false,
+    "nginxReloaded": false,
+    "formalRuntimeStarted": false,
+    "secretMaterialIncluded": false,
+    "retainedReleaseIds": [
+      "0.1.0-rc.3-c6594d375c8c",
+      "0.1.0-rc.4-b9e58335eaba",
+      "0.1.0-rc.7-aaee3b5e3016",
+      "0.1.0-rc.8-3e9e4d058e54",
+      "0.1.0-rc.10-5d755eea93d8",
+      "0.1.0-rc.11-a2f77df71bf2",
+      "0.1.0-rc.12-a1358df74535",
+      "0.1.0-rc.13-6668f4f5bd25"
+    ]
+  },
+  "migrationPreflight": {
+    "status": "PLANNED_NOT_EXECUTED",
+    "cutoverId": "cutover-535c6f696fedf77cb945a3fd",
+    "migrationHistory": "EXACT_PREFIX",
+    "migrationAdded": false,
+    "postgresqlMajor": 16,
+    "publicContracts": "UNCHANGED",
+    "automaticDownMigration": false
+  },
+  "closedIngressAdmission": {
+    "health": "PASSED",
+    "readiness": "PASSED",
+    "releaseHeader": "0.1.0-rc.13-6668f4f5bd25",
+    "runtimeApiOrigin": "https://api.anc.raft.xin",
+    "homepageMainTitlePreserved": true,
+    "twoVisitorIsolation": "PASSED",
+    "visitorOneRenewals": 1,
+    "visitorTwoRenewals": 0,
+    "formalRouteDenial": "DEMO_IDENTITY_FORBIDDEN",
+    "governedWorkflow": ["AWAITING_APPROVAL", "APPROVED", "READY_AFTER_RESET"],
+    "apiRestartRecovery": "PASSED",
+    "recoveredGeneration": 1,
+    "demoProvenance": "DEMO_FIXTURE",
+    "externalConnectorRuntime": "DISABLED",
+    "externalModelRuntime": "DISABLED",
+    "secretBroker": "DISABLED",
+    "formalDatabase": "DISABLED"
+  },
+  "runtimeSnapshot": {
+    "rc12Api": { "health": "healthy", "restarts": 0 },
+    "rc12Web": { "health": "healthy", "restarts": 0 },
+    "rc13Api": { "health": "healthy", "restarts": 0, "memoryMiB": 66.51, "pids": 12 },
+    "rc13Web": { "health": "healthy", "restarts": 0, "memoryMiB": 12.59, "pids": 12 },
+    "hostDiskAvailableGiB": 77
+  },
+  "preparedIngress": {
+    "dnsIndependentVerification": "PASSED",
+    "environmentDigest": "sha256:58702d0ff07a8005af8277053d5f075e7c7f66c7b28b139ad054f08edde170b5",
+    "nginxCandidateDigest": "sha256:0bb64e076642798fc564a00271803b3755a6b9fa8afdd0c8d41bc250ed000b9f",
+    "nginxCandidateInstalled": true,
+    "nginxCandidateEnabled": false,
+    "certificateIssued": false
+  },
+  "decision": "RC13_ALPHA_RUNNING_CLOSED_INGRESS_AWAITING_TLS_AND_PUBLIC_TRAFFIC_AUTHORIZATION",
+  "notClaimed": [
+    "public URL availability",
+    "TLS acceptance",
+    "public browser acceptance",
+    "30-minute public observation",
+    "private OIDC Alpha runtime",
+    "customer-owned external-platform connection"
+  ]
+}

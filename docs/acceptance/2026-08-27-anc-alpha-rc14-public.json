@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC14_PUBLIC_ACCEPTANCE",
+  "recordedAt": "2026-08-27T15:07:34.133Z",
+  "release": {
+    "tag": "v0.1.0-rc.14",
+    "releaseId": "0.1.0-rc.14-74bd081c75df",
+    "sourceRevision": "74bd081c75dfe237b5f14548e952dd2c24295507",
+    "workflowRun": "https://github.com/ElliottYip/company-os/actions/runs/33081142291",
+    "githubRelease": "https://github.com/ElliottYip/company-os/releases/tag/v0.1.0-rc.14",
+    "publication": "PASSED",
+    "prerelease": true,
+    "releaseManifestDigest": "sha256:e9d0f1315170471fb6fee625c6f43fafedbd9aed280841cf6ee89cd9889044fa",
+    "sbomDigest": "sha256:57c6a1c9fc67a32c7076061ce3590de7b34ab52d5914c24c8c57e6e3147a3624",
+    "bundleManifestDigest": "sha256:8d9032f2358b3ff626f495ff0fb6ff6d32f69f643851435552a0c48024930017",
+    "portableArchiveDigest": "sha256:e43d1afee4bac354d2def70fc2c28023ec0580bd2884333fa2ec9dbb08f2aba9",
+    "images": {
+      "api": "ghcr.io/elliottyip/company-os-api@sha256:45a711a015c7152eb30031b1e680e91f4f45bbc10b3d3c4e04aaf26d2f8db5e3",
+      "web": "ghcr.io/elliottyip/company-os-web@sha256:d5fa669f1fcd5377a1999dde502fa7cc1e537a96b177305188276a1c03695648",
+      "ops": "ghcr.io/elliottyip/company-os-ops@sha256:0b9b378ef00eec3cca1f5017bdda95ece28178ecbdb9dcf3196d4f28e6d1cab1",
+      "codexAgentNode": "ghcr.io/elliottyip/company-os-codex-agent-node@sha256:90fae1318ec006eec23fdba40aaa2a6129edec44743e18c977db097be8a8cec6",
+      "vaultSecretBroker": "ghcr.io/elliottyip/company-os-vault-secret-broker@sha256:2bed466bca925f4561af4e8047ce0e99d2af5ecdfceeeba5b0aa4e1c1cdb77e9",
+      "referenceDataNode": "ghcr.io/elliottyip/company-os-reference-data-node@sha256:0780099e7ad2fc5670224cd3521a583cbe0e6980e036a563f1c3fe9ebfa914fb"
+    }
+  },
+  "hongKong": {
+    "releaseDirectory": "/srv/company-os/staging/releases/0.1.0-rc.14-74bd081c75df",
+    "installStatus": "INSTALLED_AND_PUBLICLY_ROUTED_DEMO_ONLY",
+    "composeProject": "company-os-public-demo-rc14",
+    "internalSubnet": "172.31.13.0/28",
+    "apiAddress": "172.31.13.2",
+    "webAddress": "172.31.13.3",
+    "environmentDigest": "sha256:274965980789b55b4c6cfb62ee02db07afcc927c3327708d2c3577a0eb2d9eeb",
+    "nginxCandidateDigest": "sha256:1779f5ea086b2582186a87163bb06f61dac05dfcaf2a7f53fecc38de8ae1585f",
+    "activeNginxTarget": "/srv/company-os/staging/config/candidates/company-os-public-demo-rc14.nginx.conf",
+    "rollbackCandidate": "0.1.0-rc.13-6668f4f5bd25",
+    "formalRuntimeStarted": false,
+    "secretMaterialIncluded": false
+  },
+  "tls": {
+    "webOrigin": "https://anc.raft.xin",
+    "apiOrigin": "https://api.anc.raft.xin",
+    "subject": "CN=anc.raft.xin",
+    "issuer": "Let's Encrypt YR2",
+    "subjectAlternativeNames": ["anc.raft.xin", "api.anc.raft.xin"],
+    "notBefore": "2026-08-27T13:10:22Z",
+    "notAfter": "2026-11-25T13:10:21Z",
+    "certificateVerification": "PASSED"
+  },
+  "admission": {
+    "releaseHeader": "0.1.0-rc.14-74bd081c75df",
+    "health": "PASSED",
+    "readiness": "PASSED",
+    "apiRestartRecovery": "PASSED",
+    "twoVisitorIsolation": "PASSED",
+    "governedPauseDecisionEvidence": "PASSED",
+    "renewalAndReset": "PASSED",
+    "formalRouteDenial": "DEMO_IDENTITY_FORBIDDEN",
+    "portfolioClasses": ["PERSONAL", "SHARED", "FEDERATED_RUNTIME"],
+    "managementDepths": ["INVENTORY", "OBSERVED", "GOVERNED", "FEDERATED"],
+    "demoProvenance": "DEMO_FIXTURE",
+    "externalConnectorRuntime": "DISABLED",
+    "externalModelRuntime": "DISABLED",
+    "secretBroker": "DISABLED",
+    "formalDatabase": "DISABLED"
+  },
+  "browser": {
+    "engine": "Google Chrome via Playwright",
+    "publicE2E": { "status": "PASSED", "tests": 9 },
+    "consoleErrors": 0,
+    "requestFailures": 0,
+    "httpErrors": 0,
+    "screenshots": [
+      {
+        "path": "2026-08-27-anc-alpha-rc14-public-browser/01-desktop-landing-en.png",
+        "digest": "sha256:d8f7ebc3f83af5a07306c1ba6bb608e96d327504f5790e1260631f42a47e4496"
+      },
+      {
+        "path": "2026-08-27-anc-alpha-rc14-public-browser/02-desktop-portfolio-en.png",
+        "digest": "sha256:b84447f95991ebf87665d3bde829ddb63b95a0a04e694ccfaa4f06a5bce02f0e"
+      },
+      {
+        "path": "2026-08-27-anc-alpha-rc14-public-browser/03-tablet-settings-zh-CN.png",
+        "digest": "sha256:16306488e16a0bcc17b0089638c416fe2f074dcf4f17e41691e9f3c0d2248e43"
+      }
+    ]
+  },
+  "publicObservation": {
+    "status": "PASSED",
+    "startedAt": "2026-08-27T14:37:30.316Z",
+    "completedAt": "2026-08-27T15:07:34.133Z",
+    "durationSeconds": 1803,
+    "sampleCount": 180,
+    "endpointProbeCount": 360,
+    "failureCount": 0,
+    "p95Milliseconds": 8,
+    "p0": 0,
+    "p1": 0,
+    "containers": {
+      "api": { "health": "healthy", "restartCount": 0, "oomKilled": false },
+      "web": { "health": "healthy", "restartCount": 0, "oomKilled": false }
+    }
+  },
+  "decision": "RC14_PUBLIC_ALPHA_DEMO_ACCEPTED",
+  "notClaimed": [
+    "production readiness",
+    "private OIDC Alpha runtime",
+    "customer-owned external-platform connection",
+    "live Slack, QM, Codex, Raft, or model execution",
+    "production data or paid model execution"
+  ]
+}

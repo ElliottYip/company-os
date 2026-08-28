@@ -24,7 +24,7 @@ export const zhCN: Readonly<Record<CompanyOSMessageKey, string>> = {
   "nav.activity": "动态",
   "nav.responsibility": "责任链",
   "nav.connectors": "接入与治理",
-  "nav.usage": "用量与预算",
+  "nav.usage": "用量与计费",
   "nav.settings": "设置",
   "office.title": "公司运行概览",
   "office.previewAria": "Pre-3D 办公室结构和状态预览",

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_CANDIDATE_ACCEPTANCE",
+  "recordedAt": "2026-08-27T11:23:05Z",
+  "candidate": {
+    "releaseTag": "v0.1.0-rc.11",
+    "releaseId": "0.1.0-rc.11-a2f77df71bf2",
+    "sourceRevision": "a2f77df71bf268f1d512324b863778ab4c3d65a4",
+    "qualificationRun": "https://github.com/ElliottYip/company-os/actions/runs/33063142717",
+    "releaseManifestDigest": "sha256:82026495b9efaf6f0379ba1f91e0827ae64af0a8a614c8448133bc2e5cc2a628",
+    "bundleManifestDigest": "sha256:c11b5e7ab00f625d7a2bf9a30c3d5137e8dbd65afbcf256a76e64fc5b581b148",
+    "portableArchiveDigest": "sha256:ca4fdc47f2b6f44580b55d7ed3823c27dbbccf45af3aed776be8a0e65f80016b"
+  },
+  "environment": {
+    "site": "hong-kong",
+    "composeProject": "company-os-public-demo-rc11",
+    "replicas": { "api": 1, "web": 1 },
+    "exposure": "CLOSED_INGRESS_SSH_TUNNEL_ONLY",
+    "dockerNetworkInternal": true,
+    "publicTrafficChanged": false,
+    "dnsChanged": false,
+    "tlsChanged": false,
+    "formalRuntimeStarted": false,
+    "externalConnectorsEnabledInDemo": false
+  },
+  "admission": {
+    "readiness": "PASSED",
+    "productionWebSplitOrigin": "PASSED",
+    "portfolioClasses": ["PERSONAL", "SHARED", "FEDERATED_RUNTIME"],
+    "managementDepths": ["INVENTORY", "OBSERVED", "GOVERNED", "FEDERATED"],
+    "personalPrivacyBoundary": "PASSED",
+    "observedAndFederatedSourceLinks": "PASSED",
+    "governedPauseDecisionEvidence": "PASSED",
+    "renewalAndReset": "PASSED",
+    "twoVisitorIsolation": "PASSED",
+    "formalRouteDenial": "PASSED",
+    "apiProcessRecovery": "PASSED",
+    "bilingualDesktopAndTablet": "PASSED",
+    "browserConsoleErrors": 0,
+    "observation30Minutes": {
+      "status": "PASSED",
+      "durationSeconds": 1800,
+      "samples": 180,
+      "p0": 0,
+      "p1": 0
+    },
+    "runtimeSnapshot": {
+      "api": { "health": "healthy", "restartCount": 0, "oomKilled": false, "memoryMiB": 69.29, "pids": 12, "errorLogMatches": 0 },
+      "web": { "health": "healthy", "restartCount": 0, "oomKilled": false, "memoryMiB": 15.18, "pids": 12, "errorLogMatches": 0 }
+    }
+  },
+  "releaseDisposition": "CLOSED_INGRESS_ALPHA_CANDIDATE_ACCEPTED",
+  "notClaimed": [
+    "public URL availability",
+    "DNS or TLS cutover",
+    "private OIDC Alpha runtime",
+    "production external-platform connection",
+    "production data or paid model execution"
+  ]
+}

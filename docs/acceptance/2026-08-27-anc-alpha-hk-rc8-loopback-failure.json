@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "profileType": "ANC_PUBLIC_DEMO_CLOSED_INGRESS_ADMISSION",
+  "siteId": "hong-kong-active",
+  "release": {
+    "releaseId": "0.1.0-rc.8-3e9e4d058e54",
+    "releaseVersion": "0.1.0-rc.8",
+    "sourceRevision": "3e9e4d058e544b8599770c2acc86fe2ae5564699",
+    "releaseManifestDigest": "sha256:50d3df933e191c95e84f6f6c9d55fdcc54e6d99af7d312be40b6dc77f722c011",
+    "bundleManifestDigest": "sha256:0cf4ab88dc03a6792c4f82ed02a85ea2ce91eb2630b76a768df9f0265652b57d",
+    "portableArchiveDigest": "sha256:4895c26f1f747b0a9d90a9820ff28a9bcecf2449bbb50362e009c0cba4660636"
+  },
+  "publication": {
+    "workflowRunId": "33058254680",
+    "qualification": "PASSED",
+    "protectedEnvironmentApproval": "APPROVED",
+    "publish": "PASSED"
+  },
+  "closedIngressRuntime": {
+    "composeProject": "company-os-public-demo-rc8",
+    "apiReplicas": 1,
+    "webReplicas": 1,
+    "dockerNetworkInternal": true,
+    "nginxRouteChanged": false,
+    "dnsChanged": false,
+    "tlsChanged": false,
+    "publicTrafficOpened": false,
+    "formalDependenciesPresent": false,
+    "externalCallsAllowed": false
+  },
+  "admission": {
+    "readiness": "PASSED",
+    "portfolioClasses": ["PERSONAL", "SHARED", "FEDERATED_RUNTIME"],
+    "managementDepths": ["INVENTORY", "OBSERVED", "GOVERNED", "FEDERATED"],
+    "twoVisitorIsolation": "PASSED",
+    "governedPauseDecisionEvidence": "PASSED",
+    "renewalAndReset": "PASSED",
+    "formalRouteDenial": "PASSED",
+    "processRecovery": "PASSED",
+    "productionWebBrowser": "FAILED"
+  },
+  "failure": {
+    "observedRequest": "POST http://localhost:4660/api/demo/v2/sessions",
+    "observedStatus": 405,
+    "stableUiError": "Unexpected end of JSON input",
+    "rootCause": "The Vite production build moved the application module before company-os-config.js, so startup read no API base URL and used the Web origin.",
+    "fixAdmission": "The built Web must load company-os-config.js before the application module, enforced by npm run build."
+  },
+  "disposition": "RETAINED_FAILED_CANDIDATE_DO_NOT_ROUTE",
+  "capturedAt": "2026-08-27T09:55:03Z"
+}

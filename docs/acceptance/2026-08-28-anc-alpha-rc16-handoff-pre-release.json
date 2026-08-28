@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC16_HANDOFF_PRE_RELEASE",
+  "recordedAt": "2026-08-27T21:38:58Z",
+  "implementationRevision": "4c0185c5572be3931f766ff8e1d53069e9609f1a",
+  "changes": {
+    "companyOsHomepagePositioningIncluded": true,
+    "privatePaperclipComposeOverlayBundled": true,
+    "paperclipAlphaRunbookBundled": true,
+    "publicDemoProfileChanged": false,
+    "credentialMaterialIncluded": false
+  },
+  "tdd": {
+    "red": {
+      "tests": 5,
+      "passed": 3,
+      "failed": 2,
+      "missingFiles": [
+        "compose.private-alpha-paperclip.yml",
+        "paperclip-federated-alpha-runbook.md"
+      ]
+    },
+    "green": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "verification": {
+    "repositoryTests": {
+      "total": 721,
+      "passed": 717,
+      "failed": 0,
+      "skipped": 4
+    },
+    "browserE2E": {
+      "total": 21,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 4
+    },
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "PASSED_ZERO_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED",
+    "web3dPerformanceBudget": "PASSED"
+  },
+  "releaseState": {
+    "tagCreated": false,
+    "remoteBranchUpdated": false,
+    "published": false,
+    "deployed": false
+  },
+  "notClaimed": [
+    "customer-owned Paperclip sandbox acceptance",
+    "private OIDC runtime start",
+    "real Paperclip usage or cost synchronization",
+    "production connector availability"
+  ]
+}

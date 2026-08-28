@@ -158,7 +158,7 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
         retentionPolicyId: "standard-retention",
         connectorCatalog: { revision: 1, connectors: [] }, runtimeConnectors: [],
         secretBrokerRuntime: null,
-        runtimeModelProviders: [], runtimeDataConnectors: [],
+        runtimeModelProviders: [], runtimeDataConnectors: [], runtimeFederatedSources: [],
         governance: { revision: 1, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
         toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
         usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
@@ -715,7 +715,7 @@ test("formal Web rejects private credential references or cross-tenant records i
     schemaVersion: 1, mode: "PRODUCTION", viewer: { actorId: "human-one", displayName: "Human One" },
     retentionPolicyId: "standard-retention",
     connectorCatalog: { revision: 0, connectors: [] }, runtimeConnectors: [], secretBrokerRuntime: null,
-    runtimeModelProviders: [], runtimeDataConnectors: [],
+    runtimeModelProviders: [], runtimeDataConnectors: [], runtimeFederatedSources: [],
     governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
     toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
     usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
@@ -732,6 +732,31 @@ test("formal Web rejects private credential references or cross-tenant records i
     });
     await assert.rejects(client.administration(), /ADMINISTRATION_PROJECTION_INVALID/);
   }
+});
+
+test("formal Web accepts an earlier administration projection without federated sources during rolling upgrade", async () => {
+  const payload = {
+    schemaVersion: 1, mode: "PRODUCTION", viewer: { actorId: "human-one", displayName: "Human One" },
+    retentionPolicyId: "standard-retention",
+    connectorCatalog: { revision: 0, connectors: [] }, runtimeConnectors: [], secretBrokerRuntime: null,
+    runtimeModelProviders: [], runtimeDataConnectors: [],
+    governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
+    toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
+    usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
+      policySummaries: [], totalReportedCostCents: 0, unpricedEventCount: 0 },
+    egressDecisions: [], generatedAt: "2026-08-25T00:00:00.000Z",
+  };
+  const client = createFormalApplicationClient({
+    baseUrl: "https://company-os.example", webOrigin: "https://app.company-os.example",
+    companyId: "company-one", fetcher: async () => response(payload),
+  });
+  assert.deepEqual((await client.administration()).runtimeFederatedSources, []);
+
+  const invalidClient = createFormalApplicationClient({
+    baseUrl: "https://company-os.example", webOrigin: "https://app.company-os.example",
+    companyId: "company-one", fetcher: async () => response({ ...payload, runtimeFederatedSources: {} }),
+  });
+  await assert.rejects(invalidClient.administration(), /ADMINISTRATION_PROJECTION_INVALID/);
 });
 
 test("formal Web client surfaces stable API error codes without depending on message copy", async () => {

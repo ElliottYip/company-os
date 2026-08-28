@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "recordType": "FEDERATED_CONNECTOR_SANDBOX_ACCEPTANCE",
+  "recordedAt": "2026-08-27T11:05:15Z",
+  "connector": {
+    "id": "paperclip-alpha",
+    "sourceVersion": "v2026.817.0",
+    "sourceRevision": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+    "transport": "OFFICIAL_API_LOCAL_PRIVATE_SANDBOX",
+    "executionOwner": "EXTERNAL_PLATFORM"
+  },
+  "sandbox": {
+    "deploymentMode": "local_trusted",
+    "deploymentExposure": "private",
+    "companyName": "ANC Alpha Connector Sandbox",
+    "dataProvenance": "SYNTHETIC_SANDBOX",
+    "budgetCents": 0,
+    "llmConfigured": false,
+    "executionAllowed": false,
+    "productionDataUsed": false,
+    "removedAfterAcceptance": true
+  },
+  "accepted": {
+    "officialHealthApi": true,
+    "officialAgentInventoryApi": true,
+    "officialIssueApi": true,
+    "inventoryRecords": 4,
+    "federatedWorkRecords": 1,
+    "anomalies": 0,
+    "replayStable": true,
+    "issueDescriptionImported": false,
+    "adapterConfigurationImported": false,
+    "costImportedCents": 0,
+    "authorizationDisclosed": false
+  },
+  "credentialExercise": {
+    "temporaryBoardKeyCreated": true,
+    "temporaryBoardKeyRevoked": true,
+    "temporaryCredentialFilesRemoved": true,
+    "revocationEnforcementAccepted": false,
+    "reason": "Paperclip local_trusted mode accepts private-loopback requests independently of board-key authorization, so this sandbox cannot prove credential rejection after revocation."
+  },
+  "disposition": "REAL_API_CONTRACT_ACCEPTED_FORMAL_AUTHENTICATED_ALPHA_PENDING",
+  "notClaimed": [
+    "OIDC-protected Company OS formal-route synchronization",
+    "authenticated remote Paperclip sandbox acceptance",
+    "production connector availability",
+    "usage or cost capability",
+    "Agent execution through ANC"
+  ]
+}

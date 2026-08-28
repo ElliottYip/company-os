@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC16_FEDERATED_RUNTIME_VISIBILITY_ADMISSION",
+  "recordedAt": "2026-08-27T22:34:37Z",
+  "implementationRevision": "f386f3446b75dd5ce8a53053ef034fa0164dbc55",
+  "contract": {
+    "neutralPortOwnsCapabilities": true,
+    "neutralPortOwnsRetainedHealth": true,
+    "administrationReadCallsExternalPlatform": false,
+    "formalWebDisplaysDeclaredCapabilities": true,
+    "formalWebDisplaysRetainedHealth": true,
+    "formalGovernanceBrowserJourneyVerified": true,
+    "productionApiImagePackageContractVerified": true,
+    "rawVendorErrorsRetained": false,
+    "credentialOrReferenceExposed": false
+  },
+  "healthSemantics": {
+    "initial": "NOT_CHECKED",
+    "successfulSynchronization": "HEALTHY",
+    "failedSynchronization": "UNAVAILABLE",
+    "processRestart": "NOT_CHECKED",
+    "liveAvailabilityClaimed": false
+  },
+  "rollingUpgrade": {
+    "serverEmitsRuntimeFederatedSources": true,
+    "webAcceptsEarlierV1ProjectionWithoutField": true,
+    "missingFieldNormalizedToEmptyList": true,
+    "malformedFieldRejected": true
+  },
+  "verification": {
+    "focused": {
+      "total": 33,
+      "passed": 33,
+      "failed": 0
+    },
+    "repositoryTests": {
+      "total": 727,
+      "passed": 723,
+      "failed": 0,
+      "skipped": 4
+    },
+    "browserE2E": {
+      "total": 22,
+      "passed": 18,
+      "failed": 0,
+      "skipped": 4
+    },
+    "connectorBundle": "CURRENT",
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "PASSED_ZERO_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED",
+    "web3dPerformanceBudget": "PASSED"
+  },
+  "releaseState": {
+    "rc16TagCreated": false,
+    "published": false,
+    "hongKongCandidatePrepared": false,
+    "publicRc14Changed": false
+  },
+  "notClaimed": [
+    "current upstream availability from an Administration read",
+    "customer-owned Paperclip sandbox acceptance",
+    "private OIDC runtime start",
+    "Paperclip usage or cost synchronization",
+    "production connector availability"
+  ]
+}

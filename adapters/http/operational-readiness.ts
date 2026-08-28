@@ -40,6 +40,7 @@ async function brokerCheck(port: HealthPort | null): Promise<OperationalCheck> {
 
 /** Probes only bounded health contracts and never forwards provider error text. */
 export async function getOperationalReadiness(input: {
+  readonly runtimeMode?: "formal" | "public-demo";
   readonly formalRequired: boolean;
   readonly formalConfigured: boolean;
   readonly database: { ping(): Promise<void>; checkSchema(): Promise<void> } | null;
@@ -48,6 +49,32 @@ export async function getOperationalReadiness(input: {
   readonly secretBroker: HealthPort | null;
   readonly dataConnectors: readonly HealthPort[];
 }): Promise<OperationalReadiness> {
+  if (input.runtimeMode === "public-demo") {
+    const checks: Record<string, OperationalCheck> = {
+      configuration: input.formalConfigured
+        ? { status: "fail", code: "PUBLIC_DEMO_FORMAL_CONFIGURATION_FORBIDDEN" }
+        : { status: "pass", code: "PUBLIC_DEMO_CONFIGURATION_READY" },
+      connectorRuntime: input.connectors.length
+        ? { status: "fail", code: "PUBLIC_DEMO_EXTERNAL_CONNECTOR_FORBIDDEN" }
+        : { status: "pass", code: "EXTERNAL_CONNECTOR_RUNTIME_DISABLED" },
+      modelRuntime: input.modelProviders.length
+        ? { status: "fail", code: "PUBLIC_DEMO_MODEL_RUNTIME_FORBIDDEN" }
+        : { status: "pass", code: "EXTERNAL_MODEL_RUNTIME_DISABLED" },
+      secretBroker: input.secretBroker
+        ? { status: "fail", code: "PUBLIC_DEMO_SECRET_BROKER_FORBIDDEN" }
+        : { status: "pass", code: "SECRET_BROKER_DISABLED" },
+      dataRuntime: input.dataConnectors.length
+        ? { status: "fail", code: "PUBLIC_DEMO_DATA_RUNTIME_FORBIDDEN" }
+        : { status: "pass", code: "DATA_RUNTIME_DISABLED" },
+      database: input.database
+        ? { status: "fail", code: "PUBLIC_DEMO_DATABASE_FORBIDDEN" }
+        : { status: "pass", code: "FORMAL_DATABASE_DISABLED" },
+    };
+    return {
+      status: Object.values(checks).some(({ status }) => status === "fail") ? "not_ready" : "ready",
+      checks,
+    };
+  }
   const [connectorRuntime, modelRuntime, secretBroker, dataRuntime] = await Promise.all([
     runtimeCheck(input.connectors, "CONNECTOR_RUNTIME"),
     runtimeCheck(input.modelProviders, "MODEL_RUNTIME"),

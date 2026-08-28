@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "0.1.0-rc.9",
+  "sourceRevision": "a98057965fdba72d8c16e1c906e3afdf49b3c432",
+  "workflowRunId": "33060836134",
+  "qualification": {
+    "repositoryGate": "PASSED",
+    "keycloak": "PASSED",
+    "postgresql": "PASSED",
+    "verifiedTls": "PASSED",
+    "vault": "PASSED",
+    "soak": "PASSED",
+    "releaseShapedProfiles": "FAILED"
+  },
+  "failure": {
+    "stage": "WEB_IMAGE_BUILD",
+    "code": "MODULE_NOT_FOUND",
+    "rootCause": "npm run build invoked the new built-Web order checker, but Dockerfile.web had not copied that script into its build stage.",
+    "fix": "Copy only scripts/check-built-web-runtime-config-order.mjs into the Web build stage and assert the Dockerfile contract."
+  },
+  "postFixLocalAdmission": {
+    "deploymentArtifactTests": "PASSED_21_OF_21",
+    "selfHostedCompose": "PASSED",
+    "managedCloudCompose": "PASSED"
+  },
+  "publish": "SKIPPED",
+  "serverInstalled": false,
+  "disposition": "RETAINED_FAILED_QUALIFICATION",
+  "capturedAt": "2026-08-27T10:06:15Z"
+}

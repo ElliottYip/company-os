@@ -1028,3 +1028,202 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
 @media (max-width: 760px) {
   .responsibility-policy-grid { grid-template-columns: 1fr; }
 }
+.portfolio-title .portfolio-badge {
+  align-self: flex-start;
+}
+
+.portfolio-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--family-border, #d8d5cf);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--family-ink, #25221f);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+}
+
+.portfolio-badge.demo,
+.portfolio-badge.depth {
+  border-color: rgba(226, 108, 56, 0.42);
+  background: rgba(255, 238, 225, 0.9);
+  color: #9b431e;
+}
+
+.portfolio-badge.healthy {
+  border-color: rgba(49, 133, 98, 0.35);
+  background: rgba(228, 246, 238, 0.9);
+  color: #226c4d;
+}
+
+.portfolio-metric-grid,
+.portfolio-agent-grid,
+.portfolio-governance-grid,
+.portfolio-commercial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.portfolio-metric-grid article,
+.portfolio-agent-card,
+.portfolio-governance-grid article,
+.portfolio-commercial-grid article,
+.portfolio-demo-path,
+.portfolio-approval-card,
+.portfolio-work-row {
+  border: 1px solid var(--family-border, #dedbd4);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 34px rgba(50, 42, 35, 0.06);
+}
+
+.portfolio-metric-grid article,
+.portfolio-governance-grid article,
+.portfolio-commercial-grid article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.15rem;
+}
+
+.portfolio-metric-grid article span:first-child {
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 780;
+}
+
+.portfolio-metric-grid small,
+.portfolio-commercial-grid small {
+  color: var(--family-muted, #6f6963);
+}
+
+.portfolio-demo-path {
+  margin-top: 1rem;
+  padding: 1.25rem 1.4rem;
+}
+
+.portfolio-demo-path ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  padding-left: 1.25rem;
+}
+
+.portfolio-agent-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.2rem;
+}
+
+.portfolio-agent-card h3,
+.portfolio-work-row h3,
+.portfolio-commercial-grid h3 {
+  margin: 0.25rem 0;
+}
+
+.portfolio-agent-card dl,
+.portfolio-approval-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.portfolio-agent-card dl div,
+.portfolio-approval-card dl div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.portfolio-agent-card dt,
+.portfolio-approval-card dt {
+  color: var(--family-muted, #6f6963);
+  font-size: 0.75rem;
+}
+
+.portfolio-agent-card dd,
+.portfolio-approval-card dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 650;
+}
+
+.portfolio-work-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.portfolio-work-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+}
+
+.portfolio-work-row > div:last-child {
+  display: flex;
+  min-width: 10rem;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+
+.portfolio-work-row a {
+  color: #9b431e;
+  font-weight: 700;
+}
+
+.portfolio-approval-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 1fr);
+  gap: 1.25rem;
+  padding: 1.4rem;
+}
+
+.portfolio-approval-card .task-actions {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 960px) {
+  .portfolio-metric-grid,
+  .portfolio-agent-grid,
+  .portfolio-governance-grid,
+  .portfolio-commercial-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .portfolio-demo-path ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .portfolio-metric-grid,
+  .portfolio-agent-grid,
+  .portfolio-governance-grid,
+  .portfolio-commercial-grid,
+  .portfolio-approval-card {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-demo-path ol {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-work-row {
+    flex-direction: column;
+  }
+
+  .portfolio-work-row > div:last-child {
+    align-items: flex-start;
+  }
+}

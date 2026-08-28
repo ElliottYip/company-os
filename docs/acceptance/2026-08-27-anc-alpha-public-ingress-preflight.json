@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PUBLIC_INGRESS_PREFLIGHT",
+  "recordedAt": "2026-08-27T11:08:00Z",
+  "target": {
+    "site": "hong-kong",
+    "publicIpv4": "47.242.52.235",
+    "webHostname": "company-os.raft.xin",
+    "apiHostname": "company-os-api.raft.xin"
+  },
+  "observedDns": {
+    "authoritativeProvider": "AliDNS",
+    "webA": "28.0.77.91",
+    "apiA": "28.0.77.92",
+    "targetsHongKongHost": false
+  },
+  "observedTransport": {
+    "webHttp": "EMPTY_REPLY",
+    "apiHttp": "EMPTY_REPLY",
+    "webTls": "HANDSHAKE_FAILED",
+    "apiTls": "HANDSHAKE_FAILED"
+  },
+  "hostIngress": {
+    "existingCompanyOsNginxConfiguration": "HTTP_ONLY_STAGING_LOOPBACK_4600_4601",
+    "matchingCertificateInstalled": false,
+    "rc11RequestedLoopbackBindingsMaterialized": false,
+    "docker29FixedInternalBridgeProbe": {
+      "web": "PASSED",
+      "apiReadiness": "PASSED",
+      "exactCandidateCompose": "PASSED",
+      "temporaryResourcesRemoved": true
+    },
+    "probeSubnet": "172.31.11.0/28",
+    "probeCleanedUp": true
+  },
+  "decision": "DO_NOT_ROUTE_RC11",
+  "requiredNextActions": [
+    "publish and install an immutable candidate containing the fixed internal bridge address contract",
+    "obtain authoritative DNS change control for both hostnames",
+    "issue and install matching TLS certificates",
+    "route Nginx only to the fixed Demo Web and API bridge addresses",
+    "repeat browser, isolation, reset, restart, formal-route denial and bounded observation through verified TLS"
+  ]
+}

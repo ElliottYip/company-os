@@ -41,7 +41,7 @@ Status: **APPROVED — assumptions 1–5 confirmed by the product owner on
    or model Providers part of Company OS Core/Application.
 3. Hangzhou remains private before ICP/public-ingress authorization. It uses
    site-owned internal HTTPS coordinates and a site-owned OIDC callback; it
-   never reuses `company-os.raft.xin` or the Hong Kong OIDC client.
+   never reuses `anc.raft.xin` or the Hong Kong OIDC client.
 4. Off-site ZOS backup remains disabled until separately authorized. First
    start may prove local encrypted backup/restore, but cannot claim off-site
    recovery acceptance while the backup capability is disabled.

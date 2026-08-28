@@ -186,6 +186,15 @@ of the response. Connector rows also expose `runtimeHealth` as `HEALTHY`,
 presented as proof that an execution port exists. Egress records contain policy
 inputs by reference/digest, not exported content.
 
+The projection also includes `runtimeFederatedSources` for installed neutral
+portfolio-source packages. Each row contains only connector identity, protocol,
+declared data/control capabilities, maximum batch size, retained last-check
+health, and bounded check timestamps. It never includes an upstream URL,
+credential reference, raw vendor error, session identifier, or source record.
+Administration reads do not call the external platform. The server emits this
+additive field in current responses; a rolling-upgrade Web accepts an earlier
+v1 response without it and normalizes the value to an empty list.
+
 ## Data portability v1
 
 - `GET /api/v1/companies/{companyId}/portability/export`

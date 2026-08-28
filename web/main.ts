@@ -27,5 +27,5 @@ const application = formalMode
 if (inviteMatch && application) {
   mountHumanInviteAcceptance(mountElement, application, inviteMatch[1] as string);
 } else {
-  mountCompanyOS({ mountElement }, application);
+  mountCompanyOS({ mountElement, publicDemoBaseUrl: runtimeConfig.apiBaseUrl }, application);
 }

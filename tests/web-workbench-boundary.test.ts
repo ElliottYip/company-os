@@ -99,7 +99,7 @@ test("workbench offers a local company draft while formal capabilities stay behi
   assert.match(mountSource, /data-select-company/);
   assert.match(mountSource, /company-os\.selected-company/);
   assert.match(mountSource, /data-setup-dialog/);
-  assert.match(mountSource, /Create a company/);
+  assert.match(mountSource, /Set up Company OS/);
   assert.match(mountSource, /data-add-human/);
   assert.match(mountSource, /data-add-agent/);
   assert.match(mountSource, /data-add-department/);

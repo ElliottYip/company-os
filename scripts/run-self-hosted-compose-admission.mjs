@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createServer as createHttpServer, request as httpRequest } from "node:http";
 import { createServer as createHttpsServer, request as httpsRequest } from "node:https";
 import { tmpdir } from "node:os";
@@ -13,6 +13,36 @@ if (!["self-hosted", "managed-cloud"].includes(admissionProfile)) {
   throw new Error("COMPOSE_ADMISSION_PROFILE_INVALID");
 }
 const managedCloud = admissionProfile === "managed-cloud";
+const paperclipEnabled = process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_ENABLED?.trim() === "true";
+const paperclipBaseUrl = process.env.COMPANY_OS_PAPERCLIP_BASE_URL?.trim() ?? "";
+const paperclipExternalCompanyId = process.env.COMPANY_OS_PAPERCLIP_COMPANY_ID?.trim() ?? "";
+const paperclipExternalAgentId = process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_AGENT_ID?.trim() ?? "";
+const paperclipSecretDirectory = process.env.COMPANY_OS_PAPERCLIP_SECRET_DIRECTORY?.trim() ?? "";
+const paperclipExtraCaCertificate =
+  process.env.COMPANY_OS_COMPOSE_ADMISSION_EXTRA_CA_CERTIFICATE?.trim() ?? "";
+const paperclipExtraCaPrivateKey =
+  process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_TLS_KEY?.trim() ?? "";
+const paperclipKeyId = process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_KEY_ID?.trim() ?? "";
+const paperclipAdminBaseUrl = process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_ADMIN_BASE_URL?.trim() ?? "";
+const paperclipAdminEmail = process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_ADMIN_EMAIL?.trim() ?? "";
+const paperclipAdminPassword = process.env.COMPANY_OS_COMPOSE_ADMISSION_PAPERCLIP_ADMIN_PASSWORD?.trim() ?? "";
+if (paperclipEnabled) {
+  const values = [paperclipBaseUrl, paperclipExternalCompanyId, paperclipExternalAgentId,
+    paperclipSecretDirectory, paperclipExtraCaCertificate, paperclipExtraCaPrivateKey,
+    paperclipKeyId, paperclipAdminBaseUrl,
+    paperclipAdminEmail, paperclipAdminPassword];
+  if (values.some((value) => !value)) throw new Error("COMPOSE_ADMISSION_PAPERCLIP_CONFIGURATION_REQUIRED");
+  const authorizationFile = join(paperclipSecretDirectory, "paperclip-board-key");
+  if (!existsSync(authorizationFile) || !statSync(authorizationFile).isFile()) {
+    throw new Error("COMPANY_OS_PAPERCLIP_AUTHORIZATION_FILE_REQUIRED");
+  }
+  if (!existsSync(paperclipExtraCaCertificate) || !statSync(paperclipExtraCaCertificate).isFile()) {
+    throw new Error("COMPOSE_ADMISSION_PAPERCLIP_CA_REQUIRED");
+  }
+  if (!existsSync(paperclipExtraCaPrivateKey) || !statSync(paperclipExtraCaPrivateKey).isFile()) {
+    throw new Error("COMPOSE_ADMISSION_PAPERCLIP_TLS_KEY_REQUIRED");
+  }
+}
 const suffix = process.pid + "-" + randomBytes(4).toString("hex");
 const project = "company-os-compose-" + suffix;
 const keycloakContainer = "company-os-compose-keycloak-" + suffix;
@@ -20,6 +50,7 @@ const postgresContainer = "company-os-compose-postgres-" + suffix;
 const externalNetwork = "company-os-compose-external-" + suffix;
 const apiImage = "company-os-api:compose-" + suffix;
 const webImage = "company-os-web:compose-" + suffix;
+const paperclipSecretVolume = project + "-paperclip-secret";
 const temporaryDirectory = mkdtempSync(join(tmpdir(), "company-os-compose-"));
 const tlsDirectory = temporaryDirectory + "/tls";
 const importDirectory = temporaryDirectory + "/import";
@@ -27,6 +58,7 @@ mkdirSync(tlsDirectory);
 mkdirSync(importDirectory);
 const keyPath = tlsDirectory + "/tls-key.pem";
 const certificatePath = tlsDirectory + "/tls-cert.pem";
+const trustedCertificatePath = tlsDirectory + "/trusted-ca.pem";
 const environmentPath = temporaryDirectory + "/compose.env";
 const overridePath = temporaryDirectory + "/compose.override.yml";
 // Use one DNS name for both sides of the OIDC flow: Docker resolves the
@@ -65,9 +97,10 @@ function runInherited(command, args, environment) {
 }
 
 function compose(...args) {
+  const paperclipFiles = paperclipEnabled ? ["--file", "deploy/compose.private-alpha-paperclip.yml"] : [];
   return docker("compose", "--project-name", project, "--env-file", environmentPath,
     "--file", managedCloud ? "deploy/compose.managed-cloud.yml" : "deploy/compose.self-hosted.yml",
-    "--file", overridePath, ...args);
+    ...paperclipFiles, "--file", overridePath, ...args);
 }
 
 async function availablePort() {
@@ -169,6 +202,23 @@ function captureDurableState(container) {
   return state;
 }
 
+function capturePrivateAlphaIdentity(container) {
+  const query = [
+    "SELECT json_build_object(",
+    "'companyId', (SELECT id FROM company_os_company ORDER BY created_at LIMIT 1),",
+    "'humanId', (SELECT id FROM company_os_auth_user ORDER BY created_at LIMIT 1)",
+    ")::text;",
+  ].join(" ");
+  const output = docker("exec", container, "psql", "--username", databaseOwner,
+    "--dbname", "company_os", "--tuples-only", "--no-align", "--set", "ON_ERROR_STOP=1",
+    "--command", query);
+  const identity = JSON.parse(output);
+  if (typeof identity.companyId !== "string" || typeof identity.humanId !== "string") {
+    throw new Error("COMPOSE_ADMISSION_PRIVATE_ALPHA_IDENTITY_MISSING");
+  }
+  return identity;
+}
+
 async function cleanup() {
   if (cleaned) return;
   cleaned = true;
@@ -183,6 +233,9 @@ async function cleanup() {
   try { docker("image", "rm", apiImage, webImage); } catch { /* an interrupted build may not have produced both */ }
   try { docker("rm", "--force", keycloakContainer); } catch { /* container may already be gone */ }
   try { docker("network", "rm", externalNetwork); } catch { /* exact network may already be gone */ }
+  if (paperclipEnabled) {
+    try { docker("volume", "rm", paperclipSecretVolume); } catch { /* exact test volume may already be gone */ }
+  }
   rmSync(temporaryDirectory, { recursive: true, force: true });
 }
 
@@ -202,6 +255,10 @@ try {
     "-keyout", keyPath, "-out", certificatePath], { stdio: "ignore" });
   chmodSync(keyPath, 0o644);
   chmodSync(certificatePath, 0o644);
+  writeFileSync(trustedCertificatePath, Buffer.concat([
+    readFileSync(certificatePath),
+    ...(paperclipEnabled ? [Buffer.from("\n"), readFileSync(paperclipExtraCaCertificate)] : []),
+  ]), { mode: 0o644 });
 
   const realm = {
     realm: realmName, enabled: true, sslRequired: "all", registrationAllowed: false,
@@ -249,12 +306,53 @@ try {
     "COMPANY_OS_RUNTIME_DATABASE_USER=" + runtimeDatabaseUser,
     "COMPANY_OS_RUNTIME_DATABASE_PASSWORD=" + runtimeDatabasePassword,
   ]));
+  environmentLines.push(...(paperclipEnabled ? [
+    "COMPANY_OS_FEDERATED_SOURCE_PACKAGES=@company-os/federated-source-reference",
+    "COMPANY_OS_PAPERCLIP_BASE_URL=" + paperclipBaseUrl,
+    "COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID=pending-company",
+    "COMPANY_OS_PAPERCLIP_COMPANY_ID=" + paperclipExternalCompanyId,
+    "COMPANY_OS_PAPERCLIP_CONNECTOR_ID=paperclip-alpha",
+    "COMPANY_OS_PAPERCLIP_RUNTIME_AGENT_ID=paperclip-runtime",
+    "COMPANY_OS_PAPERCLIP_ACCOUNTABLE_HUMAN_ID=pending-human",
+    "COMPANY_OS_PAPERCLIP_AGENT_BINDINGS=" + JSON.stringify([{
+      externalAgentId: paperclipExternalAgentId,
+      agentId: "paperclip-research-agent",
+      accountableHumanId: "pending-human",
+    }]),
+    "COMPANY_OS_PAPERCLIP_SECRET_DIRECTORY=" + paperclipSecretDirectory,
+  ] : []));
   writeFileSync(environmentPath, environmentLines.join("\n") + "\n", { mode: 0o600 });
   const overrideLines = [
     "services:", "  api:",
-    "    environment:", "      NODE_EXTRA_CA_CERTS: /company-os-test-tls/tls-cert.pem",
+    "    environment:", "      NODE_EXTRA_CA_CERTS: /company-os-test-tls/trusted-ca.pem",
     "    volumes:", "      - \"" + tlsDirectory + ":/company-os-test-tls:ro\"",
   ];
+  if (paperclipEnabled) {
+    // Docker Desktop presents host bind-mounted files as uid 0. Keep the API
+    // non-root and exercise the shipping credential owner check with a
+    // container-native volume owned by the image's node user instead.
+    overrideLines.push(
+      "      - \"" + paperclipSecretVolume + ":/run/company-os/federated-source-secrets:ro\"",
+    );
+    overrideLines.push(
+      "  paperclip-proxy:",
+      "    image: " + apiImage,
+      "    user: \"0:0\"",
+      "    entrypoint: [\"node\"]",
+      "    command: [\"/company-os-paperclip-proxy/proxy.mjs\"]",
+      "    environment:",
+      "      COMPANY_OS_PAPERCLIP_PROXY_CERTIFICATE: /company-os-paperclip-proxy/cert.pem",
+      "      COMPANY_OS_PAPERCLIP_PROXY_KEY: /company-os-paperclip-proxy/key.pem",
+      "      COMPANY_OS_PAPERCLIP_PROXY_PORT: \"3140\"",
+      "      COMPANY_OS_PAPERCLIP_UPSTREAM_HOST: host.docker.internal",
+      "      COMPANY_OS_PAPERCLIP_UPSTREAM_PORT: \"3137\"",
+      "    volumes:",
+      "      - \"" + join(process.cwd(), "scripts/private-alpha-paperclip-tls-proxy.mjs") +
+        ":/company-os-paperclip-proxy/proxy.mjs:ro\"",
+      "      - \"" + paperclipExtraCaCertificate + ":/company-os-paperclip-proxy/cert.pem:ro\"",
+      "      - \"" + paperclipExtraCaPrivateKey + ":/company-os-paperclip-proxy/key.pem:ro\"",
+    );
+  }
   if (managedCloud) {
     overrideLines.push(
       "    ports:", "      - \"" + apiBackendPort + ":4310\"",
@@ -262,9 +360,14 @@ try {
     );
   }
   overrideLines.push("networks:", "  default:", "    external: true", "    name: " + externalNetwork);
+  if (paperclipEnabled) {
+    overrideLines.push("volumes:", "  " + paperclipSecretVolume + ":", "    external: true",
+      "    name: " + paperclipSecretVolume);
+  }
   writeFileSync(overridePath, overrideLines.join("\n") + "\n", { mode: 0o600 });
 
   docker("network", "create", externalNetwork);
+  if (paperclipEnabled) docker("volume", "create", "--name", paperclipSecretVolume);
   docker("run", "--detach", "--name", keycloakContainer, "--network", externalNetwork, "--memory", "1g",
     "--env", "KC_BOOTSTRAP_ADMIN_USERNAME=" + adminUsername,
     "--env", "KC_BOOTSTRAP_ADMIN_PASSWORD=" + adminPassword,
@@ -287,6 +390,11 @@ try {
   } else {
     compose("build", "--no-cache", "api", "web");
   }
+  if (paperclipEnabled) {
+    docker("run", "--rm", "--user", "0:0", "--volume", paperclipSecretVolume + ":/destination",
+      "--volume", paperclipSecretDirectory + ":/source:ro", "--entrypoint", "node", apiImage,
+      "-e", "const f=require('node:fs');f.copyFileSync('/source/paperclip-board-key','/destination/paperclip-board-key');f.chownSync('/destination/paperclip-board-key',1000,1000);f.chmodSync('/destination/paperclip-board-key',0o600)");
+  }
   composeStarted = true;
   compose("up", "--no-build", "--detach");
   await Promise.all([
@@ -301,7 +409,7 @@ try {
   const browserTest = managedCloud
     ? "tests/e2e/managed-cloud-compose-live.spec.ts"
     : "tests/e2e/self-hosted-compose-live.spec.ts";
-  const result = await runInherited(process.execPath, ["node_modules/@playwright/test/cli.js", "test",
+  let result = await runInherited(process.execPath, ["node_modules/@playwright/test/cli.js", "test",
     browserTest, "--workers=1"], {
     ...process.env, NO_PROXY: "*", no_proxy: "*", COMPANY_OS_COMPOSE_WEB_ORIGIN: webOrigin,
       COMPANY_OS_COMPOSE_API_ORIGIN: apiOrigin, COMPANY_OS_COMPOSE_IDENTITY_HOST: identityHost,
@@ -313,13 +421,50 @@ try {
         COMPANY_OS_MANAGED_ADMIN_EMAIL: "compose-user@example.test",
       } : {}),
   });
+  const databaseContainer = managedCloud ? postgresContainer : compose("ps", "--quiet", "postgres");
+  if (!databaseContainer) throw new Error("COMPOSE_ADMISSION_DATABASE_CONTAINER_MISSING");
+  if (result === 0 && paperclipEnabled) {
+    const identity = capturePrivateAlphaIdentity(databaseContainer);
+    const values = new Map([
+      ["COMPANY_OS_PAPERCLIP_ANC_COMPANY_ID", identity.companyId],
+      ["COMPANY_OS_PAPERCLIP_ACCOUNTABLE_HUMAN_ID", identity.humanId],
+      ["COMPANY_OS_PAPERCLIP_AGENT_BINDINGS", JSON.stringify([{
+        externalAgentId: paperclipExternalAgentId,
+        agentId: "paperclip-research-agent",
+        accountableHumanId: identity.humanId,
+      }])],
+    ]);
+    for (const [name, value] of values) {
+      const index = environmentLines.findIndex((line) => line.startsWith(name + "="));
+      if (index < 0) throw new Error("COMPOSE_ADMISSION_PAPERCLIP_ENVIRONMENT_MISSING");
+      environmentLines[index] = name + "=" + value;
+    }
+    writeFileSync(environmentPath, environmentLines.join("\n") + "\n", { mode: 0o600 });
+    compose("up", "--no-build", "--detach", "--no-deps", "--force-recreate", "api");
+    await waitForUrl("http://127.0.0.1:" + apiBackendPort + "/ready", 90_000);
+    result = await runInherited(process.execPath, ["node_modules/@playwright/test/cli.js", "test",
+      "tests/e2e/private-alpha-federated-compose-live.spec.ts", "--workers=1"], {
+      ...process.env, NO_PROXY: "*", no_proxy: "*", COMPANY_OS_COMPOSE_WEB_ORIGIN: webOrigin,
+      COMPANY_OS_COMPOSE_API_ORIGIN: apiOrigin, COMPANY_OS_COMPOSE_IDENTITY_HOST: identityHost,
+      COMPANY_OS_COMPOSE_TEST_USERNAME: username, COMPANY_OS_COMPOSE_TEST_PASSWORD: password,
+      COMPANY_OS_COMPOSE_PAPERCLIP_ADMIN_BASE_URL: paperclipAdminBaseUrl,
+      COMPANY_OS_COMPOSE_PAPERCLIP_ADMIN_EMAIL: paperclipAdminEmail,
+      COMPANY_OS_COMPOSE_PAPERCLIP_ADMIN_PASSWORD: paperclipAdminPassword,
+      COMPANY_OS_COMPOSE_PAPERCLIP_KEY_ID: paperclipKeyId,
+      COMPANY_OS_COMPOSE_PAPERCLIP_SECRET_FILE: join(paperclipSecretDirectory, "paperclip-board-key"),
+      COMPANY_OS_COMPOSE_PAPERCLIP_SECRET_VOLUME: paperclipSecretVolume,
+      COMPANY_OS_COMPOSE_API_IMAGE: apiImage,
+      COMPANY_OS_COMPOSE_PAPERCLIP_EXTERNAL_COMPANY_ID: paperclipExternalCompanyId,
+      COMPANY_OS_COMPOSE_PAPERCLIP_EXTERNAL_AGENT_ID: paperclipExternalAgentId,
+      COMPANY_OS_COMPOSE_ANC_COMPANY_ID: identity.companyId,
+      COMPANY_OS_COMPOSE_ANC_HUMAN_ID: identity.humanId,
+    });
+  }
   if (result !== 0) {
     process.stderr.write(compose("logs", "--no-color", "--tail", "120") + "\n");
     process.stderr.write(docker("logs", "--tail", "120", keycloakContainer) + "\n");
     process.exitCode = result;
   } else {
-    const databaseContainer = managedCloud ? postgresContainer : compose("ps", "--quiet", "postgres");
-    if (!databaseContainer) throw new Error("COMPOSE_ADMISSION_DATABASE_CONTAINER_MISSING");
     const beforeRestart = captureDurableState(databaseContainer);
     docker("restart", databaseContainer);
     await waitForPostgres(databaseContainer);

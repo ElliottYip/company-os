@@ -133,6 +133,7 @@ test("production images are pinned, non-root, health checked, and independently 
   assert.match(api, /^ENV COMPANY_OS_HOST=0\.0\.0\.0$/m,
     "the API image must accept traffic arriving through the container network");
   assert.match(web, /serve-web\.mjs/);
+  assert.match(web, /COPY scripts\/check-built-web-runtime-config-order\.mjs/);
   assert.match(api, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   assert.match(ops, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   const packageJson = JSON.parse(packageJsonSource);
@@ -542,7 +543,8 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.equal(scripts["release:staging-archive"], "node scripts/create-portable-staging-archive.mjs");
   assert.match(bundle, /COMPANY_OS_STAGING_RELEASE_BUNDLE/);
   assert.match(bundle, /secretMaterialIncluded: false/);
-  assert.equal(scripts["release:staging-install"], "node scripts/install-staging-release-bundle.mjs");
+  assert.equal(scripts["release:staging-install"],
+    "node --experimental-strip-types scripts/install-staging-release-bundle.mjs");
   assert.match(installer, /PLANNED_NOT_APPLIED/);
   assert.match(installer, /INSTALLED_NOT_STARTED/);
   assert.match(installer, /verifyStagingReleaseBundle/);
@@ -551,7 +553,8 @@ test("staging first install has read-only diagnostics, exact handoff, prepare-on
   assert.match(runbook, /--mount type=bind,src=\/var\/run\/docker\.sock/);
   assert.match(runbook, /npm run release:staging-bundle/);
   assert.match(runbook, /npm run release:staging-archive/);
-  assert.match(runbook, /node scripts\/install-staging-release-bundle\.mjs/);
+  assert.match(runbook,
+    /node --experimental-strip-types scripts\/install-staging-release-bundle\.mjs/);
   assert.match(runbook, /--network none/);
   assert.match(runbook, /first-install-only and logically read-only/);
   assert.equal(scripts["release:staging-start"],

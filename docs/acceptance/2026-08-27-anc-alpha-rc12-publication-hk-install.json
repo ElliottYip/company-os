@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RELEASE_PUBLICATION_AND_INSTALL",
+  "recordedAt": "2026-08-27T11:41:20Z",
+  "release": {
+    "tag": "v0.1.0-rc.12",
+    "releaseId": "0.1.0-rc.12-a1358df74535",
+    "sourceRevision": "a1358df7453519e8456e44ada5fcdd01217cc58c",
+    "workflowRun": "https://github.com/ElliottYip/company-os/actions/runs/33067211934",
+    "releaseUrl": "https://github.com/ElliottYip/company-os/releases/tag/v0.1.0-rc.12",
+    "qualification": "PASSED",
+    "protectedPublicationApproval": "APPROVED",
+    "publication": "PASSED",
+    "prerelease": true
+  },
+  "releaseAssets": {
+    "releaseManifestDigest": "sha256:1a92f01b5cab3ed5661e3e85c5a07118b23278f82e8605ffc3bc0338367c936f",
+    "sbomDigest": "sha256:4003789a8055f427419b2ec2a0c47deb4e16fafcf480213db63ee92d72e33422",
+    "bundleManifestDigest": "sha256:470878435e37d009bcde8cc1e64848004871cb326270951c3a81353bec2b5982",
+    "portableArchiveDigest": "sha256:36aacbbd3d1379d5a3fc799d2afc0c76a7db0793e035ca515301d57a79fe411d",
+    "secretMaterialIncluded": false
+  },
+  "images": {
+    "api": "ghcr.io/elliottyip/company-os-api@sha256:171feaf2421dfed1985e92f43448917071c2931dc58dc24329b01a1d21e8a32f",
+    "web": "ghcr.io/elliottyip/company-os-web@sha256:c79aa4bf211b8a3cbf9bb06a922592af97218f92132f721328eeac78326d2e92",
+    "ops": "ghcr.io/elliottyip/company-os-ops@sha256:109af3ce837b9bdd140f07b82af7851b1272444e4c0d50aeb7016eda94f8c4ff",
+    "codexAgentNode": "ghcr.io/elliottyip/company-os-codex-agent-node@sha256:e56db9a280dd4118dcbf42182fe54b26e9b33c75189a9947ca473e758c53c087",
+    "vaultSecretBroker": "ghcr.io/elliottyip/company-os-vault-secret-broker@sha256:79d567fc1eebf3f422980268f97f4013b0648755f8a45a99754ab5e3d2c6c0d1",
+    "referenceDataNode": "ghcr.io/elliottyip/company-os-reference-data-node@sha256:aebdb028d559452cdb1ed36fc18e93d3407f3faeb3e777d79fa1d15b8a94d2ab"
+  },
+  "hongKong": {
+    "installStatus": "INSTALLED_NOT_STARTED",
+    "releaseDirectory": "/srv/company-os/staging/releases/0.1.0-rc.12-a1358df74535",
+    "previousReleaseId": "0.1.0-rc.11-a2f77df71bf2",
+    "earlierReleaseDirectoriesRetained": true,
+    "publicTrafficChanged": false,
+    "dnsChanged": false,
+    "tlsChanged": false,
+    "formalRuntimeStarted": false,
+    "rc11ClosedIngressRuntimeStillHealthy": true,
+    "temporaryHandoffRemoved": true
+  },
+  "decision": "RC12_PREPARED_FOR_VERIFIED_TLS_INGRESS_NOT_PUBLICLY_ROUTED"
+}

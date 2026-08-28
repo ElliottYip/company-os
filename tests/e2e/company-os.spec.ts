@@ -3,17 +3,36 @@ import { createHash } from "node:crypto";
 
 async function enterDemo(page: Page): Promise<void> {
   await page.goto("/");
-  await page.getByRole("button", { name: "Explore the isolated demo instead" }).click();
-  await expect(page.getByText("DEMO FIXTURE · LOCAL ONLY")).toBeVisible();
+  await page.getByRole("button", { name: "Explore the Company OS demo" }).click();
+  await expect(page.getByRole("heading", { name: "Agent Portfolio" })).toBeVisible();
+  await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeVisible();
 }
+
+test("runtime API configuration drives the public Demo client across origins", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as Window & { __COMPANY_OS_CONFIG__?: unknown }).__COMPANY_OS_CONFIG__ = {
+      apiBaseUrl: "http://127.0.0.1:4310",
+      mode: "demo",
+    };
+  });
+  const sessionRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().endsWith("/api/demo/v2/sessions")) sessionRequests.push(request.url());
+  });
+
+  await enterDemo(page);
+
+  expect(sessionRequests).toEqual(["http://127.0.0.1:4310/api/demo/v2/sessions"]);
+});
 
 test("first run creates a local company draft while formal capabilities remain gated", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Build an ANC where humans stay accountable." })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Create a company/ })).toBeVisible();
-  await expect(page.getByText("DEMO FIXTURE · LOCAL ONLY")).toBeHidden();
+  await expect(page.getByRole("heading", { name: "Enterprise management and governance for every AI agent." })).toBeVisible();
+  await expect(page.getByText("Company OS provides ANC, a unified control layer for Agent identity, ownership, access, cost, risk, and lifecycle across teams, runtimes, and external platforms.")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Set up Company OS/ })).toBeVisible();
+  await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeHidden();
 
-  await page.getByRole("button", { name: /Create a company/ }).click();
+  await page.getByRole("button", { name: /Set up Company OS/ }).click();
   await expect(page.getByRole("dialog", { name: "What is your company called?" })).toBeVisible();
   await page.getByLabel("Company name").fill("Northstar Studio");
   await page.getByLabel("Company mission").fill("Build reliable operations with accountable humans and Agents.");
@@ -43,13 +62,13 @@ test("first run creates a local company draft while formal capabilities remain g
   await expect(page.getByRole("button", { name: "Tasks" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Approvals" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Governance" })).toBeDisabled();
-  await expect(page.getByText("Coral Lab", { exact: true })).toBeHidden();
+  await expect(page.getByText("Coral Labs", { exact: true })).toBeHidden();
 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByText("Local draft — formal capabilities are not connected")).toBeVisible();
 
   await page.reload();
-  await page.getByRole("button", { name: /Open an existing company/ }).click();
+  await page.getByRole("button", { name: /Sign in to Company OS/ }).click();
   await expect(page.getByRole("heading", { name: "Connect enterprise identity" })).toBeVisible();
 });
 
@@ -335,6 +354,7 @@ test("verified formal identity reaches explicit admin claim and atomic company c
           status: "ENABLED", secretConfigured: false, runtimeHealth: "HEALTHY",
         }] },
         runtimeConnectors: [], secretBrokerRuntime: null, runtimeModelProviders: [], runtimeDataConnectors: [],
+        runtimeFederatedSources: [],
         governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
         toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
         usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
@@ -633,36 +653,70 @@ test("enterprise OIDC invite acceptance creates membership before opening compan
   }).toBe("company-one");
 });
 
-test("Tasks use list, detail, search, activity, evidence, and responsibility interactions", async ({ page }) => {
+test("Demo Work projects Observed and Federated sources without claiming dispatch", async ({ page }) => {
   await enterDemo(page);
   await page.getByRole("button", { name: "Tasks", exact: true }).first().click();
-  await expect(page.getByRole("heading", { name: "TASKS" })).toBeVisible();
-  await page.getByRole("button", { name: "Board view" }).click();
-  await expect(page.locator(".control-task-list-body--board")).toBeVisible();
-  await page.getByRole("button", { name: /Filter tasks: All tasks/ }).click();
-  await expect(page.getByRole("button", { name: /Filter tasks: Active tasks/ })).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: /Sort tasks: Newest first/ }).click();
-  await expect(page.getByRole("button", { name: /Sort tasks: Oldest first/ })).toHaveAttribute("aria-pressed", "true");
-  await expect.poll(() => page.evaluate(() => ({
-    view: localStorage.getItem("company-os.work-view"),
-    filter: localStorage.getItem("company-os.work-filter"),
-    sort: localStorage.getItem("company-os.work-sort"),
-  }))).toEqual({ view: "board", filter: "active", sort: "oldest" });
-  await page.getByRole("button", { name: "List view" }).click();
-  const search = page.getByRole("searchbox", { name: "Search tasks" });
-  await search.fill("missing task");
-  await expect(page.getByText("No matching tasks")).toBeVisible();
-  await search.fill("market brief");
-  await page.locator("[data-open-work-detail]").click();
-  await expect(page.getByRole("heading", { name: /Create an evidence-backed market brief/ }).first()).toBeVisible();
-  await page.getByRole("tab", { name: /Activity/ }).click();
-  await expect(page.getByRole("tabpanel", { name: "Activity" })).toContainText("Activity will appear here");
-  await page.getByRole("tab", { name: /Deliverables and evidence/ }).click();
-  await expect(page.getByRole("tabpanel", { name: "Deliverables and evidence" })).toContainText("No admitted evidence yet");
-  await page.getByRole("tab", { name: "Responsibility" }).click();
-  await expect(page.getByRole("tabpanel", { name: "Responsibility" })).toContainText("Goal owner");
-  await page.locator("[data-close-work-detail]").click();
-  await expect(page.getByRole("heading", { name: "TASKS" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Work across sources" })).toBeVisible();
+  await expect(page.getByText("OBSERVED", { exact: true })).toBeVisible();
+  await expect(page.getByText("FEDERATED", { exact: true })).toBeVisible();
+  await expect(page.getByText("Competitor research from a shared channel · fixture")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open source fixture" })).toHaveCount(2);
+});
+
+test("formal Governance renders an installed Federated Source capability and retained health", async ({ page }) => {
+  const organization = {
+    company: { id: "company-one", name: "Company One", purpose: "Operate", locale: "en-US" },
+    departments: [{ id: "operations", name: "Operations", mandate: "Operate" }],
+    projects: [], workspaces: [],
+    humans: [{ id: "human-one", name: "Human One", title: "Boss", departmentId: "operations", avatarId: "human-one" }],
+    agents: [],
+  };
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    const json = (body: unknown) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    if (url.endsWith("/access")) return json({ schemaVersion: 1, mode: "FORMAL", deploymentProfile: "self-hosted",
+      entryState: "READY", identityProvider: { protocol: "OIDC", configured: true }, session: { authenticated: true },
+      capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,
+        execution: true, approval: true, governance: true }, blockers: [] });
+    if (url.endsWith("/companies")) return json({ schemaVersion: 1,
+      companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }], isInstanceAdmin: true });
+    if (url.endsWith("/human-members")) return json({ schemaVersion: 1, members: [{ userId: "human-one",
+      displayName: "Human One", email: "human@example.com", role: "owner", status: "active",
+      createdAt: "2026-08-25T00:00:00.000Z", updatedAt: "2026-08-25T00:00:00.000Z" }] });
+    if (url.endsWith("/administration")) return json({ schemaVersion: 1, mode: "PRODUCTION",
+      viewer: { actorId: "human-one", displayName: "Human One" }, retentionPolicyId: "standard-retention",
+      connectorCatalog: { revision: 0, connectors: [] }, runtimeConnectors: [], secretBrokerRuntime: null,
+      runtimeModelProviders: [], runtimeDataConnectors: [], runtimeFederatedSources: [{
+        connectorId: "paperclip-alpha", protocolVersion: "2.0",
+        dataCapabilities: ["AGENT_INVENTORY", "FEDERATED_WORK", "RESULT_REFERENCES"],
+        controlCapabilities: ["SYNCHRONIZE_FEDERATED_RECORDS"], maximumBatchSize: 200,
+        health: "HEALTHY", checkedAt: "2026-08-25T00:10:00.000Z",
+        lastSuccessfulAt: "2026-08-25T00:10:00.000Z",
+      }],
+      governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
+      toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
+      usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
+        policySummaries: [], totalReportedCostCents: 0, unpricedEventCount: 0 },
+      egressDecisions: [], generatedAt: "2026-08-25T00:10:00.000Z" });
+    if (url.endsWith("/planning-catalog")) return json({ companyId: "company-one", revision: 0, goals: [], projects: [] });
+    if (url.endsWith("/accountability-ledger")) return json({ schemaVersion: 1, companyId: "company-one",
+      approvals: [], evidence: [], generatedAt: "2026-08-25T00:10:00.000Z" });
+    if (url.includes("/work?")) return json({ schemaVersion: 1, items: [], nextCursor: null });
+    if (url.includes("/activity?")) return json({ schemaVersion: 1, items: [], nextSequence: null });
+    return json({ schemaVersion: 1, mode: "PRODUCTION", viewer: { actorId: "human-one", displayName: "Human One" },
+      retentionPolicyId: "standard-retention", organization,
+      responsibilities: { revision: 0, contracts: [] }, agentLifecycle: { revision: 0, agents: [] },
+      work: [], attempts: [], pendingApprovals: [], generatedAt: "2026-08-25T00:10:00.000Z" });
+  });
+
+  await page.goto("/?mode=formal");
+  await page.getByRole("button", { name: "Governance" }).click();
+  await expect(page.getByRole("heading", { name: "Federated sources" })).toBeVisible();
+  const source = page.getByRole("article").filter({ hasText: "paperclip-alpha" });
+  await expect(source).toContainText("AGENT_INVENTORY");
+  await expect(source).toContainText("SYNCHRONIZE_FEDERATED_RECORDS");
+  await expect(source).toContainText("HEALTHY");
+  await expect(source).toContainText("2026-08-25T00:10:00.000Z");
 });
 
 test("formal running Work requests cancellation and waits for Connector confirmation", async ({ page }) => {
@@ -700,6 +754,7 @@ test("formal running Work requests cancellation and waits for Connector confirma
       viewer: { actorId: "human-one", displayName: "Human One" }, connectorCatalog: { revision: 1, connectors: [] },
       retentionPolicyId: "standard-retention",
       runtimeConnectors: [], secretBrokerRuntime: null, runtimeModelProviders: [], runtimeDataConnectors: [],
+      runtimeFederatedSources: [],
       governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
       toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
       usageBudget: { ledger: { companyId: "company-one", revision: 0, costEvents: [], policies: [] },
@@ -787,35 +842,45 @@ test("formal running Work requests cancellation and waits for Connector confirma
 
 test("the deterministic Demo reaches an exact human approval and completed evidence chain", async ({ page }) => {
   await enterDemo(page);
-  await page.getByRole("button", { name: "Assign demo task" }).click();
-  await page.getByRole("button", { name: "Advance run" }).click();
-  await page.getByRole("button", { name: "Advance run" }).click();
-  await page.getByRole("button", { name: "Advance run" }).click();
-  await expect(page.locator("[data-phase=AWAITING_APPROVAL]")).toBeVisible();
-  await page.getByRole("button", { name: "Accountability" }).click();
-  await page.getByRole("tab", { name: /Approvals/ }).click();
-  await expect(page.getByRole("tabpanel", { name: "Approvals" })).toContainText("HIGH RISK · PAUSED");
+  await page.getByRole("button", { name: "Approvals", exact: true }).first().click();
+  await page.getByRole("button", { name: "Trigger governed workflow" }).click();
+  await expect(page.getByText("AWAITING_APPROVAL", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Approve" }).click();
-  await expect(page.locator("[data-phase=COMPLETED]")).toBeVisible();
-  await page.getByRole("tab", { name: /Evidence/ }).click();
-  await expect(page.getByRole("tabpanel", { name: "Evidence" })).toContainText("VERIFIED RESULT");
+  await expect(page.locator(".portfolio-approval-card")).toContainText("APPROVED");
+  await expect(page.locator(".portfolio-approval-card")).toContainText("2");
 });
 
 test("governance exposes each production boundary without secret values", async ({ page }) => {
   await enterDemo(page);
   await page.getByRole("button", { name: "Governance" }).click();
-  await expect(page.getByRole("heading", { name: "GOVERNANCE" })).toBeVisible();
-  await expect(page.getByRole("tab", { name: "Agent Connectors" })).toHaveAttribute("aria-selected", "true");
-  await page.getByRole("tab", { name: "Models" }).click();
-  await expect(page.getByRole("tabpanel", { name: "Models" })).toContainText("Demo has no model routing");
-  await page.getByRole("tab", { name: "Data authorization" }).click();
-  await expect(page.getByRole("tabpanel", { name: "Data authorization" })).toContainText("Egress denied");
-  await page.getByRole("tab", { name: "Secrets" }).click();
-  await expect(page.getByRole("tabpanel", { name: "Secrets" })).toContainText("Secret values in control plane");
-  await page.getByRole("tab", { name: "Tool access" }).click();
-  await expect(page.getByRole("tabpanel", { name: "Tool access" })).toContainText("Demo installs no tools");
-  await page.getByRole("tab", { name: "Egress audit" }).click();
-  await expect(page.getByRole("tabpanel", { name: "Egress audit" })).toContainText("Demo never initiates data egress");
+  await expect(page.getByRole("heading", { name: "Governance" })).toBeVisible();
+  await expect(page.getByText("PRIVATE_ACTIVITY_EXCLUDED")).toBeVisible();
+  await expect(page.getByText(/Inventory Connectors do not claim task control/)).toBeVisible();
+  await expect(page.getByText(/deterministic reference data, not a live platform connection/)).toBeVisible();
+});
+
+test("concurrent exhibition visitors keep renewal and reset state isolated", async ({ browser }) => {
+  const firstContext = await browser.newContext();
+  const secondContext = await browser.newContext();
+  const first = await firstContext.newPage();
+  const second = await secondContext.newPage();
+  try {
+    await enterDemo(first);
+    await enterDemo(second);
+    await first.getByRole("button", { name: "Usage & Billing", exact: true }).first().click();
+    await first.getByRole("button", { name: "Request renewal" }).click();
+    await expect(first.getByText("PENDING_APPROVAL", { exact: true })).toBeVisible();
+
+    await second.getByRole("button", { name: "Usage & Billing", exact: true }).first().click();
+    await expect(second.getByText("PENDING_APPROVAL", { exact: true })).toBeHidden();
+
+    await first.getByRole("button", { name: "Reset demo" }).click();
+    await expect(first.getByText("PENDING_APPROVAL", { exact: true })).toBeHidden();
+    await expect(second.getByText("PENDING_APPROVAL", { exact: true })).toBeHidden();
+  } finally {
+    await firstContext.close();
+    await secondContext.close();
+  }
 });
 
 test("standalone Settings persists English and Chinese product language without changing authored records", async ({ page }) => {
@@ -829,7 +894,7 @@ test("standalone Settings persists English and Chinese product language without 
   await page.reload();
   await page.locator("[data-enter-demo]").click();
   await expect(page.getByRole("button", { name: "设置", exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Coral Lab", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Coral Labs", { exact: true }).first()).toBeVisible();
 });
 
 test("accepted page inventory is reachable through Company OS navigation", async ({ page }) => {
@@ -839,11 +904,11 @@ test("accepted page inventory is reachable through Company OS navigation", async
     ["Goals", "GOALS"],
     ["Projects", "PROJECTS"],
     ["Humans", "HUMANS"],
-    ["Agents", "AGENTS"],
-    ["Approvals", "APPROVALS"],
+    ["Agents", "Agents"],
+    ["Approvals", "Approvals"],
     ["Evidence", "EVIDENCE"],
     ["Activity", "ACTIVITY"],
-    ["Usage & budgets", "USAGE & BUDGETS"],
+    ["Usage & Billing", "Usage & Billing"],
   ] as const) {
     await page.getByRole("button", { name: navigation, exact: true }).first().click();
     await expect(page.getByRole("heading", { name: heading })).toBeVisible();

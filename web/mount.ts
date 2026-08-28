@@ -80,6 +80,11 @@ import {
   usagePage,
   type InboxFilter,
 } from "./pages/operational-pages.ts";
+import { agentPortfolioPage } from "./pages/agent-portfolio-pages.ts";
+import {
+  createPublicDemoClient,
+  type PublicDemoPortfolioSnapshot,
+} from "./public-demo-client.ts";
 
 export type CompanyOSSection =
   | "office"
@@ -102,6 +107,7 @@ export interface CompanyOSHostContract {
   readonly mountElement: HTMLElement;
   readonly basePath?: string;
   readonly initialSection?: CompanyOSSection;
+  readonly publicDemoBaseUrl?: string;
   readonly onNavigate?: (path: string) => void;
 }
 
@@ -634,6 +640,7 @@ function connectorsView(
 ): string {
   const connectorCount = mode === "DEMO_FIXTURE" ? 2 : (administration?.connectorCatalog.connectors.length ?? 0);
   const runtimeConnectors = administration?.runtimeConnectors ?? [];
+  const federatedSources = administration?.runtimeFederatedSources ?? [];
   const registeredRows = administration?.connectorCatalog.connectors
     .map((connector) => `<article class="connector-row family-list-row"><span class="connector-orb ${connector.runtimeHealth === "HEALTHY" ? "connector-orb--green" : ""}"></span><div><h2>${escapeHtml(connector.displayName)}</h2><p>${connector.operations.join(" · ")} · ${escapeHtml(connector.executionResidency)}</p><small>${connector.secretConfigured ? copy("Secret reference configured", "已配置 Secret 引用") : copy("No secret reference", "未配置 Secret 引用")}</small></div><div>${raftStatus(connector.runtimeHealth === "NOT_BOUND" ? copy("Runtime not bound", "未绑定运行环境") : connector.runtimeHealth, connector.runtimeHealth === "HEALTHY" ? "working" : "neutral")}<button type="button" class="agent-lifecycle-action" data-connector-status="${connector.status === "ENABLED" ? "DISABLED" : "ENABLED"}" data-connector-id="${escapeHtml(connector.id)}">${connector.status === "ENABLED" ? copy("Disable", "停用") : copy("Enable", "启用")}</button></div></article>`)
     .join("") ?? "";
@@ -643,6 +650,7 @@ function connectorsView(
   const runtimeRegistration = mode === "FORMAL" && administration && runtimeConnectors.some(({ registered }) => !registered)
     ? `<form class="admin-surface formal-work-form" data-register-connector-form><label class="family-field">Installed runtime<select class="family-control" name="connectorId">${runtimeConnectors.filter(({ registered }) => !registered).map((connector) => `<option value="${escapeHtml(connector.connectorId)}">${escapeHtml(connector.displayName)} · ${escapeHtml(connector.health)}</option>`).join("")}</select></label><label class="family-field">Execution residency<select class="family-control" name="executionResidency"><option value="CUSTOMER_ENVIRONMENT">Customer environment</option><option value="MANAGED_CLOUD">Managed cloud</option></select></label><button class="family-button family-button--primary" type="submit">Register runtime</button></form>`
     : "";
+  const federatedRows = federatedSources.map((source) => `<article class="connector-row family-list-row"><span class="connector-orb ${source.health === "HEALTHY" ? "connector-orb--green" : ""}"></span><div><p class="family-kicker">${copy("FEDERATED SOURCE", "联合运行来源")}</p><h2>${escapeHtml(source.connectorId)}</h2><p>${source.dataCapabilities.map(escapeHtml).join(" · ")} · ${source.controlCapabilities.map(escapeHtml).join(" · ")}</p><small>${source.lastSuccessfulAt ? `${copy("Last synchronized", "最近同步")} ${escapeHtml(source.lastSuccessfulAt)}` : copy("No successful synchronization recorded", "尚无成功同步记录")}</small></div>${raftStatus(source.health, source.health === "HEALTHY" ? "working" : "neutral")}</article>`).join("");
   const catalogRows = mode === "DEMO_FIXTURE"
     ? `<article class="connector-row family-list-row"><span class="connector-orb connector-orb--green"></span><div><h2>${copy("State machine fixture", "状态机演示")}</h2><p>${copy("Pause, resume, cancel, evidence and result capabilities", "演示暂停、恢复、取消、证据和结果能力")}</p></div>${raftStatus(copy("Isolated", "已隔离"), "working")}</article>
        <article class="connector-row family-list-row"><span class="connector-orb connector-orb--approval"></span><div><h2>${copy("Journal fixture", "事件记录演示")}</h2><p>${copy("Deterministic progress events with no credentials or external sessions", "仅生成确定性进度事件，不使用凭据或外部会话")}</p></div>${raftStatus(copy("Isolated", "已隔离"), "working")}</article>
@@ -698,12 +706,12 @@ function connectorsView(
     <header class="control-page-title"><div><h1 id="connectors-title">${copy("GOVERNANCE", "接入与治理")}</h1><p>${copy("Manage Agent connections, models, data, secret boundaries, and execution permissions.", "管理 Agent 接入、模型、数据授权、Secret 边界和工具权限。")}</p></div><span class="status-pill">${mode === "DEMO_FIXTURE" ? isDemo ? copy("DEMO · NO NETWORK", "演示 · 未连接网络") : copy("LOCAL DRAFT · NOT CONNECTED", "本地草稿 · 未连接") : copy("FORMAL CONTROL PLANE", "正式控制平面")}</span></header>
     ${raftMetricStrip([
       { label: copy("Registered", "已注册"), value: connectorCount, detail: mode === "DEMO_FIXTURE" ? copy("Deterministic fixtures", "确定性演示") : copy("Production catalog", "正式目录") },
-      { label: copy("Installed runtimes", "已安装运行环境"), value: mode === "DEMO_FIXTURE" ? 0 : runtimeConnectors.length, detail: copy("Server package registry", "服务端组件目录") },
+      { label: copy("Installed runtimes", "已安装运行环境"), value: mode === "DEMO_FIXTURE" ? 0 : runtimeConnectors.length + federatedSources.length, detail: copy("Execution and federated packages", "执行与联合运行组件") },
       { label: copy("Data contracts", "数据授权合同"), value: administration?.governance.dataAuthorizationContracts.length ?? 0, detail: copy("Purpose and scope bound", "已限定用途和范围") },
       { label: copy("Egress records", "数据出口记录"), value: administration?.egressDecisions.length ?? 0, detail: copy("Granted and denied audited", "允许与拒绝均有审计记录") },
     ], copy("Connector boundary summary", "Connector 边界摘要"))}
     <div class="administration-tabs" role="tablist" aria-label="${copy("Governance categories", "治理分类")}"><button type="button" role="tab" aria-selected="true" data-admin-tab="connectors">${copy("Agent Connectors", "Agent 接入")}</button><button type="button" role="tab" aria-selected="false" data-admin-tab="models">${copy("Models", "模型")}</button><button type="button" role="tab" aria-selected="false" data-admin-tab="data">${copy("Data authorization", "数据授权")}</button><button type="button" role="tab" aria-selected="false" data-admin-tab="secrets">${copy("Secrets", "Secret")}</button><button type="button" role="tab" aria-selected="false" data-admin-tab="tools">${copy("Tool access", "工具权限")}</button><button type="button" role="tab" aria-selected="false" data-admin-tab="audit">${copy("Egress audit", "数据出口审计")}</button></div>
-    <div class="administration-panel" role="tabpanel" aria-label="Agent Connectors" data-admin-panel="connectors">${runtimeRegistration}<section class="connector-catalog family-list">${raftSectionHeader({ title: copy("Agent access", "Agent 接入"), description: copy("Capability declarations, health, and execution residency without credentials or private vendor sessions.", "查看能力声明、健康状态和执行位置；控制平面不接收凭据或厂商私有会话。") })}${catalogRows}</section></div>
+    <div class="administration-panel" role="tabpanel" aria-label="Agent Connectors" data-admin-panel="connectors">${runtimeRegistration}<section class="connector-catalog family-list">${raftSectionHeader({ title: copy("Agent access", "Agent 接入"), description: copy("Capability declarations, health, and execution residency without credentials or private vendor sessions.", "查看能力声明、健康状态和执行位置；控制平面不接收凭据或厂商私有会话。") })}${catalogRows}</section>${mode === "FORMAL" ? `<section class="connector-catalog family-list">${raftSectionHeader({ title: copy("Federated sources", "联合运行来源"), description: copy("External platforms remain execution owners. Company OS shows only declared synchronization capabilities and retained health state.", "外部平台仍拥有执行权；Company OS 仅显示声明的同步能力和保留的健康状态。") })}${federatedRows || `<div class="admin-empty"><strong>${copy("No Federated Source installed", "尚未安装联合运行来源")}</strong><p>${copy("External workspaces are not synchronized until a formal source package is configured.", "配置正式来源组件前，不会同步外部 Workspace。")}</p></div>`}</section>` : ""}</div>
     <div class="administration-panel" role="tabpanel" aria-label="Models" data-admin-panel="models" hidden>${modelRouteForm}<section class="admin-surface">${raftSectionHeader({ title: copy("Model routing", "模型路由"), description: copy("Choose models by installed provider capability, active broker reference, data classification, and residency. New routes remain disabled until explicitly enabled.", "按供应商能力、有效凭据引用、数据分级和执行位置选择模型。新路由需手动启用。") })}<div class="admin-list">${modelRows || `<div class="admin-empty"><strong>${copy("No model route configured", "尚未配置模型路由")}</strong><p>${copy("Agents receive no model capability until a formal route is added.", "添加并启用正式路由前，Agent 无法调用模型。")}</p></div>`}</div></section></div>
     <div class="administration-panel" role="tabpanel" aria-label="Data authorization" data-admin-panel="data" hidden>${dataAuthorizationForm}<section class="admin-surface">${raftSectionHeader({ title: copy("Data Connector nodes", "数据连接节点"), description: copy("Customer-controlled nodes return references and digests only; enterprise records never enter the control plane.", "客户侧节点只返回引用和摘要，企业数据原文不会进入控制平面。") })}<div class="admin-list">${runtimeDataConnectors.map((connector) => `<article class="admin-row"><div><p class="family-kicker">${escapeHtml(connector.connectorId)}</p><h3>${escapeHtml(connector.displayName)}</h3><p>${connector.dataSourceIds.map(escapeHtml).join(" · ")} · ${connector.supportedOperations.join(" · ")}</p></div>${raftStatus(connector.health, connector.health === "HEALTHY" ? "working" : "neutral")}</article>`).join("") || `<div class="admin-empty"><strong>${copy("No Data Connector installed", "尚未安装数据连接节点")}</strong><p>${copy("Enterprise reads, writes, and exports remain unavailable.", "企业数据读取、写入和导出将保持不可用。")}</p></div>`}</div></section><section class="admin-surface">${raftSectionHeader({ title: copy("Data authorization contracts", "数据授权合同"), description: copy("Agent, operation, purpose, classification, expiry, and destination must all match. New grants start active; revoked grants cannot be reopened.", "Agent、操作、用途、数据分级、有效期和目标位置必须全部匹配。已撤销的授权不可恢复。") })}<div class="admin-list">${dataRows || `<div class="admin-empty"><strong>${copy("No data authorization contract", "尚未配置数据授权合同")}</strong><p>${copy("Enterprise data access is denied by default.", "企业数据默认禁止访问。")}</p></div>`}</div></section></div>
     <div class="administration-panel" role="tabpanel" aria-label="Secrets" data-admin-panel="secrets" hidden>${secretManagementForm}${secretManagementStatus}<section class="admin-surface">${raftSectionHeader({ title: copy("Secret boundary", "Secret 安全边界"), description: copy("The Web receives reference state, version, and audit metadata—never secret values.", "Web 端只接收引用状态、版本和审计元数据，不接收 Secret 原文。") })}<div class="secret-boundary-grid"><article><span>${copy("Installed broker", "已安装的 Secret Broker")}</span><strong>${secretBroker ? escapeHtml(secretBroker.displayName) : copy("Not installed", "未安装")}</strong><p>${secretBroker ? `${escapeHtml(secretBroker.health)} · ${copy("protocol", "协议")} ${escapeHtml(secretBroker.protocolVersion)} · ${copy("leases up to", "最长租期")} ${secretBroker.maximumLeaseSeconds}s` : copy("Formal Secret access remains fail-closed until one server package is installed.", "安装服务端 Secret Broker 前，正式环境会拒绝所有 Secret 访问。")}</p></article><article><span>${copy("Configured references", "已配置引用")}</span><strong>${configuredSecretReferences}</strong><p>${copy("Redacted status from Connector and model routes.", "仅显示 Connector 和模型路由中的脱敏状态。")}</p></article><article><span>${copy("Secret values in control plane", "控制平面中的 Secret 原文")}</span><strong>0</strong><p>${copy("A Secret Broker leases short-lived values at the execution edge.", "Secret Broker 仅在执行端提供短期租约。")}</p></article><article><span>${copy("Demo credentials", "演示凭据")}</span><strong>0</strong><p>${copy("Demo never generates or requests real credentials.", "演示环境不会生成或请求真实凭据。")}</p></article></div></section></div>
@@ -782,15 +790,15 @@ function frontDoor(): string {
   return `<main class="company-front-door" aria-labelledby="front-door-title">
     <header><span class="front-door-mark" aria-hidden="true">C</span><strong>Company OS</strong></header>
     <section class="front-door-content">
-      <div class="front-door-copy"><p class="family-kicker">${copy("AI-NATIVE COMPANY CONTROL PLANE", "AI 原生公司控制平面")}</p><h1 id="front-door-title">${copy("Build an ANC where humans stay accountable.", "让真人和 Agent 一起工作，责任始终落到人。")}</h1><p>${copy("Create the company first. Then add accountable humans, Agent colleagues, permissions, approvals, evidence, and work.", "先创建公司和负责人，再配置 Agent、权限、审批和证据。")}</p></div>
+      <div class="front-door-copy"><p class="family-kicker">COMPANY OS · AGENT NETWORK CONTROL (ANC)</p><h1 id="front-door-title">${copy("Enterprise management and governance for every AI agent.", "统一管理与治理企业中的每一个 AI Agent。")}</h1><p>${copy("Company OS provides ANC, a unified control layer for Agent identity, ownership, access, cost, risk, and lifecycle across teams, runtimes, and external platforms.", "Company OS 提供 ANC，作为统一控制层，跨团队、Runtime 与外部平台管理 Agent 的身份、归属、权限、成本、风险和生命周期。")}</p></div>
       <div class="front-door-actions">
-        <button class="front-door-primary" type="button" data-enter-local><span>${copy("Create a company", "创建公司")}</span><small>${copy("Start locally; connect enterprise identity when ready", "先建立本地草稿，准备好后再连接企业身份")}</small></button>
-        <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Open an existing company", "打开现有公司")}</span><small>${copy("Sign in through your organization identity provider", "通过组织身份提供方登录")}</small></button>
+        <button class="front-door-primary" type="button" data-enter-local><span>${copy("Set up Company OS", "配置 Company OS")}</span><small>${copy("Create your ANC control plane", "建立企业 ANC 控制平面")}</small></button>
+        <button class="front-door-secondary" type="button" data-enter-existing><span>${copy("Sign in to Company OS", "登录 Company OS")}</span><small>${copy("Open your organization's ANC workspace", "进入企业 ANC 工作区")}</small></button>
       </div>
-      <button class="front-door-demo" type="button" data-enter-demo>${copy("Explore the isolated demo instead", "先看看隔离演示")}</button>
-      <p class="front-door-boundary">${copy("The demo is optional and isolated. It never creates credentials, calls models, or accesses enterprise systems.", "演示是可选且隔离的；不会创建凭据、调用模型或访问企业系统。")}</p>
+      <button class="front-door-demo" type="button" data-enter-demo>${copy("Explore the Company OS demo", "体验 Company OS 公开 Demo")}</button>
+      <p class="front-door-boundary">${copy("No sign-in. Isolated demo data. No credentials, model calls, or enterprise-system access.", "无需登录，使用隔离演示数据；不会创建凭据、调用模型或访问企业系统。")}</p>
     </section>
-    <footer>${copy("Open source · Managed cloud and self-hosted profiles · Vendor-neutral Connectors", "开源 · Managed cloud 与 self-hosted Profile · 厂商中立 Connector")}</footer>
+    <footer>${copy("ANC by Company OS · Inventory · Governance · Accountability", "Company OS 提供 ANC · 资产 · 治理 · 责任")}</footer>
   </main>`;
 }
 
@@ -942,6 +950,8 @@ export function mountCompanyOS(
   let selectedFormalCompanyId: string | null = null;
   let formalOrganizationMissing = false;
   let explicitDemo = false;
+  const publicDemoClient = createPublicDemoClient(host.publicDemoBaseUrl ?? "");
+  let publicDemoSnapshot: PublicDemoPortfolioSnapshot | null = null;
   let openSetupAfterRender = false;
   let localSetupRequired = false;
   let selectedWorkId: string | null = null;
@@ -1053,10 +1063,12 @@ export function mountCompanyOS(
 
   function bindFrontDoor(): void {
     root.querySelector<HTMLButtonElement>("[data-enter-demo]")?.addEventListener("click", () => {
-      explicitDemo = true;
-      frontDoorVisible = false;
-      onboardingVisible = false;
-      void render();
+      void runAction(async () => {
+        publicDemoSnapshot = await publicDemoClient.create();
+        explicitDemo = true;
+        frontDoorVisible = false;
+        onboardingVisible = false;
+      });
     });
     root.querySelector<HTMLButtonElement>("[data-enter-local]")?.addEventListener("click", () => {
       explicitDemo = false;
@@ -1294,7 +1306,11 @@ export function mountCompanyOS(
       ? workStateForCatalogItem(state, selectedCatalogItem, runTimeline)
       : state;
     let main: string;
-    switch (section) {
+    const portfolioSection = (["office", "agents", "work", "approvals", "connectors", "usage"] as const)
+      .find((candidate) => candidate === section);
+    if (isDemo && publicDemoSnapshot && portfolioSection) {
+      main = agentPortfolioPage(portfolioSection, publicDemoSnapshot, locale);
+    } else switch (section) {
       case "office": main = officeView(pageState, organization, activeWorkTitle); break;
       case "inbox": main = inboxPage(pageState, organization, locale, activeInboxFilter, workCatalog, accountabilityLedger, activeWorkTitle); break;
       case "work": main = workView(visibleWorkState, organization, selectedWorkId !== null, workCatalog, {
@@ -1355,6 +1371,33 @@ export function mountCompanyOS(
     root.querySelectorAll<HTMLButtonElement>("[data-section-target]").forEach((button) => {
       button.addEventListener("click", () => {
         navigateTo(button.dataset.sectionTarget as CompanyOSSection);
+      });
+    });
+    root.querySelector<HTMLButtonElement>("[data-demo-trigger-governed]")?.addEventListener("click", () => {
+      void runAction(async () => {
+        publicDemoSnapshot = await publicDemoClient.action({ action: "TRIGGER_GOVERNED" });
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-demo-decision]").forEach((button) => {
+      button.addEventListener("click", () => {
+        void runAction(async () => {
+          publicDemoSnapshot = await publicDemoClient.action({
+            action: "DECIDE",
+            decision: button.dataset.demoDecision as "APPROVED" | "REJECTED",
+          });
+        });
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-demo-renewal-target]").forEach((button) => {
+      button.addEventListener("click", () => {
+        void runAction(async () => {
+          publicDemoSnapshot = await publicDemoClient.action({
+            action: "REQUEST_RENEWAL",
+            targetType: button.dataset.demoRenewalType as "CREDENTIAL",
+            targetId: button.dataset.demoRenewalTarget ?? "",
+            reason: locale === "zh-CN" ? "展会演示前完成续期。" : "Renew before the exhibition demo.",
+          });
+        });
       });
     });
     const companyMenu = root.querySelector<HTMLElement>("[data-company-menu]");
@@ -1479,7 +1522,13 @@ export function mountCompanyOS(
       options[next]?.focus();
     });
     root.querySelector<HTMLButtonElement>("[data-global-reset]")?.addEventListener("click", () => {
-      void runAction(() => application.resetFixture());
+      void runAction(async () => {
+        if (isDemo && publicDemoSnapshot) {
+          publicDemoSnapshot = await publicDemoClient.action({ action: "RESET" });
+          return;
+        }
+        await application.resetFixture();
+      });
     });
 
     root.querySelector<HTMLButtonElement>("[data-onboarding-dismiss]")?.addEventListener("click", () => {

@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_PUBLIC_CUTOVER_PLAN",
+  "recordedAt": "2026-08-27T13:02:52Z",
+  "status": "DNS_CREATED_AUTHORITY_NOT_CONVERGED",
+  "dnsPreflight": {
+    "authenticatedConsoleAccess": true,
+    "zoneVisibleInMainAccount": true,
+    "recordCountBefore": 15,
+    "recordCountAfter": 17,
+    "targetRecordsExist": true,
+    "authoritativeMissingNameSynthesis": true,
+    "synthesisEvidence": {
+      "company-os.raft.xin": "28.0.77.91",
+      "company-os-api.raft.xin": "28.0.77.92",
+      "randomMissingNamesAlsoReturned28NetworkAddresses": true,
+      "authoritativeTtlSeconds": 1
+    },
+    "interpretationBeforeCreate": "The 28.0.77.* answers were initially treated as synthesized responses for absent names, not stored records and not rollback values.",
+    "postCreateFinding": {
+      "consoleRecordsCorrectAndEnabled": true,
+      "companyOsCreatedAtUtcPlus8": "2026-08-27T20:56:18+08:00",
+      "companyOsApiCreatedAtUtcPlus8": "2026-08-27T20:58:51+08:00",
+      "configuredValue": "47.242.52.235",
+      "configuredTtlSeconds": 600,
+      "authoritativeCompanyOsAnswer": "28.0.77.91",
+      "authoritativeCompanyOsApiAnswer": "28.0.77.92",
+      "publicResolversAlsoReturn28NetworkAddresses": true,
+      "allExistingRaftXinARecordsAlsoRewritten": true,
+      "txtRecordsRemainAuthoritative": true,
+      "whoisDomainStatus": "ok",
+      "whoisExpiry": "2027-03-17T08:46:35Z",
+      "consoleDomainStatus": "normal",
+      "dnsSecurityDefenseEnabled": false,
+      "soaSerialObserved": "2026081710",
+      "controlDomainCheck": {
+        "hostname": "api.bztiuzl.cn",
+        "answer": "47.242.52.235",
+        "status": "NORMAL"
+      },
+      "conclusion": "The two records are stored correctly, but raft.xin A responses are being rewritten upstream. TLS issuance and public cutover are prohibited until the authoritative answer equals the configured address."
+    }
+  },
+  "candidate": {
+    "releaseTag": "v0.1.0-rc.12",
+    "releaseId": "0.1.0-rc.12-a1358df74535",
+    "site": "hong-kong",
+    "publicIpv4": "47.242.52.235",
+    "webTarget": "172.31.11.3:8080",
+    "apiTarget": "172.31.11.2:4310"
+  },
+  "dns": [
+    {
+      "hostname": "company-os.raft.xin",
+      "recordType": "A",
+      "hostRecord": "company-os",
+      "action": "CREATE",
+      "recordExists": false,
+      "candidateValue": "47.242.52.235",
+      "ttlSeconds": 600,
+      "rollbackAction": "DELETE_CREATED_RECORD",
+      "applied": true,
+      "consoleEnabled": true,
+      "authorityConverged": false,
+      "createdAt": "2026-08-27T12:56:18Z"
+    },
+    {
+      "hostname": "company-os-api.raft.xin",
+      "recordType": "A",
+      "hostRecord": "company-os-api",
+      "action": "CREATE",
+      "recordExists": false,
+      "candidateValue": "47.242.52.235",
+      "ttlSeconds": 600,
+      "rollbackAction": "DELETE_CREATED_RECORD",
+      "applied": true,
+      "consoleEnabled": true,
+      "authorityConverged": false,
+      "createdAt": "2026-08-27T12:58:51Z"
+    }
+  ],
+  "tls": {
+    "certificateName": "company-os.raft.xin",
+    "subjectNames": ["company-os.raft.xin", "company-os-api.raft.xin"],
+    "issuer": "LetsEncrypt",
+    "issued": false,
+    "existingMatchingCertificate": false
+  },
+  "ingress": {
+    "candidateFile": "/srv/company-os/staging/config/candidates/company-os-public-demo-rc12.nginx.conf",
+    "enabledFile": "/etc/nginx/sites-enabled/company-os-staging",
+    "candidateDigest": "sha256:7311a670e207ba6733437317c061e846caab818c0fed7c04b220b0b8b972e94e",
+    "installedPrepareOnly": true,
+    "syntaxValidatedWithSubstituteCertificate": true,
+    "activeConfigurationReloaded": false,
+    "enabled": false
+  },
+  "orderedGates": [
+    "DNS action-time confirmation obtained on 2026-08-27",
+    "both A records created at the Hong Kong public IPv4 with a 10-minute TTL",
+    "resolve the raft.xin upstream A-response rewrite or obtain explicit approval for a healthy alternate domain",
+    "wait for authoritative and public resolver convergence",
+    "issue one certificate covering both hostnames",
+    "validate and atomically enable the RC12 Nginx candidate",
+    "repeat the full browser, isolation, reset, recovery and formal-route-denial acceptance through HTTPS",
+    "observe at least 30 minutes with zero P0/P1 before declaring the public Alpha available"
+  ],
+  "rollback": [
+    "withdraw the enabled Nginx candidate",
+    "delete the two created DNS records to restore the prior absent-name behavior",
+    "keep RC12 running behind closed ingress for diagnosis",
+    "retain all access, error and acceptance evidence"
+  ],
+  "blockingInputs": [
+    "raft.xin authoritative A answers must stop returning rewritten 28.0.* addresses, or a healthy alternate domain must be explicitly approved",
+    "matching certificate issuance after DNS convergence"
+  ]
+}

@@ -90,6 +90,21 @@ test("formal administration projection sanitizes Connector, model, data and egre
       async submit() { return { accepted: true as const, executionId: "execution-two" }; },
       async observe() { return []; }, async pause() {}, async resume() {}, async cancel() {},
     }],
+    federatedSources: [{
+      connectorId: "federated-one", companyId: "company-one",
+      async capabilities() { return {
+        connectorId: "federated-one", protocolVersion: "2.0" as const,
+        capabilities: { data: ["AGENT_INVENTORY" as const, "FEDERATED_WORK" as const],
+          control: ["SYNCHRONIZE_FEDERATED_RECORDS" as const] },
+        maximumBatchSize: 200,
+      }; },
+      async health() { return {
+        status: "HEALTHY" as const,
+        checkedAt: "2026-08-20T18:00:30.000Z",
+        lastSuccessfulAt: "2026-08-20T18:00:30.000Z",
+      }; },
+      async synchronize() { return { inventory: [], work: [], anomalies: [] }; },
+    }],
   }).execute("company-one");
 
   assert.equal(projection.connectorCatalog.connectors[0]?.secretConfigured, true);
@@ -113,6 +128,13 @@ test("formal administration projection sanitizes Connector, model, data and egre
   assert.deepEqual(projection.runtimeModelProviders, [{
     providerAdapterId: "provider-one", displayName: "Provider One", protocolVersion: "1.0",
     modelReferences: ["model-one"], supportedResidencies: ["LOCAL"], health: "HEALTHY",
+  }]);
+  assert.deepEqual(projection.runtimeFederatedSources, [{
+    connectorId: "federated-one", protocolVersion: "2.0",
+    dataCapabilities: ["AGENT_INVENTORY", "FEDERATED_WORK"],
+    controlCapabilities: ["SYNCHRONIZE_FEDERATED_RECORDS"], maximumBatchSize: 200,
+    health: "HEALTHY", checkedAt: "2026-08-20T18:00:30.000Z",
+    lastSuccessfulAt: "2026-08-20T18:00:30.000Z",
   }]);
   assert.equal(projection.egressDecisions[0]?.decision.type, "GRANTED");
   assert.equal(projection.toolAccess.revision, 1);
