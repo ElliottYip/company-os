@@ -442,6 +442,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
 
     await stopBackend();
     await startBackend();
+    await page.reload();
     const replayPackage = await page.evaluate(async ({ command }) => {
       const companyId = localStorage.getItem("company-os.selected-company");
       const response = await fetch(`/api/v1/companies/${companyId}/accountability-exports`, {
