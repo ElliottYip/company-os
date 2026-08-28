@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_SYNTHETIC_PRIVATE_RUNTIME_ACCEPTANCE",
+  "recordedAt": "2026-08-28T07:31:02Z",
+  "scope": {
+    "purpose": "Exercise the first private Federated Connector Alpha without a customer-owned platform account or production data.",
+    "provenance": "SYNTHETIC_SANDBOX",
+    "paidModelCalls": 0,
+    "productionDataAccessed": false,
+    "customerCredentialUsed": false
+  },
+  "paperclip": {
+    "release": "v2026.817.0",
+    "sourceRevision": "213dabab4f8e1f3bb1803a2924c0fea1289fcd4c",
+    "deploymentMode": "authenticated",
+    "deploymentExposure": "private",
+    "budgetCents": 0,
+    "modelCredentialsConfigured": false,
+    "fixtureInventory": {
+      "companies": 1,
+      "agents": 1,
+      "issues": 1
+    }
+  },
+  "localFormalAcceptance": {
+    "status": "PASSED",
+    "profile": "self-hosted",
+    "companyOsApiAndWeb": "BUILT_FROM_CURRENT_WORKTREE",
+    "identity": "EPHEMERAL_PRIVATE_KEYCLOAK_OIDC",
+    "database": "EPHEMERAL_POSTGRESQL_16",
+    "paperclipTransport": "REAL_PINNED_PAPERCLIP_HTTP_API_OVER_INTERNAL_TEST_TLS",
+    "browserNetworkInterception": false,
+    "assertions": {
+      "formalLoginAndCompanyClaim": "PASSED",
+      "tenantBoundSynchronization": "PASSED",
+      "inventoryFirstRecord": 2,
+      "workFirstRecord": 1,
+      "mappedAgentReplay": "PASSED",
+      "federatedRuntimeHeartbeatUpdate": "PASSED",
+      "workReplay": "PASSED",
+      "privateIssueBodyExcluded": "PASSED",
+      "declaredCapabilitiesVisible": "PASSED",
+      "credentialRevocationReturns503": "PASSED",
+      "unavailableHealthRetainsLastSuccess": "PASSED",
+      "atomicCredentialRotation": "PASSED",
+      "synchronizationRecovery": "PASSED",
+      "postgresAndApiRestartDurability": "PASSED"
+    },
+    "durableStateAfterRecovery": {
+      "companies": 1,
+      "memberships": 1,
+      "users": 1,
+      "sessions": 2,
+      "events": 6
+    }
+  },
+  "hongKongLoopbackAcceptance": {
+    "status": "PASSED",
+    "apiImage": "ghcr.io/elliottyip/company-os-api@sha256:73988a3c69a6f47174939cad42d7108db67e436bbda537afecc088e11fa8e74e",
+    "release": "v0.1.0-rc.16",
+    "networkExposure": "DOCKER_INTERNAL_ONLY",
+    "hostPortsPublished": 0,
+    "inventoryCount": 2,
+    "workCount": 1,
+    "credentialFailureClosed": true,
+    "credentialRotated": true,
+    "connectorRecovered": true,
+    "rc14HealthUnchanged": true,
+    "releaseStoreDigestBeforeAndAfter": "sha256:164a150ed0e2eed6d172fde23ab830eb8030c803c4bd9839d5a01a740e2486f7",
+    "publicTrafficChanged": false,
+    "dnsChanged": false,
+    "nginxChanged": false,
+    "formalRuntimeStarted": false,
+    "temporaryContainersAndVolumesRetained": false
+  },
+  "publicDemo": {
+    "url": "https://anc.raft.xin",
+    "apiUrl": "https://api.anc.raft.xin",
+    "release": "0.1.0-rc.14-74bd081c75df",
+    "mode": "DEMO_FIXTURE",
+    "statusAfterAcceptance": "HEALTHY"
+  },
+  "repositoryValidation": {
+    "unitTests": "725_PASSED_4_SKIPPED_0_FAILED",
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "0_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED",
+    "browserE2E": "18_PASSED_5_ENVIRONMENT_GATED_SKIPPED_0_FAILED",
+    "privateFederatedComposeE2E": "PASSED_SEPARATELY_WITH_CONFIGURED_SANDBOX"
+  },
+  "decision": "SYNTHETIC_PRIVATE_ALPHA_ENGINEERING_ACCEPTANCE_PASSED_ACTIVE_GOAL_REMAINS_OPEN",
+  "notClaimed": [
+    "customer-owned Paperclip sandbox acceptance",
+    "production Connector availability",
+    "public access to a private OIDC Alpha runtime",
+    "live Slack, QM, Codex, Raft, or paid model execution",
+    "Paperclip usage or cost synchronization",
+    "formal RC16 runtime deployment"
+  ],
+  "remainingGate": "Obtain a customer-owned disposable Paperclip sandbox or another approved external-platform test credential, then repeat the same formal route acceptance without production data or paid execution."
+}
