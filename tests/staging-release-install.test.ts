@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { chmod, lstat, mkdtemp, readFile, rm, symlink, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -8,6 +9,7 @@ import { createStagingReleaseBundle } from "../scripts/create-staging-release-bu
 import {
   adoptStagingSiteContract,
   installStagingReleaseBundle,
+  planStagingSiteContractAdoption,
   planStagingReleaseInstall,
 } from "../scripts/install-staging-release-bundle.mjs";
 import { siteRuntimeFixture } from "./fixtures/site-runtime-fixture.ts";
@@ -135,8 +137,12 @@ test("canonical store adopts one digest-bound site contract idempotently", async
     writeFile(paths.dependencySecretMetadataFile,
       `${JSON.stringify(artifacts.dependencySecretMetadata)}\n`, { mode: 0o600 }),
   ]);
-  const adopted = await adoptStagingSiteContract({ rootDirectory: value.root,
-    releaseId: installed.releaseId, productSecretDirectory: artifacts.productSecretDirectory, ...paths });
+  const input = { rootDirectory: value.root, releaseId: installed.releaseId,
+    productSecretDirectory: artifacts.productSecretDirectory, ...paths };
+  const plan = await planStagingSiteContractAdoption(input);
+  assert.equal(plan.status, "SITE_CONTRACT_ADOPTION_PLANNED_NOT_APPLIED");
+  await assert.rejects(lstat(join(value.root, "site-contracts")), /ENOENT/);
+  const adopted = await adoptStagingSiteContract(input);
   assert.equal(adopted.status, "SITE_CONTRACT_ADOPTED_NOT_STARTED");
   assert.equal(adopted.reused, false);
   assert.equal(Object.keys(adopted.digests).length, 4);
@@ -145,12 +151,49 @@ test("canonical store adopts one digest-bound site contract idempotently", async
   assert.equal(store.schemaVersion, 2);
   assert.equal(store.prepared.siteContract.siteId, "company-os-test-site");
   assert.equal(store.prepared.siteContract.releaseId, installed.releaseId);
-  const reused = await adoptStagingSiteContract({ rootDirectory: value.root,
-    releaseId: installed.releaseId, productSecretDirectory: artifacts.productSecretDirectory, ...paths });
+  const reused = await adoptStagingSiteContract(input);
   assert.equal(reused.reused, true);
 
   await writeFile(paths.publicEnvironmentFile, `${artifacts.publicEnvironment}EXTRA_PUBLIC_VALUE=changed\n`);
   await assert.rejects(adoptStagingSiteContract({ rootDirectory: value.root,
     releaseId: installed.releaseId, productSecretDirectory: artifacts.productSecretDirectory, ...paths }),
   /STAGING_SITE_PUBLIC_ENVIRONMENT_MISMATCH/);
+});
+
+test("staging release CLI plans and explicitly applies site-contract adoption", async (context) => {
+  const value = await fixture("company-os-staging-install-site-cli-");
+  context.after(() => rm(value.temporary, { recursive: true, force: true }));
+  const installed = await installStagingReleaseBundle({ bundleDirectory: value.source,
+    rootDirectory: value.root });
+  const artifacts = siteRuntimeFixture({ root: value.root, releaseId: installed.releaseId,
+    images: release.images });
+  const paths = {
+    siteRuntimeFile: join(value.temporary, "site-runtime.json"),
+    publicEnvironmentFile: join(value.temporary, "staging.env"),
+    dependencyManifestFile: join(value.temporary, "staging-dependencies.json"),
+    dependencySecretMetadataFile: join(value.temporary, "dependency-secrets.json"),
+  };
+  await Promise.all([
+    writeFile(paths.siteRuntimeFile, `${JSON.stringify(artifacts.site)}\n`, { mode: 0o600 }),
+    writeFile(paths.publicEnvironmentFile, artifacts.publicEnvironment, { mode: 0o600 }),
+    writeFile(paths.dependencyManifestFile, `${JSON.stringify(artifacts.dependencyManifest)}\n`, { mode: 0o600 }),
+    writeFile(paths.dependencySecretMetadataFile,
+      `${JSON.stringify(artifacts.dependencySecretMetadata)}\n`, { mode: 0o600 }),
+  ]);
+  const command = ["--experimental-strip-types",
+    new URL("../scripts/install-staging-release-bundle.mjs", import.meta.url).pathname,
+    "--adopt-site-contract", "--root", value.root, "--release", installed.releaseId,
+    "--site-runtime", paths.siteRuntimeFile, "--public-env-file", paths.publicEnvironmentFile,
+    "--dependency-manifest", paths.dependencyManifestFile,
+    "--dependency-secret-metadata", paths.dependencySecretMetadataFile,
+    "--product-secret-directory", artifacts.productSecretDirectory];
+  const planned = spawnSync(process.execPath, command, { encoding: "utf8" });
+  assert.equal(planned.status, 0, planned.stderr);
+  assert.equal(JSON.parse(planned.stdout).status, "SITE_CONTRACT_ADOPTION_PLANNED_NOT_APPLIED");
+  await assert.rejects(lstat(join(value.root, "site-contracts")), /ENOENT/);
+
+  const applied = spawnSync(process.execPath, [...command, "--apply"], { encoding: "utf8" });
+  assert.equal(applied.status, 0, applied.stderr);
+  assert.equal(JSON.parse(applied.stdout).status, "SITE_CONTRACT_ADOPTED_NOT_STARTED");
+  assert.equal((await lstat(join(value.root, "site-contracts"))).isDirectory(), true);
 });
