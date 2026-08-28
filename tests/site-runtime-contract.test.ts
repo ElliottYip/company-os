@@ -283,6 +283,7 @@ test("dependency public configuration is Secret-free and binds Vault and Broker 
   const rendered = renderReferenceDependencyPublicConfiguration(manifest, metadata);
   assert.deepEqual(Object.keys(rendered).sort(), ["secret-references.json", "vault.hcl"]);
   assert.match(rendered["vault.hcl"], /storage "file"/);
+  assert.match(rendered["vault.hcl"], /path = "\/vault\/file"/);
   assert.match(rendered["vault.hcl"], /tls_cert_file = "\/run\/dependency-secrets\/internal-tls-cert-12"/);
   assert.match(rendered["vault.hcl"], /api_addr = "https:\/\/vault\.hk\.internal:8200"/);
   const references = JSON.parse(rendered["secret-references.json"]);
@@ -307,6 +308,9 @@ test("dependency Secret projection plan gives each immutable service only its re
   const postgres = plan.projections.find(({ consumer }) => consumer === "POSTGRES")!;
   assert.deepEqual(postgres.files.map(({ purpose }) => purpose),
     ["POSTGRES_BOOTSTRAP", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]);
+  const vault = plan.projections.find(({ consumer }) => consumer === "VAULT")!;
+  assert.equal(vault.runtimeOwnerResolution, "OCI_IMAGE_EXPLICIT_ACCOUNT");
+  assert.equal(vault.runtimeUser, "vault");
   const broker = plan.projections.find(({ consumer }) => consumer === "VAULT_SECRET_BROKER")!;
   assert.deepEqual(broker.files.map(({ purpose }) => purpose), ["VAULT_APPROLE_ROLE_ID",
     "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN", "BROKER_EXECUTION_TOKEN",

@@ -371,7 +371,7 @@ export function renderReferenceDependencyPublicConfiguration(
     "ui = false",
     "disable_mlock = true",
     'storage "file" {',
-    '  path = "/var/lib/company-os-vault"',
+    '  path = "/vault/file"',
     "}",
     'listener "tcp" {',
     '  address = "0.0.0.0:8200"',
@@ -416,7 +416,7 @@ export function planDependencySecretProjections(
     readonly DependencySecretPurpose[]][] = [
     ["POSTGRES", manifest.dependencies.postgres.image, "postgres",
       ["POSTGRES_BOOTSTRAP", "INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
-    ["VAULT", manifest.dependencies.vault.image, null, ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
+    ["VAULT", manifest.dependencies.vault.image, "vault", ["INTERNAL_TLS_CERT", "INTERNAL_TLS_KEY"]],
     ["VAULT_SECRET_BROKER", manifest.dependencies.secretBroker.image, null,
       ["VAULT_APPROLE_ROLE_ID", "VAULT_APPROLE_SECRET_ID", "BROKER_CONTROL_TOKEN",
         "BROKER_EXECUTION_TOKEN", "BROKER_SIGNING_KEY", "INTERNAL_TLS_CERT"]],

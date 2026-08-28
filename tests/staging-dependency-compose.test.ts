@@ -42,6 +42,8 @@ test("reference dependencies are isolated, TLS-fronted, immutable and resource b
   assert.match(compose, /COMPANY_OS_OIDC_VOLUME:[^}]+\}/);
   assert.match(compose, /company_os_dependency_oidc:\/var\/dex/);
   assert.match(compose, /COMPANY_OS_VAULT_ADDRESS: https:\/\/\$\{COMPANY_OS_VAULT_TLS_HOST:[^}]+\}:8200/);
+  assert.match(compose, /SKIP_SETCAP: "true"/);
+  assert.match(compose, /company_os_dependency_vault:\/vault\/file/);
   assert.match(compose, /aliases: \["\$\{COMPANY_OS_VAULT_TLS_HOST:[^}]+\}"\]/);
   assert.match(caddy, /reverse_proxy oidc:5556/);
   assert.match(caddy, /reverse_proxy vault-secret-broker:4321/);
