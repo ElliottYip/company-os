@@ -3,8 +3,8 @@
   "environment": "STAGING",
   "deploymentId": "company-os-staging-raft-xin",
   "ingress": {
-    "webOrigin": "https://anc.raft.xin",
-    "apiOrigin": "https://api.anc.raft.xin",
+    "webOrigin": "https://company-os.raft.xin",
+    "apiOrigin": "https://company-os-api.raft.xin",
     "ownerReference": "team:replace-with-infrastructure-owner",
     "dnsEvidenceReference": "evidence:replace-with-dns-check",
     "tlsEvidenceReference": "evidence:replace-with-tls-check"

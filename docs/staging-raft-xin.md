@@ -6,8 +6,11 @@ network, volume, database, bucket, queue, or H3 runtime.
 
 ## Fixed coordinates
 
-- Web: `https://anc.raft.xin` -> `127.0.0.1:4600`
-- API: `https://api.anc.raft.xin` -> `127.0.0.1:4601`
+- Public Demo: `https://anc.raft.xin` and `https://api.anc.raft.xin`; the
+  active immutable Demo release owns a dedicated Compose project and Docker
+  network and does not use the formal loopback ports below.
+- Private Alpha Web: `https://company-os.raft.xin` -> `127.0.0.1:4600`
+- Private Alpha API: `https://company-os-api.raft.xin` -> `127.0.0.1:4601`
 - fixture-only reference Data Node ingress -> `127.0.0.1:4322`
 - deployment root: `/srv/company-os/staging`
 - Compose project/network: `company-os-staging` / `company-os-staging_internal`
@@ -34,7 +37,7 @@ No Secret file, public environment, container, network, image, DNS record,
 certificate or proxy configuration was created. Existing Buzz production
 containers, networks, volumes and PostgreSQL 17 remain forbidden and untouched.
 
-The following external prerequisites do not yet exist for Company OS:
+The following external prerequisites do not yet exist for the private Alpha:
 
 - an independent PostgreSQL 16 coordinate;
 - an enterprise OIDC client/issuer;
@@ -42,7 +45,9 @@ The following external prerequisites do not yet exist for Company OS:
 - an Agent Node coordinate and verified TLS ingress for either the fixture-only
   reference Data Node or a customer Data Node;
 - the final binding and verification of the dedicated ZOS bucket-scoped identity;
-- DNS, Nginx sites and certificates for both fixed hostnames.
+- HTTPS certificates for both private Alpha hostnames. Their DNS records and
+  HTTP-only Nginx sites exist, but formal OIDC and company capabilities remain
+  fail-closed until an explicitly authorized TLS and first-start operation.
 
 The dedicated ZOS Hangzhou 7 bucket has now been created as private,
 single-availability-zone storage with ZOS-managed encryption and versioning.
@@ -134,13 +139,57 @@ Before any start:
    directory and rename, records `PREPARED_NOT_STARTED`, and preserves every
    earlier immutable release. It does not pull images, read Secrets, migrate the
    database, start services or move traffic;
-2. copy only the public `staging.env`, create a private regular file named
-   `/srv/company-os/staging/staging-dependencies.json` from
-   `deploy/staging-dependencies.example.json`, and separately inject the
-   required Secret files. Every placeholder in the dependency file must be
-   replaced with an independently owned resource, accountable owner reference
-   and retained evidence reference. The template itself is intentionally
-   rejected.
+2. prepare the four Secret-free site-contract files outside the release store:
+   `site-runtime.json`, the exactly rendered `staging.env`,
+   `staging-dependencies.json`, and `dependency-secrets.json`. The OIDC callback
+   in `staging.env` must use the API origin, not the Web origin. Every
+   placeholder in the dependency and site files must be replaced with an
+   independently owned resource, accountable owner reference and retained
+   evidence reference. `dependency-secrets.json` contains only filenames,
+   owners, consumers, generation methods, rotation classes and modes; it never
+   contains values. The templates themselves are intentionally rejected.
+
+   Bind the four files to the exact prepared release through the attested Ops
+   image. The first command is read-only. The second writes only a digest-bound
+   site contract, an adoption evidence record and the schema-v2 release-store
+   binding; it does not create Secret values, initialize dependencies, migrate,
+   start containers or move traffic:
+
+   ```sh
+   docker run --rm --network none --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/absolute/site-contract-input,dst=/contract,readonly \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/install-staging-release-bundle.mjs \
+     --adopt-site-contract \
+     --root /srv/company-os/staging \
+     --release REPLACE_WITH_EXACT_RELEASE_ID \
+     --site-runtime /contract/site-runtime.json \
+     --public-env-file /contract/staging.env \
+     --dependency-manifest /contract/staging-dependencies.json \
+     --dependency-secret-metadata /contract/dependency-secrets.json \
+     --product-secret-directory /etc/company-os/secrets
+
+   docker run --rm --network none --read-only --cap-drop ALL \
+     --security-opt no-new-privileges:true --user 0:0 \
+     --mount type=bind,src=/absolute/site-contract-input,dst=/contract,readonly \
+     --mount type=bind,src=/srv/company-os/staging,dst=/srv/company-os/staging \
+     "$COMPANY_OS_VERIFIED_OPS_IMAGE" \
+     node --experimental-strip-types scripts/install-staging-release-bundle.mjs \
+     --adopt-site-contract \
+     --root /srv/company-os/staging \
+     --release REPLACE_WITH_EXACT_RELEASE_ID \
+     --site-runtime /contract/site-runtime.json \
+     --public-env-file /contract/staging.env \
+     --dependency-manifest /contract/staging-dependencies.json \
+     --dependency-secret-metadata /contract/dependency-secrets.json \
+     --product-secret-directory /etc/company-os/secrets \
+     --apply
+   ```
+
+   Separately inject the required Secret files only after their accountable
+   generation/install action has been approved.
 
    Before the doctor, validate the exact dependency file through the attested
    Ops image and retain its secret-free digest:

@@ -113,7 +113,44 @@ export async function installStagingReleaseBundle(input) {
   return { ...plan, status: "INSTALLED_NOT_STARTED", reused };
 }
 
+export async function planStagingSiteContractAdoption(input) {
+  const validated = await validateStagingSiteContractAdoption(input);
+  return siteContractAdoptionResult(validated, "SITE_CONTRACT_ADOPTION_PLANNED_NOT_APPLIED");
+}
+
 export async function adoptStagingSiteContract(input) {
+  const validated = await validateStagingSiteContractAdoption(input);
+  const { rootDirectory, store, sources, digests, manifest, contractDirectory,
+    siteContract } = validated;
+  const { reused } = validated;
+  if (!reused) {
+    const parent = join(rootDirectory, "site-contracts", manifest.site.id);
+    await mkdir(parent, { recursive: true, mode: 0o750 });
+    const staging = await mkdtemp(join(parent, `.${input.releaseId}.partial-`));
+    try {
+      await chmod(staging, 0o750);
+      for (const [name, source] of Object.entries(sources)) {
+        await copyFile(source, join(staging, name), constants.COPYFILE_EXCL);
+        await chmod(join(staging, name), 0o600);
+      }
+      await rename(staging, contractDirectory);
+    } finally { await rm(staging, { recursive: true, force: true }); }
+  }
+  await writeStoreAtomic(rootDirectory, { ...store, schemaVersion: 2,
+    prepared: { ...store.prepared, siteContract } });
+  const evidenceDirectory = join(rootDirectory, "evidence", "site-adoptions");
+  await mkdir(evidenceDirectory, { recursive: true, mode: 0o750 });
+  const evidencePath = join(evidenceDirectory, `${manifest.site.id}-${input.releaseId}.json`);
+  const evidence = `${JSON.stringify({ schemaVersion: 1, product: "company-os",
+    status: "SITE_CONTRACT_ADOPTED_NOT_STARTED", ...siteContract }, null, 2)}\n`;
+  try { await writeFile(evidencePath, evidence, { flag: "wx", mode: 0o600 }); }
+  catch (error) {
+    if (!isCode(error, "EEXIST") || await readFile(evidencePath, "utf8") !== evidence) throw error;
+  }
+  return siteContractAdoptionResult({ ...validated, reused }, "SITE_CONTRACT_ADOPTED_NOT_STARTED");
+}
+
+async function validateStagingSiteContractAdoption(input) {
   const rootDirectory = safeAbsolutePath(input.rootDirectory, "STAGING_RELEASE_ROOT_ABSOLUTE_PATH_REQUIRED");
   const store = await readStore(rootDirectory);
   if (!store || store.prepared.releaseId !== input.releaseId) {
@@ -163,17 +200,6 @@ export async function adoptStagingSiteContract(input) {
     reused = true;
   } catch (error) {
     if (!isCode(error, "ENOENT")) throw error;
-    const parent = join(rootDirectory, "site-contracts", manifest.site.id);
-    await mkdir(parent, { recursive: true, mode: 0o750 });
-    const staging = await mkdtemp(join(parent, `.${input.releaseId}.partial-`));
-    try {
-      await chmod(staging, 0o750);
-      for (const [name, source] of Object.entries(sources)) {
-        await copyFile(source, join(staging, name), constants.COPYFILE_EXCL);
-        await chmod(join(staging, name), 0o600);
-      }
-      await rename(staging, contractDirectory);
-    } finally { await rm(staging, { recursive: true, force: true }); }
   }
   const siteContract = { schemaVersion: 1, siteId: manifest.site.id, releaseId: input.releaseId,
     contractDirectory, digests, dependencyManifestDigest: dependencyAdmission.manifestDigest };
@@ -181,20 +207,16 @@ export async function adoptStagingSiteContract(input) {
   if (existingContract && JSON.stringify(existingContract) !== JSON.stringify(siteContract)) {
     throw new Error("STAGING_SITE_STORE_COLLISION");
   }
-  await writeStoreAtomic(rootDirectory, { ...store, schemaVersion: 2,
-    prepared: { ...store.prepared, siteContract } });
-  const evidenceDirectory = join(rootDirectory, "evidence", "site-adoptions");
-  await mkdir(evidenceDirectory, { recursive: true, mode: 0o750 });
-  const evidencePath = join(evidenceDirectory, `${manifest.site.id}-${input.releaseId}.json`);
-  const evidence = `${JSON.stringify({ schemaVersion: 1, product: "company-os",
-    status: "SITE_CONTRACT_ADOPTED_NOT_STARTED", ...siteContract }, null, 2)}\n`;
-  try { await writeFile(evidencePath, evidence, { flag: "wx", mode: 0o600 }); }
-  catch (error) {
-    if (!isCode(error, "EEXIST") || await readFile(evidencePath, "utf8") !== evidence) throw error;
-  }
-  return { schemaVersion: 1, status: "SITE_CONTRACT_ADOPTED_NOT_STARTED",
-    siteId: manifest.site.id, releaseId: input.releaseId, contractDirectory, digests,
-    dependencyManifestDigest: dependencyAdmission.manifestDigest, reused };
+  return { rootDirectory, store, sources, manifest, contractDirectory, digests,
+    dependencyManifestDigest: dependencyAdmission.manifestDigest, siteContract, reused,
+    releaseId: input.releaseId };
+}
+
+function siteContractAdoptionResult(validated, status) {
+  return { schemaVersion: 1, status, siteId: validated.manifest.site.id,
+    releaseId: validated.releaseId, contractDirectory: validated.contractDirectory,
+    digests: validated.digests, dependencyManifestDigest: validated.dependencyManifestDigest,
+    reused: validated.reused };
 }
 
 function releaseRecord(plan) {
@@ -321,20 +343,44 @@ function isCode(error, code) {
 }
 
 function argumentsFrom(values) {
-  let bundleDirectory; let rootDirectory; let apply = false;
+  let bundleDirectory; let rootDirectory; let releaseId; let siteRuntimeFile;
+  let publicEnvironmentFile; let dependencyManifestFile; let dependencySecretMetadataFile;
+  let productSecretDirectory; let apply = false; let adoptSiteContract = false;
   for (let index = 0; index < values.length; index += 1) {
     const flag = values[index];
     if (flag === "--apply") apply = true;
+    else if (flag === "--adopt-site-contract") adoptSiteContract = true;
     else if (flag === "--bundle") bundleDirectory = values[++index];
     else if (flag === "--root") rootDirectory = values[++index];
+    else if (flag === "--release") releaseId = values[++index];
+    else if (flag === "--site-runtime") siteRuntimeFile = values[++index];
+    else if (flag === "--public-env-file") publicEnvironmentFile = values[++index];
+    else if (flag === "--dependency-manifest") dependencyManifestFile = values[++index];
+    else if (flag === "--dependency-secret-metadata") dependencySecretMetadataFile = values[++index];
+    else if (flag === "--product-secret-directory") productSecretDirectory = values[++index];
     else throw new Error("STAGING_RELEASE_INSTALL_ARGUMENT_INVALID");
   }
+  if (adoptSiteContract) {
+    if (bundleDirectory || !rootDirectory || !releaseId || !siteRuntimeFile || !publicEnvironmentFile ||
+        !dependencyManifestFile || !dependencySecretMetadataFile || !productSecretDirectory) {
+      throw new Error("STAGING_SITE_ADOPTION_ARGUMENTS_REQUIRED");
+    }
+    return { mode: "ADOPT_SITE_CONTRACT", rootDirectory, releaseId, siteRuntimeFile,
+      publicEnvironmentFile, dependencyManifestFile, dependencySecretMetadataFile,
+      productSecretDirectory, apply };
+  }
+  if (releaseId || siteRuntimeFile || publicEnvironmentFile || dependencyManifestFile ||
+      dependencySecretMetadataFile || productSecretDirectory) {
+    throw new Error("STAGING_RELEASE_INSTALL_ARGUMENT_INVALID");
+  }
   if (!bundleDirectory || !rootDirectory) throw new Error("STAGING_RELEASE_INSTALL_PATHS_REQUIRED");
-  return { bundleDirectory, rootDirectory, apply };
+  return { mode: "INSTALL_BUNDLE", bundleDirectory, rootDirectory, apply };
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) {
   const options = argumentsFrom(process.argv.slice(2));
-  const result = options.apply ? await installStagingReleaseBundle(options) : await planStagingReleaseInstall(options);
+  const result = options.mode === "ADOPT_SITE_CONTRACT"
+    ? options.apply ? await adoptStagingSiteContract(options) : await planStagingSiteContractAdoption(options)
+    : options.apply ? await installStagingReleaseBundle(options) : await planStagingReleaseInstall(options);
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 }
