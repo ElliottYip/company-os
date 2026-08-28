@@ -56,6 +56,7 @@ import { DeliverConnectorCommands } from "../../application/deliver-connector-co
 import { Sha256ConnectorRuntimeSecurity } from "../connectors/sha256-connector-runtime-security.ts";
 import { startConnectorCommandSupervisor } from "../connectors/connector-command-supervisor.ts";
 import { RedriveConnectorCommands } from "../../application/redrive-connector-commands.ts";
+import { ReconcileConnectorControlPlane } from "../../application/reconcile-connector-control-plane.ts";
 import { RecoverExpiredWorkAttempts } from "../../application/recover-expired-work-attempts.ts";
 import { PlanningRegistry } from "../../application/planning-registry.ts";
 import { EventBackedPlanningStore } from "../storage/event-backed-planning-store.ts";
@@ -1128,11 +1129,6 @@ const stopConnectorSupervisor = formalEvents && companyAccessStore
   ? startConnectorCommandSupervisor(new RedriveConnectorCommands({
       listCompanyIds: () => companyAccessStore.listCompanyIds(),
       deliver: async (companyId) => {
-        await new RecoverExpiredWorkAttempts({
-          store: formalEvents,
-          now: () => new Date().toISOString(),
-          nextId: nextPostgresRecordId,
-        }).execute(companyId);
         const collectObservations = () => new CollectConnectorObservations({
           store: formalEvents,
           executionPorts: formalExecutionPorts,
@@ -1143,23 +1139,28 @@ const stopConnectorSupervisor = formalEvents && companyAccessStore
           }),
           nextId: nextPostgresRecordId,
         }).execute(companyId);
-        await collectObservations();
-        // Observation handling may enqueue PAUSE/CANCEL commands. Deliver after
-        // collection so safety commands do not wait for another supervisor tick.
-        const deliveries = await connectorDelivery({
+        const deliver = () => connectorDelivery({
           structure: new EventBackedOrganizationPrincipalStore(formalEvents),
           now: () => new Date().toISOString(),
         }).execute(companyId);
-        // A delivered RESUME/CANCEL may synchronously expose a terminal
-        // observation. Collect once more only when this tick sent commands;
-        // idle ticks remain a single bounded poll.
-        if (deliveries.length) await collectObservations();
-        if (formalSecretBroker) {
-          const revocations = await new RevokeAttemptSecretLeases({ events: formalEvents, broker: formalSecretBroker,
-            now: () => new Date().toISOString(), nextId: nextPostgresRecordId }).execute(companyId);
-          runtimeMetrics?.recordSecretLeaseRevocations(revocations);
-        }
-        return deliveries;
+        return new ReconcileConnectorControlPlane({
+          recoverExpired: async () => {
+            await new RecoverExpiredWorkAttempts({
+              store: formalEvents,
+              now: () => new Date().toISOString(),
+              nextId: nextPostgresRecordId,
+            }).execute(companyId);
+          },
+          deliver,
+          collectObservations: async () => { await collectObservations(); },
+          ...(formalSecretBroker ? {
+            revokeSecretLeases: async () => {
+              const revocations = await new RevokeAttemptSecretLeases({ events: formalEvents, broker: formalSecretBroker,
+                now: () => new Date().toISOString(), nextId: nextPostgresRecordId }).execute(companyId);
+              runtimeMetrics?.recordSecretLeaseRevocations(revocations);
+            },
+          } : {}),
+        }).execute();
       },
     }), {
       intervalMs: Math.max(10_000, Number(process.env.COMPANY_OS_CONNECTOR_REDRIVE_INTERVAL_MS) || 30_000),
