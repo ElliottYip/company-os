@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "recordType": "ANC_ALPHA_RC17_PUBLICATION_AND_HK_PREPARE_ONLY",
+  "recordedAt": "2026-08-28T08:09:20Z",
+  "release": {
+    "tag": "v0.1.0-rc.17",
+    "releaseId": "0.1.0-rc.17-fb84ad67c548",
+    "sourceRevision": "fb84ad67c548e66ab29586b8cf98ec93733bd1ac",
+    "pullRequest": "https://github.com/ElliottYip/company-os/pull/4",
+    "pullRequestHeadRevision": "9101e5b8d01a055f526e78641b142308b042b1c1",
+    "pullRequestVerification": "https://github.com/ElliottYip/company-os/actions/runs/33152020148",
+    "mainVerification": "https://github.com/ElliottYip/company-os/actions/runs/33152542515",
+    "releaseWorkflow": "https://github.com/ElliottYip/company-os/actions/runs/33153061738",
+    "qualify": "PASSED",
+    "publish": "PASSED",
+    "releaseManifestDigest": "sha256:b15df63ac36233bf661a2cd22514b0e67da273a65f3b98d9a016aa11145c453b",
+    "sbomDigest": "sha256:773d50b09284395b785f84e5e68f81f15c994c05857e8ed91d2ab689159c6433",
+    "bundleManifestDigest": "sha256:943f10da0257314dd46928cdc9cb456d22ff75050d17d2c4fa65f58004d87405",
+    "portableArchiveDigest": "sha256:8bcf692d8a7186bb5ddb954c870025789b9f59dec95974f3149293631c7c59b3",
+    "images": {
+      "api": "ghcr.io/elliottyip/company-os-api@sha256:2fbea01d5c73408f4867fe441b6b370a919f81151f849a3cdf0ec94be833c4b6",
+      "web": "ghcr.io/elliottyip/company-os-web@sha256:3c53feb59e19def8f35b5d48bc609cfc0d6d435facc463358b47e5914ae215e5",
+      "ops": "ghcr.io/elliottyip/company-os-ops@sha256:2c824c9c49a2b102529d2b073f295fd070b1587a2015e86f352f5405e198585b",
+      "codexAgentNode": "ghcr.io/elliottyip/company-os-codex-agent-node@sha256:2659253e3bd9f258d3bf8c37aba03f9e837e59d94304d2f312c9dbf10dfe533c",
+      "vaultSecretBroker": "ghcr.io/elliottyip/company-os-vault-secret-broker@sha256:4c2d03b9b579b5864c62ded12d6032d302a2207584ec5a8fba32d982d6082dda",
+      "referenceDataNode": "ghcr.io/elliottyip/company-os-reference-data-node@sha256:39da324a1c97183f1e5c82efc936fe34ec521d941a41f2adb949d7d816331a6d"
+    }
+  },
+  "hongKong": {
+    "releaseDirectory": "/srv/company-os/staging/releases/0.1.0-rc.17-fb84ad67c548",
+    "installStatus": "INSTALLED_NOT_STARTED",
+    "releaseStoreState": "PREPARED_NOT_STARTED",
+    "releaseStoreDigestAfterInstall": "sha256:f87a8f52632b86a4b7bab57a5acf5c307e5347e361e894bb5f8d6b562d47248a",
+    "previousPreparedReleaseId": "0.1.0-rc.16-31415279cc5f",
+    "publicReleaseId": "0.1.0-rc.14-74bd081c75df",
+    "publicApi": "HEALTHY_DEMO_FIXTURE_MANAGED_CLOUD",
+    "rc17ContainersStarted": false,
+    "publicTrafficChanged": false,
+    "dnsChanged": false,
+    "tlsChanged": false,
+    "nginxReloaded": false,
+    "databaseMigrated": false,
+    "formalRuntimeStarted": false,
+    "customerCredentialInstalled": false,
+    "secretMaterialIncluded": false,
+    "temporaryArchiveAndHandoffRetained": false
+  },
+  "migrationPreflight": {
+    "status": "PLANNED_NOT_EXECUTED",
+    "cutoverId": "cutover-374d267d0d939fac462072fa",
+    "previousRelease": "0.1.0-rc.16",
+    "currentRelease": "0.1.0-rc.17",
+    "migrationHistory": "EXACT_PREFIX",
+    "migrationAdded": false,
+    "postgresqlMajor": 16,
+    "codexCliChanged": false,
+    "publicContracts": "UNCHANGED",
+    "automaticDownMigration": false,
+    "rollbackStrategy": "RESTORE_PAIRED_BACKUP_TO_EMPTY_PARALLEL_DATABASE"
+  },
+  "alphaAcceptance": {
+    "syntheticPrivateRuntimeEvidence": "docs/acceptance/2026-08-28-anc-alpha-synthetic-private-runtime-acceptance.json",
+    "formalOidcPostgresqlCompose": "PASSED_LOCALLY",
+    "actualPinnedAuthenticatedPaperclipApi": "PASSED_WITH_SYNTHETIC_SANDBOX_RECORDS",
+    "credentialRevocationAndFailClosed": "PASSED",
+    "credentialRotationAndRecovery": "PASSED",
+    "durabilityAcrossDatabaseAndApiRestart": "PASSED",
+    "privateContentMinimization": "PASSED",
+    "customerOwnedCredentialUsed": false,
+    "paidExecution": false
+  },
+  "repositoryValidation": {
+    "unitTests": "725_PASSED_4_SKIPPED_0_FAILED",
+    "boundaries": "PASSED",
+    "independence": "PASSED",
+    "secretScan": "PASSED",
+    "dependencyAudit": "0_VULNERABILITIES",
+    "typecheck": "PASSED",
+    "build": "PASSED",
+    "browserE2E": "18_PASSED_5_ENVIRONMENT_GATED_SKIPPED_0_FAILED"
+  },
+  "decision": "RC17_PUBLISHED_AND_HONG_KONG_PREPARED_NOT_STARTED_RC14_REMAINS_PUBLIC",
+  "notClaimed": [
+    "RC17 formal runtime start",
+    "RC17 public traffic",
+    "customer-owned external-platform acceptance",
+    "production Connector availability",
+    "live Slack, QM, Codex, Raft, or paid model execution",
+    "Paperclip usage or cost synchronization"
+  ],
+  "remainingGate": "Formal first start and any customer-owned Connector credential require a separate explicit operator decision and bounded sandbox credential."
+}
