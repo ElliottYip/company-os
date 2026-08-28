@@ -26,6 +26,7 @@ test("OCI image user resolves numeric and explicit user/group forms", () => {
   assert.deepEqual(resolveOciImageUser("1001", passwd, groups), { uid: 1001, gid: 1002 });
   assert.deepEqual(resolveOciImageUser("dex:runtime", passwd, groups), { uid: 1001, gid: 2000 });
   assert.deepEqual(resolveOciImageUser("1003:2000", passwd, groups), { uid: 1003, gid: 2000 });
+  assert.deepEqual(resolveOciImageUser("2001:2002", passwd, groups), { uid: 2001, gid: 2002 });
 });
 
 test("OCI image user rejects implicit or explicit root identity", () => {
@@ -39,6 +40,8 @@ test("OCI image user refuses missing and ambiguous account data", () => {
     /OCI_IMAGE_USER_NOT_FOUND_OR_AMBIGUOUS/);
   assert.throws(() => resolveOciImageUser("dex:missing", passwd, groups),
     /OCI_IMAGE_GROUP_NOT_FOUND_OR_AMBIGUOUS/);
+  assert.throws(() => resolveOciImageUser("2001", passwd, groups),
+    /OCI_IMAGE_USER_NOT_FOUND_OR_AMBIGUOUS/);
   assert.throws(() => resolveOciImageUser("dex", `${passwd}dex:x:2001:2001::/:/bin/false\n`, groups),
     /OCI_IMAGE_USER_NOT_FOUND_OR_AMBIGUOUS/);
   assert.throws(() => resolveOciImageUser("dex:runtime", passwd, `${groups}runtime:x:2001:\n`),

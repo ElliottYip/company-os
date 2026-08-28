@@ -62,22 +62,23 @@ export function resolveOciImageUser(
 
   const passwd = parsePasswd(passwdContents);
   const groups = parseGroups(groupContents);
-  const user = numericToken(userToken) === null
+  const numericUser = numericToken(userToken);
+  const account = numericUser === null
     ? unique(passwd.filter((entry) => entry.name === userToken), "OCI_IMAGE_USER_NOT_FOUND_OR_AMBIGUOUS")
-    : unique(passwd.filter((entry) => entry.uid === numericToken(userToken)),
-      "OCI_IMAGE_USER_NOT_FOUND_OR_AMBIGUOUS");
-
-  const gid = groupToken === undefined ? user.gid : resolveGroup(groupToken, groups);
-  if (!validId(user.uid) || !validId(gid)) throw new Error("OCI_IMAGE_USER_ROOT_OR_RANGE_INVALID");
-  return { uid: user.uid, gid };
+    : groupToken === undefined
+      ? unique(passwd.filter((entry) => entry.uid === numericUser), "OCI_IMAGE_USER_NOT_FOUND_OR_AMBIGUOUS")
+      : null;
+  const uid = numericUser ?? account!.uid;
+  const gid = groupToken === undefined ? account!.gid : resolveGroup(groupToken, groups);
+  if (!validId(uid) || !validId(gid)) throw new Error("OCI_IMAGE_USER_ROOT_OR_RANGE_INVALID");
+  return { uid, gid };
 }
 
 function resolveGroup(token: string, groups: readonly GroupEntry[]): number {
   const numeric = numericToken(token);
-  const group = numeric === null
-    ? unique(groups.filter((entry) => entry.name === token), "OCI_IMAGE_GROUP_NOT_FOUND_OR_AMBIGUOUS")
-    : unique(groups.filter((entry) => entry.gid === numeric), "OCI_IMAGE_GROUP_NOT_FOUND_OR_AMBIGUOUS");
-  return group.gid;
+  if (numeric !== null) return numeric;
+  return unique(groups.filter((entry) => entry.name === token),
+    "OCI_IMAGE_GROUP_NOT_FOUND_OR_AMBIGUOUS").gid;
 }
 
 function parsePasswd(contents: string): readonly PasswdEntry[] {
