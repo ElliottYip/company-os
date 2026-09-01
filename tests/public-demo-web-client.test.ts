@@ -8,7 +8,7 @@ const snapshot = {
   revision: 0,
   createdAt: "2026-08-27T10:00:00.000Z",
   expiresAt: "2026-08-27T14:00:00.000Z",
-  company: { id: "demo-company-one", name: "Coral Labs · Demo Fixture" },
+  company: { id: "demo-company-one", name: "Northstar Analytics · Demo Fixture" },
   agents: [],
   work: [],
   commercial: { subscriptions: [], credentials: [], renewals: [], usage: [] },
@@ -51,4 +51,3 @@ test("public Demo Web client rejects a response that leaks the session token", a
   }));
   await assert.rejects(client.read(), /PUBLIC_DEMO_RESPONSE_INVALID/);
 });
-

@@ -1,10 +1,10 @@
 export const en = {
   "app.name": "Company OS",
-  "app.subtitle": "Coral Labs · Deterministic demo",
+  "app.subtitle": "Northstar Analytics · Deterministic demo",
   "demo.badge": "DEMO FIXTURE · ISOLATED SESSION",
   "demo.companyAria": "Demo company structure",
   "demo.runningCompany": "Running company",
-  "demo.companyName": "Coral Labs",
+  "demo.companyName": "Northstar Analytics",
   "demo.accountability": "A human remains accountable for goals, permissions, and high-risk actions.",
   "demo.boss": "Lin Cheng (demo human identity)",
   "demo.executors": "2 simulated Agents",

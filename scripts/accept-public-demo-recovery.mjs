@@ -35,7 +35,7 @@ const current = await fetch(`${apiOrigin}/api/demo/v2/session`, {
   headers: { cookie: nextSetCookie.split(";")[0] },
 });
 assert.equal(current.status, 200);
-assert.equal((await current.json()).company.name, "Coral Labs · Demo Fixture");
+assert.equal((await current.json()).company.name, "Northstar Analytics · Demo Fixture");
 
 console.log(JSON.stringify({
   status: "PASSED",

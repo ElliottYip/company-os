@@ -1,9 +1,14 @@
 import { defineConfig } from "@playwright/test";
 
+const reuseExistingServer = process.env.COMPANY_OS_E2E_REUSE_EXISTING === "true";
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
   fullyParallel: false,
+  // The browser suites share one deterministic Demo API process; serial workers keep
+  // session resets and Web-server teardown isolated and make local verification reliable.
+  workers: 1,
   retries: 0,
   reporter: "line",
   use: {
@@ -15,12 +20,12 @@ export default defineConfig({
   webServer: [{
     command: "COMPANY_OS_PORT=4310 COMPANY_OS_RUNTIME_MODE=public-demo COMPANY_OS_PUBLIC_DEMO_ENABLED=true COMPANY_OS_WEB_ORIGINS=http://127.0.0.1:4173 npm start",
     url: "http://127.0.0.1:4310/health",
-    reuseExistingServer: false,
+    reuseExistingServer,
     timeout: 30_000,
   }, {
     command: "npm run dev -- --host 127.0.0.1 --port 4173",
     url: "http://127.0.0.1:4173",
-    reuseExistingServer: false,
+    reuseExistingServer,
     timeout: 30_000,
   }],
 });

@@ -2,11 +2,11 @@ import type { CompanyOSMessageKey } from "./en.ts";
 
 export const zhCN: Readonly<Record<CompanyOSMessageKey, string>> = {
   "app.name": "Company OS",
-  "app.subtitle": "珊瑚实验室 · 隔离演示环境",
+  "app.subtitle": "Northstar Analytics · 隔离演示环境",
   "demo.badge": "本地演示数据",
   "demo.companyAria": "演示公司结构",
   "demo.runningCompany": "演示公司运行中",
-  "demo.companyName": "珊瑚实验室",
+  "demo.companyName": "Northstar Analytics",
   "demo.accountability": "目标、权限和高风险操作始终由真人负责。",
   "demo.boss": "林澄（演示真人身份）",
   "demo.executors": "2 个模拟 Agent",

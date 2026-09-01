@@ -196,7 +196,7 @@ export const createDemoPortfolioFixture: CreateDemoPortfolioFixture = (
     revision: input.revision,
     createdAt: input.createdAt,
     expiresAt: input.expiresAt,
-    company: { id: input.companyId, name: "Coral Labs · Demo Fixture" },
+    company: { id: input.companyId, name: "Northstar Analytics · Demo Fixture" },
     agents,
     work,
     commercial: {
@@ -215,4 +215,3 @@ export const createDemoPortfolioFixture: CreateDemoPortfolioFixture = (
     provenance: "DEMO_FIXTURE",
   };
 };
-

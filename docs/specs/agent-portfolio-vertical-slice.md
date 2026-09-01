@@ -118,7 +118,7 @@ server-side isolated fixture namespace. The cookie is secure in deployed
 profiles and does not encode company authority. Demo routes resolve company ID
 from the session; request bodies cannot choose a tenant.
 
-Coral Labs contains three Personal Agents, four Shared Agents, at least one
+Northstar Analytics contains three Personal Agents, four Shared Agents, at least one
 Observed Work item, one Governed high-risk flow, and one deterministic
 Federated workspace/run. Every external source and platform is labelled as a
 reference fixture. Reset revokes the current generation and creates pristine

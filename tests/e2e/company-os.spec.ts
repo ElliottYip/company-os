@@ -62,7 +62,7 @@ test("first run creates a local company draft while formal capabilities remain g
   await expect(page.getByRole("button", { name: "Tasks" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Approvals" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Governance" })).toBeDisabled();
-  await expect(page.getByText("Coral Labs", { exact: true })).toBeHidden();
+  await expect(page.getByText("Northstar Analytics", { exact: true })).toBeHidden();
 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByText("Local draft — formal capabilities are not connected")).toBeVisible();
@@ -657,8 +657,9 @@ test("Demo Work projects Observed and Federated sources without claiming dispatc
   await enterDemo(page);
   await page.getByRole("button", { name: "Tasks", exact: true }).first().click();
   await expect(page.getByRole("heading", { name: "Work across sources" })).toBeVisible();
-  await expect(page.getByText("OBSERVED", { exact: true })).toBeVisible();
-  await expect(page.getByText("FEDERATED", { exact: true })).toBeVisible();
+  const workList = page.getByLabel("Cross-source work");
+  await expect(workList.getByText("OBSERVED", { exact: true })).toBeVisible();
+  await expect(workList.getByText("FEDERATED", { exact: true })).toBeVisible();
   await expect(page.getByText("Competitor research from a shared channel · fixture")).toBeVisible();
   await expect(page.getByRole("link", { name: "Open source fixture" })).toHaveCount(2);
 });
@@ -837,17 +838,17 @@ test("formal running Work requests cancellation and waits for Connector confirma
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Evidence", exact: true }).first().click();
   await expect(page.getByRole("heading", { name: "EVIDENCE" })).toBeVisible();
-  await expect(page.getByText(`sha256:${"e".repeat(64)}`)).toBeVisible();
+  await expect(page.getByRole("button", { name: /evidence-one/ })).toContainText(`sha256:${"e".repeat(64)}`);
 });
 
 test("the deterministic Demo reaches an exact human approval and completed evidence chain", async ({ page }) => {
   await enterDemo(page);
   await page.getByRole("button", { name: "Approvals", exact: true }).first().click();
   await page.getByRole("button", { name: "Trigger governed workflow" }).click();
-  await expect(page.getByText("AWAITING_APPROVAL", { exact: true })).toBeVisible();
+  await expect(page.locator(".portfolio-approval-subject > header .portfolio-badge")).toHaveText("AWAITING_APPROVAL");
   await page.getByRole("button", { name: "Approve" }).click();
-  await expect(page.locator(".portfolio-approval-card")).toContainText("APPROVED");
-  await expect(page.locator(".portfolio-approval-card")).toContainText("2");
+  await expect(page.locator(".portfolio-approval-subject")).toContainText("APPROVED");
+  await expect(page.locator(".portfolio-approval-subject")).toContainText("2");
 });
 
 test("governance exposes each production boundary without secret values", async ({ page }) => {
@@ -869,6 +870,9 @@ test("concurrent exhibition visitors keep renewal and reset state isolated", asy
     await enterDemo(second);
     await first.getByRole("button", { name: "Usage & Billing", exact: true }).first().click();
     await first.getByRole("button", { name: "Request renewal" }).click();
+    const renewalDialog = first.getByRole("dialog", { name: "Request renewal" });
+    await expect(renewalDialog).toBeVisible();
+    await renewalDialog.getByRole("button", { name: "Submit request" }).click();
     await expect(first.getByText("PENDING_APPROVAL", { exact: true })).toBeVisible();
 
     await second.getByRole("button", { name: "Usage & Billing", exact: true }).first().click();
@@ -894,7 +898,7 @@ test("standalone Settings persists English and Chinese product language without 
   await page.reload();
   await page.locator("[data-enter-demo]").click();
   await expect(page.getByRole("button", { name: "设置", exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Coral Labs", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Northstar Analytics", { exact: true }).first()).toBeVisible();
 });
 
 test("accepted page inventory is reachable through Company OS navigation", async ({ page }) => {
@@ -926,12 +930,12 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await enterDemo(page);
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    if (viewport.width <= 860) await expect(page.getByRole("navigation", { name: "Company OS mobile navigation" })).toBeVisible();
+    if (viewport.width <= 860) await expect(page.getByRole("navigation", { name: "Agent portfolio navigation" })).toBeVisible();
     await page.keyboard.press("Control+k");
     const palette = page.getByRole("dialog", { name: "Go to Company OS" });
     await palette.getByRole("searchbox").fill("Accountability");
     await palette.getByRole("searchbox").press("Enter");
-    await expect(page.getByRole("heading", { name: "ACCOUNTABILITY" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Accountability" })).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(browserProblems).toEqual([]);
   });

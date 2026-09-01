@@ -77,7 +77,7 @@ test("public Demo creates an isolated cookie session without exposing its token 
     const sessionCookie = cookie(created);
     const body = await created.json() as Record<string, unknown>;
     assert.equal("sessionId" in body, false);
-    assert.equal((body.company as { name: string }).name, "Coral Labs · Demo Fixture");
+    assert.equal((body.company as { name: string }).name, "Northstar Analytics · Demo Fixture");
 
     const read = await fetch(`${baseUrl}/api/demo/v2/session`, {
       headers: { cookie: sessionCookie },

@@ -290,7 +290,7 @@ function officeView(state: CompanyWorkState, organization: OrganizationDraft, ac
   const needsDecision = state.phase === "AWAITING_APPROVAL";
   const isActive = ["PLANNING", "SIMULATING_TOOL_ACTIVITY", "AWAITING_APPROVAL"].includes(state.phase);
   return `<section class="page-stage control-dashboard" aria-labelledby="office-title" data-section="office" data-phase="${state.phase}">
-    <header class="control-page-title"><h1 id="office-title">${copy("DASHBOARD", "仪表盘")}</h1></header>
+    <header class="control-page-title"><h1 id="office-title">${copy("Dashboard", "仪表盘")}</h1></header>
     ${needsDecision ? `<section class="control-alert" aria-label="${copy("Approval required", "需要审批")}"><span aria-hidden="true">${iconSvg(ShieldCheck)}</span><div><strong>${copy("1 high-risk action needs a human decision", "有 1 项高风险操作待审批")}</strong><p>${escapeHtml(executingAgent)} ${copy("is paused until", "已暂停，等待")} ${escapeHtml(accountableHuman)} ${copy("reviews the exact action and evidence binding.", "审核本次操作及其证据。")}</p></div><button type="button" data-section-target="approvals">${copy("Review approval", "查看审批")}</button></section>` : ""}
     <section class="control-section control-active-agents" aria-labelledby="active-agents-title">
       <header><div><h2 id="active-agents-title">${copy("Active Agents", "Agent 状态")}</h2><p>${copy("Execution status and accountable human ownership", "执行状态与真人负责人")}</p></div><button type="button" data-section-target="agents">${copy("View all Agents", "查看全部 Agent")}</button></header>
@@ -345,7 +345,7 @@ function workView(
       : controls.filter === "active" ? copy("Active tasks", "进行中任务") : copy("Resolved tasks", "已完成任务");
     const sortLabel = controls.sort === "newest" ? copy("Newest first", "最新优先") : copy("Oldest first", "最早优先");
     return `<section class="page-stage control-task-list" data-section="work" data-phase="${state.phase}" aria-labelledby="work-list-title">
-      <header class="control-page-title"><h1 id="work-list-title">${copy("TASKS", "任务")}</h1></header>
+      <header class="control-page-title"><h1 id="work-list-title">${copy("Tasks", "任务")}</h1></header>
       <div class="control-list-toolbar">
         <button class="control-new-button" type="button" data-open-new-task>${iconSvg(Plus)} ${copy("New Task", "新建任务")}</button>
         <label class="control-search"><span aria-hidden="true">${iconSvg(Search)}</span><input type="search" data-work-list-search aria-label="${copy("Search tasks", "搜索任务")}" placeholder="${copy("Search tasks…", "搜索任务…")}"></label>
@@ -479,17 +479,17 @@ function organizationView(
     const ownedAgents = organization.agents.filter((agent) => agent.accountableHumanId === human.id);
     const editDepartmentOptions = organization.departments.map((candidate) =>
       `<option value="${escapeHtml(candidate.id)}"${candidate.id === human.departmentId ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`).join("");
-    return `<dialog class="colleague-detail-dialog" data-detail-dialog="human-${escapeHtml(human.id)}" aria-label="${escapeHtml(human.name)} ${copy("details", "详情")}"><header><span class="colleague-avatar">${escapeHtml(human.name.slice(0, 1))}</span><div><p class="family-kicker">${copy("ACCOUNTABLE HUMAN", "真人负责人")}</p><h2>${escapeHtml(human.name)}</h2><p>${escapeHtml(human.title)}</p></div><button type="button" data-detail-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header><dl><div><dt>${copy("Department", "部门")}</dt><dd>${escapeHtml(department?.name ?? copy("Unassigned", "未分配"))}</dd></div><div><dt>${copy("Organizational responsibility", "组织责任")}</dt><dd>${copy("Accountable for the goals, permissions, high-risk approvals, and results of assigned Agents", "对名下 Agent 的目标、权限、高风险审批和结果负责")}</dd></div><div><dt>${copy("Owned Agents", "负责的 Agent")}</dt><dd>${ownedAgents.length ? ownedAgents.map((agent) => escapeHtml(agent.name)).join(", ") : copy("None", "暂无")}</dd></div><div><dt>${copy("Identity status", "身份状态")}</dt><dd>${isDemo ? copy("Demo fixture; no real identity is created", "演示数据，不会创建真实身份") : copy("Bound through IdentityPort and audited independently", "通过 IdentityPort 接入，并保留独立审计记录")}</dd></div></dl>${editable ? `<form class="colleague-profile-form" data-human-profile-form><input type="hidden" name="humanId" value="${escapeHtml(human.id)}"><label class="company-field">${copy("Name", "姓名")}<input class="company-form-control" name="name" required maxlength="120" value="${escapeHtml(human.name)}"></label><label class="company-field">${copy("Role and responsibility", "岗位与职责")}<input class="company-form-control" name="title" required maxlength="120" value="${escapeHtml(human.title)}"></label><label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${editDepartmentOptions}</select></label><button class="family-button family-button--primary" type="submit">${copy("Save profile", "保存资料")}</button></form>` : ""}</dialog>`;
+    return `<dialog class="colleague-detail-dialog family-overlay family-drawer" data-detail-dialog="human-${escapeHtml(human.id)}" aria-label="${escapeHtml(human.name)} ${copy("details", "详情")}"><header><span class="colleague-avatar">${escapeHtml(human.name.slice(0, 1))}</span><div><p class="family-kicker">${copy("ACCOUNTABLE HUMAN", "真人负责人")}</p><h2>${escapeHtml(human.name)}</h2><p>${escapeHtml(human.title)}</p></div><button class="family-overlay-close" type="button" data-detail-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header><dl><div><dt>${copy("Department", "部门")}</dt><dd>${escapeHtml(department?.name ?? copy("Unassigned", "未分配"))}</dd></div><div><dt>${copy("Organizational responsibility", "组织责任")}</dt><dd>${copy("Accountable for the goals, permissions, high-risk approvals, and results of assigned Agents", "对名下 Agent 的目标、权限、高风险审批和结果负责")}</dd></div><div><dt>${copy("Owned Agents", "负责的 Agent")}</dt><dd>${ownedAgents.length ? ownedAgents.map((agent) => escapeHtml(agent.name)).join(", ") : copy("None", "暂无")}</dd></div><div><dt>${copy("Identity status", "身份状态")}</dt><dd>${isDemo ? copy("Demo fixture; no real identity is created", "演示数据，不会创建真实身份") : copy("Bound through IdentityPort and audited independently", "通过 IdentityPort 接入，并保留独立审计记录")}</dd></div></dl>${editable ? `<form class="colleague-profile-form" data-human-profile-form><input type="hidden" name="humanId" value="${escapeHtml(human.id)}"><label class="company-field">${copy("Name", "姓名")}<input class="company-form-control" name="name" required maxlength="120" value="${escapeHtml(human.name)}"></label><label class="company-field">${copy("Role and responsibility", "岗位与职责")}<input class="company-form-control" name="title" required maxlength="120" value="${escapeHtml(human.title)}"></label><label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${editDepartmentOptions}</select></label><button class="family-button family-button--primary" type="submit">${copy("Save profile", "保存资料")}</button></form>` : ""}</dialog>`;
   }).join("");
   const agentDetails = organization.agents.map((agent) => {
     const department = organization.departments.find((candidate) => candidate.id === agent.departmentId);
     const editDepartmentOptions = organization.departments.map((candidate) =>
       `<option value="${escapeHtml(candidate.id)}"${candidate.id === agent.departmentId ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`).join("");
-    return `<dialog class="colleague-detail-dialog" data-detail-dialog="agent-${escapeHtml(agent.id)}" aria-label="${escapeHtml(agent.name)} ${copy("details", "详情")}"><header><span class="colleague-avatar colleague-avatar--agent">AI</span><div><p class="family-kicker">${copy("AGENT COLLEAGUE", "AGENT 同事")}</p><h2>${escapeHtml(agent.name)}</h2><p>${escapeHtml(agent.role)}</p></div><button type="button" data-detail-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header><dl><div><dt>${copy("Accountable human", "真人负责人")}</dt><dd>${escapeHtml(principalName(organization, agent.accountableHumanId))}</dd></div><div><dt>${copy("Department", "部门")}</dt><dd>${escapeHtml(department?.name ?? copy("Unassigned", "未分配"))}</dd></div><div><dt>${copy("Autonomy level", "自主等级")}</dt><dd>L${agent.autonomyLevel} · ${copy("High-risk actions still require a matching human approval", "高风险操作仍须由对应的真人负责人审批")}</dd></div><div><dt>${copy("Runtime connection", "运行环境")}</dt><dd>${isDemo ? copy("Demo simulation; no model, shell, relay, or enterprise system connection", "演示环境未连接模型、Shell、Relay 或企业系统") : escapeHtml(agent.runtimeConnectorId)}</dd></div><div><dt>${copy("Data access", "数据权限")}</dt><dd>${isDemo ? copy("Unauthorized; deterministic fixtures only", "未授权，仅使用固定演示数据") : copy("Controlled by data authorization contracts and egress policy", "受数据授权合同和数据出口策略约束")}</dd></div><div><dt>${copy("Status", "状态")}</dt><dd>${isDemo ? copy("Demo simulation", "演示数据") : copy("Awaiting Connector and authorization verification", "等待 Connector 与授权校验")}</dd></div></dl>${editable ? `<form class="colleague-profile-form" data-agent-profile-form><input type="hidden" name="agentId" value="${escapeHtml(agent.id)}"><label class="company-field">${copy("Agent name", "Agent 名称")}<input class="company-form-control" name="name" required maxlength="120" value="${escapeHtml(agent.name)}"></label><label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" value="${escapeHtml(agent.role)}"></label><label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${editDepartmentOptions}</select></label><p class="profile-boundary-note">${copy("Responsibility, autonomy and runtime use their own reviewed commands.", "责任人、自主等级和运行环境需通过各自的审核命令修改。")}</p><button class="family-button family-button--primary" type="submit">${copy("Save profile", "保存资料")}</button></form>` : ""}</dialog>`;
+    return `<dialog class="colleague-detail-dialog family-overlay family-drawer" data-detail-dialog="agent-${escapeHtml(agent.id)}" aria-label="${escapeHtml(agent.name)} ${copy("details", "详情")}"><header><span class="colleague-avatar colleague-avatar--agent">AI</span><div><p class="family-kicker">${copy("AGENT COLLEAGUE", "AGENT 同事")}</p><h2>${escapeHtml(agent.name)}</h2><p>${escapeHtml(agent.role)}</p></div><button class="family-overlay-close" type="button" data-detail-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header><dl><div><dt>${copy("Accountable human", "真人负责人")}</dt><dd>${escapeHtml(principalName(organization, agent.accountableHumanId))}</dd></div><div><dt>${copy("Department", "部门")}</dt><dd>${escapeHtml(department?.name ?? copy("Unassigned", "未分配"))}</dd></div><div><dt>${copy("Autonomy level", "自主等级")}</dt><dd>L${agent.autonomyLevel} · ${copy("High-risk actions still require a matching human approval", "高风险操作仍须由对应的真人负责人审批")}</dd></div><div><dt>${copy("Runtime connection", "运行环境")}</dt><dd>${isDemo ? copy("Demo simulation; no model, shell, relay, or enterprise system connection", "演示环境未连接模型、Shell、Relay 或企业系统") : escapeHtml(agent.runtimeConnectorId)}</dd></div><div><dt>${copy("Data access", "数据权限")}</dt><dd>${isDemo ? copy("Unauthorized; deterministic fixtures only", "未授权，仅使用固定演示数据") : copy("Controlled by data authorization contracts and egress policy", "受数据授权合同和数据出口策略约束")}</dd></div><div><dt>${copy("Status", "状态")}</dt><dd>${isDemo ? copy("Demo simulation", "演示数据") : copy("Awaiting Connector and authorization verification", "等待 Connector 与授权校验")}</dd></div></dl>${editable ? `<form class="colleague-profile-form" data-agent-profile-form><input type="hidden" name="agentId" value="${escapeHtml(agent.id)}"><label class="company-field">${copy("Agent name", "Agent 名称")}<input class="company-form-control" name="name" required maxlength="120" value="${escapeHtml(agent.name)}"></label><label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" value="${escapeHtml(agent.role)}"></label><label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${editDepartmentOptions}</select></label><p class="profile-boundary-note">${copy("Responsibility, autonomy and runtime use their own reviewed commands.", "责任人、自主等级和运行环境需通过各自的审核命令修改。")}</p><button class="family-button family-button--primary" type="submit">${copy("Save profile", "保存资料")}</button></form>` : ""}</dialog>`;
   }).join("");
   const disabled = editable ? "" : " disabled aria-disabled=\"true\"";
   return `<section class="page-stage control-organization" data-section="organization" aria-labelledby="organization-title">
-    <header class="control-page-title control-page-title--actions"><div><h1 id="organization-title">${copy("ORGANIZATION", "组织架构")}</h1><p>${copy("Define accountable humans before placing Agents into roles and reporting lines.", "先确定真人负责人，再为 Agent 分配岗位和汇报关系。")}</p></div><div><button class="control-secondary-button" type="button" data-add-department${disabled}>${copy("Add department", "添加部门")}</button><button class="control-secondary-button" type="button" data-add-human${disabled}>${copy("Add human", "添加真人成员")}</button><button class="control-new-button" type="button" data-add-agent${disabled}>${iconSvg(Plus)} ${copy("Add Agent", "添加 Agent")}</button></div></header>
+    <header class="control-page-title control-page-title--actions"><div><h1 id="organization-title">${copy("Organization", "组织架构")}</h1><p>${copy("Define accountable humans before placing Agents into roles and reporting lines.", "先确定真人负责人，再为 Agent 分配岗位和汇报关系。")}</p></div><div><button class="control-secondary-button" type="button" data-add-department${disabled}>${copy("Add department", "添加部门")}</button><button class="control-secondary-button" type="button" data-add-human${disabled}>${copy("Add human", "添加真人成员")}</button><button class="control-new-button" type="button" data-add-agent${disabled}>${iconSvg(Plus)} ${copy("Add Agent", "添加 Agent")}</button></div></header>
     <div class="organization-toolbar">
       <div><strong>${escapeHtml(organization.company.name)}</strong><span>${escapeHtml(organization.company.purpose || copy("AI Native Company", "AI 原生公司"))}</span></div>
       <div><span>${organization.departments.length} ${copy(organization.departments.length === 1 ? "department" : "departments", "个部门")}</span><span>${organization.humans.length} ${copy(organization.humans.length === 1 ? "human" : "humans", "名成员")}</span><span>${organization.agents.length} ${organization.agents.length === 1 ? "Agent" : "Agents"}</span></div>
@@ -501,8 +501,8 @@ function organizationView(
     <div role="tabpanel" data-org-panel="humans" hidden><div class="roster-list">${humans}</div></div>
     <div role="tabpanel" data-org-panel="agents" hidden><div class="roster-list">${agents}</div></div>
     ${humanDetails}${agentDetails}
-    <dialog class="editor-dialog" data-department-dialog aria-labelledby="department-dialog-title">
-      <form method="dialog" data-department-form><header><div><p class="family-kicker">${copy("ORGANIZATION BOUNDARY", "组织边界")}</p><h2 id="department-dialog-title">${copy("Department", "部门")}</h2></div><button type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+    <dialog class="editor-dialog family-overlay family-modal" data-department-dialog aria-labelledby="department-dialog-title">
+      <form method="dialog" data-department-form><header><div><p class="family-kicker">${copy("ORGANIZATION BOUNDARY", "组织边界")}</p><h2 id="department-dialog-title">${copy("Department", "部门")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
         <input type="hidden" name="departmentId">
         <p>${copy("Departments scope people, Agents, work and data responsibility. Renaming never changes opaque IDs.", "部门用于界定成员、Agent、工作与数据责任范围；修改名称不会改变稳定 ID。")}</p>
         <label class="company-field">${copy("Department name", "部门名称")}<input class="company-form-control" name="name" required maxlength="120"></label>
@@ -511,8 +511,8 @@ function organizationView(
         <footer><button class="family-button family-button--secondary" type="button" data-editor-close>${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit">${copy("Save department", "保存部门")}</button></footer>
       </form>
     </dialog>
-    <dialog class="editor-dialog" data-human-dialog aria-labelledby="human-dialog-title">
-      <form method="dialog" data-human-form><header><div><p class="family-kicker">${copy("HUMAN PRINCIPAL", "公司成员")}</p><h2 id="human-dialog-title">${copy("Add an accountable human", "添加负责人")}</h2></div><button type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+    <dialog class="editor-dialog family-overlay family-modal" data-human-dialog aria-labelledby="human-dialog-title">
+      <form method="dialog" data-human-form><header><div><p class="family-kicker">${copy("HUMAN PRINCIPAL", "公司成员")}</p><h2 id="human-dialog-title">${copy("Add an accountable human", "添加负责人")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
         <p>${copy("A human holds organizational responsibility. An Agent's high-risk actions return to a matching human decision.", "真人承担组织责任。Agent 发起高风险操作时，必须由对应负责人审批。")}</p>
         ${isFormal ? `<label class="company-field">${copy("Enterprise email", "企业邮箱")}<input class="company-form-control" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="jordan@example.com"></label>` : `<label class="company-field">${copy("Name", "姓名")}<input class="company-form-control" name="name" required maxlength="120" autocomplete="name" placeholder="${copy("Example: Jordan Lee", "例如：陈晨")}"></label>`}
         <label class="company-field">${copy("Role and responsibility", "岗位与职责")}<input class="company-form-control" name="title" required maxlength="120" placeholder="${copy("Example: Customer Success Lead", "例如：客户成功负责人")}"></label>
@@ -521,8 +521,8 @@ function organizationView(
         <footer><button class="family-button family-button--secondary" type="button" data-editor-close>${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit">${copy("Add human", "添加真人成员")}</button></footer>
       </form>
     </dialog>
-    <dialog class="editor-dialog" data-agent-dialog aria-labelledby="agent-dialog-title">
-      <form method="dialog" data-agent-form><header><div><p class="family-kicker">AGENT COLLEAGUE</p><h2 id="agent-dialog-title">${copy("Add an Agent colleague", "添加 Agent 同事")}</h2></div><button type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+    <dialog class="editor-dialog family-overlay family-modal" data-agent-dialog aria-labelledby="agent-dialog-title">
+      <form method="dialog" data-agent-form><header><div><p class="family-kicker">AGENT COLLEAGUE</p><h2 id="agent-dialog-title">${copy("Add an Agent colleague", "添加 Agent 同事")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
         <p>${isDemo ? copy("This creates a simulated demo colleague. It never connects to a real model or execution system.", "这里创建的是模拟 Agent，不会连接真实模型或执行系统。") : copy("This creates a local draft. Runtime, model, permission, and data access remain disabled until separately verified.", "这里只创建本地草稿。运行环境、模型、权限和数据访问需要单独校验后才会启用。")}</p>
         <label class="company-field">${copy("Agent name", "Agent 名称")}<input class="company-form-control" name="name" required maxlength="120" placeholder="${copy("Example: Research Assistant", "例如：研究助理")}"></label>
         <label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" placeholder="${copy("Example: Market Research Agent", "例如：市场研究 Agent")}"></label>
@@ -537,7 +537,7 @@ function organizationView(
 }
 
 function setupDialog(): string {
-  return `<dialog class="setup-dialog" data-setup-dialog aria-labelledby="setup-title">
+  return `<dialog class="setup-dialog family-overlay" data-setup-dialog aria-labelledby="setup-title">
     <form data-setup-form data-setup-step="1">
       <button class="setup-close" type="button" data-setup-close aria-label="${copy("Close setup", "关闭设置")}">${iconSvg(X)}</button>
       <div class="setup-progress" aria-label="${copy("Setup progress", "设置进度")}">${[1, 2, 3, 4, 5].map((step) => `<span data-setup-progress="${step}"></span>`).join("")}</div>
@@ -578,8 +578,8 @@ function newTaskDialog(
   }
   const modelRouteOptions = [...modelChoices].map(([value, label]) =>
     `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join("");
-  return `<dialog class="editor-dialog task-dialog" data-new-task-dialog aria-labelledby="new-task-title">
-    <form method="dialog" data-new-task-form><header><div><p class="family-kicker">${copy("NEW TASK", "新建任务")}</p><h2 id="new-task-title">${copy("Assign a task", "分配任务")}</h2></div><button type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+  return `<dialog class="editor-dialog task-dialog family-overlay family-modal" data-new-task-dialog aria-labelledby="new-task-title">
+    <form method="dialog" data-new-task-form><header><div><p class="family-kicker">${copy("NEW TASK", "新建任务")}</p><h2 id="new-task-title">${copy("Assign a task", "分配任务")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
       ${canAssign ? `<p>${isLocalDraft ? copy("Local simulation only — no model, tool, Connector, or enterprise system will be called.", "仅在本地模拟，不会调用模型、工具、Connector 或企业系统。") : copy("The goal, executing Agent, and accountable human are bound to the same work record.", "目标、执行 Agent 和真人负责人会记录在同一项任务中。")}</p>
       <label class="company-field">${copy("Task title", "任务标题")}<input class="company-form-control" name="title" required maxlength="120" placeholder="${copy("Example: Summarize this week's customer feedback", "例如：汇总本周客户反馈")}"></label>
       <label class="company-field">${copy("Desired outcome", "期望结果")}<textarea class="company-form-control" name="goal" required maxlength="1000" rows="4" placeholder="${copy("Describe completion criteria, required evidence, and boundaries", "描述完成标准、所需证据和边界")}"></textarea></label>
@@ -607,7 +607,7 @@ function responsibilityView(
   const accountableHuman = principalName(organization, state.responsibility.accountableHumanId);
   const executingAgent = principalName(organization, state.responsibility.executingAgentId);
   return `<section class="page-stage control-accountability" data-section="responsibility" data-phase="${state.phase}" aria-labelledby="responsibility-title">
-    <header class="control-page-title"><div><h1 id="responsibility-title">${copy("ACCOUNTABILITY", "责任链")}</h1><p>${copy("Every commitment connects a goal, owner, permissions, approval, evidence, and result.", "每项工作都完整记录目标、真人负责人、权限、审批、证据和结果。")}</p></div></header>
+    <header class="control-page-title"><div><h1 id="responsibility-title">${copy("Accountability", "责任链")}</h1><p>${copy("Every commitment connects a goal, owner, permissions, approval, evidence, and result.", "每项工作都完整记录目标、真人负责人、权限、审批、证据和结果。")}</p></div></header>
     ${raftMetricStrip([
       { label: copy("Work record", "任务记录"), value: 1, detail: escapeHtml(state.responsibility.workId) },
       { label: copy("Permissions", "权限"), value: state.responsibility.permissionIds.length, detail: copy("Bound by contract", "已按合同绑定") },
@@ -703,7 +703,7 @@ function connectorsView(
   const toolPolicyForm = mode === "FORMAL" && administration
     ? `<form class="admin-surface formal-work-form" data-tool-policy-form><div class="form-grid"><label class="family-field">Policy ID<input class="family-control" name="policyId" required pattern="[a-z0-9][a-z0-9-]{0,127}" placeholder="approve-destructive"></label><label class="family-field">Name<input class="family-control" name="name" required maxlength="160" placeholder="Approve destructive tools"></label><label class="family-field">Policy type<select class="family-control" name="policyType"><option value="block">Block</option><option value="require_approval">Require approval</option><option value="allow">Allow</option></select></label><label class="family-field">Priority<input class="family-control" type="number" name="priority" min="0" max="10000" value="100"></label><label class="family-field">Selector<select class="family-control" name="selectorKey"><option value="riskLevel">Risk level</option><option value="toolName">Tool name</option><option value="applicationId">Application</option><option value="connectionId">Connection</option><option value="catalogEntryId">Catalog entry</option><option value="agentId">Agent</option><option value="projectId">Project</option></select></label><label class="family-field">Selector value<input class="family-control" name="selectorValue" required pattern="[a-z0-9][a-z0-9-]{0,127}" value="destructive"></label><label class="family-field">Description<input class="family-control" name="description" maxlength="4000" placeholder="Optional policy intent"></label></div><button class="family-button family-button--primary" type="submit">Create enabled policy</button></form>` : "";
   return `<section class="page-stage control-administration" data-section="connectors" aria-labelledby="connectors-title">
-    <header class="control-page-title"><div><h1 id="connectors-title">${copy("GOVERNANCE", "接入与治理")}</h1><p>${copy("Manage Agent connections, models, data, secret boundaries, and execution permissions.", "管理 Agent 接入、模型、数据授权、Secret 边界和工具权限。")}</p></div><span class="status-pill">${mode === "DEMO_FIXTURE" ? isDemo ? copy("DEMO · NO NETWORK", "演示 · 未连接网络") : copy("LOCAL DRAFT · NOT CONNECTED", "本地草稿 · 未连接") : copy("FORMAL CONTROL PLANE", "正式控制平面")}</span></header>
+    <header class="control-page-title"><div><h1 id="connectors-title">${copy("Governance", "接入与治理")}</h1><p>${copy("Manage Agent connections, models, data, secret boundaries, and execution permissions.", "管理 Agent 接入、模型、数据授权、Secret 边界和工具权限。")}</p></div><span class="status-pill">${mode === "DEMO_FIXTURE" ? isDemo ? copy("DEMO · NO NETWORK", "演示 · 未连接网络") : copy("LOCAL DRAFT · NOT CONNECTED", "本地草稿 · 未连接") : copy("FORMAL CONTROL PLANE", "正式控制平面")}</span></header>
     ${raftMetricStrip([
       { label: copy("Registered", "已注册"), value: connectorCount, detail: mode === "DEMO_FIXTURE" ? copy("Deterministic fixtures", "确定性演示") : copy("Production catalog", "正式目录") },
       { label: copy("Installed runtimes", "已安装运行环境"), value: mode === "DEMO_FIXTURE" ? 0 : runtimeConnectors.length + federatedSources.length, detail: copy("Execution and federated packages", "执行与联合运行组件") },
@@ -772,7 +772,7 @@ function navigation(section: CompanyOSSection): string {
 }
 
 function commandPalette(section: CompanyOSSection): string {
-  return `<dialog class="command-palette" data-command-palette aria-labelledby="command-title">
+  return `<dialog class="command-palette family-overlay family-modal" data-command-palette aria-labelledby="command-title">
     <div class="command-palette-header">
       <div><p class="family-kicker">${copy("COMMAND MENU", "命令菜单")}</p><h2 id="command-title">${copy("Go to Company OS", "前往 Company OS 页面")}</h2></div>
       <button class="command-close" type="button" data-command-close aria-label="${copy("Close command menu", "关闭命令菜单")}">${iconSvg(X)}</button>
@@ -788,6 +788,7 @@ function commandPalette(section: CompanyOSSection): string {
 
 function frontDoor(): string {
   return `<main class="company-front-door" aria-labelledby="front-door-title">
+    <div class="front-door-fish" aria-hidden="true"><video autoplay muted loop playsinline preload="metadata" poster="/media/hero/fish-shadow-poster.jpg" tabindex="-1" disablepictureinpicture><source src="/media/hero/fish-shadow-loop-desktop.mp4" media="(min-width: 768px)" type="video/mp4"><source src="/media/hero/fish-shadow-loop-mobile.mp4" type="video/mp4"></video><span></span></div>
     <header><span class="front-door-mark" aria-hidden="true">C</span><strong>Company OS</strong></header>
     <section class="front-door-content">
       <div class="front-door-copy"><p class="family-kicker">COMPANY OS · AGENT NETWORK CONTROL (ANC)</p><h1 id="front-door-title">${copy("Enterprise management and governance for every AI agent.", "统一管理与治理企业中的每一个 AI Agent。")}</h1><p>${copy("Company OS provides ANC, a unified control layer for Agent identity, ownership, access, cost, risk, and lifecycle across teams, runtimes, and external platforms.", "Company OS 提供 ANC，作为统一控制层，跨团队、Runtime 与外部平台管理 Agent 的身份、归属、权限、成本、风险和生命周期。")}</p></div>
@@ -900,7 +901,20 @@ function formalOrganizationBootstrap(companyName: string): string {
     </div>`;
 }
 
-function mobileNavigation(section: CompanyOSSection): string {
+function mobileNavigation(section: CompanyOSSection, portfolio = false): string {
+  if (portfolio) {
+    const items: readonly { readonly id: CompanyOSSection; readonly label: string; readonly shortLabel: string }[] = [
+      { id: "agents", label: t("nav.agents"), shortLabel: copy("Agent", "Agent") },
+      { id: "work", label: t("nav.workApprovals"), shortLabel: copy("Work", "任务") },
+      { id: "approvals", label: t("nav.approvals"), shortLabel: copy("Approve", "审批") },
+      { id: "evidence", label: t("nav.evidence"), shortLabel: copy("Evidence", "证据") },
+      { id: "connectors", label: t("nav.connectors"), shortLabel: copy("Control", "治理") },
+      { id: "usage", label: t("nav.usage"), shortLabel: copy("Usage", "用量") },
+    ];
+    return `<nav class="mobile-bottom-nav" aria-label="${copy("Agent portfolio navigation", "Agent 资产组合导航")}">
+      ${items.map((item) => `<button type="button" data-section-target="${item.id}" aria-label="${item.label}"${section === item.id ? ' aria-current="page"' : ""}>${sectionIcon(item.id)}<span>${item.shortLabel}</span></button>`).join("")}
+    </nav>`;
+  }
   const items: readonly { readonly id: CompanyOSSection; readonly label: string }[] = [
     { id: "office", label: t("nav.office") },
     { id: "work", label: t("nav.workApprovals") },
@@ -971,17 +985,79 @@ export function mountCompanyOS(
   root.className = "company-os family-ui";
   root.lang = initialLocale;
   host.mountElement.replaceChildren(root);
+  const dialogReturnTargets = new WeakMap<HTMLDialogElement, HTMLElement>();
+  const showManagedDialog = (
+    dialog: HTMLDialogElement | null | undefined,
+    trigger?: HTMLElement | null,
+    initialFocusSelector = "input:not([type='hidden']), textarea, select",
+  ): void => {
+    if (!dialog) return;
+    const returnTarget = trigger ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    if (returnTarget) dialogReturnTargets.set(dialog, returnTarget);
+    if (!dialog.dataset.managedDialog) {
+      dialog.dataset.managedDialog = "true";
+      dialog.addEventListener("close", () => {
+        const target = dialogReturnTargets.get(dialog);
+        dialogReturnTargets.delete(dialog);
+        requestAnimationFrame(() => {
+          if (target?.isConnected) target.focus();
+          else root.querySelector<HTMLElement>("h1, [tabindex='-1']")?.focus();
+        });
+      });
+      dialog.addEventListener("cancel", (event) => {
+        if (dialog.getAttribute("aria-busy") === "true") event.preventDefault();
+      });
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog && !dialog.hasAttribute("data-static-backdrop") && dialog.getAttribute("aria-busy") !== "true") {
+          dialog.close();
+        }
+      });
+    }
+    if (!dialog.open) dialog.showModal();
+    const initial = dialog.querySelector<HTMLElement>(initialFocusSelector)
+      ?? dialog.querySelector<HTMLElement>("button, [href], [tabindex]:not([tabindex='-1'])");
+    initial?.focus();
+  };
   const handleGlobalKeydown = (event: KeyboardEvent): void => {
+    attemptFrontDoorFishPlayback();
     const target = event.target as HTMLElement | null;
     const isTyping = target?.matches("input, textarea, select, [contenteditable=true]") ?? false;
     if (((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "k") || (event.key === "/" && !isTyping)) {
       event.preventDefault();
       const palette = root.querySelector<HTMLDialogElement>("[data-command-palette]");
-      if (palette && !palette.open) palette.showModal();
-      requestAnimationFrame(() => palette?.querySelector<HTMLInputElement>("[data-command-input]")?.focus());
+      showManagedDialog(palette, target, "[data-command-input]");
     }
   };
+  const handleGlobalPointerdown = (event: PointerEvent): void => {
+    attemptFrontDoorFishPlayback();
+    const menu = root.querySelector<HTMLElement>("[data-company-menu]");
+    const trigger = root.querySelector<HTMLButtonElement>("[data-company-menu-trigger]");
+    const target = event.target;
+    if (!menu || menu.hidden || !(target instanceof Node) || menu.contains(target) || trigger?.contains(target)) return;
+    menu.hidden = true;
+    trigger?.setAttribute("aria-expanded", "false");
+  };
+  const reducedMotion = (): boolean => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+  const attemptFrontDoorFishPlayback = (): void => {
+    const video = root.querySelector<HTMLVideoElement>(".front-door-fish video");
+    if (!video || reducedMotion() || document.hidden) return;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+    void video.play().catch(() => undefined);
+  };
+  const handleFrontDoorFishVisibility = (): void => {
+    if (!document.hidden) attemptFrontDoorFishPlayback();
+  };
+  const handleFrontDoorFishPageShow = (event: PageTransitionEvent): void => {
+    if (event.persisted) attemptFrontDoorFishPlayback();
+  };
   document.addEventListener("keydown", handleGlobalKeydown);
+  document.addEventListener("pointerdown", handleGlobalPointerdown);
+  document.addEventListener("visibilitychange", handleFrontDoorFishVisibility);
+  window.addEventListener("pageshow", handleFrontDoorFishPageShow);
 
   const failureCopy = (failure: ReturnType<typeof formalWebFailure>): string => ({
     UNAUTHORIZED: copy("Sign in with your enterprise identity to continue.", "请先使用企业身份登录。"),
@@ -1036,7 +1112,7 @@ export function mountCompanyOS(
 
   function confirmCompanyRestore(inspection: CompanyBackupInspection): Promise<boolean> {
     const dialog = document.createElement("dialog");
-    dialog.className = "company-restore-dialog";
+    dialog.className = "company-restore-dialog family-overlay family-modal";
     dialog.dataset.companyRestoreConfirmation = "";
     dialog.setAttribute("aria-labelledby", "company-restore-confirmation-title");
     dialog.innerHTML = `<form method="dialog"><p class="family-kicker">${copy("VERIFIED RESTORE PLAN", "已验证恢复计划")}</p><h2 id="company-restore-confirmation-title">${copy("Restore", "恢复")} ${escapeHtml(inspection.name)}?</h2><p>${copy("The server verified the backup, exact signed-in human binding, and a clean target company ID. Confirming creates the company and control-plane state in one transaction.", "服务端已验证备份、当前登录真人的精确身份绑定，以及未被占用的公司 ID。确认后，公司和控制平面状态将在同一事务中创建。")}</p><dl><div><dt>${copy("Company ID", "公司 ID")}</dt><dd><code>${escapeHtml(inspection.companyId)}</code></dd></div><div><dt>${copy("Identity binding", "身份绑定")}</dt><dd>${copy("Exact human match", "真人身份精确匹配")}</dd></div><div><dt>${copy("Organization", "组织")}</dt><dd>${inspection.humanCount} ${copy("humans", "位真人")} · ${inspection.agentCount} Agent</dd></div><div><dt>${copy("Control-plane state", "控制平面状态")}</dt><dd>${inspection.eventCount} ${copy("events", "条事件")} · ${inspection.deliveredPublicationCount} ${copy("delivered publications", "条已投递消息")} · ${inspection.checkpointCount} ${copy("checkpoints", "个检查点")}</dd></div></dl><div class="company-restore-dialog-actions"><button class="family-button family-button--secondary" type="submit" value="cancel">${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit" value="confirm">${copy("Restore company", "恢复公司")}</button></div></form>`;
@@ -1047,7 +1123,7 @@ export function mountCompanyOS(
         dialog.remove();
         resolve(confirmed);
       }, { once: true });
-      dialog.showModal();
+      showManagedDialog(dialog, document.activeElement instanceof HTMLElement ? document.activeElement : null, "button[value='cancel']");
     });
   }
 
@@ -1062,6 +1138,9 @@ export function mountCompanyOS(
   }
 
   function bindFrontDoor(): void {
+    const fishVideo = root.querySelector<HTMLVideoElement>(".front-door-fish video");
+    fishVideo?.addEventListener("loadeddata", attemptFrontDoorFishPlayback);
+    fishVideo?.addEventListener("canplay", attemptFrontDoorFishPlayback);
     root.querySelector<HTMLButtonElement>("[data-enter-demo]")?.addEventListener("click", () => {
       void runAction(async () => {
         publicDemoSnapshot = await publicDemoClient.create();
@@ -1355,7 +1434,7 @@ export function mountCompanyOS(
         <header class="topbar family-header"><nav class="topbar-breadcrumb" aria-label="${copy("Breadcrumb", "面包屑导航")}"><span>${escapeHtml(organization.company.name)}</span><span aria-hidden="true">/</span><strong>${activeSectionLabel}</strong></nav><span class="topbar-company">${isDemo ? t("demo.badge") : isFixtureRuntime ? copy("LOCAL WORKSPACE", "本地工作区") : escapeHtml(organization.company.name)}</span></header>
         <main class="workspace">${isFixtureRuntime && !isDemo ? `<section class="local-draft-banner" aria-label="${copy("Local workspace capability status", "本地工作区能力状态")}"><div><strong>${copy("Local draft — formal capabilities are not connected", "本地草稿 · 尚未接入正式能力")}</strong><p>${copy("Organization and planning changes stay in this browser session. Real Agent execution, enterprise data, Secrets, and production approvals remain unavailable.", "组织与规划变更仅保留在当前浏览器会话中。真实 Agent 执行、企业数据、Secret 和正式审批仍不可用。")}</p></div><button type="button" data-open-formal-access>${copy("Configure formal access", "配置正式访问")}</button></section>` : ""}${main}</main>
       </div>
-      ${mobileNavigation(section)}
+      ${mobileNavigation(section, isDemo && publicDemoSnapshot !== null)}
       ${isFixtureRuntime ? setupDialog() : ""}
       ${newTaskDialog(state, assignmentOptions, isFixtureRuntime && !isDemo, application.mode === "FORMAL", administration)}
       ${commandPalette(section)}`;
@@ -1388,16 +1467,53 @@ export function mountCompanyOS(
         });
       });
     });
+    const rejectTrigger = root.querySelector<HTMLButtonElement>("[data-demo-open-reject]");
+    rejectTrigger?.addEventListener("click", () => {
+      showManagedDialog(
+        root.querySelector<HTMLDialogElement>("[data-demo-reject-dialog]"),
+        rejectTrigger,
+        "[data-demo-reject-cancel]",
+      );
+    });
+    root.querySelector<HTMLFormElement>("[data-demo-reject-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void runAction(async () => {
+        publicDemoSnapshot = await publicDemoClient.action({ action: "DECIDE", decision: "REJECTED" });
+      });
+    });
     root.querySelectorAll<HTMLButtonElement>("[data-demo-renewal-target]").forEach((button) => {
       button.addEventListener("click", () => {
+        const targetId = button.dataset.demoRenewalTarget;
+        const dialog = Array.from(root.querySelectorAll<HTMLDialogElement>("[data-demo-renewal-dialog]"))
+          .find((candidate) => candidate.dataset.demoRenewalDialog === targetId);
+        showManagedDialog(dialog, button, "textarea[name='reason']");
+      });
+    });
+    root.querySelectorAll<HTMLFormElement>("[data-demo-renewal-form]").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const values = new FormData(form);
         void runAction(async () => {
           publicDemoSnapshot = await publicDemoClient.action({
             action: "REQUEST_RENEWAL",
-            targetType: button.dataset.demoRenewalType as "CREDENTIAL",
-            targetId: button.dataset.demoRenewalTarget ?? "",
-            reason: locale === "zh-CN" ? "展会演示前完成续期。" : "Renew before the exhibition demo.",
+            targetType: "CREDENTIAL",
+            targetId: form.dataset.demoRenewalForm ?? "",
+            reason: String(values.get("reason") ?? ""),
           });
         });
+      });
+    });
+    root.querySelector<HTMLButtonElement>("[data-demo-open-evidence]")?.addEventListener("click", (event) => {
+      const dialog = root.querySelector<HTMLDialogElement>("[data-demo-evidence-dialog]");
+      showManagedDialog(dialog, event.currentTarget as HTMLButtonElement, "[data-detail-close]");
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-demo-agent-detail]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.demoAgentDetail;
+        if (!id) return;
+        const dialog = Array.from(root.querySelectorAll<HTMLDialogElement>("[data-demo-agent-detail-dialog]"))
+          .find((candidate) => candidate.dataset.demoAgentDetailDialog === id);
+        showManagedDialog(dialog, button, "[data-detail-close]");
       });
     });
     const companyMenu = root.querySelector<HTMLElement>("[data-company-menu]");
@@ -1485,11 +1601,10 @@ export function mountCompanyOS(
       if (empty) empty.hidden = matches;
     });
     const palette = root.querySelector<HTMLDialogElement>("[data-command-palette]");
-    const openPalette = (): void => {
-      if (palette && !palette.open) palette.showModal();
-      requestAnimationFrame(() => palette?.querySelector<HTMLInputElement>("[data-command-input]")?.focus());
+    const openPalette = (trigger?: HTMLElement | null): void => {
+      showManagedDialog(palette, trigger, "[data-command-input]");
     };
-    root.querySelector<HTMLButtonElement>("[data-open-command]")?.addEventListener("click", openPalette);
+    root.querySelector<HTMLButtonElement>("[data-open-command]")?.addEventListener("click", (event) => openPalette(event.currentTarget as HTMLButtonElement));
     palette?.querySelector<HTMLButtonElement>("[data-command-close]")?.addEventListener("click", () => palette.close());
     palette?.querySelectorAll<HTMLButtonElement>("[data-command-target]").forEach((button) => {
       button.addEventListener("click", () => navigateTo(button.dataset.commandTarget as CompanyOSSection));
@@ -1535,13 +1650,12 @@ export function mountCompanyOS(
       onboardingVisible = false;
       void render();
     });
-    const openDialog = (selector: string): void => {
+    const openDialog = (selector: string, trigger?: HTMLElement | null): void => {
       const dialog = root.querySelector<HTMLDialogElement>(selector);
-      if (dialog && !dialog.open) dialog.showModal();
-      requestAnimationFrame(() => dialog?.querySelector<HTMLElement>("input, textarea, select, button")?.focus());
+      showManagedDialog(dialog, trigger);
     };
     root.querySelectorAll<HTMLButtonElement>("[data-open-new-task]").forEach((button) => {
-      button.addEventListener("click", () => openDialog("[data-new-task-dialog]"));
+      button.addEventListener("click", () => openDialog("[data-new-task-dialog]", button));
     });
     const setup = root.querySelector<HTMLDialogElement>("[data-setup-dialog]");
     const setupForm = setup?.querySelector<HTMLFormElement>("[data-setup-form]");
@@ -1568,7 +1682,7 @@ export function mountCompanyOS(
     };
     root.querySelector<HTMLButtonElement>("[data-open-setup]")?.addEventListener("click", () => {
       showSetupStep(1);
-      if (setup && !setup.open) setup.showModal();
+      showManagedDialog(setup, root.querySelector<HTMLButtonElement>("[data-open-setup]"));
     });
     setup?.querySelector<HTMLButtonElement>("[data-setup-close]")?.addEventListener("click", () => {
       setup.close();
@@ -1607,15 +1721,15 @@ export function mountCompanyOS(
     if (openSetupAfterRender && setup) {
       openSetupAfterRender = false;
       showSetupStep(1);
-      setup.showModal();
+      showManagedDialog(setup, null, "input, textarea");
     }
-    root.querySelector<HTMLButtonElement>("[data-add-human]")?.addEventListener("click", () => openDialog("[data-human-dialog]"));
-    root.querySelector<HTMLButtonElement>("[data-add-agent]")?.addEventListener("click", () => openDialog("[data-agent-dialog]"));
-    root.querySelector<HTMLButtonElement>("[data-add-department]")?.addEventListener("click", () => {
+    root.querySelector<HTMLButtonElement>("[data-add-human]")?.addEventListener("click", (event) => openDialog("[data-human-dialog]", event.currentTarget as HTMLButtonElement));
+    root.querySelector<HTMLButtonElement>("[data-add-agent]")?.addEventListener("click", (event) => openDialog("[data-agent-dialog]", event.currentTarget as HTMLButtonElement));
+    root.querySelector<HTMLButtonElement>("[data-add-department]")?.addEventListener("click", (event) => {
       const form = root.querySelector<HTMLFormElement>("[data-department-form]");
       form?.reset();
       form?.querySelector<HTMLElement>("[data-department-archive-controls]")?.setAttribute("hidden", "");
-      openDialog("[data-department-dialog]");
+      openDialog("[data-department-dialog]", event.currentTarget as HTMLButtonElement);
     });
     root.querySelectorAll<HTMLButtonElement>("[data-edit-department]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -1631,7 +1745,7 @@ export function mountCompanyOS(
           destination.value = Array.from(destination.options).find((option) => !option.disabled)?.value ?? "";
         }
         form.querySelector<HTMLElement>("[data-department-archive-controls]")?.removeAttribute("hidden");
-        openDialog("[data-department-dialog]");
+        openDialog("[data-department-dialog]", button);
       });
     });
     root.querySelector<HTMLButtonElement>("[data-archive-department]")?.addEventListener("click", () => {
@@ -1989,7 +2103,14 @@ export function mountCompanyOS(
       button.addEventListener("click", () => {
         const id = button.dataset.colleagueDetail;
         const dialog = root.querySelector<HTMLDialogElement>(`[data-detail-dialog="${id}"]`);
-        if (dialog && !dialog.open) dialog.showModal();
+        showManagedDialog(dialog, button, "[data-detail-close]");
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-evidence-detail]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.evidenceDetail;
+        const dialog = root.querySelector<HTMLDialogElement>(`[data-evidence-detail-dialog="${id}"]`);
+        showManagedDialog(dialog, button, "[data-detail-close]");
       });
     });
     root.querySelectorAll<HTMLButtonElement>("[data-detail-close]").forEach((button) => {
@@ -2339,6 +2460,9 @@ export function mountCompanyOS(
       disposed = true;
       unmountWorkforceGraph?.();
       document.removeEventListener("keydown", handleGlobalKeydown);
+      document.removeEventListener("pointerdown", handleGlobalPointerdown);
+      document.removeEventListener("visibilitychange", handleFrontDoorFishVisibility);
+      window.removeEventListener("pageshow", handleFrontDoorFishPageShow);
       host.mountElement.replaceChildren();
     },
   };

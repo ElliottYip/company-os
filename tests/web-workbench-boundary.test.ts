@@ -114,7 +114,7 @@ test("workbench offers a local company draft while formal capabilities stay behi
 });
 
 test("dashboard prioritizes accountable humans, decisions, active work and evidence", () => {
-  assert.match(mountSource, /DASHBOARD/);
+  assert.match(mountSource, /Dashboard/);
   assert.match(mountSource, /high-risk action needs a human decision/);
   assert.match(mountSource, /Accountable human/);
   assert.match(mountSource, /Evidence admitted/);

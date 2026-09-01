@@ -28,7 +28,7 @@ async function createSession() {
   assert.match(setCookie ?? "", /SameSite=Lax/);
   const body = await result.json();
   assert.equal("sessionId" in body, false);
-  assert.equal(body.company.name, "Coral Labs · Demo Fixture");
+  assert.equal(body.company.name, "Northstar Analytics · Demo Fixture");
   assert.equal(body.provenance, "DEMO_FIXTURE");
   return { cookie: setCookie.split(";")[0], body };
 }

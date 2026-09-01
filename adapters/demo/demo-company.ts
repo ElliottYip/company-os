@@ -3,7 +3,7 @@ import type { OrganizationDraft } from "../../core/organization.ts";
 export const DEMO_COMPANY: OrganizationDraft = Object.freeze({
   company: Object.freeze({
     id: "demo-company",
-    name: "Coral Labs",
+    name: "Northstar Analytics",
     purpose: "Deterministic Company OS demo company",
     locale: "en",
   }),

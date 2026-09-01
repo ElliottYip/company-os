@@ -300,6 +300,23 @@ task transcript or generated preview.
 | `src/components/root/app-sidebar-shell.tsx` | same revision | Same as above | Used its compact navigation density as a visual baseline; Company OS keeps its own routes, icons, copy and DOM implementation |
 | `src/app/globals.css` | same revision | Same as above | Reused the user-owned SF Pro/PingFang font-stack direction and neutral surface values where compatible |
 
+### Generator fish-shadow front-door background (2026-09-01)
+
+The user explicitly requested direct reuse of Generator's animated fish background
+on the Company OS public front door. The assets and presentation contract come from
+the same private user-owned Generator repository at revision
+`29c3e57ad4cc392fddca2b899a47a4b67a1b3554`. Reuse is authorized by the user for
+this project; no public-license claim is made. Only decorative Web media and its
+mask/overlay behavior are copied. No Generator product copy, route, state, backend,
+credential or runtime dependency enters Company OS.
+
+| Generator source | SHA-256 | Company OS destination / use |
+|---|---|---|
+| `src/components/root/fish-shadow-background.tsx` | source contract at pinned revision | Reimplemented as dependency-free `<video>` markup and repository-owned CSS in the public front door |
+| `public/media/hero/fish-shadow-poster.jpg` | `e9877726ddd2a0fb53fead993e590103aa110427acbe8a2c29076e4ba663cfe6` | `web/public/media/hero/fish-shadow-poster.jpg`; reduced-motion and loading fallback |
+| `public/media/hero/fish-shadow-loop-desktop.mp4` | `f989acb54fffdaa1d8229e55df8d514a34940841b2b13a0a57ca3fc9684008a7` | `web/public/media/hero/fish-shadow-loop-desktop.mp4`; decorative desktop loop |
+| `public/media/hero/fish-shadow-loop-mobile.mp4` | `34896dc1cf619db28da5665f4bda1401549f0c8504749ec7eef76df2adbe9dde` | `web/public/media/hero/fish-shadow-loop-mobile.mp4`; decorative narrow-screen loop |
+
 Paperclip's previously audited onboarding, company setup, empty-state and command
 flow patterns remain **reference-only**. This implementation does not import or
 copy Paperclip page code, brand assets, copy, database types, API clients, or

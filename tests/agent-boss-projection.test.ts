@@ -143,7 +143,7 @@ test("formal Agent Boss projection joins organization, contracts, work, and atte
   const projection = await useCase.execute("demo-company");
   assert.equal(projection.schemaVersion, 1);
   assert.deepEqual(projection.viewer, { actorId: "demo-boss", displayName: "Boss" });
-  assert.equal(projection.organization.company.name, "Coral Labs");
+  assert.equal(projection.organization.company.name, "Northstar Analytics");
   assert.equal(projection.responsibilities.revision, 3);
   assert.equal(projection.agentLifecycle.agents[0]?.eligibility.invokable, true);
   assert.equal(projection.work[0]?.accountableHumanId, "demo-boss");

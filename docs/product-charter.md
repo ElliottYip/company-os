@@ -137,7 +137,7 @@ chain unless the source supplied and ANC admitted every required binding.
 The highest-priority first-run experience is `Explore a live demo company`.
 It creates an isolated, temporary server-side Demo Session without registration,
 OIDC, enterprise credentials, model keys, or production identity. Each session
-receives a deterministic Coral Labs fixture and cannot read or mutate another
+receives a deterministic Northstar Analytics fixture and cannot read or mutate another
 visitor's data.
 
 The three-minute loop covers:

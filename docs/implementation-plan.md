@@ -52,7 +52,7 @@ Verification: domain/application/API/projection tests plus Secret scan.
 
 ## Phase 4 — isolated exhibition Demo
 
-- [x] Create server-owned temporary Demo Sessions and deterministic Coral Labs
+- [x] Create server-owned temporary Demo Sessions and deterministic Northstar Analytics
   portfolio fixtures.
 - [x] Add create/read/reset/recover routes that derive tenant from the session.
 - [x] Prove two visitors cannot observe or mutate one another.
