@@ -379,14 +379,24 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     }), { timeout: 15_000 }).toBe("SUCCEEDED");
     await page.reload();
     await page.getByRole("button", { name: "Evidence", exact: true }).first().click();
-    const evidenceDetail = page.getByRole("dialog", { name: "evidence-browser-live", exact: true });
+    const evidenceRow = page.locator('[data-evidence-detail="evidence-browser-live"]');
+    await expect(evidenceRow).toBeVisible();
+    await evidenceRow.click();
+    const evidenceDetail = page.locator('dialog[data-evidence-detail-dialog="evidence-browser-live"]');
     await expect(evidenceDetail).toBeVisible();
     await expect(evidenceDetail.getByText("evidence-browser-live", { exact: true })).toBeVisible();
-    await expect(page.getByText("result-browser-live", { exact: true })).toBeVisible();
+    await evidenceDetail.getByRole("button", { name: "Close evidence", exact: true }).click();
+    const resultRow = page.locator('[data-evidence-detail="result-browser-live"]');
+    await expect(resultRow).toBeVisible();
+    await resultRow.click();
+    const resultDetail = page.locator('dialog[data-evidence-detail-dialog="result-browser-live"]');
+    await expect(resultDetail).toBeVisible();
+    await expect(resultDetail.getByText("result-browser-live", { exact: true })).toBeVisible();
+    await resultDetail.getByRole("button", { name: "Close evidence", exact: true }).click();
     await page.getByRole("button", { name: "Activity", exact: true }).first().click();
-    await expect(page.getByText("Published after exact human approval", { exact: true })).toBeVisible();
+    await expect(page.locator('[data-section="activity"]').getByText("Published after exact human approval", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Approvals", exact: true }).first().click();
-    await expect(page.getByText("APPROVED", { exact: true })).toBeVisible();
+    await expect(page.locator('[data-section="approvals"]').getByText("APPROVED", { exact: true })).toBeVisible();
     assert.equal(submitCount, 1);
     assert.deepEqual(commands, ["PAUSE", "RESUME"]);
 
