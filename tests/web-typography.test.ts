@@ -247,8 +247,8 @@ test("customer-facing text families use semantic size and weight roles", () => {
 
 test("working surfaces do not fork the shared page geometry or component shape", () => {
   assert.match(styles, /\.control-task-list, \.control-task-detail\s*\{[^}]*margin:\s*0 auto;/s);
-  assert.match(styles, /\.control-accountability, \.control-administration\s*\{[^}]*margin:\s*0;/s);
-  assert.match(styles, /\.control-organization\s*\{[^}]*margin:\s*0;/s);
+  assert.match(styles, /\.control-accountability, \.control-administration\s*\{[^}]*margin:\s*0 auto;/s);
+  assert.match(styles, /\.control-organization\s*\{[^}]*margin:\s*0 auto;/s);
   assert.match(styles, /\.responsibility-policy-row\s*\{[^}]*border-radius:\s*var\(--family-radius-panel\)/s);
   assert.match(workforceStyles, /\.workforce-graph-shell \.react-flow__controls\s*\{[^}]*border-radius:\s*var\(--family-radius-control\)[^}]*box-shadow:\s*none;/s);
   assert.match(workforceStyles, /\.workforce-detail\s*\{[^}]*padding:\s*var\(--space-4\)[^}]*box-shadow:\s*var\(--family-shadow-overlay\)/s);

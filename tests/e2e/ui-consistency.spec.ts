@@ -79,6 +79,21 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 }
 
+async function expectCenteredPageStage(page: Page): Promise<void> {
+  const gutters = await page.locator(".page-stage").evaluate((stage) => {
+    const workspace = stage.closest(".workspace") as HTMLElement | null;
+    if (!workspace) return null;
+    const stageBox = stage.getBoundingClientRect();
+    const workspaceBox = workspace.getBoundingClientRect();
+    return {
+      left: stageBox.left - workspaceBox.left,
+      right: workspaceBox.right - stageBox.right,
+    };
+  });
+  expect(gutters).not.toBeNull();
+  expect(Math.abs((gutters?.left ?? 0) - (gutters?.right ?? 0))).toBeLessThanOrEqual(1);
+}
+
 async function expectSharedTypographyContract(page: Page): Promise<void> {
   const audit = await page.evaluate(() => {
     const root = document.querySelector<HTMLElement>(".family-ui");
@@ -281,6 +296,7 @@ for (const configuration of [
     expect(Math.abs((pageTitle?.x ?? 0) - (firstSurface?.x ?? 0))).toBeLessThanOrEqual(1);
     expect(Math.abs((width - ((pageTitle?.x ?? 0) + (pageTitle?.width ?? 0))) - (width - ((firstSurface?.x ?? 0) + (firstSurface?.width ?? 0))))).toBeLessThanOrEqual(1);
     await expectNoHorizontalOverflow(page);
+    await expectCenteredPageStage(page);
 
     const humanTrigger = page.getByRole("button", { name: labels.viewHuman }).first();
     await humanTrigger.click();
@@ -345,6 +361,31 @@ for (const configuration of [
     await expectSharedTypographyContract(page);
     await page.keyboard.press("Escape");
     await expect(agentTrigger).toBeFocused();
+
+    if (width === 1440) {
+      for (const navigation of [
+        "Dashboard", "Inbox", "Tasks", "Goals", "Projects", "Organization", "Humans", "Agents",
+        "Approvals", "Evidence", "Activity", "Accountability", "Governance", "Usage & Billing", "Settings",
+      ]) {
+        await page.getByRole("button", { name: navigation, exact: true }).first().click();
+        await expectCenteredPageStage(page);
+        await expectNoHorizontalOverflow(page);
+      }
+    }
+
+    if (width === 1024) {
+      await page.getByRole("button", { name: "设置", exact: true }).first().click();
+      const settingsTabs = page.locator(".settings-navigation [role='tab']");
+      for (let index = 0; index < await settingsTabs.count(); index += 1) {
+        await settingsTabs.nth(index).click();
+        const escaped = await page.locator(".settings-content *").evaluateAll((elements) => elements.filter((element) => {
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          return style.display !== "none" && rect.width > 0 && (rect.left < -0.5 || rect.right > window.innerWidth + 0.5);
+        }).map((element) => ({ tag: element.tagName, className: String(element.className) })));
+        expect(escaped).toEqual([]);
+      }
+    }
 
     await page.getByRole("button", { name: labels.newTask }).first().click();
     const taskModal = page.getByRole("dialog");

@@ -108,11 +108,22 @@ export function checkWebVisualContractSources(sources) {
     }
   }
 
-  if (!/\.page-stage\s*\{[^}]*width:\s*min\(100%, var\(--layout-page-max\)\);[^}]*margin-inline:\s*auto;/s.test(sources.map(([, source]) => source).join("\n"))) {
+  const combinedStyles = sources.map(([, source]) => source).join("\n");
+  if (!/\.page-stage\s*\{[^}]*width:\s*100%;[^}]*max-width:\s*var\(--layout-page-max\);[^}]*margin-inline:\s*auto;/s.test(combinedStyles)) {
     violations.push("web/styles.css:page-stage must own the shared centered content lane");
   }
-  if (/\.(?:control-task-list|control-task-detail|control-organization|control-accountability|control-administration|control-settings|product-list-page)[^{]*\{[^}]*margin:\s*[^;}]*-\d/s.test(sources.map(([, source]) => source).join("\n"))) {
-    violations.push("web/styles.css:page-level product surfaces may not use negative margins");
+  const centeredPageSelectors = new Set([
+    ".control-dashboard", ".control-task-list", ".control-task-detail", ".control-organization",
+    ".control-accountability", ".control-administration", ".control-settings", ".product-list-page",
+  ]);
+  for (const block of combinedStyles.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!block[1].split(",").some((selector) => centeredPageSelectors.has(selector.trim()))) continue;
+    for (const declaration of block[2].matchAll(/(?:^|;)\s*(margin|margin-inline)\s*:\s*([^;]+)/g)) {
+      const value = declaration[2].replace(/\s*!important\s*$/i, "").trim().replace(/\s+/g, " ");
+      if ((declaration[1] === "margin" && value !== "0 auto") || (declaration[1] === "margin-inline" && value !== "auto")) {
+        violations.push(`web/styles.css:page-level product surfaces must preserve centered margins, found ${declaration[1]}: ${value}`);
+      }
+    }
   }
 
   if (violations.length) throw new Error(`WEB_VISUAL_CONTRACT_FAILED\n${violations.join("\n")}`);

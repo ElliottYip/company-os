@@ -93,7 +93,7 @@ button.sidebar-brand:hover { background: rgb(69 75 62 / 5%); }
 .topbar-company { display: inline-flex; min-height: 30px; align-items: center; border: 1px solid var(--family-line); border-radius: var(--family-radius-badge); background: #fff; padding: 4px 10px; color: var(--family-ink-muted); font-size: var(--type-label); font-weight: var(--weight-medium); line-height: var(--leading-compact); }
 
 .workspace { width: 100%; height: calc(100% - var(--layout-topbar-height)); min-width: 0; margin: 0; overflow: auto; padding: var(--space-6) var(--layout-page-gutter) 48px; background: var(--family-canvas); font-size: var(--type-body); }
-.page-stage { width: min(100%, var(--layout-page-max)); min-width: 0; margin-inline: auto; }
+.page-stage { width: 100%; max-width: var(--layout-page-max); min-width: 0; margin-inline: auto; }
 .page-stage > .family-metric-strip { margin-inline: 0; }
 .page-stage > .family-metric-strip + * { margin-top: 18px; }
 .page-stage[data-section="office"] > .family-metric-strip,
@@ -452,7 +452,7 @@ button.office-2-5d-sprite { cursor: pointer; }
 .contract-facts dd { overflow-wrap: anywhere; }
 .responsibility-layout + .event-feed { margin-top: 18px; }
 .page-stage[data-section="responsibility"] > .event-feed { border-radius: var(--family-radius-panel); }
-.control-accountability, .control-administration { margin: 0; }
+.control-accountability, .control-administration { margin: 0 auto; }
 .control-accountability > :not(.control-page-title), .control-administration > :not(.control-page-title) { margin-right: 0; margin-left: 0; }
 .control-accountability > .family-metric-strip, .control-administration > .family-metric-strip { margin-top: 16px; }
 .accountability-tabs { display: flex; gap: 22px; margin-top: 16px; overflow-x: auto; border-bottom: 1px solid var(--family-line); }
@@ -582,7 +582,7 @@ button.office-2-5d-sprite { cursor: pointer; }
 .setup-review dt { color: var(--family-ink-faint); font-size: var(--type-supporting); line-height: var(--leading-compact); }
 .setup-review dd { margin: 0; font-size: var(--type-body); font-weight: var(--weight-semibold); overflow-wrap: anywhere; }
 
-.control-organization { margin: 0; }
+.control-organization { margin: 0 auto; }
 .control-organization > :not(.control-page-title):not(dialog) { margin-right: 0; margin-left: 0; }
 .control-page-title--actions { min-height: 64px; align-items: flex-start; justify-content: space-between; gap: var(--space-5); }
 .control-page-title--actions > div:first-child { min-width: 0; }
@@ -858,6 +858,10 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
   .work-main-column { border-right: 0; border-bottom: 1px solid var(--family-line); }
   .task-record-panel[data-task-panel="detail"] { grid-template-columns: 1fr; }
   .task-properties { border-top: 1px solid var(--family-line); border-left: 0; }
+  .settings-layout { grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-4); }
+  .settings-list > div { grid-template-columns: minmax(120px, .45fr) minmax(0, 1fr); gap: var(--space-3); }
+  .settings-list .status-pill { grid-column: 2; justify-self: start; }
+  .settings-member-row { grid-template-columns: minmax(0, 1fr) minmax(120px, .7fr); }
 }
 
 @media (max-width: 860px) {

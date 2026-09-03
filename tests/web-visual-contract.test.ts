@@ -19,7 +19,7 @@ test("the visual contract rejects page-local typography and arbitrary breakpoint
         "--control-height-comfortable", "--overlay-edge", "--overlay-modal-width", "--overlay-drawer-width",
       ].map((token) => `${token}: 1;`).join(" ")} }
     `],
-    ["web/styles.css", `.page-stage { width: 100%; max-width: var(--layout-page-max); margin: 0 auto; } .rogue { font: 15px fantasy; font-family: fantasy; font-size: var(--type-rogue); line-height: 1.4; font-weight: 550; } @media (max-width: 777px) {}`],
+    ["web/styles.css", `.page-stage { width: 100%; max-width: var(--layout-page-max); margin-inline: auto; } .control-organization { margin: 0; } .rogue { font: 15px fantasy; font-family: fantasy; font-size: var(--type-rogue); line-height: 1.4; font-weight: 550; } @media (max-width: 777px) {}`],
     ["web/workforce-graph/workforce-graph.css", ""],
-  ]), /font-size must use the shared semantic contract[\s\S]*font-weight must use the shared semantic contract[\s\S]*line-height must use the shared semantic contract[\s\S]*font-family must use the shared semantic contract[\s\S]*font must use the shared semantic contract[\s\S]*uncontracted max-width breakpoint 777px/);
+  ]), /font-size must use the shared semantic contract[\s\S]*font-weight must use the shared semantic contract[\s\S]*line-height must use the shared semantic contract[\s\S]*font-family must use the shared semantic contract[\s\S]*font must use the shared semantic contract[\s\S]*uncontracted max-width breakpoint 777px[\s\S]*page-level product surfaces must preserve centered margins/);
 });

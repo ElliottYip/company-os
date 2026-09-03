@@ -65,6 +65,7 @@ Implementation entries are appended as each batch is completed.
 49. Approval decision notes span the record content columns, and the Agent empty state provides a keyboard-operable continuation to Organization while preserving the existing identity, Connector, responsibility and execution boundaries.
 50. The Dashboard recent-Work register now applies progressive disclosure at tablet and phone widths instead of allowing technical Agent identifiers to wrap into letter fragments. The dedicated Work page remains the complete record surface.
 51. Visual consistency is now mechanically enforced across all shipped Web styles. Text can consume only semantic type, weight and leading tokens; icon glyphs use a separate scale; responsive CSS can consume only the documented breakpoint set; page-level negative margins and loss of the centered content lane fail verification. Computed browser checks independently audit the visible result in Chinese and English.
+52. The production RC33 sweep exposed two cases that source-only checks had not proven: Organization, Accountability and Administration overrode the wide-screen auto margins, while Settings summary/member rows exceeded the rail-constrained 1024px content column. The shared page lane now uses the conventional `width: 100%` plus `max-width` contract, page-root margin overrides are rejected mechanically, and Settings reflows at the existing 1080px breakpoint. Browser tests traverse every primary desktop page and every tablet Settings tab.
 
 ## Safety and dependency record
 
