@@ -381,7 +381,7 @@ function workView(
   return `<section class="page-stage control-task-detail" data-section="work" data-phase="${state.phase}" aria-labelledby="work-title">
     <header class="control-detail-breadcrumb"><button type="button" data-close-work-detail>${copy("Tasks", "任务")}</button><span aria-hidden="true">›</span><span class="control-task-status ${approval ? "is-blocked" : ""}"></span><span>${escapeHtml(state.responsibility.workId)}</span><strong>${escapeHtml(workTitle)}</strong></header>
     <article class="task-record-shell" data-testid="${approval ? "approval-focus" : "active-work"}">
-      <header class="task-record-heading"><div><p class="family-kicker">${escapeHtml(state.responsibility.workId)} · ${copy("COMPANY OS WORK", "COMPANY OS 工作")}</p><h2 id="work-title">${escapeHtml(workTitle)}</h2><p>${escapeHtml(accountableHuman)} ${copy("is accountable;", "负责；")} ${escapeHtml(executingAgent)} ${copy("executes", "执行")}</p></div>${raftStatus(statusCopy(state), statusTone(state))}</header>
+      <header class="task-record-heading"><div><p class="family-kicker">${escapeHtml(state.responsibility.workId)} · ${copy("COMPANY OS WORK", "COMPANY OS 工作")}</p><h2 id="work-title" tabindex="-1">${escapeHtml(workTitle)}</h2><p>${escapeHtml(accountableHuman)} ${copy("is accountable;", "负责；")} ${escapeHtml(executingAgent)} ${copy("executes", "执行")}</p></div>${raftStatus(statusCopy(state), statusTone(state))}</header>
       <div class="task-record-tabs" role="tablist" aria-label="${copy("Task record views", "任务记录视图")}"><button type="button" role="tab" aria-selected="true" data-task-tab="detail">${copy("Details", "详情")}</button><button type="button" role="tab" aria-selected="false" data-task-tab="activity">${copy("Activity", "活动")} <span>${state.events.length}</span></button><button type="button" role="tab" aria-selected="false" data-task-tab="evidence">${copy("Deliverables and evidence", "交付物与证据")} <span>${state.responsibility.evidenceIds.length + (state.responsibility.resultId ? 1 : 0)}</span></button><button type="button" role="tab" aria-selected="false" data-task-tab="responsibility">${copy("Responsibility", "责任")}</button></div>
       <div class="task-record-panel" role="tabpanel" aria-label="${copy("Details", "详情")}" data-task-panel="detail">
         <div class="task-record-primary"><p class="family-kicker">${copy("CURRENT GOAL", "当前目标")}</p><h3>${escapeHtml(workGoal)}</h3>${workBody}<div class="task-actions" data-task-actions></div></div>
@@ -969,6 +969,7 @@ export function mountCompanyOS(
   let openSetupAfterRender = false;
   let localSetupRequired = false;
   let selectedWorkId: string | null = null;
+  let workDetailReturnId: string | null = null;
   let activeInboxFilter: InboxFilter = "needs-me";
   let activeWorkView = storedViewChoice("company-os.work-view", ["list", "board"] as const, "list");
   let activeWorkFilter = storedViewChoice("company-os.work-filter", ["all", "active", "resolved"] as const, "all");
@@ -981,6 +982,21 @@ export function mountCompanyOS(
   let actionQueue: Promise<void> = Promise.resolve();
   let activeAdministrationTab = "connectors";
   let unmountWorkforceGraph: (() => void) | undefined;
+  type WorkspaceProjection = {
+    readonly state: CompanyWorkState;
+    readonly organization: OrganizationDraft;
+    readonly assignmentOptions: Awaited<ReturnType<CompanyOSApplicationClient["assignmentOptions"]>>;
+    readonly administration: AdministrationProjection | null;
+    readonly planning: PlanningCatalog;
+    readonly memberDirectory: CompanyHumanMemberDirectory;
+    readonly workCatalog: FormalWorkCatalog | null;
+    readonly formalActivity: Awaited<ReturnType<CompanyOSApplicationClient["activity"]>> | null;
+    readonly accountabilityLedger: Awaited<ReturnType<CompanyOSApplicationClient["accountabilityLedger"]>>;
+  };
+  let workspaceProjection: WorkspaceProjection | null = null;
+  let workspaceProjectionInFlight: Promise<WorkspaceProjection> | null = null;
+  let workspaceProjectionLoadedAt = 0;
+  let renderGeneration = 0;
   const root = document.createElement("div");
   root.className = "company-os family-ui";
   root.lang = initialLocale;
@@ -1076,7 +1092,10 @@ export function mountCompanyOS(
       <p>${copy("Error code", "错误代码")}: <code>${escapeHtml(failure.code)}</code></p>
       <button class="family-button family-button--secondary cos-button cos-button--secondary" type="button" data-retry>${copy("Try again", "重试")}</button>
     </section>`;
-    root.querySelector<HTMLButtonElement>("[data-retry]")?.addEventListener("click", () => void render());
+    root.querySelector<HTMLButtonElement>("[data-retry]")?.addEventListener("click", () => {
+      workspaceProjection = null;
+      void render();
+    });
   }
 
   function renderActionFailure(error: unknown): void {
@@ -1099,6 +1118,9 @@ export function mountCompanyOS(
       root.inert = true;
       try {
         await action();
+        await workspaceProjectionInFlight?.catch(() => undefined);
+        workspaceProjection = null;
+        workspaceProjectionLoadedAt = 0;
         await render();
       } catch (error) {
         renderActionFailure(error);
@@ -1124,6 +1146,52 @@ export function mountCompanyOS(
         resolve(confirmed);
       }, { once: true });
       showManagedDialog(dialog, document.activeElement instanceof HTMLElement ? document.activeElement : null, "button[value='cancel']");
+    });
+  }
+
+  function confirmDangerousAction(input: {
+    readonly title: string;
+    readonly description: string;
+    readonly confirmLabel: string;
+    readonly trigger: HTMLElement;
+  }): Promise<boolean> {
+    const dialog = document.createElement("dialog");
+    dialog.className = "action-confirm-dialog family-overlay family-modal";
+    dialog.setAttribute("aria-labelledby", "action-confirm-title");
+    dialog.innerHTML = `<form method="dialog"><p class="family-kicker">${copy("CONFIRM ACTION", "确认操作")}</p><h2 id="action-confirm-title">${escapeHtml(input.title)}</h2><p>${escapeHtml(input.description)}</p><div class="action-confirm-dialog__actions"><button class="family-button family-button--secondary" type="submit" value="cancel">${copy("Cancel", "取消")}</button><button class="family-button family-button--danger" type="submit" value="confirm">${escapeHtml(input.confirmLabel)}</button></div></form>`;
+    document.body.append(dialog);
+    return new Promise((resolve) => {
+      dialog.addEventListener("close", () => {
+        const confirmed = dialog.returnValue === "confirm";
+        dialog.remove();
+        input.trigger.focus();
+        resolve(confirmed);
+      }, { once: true });
+      showManagedDialog(dialog, input.trigger, "button[value='cancel']");
+    });
+  }
+
+  function bindTabKeyboardNavigation(): void {
+    root.querySelectorAll<HTMLElement>("[role='tablist']").forEach((tablist) => {
+      const horizontal = tablist.classList.contains("settings-navigation") && window.matchMedia("(max-width: 1024px)").matches;
+      if (tablist.classList.contains("settings-navigation")) {
+        tablist.setAttribute("aria-orientation", horizontal ? "horizontal" : "vertical");
+      }
+      tablist.addEventListener("keydown", (event) => {
+        const previousKey = horizontal ? "ArrowLeft" : "ArrowUp";
+        const nextKey = horizontal ? "ArrowRight" : "ArrowDown";
+        if (![previousKey, nextKey, "Home", "End"].includes(event.key)) return;
+        const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>("[role='tab']:not([disabled])"));
+        if (!tabs.length) return;
+        const current = Math.max(0, tabs.indexOf(document.activeElement as HTMLButtonElement));
+        const next = event.key === "Home" ? 0
+          : event.key === "End" ? tabs.length - 1
+          : event.key === nextKey ? (current + 1) % tabs.length
+          : (current - 1 + tabs.length) % tabs.length;
+        event.preventDefault();
+        tabs[next]?.focus();
+        tabs[next]?.click();
+      });
     });
   }
 
@@ -1245,7 +1313,49 @@ export function mountCompanyOS(
     });
   }
 
+  async function loadWorkspaceProjection(): Promise<WorkspaceProjection> {
+    if (workspaceProjection) return workspaceProjection;
+    const inFlight = workspaceProjectionInFlight ??= fetchWorkspaceProjection().then((loaded) => {
+      workspaceProjection = loaded;
+      workspaceProjectionLoadedAt = Date.now();
+      return loaded;
+    }).finally(() => {
+      workspaceProjectionInFlight = null;
+    });
+    return inFlight;
+  }
+
+  function fetchWorkspaceProjection(): Promise<WorkspaceProjection> {
+    return Promise.all([
+      application.snapshot(),
+      application.organization(),
+      application.assignmentOptions(),
+      application.administration(),
+      application.planning(),
+      application.humanMembers(),
+      application.mode === "FORMAL" ? application.workCatalog() : Promise.resolve(null),
+      application.mode === "FORMAL" ? application.activity() : Promise.resolve(null),
+      application.accountabilityLedger(),
+    ]).then(([state, organization, assignmentOptions, administration, planning, memberDirectory, workCatalog, formalActivity, accountabilityLedger]) => ({
+      state, organization, assignmentOptions, administration, planning, memberDirectory,
+      workCatalog, formalActivity, accountabilityLedger,
+    }));
+  }
+
+  function revalidateWorkspaceProjection(): void {
+    if (workspaceProjectionInFlight) return;
+    workspaceProjectionInFlight = fetchWorkspaceProjection().then((loaded) => {
+      workspaceProjection = loaded;
+      workspaceProjectionLoadedAt = Date.now();
+      return loaded;
+    }).finally(() => {
+      workspaceProjectionInFlight = null;
+    });
+    void workspaceProjectionInFlight.catch(() => undefined);
+  }
+
   async function render(): Promise<void> {
+    const generation = ++renderGeneration;
     if (disposed) return;
     if (frontDoorVisible) {
       root.innerHTML = frontDoor();
@@ -1319,27 +1429,9 @@ export function mountCompanyOS(
     if (!root.childElementCount) {
       root.innerHTML = `<section class="system-state" data-state="LOADING"><p class="family-kicker">${copy("LOADING", "加载中")}</p><h1>${copy("Loading the company control plane…", "正在加载公司控制平面…")}</h1></section>`;
     }
-    let state: CompanyWorkState;
-    let organization: OrganizationDraft;
-    let assignmentOptions: Awaited<ReturnType<CompanyOSApplicationClient["assignmentOptions"]>>;
-    let administration: AdministrationProjection | null;
-    let planning: PlanningCatalog;
-    let memberDirectory: CompanyHumanMemberDirectory;
-    let workCatalog: FormalWorkCatalog | null;
-    let formalActivity: Awaited<ReturnType<CompanyOSApplicationClient["activity"]>> | null;
-    let accountabilityLedger: Awaited<ReturnType<CompanyOSApplicationClient["accountabilityLedger"]>>;
+    let projection: WorkspaceProjection;
     try {
-      [state, organization, assignmentOptions, administration, planning, memberDirectory, workCatalog, formalActivity, accountabilityLedger] = await Promise.all([
-        application.snapshot(),
-        application.organization(),
-        application.assignmentOptions(),
-        application.administration(),
-        application.planning(),
-        application.humanMembers(),
-        application.mode === "FORMAL" ? application.workCatalog() : Promise.resolve(null),
-        application.mode === "FORMAL" ? application.activity() : Promise.resolve(null),
-        application.accountabilityLedger(),
-      ]);
+      projection = await loadWorkspaceProjection();
     } catch (error) {
       if (application.mode === "FORMAL" && error instanceof Error && error.message === "ORGANIZATION_NOT_FOUND" && formalDirectory?.companies.length) {
         formalOrganizationMissing = true;
@@ -1352,7 +1444,11 @@ export function mountCompanyOS(
       renderFailure(error);
       return;
     }
-    if (disposed) return;
+    if (disposed || generation !== renderGeneration) return;
+    const {
+      state, organization, assignmentOptions, administration, planning, memberDirectory,
+      workCatalog, formalActivity, accountabilityLedger,
+    } = projection;
 
     const isFixtureRuntime = application.mode === "DEMO_FIXTURE";
     const isDemo = isFixtureRuntime && explicitDemo;
@@ -1380,7 +1476,7 @@ export function mountCompanyOS(
         return;
       }
     }
-    if (disposed) return;
+    if (disposed || generation !== renderGeneration) return;
     const visibleWorkState = selectedCatalogItem
       ? workStateForCatalogItem(state, selectedCatalogItem, runTimeline)
       : state;
@@ -1440,16 +1536,22 @@ export function mountCompanyOS(
       ${commandPalette(section)}`;
     root.innerHTML = productShell;
     root.removeAttribute("aria-busy");
+    bindTabKeyboardNavigation();
+    if (Date.now() - workspaceProjectionLoadedAt > 30_000) revalidateWorkspaceProjection();
 
-    const navigateTo = (nextSection: CompanyOSSection): void => {
+    const navigateTo = async (nextSection: CompanyOSSection): Promise<void> => {
       section = nextSection;
       selectedWorkId = null;
       host.onNavigate?.(`${host.basePath ?? ""}/${section}`.replace(/\/+/g, "/"));
-      void render();
+      await render();
     };
     root.querySelectorAll<HTMLButtonElement>("[data-section-target]").forEach((button) => {
-      button.addEventListener("click", () => {
-        navigateTo(button.dataset.sectionTarget as CompanyOSSection);
+      button.addEventListener("click", async () => {
+        const colleagueId = button.dataset.openColleagueAfterNavigation;
+        await navigateTo(button.dataset.sectionTarget as CompanyOSSection);
+        if (colleagueId) {
+          root.querySelector<HTMLButtonElement>(`[data-colleague-detail="${CSS.escape(colleagueId)}"]`)?.click();
+        }
       });
     });
     root.querySelector<HTMLButtonElement>("[data-demo-trigger-governed]")?.addEventListener("click", () => {
@@ -1543,7 +1645,12 @@ export function mountCompanyOS(
         section = "office";
         application.selectCompany(companyId);
         window.localStorage.setItem("company-os.selected-company", companyId);
-        void render();
+        void (async () => {
+          await workspaceProjectionInFlight?.catch(() => undefined);
+          workspaceProjection = null;
+          workspaceProjectionLoadedAt = 0;
+          await render();
+        })();
       });
     });
     root.querySelector<HTMLButtonElement>("[data-open-company-settings]")?.addEventListener("click", () => navigateTo("settings"));
@@ -1558,14 +1665,20 @@ export function mountCompanyOS(
       });
     });
     root.querySelectorAll<HTMLButtonElement>("[data-open-work-detail]").forEach((button) => {
-      button.addEventListener("click", () => {
-        selectedWorkId = button.dataset.openWorkDetail || state.responsibility.workId;
-        void render();
+      button.addEventListener("click", async () => {
+        workDetailReturnId = button.dataset.openWorkDetail || state.responsibility.workId;
+        selectedWorkId = workDetailReturnId;
+        await render();
+        root.querySelector<HTMLElement>("#work-title")?.focus();
       });
     });
-    root.querySelector<HTMLButtonElement>("[data-close-work-detail]")?.addEventListener("click", () => {
+    root.querySelector<HTMLButtonElement>("[data-close-work-detail]")?.addEventListener("click", async () => {
+      const returnId = workDetailReturnId;
       selectedWorkId = null;
-      void render();
+      await render();
+      if (returnId) {
+        root.querySelector<HTMLButtonElement>(`[data-open-work-detail="${CSS.escape(returnId)}"]`)?.focus();
+      }
     });
     root.querySelectorAll<HTMLButtonElement>("[data-inbox-filter]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -2216,9 +2329,14 @@ export function mountCompanyOS(
       }));
     });
     root.querySelectorAll<HTMLButtonElement>("[data-goal-status]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const goal = planning.goals.find(({ id }) => id === button.dataset.goalId);
         if (!goal || !button.dataset.goalStatus) return;
+        if (button.dataset.goalStatus === "cancelled" && !await confirmDangerousAction({
+          title: copy("Cancel this goal?", "取消这个目标？"),
+          description: copy("The goal will remain in the audit history and can no longer receive active progress.", "该目标会保留在审计记录中，但不能再接收有效进展。"),
+          confirmLabel: copy("Cancel goal", "取消目标"), trigger: button,
+        })) return;
         void runAction(() => application.updateGoal(goal.id, {
           title: goal.title, description: goal.description, level: goal.level,
           status: button.dataset.goalStatus as "planned" | "active" | "achieved" | "cancelled",
@@ -2228,9 +2346,14 @@ export function mountCompanyOS(
       });
     });
     root.querySelectorAll<HTMLButtonElement>("[data-project-status]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const project = planning.projects.find(({ id }) => id === button.dataset.projectId);
         if (!project || !button.dataset.projectStatus) return;
+        if (button.dataset.projectStatus === "cancelled" && !await confirmDangerousAction({
+          title: copy("Cancel this project?", "取消这个项目？"),
+          description: copy("The project will stop accepting active work but will remain traceable in company records.", "该项目将停止接收有效工作，但仍会保留在公司记录中。"),
+          confirmLabel: copy("Cancel project", "取消项目"), trigger: button,
+        })) return;
         void runAction(() => application.updateProject(project.id, {
           goalIds: project.goalIds, name: project.name, description: project.description,
           status: button.dataset.projectStatus as "backlog" | "planned" | "in_progress" | "completed" | "cancelled",
@@ -2241,9 +2364,14 @@ export function mountCompanyOS(
       });
     });
     root.querySelectorAll<HTMLButtonElement>("[data-project-archive]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const projectId = button.dataset.projectArchive;
         if (!projectId) return;
+        if (!await confirmDangerousAction({
+          title: copy("Archive this project?", "归档这个项目？"),
+          description: copy("Archived projects leave active views and remain available in retained company records.", "归档后项目会离开活动视图，并继续保留在公司记录中。"),
+          confirmLabel: copy("Archive project", "归档项目"), trigger: button,
+        })) return;
         void runAction(() => application.archiveProject(projectId, planning.revision));
       });
     });
@@ -2350,20 +2478,38 @@ export function mountCompanyOS(
     }
 
     const actions = root.querySelector<HTMLElement>("[data-task-actions]");
+    const appendApprovalActions = (container: HTMLElement): void => {
+      const approve = createButton({
+        label: t("action.approve"), tone: "primary",
+        onClick: () => void runAction(() => application.decideApproval("APPROVED")),
+      });
+      const reject = createButton({
+        label: t("action.reject"), tone: "danger",
+        onClick: () => void (async () => {
+          if (!await confirmDangerousAction({
+            title: copy("Reject this approval?", "拒绝这项审批？"),
+            description: copy("The bound high-risk action will not execute. The decision remains in the responsibility record.", "绑定的高风险操作将不会执行；该决定会保留在责任记录中。"),
+            confirmLabel: copy("Reject approval", "拒绝审批"), trigger: reject,
+          })) return;
+          await runAction(() => application.decideApproval("REJECTED"));
+        })(),
+      });
+      container.append(approve, reject);
+    };
     if (actions && application.mode === "DEMO_FIXTURE") {
       if (state.phase === "READY") {
         actions.append(createButton({ label: t("action.assign"), tone: "primary", onClick: () => void runAction(() => application.assignWork()) }));
       } else if (["PLANNING", "SIMULATING_TOOL_ACTIVITY"].includes(state.phase)) {
         actions.append(createButton({ label: t("action.advance"), tone: "primary", onClick: () => void runAction(() => application.advanceWork()) }));
       } else if (state.phase === "AWAITING_APPROVAL") {
-        actions.append(
-          createButton({ label: t("action.approve"), tone: "primary", onClick: () => void runAction(() => application.decideApproval("APPROVED")) }),
-          createButton({ label: t("action.reject"), tone: "danger", onClick: () => void runAction(() => application.decideApproval("REJECTED")) }),
-        );
+        appendApprovalActions(actions);
       }
     } else if (actions && state.phase === "READY") {
       if (!assignmentOptions.agents.length) {
-        actions.innerHTML = `<p class="empty-copy" role="status">No Agent has both an active responsibility contract and executable capabilities.</p>`;
+        actions.innerHTML = `<p class="empty-copy" role="status">${copy(
+          "No Agent currently has both an active responsibility contract and executable capabilities.",
+          "当前没有同时具备有效责任合同与可执行能力的 Agent。",
+        )}</p>`;
       } else {
         const quickModelChoices = new Map<string, string>();
         for (const policy of administration?.governance.modelRoutingPolicies ?? []) {
@@ -2403,10 +2549,7 @@ export function mountCompanyOS(
         });
       }
     } else if (actions && state.phase === "AWAITING_APPROVAL") {
-      actions.append(
-        createButton({ label: t("action.approve"), tone: "primary", onClick: () => void runAction(() => application.decideApproval("APPROVED")) }),
-        createButton({ label: t("action.reject"), tone: "danger", onClick: () => void runAction(() => application.decideApproval("REJECTED")) }),
-      );
+      appendApprovalActions(actions);
     }
     if (actions && application.mode === "FORMAL" && selectedCatalogItem) {
       const attempt = selectedCatalogItem.attempts.at(-1);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-const [apiOrigin, webOrigin, expectedReleaseId, browserOrigin = webOrigin] = process.argv.slice(2);
+const [apiOrigin, webOrigin, expectedReleaseId, browserOrigin = webOrigin, expectedSourceRevision] = process.argv.slice(2);
 if (!apiOrigin || !webOrigin) {
   throw new Error(
     "USAGE: node scripts/accept-public-demo-runtime.mjs <api-origin> <web-origin> [release-id]",
@@ -44,6 +44,12 @@ const web = await fetch(webOrigin);
 assert.equal(web.status, 200);
 assert.equal(web.headers.get("x-company-os-release-id"), expectedReleaseId ?? null);
 assert.match(await web.text(), /Company OS|ANC/);
+const webBuild = await fetch(`${webOrigin}/build-manifest.json`);
+assert.equal(webBuild.status, 200, "Web build manifest is unavailable");
+const webBuildManifest = await webBuild.json();
+assert.equal(webBuildManifest.schemaVersion, 1);
+assert.ok(Array.isArray(webBuildManifest.assets) && webBuildManifest.assets.length > 0);
+if (expectedSourceRevision) assert.equal(webBuildManifest.sourceRevision, expectedSourceRevision);
 
 const first = await createSession();
 const second = await createSession();
@@ -123,6 +129,7 @@ assert.equal(reset.commercial.renewals.length, 0);
 console.log(JSON.stringify({
   status: "PASSED",
   releaseId: expectedReleaseId ?? web.headers.get("x-company-os-release-id"),
+  webSourceRevision: webBuildManifest.sourceRevision,
   readiness: ready.checks,
   portfolio: {
     agents: first.body.agents.length,

@@ -51,10 +51,50 @@ test("the managed dialog controller owns close, backdrop, busy and focus-return 
   assert.match(mount, /target\?\.isConnected\) target\.focus\(\)/);
 });
 
+test("formal rejection and destructive planning changes use the shared confirmation contract", () => {
+  assert.match(mount, /action-confirm-dialog family-overlay family-modal/);
+  assert.match(mount, /confirmDangerousAction/);
+  assert.match(mount, /Reject this approval\?/);
+  assert.match(mount, /Cancel this goal\?/);
+  assert.match(mount, /Cancel this project\?/);
+  assert.match(mount, /Archive this project\?/);
+  assert.match(styles, /\.action-confirm-dialog__actions[^}]*justify-content:\s*flex-end/);
+});
+
+test("workspace navigation reuses one projection and discards stale renders", () => {
+  assert.match(mount, /let workspaceProjection:/);
+  assert.match(mount, /workspaceProjectionInFlight \?\?=/);
+  assert.match(mount, /generation !== renderGeneration/);
+  assert.match(mount, /const navigateTo = async/);
+  assert.doesNotMatch(mount, /const navigateTo[\s\S]{0,220}workspaceProjection\s*=\s*null/);
+});
+
+test("task detail navigation moves focus into the record and returns it to the source row", () => {
+  assert.match(mount, /let workDetailReturnId:/);
+  assert.match(mount, /id="work-title" tabindex="-1"/);
+  assert.match(mount, /querySelector<HTMLElement>\("#work-title"\)\?\.focus\(\)/);
+  assert.match(mount, /data-open-work-detail="\$\{CSS\.escape\(returnId\)\}"/);
+});
+
+test("page and administration forms keep actions at control height", () => {
+  assert.match(operationalPages, /catalog-create-form/);
+  assert.match(operationalPages, /budget-policy-form/);
+  assert.match(styles, /\.formal-work-form:has\(> \.form-grid\)[^}]*grid-template-columns:\s*1fr/);
+  assert.match(styles, /\.formal-work-form > \.family-button[^}]*justify-self:\s*start/);
+  assert.match(styles, /\.budget-policy-form > \.family-button[^}]*min-height:\s*var\(--control-height\)/);
+});
+
+test("people rows preserve the selected colleague when opening Organization", () => {
+  assert.match(operationalPages, /data-open-colleague-after-navigation="human-/);
+  assert.match(mount, /openColleagueAfterNavigation/);
+});
+
 test("approval and evidence flows expose read-only evidence drawers", () => {
   assert.match(operationalPages, /data-evidence-detail=/);
   assert.match(operationalPages, /data-evidence-detail-dialog=/);
   assert.match(operationalPages, /evidence-detail-dialog family-overlay family-drawer/);
+  assert.match(operationalPages, /class="product-record-row evidence-record-row"/);
+  assert.match(styles, /\.evidence-record-meta code/);
   assert.match(portfolioPages, /data-demo-evidence-dialog/);
   assert.match(portfolioPages, /evidence-detail-dialog family-overlay family-drawer/);
 });

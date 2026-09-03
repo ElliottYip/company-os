@@ -1160,9 +1160,14 @@ export function createFormalApplicationClient(
     return payload;
   }
 
-  async function projection(): Promise<AgentBossProjection> {
-    const payload = await getJson(companyEndpoint("/agent-boss"));
-    return agentBossProjection(payload, companyId());
+  let projectionInFlight: Promise<AgentBossProjection> | null = null;
+  function projection(): Promise<AgentBossProjection> {
+    projectionInFlight ??= getJson(companyEndpoint("/agent-boss"))
+      .then((payload) => agentBossProjection(payload, companyId()))
+      .finally(() => {
+        projectionInFlight = null;
+      });
+    return projectionInFlight;
   }
 
   async function command(path: string, body: unknown): Promise<void> {

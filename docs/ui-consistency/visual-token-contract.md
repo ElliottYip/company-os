@@ -46,6 +46,7 @@ Weights are limited to 400, 500 and 600 through `--weight-regular`, `--weight-me
 - Identity and scan-list primary labels use the one-line ellipsis contract. Supporting summaries that must remain scannable use the two-line clamp contract.
 - Buttons, tabs, status labels and short counters never wrap. They move as complete controls or the container changes layout at the breakpoint.
 - IDs, digests, Runtime references and other technical values opt into `data-technical-value` / `.family-technical` and may break anywhere. This behavior must never be applied to normal prose.
+- Digest, source and timestamp metadata are separate semantic fields. A record row may truncate each field independently on wide screens and must stack them on narrow screens; it may not concatenate them into one prose line.
 - Numeric columns use `.family-numeric`, tabular figures and right alignment. Text columns remain left aligned.
 
 ## Semantic color

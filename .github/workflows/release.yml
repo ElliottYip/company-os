@@ -147,6 +147,8 @@ jobs:
         with:
           context: .
           file: deploy/Dockerfile.web
+          build-args: |
+            COMPANY_OS_SOURCE_REVISION=${{ github.sha }}
           push: true
           tags: ${{ steps.coordinates.outputs.web }}:${{ github.ref_name }}
           sbom: true
@@ -246,6 +248,22 @@ jobs:
 
       - name: Install exact release dependency graph
         run: npm ci --ignore-scripts
+
+      - name: Verify the published Web bundle is bound to this source revision
+        env:
+          COMPANY_OS_WEB_IMAGE: ${{ steps.coordinates.outputs.web }}@${{ steps.web.outputs.digest }}
+          COMPANY_OS_SOURCE_REVISION: ${{ github.sha }}
+        shell: bash
+        run: |
+          docker pull "$COMPANY_OS_WEB_IMAGE"
+          image_revision="$(docker image inspect --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}' "$COMPANY_OS_WEB_IMAGE")"
+          test "$image_revision" = "$COMPANY_OS_SOURCE_REVISION"
+          docker run --rm --entrypoint node "$COMPANY_OS_WEB_IMAGE" -e '
+            const { readFileSync } = require("node:fs");
+            const manifest = JSON.parse(readFileSync("/app/web/dist/build-manifest.json", "utf8"));
+            if (manifest.sourceRevision !== process.argv[1]) process.exit(1);
+            if (!Array.isArray(manifest.assets) || manifest.assets.length === 0) process.exit(1);
+          ' "$COMPANY_OS_SOURCE_REVISION"
 
       - name: Generate release manifest and application SBOM
         env:

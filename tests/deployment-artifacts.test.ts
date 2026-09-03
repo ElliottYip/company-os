@@ -134,6 +134,8 @@ test("production images are pinned, non-root, health checked, and independently 
     "the API image must accept traffic arriving through the container network");
   assert.match(web, /serve-web\.mjs/);
   assert.match(web, /COPY scripts\/check-built-web-runtime-config-order\.mjs/);
+  assert.match(web, /COPY scripts\/write-web-build-manifest\.mjs/);
+  assert.match(web, /org\.opencontainers\.image\.revision/);
   assert.match(api, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   assert.match(ops, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   const packageJson = JSON.parse(packageJsonSource);
@@ -448,6 +450,9 @@ test("release automation publishes six digest-addressed images with SBOM and pro
   assert.match(workflow, /test -f LICENSE/);
   assert.match(workflow, /deploy\/Dockerfile\.api/);
   assert.match(workflow, /deploy\/Dockerfile\.web/);
+  assert.match(workflow, /COMPANY_OS_SOURCE_REVISION=\$\{\{ github\.sha \}\}/);
+  assert.match(workflow, /Verify the published Web bundle is bound to this source revision/);
+  assert.match(workflow, /build-manifest\.json/);
   assert.match(workflow, /deploy\/Dockerfile\.ops/);
   assert.match(workflow, /sbom: true/);
   assert.match(workflow, /provenance: mode=max/);

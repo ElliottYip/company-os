@@ -11,9 +11,13 @@ COPY adapters ./adapters
 COPY connector-sdk ./connector-sdk
 COPY web ./web
 COPY scripts/check-built-web-runtime-config-order.mjs ./scripts/check-built-web-runtime-config-order.mjs
-RUN npm run build
+COPY scripts/write-web-build-manifest.mjs ./scripts/write-web-build-manifest.mjs
+ARG COMPANY_OS_SOURCE_REVISION=local
+RUN npm run build && node scripts/write-web-build-manifest.mjs "${COMPANY_OS_SOURCE_REVISION}"
 
 FROM node:22.12.0-bookworm-slim
+ARG COMPANY_OS_SOURCE_REVISION=local
+LABEL org.opencontainers.image.revision="${COMPANY_OS_SOURCE_REVISION}"
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build --chown=node:node /app/web/dist ./web/dist

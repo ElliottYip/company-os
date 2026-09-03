@@ -22,6 +22,8 @@
 - Tab and Shift+Tab remain trapped by native `dialog` behavior.
 - Escape closes non-destructive overlays. A submitting or authoritative pending state does not close.
 - Closing returns focus to the exact trigger when it still exists; otherwise to the page heading.
+- Page-level Task detail moves focus to its heading after navigation and returns focus to the exact originating task row when the user returns to the list.
+- Cross-page contextual inspection waits for the destination page to render before opening the selected drawer; it never opens a generic first record as a timing fallback.
 - Backdrop click closes read-only drawers and ordinary create/edit modals, but managed busy state blocks dismissal. Dangerous confirmation requires Cancel, close or Escape before submission.
 - Drawers and modals use internal scrolling; the shell and background do not jump.
 - Modal placement never depends on the navigation rail or page gutters. It uses `50vw / 50dvh` as one stable reference frame, so an open modal does not jump when the shell crosses the 860px rail breakpoint.

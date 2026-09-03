@@ -549,6 +549,9 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page.getByRole("button", { name: "Complete", exact: true }).click();
   await page.getByRole("button", { name: "Archive", exact: true }).click();
+  const archiveProjectDialog = page.getByRole("dialog", { name: "Archive this project?" });
+  await expect(archiveProjectDialog.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
+  await archiveProjectDialog.getByRole("button", { name: "Archive project", exact: true }).click();
   await expect(page.getByText("ARCHIVED", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Tasks", exact: true }).first().click();
   await page.getByRole("button", { name: "New Task", exact: true }).click();
@@ -825,7 +828,9 @@ test("formal running Work requests cancellation and waits for Connector confirma
   attemptStatus = "OUTCOME_UNKNOWN";
   await page.reload();
   await page.getByRole("button", { name: "Tasks", exact: true }).first().click();
-  await page.getByRole("listitem").filter({ hasText: "Review customer evidence" }).click();
+  const workRow = page.getByRole("listitem").filter({ hasText: "Review customer evidence" });
+  await workRow.click();
+  await expect(page.getByRole("heading", { name: "Review customer evidence", level: 2 })).toBeFocused();
   await expect(page.getByText("The external outcome is unknown. Resolve it only with admitted evidence.")).toBeVisible();
   await page.getByLabel("Resolution").selectOption("SAFE_TO_RETRY");
   await page.getByLabel("Admitted evidence ID").fill("evidence-one");
@@ -833,12 +838,16 @@ test("formal running Work requests cancellation and waits for Connector confirma
   await page.getByRole("button", { name: "Retry with current authority" }).click();
   await expect(page.getByRole("button", { name: "Request cancellation" })).toBeVisible();
   await page.locator("[data-close-work-detail]").click();
+  await expect(workRow).toBeFocused();
   await page.getByRole("button", { name: "New Task", exact: true }).click();
   await expect(page.getByLabel("Task title")).toBeVisible();
   await page.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("button", { name: "Evidence", exact: true }).first().click();
   await expect(page.getByRole("heading", { name: "EVIDENCE" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /evidence-one/ })).toContainText(`sha256:${"e".repeat(64)}`);
+  const evidenceRow = page.getByRole("button", { name: /evidence-one/ });
+  await expect(evidenceRow).toContainText(`sha256:${"e".repeat(64)}`);
+  await expect(evidenceRow.locator("code")).toHaveText(`sha256:${"e".repeat(64)}`);
+  await expect(evidenceRow.locator("time")).toHaveText("2026-08-25T00:03:00.000Z");
 });
 
 test("the deterministic Demo reaches an exact human approval and completed evidence chain", async ({ page }) => {
