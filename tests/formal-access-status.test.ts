@@ -70,3 +70,26 @@ test("configured OIDC fails closed when its durable session runtime is unavailab
   assert.deepEqual(status.blockers, [{ code: "FORMAL_IDENTITY_RUNTIME_UNAVAILABLE", parameters: {} }]);
   assert.equal(status.capabilities.companyData, false);
 });
+
+test("configured Feishu OAuth exposes the exact provider without requiring OIDC discovery", () => {
+  const status = getFormalAccessStatus({
+    deploymentProfile: "self-hosted",
+    configuration: {
+      provider: "FEISHU",
+      publicBaseUrl: "https://company.example.test",
+      feishuAppId: "cli_company_os_fixture",
+      feishuAppSecret: fixtureMaterial("feishu-app"),
+      feishuTenantKey: "tenant-company-fixture",
+      redirectUri: "https://company.example.test/api/auth/oauth2/callback/feishu",
+      sessionSigningKey: fixtureMaterial("session-signing", 40),
+      databaseUrl: "postgres://fixture.invalid/company_os",
+    },
+  });
+
+  assert.equal(status.entryState, "AUTHENTICATION_REQUIRED");
+  assert.deepEqual(status.identityProvider, {
+    protocol: "OAUTH2",
+    providerId: "feishu",
+    configured: true,
+  });
+});

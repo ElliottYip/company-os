@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   buildCompanyAuthOptions,
+  buildConfiguredCompanyAuthOptions,
+  buildCompanyFeishuAuthOptions,
   deriveCompanyAuthCookiePrefix,
   deriveCompanyAuthTrustedOrigins,
+  parseCompanyIdentityProvider,
   parseTrustedProxyCidrs,
 } from "../adapters/identity/better-auth-options.ts";
 
@@ -45,6 +48,13 @@ test("Better Auth follows the Paperclip session baseline and only enables enterp
   assert.equal(options.plugins?.[0]?.id, "generic-oauth");
 });
 
+test("formal identity provider selection is explicit and fail-closed", () => {
+  assert.equal(parseCompanyIdentityProvider(undefined), "OIDC");
+  assert.equal(parseCompanyIdentityProvider("OIDC"), "OIDC");
+  assert.equal(parseCompanyIdentityProvider("FEISHU"), "FEISHU");
+  assert.throws(() => parseCompanyIdentityProvider("oauth"), /IDENTITY_PROVIDER_INVALID/);
+});
+
 test("trusted proxy CIDRs are explicit and invalid network boundaries fail closed", () => {
   assert.deepEqual(parseTrustedProxyCidrs("192.0.2.10/32, 2001:db8::/48"), [
     "192.0.2.10/32", "2001:db8::/48",
@@ -80,4 +90,30 @@ test("OIDC configuration rejects incomplete or unsafe provider boundaries", () =
     redirectUri: "https://company.example.test/api/auth/oauth2/callback/wrong-provider",
   }, {} as never), /OIDC_REDIRECT_URI_MISMATCH/);
   assert.throws(() => buildCompanyAuthOptions({ ...configuration, sessionSecret: "short" }, {} as never), /SESSION_SIGNING_KEY_TOO_SHORT/);
+});
+
+test("Feishu OAuth reuses the hardened durable session boundary", () => {
+  const feishuConfiguration = {
+    provider: "FEISHU" as const,
+    baseUrl: configuration.baseUrl,
+    redirectUri: "https://company.example.test/api/auth/oauth2/callback/feishu",
+    appId: "cli_company_os_fixture",
+    appSecret: fixtureMaterial("feishu-app"),
+    expectedTenantKey: "tenant-company-fixture",
+    sessionSecret: configuration.sessionSecret,
+    instanceId: "feishu-pilot",
+  };
+  const options = buildCompanyFeishuAuthOptions(feishuConfiguration, { adapter: "durable-adapter" } as never);
+
+  assert.deepEqual(options.emailAndPassword, { enabled: false });
+  assert.equal(options.account?.encryptOAuthTokens, true);
+  assert.equal(options.account?.storeStateStrategy, "database");
+  assert.deepEqual(options.user?.additionalFields?.assertedEmailHmac, {
+    type: "string", required: false, input: true, returned: false, fieldName: "assertedEmailHmac",
+  });
+  assert.deepEqual(options.rateLimit, { enabled: true, storage: "database" });
+  assert.equal(options.advanced?.cookiePrefix, "company-os-feishu-pilot");
+  assert.equal(options.plugins?.[0]?.id, "generic-oauth");
+  assert.equal(buildConfiguredCompanyAuthOptions(feishuConfiguration,
+    { adapter: "durable-adapter" } as never).plugins?.[0]?.id, "generic-oauth");
 });

@@ -90,6 +90,7 @@ export const humanInvites = pgTable("company_os_human_invite", {
   companyId: text("company_id").notNull().references(() => companies.id, { onDelete: "cascade" }),
   tokenHash: text("token_hash").notNull(),
   expectedEmail: text("expected_email").notNull(),
+  expectedEmailHmac: text("expected_email_hmac"),
   departmentId: text("department_id").notNull(),
   title: text("title").notNull(),
   membershipRole: text("membership_role").notNull(),

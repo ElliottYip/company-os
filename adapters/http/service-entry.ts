@@ -7,8 +7,18 @@ import { getFormalAccessStatus } from "../../application/get-formal-access-statu
 import {
   createCompanyAuth,
   createCompanyAuthHandler,
+  createCompanyAuthWebHandler,
   resolveCompanyAuthSession,
 } from "../identity/better-auth-instance.ts";
+import {
+  createTenantAuthRuntimeResolver,
+  tenantOAuthCallbackUri,
+} from "../identity/tenant-auth-runtime-resolver.ts";
+import { createTenantAuthNodeHandler } from "../identity/tenant-auth-router.ts";
+import { createTenantSecretEnvelope } from "../security/tenant-secret-envelope.ts";
+import { createTenantSignupInviteGate } from "../security/tenant-signup-invite-gate.ts";
+import { PostgresTenantAuthBindingSource } from
+  "../persistence/postgres/postgres-tenant-auth-binding-source.ts";
 import { createCompanyDatabase } from "../persistence/postgres/company-database.ts";
 import { createCompanyAccessDirectory } from "../persistence/postgres/company-access-directory.ts";
 import {
@@ -16,6 +26,12 @@ import {
   nextPostgresRecordId,
 } from "../persistence/postgres/postgres-company-access-store.ts";
 import { CompanyBootstrapService } from "../../application/company-bootstrap.ts";
+import { CompleteTenantSaasRegistration } from
+  "../../application/complete-tenant-saas-registration.ts";
+import { BeginTenantSaasRegistration } from
+  "../../application/begin-tenant-saas-registration.ts";
+import { generateIndependentDeploymentHandoff } from
+  "../../application/generate-independent-deployment-handoff.ts";
 import { RestoreCompanyFromBackup } from "../../application/restore-company-from-backup.ts";
 import { CompanyRegistry } from "../../application/company-registry.ts";
 import { SetupInitialOrganization } from "../../application/setup-initial-organization.ts";
@@ -43,6 +59,14 @@ import { PostgresEventStore } from "../persistence/postgres/postgres-event-store
 import { createPostgresHumanInviteStore } from "../persistence/postgres/postgres-human-invite-store.ts";
 import { PostgresCompanyRestoreStore } from "../persistence/postgres/postgres-company-restore-store.ts";
 import { PostgresInstanceMaintenanceStore } from "../persistence/postgres/postgres-instance-maintenance-store.ts";
+import { PostgresTenantSaasCompletionStore } from
+  "../persistence/postgres/postgres-tenant-saas-completion-store.ts";
+import { PostgresTenantSaasProvisioningStore } from
+  "../persistence/postgres/postgres-tenant-saas-provisioning-store.ts";
+import { PostgresTenantInviteIdentity } from
+  "../persistence/postgres/postgres-tenant-invite-identity.ts";
+import { createFeishuIdentityBindingVerifier } from
+  "../identity/feishu-identity-binding-verifier.ts";
 import { EventBackedOrganizationPrincipalStore } from "../storage/event-backed-organization-principal-store.ts";
 import { EventBackedResponsibilityContractStore } from "../storage/event-backed-responsibility-contract-store.ts";
 import { EventBackedApprovalStore } from "../storage/event-backed-approval-store.ts";
@@ -91,6 +115,8 @@ import {
 import { createCompanyOsHttpService } from "./company-os-http-service.ts";
 import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
 import { PublicDemoRequestLimiter } from "./public-demo-request-limiter.ts";
+import { TenantSignupRequestLimiter } from "./tenant-signup-request-limiter.ts";
+import { TrustedClientAddressResolver } from "./trusted-client-address.ts";
 import {
   loadFormalSecretBroker,
   parseFormalSecretBrokerPackage,
@@ -101,7 +127,10 @@ import {
 } from "../models/load-formal-model-providers.ts";
 import { Sha256ModelRuntimeSecurity } from "../models/sha256-model-runtime-security.ts";
 import { Sha256ContentDigest } from "../security/sha256-content-digest.ts";
-import { parseTrustedProxyCidrs } from "../identity/better-auth-options.ts";
+import {
+  parseCompanyIdentityProvider,
+  parseTrustedProxyCidrs,
+} from "../identity/better-auth-options.ts";
 import { parseAllowedWebOrigins } from "./allowed-web-origins.ts";
 import { loadFormalDataConnectors, parseFormalDataConnectorPackages } from "../data/load-formal-data-connectors.ts";
 import { operationalLogLine } from "./structured-operational-log.ts";
@@ -120,6 +149,7 @@ import {
   loadFormalFederatedSources,
   parseFormalFederatedSourcePackages,
 } from "../connectors/load-formal-federated-sources.ts";
+import { dropRuntimePrivileges } from "../security/runtime-privilege-drop.ts";
 
 function deploymentProfile(value: string | undefined): "managed-cloud" | "self-hosted" {
   if (value === undefined || value === "self-hosted") return "self-hosted";
@@ -173,6 +203,48 @@ const publicDemoEnabled = enabled(
   process.env.COMPANY_OS_PUBLIC_DEMO_ENABLED,
   "COMPANY_OS_PUBLIC_DEMO_ENABLED",
 );
+const multiTenantSaasEnabled = enabled(
+  process.env.COMPANY_OS_MULTI_TENANT_SAAS_ENABLED,
+  "COMPANY_OS_MULTI_TENANT_SAAS_ENABLED",
+);
+const unrestrictedTenantSignup = enabled(
+  process.env.COMPANY_OS_TENANT_PUBLIC_SIGNUP_UNRESTRICTED,
+  "COMPANY_OS_TENANT_PUBLIC_SIGNUP_UNRESTRICTED",
+);
+const tenantSignupAllowedAppIds = new Set(
+  String(process.env.COMPANY_OS_TENANT_SIGNUP_APP_ALLOWLIST ?? "")
+    .split(",").map((value) => value.trim()).filter(Boolean),
+);
+const tenantSignupInviteKeyMaterial = await readSecretFileEnvironment(
+  "COMPANY_OS_TENANT_SIGNUP_INVITE_HMAC_KEY",
+);
+const tenantSignupInviteDigestMaterial = await readSecretFileEnvironment(
+  "COMPANY_OS_TENANT_SIGNUP_INVITE_DIGESTS",
+);
+if ((tenantSignupInviteKeyMaterial === undefined) !== (tenantSignupInviteDigestMaterial === undefined)) {
+  throw new Error("TENANT_SIGNUP_INVITE_CONFIGURATION_INCOMPLETE");
+}
+const tenantSignupInviteGate = tenantSignupInviteKeyMaterial && tenantSignupInviteDigestMaterial
+  ? createTenantSignupInviteGate({
+      key: /^[A-Za-z0-9_-]{43}$/.test(tenantSignupInviteKeyMaterial)
+        ? Buffer.from(tenantSignupInviteKeyMaterial, "base64url")
+        : Buffer.alloc(0),
+      allowedDigests: new Set(tenantSignupInviteDigestMaterial
+        .split(/[\s,]+/).map((value) => value.trim()).filter(Boolean)),
+    })
+  : null;
+if ([...tenantSignupAllowedAppIds].some((value) => !/^[A-Za-z0-9_-]{3,255}$/.test(value))) {
+  throw new Error("TENANT_SIGNUP_APP_ALLOWLIST_INVALID");
+}
+if (multiTenantSaasEnabled && !unrestrictedTenantSignup && tenantSignupAllowedAppIds.size === 0 &&
+    !tenantSignupInviteGate) {
+  throw new Error("TENANT_SIGNUP_ADMISSION_REQUIRED");
+}
+const tenantSignupLimiter = multiTenantSaasEnabled ? new TenantSignupRequestLimiter({
+  maximumRequestsPerWindow: boundedInteger(process.env.COMPANY_OS_TENANT_SIGNUPS_PER_MINUTE, {
+    name: "COMPANY_OS_TENANT_SIGNUPS_PER_MINUTE", defaultValue: 20, minimum: 1, maximum: 1_000,
+  }),
+}) : null;
 const demoMaximumSessions = boundedInteger(process.env.COMPANY_OS_DEMO_MAX_SESSIONS, {
   name: "COMPANY_OS_DEMO_MAX_SESSIONS", defaultValue: 500, minimum: 1, maximum: 10_000,
 });
@@ -198,6 +270,7 @@ const host = process.env.COMPANY_OS_HOST?.trim() || "127.0.0.1";
 const listenPort = port(process.env.COMPANY_OS_PORT);
 const deployedReleaseId = releaseId(process.env.COMPANY_OS_RELEASE_ID);
 const trustedProxyCidrs = parseTrustedProxyCidrs(process.env.COMPANY_OS_TRUSTED_PROXY_CIDRS);
+const tenantSignupClientAddress = new TrustedClientAddressResolver(trustedProxyCidrs);
 const configuredRetentionPolicyId = resolveRetentionPolicyId(process.env.COMPANY_OS_RETENTION_POLICY_ID);
 const configuredAccountabilityExportPolicyId = resolveAccountabilityExportPolicyId(
   process.env.COMPANY_OS_ACCOUNTABILITY_EXPORT_POLICY_ID,
@@ -218,13 +291,24 @@ const publicDemoRequestLimiter = publicDemoEnabled ? new PublicDemoRequestLimite
   maximumTrackedSessions: demoMaximumSessions,
   windowMilliseconds: 60_000,
 }) : undefined;
+const identityProvider = parseCompanyIdentityProvider(process.env.COMPANY_OS_IDENTITY_PROVIDER);
 const formalConfiguration = {
+  provider: identityProvider,
   publicBaseUrl: process.env.COMPANY_OS_PUBLIC_URL,
   issuer: process.env.COMPANY_OS_OIDC_ISSUER,
   discoveryUrl: process.env.COMPANY_OS_OIDC_DISCOVERY_URL,
   clientId: process.env.COMPANY_OS_OIDC_CLIENT_ID,
-  clientSecret: await readSecretFileEnvironment("COMPANY_OS_OIDC_CLIENT_SECRET"),
-  redirectUri: process.env.COMPANY_OS_OIDC_REDIRECT_URI,
+  clientSecret: identityProvider === "OIDC"
+    ? await readSecretFileEnvironment("COMPANY_OS_OIDC_CLIENT_SECRET")
+    : undefined,
+  redirectUri: identityProvider === "FEISHU"
+    ? process.env.COMPANY_OS_FEISHU_REDIRECT_URI
+    : process.env.COMPANY_OS_OIDC_REDIRECT_URI,
+  feishuAppId: process.env.COMPANY_OS_FEISHU_APP_ID,
+  feishuAppSecret: identityProvider === "FEISHU"
+    ? await readSecretFileEnvironment("COMPANY_OS_FEISHU_APP_SECRET")
+    : undefined,
+  feishuTenantKey: process.env.COMPANY_OS_FEISHU_TENANT_KEY,
   sessionSigningKey: await readSecretFileEnvironment("COMPANY_OS_SESSION_SIGNING_KEY"),
   databaseUrl: await readSecretFileEnvironment("COMPANY_OS_DATABASE_URL"),
 };
@@ -239,6 +323,9 @@ validateServiceRuntimeBoundary({
     formalConfiguration.redirectUri,
     formalConfiguration.sessionSigningKey,
     formalConfiguration.databaseUrl,
+    formalConfiguration.feishuAppId,
+    formalConfiguration.feishuAppSecret,
+    formalConfiguration.feishuTenantKey,
   ].some((value) => Boolean(value?.trim())),
   connectorConfigurationPresent: [
     process.env.COMPANY_OS_CONNECTOR_PACKAGES,
@@ -252,7 +339,16 @@ const allowedWebOrigins = parseAllowedWebOrigins(
   process.env.COMPANY_OS_WEB_ORIGINS,
   formalConfiguration.publicBaseUrl,
 );
-const isFormalConfigured = Object.values(formalConfiguration).every((value) => value?.trim());
+const isFormalConfigured = identityProvider === "FEISHU"
+  ? [formalConfiguration.publicBaseUrl, formalConfiguration.feishuAppId,
+      formalConfiguration.feishuAppSecret, formalConfiguration.feishuTenantKey,
+      formalConfiguration.redirectUri, formalConfiguration.sessionSigningKey,
+      formalConfiguration.databaseUrl].every((value) => value?.trim())
+  : [formalConfiguration.publicBaseUrl, formalConfiguration.issuer,
+      formalConfiguration.discoveryUrl, formalConfiguration.clientId,
+      formalConfiguration.clientSecret, formalConfiguration.redirectUri,
+      formalConfiguration.sessionSigningKey, formalConfiguration.databaseUrl]
+    .every((value) => value?.trim());
 const federatedSourcePackages = parseFormalFederatedSourcePackages(
   process.env.COMPANY_OS_FEDERATED_SOURCE_PACKAGES,
 );
@@ -264,7 +360,19 @@ const database = isFormalConfigured
   ? createCompanyDatabase(formalConfiguration.databaseUrl as string)
   : null;
 const auth = database
-  ? createCompanyAuth(database.db, {
+  ? createCompanyAuth(database.db, identityProvider === "FEISHU" ? {
+      provider: "FEISHU",
+      baseUrl: formalConfiguration.publicBaseUrl as string,
+      redirectUri: formalConfiguration.redirectUri as string,
+      appId: formalConfiguration.feishuAppId as string,
+      appSecret: formalConfiguration.feishuAppSecret as string,
+      expectedTenantKey: formalConfiguration.feishuTenantKey as string,
+      sessionSecret: formalConfiguration.sessionSigningKey as string,
+      instanceId: process.env.COMPANY_OS_INSTANCE_ID,
+      trustedProxyCidrs,
+      trustedWebOrigins: allowedWebOrigins,
+    } : {
+      provider: "OIDC",
       baseUrl: formalConfiguration.publicBaseUrl as string,
       redirectUri: formalConfiguration.redirectUri as string,
       issuer: formalConfiguration.issuer as string,
@@ -277,11 +385,63 @@ const auth = database
       trustedWebOrigins: allowedWebOrigins,
     })
   : null;
+function tenantMasterKey(encodedSecret: string | undefined): { readonly version: string; readonly key: Buffer } {
+  const version = process.env.COMPANY_OS_TENANT_SECRET_KEY_VERSION?.trim() ?? "";
+  const encoded = encodedSecret?.trim() ?? "";
+  if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(version) || !/^[A-Za-z0-9_-]{43}$/.test(encoded)) {
+    throw new Error("TENANT_SECRET_MASTER_KEY_CONFIGURATION_INVALID");
+  }
+  const key = Buffer.from(encoded, "base64url");
+  if (key.length !== 32 || key.toString("base64url") !== encoded) {
+    throw new Error("TENANT_SECRET_MASTER_KEY_CONFIGURATION_INVALID");
+  }
+  return { version, key };
+}
+const tenantMasterKeySecret = multiTenantSaasEnabled
+  ? await readSecretFileEnvironment("COMPANY_OS_TENANT_SECRET_MASTER_KEY")
+  : undefined;
+const tenantMasterKeyMaterial = multiTenantSaasEnabled
+  ? tenantMasterKey(tenantMasterKeySecret)
+  : null;
+const tenantSecretEnvelope = multiTenantSaasEnabled ? (() => {
+  return createTenantSecretEnvelope({
+    activeKeyVersion: tenantMasterKeyMaterial!.version,
+    keys: new Map([[tenantMasterKeyMaterial!.version, tenantMasterKeyMaterial!.key]]),
+  });
+})() : null;
+const tenantAuthHandler = multiTenantSaasEnabled ? (() => {
+  if (!database || !auth || !formalConfiguration.publicBaseUrl ||
+      !formalConfiguration.sessionSigningKey) throw new Error("TENANT_AUTH_FORMAL_RUNTIME_REQUIRED");
+  const webBaseUrl = process.env.COMPANY_OS_TENANT_WEB_BASE_URL?.trim() ?? "";
+  if (!webBaseUrl) throw new Error("TENANT_WEB_BASE_URL_REQUIRED");
+  const resolver = createTenantAuthRuntimeResolver({
+    authBaseUrl: formalConfiguration.publicBaseUrl,
+    sessionSecret: formalConfiguration.sessionSigningKey,
+    instanceId: process.env.COMPANY_OS_INSTANCE_ID,
+    trustedProxyCidrs,
+    trustedWebOrigins: allowedWebOrigins,
+    source: new PostgresTenantAuthBindingSource(database.db),
+    envelope: tenantSecretEnvelope!,
+    assertedEmailHmacKey: tenantMasterKeyMaterial!.key,
+    createHandler(configuration) {
+      return createCompanyAuthWebHandler(createCompanyAuth(database.db, configuration));
+    },
+  });
+  return createTenantAuthNodeHandler({
+    authBaseUrl: formalConfiguration.publicBaseUrl,
+    webBaseUrl,
+    ...resolver,
+    legacyHandle: async () => new Response(null, { status: 404 }),
+  });
+})() : null;
 const accessDirectory = database ? createCompanyAccessDirectory(database.db) : null;
 const companyAccessStore = database ? createPostgresCompanyAccessStore(database.db) : null;
 const companyRestoreStore = database ? new PostgresCompanyRestoreStore(database.db) : null;
 const formalEvents = database ? new PostgresEventStore(database.db) : null;
 const humanInviteStore = database ? createPostgresHumanInviteStore(database.db) : null;
+const tenantInviteIdentity = database && tenantMasterKeyMaterial
+  ? new PostgresTenantInviteIdentity(database.db, tenantMasterKeyMaterial.key)
+  : null;
 const instanceMaintenance = database ? new PostgresInstanceMaintenanceStore(database.db) : null;
 const formalExecutionPorts = await loadFormalConnectors(
   parseFormalConnectorPackages(process.env.COMPANY_OS_CONNECTOR_PACKAGES),
@@ -295,6 +455,7 @@ const formalModelProviders = await loadFormalModelProviders(
 const formalDataConnectors = await loadFormalDataConnectors(
   parseFormalDataConnectorPackages(process.env.COMPANY_OS_DATA_CONNECTOR_PACKAGES),
 );
+dropRuntimePrivileges();
 
 function secretManagementBroker() {
   if (!formalSecretBroker || typeof formalSecretBroker.beginReferenceManagement !== "function" ||
@@ -333,6 +494,26 @@ const companyBootstrap = companyAccessStore ? new CompanyBootstrapService({
   store: companyAccessStore,
   nextId: nextPostgresRecordId,
 }) : null;
+const tenantSaasCompletion = multiTenantSaasEnabled && database
+  ? new CompleteTenantSaasRegistration({
+      store: new PostgresTenantSaasCompletionStore(database.db),
+      nextId: nextPostgresRecordId,
+      now: () => new Date().toISOString(),
+    })
+  : null;
+const tenantSaasRegistration = multiTenantSaasEnabled && database && tenantSecretEnvelope
+  ? new BeginTenantSaasRegistration({
+      verify: createFeishuIdentityBindingVerifier(),
+      store: new PostgresTenantSaasProvisioningStore(database.db),
+      envelope: tenantSecretEnvelope,
+      nextId: nextPostgresRecordId,
+      now: () => new Date().toISOString(),
+      reservedExternalTenantDigests: identityProvider === "FEISHU" && formalConfiguration.feishuTenantKey
+        ? new Set([`sha256:${createHash("sha256")
+          .update(formalConfiguration.feishuTenantKey).digest("hex")}`])
+        : new Set(),
+    })
+  : null;
 async function authenticatedHuman(request: import("node:http").IncomingMessage) {
   if (!auth) throw new Error("FORMAL_IDENTITY_REQUIRED");
   const session = await resolveCompanyAuthSession(auth, request);
@@ -546,6 +727,65 @@ const server = createCompanyOsHttpService({
   ...(auth ? { authHandler: createCompanyAuthHandler(auth, {
     trustForwardedFor: trustedProxyCidrs.length > 0,
   }) } : {}),
+  ...(tenantAuthHandler ? { tenantAuthHandler } : {}),
+  ...(tenantSaasCompletion ? {
+    tenantOnboarding: {
+      async begin(request: import("node:http").IncomingMessage, input: {
+        readonly slug: string;
+        readonly companyName: string;
+        readonly appId: string;
+        readonly identityProvider: "FEISHU" | "OIDC" | "CUSTOM_ADAPTER";
+        readonly appSecret: string;
+        readonly inviteCode?: string;
+      }) {
+        if (!tenantSaasRegistration || !tenantSignupLimiter) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        tenantSignupLimiter.consume(tenantSignupClientAddress.resolve(request));
+        let signupInviteDigest: `hmac-sha256:${string}` | undefined;
+        if (!unrestrictedTenantSignup && !tenantSignupAllowedAppIds.has(input.appId.trim())) {
+          if (!tenantSignupInviteGate || !input.inviteCode) throw new Error("TENANT_SIGNUP_NOT_ALLOWED");
+          signupInviteDigest = tenantSignupInviteGate.verify(input.inviteCode);
+        }
+        const registration = await tenantSaasRegistration.begin({
+          slug: input.slug,
+          companyName: input.companyName,
+          appId: input.appId,
+          appSecret: input.appSecret,
+          ...(signupInviteDigest ? { signupInviteDigest } : {}),
+        });
+        return {
+          ...registration,
+          callbackUri: tenantOAuthCallbackUri(formalConfiguration.publicBaseUrl!, registration.providerId),
+        };
+      },
+      async independentHandoff(input: {
+        readonly slug: string;
+        readonly companyName: string;
+        readonly domain: string;
+        readonly appId: string;
+      }) {
+        if (!deployedReleaseId) throw new Error("RELEASE_ID_REQUIRED");
+        return generateIndependentDeploymentHandoff({ ...input, releaseId: deployedReleaseId });
+      },
+      async complete(request: import("node:http").IncomingMessage, registrationId: string,
+        input: { readonly locale?: string }) {
+        const actor = await authenticatedHuman(request);
+        return tenantSaasCompletion.complete({
+          registrationId,
+          verifiedUserId: actor.userId,
+          ...(input.locale ? { locale: input.locale } : {}),
+        });
+      },
+      async completeBySlug(request: import("node:http").IncomingMessage, slug: string,
+        input: { readonly locale?: string }) {
+        const actor = await authenticatedHuman(request);
+        return tenantSaasCompletion.completeBySlug({
+          slug,
+          verifiedUserId: actor.userId,
+          ...(input.locale ? { locale: input.locale } : {}),
+        });
+      },
+    },
+  } : {}),
   operationalReadiness: {
     async getStatus() {
       return getOperationalReadiness({
@@ -961,7 +1201,9 @@ const server = createCompanyOsHttpService({
     formalDirectory: {
       async listCompanies(request) {
         const actor = await authenticatedHuman(request);
-        return accessDirectory.listForUser(actor.userId);
+        return multiTenantSaasEnabled
+          ? accessDirectory.listRoutableForUser(actor.userId)
+          : accessDirectory.listForUser(actor.userId);
       },
       async claimFirstAdmin(request) {
         const result = await companyBootstrap.claimFirstInstanceAdmin(await authenticatedHuman(request));
@@ -1063,6 +1305,10 @@ const server = createCompanyOsHttpService({
           nextId: nextPostgresRecordId,
           issueToken: issueHumanInviteToken,
           hashToken: hashHumanInviteToken,
+          ...(tenantInviteIdentity ? {
+            assertedEmailHmac: (targetCompanyId: string, email: string) =>
+              tenantInviteIdentity.expectedEmailHmac(targetCompanyId, email),
+          } : {}),
         }).execute({ companyId, ...command });
         return {
           inviteId: result.invite.id,
@@ -1113,7 +1359,14 @@ const server = createCompanyOsHttpService({
           hashToken: hashHumanInviteToken,
         }).execute({
           token,
-          user: { id: actor.userId, name: actor.name, email: actor.email },
+          user: {
+            id: actor.userId,
+            name: actor.name,
+            email: actor.email,
+            ...(tenantInviteIdentity ? {
+              assertedEmailHmac: await tenantInviteIdentity.assertedEmailHmac(actor.userId),
+            } : {}),
+          },
         });
         return {
           accepted: true,

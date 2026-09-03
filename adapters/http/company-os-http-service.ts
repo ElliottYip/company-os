@@ -72,6 +72,27 @@ export interface CompanyOsHttpServiceOptions {
     updateHumanMember?(request: IncomingMessage, companyId: string, userId: string, input: unknown): Promise<unknown>;
   };
   readonly authHandler?: (request: IncomingMessage, response: ServerResponse) => Promise<void>;
+  readonly tenantAuthHandler?: (request: IncomingMessage, response: ServerResponse) => Promise<void>;
+  readonly tenantOnboarding?: {
+    begin(request: IncomingMessage, input: {
+      readonly slug: string;
+      readonly companyName: string;
+      readonly appId: string;
+      readonly appSecret: string;
+      readonly inviteCode?: string;
+    }): Promise<unknown>;
+    independentHandoff(input: {
+      readonly slug: string;
+      readonly companyName: string;
+      readonly domain: string;
+      readonly appId: string;
+      readonly identityProvider: "FEISHU" | "OIDC" | "CUSTOM_ADAPTER";
+    }): Promise<unknown>;
+    complete(request: IncomingMessage, registrationId: string,
+      input: { readonly locale?: string }): Promise<unknown>;
+    completeBySlug(request: IncomingMessage, slug: string,
+      input: { readonly locale?: string }): Promise<unknown>;
+  };
   readonly formalApi?: {
     getAgentBoss(request: IncomingMessage, companyId: string): Promise<unknown>;
     getAdministration?(request: IncomingMessage, companyId: string): Promise<unknown>;
@@ -340,6 +361,56 @@ function optionalId(value: unknown): string | null | undefined {
 
 function requiredId(value: unknown): string | undefined {
   return typeof value === "string" && PORTABLE_ID.test(value) ? value : undefined;
+}
+
+function tenantCompletionCommand(value: unknown): { readonly locale?: string } | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (Object.keys(input).some((key) => key !== "locale")) return null;
+  if (input.locale === undefined) return {};
+  return typeof input.locale === "string" && /^[a-z]{2,3}(?:-[A-Z]{2})?$/.test(input.locale)
+    ? { locale: input.locale }
+    : null;
+}
+
+function tenantRegistrationCommand(value: unknown): {
+  readonly slug: string;
+  readonly companyName: string;
+  readonly appId: string;
+  readonly appSecret: string;
+  readonly inviteCode?: string;
+} | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (Object.keys(input).some((key) =>
+    !["slug", "companyName", "appId", "appSecret", "inviteCode"].includes(key)) ||
+      typeof input.slug !== "string" || typeof input.companyName !== "string" ||
+      typeof input.appId !== "string" || typeof input.appSecret !== "string" ||
+      (input.inviteCode !== undefined && typeof input.inviteCode !== "string")) return null;
+  return {
+    slug: input.slug,
+    companyName: input.companyName,
+    appId: input.appId,
+    appSecret: input.appSecret,
+    ...(input.inviteCode === undefined ? {} : { inviteCode: input.inviteCode }),
+  };
+}
+
+function independentHandoffCommand(value: unknown): {
+  readonly slug: string;
+  readonly companyName: string;
+  readonly domain: string;
+  readonly appId: string;
+  readonly identityProvider: "FEISHU" | "OIDC" | "CUSTOM_ADAPTER";
+} | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (Object.keys(input).some((key) => !["slug", "companyName", "domain", "appId", "identityProvider"].includes(key)) ||
+      typeof input.slug !== "string" || typeof input.companyName !== "string" ||
+      typeof input.domain !== "string" || typeof input.appId !== "string" ||
+      !["FEISHU", "OIDC", "CUSTOM_ADAPTER"].includes(String(input.identityProvider))) return null;
+  return { slug: input.slug, companyName: input.companyName, domain: input.domain, appId: input.appId,
+    identityProvider: input.identityProvider as "FEISHU" | "OIDC" | "CUSTOM_ADAPTER" };
 }
 
 function accountabilityExportCommand(value: unknown): {
@@ -956,6 +1027,16 @@ function formalError(error: unknown): { readonly status: number; readonly code: 
     return { status: 409, code: "RESPONSIBILITY_AUTONOMY_COMMAND_REQUIRED" };
   }
   if (code === "FORMAL_IDENTITY_REQUIRED") return { status: 401, code };
+  if (code === "TENANT_SIGNUP_RATE_LIMITED") return { status: 429, code };
+  if (code === "TENANT_SIGNUP_NOT_ALLOWED") return { status: 403, code };
+  if (["IDENTITY_BINDING_VERIFICATION_FAILED", "IDENTITY_BINDING_CREDENTIALS_INVALID",
+    "IDENTITY_PROVIDER_SECRET_INVALID"].includes(code)) {
+    return { status: 422, code: "IDENTITY_BINDING_VERIFICATION_FAILED" };
+  }
+  if (["TENANT_REGISTRATION_CONFLICT", "TENANT_SLUG_TAKEN", "TENANT_IDENTITY_ALREADY_BOUND",
+    "TENANT_REGISTRATION_ALREADY_COMPLETED"].includes(code)) return { status: 409, code };
+  if (code === "TENANT_REGISTRATION_NOT_FOUND") return { status: 404, code };
+  if (code === "TENANT_MEMBERSHIP_REQUIRED") return { status: 403, code };
   if (code === "FIRST_ADMIN_ALREADY_CLAIMED") return { status: 409, code };
   if (code === "INSTANCE_ADMIN_REQUIRED") return { status: 403, code };
   if (code === "INSTANCE_ACCEPTANCE_WORK_NOT_AUTHORIZED") return { status: 403, code };
@@ -1165,6 +1246,15 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         res.end();
         return;
       }
+      if (/^\/t\/[^/]+\/sign-in$/.test(path) ||
+          /^\/api\/auth\/oauth2\/callback\/feishu-/.test(path)) {
+        if (!options.tenantAuthHandler) {
+          sendStructuredError(res, 404, "TENANT_AUTH_ROUTE_NOT_FOUND");
+          return;
+        }
+        await options.tenantAuthHandler(req, res);
+        return;
+      }
       if (path.startsWith("/api/auth/")) {
         if (!options.authHandler) throw new Error("FORMAL_AUTH_UNAVAILABLE");
         await options.authHandler(req, res);
@@ -1292,6 +1382,45 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
         if (!options.formalDirectory?.claimFirstAdmin) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
         sendJson(res, 200, await options.formalDirectory.claimFirstAdmin(req));
+        return;
+      }
+      if (method === "POST" && path === "/api/v1/tenant-registrations") {
+        if (!req.headers.origin || !isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.tenantOnboarding) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const command = tenantRegistrationCommand(await readJson(req, Math.min(maxBodyBytes, 8 * 1_024)));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 201, await options.tenantOnboarding.begin(req, command));
+        return;
+      }
+      if (method === "POST" && path === "/api/v1/deployment-handoffs") {
+        if (!req.headers.origin || !isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.tenantOnboarding) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const command = independentHandoffCommand(await readJson(req, Math.min(maxBodyBytes, 8 * 1_024)));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 201, await options.tenantOnboarding.independentHandoff(command));
+        return;
+      }
+      const tenantCompletionMatch = /^\/api\/v1\/tenant-registrations\/([a-z0-9][a-z0-9-]{0,63})\/complete$/
+        .exec(path);
+      const tenantSlugCompletionMatch =
+        /^\/api\/v1\/tenant-registrations\/by-slug\/([a-z0-9](?:[a-z0-9-]{1,46}[a-z0-9]))\/complete$/
+          .exec(path);
+      if (method === "POST" && tenantSlugCompletionMatch) {
+        if (!req.headers.origin || !isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.tenantOnboarding) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const command = tenantCompletionCommand(await readJson(req, maxBodyBytes));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.tenantOnboarding.completeBySlug(
+          req, tenantSlugCompletionMatch[1]!, command,
+        ));
+        return;
+      }
+      if (method === "POST" && tenantCompletionMatch) {
+        if (!req.headers.origin || !isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.tenantOnboarding) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const command = tenantCompletionCommand(await readJson(req, maxBodyBytes));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.tenantOnboarding.complete(req, tenantCompletionMatch[1]!, command));
         return;
       }
       if (method === "GET" && path === "/api/v1/companies") {
@@ -2102,6 +2231,7 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       }
       if (path.startsWith("/api/v1/")) {
         const response = formalError(error);
+        if (response.status === 429) res.setHeader("retry-after", "60");
         sendStructuredError(res, response.status, response.code);
         return;
       }

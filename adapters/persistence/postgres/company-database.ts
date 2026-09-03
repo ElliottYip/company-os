@@ -3,8 +3,9 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import * as authSchema from "./auth-schema.ts";
 import * as accessSchema from "./company-access-schema.ts";
+import * as tenantRegistrationSchema from "./tenant-registration-schema.ts";
 
-const schema = { ...authSchema, ...accessSchema };
+const schema = { ...authSchema, ...accessSchema, ...tenantRegistrationSchema };
 
 export function createCompanyDatabase(connectionString: string) {
   const normalized = connectionString.trim();
@@ -29,6 +30,9 @@ export function createCompanyDatabase(connectionString: string) {
       await sql`select 1 from company_os_company limit 0`;
       await sql`select 1 from company_os_domain_event limit 0`;
       await sql`select 1 from company_os_connector_outbox limit 0`;
+      await sql`select 1 from company_os_tenant_registration limit 0`;
+      await sql`select 1 from company_os_identity_binding limit 0`;
+      await sql`select 1 from company_os_tenant_signup_invite_redemption limit 0`;
     },
     async migrate() {
       await sql`select pg_advisory_lock(hashtext('company-os-schema-migrations'))`;

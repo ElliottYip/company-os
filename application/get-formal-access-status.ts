@@ -11,16 +11,22 @@ export interface FormalAccessStatus {
   readonly mode: "FORMAL";
   readonly deploymentProfile: "managed-cloud" | "self-hosted";
   readonly entryState: FormalAccessEntryState;
-  readonly identityProvider: { readonly protocol: "OIDC"; readonly configured: boolean };
+  readonly identityProvider: {
+    readonly protocol: "OIDC" | "OAUTH2";
+    readonly providerId: "enterprise-oidc" | "feishu";
+    readonly configured: boolean;
+  };
   readonly session: { readonly authenticated: boolean };
   readonly capabilities: Readonly<Record<FormalAccessCapability, boolean>>;
   readonly blockers: readonly {
-    readonly code: "FORMAL_OIDC_NOT_CONFIGURED" | "FORMAL_IDENTITY_RUNTIME_UNAVAILABLE" | "FORMAL_IDENTITY_REQUIRED";
+    readonly code: "FORMAL_OIDC_NOT_CONFIGURED" | "FORMAL_FEISHU_NOT_CONFIGURED" |
+      "FORMAL_IDENTITY_RUNTIME_UNAVAILABLE" | "FORMAL_IDENTITY_REQUIRED";
     readonly parameters: Readonly<Record<string, readonly string[]>>;
   }[];
 }
 
 export interface FormalAccessConfiguration {
+  readonly provider?: "OIDC" | "FEISHU";
   readonly publicBaseUrl?: string;
   readonly issuer?: string;
   readonly discoveryUrl?: string;
@@ -29,6 +35,9 @@ export interface FormalAccessConfiguration {
   readonly redirectUri?: string;
   readonly sessionSigningKey?: string;
   readonly databaseUrl?: string;
+  readonly feishuAppId?: string;
+  readonly feishuAppSecret?: string;
+  readonly feishuTenantKey?: string;
 }
 
 export function getFormalAccessStatus(input: {
@@ -37,7 +46,13 @@ export function getFormalAccessStatus(input: {
   readonly authenticated?: boolean;
   readonly identityRuntimeHealthy?: boolean;
 }): FormalAccessStatus {
-  const missing = (["publicBaseUrl", "issuer", "discoveryUrl", "clientId", "clientSecret", "redirectUri", "sessionSigningKey", "databaseUrl"] as const)
+  const provider = input.configuration.provider === "FEISHU" ? "FEISHU" : "OIDC";
+  const required = provider === "FEISHU"
+    ? (["publicBaseUrl", "feishuAppId", "feishuAppSecret", "feishuTenantKey", "redirectUri",
+        "sessionSigningKey", "databaseUrl"] as const)
+    : (["publicBaseUrl", "issuer", "discoveryUrl", "clientId", "clientSecret", "redirectUri",
+        "sessionSigningKey", "databaseUrl"] as const);
+  const missing = required
     .filter((key) => !input.configuration[key]?.trim());
   const configured = missing.length === 0;
   const authenticated = configured && input.authenticated === true;
@@ -51,7 +66,9 @@ export function getFormalAccessStatus(input: {
     mode: "FORMAL",
     deploymentProfile: input.deploymentProfile,
     entryState,
-    identityProvider: { protocol: "OIDC", configured },
+    identityProvider: provider === "FEISHU"
+      ? { protocol: "OAUTH2", providerId: "feishu", configured }
+      : { protocol: "OIDC", providerId: "enterprise-oidc", configured },
     session: { authenticated },
     capabilities: {
       diagnostics: true,
@@ -65,7 +82,8 @@ export function getFormalAccessStatus(input: {
     blockers: entryState === "BLOCKED"
       ? [configured
           ? { code: "FORMAL_IDENTITY_RUNTIME_UNAVAILABLE" as const, parameters: {} }
-          : { code: "FORMAL_OIDC_NOT_CONFIGURED" as const, parameters: { missing } }]
+          : { code: provider === "FEISHU" ? "FORMAL_FEISHU_NOT_CONFIGURED" as const
+            : "FORMAL_OIDC_NOT_CONFIGURED" as const, parameters: { missing } }]
       : entryState === "AUTHENTICATION_REQUIRED"
         ? [{ code: "FORMAL_IDENTITY_REQUIRED", parameters: {} }]
         : [],

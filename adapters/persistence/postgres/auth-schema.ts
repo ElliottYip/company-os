@@ -5,6 +5,7 @@ export const authUsers = pgTable("company_os_auth_user", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   emailVerified: boolean("email_verified").notNull().default(false),
+  assertedEmailHmac: text("asserted_email_hmac"),
   image: text("image"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull(),

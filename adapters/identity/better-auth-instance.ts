@@ -4,15 +4,22 @@ import { toNodeHandler } from "better-auth/node";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { companyAuthSchema } from "../persistence/postgres/auth-schema.ts";
 import type { createCompanyDatabase } from "../persistence/postgres/company-database.ts";
-import { buildCompanyAuthOptions, type CompanyOidcConfiguration } from "./better-auth-options.ts";
+import {
+  buildConfiguredCompanyAuthOptions,
+  type CompanyAuthConfiguration,
+} from "./better-auth-options.ts";
 
 type CompanyDatabase = ReturnType<typeof createCompanyDatabase>["db"];
 
-export function createCompanyAuth(database: CompanyDatabase, configuration: CompanyOidcConfiguration) {
-  return betterAuth(buildCompanyAuthOptions(configuration, drizzleAdapter(database, {
+export function createCompanyAuth(database: CompanyDatabase, configuration: CompanyAuthConfiguration) {
+  return betterAuth(buildConfiguredCompanyAuthOptions(configuration, drizzleAdapter(database, {
     provider: "pg",
     schema: companyAuthSchema,
   })));
+}
+
+export function createCompanyAuthWebHandler(auth: ReturnType<typeof createCompanyAuth>) {
+  return (request: Request): Promise<Response> => Promise.resolve(auth.handler(request));
 }
 
 export function createCompanyAuthHandler(

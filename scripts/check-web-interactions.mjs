@@ -3,6 +3,8 @@ import { pathToFileURL } from "node:url";
 
 const sourceFiles = [
   "web/mount.ts",
+  "web/tenant-onboarding.ts",
+  "web/tenant-activation.ts",
   "web/pages/operational-pages.ts",
 ];
 

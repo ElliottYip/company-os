@@ -11,6 +11,7 @@ export * from "./audit-evidence-port.ts";
 export * from "./data-connector-port.ts";
 export * from "./durable-control-plane-store-port.ts";
 export * from "./event-data-store-port.ts";
+export * from "./enterprise-directory-source-port.ts";
 export * from "./fde-template-trust-port.ts";
 export * from "./generic-work-port.ts";
 export * from "./governance-catalog-port.ts";

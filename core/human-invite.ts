@@ -5,6 +5,7 @@ export interface HumanInvite {
   readonly id: Identifier;
   readonly companyId: Identifier;
   readonly expectedEmail: string;
+  readonly expectedEmailHmac?: string | null;
   readonly departmentId: Identifier;
   readonly title: string;
   readonly membershipRole: HumanCompanyRole;

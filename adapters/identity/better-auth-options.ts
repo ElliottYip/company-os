@@ -2,8 +2,13 @@ import type { BetterAuthOptions } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
 import { isIP } from "node:net";
 import { randomUUID } from "node:crypto";
+import {
+  buildFeishuOAuthProvider,
+  type FeishuOAuthConfiguration,
+} from "./feishu-oauth-provider.ts";
 
 export interface CompanyOidcConfiguration {
+  readonly provider?: "OIDC";
   readonly baseUrl: string;
   readonly redirectUri: string;
   readonly issuer: string;
@@ -14,6 +19,22 @@ export interface CompanyOidcConfiguration {
   readonly instanceId?: string;
   readonly trustedProxyCidrs?: readonly string[];
   readonly trustedWebOrigins?: readonly string[];
+}
+
+export interface CompanyFeishuConfiguration extends FeishuOAuthConfiguration {
+  readonly provider: "FEISHU";
+  readonly sessionSecret: string;
+  readonly instanceId?: string;
+  readonly trustedProxyCidrs?: readonly string[];
+  readonly trustedWebOrigins?: readonly string[];
+}
+
+export type CompanyAuthConfiguration = CompanyOidcConfiguration | CompanyFeishuConfiguration;
+
+export function parseCompanyIdentityProvider(value: string | undefined): "OIDC" | "FEISHU" {
+  if (value === undefined || value === "OIDC") return "OIDC";
+  if (value === "FEISHU") return "FEISHU";
+  throw new Error("IDENTITY_PROVIDER_INVALID");
 }
 
 function required(value: string, code: string): string {
@@ -67,15 +88,64 @@ export function buildCompanyAuthOptions(
   if (redirectUri !== expectedRedirectUri) throw new Error("OIDC_REDIRECT_URI_MISMATCH");
   const clientId = required(input.clientId, "OIDC_CLIENT_ID_REQUIRED");
   const clientSecret = required(input.clientSecret, "OIDC_CLIENT_SECRET_REQUIRED");
+  return hardenedSessionOptions(input, database, genericOAuth({
+    config: [{
+      providerId: "enterprise-oidc",
+      issuer,
+      discoveryUrl,
+      clientId,
+      clientSecret,
+      scopes: ["openid", "profile", "email"],
+      pkce: true,
+      requireIssuerValidation: true,
+      disableImplicitSignUp: false,
+    }],
+  }));
+}
+
+export function buildCompanyFeishuAuthOptions(
+  input: CompanyFeishuConfiguration,
+  database: NonNullable<BetterAuthOptions["database"]>,
+): BetterAuthOptions {
+  const provider = buildFeishuOAuthProvider(input);
+  return hardenedSessionOptions(input, database, genericOAuth({ config: [provider] }));
+}
+
+export function buildConfiguredCompanyAuthOptions(
+  input: CompanyAuthConfiguration,
+  database: NonNullable<BetterAuthOptions["database"]>,
+): BetterAuthOptions {
+  return input.provider === "FEISHU"
+    ? buildCompanyFeishuAuthOptions(input, database)
+    : buildCompanyAuthOptions(input, database);
+}
+
+function hardenedSessionOptions(
+  input: Pick<CompanyOidcConfiguration, "baseUrl" | "sessionSecret" | "instanceId" |
+    "trustedProxyCidrs" | "trustedWebOrigins">,
+  database: NonNullable<BetterAuthOptions["database"]>,
+  plugin: NonNullable<BetterAuthOptions["plugins"]>[number],
+): BetterAuthOptions {
+  const baseUrl = httpsUrl(input.baseUrl, "AUTH_BASE_URL_HTTPS_REQUIRED").href.replace(/\/$/, "");
   const secret = required(input.sessionSecret, "SESSION_SIGNING_KEY_REQUIRED");
   if (Buffer.byteLength(secret, "utf8") < 32) throw new Error("SESSION_SIGNING_KEY_TOO_SHORT");
-
   return {
     baseURL: baseUrl,
     secret,
     database,
     trustedOrigins: deriveCompanyAuthTrustedOrigins(baseUrl, input.trustedWebOrigins),
     emailAndPassword: { enabled: false },
+    user: {
+      additionalFields: {
+        assertedEmailHmac: {
+          type: "string",
+          required: false,
+          input: true,
+          returned: false,
+          fieldName: "assertedEmailHmac",
+        },
+      },
+    },
     account: {
       encryptOAuthTokens: true,
       storeStateStrategy: "database",
@@ -94,19 +164,7 @@ export function buildCompanyAuthOptions(
         generateId: () => randomUUID(),
       },
     },
-    plugins: [genericOAuth({
-      config: [{
-        providerId: "enterprise-oidc",
-        issuer,
-        discoveryUrl,
-        clientId,
-        clientSecret,
-        scopes: ["openid", "profile", "email"],
-        pkce: true,
-        requireIssuerValidation: true,
-        disableImplicitSignUp: false,
-      }],
-    })],
+    plugins: [plugin],
   };
 }
 

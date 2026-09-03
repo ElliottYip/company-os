@@ -4,6 +4,10 @@ import { once } from "node:events";
 import { createDemoComposition } from "../adapters/demo/create-demo-composition.ts";
 import { createCompanyOsHttpService } from "../adapters/http/company-os-http-service.ts";
 
+function fixtureMaterial(label: string): string {
+  return `${label}-fixture-material-`.padEnd(32, "x");
+}
+
 async function withService(
   run: (baseUrl: string) => Promise<void>,
   formalApi?: {
@@ -61,7 +65,9 @@ async function withService(
   deploymentExposure: "private" | "public" = "private",
   operational?: Pick<
     import("../adapters/http/company-os-http-service.ts").CompanyOsHttpServiceOptions,
-    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance" | "releaseId"
+    "serviceMode" | "operationalReadiness" | "metricsEnabled" | "instanceMaintenance" | "releaseId" |
+      "tenantAuthHandler"
+      | "tenantOnboarding"
   >,
 ) {
   const { runtime } = createDemoComposition();
@@ -273,7 +279,7 @@ test("company discovery returns only the authenticated actor membership projecti
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
       schemaVersion: 1,
-      companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }],
+      companies: [{ id: "company-one", name: "Company One", slug: "company-one", membershipRole: "owner" }],
       isInstanceAdmin: true,
     });
   }, undefined, undefined, undefined, {
@@ -281,7 +287,7 @@ test("company discovery returns only the authenticated actor membership projecti
       assert.equal(request.headers.cookie, "company-os-session=opaque");
       return {
         schemaVersion: 1,
-        companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }],
+        companies: [{ id: "company-one", name: "Company One", slug: "company-one", membershipRole: "owner" }],
         isInstanceAdmin: true,
       };
     },
@@ -908,6 +914,166 @@ test("Better Auth exclusively owns the Paperclip-aligned /api/auth route family"
     assert.deepEqual(await unavailable.json(), {
       error: { code: "FORMAL_AUTH_UNAVAILABLE", parameters: {} },
     });
+  });
+});
+
+test("tenant-owned sign-in and Feishu callbacks are selected before legacy auth without fallback", async () => {
+  const tenantCalls: string[] = [];
+  const legacyCalls: string[] = [];
+  const tenantAuthHandler = async (request: import("node:http").IncomingMessage,
+    response: import("node:http").ServerResponse) => {
+    tenantCalls.push(request.url ?? "");
+    response.writeHead(202);
+    response.end();
+  };
+  await withService(async (baseUrl) => {
+    assert.equal((await fetch(`${baseUrl}/t/alpha-company/sign-in`, { method: "POST" })).status, 202);
+    assert.equal((await fetch(`${baseUrl}/api/auth/oauth2/callback/feishu-binding-alpha`)).status, 202);
+    assert.equal((await fetch(`${baseUrl}/api/auth/session`)).status, 203);
+    assert.deepEqual(tenantCalls, [
+      "/t/alpha-company/sign-in",
+      "/api/auth/oauth2/callback/feishu-binding-alpha",
+    ]);
+    assert.deepEqual(legacyCalls, ["/api/auth/session"]);
+  }, undefined, undefined, async (request, response) => {
+    legacyCalls.push(request.url ?? "");
+    response.writeHead(203);
+    response.end();
+  }, undefined, "private", { tenantAuthHandler });
+
+  await withService(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/auth/oauth2/callback/feishu-binding-unknown`);
+    assert.equal(response.status, 404);
+    assert.deepEqual(await response.json(), {
+      error: { code: "TENANT_AUTH_ROUTE_NOT_FOUND", parameters: {} },
+    });
+  });
+});
+
+test("authenticated tenant completion route is origin-bound and accepts only a bounded locale command", async () => {
+  const calls: unknown[] = [];
+  await withService(async (baseUrl) => {
+    const completed = await fetch(`${baseUrl}/api/v1/tenant-registrations/registration-one/complete`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({ locale: "zh-CN" }),
+    });
+    assert.equal(completed.status, 200);
+    assert.deepEqual(await completed.json(), { status: "COMPLETED", companyId: "company-one" });
+
+    const completedBySlug = await fetch(
+      `${baseUrl}/api/v1/tenant-registrations/by-slug/alpha-company/complete`, {
+        method: "POST",
+        headers: { origin: "http://allowed.test", "content-type": "application/json" },
+        body: JSON.stringify({ locale: "zh-CN" }),
+      },
+    );
+    assert.equal(completedBySlug.status, 200);
+    assert.deepEqual(await completedBySlug.json(), { status: "ALREADY_COMPLETED", companyId: "company-one" });
+
+    const invalid = await fetch(`${baseUrl}/api/v1/tenant-registrations/registration-one/complete`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({ locale: "zh_CN", privilege: "instance-admin" }),
+    });
+    assert.equal(invalid.status, 422);
+    const denied = await fetch(`${baseUrl}/api/v1/tenant-registrations/registration-one/complete`, {
+      method: "POST",
+      headers: { origin: "http://attacker.test", "content-type": "application/json" },
+      body: "{}",
+    });
+    assert.equal(denied.status, 403);
+    assert.deepEqual(calls, [
+      { registrationId: "registration-one", input: { locale: "zh-CN" } },
+      { slug: "alpha-company", input: { locale: "zh-CN" } },
+    ]);
+  }, undefined, undefined, undefined, undefined, "private", {
+    tenantOnboarding: {
+      async begin() { throw new Error("UNREACHABLE"); },
+      async independentHandoff() { throw new Error("UNREACHABLE"); },
+      async completeBySlug(_request, slug, input) {
+        calls.push({ slug, input });
+        return { status: "ALREADY_COMPLETED", companyId: "company-one" };
+      },
+      async complete(_request, registrationId, input) {
+        calls.push({ registrationId, input });
+        return { status: "COMPLETED", companyId: "company-one" };
+      },
+    },
+  });
+});
+
+test("public tenant registration requires an allowed origin, bounded exact input, and redacts secrets", async () => {
+  const calls: Array<Record<string, string>> = [];
+  const tenantOnboarding = {
+    async begin(_request: import("node:http").IncomingMessage, input: Record<string, string>) {
+      calls.push(input);
+      return {
+        id: "registration-one",
+        slug: input.slug,
+        status: "PENDING_IDENTITY",
+        signInPath: `/t/${input.slug}/sign-in`,
+      };
+    },
+    async independentHandoff() { throw new Error("UNREACHABLE"); },
+    async completeBySlug() { throw new Error("UNREACHABLE"); },
+    async complete() { throw new Error("UNREACHABLE"); },
+  };
+  await withService(async (baseUrl) => {
+    const appSecret = fixtureMaterial("tenant-app");
+    const response = await fetch(`${baseUrl}/api/v1/tenant-registrations`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({
+        slug: "alpha-company", companyName: "Alpha", appId: "cli_alpha", appSecret,
+        inviteCode: "COS-23456-789AB-CDEFG-HJKLM",
+      }),
+    });
+    assert.equal(response.status, 201);
+    assert.doesNotMatch(await response.text(), new RegExp(appSecret));
+    assert.equal(calls.length, 1);
+
+    const missingOrigin = await fetch(`${baseUrl}/api/v1/tenant-registrations`, {
+      method: "POST", headers: { "content-type": "application/json" }, body: "{}",
+    });
+    assert.equal(missingOrigin.status, 403);
+    const extraField = await fetch(`${baseUrl}/api/v1/tenant-registrations`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({
+        slug: "alpha-company", companyName: "Alpha", appId: "cli_alpha", appSecret,
+        inviteCode: "COS-23456-789AB-CDEFG-HJKLM", admin: true,
+      }),
+    });
+    assert.equal(extraField.status, 422);
+    assert.equal(calls.length, 1);
+  }, undefined, undefined, undefined, undefined, "private", { tenantOnboarding });
+});
+
+test("public tenant registration returns a bounded retry contract when verification is rate limited", async () => {
+  await withService(async (baseUrl) => {
+    const response = await fetch(`${baseUrl}/api/v1/tenant-registrations`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({
+        slug: "alpha-company",
+        companyName: "Alpha",
+        appId: "cli_alpha",
+        appSecret: fixtureMaterial("tenant-app"),
+      }),
+    });
+    assert.equal(response.status, 429);
+    assert.equal(response.headers.get("retry-after"), "60");
+    assert.deepEqual(await response.json(), {
+      error: { code: "TENANT_SIGNUP_RATE_LIMITED", parameters: {} },
+    });
+  }, undefined, undefined, undefined, undefined, "private", {
+    tenantOnboarding: {
+      async begin() { throw new Error("TENANT_SIGNUP_RATE_LIMITED"); },
+      async independentHandoff() { throw new Error("UNREACHABLE"); },
+      async completeBySlug() { throw new Error("UNREACHABLE"); },
+      async complete() { throw new Error("UNREACHABLE"); },
+    },
   });
 });
 

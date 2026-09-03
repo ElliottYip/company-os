@@ -48,12 +48,20 @@ export function normalizePublicApiUrl(value) {
   return url.origin;
 }
 
-export function runtimeConfigSource(options) {
+export function runtimeConfigSource(options, onboardingAvailable = false) {
   const config = JSON.stringify({ apiBaseUrl: options.apiBaseUrl, mode: options.mode })
     .replaceAll("<", "\\u003c")
     .replaceAll(">", "\\u003e")
     .replaceAll("&", "\\u0026");
-  return `window.__COMPANY_OS_CONFIG__ = Object.freeze(${config});\n`;
+  const onboardingBridge = onboardingAvailable
+    ? `document.addEventListener("click",(event)=>{const target=event.target instanceof Element?event.target.closest("[data-enter-local]"):null;if(!target)return;event.preventDefault();event.stopImmediatePropagation();window.location.assign("/start");},true);\n`
+    : "";
+  const formalProviderBridge = `(()=>{const api=${JSON.stringify(options.apiBaseUrl)};const access=api+"/api/v1/access";const signIn=api+"/api/auth/sign-in/social";const original=window.fetch.bind(window);let configured=null;const remember=async(response)=>{try{const value=(await response.clone().json()).identityProvider?.providerId;if(value==="feishu"||value==="enterprise-oidc")configured=value;}catch{}return response;};window.fetch=async(input,init)=>{const url=typeof input==="string"?input:input instanceof URL?input.href:input?.url;if(url===access)return remember(await original(input,init));if(url===signIn&&String(init?.method||"GET").toUpperCase()==="POST"){if(!configured){try{await remember(await original(access,{credentials:"include",headers:{accept:"application/json"}}));}catch{}}if(configured&&typeof init?.body==="string"){try{const body=JSON.parse(init.body);if((body.provider==="feishu"||body.provider==="enterprise-oidc")&&body.provider!==configured)return original(input,{...init,body:JSON.stringify({...body,provider:configured})});}catch{}}}return original(input,init);};})();\n`;
+  return `window.__COMPANY_OS_CONFIG__ = Object.freeze(${config});\n${formalProviderBridge}${onboardingBridge}`;
+}
+
+export function isTenantEntryPath(pathname) {
+  return pathname === "/start" || /^\/t\/[a-z0-9](?:[a-z0-9-]{1,46}[a-z0-9])$/.test(pathname);
 }
 
 export function resolveStaticFile(distDirectory, requestPath) {
@@ -77,7 +85,9 @@ export function resolveStaticFile(distDirectory, requestPath) {
 export function createCompanyOsWebServer({ distDirectory, apiBaseUrl, mode = "formal", releaseId }) {
   const root = resolve(distDirectory);
   const indexFile = join(root, "index.html");
+  const tenantIndexFile = join(root, "tenant.html");
   if (!existsSync(indexFile)) throw new Error("COMPANY_OS_WEB_DIST_MISSING");
+  const onboardingAvailable = existsSync(tenantIndexFile) && statSync(tenantIndexFile).isFile();
   const connectOrigin = normalizePublicApiUrl(apiBaseUrl);
   const baseHeaders = {
     "content-security-policy": `default-src 'self'; connect-src 'self' ${connectOrigin}; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'`,
@@ -98,7 +108,7 @@ export function createCompanyOsWebServer({ distDirectory, apiBaseUrl, mode = "fo
     }
     const requestUrl = new URL(request.url || "/", "http://localhost");
     if (requestUrl.pathname === "/company-os-config.js") {
-      const body = runtimeConfigSource({ apiBaseUrl: connectOrigin, mode });
+      const body = runtimeConfigSource({ apiBaseUrl: connectOrigin, mode }, onboardingAvailable);
       response.writeHead(200, {
         ...baseHeaders,
         "cache-control": "no-store",
@@ -109,7 +119,8 @@ export function createCompanyOsWebServer({ distDirectory, apiBaseUrl, mode = "fo
       return;
     }
     const staticFile = resolveStaticFile(root, requestUrl.pathname);
-    const file = staticFile || indexFile;
+    const file = staticFile || (onboardingAvailable && isTenantEntryPath(requestUrl.pathname)
+      ? tenantIndexFile : indexFile);
     const extension = extname(file).toLowerCase();
     const immutable = Boolean(staticFile && requestUrl.pathname.startsWith("/assets/"));
     response.writeHead(200, {

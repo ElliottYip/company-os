@@ -15,6 +15,7 @@ interface CreateHumanInviteDependencies {
   readonly nextId: () => Identifier;
   readonly issueToken: () => string;
   readonly hashToken: (token: string) => string;
+  readonly assertedEmailHmac?: (companyId: Identifier, normalizedEmail: string) => Promise<string | null>;
 }
 
 interface AcceptHumanInviteDependencies {
@@ -58,9 +59,11 @@ export class CreateHumanInvite {
     const token = this.#dependencies.issueToken();
     if (token.length < 32) throw new Error("HUMAN_INVITE_TOKEN_INVALID");
     const now = this.#dependencies.now();
+    const expectedEmail = normalizeInviteEmail(input.email);
+    const expectedEmailHmac = await this.#dependencies.assertedEmailHmac?.(input.companyId, expectedEmail) ?? null;
     const invite: HumanInvite = {
       id: this.#dependencies.nextId(), companyId: input.companyId,
-      expectedEmail: normalizeInviteEmail(input.email), departmentId: input.departmentId,
+      expectedEmail, expectedEmailHmac, departmentId: input.departmentId,
       title, membershipRole: input.role, invitedByUserId: identity.actorId,
       expiresAt: new Date(Date.parse(now) + 7 * 24 * 60 * 60 * 1000).toISOString(),
       acceptedAt: null, revokedAt: null,
@@ -84,14 +87,22 @@ export class AcceptHumanInvite {
 
   async execute(input: {
     readonly token: string;
-    readonly user: { readonly id: Identifier; readonly name: string; readonly email: string };
+    readonly user: {
+      readonly id: Identifier;
+      readonly name: string;
+      readonly email: string;
+      readonly assertedEmailHmac?: string | null;
+    };
   }): Promise<HumanInvite> {
     const now = this.#dependencies.now();
     const tokenHash = this.#dependencies.hashToken(input.token);
     const invite = await this.#dependencies.store.findPendingByTokenHash(tokenHash, now);
     if (!invite || humanInviteState(invite, now) !== "PENDING") throw new Error("HUMAN_INVITE_NOT_FOUND");
     const email = normalizeInviteEmail(input.user.email);
-    if (email !== invite.expectedEmail) throw new Error("HUMAN_INVITE_IDENTITY_MISMATCH");
+    const identityMatches = invite.expectedEmailHmac
+      ? input.user.assertedEmailHmac === invite.expectedEmailHmac
+      : email === invite.expectedEmail;
+    if (!identityMatches) throw new Error("HUMAN_INVITE_IDENTITY_MISMATCH");
     const events = await this.#dependencies.events.read(invite.companyId);
     const current = latestStructure(events);
     if (current.organization.humans.some(({ id }) => id === input.user.id)) {
@@ -123,7 +134,10 @@ export class AcceptHumanInvite {
     };
     return this.#dependencies.store.acceptAtomically({
       inviteId: invite.id, tokenHash, userId: input.user.id, normalizedEmail: email,
-      membershipId: this.#dependencies.nextId(), role: invite.membershipRole,
+      assertedEmailHmac: input.user.assertedEmailHmac ?? null,
+      membershipId: this.#dependencies.nextId(),
+      externalIdentityId: this.#dependencies.nextId(),
+      role: invite.membershipRole,
       grants: permissionKeysForHumanRole(invite.membershipRole).map((permissionKey) => ({
         id: this.#dependencies.nextId(), permissionKey,
       })),

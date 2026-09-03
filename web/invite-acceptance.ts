@@ -8,7 +8,7 @@ export function mountHumanInviteAcceptance(
   root.innerHTML = `<main class="invite-acceptance"><section class="formal-gate-panel" aria-live="polite">
     <p class="family-kicker">ENTERPRISE COMPANY INVITE</p>
     <h1>Join this company with your verified identity</h1>
-    <p>The invitation becomes an active company membership only after enterprise OIDC verifies the expected email. The link is single-use and expires automatically.</p>
+    <p>The invitation becomes an active company membership only after the configured enterprise identity provider verifies the expected identity. The link is single-use and expires automatically.</p>
     <div class="invite-acceptance-status" data-invite-status>Checking enterprise session…</div>
   </section></main>`;
   const status = root.querySelector<HTMLElement>("[data-invite-status]");

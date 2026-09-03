@@ -1,18 +1,17 @@
 const IMMUTABLE_IMAGE =
   /^[a-z0-9][a-z0-9./_-]*(?::[A-Za-z0-9_][A-Za-z0-9_.-]{0,127})?@sha256:[a-f0-9]{64}$/;
-const SECRET_KEY = /(?:^|_)(?:CLIENT_SECRET|SESSION_SIGNING_KEY|BEARER_TOKEN|PASSWORD|DATABASE_URL|PRIVATE_KEY|CREDENTIALS?)$/i;
+const SECRET_KEY = /(?:^|_)(?:APP_SECRET|CLIENT_SECRET|SESSION_SIGNING_KEY|BEARER_TOKEN|PASSWORD|DATABASE_URL|PRIVATE_KEY|CREDENTIALS?)$/i;
 const PUBLIC_KEY = /^[A-Z][A-Z0-9_]{0,127}$/;
-const REQUIRED_SECRET_FILES = [
+const COMMON_SECRET_FILES = [
   "migration-database-url", "runtime-database-url", "runtime-database-password",
-  "oidc-client-secret", "session-signing-key", "agent-node-bearer-token",
+  "session-signing-key", "agent-node-bearer-token",
   "data-node-bearer-token", "secret-broker-bearer-token", "internal-ca-cert.pem",
 ] as const;
 const IMAGE_KEYS = ["COMPANY_OS_API_IMAGE", "COMPANY_OS_WEB_IMAGE", "COMPANY_OS_OPS_IMAGE",
   "COMPANY_OS_REFERENCE_DATA_NODE_IMAGE"] as const;
-const HTTPS_KEYS = ["COMPANY_OS_OIDC_ISSUER", "COMPANY_OS_OIDC_DISCOVERY_URL",
-  "COMPANY_OS_HTTP_AGENT_NODE_BASE_URL", "COMPANY_OS_HTTP_DATA_NODE_BASE_URL",
+const COMMON_HTTPS_KEYS = ["COMPANY_OS_HTTP_AGENT_NODE_BASE_URL", "COMPANY_OS_HTTP_DATA_NODE_BASE_URL",
   "COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL"] as const;
-const REQUIRED_PUBLIC_KEYS = ["COMPANY_OS_OIDC_CLIENT_ID", "COMPANY_OS_COMPOSE_PROJECT",
+const COMMON_PUBLIC_KEYS = ["COMPANY_OS_COMPOSE_PROJECT",
   "COMPANY_OS_PRODUCT_NETWORK", "COMPANY_OS_REFERENCE_DATA_NODE_PORT",
   "COMPANY_OS_WEB_LOOPBACK_PORT", "COMPANY_OS_API_LOOPBACK_PORT"] as const;
 const BACKUP_PUBLIC_KEYS = ["COMPANY_OS_BACKUP_S3_REGION", "COMPANY_OS_BACKUP_S3_BUCKET"] as const;
@@ -46,6 +45,11 @@ export interface StagingDoctorResult {
 export function evaluateStagingDeploymentReadiness(snapshot: StagingDeploymentSnapshot): StagingDoctorResult {
   const findings: StagingDoctorFinding[] = [];
   const add = (code: string, subject: string) => findings.push({ code, subject });
+  const identityProvider = snapshot.publicEnvironment.COMPANY_OS_IDENTITY_PROVIDER?.trim() || "OIDC";
+  const providerSupported = identityProvider === "OIDC" || identityProvider === "FEISHU";
+  if (!providerSupported) add("STAGING_IDENTITY_PROVIDER_INVALID", "COMPANY_OS_IDENTITY_PROVIDER");
+  const requiredSecretFiles = [...COMMON_SECRET_FILES,
+    identityProvider === "FEISHU" ? "feishu-app-secret" : "oidc-client-secret"];
   if (!snapshot.root.exists) add("STAGING_ROOT_MISSING", "deployment-root");
   else if (snapshot.root.mode === null || (snapshot.root.mode & 0o027) !== 0) {
     add("STAGING_ROOT_MODE_UNSAFE", "deployment-root");
@@ -54,7 +58,7 @@ export function evaluateStagingDeploymentReadiness(snapshot: StagingDeploymentSn
   else {
     if (snapshot.secretDirectory.mode !== 0o700) add("SECRET_DIRECTORY_MODE_UNSAFE", "secret-directory");
     const files = new Map(snapshot.secretDirectory.files.map((file) => [file.name, file]));
-    for (const name of REQUIRED_SECRET_FILES) {
+    for (const name of requiredSecretFiles) {
       const file = files.get(name);
       if (!file) add("SECRET_FILE_MISSING", name);
       else if (file.kind !== "file" || (file.mode & 0o077) !== 0 || file.size < 1 || file.size > 16_384) {
@@ -77,10 +81,16 @@ export function evaluateStagingDeploymentReadiness(snapshot: StagingDeploymentSn
   for (const key of IMAGE_KEYS) {
     if (!IMMUTABLE_IMAGE.test(snapshot.publicEnvironment[key] ?? "")) add("STAGING_IMAGE_NOT_IMMUTABLE", key);
   }
-  for (const key of REQUIRED_PUBLIC_KEYS) {
+  const providerPublicKeys = identityProvider === "FEISHU"
+    ? ["COMPANY_OS_FEISHU_APP_ID", "COMPANY_OS_FEISHU_TENANT_KEY"]
+    : ["COMPANY_OS_OIDC_CLIENT_ID"];
+  for (const key of [...COMMON_PUBLIC_KEYS, ...providerPublicKeys]) {
     if (!snapshot.publicEnvironment[key]?.trim()) add("STAGING_PUBLIC_CONFIG_MISSING", key);
   }
-  for (const key of HTTPS_KEYS) {
+  const providerHttpsKeys = identityProvider === "FEISHU"
+    ? ["COMPANY_OS_FEISHU_REDIRECT_URI"]
+    : ["COMPANY_OS_OIDC_ISSUER", "COMPANY_OS_OIDC_DISCOVERY_URL"];
+  for (const key of [...COMMON_HTTPS_KEYS, ...providerHttpsKeys]) {
     if (!strictHttpsUrl(snapshot.publicEnvironment[key])) add("STAGING_HTTPS_COORDINATE_REQUIRED", key);
   }
   const backupState = snapshot.publicEnvironment.COMPANY_OS_OFF_SITE_BACKUP;

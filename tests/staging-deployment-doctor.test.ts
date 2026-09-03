@@ -56,6 +56,33 @@ test("staging doctor admits an isolated immutable install without reading secret
   assert.doesNotMatch(JSON.stringify(result), /database-url|client-secret|bearer-token|signing-key/);
 });
 
+test("staging doctor admits Feishu with only the provider-specific public coordinates and secret", () => {
+  const snapshot = readySnapshot();
+  const publicEnvironment = { ...snapshot.publicEnvironment,
+    COMPANY_OS_IDENTITY_PROVIDER: "FEISHU",
+    COMPANY_OS_FEISHU_APP_ID: "cli_company_os",
+    COMPANY_OS_FEISHU_TENANT_KEY: "tenant_company_os",
+    COMPANY_OS_FEISHU_REDIRECT_URI: "https://api.company.example/api/auth/oauth2/callback/feishu",
+  };
+  delete publicEnvironment.COMPANY_OS_OIDC_ISSUER;
+  delete publicEnvironment.COMPANY_OS_OIDC_DISCOVERY_URL;
+  delete publicEnvironment.COMPANY_OS_OIDC_CLIENT_ID;
+  const files = snapshot.secretDirectory.files
+    .filter(({ name }) => name !== "oidc-client-secret")
+    .concat({ name: "feishu-app-secret", kind: "file" as const, mode: 0o400, size: 64 });
+  const result = evaluateStagingDeploymentReadiness({ ...snapshot, publicEnvironment,
+    secretDirectory: { ...snapshot.secretDirectory, files } });
+  assert.deepEqual(result, { schemaVersion: 1, mode: "INSTALL", status: "READY", findings: [] });
+});
+
+test("staging doctor fails closed for an unsupported identity provider", () => {
+  const snapshot = readySnapshot();
+  const result = evaluateStagingDeploymentReadiness({ ...snapshot, publicEnvironment: {
+    ...snapshot.publicEnvironment, COMPANY_OS_IDENTITY_PROVIDER: "SAML",
+  } });
+  assert.equal(result.findings[0]?.code, "STAGING_IDENTITY_PROVIDER_INVALID");
+});
+
 test("off-site backup is capability-gated instead of blocking first start", () => {
   const snapshot = readySnapshot();
   const enabled = evaluateStagingDeploymentReadiness({ ...snapshot, publicEnvironment: {
@@ -117,6 +144,8 @@ test("staging doctor reports every actionable precondition with stable codes", (
 
 test("public staging environment rejects secret-shaped keys before retaining configuration", () => {
   assert.throws(() => parsePublicStagingEnvironment("COMPANY_OS_API_IMAGE=x\nOIDC_CLIENT_SECRET=do-not-retain\n"),
+    /STAGING_PUBLIC_ENV_SECRET_KEY_FORBIDDEN/);
+  assert.throws(() => parsePublicStagingEnvironment("COMPANY_OS_FEISHU_APP_SECRET=do-not-retain\n"),
     /STAGING_PUBLIC_ENV_SECRET_KEY_FORBIDDEN/);
   assert.deepEqual(parsePublicStagingEnvironment("# public only\nCOMPANY_OS_OIDC_CLIENT_ID=company-os-staging\n"),
     { COMPANY_OS_OIDC_CLIENT_ID: "company-os-staging" });

@@ -10,7 +10,9 @@ export interface HumanInviteStorePort {
     readonly tokenHash: string;
     readonly userId: Identifier;
     readonly normalizedEmail: string;
+    readonly assertedEmailHmac?: string | null;
     readonly membershipId: Identifier;
+    readonly externalIdentityId: Identifier;
     readonly role: HumanCompanyRole;
     readonly grants: readonly { readonly id: Identifier; readonly permissionKey: CompanyPermissionKey }[];
     readonly event: CompanyDomainEvent;

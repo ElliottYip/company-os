@@ -115,3 +115,60 @@ test("invite acceptance fails closed for an OIDC email mismatch", async () => {
   }).execute({ token, user: { id: "attacker", name: "Other", email: "other@example.com" } }), /HUMAN_INVITE_IDENTITY_MISMATCH/);
   assert.equal(store.accepted, null);
 });
+
+test("tenant-scoped invite accepts the matching asserted email HMAC without using the auth alias", async () => {
+  const store = new MemoryInviteStore();
+  const eventStore = await registeredEvents();
+  const token = "company_os_invite_0123456789abcdefghijklmnopqrstuvwxyz";
+  const assertedEmailHmac = `hmac-sha256:${"a".repeat(64)}`;
+  await new CreateHumanInvite({
+    identity: identity(), events: eventStore, store,
+    now: () => "2026-08-24T00:00:00.000Z", nextId: () => "invite-one",
+    issueToken: () => token, hashToken: (value) => `hash:${value}`,
+    assertedEmailHmac: async () => assertedEmailHmac,
+  }).execute({
+    companyId, email: "jordan@example.com", departmentId: "operations",
+    title: "Lead", role: "operator",
+  });
+  let id = 0;
+  await new AcceptHumanInvite({
+    events: eventStore, store, now: () => "2026-08-24T01:00:00.000Z",
+    nextId: () => `generated-${++id}`, hashToken: (value) => `hash:${value}`,
+  }).execute({
+    token,
+    user: {
+      id: "human-jordan",
+      name: "Jordan",
+      email: "feishu-tenant-alias@identity.invalid",
+      assertedEmailHmac,
+    },
+  });
+  assert.equal(store.invite?.expectedEmailHmac, assertedEmailHmac);
+  assert.equal(store.accepted?.assertedEmailHmac, assertedEmailHmac);
+});
+
+test("tenant-scoped invite rejects a different asserted email HMAC", async () => {
+  const store = new MemoryInviteStore();
+  const eventStore = await registeredEvents();
+  const token = "company_os_invite_0123456789abcdefghijklmnopqrstuvwxyz";
+  await new CreateHumanInvite({
+    identity: identity(), events: eventStore, store,
+    now: () => "2026-08-24T00:00:00.000Z", nextId: () => "invite-one",
+    issueToken: () => token, hashToken: (value) => `hash:${value}`,
+    assertedEmailHmac: async () => `hmac-sha256:${"a".repeat(64)}`,
+  }).execute({
+    companyId, email: "jordan@example.com", departmentId: "operations",
+    title: "Lead", role: "viewer",
+  });
+  await assert.rejects(new AcceptHumanInvite({
+    events: eventStore, store, now: () => "2026-08-24T01:00:00.000Z",
+    nextId: () => "generated", hashToken: (value) => `hash:${value}`,
+  }).execute({
+    token,
+    user: {
+      id: "attacker", name: "Other", email: "feishu-attacker@identity.invalid",
+      assertedEmailHmac: `hmac-sha256:${"b".repeat(64)}`,
+    },
+  }), /HUMAN_INVITE_IDENTITY_MISMATCH/);
+  assert.equal(store.accepted, null);
+});

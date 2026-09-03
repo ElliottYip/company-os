@@ -1,0 +1,82 @@
+:root {
+  --family-canvas: #fff;
+  --family-ink: #262724;
+  --family-ink-muted: #666861;
+  --family-ink-faint: #8b8d85;
+  --family-line: #e8e8e4;
+  --family-line-strong: #d7d8d2;
+  font-family: "Inter Variable", Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--family-ink);
+  background: #fff;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+html, body { max-width: 100%; min-height: 100%; overflow-x: hidden; }
+body { min-width: 320px; min-height: 100vh; margin: 0; background: #fff; }
+button, input, select { font: inherit; }
+button { border: 0; }
+.family-kicker { margin: 0; color: var(--family-ink-faint); font-size: 11px; font-weight: 600; line-height: 1.4; }
+
+.tenant-onboarding { min-height: 100vh; background: #f7f7f4; color: var(--family-ink); }
+.tenant-onboarding [hidden] { display: none !important; }
+.tenant-onboarding-header { display: flex; height: 64px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--family-line); background: #fff; padding: 0 28px; }
+.tenant-onboarding-header a { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+.tenant-onboarding-header a span { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--family-line); border-radius: 8px; font-size: 11px; font-weight: 760; }
+.tenant-onboarding-header strong { font-size: 13px; }
+.tenant-onboarding-header small { color: var(--family-ink-faint); font-size: 11px; }
+.tenant-onboarding-layout { display: grid; width: min(100% - 40px, 1040px); margin: 0 auto; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); gap: 56px; padding: 64px 0 80px; }
+.tenant-onboarding-intro h1 { margin: 8px 0 0; font-size: 42px; line-height: 1.05; letter-spacing: -.045em; }
+.tenant-onboarding-intro > p:not(.family-kicker) { margin: 18px 0 0; color: var(--family-ink-muted); font-size: 14px; line-height: 1.65; }
+.tenant-mode-picker { display: grid; gap: 8px; margin-top: 28px; }
+.tenant-mode-picker button { display: grid; gap: 5px; border: 1px solid var(--family-line); border-radius: 9px; background: #fff; padding: 15px 16px; color: inherit; text-align: left; cursor: pointer; }
+.tenant-mode-picker button[aria-checked="true"] { border-color: #2d2f2c; box-shadow: inset 3px 0 #2d2f2c; }
+.tenant-mode-picker button strong { font-size: 13px; }
+.tenant-mode-picker button span { color: var(--family-ink-muted); font-size: 11px; line-height: 1.5; }
+.tenant-mode-picker button:focus-visible,
+.tenant-onboarding-form-panel button:focus-visible,
+.tenant-onboarding-form-panel input:focus-visible,
+.tenant-onboarding-form-panel select:focus-visible,
+.tenant-onboarding-result a:focus-visible { outline: 2px solid #6650e7; outline-offset: 2px; }
+.tenant-security-note { margin-top: 24px; border-top: 1px solid var(--family-line); padding-top: 18px; }
+.tenant-security-note strong { font-size: 12px; }
+.tenant-security-note p { margin: 6px 0 0; color: var(--family-ink-muted); font-size: 11px; line-height: 1.6; }
+.tenant-onboarding-form-panel { align-self: start; border: 1px solid var(--family-line); border-radius: 12px; background: #fff; padding: 28px; }
+.tenant-onboarding-form-panel form { display: grid; gap: 16px; }
+.tenant-onboarding-form-panel h2 { margin: -8px 0 4px; font-size: 22px; letter-spacing: -.025em; }
+.tenant-onboarding-form-panel label { display: grid; gap: 7px; font-size: 11px; font-weight: 680; }
+.tenant-onboarding-form-panel label small, .tenant-form-boundary { margin: 0; color: var(--family-ink-faint); font-size: 10px; font-weight: 450; line-height: 1.5; }
+.tenant-onboarding-form-panel input, .tenant-onboarding-form-panel select { min-height: 42px; border: 1px solid var(--family-line-strong); border-radius: 8px; background: #fff; padding: 0 12px; color: inherit; font: inherit; }
+.tenant-onboarding-form-panel form > button,
+.tenant-onboarding-result button,
+.tenant-onboarding-result a { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; border: 1px solid #2d2f2c; border-radius: 8px; background: #2d2f2c; padding: 0 16px; color: #fff; font-size: 12px; font-weight: 680; text-decoration: none; cursor: pointer; }
+.tenant-onboarding-form-panel button:disabled { cursor: wait; opacity: .55; }
+.tenant-onboarding-result { display: grid; gap: 7px; margin-top: 20px; border-top: 1px solid var(--family-line); padding-top: 18px; }
+.tenant-onboarding-result strong { font-size: 13px; }
+.tenant-onboarding-result p { margin: 0; color: var(--family-ink-muted); font-size: 11px; line-height: 1.55; }
+.tenant-callback-field { display: grid; gap: 7px; margin-top: 6px; font-size: 11px; font-weight: 680; }
+.tenant-callback-field input { width: 100%; min-height: 42px; border: 1px solid var(--family-line-strong); border-radius: 8px; background: var(--family-canvas); padding: 0 12px; color: var(--family-ink); font: 500 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.tenant-onboarding-result .tenant-copy-callback { margin-top: 0; border-color: var(--family-line-strong); background: #fff; color: var(--family-ink); }
+.tenant-onboarding-result[data-kind="error"] strong { color: #984432; }
+.tenant-onboarding-result button, .tenant-onboarding-result a { margin-top: 6px; }
+
+.tenant-activation { display: grid; min-height: 100vh; place-items: center; background: #f7f7f4; padding: 24px; color: var(--family-ink); }
+.tenant-activation > section { width: min(100%, 560px); border: 1px solid var(--family-line); border-radius: 16px; background: #fff; padding: clamp(28px, 6vw, 56px); box-shadow: 0 24px 80px rgb(45 47 44 / 8%); }
+.tenant-activation > section > a { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 48px; color: inherit; text-decoration: none; }
+.tenant-activation > section > a span { display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid var(--family-line); border-radius: 9px; font-size: 11px; font-weight: 760; }
+.tenant-activation h1 { margin: 8px 0 12px; font-size: 34px; letter-spacing: -.035em; }
+.tenant-activation [data-tenant-activation-detail] { color: var(--family-ink-muted); font-size: 13px; line-height: 1.6; }
+.tenant-activation [data-tenant-activation-action] button { min-height: 42px; margin-top: 18px; border: 1px solid #2d2f2c; border-radius: 8px; background: #2d2f2c; padding: 0 16px; color: #fff; font: inherit; font-size: 12px; font-weight: 680; cursor: pointer; }
+.tenant-activation [data-tenant-activation-action] button:focus-visible { outline: 2px solid #6650e7; outline-offset: 2px; }
+
+@media (max-width: 960px) {
+  .tenant-onboarding-layout { grid-template-columns: 1fr; gap: 32px; padding-top: 42px; }
+  .tenant-onboarding-intro { max-width: 680px; }
+}
+
+@media (max-width: 680px) {
+  .tenant-onboarding-header { padding-inline: 16px; }
+  .tenant-onboarding-layout { width: min(100% - 32px, 1040px); padding: 32px 0 56px; }
+  .tenant-onboarding-intro h1 { font-size: 34px; }
+  .tenant-onboarding-form-panel { padding: 22px 18px; }
+}
