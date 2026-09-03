@@ -57,10 +57,11 @@ Implementation entries are appended as each batch is completed.
 41. Workspace navigation now reuses a shared projection, deduplicates concurrent Agent Boss reads, revalidates stale data in the background and rejects obsolete render generations. Mutations still force an authoritative refresh, so the speedup does not weaken data freshness after writes.
 42. Evidence records now separate digest, source and timestamp into semantic scan fields with mono technical typography and a narrow-screen stack. The read-only drawer contract and evidence-admission authority remain unchanged.
 43. Release qualification now binds the Web bundle to its source revision through a generated asset-hash manifest and matching OCI label. Public acceptance can reject a server that has silently rolled back to an older UI even when the API remains healthy.
+44. The first RC30 production browser probe exposed a rolling-deployment compatibility gap: the existing verified identity adapter projects generic OAuth2 while the new Web validator accepted OIDC only. The Web was rolled back immediately, then the provider-neutral access type and adapter validation were narrowed to the explicit `OIDC | OAUTH2` union without changing authenticated-session, capability or blocker invariants. RC31 passed full qualification and was promoted as a Web-only image; production browser acceptance then covered Goals, Usage, Organization, Agents, Tasks, Settings, centered creation modals and right-edge detail drawers.
 
 ## Safety and dependency record
 
-- No `core`, `ports`, `application`, Connector SDK, Runtime, credential, DNS/TLS or deployment behavior changed.
+- No `core`, `ports`, Connector SDK, Runtime, credential, DNS/TLS or authority behavior changed. The application access-status type gained only the provider-neutral OAuth2 protocol alternative already emitted by the verified formal adapter.
 - Demo actions remain deterministic, session-isolated and explicitly labelled as no-external-call fixtures.
 - Approval authority, exact-action binding, evidence admission, responsibility ownership and renewal semantics are unchanged.
 - No Paperclip, Raft host or vendor concept was added to inward layers.

@@ -46,14 +46,15 @@ This pass adds two explicit rules:
 ## Verification
 
 - npm run typecheck: passed.
-- npm run build: passed; built CSS index-C3jPEJe0.css, JS index-DiqETFNf.js.
-- npm test: 760 passed, 4 skipped, 0 failed.
+- npm run build: passed; final RC31 assets are CSS index-C3jPEJe0.css and JS index-BZAGj_E-.js.
+- npm test: 761 passed, 4 skipped, 0 failed.
 - npm run check:boundaries: passed.
 - Focused UI/deployment tests: 49 passed, 0 failed.
 - npm run test:e2e -- tests/e2e/ui-consistency.spec.ts: 13 passed, covering English and Chinese at 1440, 1024, 768 and 320px; modal centering, drawer placement, focus return, Escape behavior, fish playback and overflow checks.
 - In-app browser: local workspace pages were walked from a fresh five-step setup; Settings switch measured 269ms and secondary-page structure was inspected after the cache fix.
 - npm run verify: passed end-to-end. The final browser phase ran 36 tests: 31 passed, 5 environment-gated suites skipped, 0 failed.
-- Public source-manifest acceptance remains the promotion gate recorded below.
+- The authenticated production browser reached Dashboard, Goals, Usage & Billing, Organization, Agents, Tasks and Settings after promotion. Cached page-title visibility measured 288–293ms including browser automation overhead.
+- At the 1000 × 906 live browser viewport, the Add Agent modal measured 576 × 626px, was centered to 0px delta on both axes and had no viewport overflow. The Human detail drawer measured 560 × 906px, was pinned to the right edge and had no overflow.
 
 ## Visual evidence
 
@@ -67,6 +68,19 @@ Accepted local after evidence:
 - output/ui-audit-2026-09-03-after/05-usage-stable-1488.jpg
 - output/playwright/ui-consistency-refinement-after/ for the complete 1440/1024 Chinese/English secondary-flow matrix
 
+Accepted production RC31 evidence:
+
+- output/ui-audit-2026-09-03-live-after-rc31/01-settings-1000.png
+- output/ui-audit-2026-09-03-live-after-rc31/02-goals-1000.png
+- output/ui-audit-2026-09-03-live-after-rc31/03-usage-1000.png
+- output/ui-audit-2026-09-03-live-after-rc31/04-add-agent-modal-1000.png
+- output/ui-audit-2026-09-03-live-after-rc31/05-human-drawer-1000.png
+
 ## Release acceptance
 
-Pending a new immutable release and Web-only promotion to the existing formal deployment. Promotion must preserve the formal API, database, credentials, identity, traffic and security boundaries. Acceptance requires the live HTML asset hashes and build-manifest.json source revision to match the promoted release.
+- RC30 qualification and publication succeeded, but its first production browser probe rejected the existing formal access projection because the Web client accepted OIDC only while the verified production identity adapter reports generic OAuth2. The Web-only change was immediately rolled back to the preserved compose backup; the previous container returned healthy before compatibility work continued.
+- The compatibility repair accepts only the explicit `OIDC` and `OAUTH2` protocol values while retaining the existing authenticated-session, capability and blocker invariants. A regression test covers the production-shaped OAuth2 access projection. No vendor name or credential is introduced into core/application behavior.
+- RC31 release: `v0.1.0-rc.31`; source revision `d39f72ad3ded18f28188104f63b136fb5b3987f9`; qualification run `33714871782`, qualify and publish both successful.
+- Promoted Web image: `ghcr.io/elliottyip/company-os-web@sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8`.
+- Public HTML serves `index-C3jPEJe0.css` and `index-BZAGj_E-.js`. Public `build-manifest.json` reports the same RC31 source revision.
+- Only the formal compose `web.image` line changed. API, database, credentials, identity configuration, Nginx, DNS/TLS, traffic boundary and Runtime remained unchanged. The promoted Web container is running and healthy.
