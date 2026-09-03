@@ -88,7 +88,11 @@ async function expectSharedTypographyContract(page: Page): Promise<void> {
     const rootStyle = getComputedStyle(root);
     const sizeTokens = [
       "--type-page-title", "--type-detail-title", "--type-section-title", "--type-panel-title", "--type-body",
-      "--type-control", "--type-supporting", "--type-label", "--type-micro", "--type-metric",
+      "--type-control", "--type-supporting", "--type-label", "--type-micro", "--type-metric", "--type-visual-label",
+    ];
+    const leadingTokens = [
+      "--leading-title", "--leading-display", "--leading-display-tight", "--leading-display-compact",
+      "--leading-lead", "--leading-body", "--leading-compact", "--leading-metric", "--leading-icon", "--leading-none",
     ];
     const probe = document.createElement("span");
     probe.hidden = true;
@@ -101,15 +105,18 @@ async function expectSharedTypographyContract(page: Page): Promise<void> {
     const allowedWeights = new Set([
       "--weight-regular", "--weight-medium", "--weight-semibold", "--weight-bold",
     ].map((token) => rootStyle.getPropertyValue(token).trim()));
+    const allowedLeading = leadingTokens.map((token) => Number.parseFloat(rootStyle.getPropertyValue(token)));
     const elements = main.querySelectorAll<HTMLElement>("h1, h2, h3, p, strong, small, button, a, dt, dd, label, input, textarea, select");
     const invalid = [...elements].filter((element) => {
       const rect = element.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0 || element.getAttribute("aria-hidden") === "true") return false;
       const style = getComputedStyle(element);
-      return style.fontFamily !== rootStyle.fontFamily || !allowedSizes.has(style.fontSize) || !allowedWeights.has(style.fontWeight);
+      const lineRatio = Number.parseFloat(style.lineHeight) / Number.parseFloat(style.fontSize);
+      const hasAllowedLeading = (element.tagName === "SELECT" && style.lineHeight === "normal") || allowedLeading.some((value) => Math.abs(value - lineRatio) <= 0.02);
+      return style.fontFamily !== rootStyle.fontFamily || !allowedSizes.has(style.fontSize) || !allowedWeights.has(style.fontWeight) || !hasAllowedLeading;
     }).map((element) => {
       const style = getComputedStyle(element);
-      return { tag: element.tagName, text: element.textContent?.trim().slice(0, 40), fontFamily: style.fontFamily, fontSize: style.fontSize, fontWeight: style.fontWeight };
+      return { tag: element.tagName, text: element.textContent?.trim().slice(0, 40), fontFamily: style.fontFamily, fontSize: style.fontSize, fontWeight: style.fontWeight, lineHeight: style.lineHeight };
     });
     return { railFamily: getComputedStyle(rail).fontFamily, mainFamily: getComputedStyle(main).fontFamily, rootFamily: rootStyle.fontFamily, invalid };
   });

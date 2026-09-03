@@ -64,6 +64,7 @@ Implementation entries are appended as each batch is completed.
 48. Organization create/edit modals now have explicit fixed header, independently scrolling body and fixed footer regions. Focus and viewport resize keep the active field visible above the footer, covering the previously failing 1024×600 and 768×400 Agent editor cases.
 49. Approval decision notes span the record content columns, and the Agent empty state provides a keyboard-operable continuation to Organization while preserving the existing identity, Connector, responsibility and execution boundaries.
 50. The Dashboard recent-Work register now applies progressive disclosure at tablet and phone widths instead of allowing technical Agent identifiers to wrap into letter fragments. The dedicated Work page remains the complete record surface.
+51. Visual consistency is now mechanically enforced across all shipped Web styles. Text can consume only semantic type, weight and leading tokens; icon glyphs use a separate scale; responsive CSS can consume only the documented breakpoint set; page-level negative margins and loss of the centered content lane fail verification. Computed browser checks independently audit the visible result in Chinese and English.
 
 ## Safety and dependency record
 

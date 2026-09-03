@@ -26,7 +26,9 @@ The `.family-ui` root owns the inherited family, body size, regular weight and b
 
 Locale order is part of the contract, not an implementation accident. English and Chinese use Generator's single `SF Pro Text`, PingFang, Hiragino and YaHei fallback chain. Locale changes copy and wrapping but never switch the Latin/numeric font priority between the rail and working lane. Technical references alone use the declared IBM Plex/SF Mono fallback chain.
 
-Weights are limited to 400, 500 and 600 through `--weight-regular`, `--weight-medium`, `--weight-semibold`, and the 600 alias `--weight-bold`. Line heights are 1.05 display, 1.3 title, 1.5 body and 1.35 compact. Numeric metrics and timestamps use tabular numerals. Raw sizes are reserved for non-text icons and illustration geometry; every meaningful label in the Office and Workforce views also consumes semantic type tokens.
+Weights are limited to 400, 500 and 600 through `--weight-regular`, `--weight-medium`, `--weight-semibold`, and the 600 alias `--weight-bold`. Line heights are named roles as well: display, title, lead, body, compact, metric and icon. Numeric metrics and timestamps use tabular numerals. Icon glyph sizes use the separate `--icon-glyph-*` scale so they can never become an accidental text role. Every meaningful label in the Office and Workforce views consumes semantic type tokens.
+
+This hierarchy is a build contract rather than guidance. `npm run check:web-visual-contract` scans every shipped Web stylesheet and fails on raw `font-size`, `font-weight`, `line-height`, uncontracted responsive breakpoints, page-level negative margins, a missing centered page lane, or deletion of a required token. Browser E2E independently checks the computed font family, semantic size, weight and line-height of every visible heading, paragraph, label, control and table cell in both languages. Native selects are the sole computed-line-height exception because Chromium reports `normal` even when the shared declared leading is present; their family, size, weight and control height remain verified.
 
 ## Spacing, density and shape
 
@@ -61,3 +63,5 @@ The analytical work canvas is cool gray `#f6f7f9`; navigation and primary data s
 - 760px and below: compact overlay behavior; drawers become full-width sheets.
 - 560px and below: safety labels remain complete, page safety badges stack below title copy and navigation uses short visible labels with full accessible names.
 - English and Chinese share identical roles and spacing; copy length changes wrapping, not the hierarchy.
+
+The only admitted CSS breakpoints are 1180 (wide action/tool grids), 1080 (two-column work surfaces), 960 (specialized office canvas), 860/861 (rail-to-compact shell boundary), 760 (overlay/tablet contract), 680 (narrow organization actions), 560 (phone contract), and 420 (small-phone overlay contract). A page may consume an existing breakpoint but may not invent another one.
