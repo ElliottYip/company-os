@@ -136,6 +136,7 @@ test("production images are pinned, non-root, health checked, and independently 
   assert.match(web, /COPY scripts\/check-built-web-runtime-config-order\.mjs/);
   assert.match(web, /COPY scripts\/write-web-build-manifest\.mjs/);
   assert.match(web, /org\.opencontainers\.image\.revision/);
+  assert.match(await read("scripts/write-web-build-manifest.mjs"), /readdir\(directory, \{ withFileTypes: true \}\)/);
   assert.match(api, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   assert.match(ops, /npm ci --omit=dev --omit=optional --ignore-scripts/);
   const packageJson = JSON.parse(packageJsonSource);
