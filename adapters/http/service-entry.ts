@@ -423,6 +423,10 @@ const tenantAuthHandler = multiTenantSaasEnabled ? (() => {
     source: new PostgresTenantAuthBindingSource(database.db),
     envelope: tenantSecretEnvelope!,
     assertedEmailHmacKey: tenantMasterKeyMaterial!.key,
+    ...(identityProvider === "FEISHU" && formalConfiguration.feishuTenantKey ? {
+      legacyTenantDigest: `sha256:${createHash("sha256")
+        .update(formalConfiguration.feishuTenantKey).digest("hex")}`,
+    } : {}),
     createHandler(configuration) {
       return createCompanyAuthWebHandler(createCompanyAuth(database.db, configuration));
     },
@@ -431,7 +435,7 @@ const tenantAuthHandler = multiTenantSaasEnabled ? (() => {
     authBaseUrl: formalConfiguration.publicBaseUrl,
     webBaseUrl,
     ...resolver,
-    legacyHandle: async () => new Response(null, { status: 404 }),
+    legacyHandle: createCompanyAuthWebHandler(auth),
   });
 })() : null;
 const accessDirectory = database ? createCompanyAccessDirectory(database.db) : null;

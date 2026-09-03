@@ -10,6 +10,7 @@ export interface TenantAuthRuntime {
 export interface TenantAuthRouteResolver {
   resolveBySlug(slug: string): Promise<TenantAuthRuntime | null>;
   resolveByProviderId(providerId: string): Promise<TenantAuthRuntime | null>;
+  resolveLegacyBySlug?(slug: string): Promise<boolean>;
 }
 
 export function isTenantAuthPath(pathname: string): boolean {
@@ -67,6 +68,19 @@ export function createTenantAuthRequestRouter(input: TenantAuthRouteResolver & {
       }
       const slug = signInMatch[1]!;
       if (!TENANT_SLUG.test(slug)) return notFound();
+      if (input.resolveLegacyBySlug && await input.resolveLegacyBySlug(slug)) {
+        const headers = new Headers(request.headers);
+        headers.set("content-type", "application/json; charset=utf-8");
+        headers.delete("content-length");
+        return input.legacyHandle(new Request(`${authBaseUrl}/api/auth/sign-in/oauth2`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            providerId: "feishu",
+            callbackURL: `${webBaseUrl}/${slug}/`,
+          }),
+        }));
+      }
       const runtime = await input.resolveBySlug(slug);
       if (!active(runtime, { slug })) return notFound();
       const headers = new Headers(request.headers);

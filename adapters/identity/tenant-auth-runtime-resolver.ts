@@ -71,6 +71,7 @@ export function createTenantAuthRuntimeResolver(input: {
     }): string;
   };
   readonly assertedEmailHmacKey: Buffer;
+  readonly legacyTenantDigest?: string;
   readonly createHandler: (configuration: CompanyFeishuConfiguration) =>
     (request: Request) => Promise<Response>;
   readonly now?: () => string;
@@ -115,6 +116,14 @@ export function createTenantAuthRuntimeResolver(input: {
   }
 
   return {
+    async resolveLegacyBySlug(slug) {
+      if (!TENANT_SLUG.test(slug) || !input.legacyTenantDigest ||
+          !TENANT_DIGEST.test(input.legacyTenantDigest)) return false;
+      const material = await input.source.findBySlug(slug);
+      return material?.slug === slug && material.registrationStatus === "COMPLETED" &&
+        material.bindingStatus === "active" && material.companyId !== null &&
+        valid(material, now()) && material.tenantDigest === input.legacyTenantDigest;
+    },
     async resolveBySlug(slug) {
       const material = await input.source.findBySlug(slug);
       return material?.slug === slug ? build(material) : null;

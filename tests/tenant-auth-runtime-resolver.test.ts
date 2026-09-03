@@ -126,3 +126,37 @@ test("runtime resolver rejects expired or incoherent binding and registration st
     assert.equal(await resolver.resolveBySlug("alpha-company"), null);
   }
 });
+
+test("legacy resolution requires an active completed binding with the configured tenant digest", async () => {
+  const legacy = {
+    ...material("legacy-company", "legacy"),
+    registrationStatus: "COMPLETED",
+    companyId: "company-legacy",
+    bindingStatus: "active",
+  };
+  const resolver = createTenantAuthRuntimeResolver({
+    authBaseUrl: "https://api.company.example",
+    sessionSecret: fixtureMaterial("session"),
+    envelope,
+    now: () => "2026-09-03T06:05:00.000Z",
+    legacyTenantDigest: legacy.tenantDigest,
+    source: {
+      findBySlug: async (slug) => slug === legacy.slug ? legacy : null,
+      findByProviderId: async () => null,
+    },
+    createHandler: () => async () => new Response(),
+  });
+  assert.equal(await resolver.resolveLegacyBySlug?.("legacy-company"), true);
+  assert.equal(await resolver.resolveLegacyBySlug?.("other-company"), false);
+
+  const wrongDigest = createTenantAuthRuntimeResolver({
+    authBaseUrl: "https://api.company.example",
+    sessionSecret: fixtureMaterial("session"),
+    envelope,
+    now: () => "2026-09-03T06:05:00.000Z",
+    legacyTenantDigest: `sha256:${"f".repeat(64)}`,
+    source: { findBySlug: async () => legacy, findByProviderId: async () => null },
+    createHandler: () => async () => new Response(),
+  });
+  assert.equal(await wrongDigest.resolveLegacyBySlug?.("legacy-company"), false);
+});

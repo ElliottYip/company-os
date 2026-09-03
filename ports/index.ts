@@ -27,6 +27,7 @@ export * from "./company-restore-store-port.ts";
 export * from "./company-lifecycle-store-port.ts";
 export * from "./company-structure-port.ts";
 export * from "./human-invite-store-port.ts";
+export * from "./legacy-tenant-bootstrap-store-port.ts";
 export * from "./responsibility-contract-port.ts";
 export * from "./secret-broker-port.ts";
 export * from "./secret-broker-management-port.ts";

@@ -41,6 +41,7 @@
     "ops:doctor:staging": "node --experimental-strip-types scripts/staging-deployment-doctor.ts",
     "ops:validate:staging-dependencies": "node --experimental-strip-types scripts/validate-staging-dependencies.ts",
     "ops:verify:feishu-directory": "node --experimental-strip-types scripts/verify-feishu-directory.ts",
+    "ops:bootstrap:legacy-tenant-route": "node --experimental-strip-types scripts/bootstrap-legacy-tenant-route.ts",
     "ops:generate:tenant-signup-invites": "node --experimental-strip-types scripts/generate-tenant-signup-invites.ts",
     "ops:smoke:multi-tenant-public": "node --experimental-strip-types scripts/smoke-multi-tenant-public.ts",
     "ops:status:staging": "node --experimental-strip-types scripts/inspect-staging-runtime.mjs",

@@ -48,6 +48,33 @@ test("tenant sign-in resolves exactly one active binding and fixes provider and 
   assert.equal(alphaCalls[0]!.headers.get("origin"), "https://company.example");
 });
 
+test("an explicitly verified legacy tenant slug reuses the static Feishu identity", async () => {
+  const legacyCalls: Request[] = [];
+  const router = createTenantAuthRequestRouter({
+    authBaseUrl: "https://api.company.example",
+    webBaseUrl: "https://company.example",
+    resolveLegacyBySlug: async (slug) => slug === "legacy-company",
+    resolveBySlug: async () => { throw new Error("DYNAMIC_RUNTIME_MUST_NOT_BE_USED"); },
+    resolveByProviderId: async () => null,
+    legacyHandle: async (request) => {
+      legacyCalls.push(request);
+      return Response.json({ ok: true });
+    },
+  });
+
+  const response = await router(new Request(
+    "https://api.company.example/t/legacy-company/sign-in",
+    { method: "POST" },
+  ));
+  assert.equal(response.status, 200);
+  assert.equal(legacyCalls.length, 1);
+  assert.equal(new URL(legacyCalls[0]!.url).pathname, "/api/auth/sign-in/oauth2");
+  assert.deepEqual(await legacyCalls[0]!.json(), {
+    providerId: "feishu",
+    callbackURL: "https://company.example/legacy-company/",
+  });
+});
+
 test("binding-specific callbacks never fall back to another tenant or the legacy provider", async () => {
   const alphaCalls: Request[] = [];
   const betaCalls: Request[] = [];
