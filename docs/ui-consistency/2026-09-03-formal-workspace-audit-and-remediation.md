@@ -84,3 +84,20 @@ Accepted production RC31 evidence:
 - Promoted Web image: `ghcr.io/elliottyip/company-os-web@sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8`.
 - Public HTML serves `index-C3jPEJe0.css` and `index-BZAGj_E-.js`. Public `build-manifest.json` reports the same RC31 source revision.
 - Only the formal compose `web.image` line changed. API, database, credentials, identity configuration, Nginx, DNS/TLS, traffic boundary and Runtime remained unchanged. The promoted Web container is running and healthy.
+
+## RC31 alignment follow-up
+
+The second audit pass was triggered by a production annotation on the Dashboard event row and expanded across every primary and secondary workspace at 1438, 1024 and 768px. Three independent read-only audits found no P0 issue and confirmed the following P1 gaps in RC31:
+
+| ID | Surface | RC31 gap | Follow-up contract |
+| --- | --- | --- | --- |
+| A-001 | Dashboard event feed | Avatar, time, event code and status were four unrelated columns; the summary inherited a different optical anchor. | Three-column record row: avatar, one content anchor, end status. Code and time share a metadata baseline; summary begins on the same left edge. |
+| A-002 | Tasks / detail | A page-local `margin: 0` overrode the shared centered stage on wide screens. | Every page and detail stage uses the same centered max-width lane. |
+| A-003 | 561–860px workspaces | Negative margins were applied to whole pages while selected children added back only one gutter, producing asymmetric width and title/body drift. | The stage, title, tabs and first surface retain the same 16px viewport gutter; edge-to-edge behavior may only be applied symmetrically to an inner surface. |
+| A-004 | Goal / Project creation | The four-column minimum width exceeded the 900px work lane and was hidden by global overflow clipping. | Creation forms reflow to two columns at 1080px and one column at 560px; inputs, selects and action buttons share the comfortable control height. |
+| A-005 | Add Agent | A sticky footer could cover the final select in a short or newly resized viewport. | Organization editors use fixed header/body/footer regions; only the body scrolls, and focus plus viewport resize keep the active control above the footer. |
+| A-006 | Activity / approvals / Agent empty state | Full ISO timestamps wrapped, approval notes auto-placed into the avatar column, and the empty Agent page had no continuation action. | Visible activity time is a compact UTC label with full `datetime`; notes span the content columns; the empty state links to Organization without bypassing creation safeguards. |
+| A-007 | Usage | Tablet metrics collapsed too early and two generic 220px empty panels dominated the page. | Three metrics remain horizontal through tablet widths and collapse only at 560px; data-list empty states keep the bounded product density. |
+| A-008 | Dashboard recent Work | The six-column register technically fit at tablet width but left Agent identifiers wrapping into unreadable fragments. | Tablet keeps Work, mode, cost and status; phone keeps Work and status. Hidden secondary columns remain available on the dedicated Work page. |
+
+Before evidence is stored in `output/ui-audit-2026-09-03-alignment-pass2-before/`, `output/ui-audit-2026-09-03-rc31-alignment/`, and `output/audit-2026-09-03-company-secondary-rc31/`. The complete English/Chinese after matrix is stored in `output/playwright/ui-consistency-refinement-after/` (120 screenshots). Follow-up browser tests assert title/surface edge equality, symmetric gutters, compact-form containment, short-window focused-control visibility, modal centering, drawer pinning, typography inheritance and horizontal-overflow absence. `npm run verify` passes with 761 unit/static tests admitted (4 skipped by contract) and 31 browser E2E scenarios passed (5 environment-specific scenarios skipped).

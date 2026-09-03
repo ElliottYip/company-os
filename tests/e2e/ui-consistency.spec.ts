@@ -267,6 +267,14 @@ for (const configuration of [
     await page.getByRole("button", { name: labels.continue }).click();
     await page.getByRole("button", { name: labels.createCompany }).click();
 
+    const pageTitle = await page.locator(".control-page-title").boundingBox();
+    const firstSurface = await page.locator(".organization-toolbar").boundingBox();
+    expect(pageTitle).not.toBeNull();
+    expect(firstSurface).not.toBeNull();
+    expect(Math.abs((pageTitle?.x ?? 0) - (firstSurface?.x ?? 0))).toBeLessThanOrEqual(1);
+    expect(Math.abs((width - ((pageTitle?.x ?? 0) + (pageTitle?.width ?? 0))) - (width - ((firstSurface?.x ?? 0) + (firstSurface?.width ?? 0))))).toBeLessThanOrEqual(1);
+    await expectNoHorizontalOverflow(page);
+
     const humanTrigger = page.getByRole("button", { name: labels.viewHuman }).first();
     await humanTrigger.click();
     const drawer = page.getByRole("dialog");
@@ -299,10 +307,12 @@ for (const configuration of [
       for (const viewport of [
         { width: 1280, height: 900 },
         { width: 1024, height: 800 },
+        { width: 1024, height: 600 },
         { width: 900, height: 760 },
         { width: 861, height: 760 },
         { width: 860, height: 760 },
         { width: 768, height: 760 },
+        { width: 768, height: 400 },
         { width: 640, height: 700 },
         { width: 480, height: 700 },
         { width: 320, height: 640 },
@@ -312,6 +322,16 @@ for (const configuration of [
         const actions = await agentModal.getByRole("button", { name: labels.addAgent, exact: true }).boundingBox();
         expect(actions).not.toBeNull();
         expect((actions?.y ?? 0) + (actions?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+        if (viewport.height <= 600) {
+          const lastControl = agentModal.locator("select").last();
+          await lastControl.focus();
+          await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+          const controlBox = await lastControl.boundingBox();
+          const footerBox = await agentModal.locator("footer").boundingBox();
+          expect(controlBox).not.toBeNull();
+          expect(footerBox).not.toBeNull();
+          expect((controlBox?.y ?? 0) + (controlBox?.height ?? 0)).toBeLessThanOrEqual((footerBox?.y ?? 0) + 1);
+        }
       }
       await page.setViewportSize({ width: 1440, height: 900 });
     }

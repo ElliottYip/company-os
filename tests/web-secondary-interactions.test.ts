@@ -36,7 +36,7 @@ test("secondary detail surfaces share one field grid and one responsive edge con
 
 test("details use drawers while create, edit, restore and command flows use modals", () => {
   assert.match(mount, /colleague-detail-dialog family-overlay family-drawer/);
-  assert.match(mount, /editor-dialog family-overlay family-modal/);
+  assert.match(mount, /editor-dialog(?: editor-dialog--framed)? family-overlay family-modal/);
   assert.match(mount, /task-dialog family-overlay family-modal/);
   assert.match(mount, /command-palette family-overlay family-modal/);
   assert.match(mount, /company-restore-dialog family-overlay family-modal/);
@@ -81,7 +81,7 @@ test("page and administration forms keep actions at control height", () => {
   assert.match(operationalPages, /budget-policy-form/);
   assert.match(styles, /\.formal-work-form:has\(> \.form-grid\)[^}]*grid-template-columns:\s*1fr/);
   assert.match(styles, /\.formal-work-form > \.family-button[^}]*justify-self:\s*start/);
-  assert.match(styles, /\.budget-policy-form > \.family-button[^}]*min-height:\s*var\(--control-height\)/);
+  assert.match(styles, /\.budget-policy-form > \.family-button[^}]*min-height:\s*var\(--control-height-comfortable\)/);
 });
 
 test("people rows preserve the selected colleague when opening Organization", () => {

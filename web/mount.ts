@@ -251,8 +251,7 @@ function eventFeed(state: CompanyWorkState, compact = false): string {
     ? state.events
         .map(
           (event) => `<article class="event-row family-list-row" data-event-code="${escapeHtml(event.type)}">
-      <time>${event.occurredAt.slice(11, 19)}</time>
-      <div><strong>${escapeHtml(eventKind(event.type))}</strong><p>${escapeHtml(event.summary)}</p></div>
+      <div class="event-row-content"><div class="event-row-meta"><strong>${escapeHtml(eventKind(event.type))}</strong><time datetime="${escapeHtml(event.occurredAt)}">${event.occurredAt.slice(11, 19)}</time></div><p>${escapeHtml(event.summary)}</p></div>
       <span>${event.isFixture ? copy("FIXTURE", "演示") : copy("FORMAL", "正式")}</span>
     </article>`,
         )
@@ -501,28 +500,33 @@ function organizationView(
     <div role="tabpanel" data-org-panel="humans" hidden><div class="roster-list">${humans}</div></div>
     <div role="tabpanel" data-org-panel="agents" hidden><div class="roster-list">${agents}</div></div>
     ${humanDetails}${agentDetails}
-    <dialog class="editor-dialog family-overlay family-modal" data-department-dialog aria-labelledby="department-dialog-title">
+    <dialog class="editor-dialog editor-dialog--framed family-overlay family-modal" data-department-dialog aria-labelledby="department-dialog-title">
       <form method="dialog" data-department-form><header><div><p class="family-kicker">${copy("ORGANIZATION BOUNDARY", "组织边界")}</p><h2 id="department-dialog-title">${copy("Department", "部门")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+        <div class="editor-dialog-body">
         <input type="hidden" name="departmentId">
         <p>${copy("Departments scope people, Agents, work and data responsibility. Renaming never changes opaque IDs.", "部门用于界定成员、Agent、工作与数据责任范围；修改名称不会改变稳定 ID。")}</p>
         <label class="company-field">${copy("Department name", "部门名称")}<input class="company-form-control" name="name" required maxlength="120"></label>
         <label class="company-field">${copy("Mandate", "部门职责")}<textarea class="company-form-control" name="mandate" maxlength="2000" rows="4"></textarea></label>
         ${isFormal && organization.departments.length > 1 ? `<div class="department-archive-controls" data-department-archive-controls hidden><label class="company-field">${copy("Move records to", "转移到部门")}<select class="company-form-control" name="destinationDepartmentId">${departmentOptions}</select></label><label class="company-field">${copy("Archive reason", "归档原因")}<input class="company-form-control" name="archiveReason" maxlength="1000"></label><button class="family-button family-button--danger" type="button" data-archive-department>${copy("Archive and reassign", "归档并转移")}</button></div>` : ""}
+        </div>
         <footer><button class="family-button family-button--secondary" type="button" data-editor-close>${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit">${copy("Save department", "保存部门")}</button></footer>
       </form>
     </dialog>
-    <dialog class="editor-dialog family-overlay family-modal" data-human-dialog aria-labelledby="human-dialog-title">
+    <dialog class="editor-dialog editor-dialog--framed family-overlay family-modal" data-human-dialog aria-labelledby="human-dialog-title">
       <form method="dialog" data-human-form><header><div><p class="family-kicker">${copy("HUMAN PRINCIPAL", "公司成员")}</p><h2 id="human-dialog-title">${copy("Add an accountable human", "添加负责人")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+        <div class="editor-dialog-body">
         <p>${copy("A human holds organizational responsibility. An Agent's high-risk actions return to a matching human decision.", "真人承担组织责任。Agent 发起高风险操作时，必须由对应负责人审批。")}</p>
         ${isFormal ? `<label class="company-field">${copy("Enterprise email", "企业邮箱")}<input class="company-form-control" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="jordan@example.com"></label>` : `<label class="company-field">${copy("Name", "姓名")}<input class="company-form-control" name="name" required maxlength="120" autocomplete="name" placeholder="${copy("Example: Jordan Lee", "例如：陈晨")}"></label>`}
         <label class="company-field">${copy("Role and responsibility", "岗位与职责")}<input class="company-form-control" name="title" required maxlength="120" placeholder="${copy("Example: Customer Success Lead", "例如：客户成功负责人")}"></label>
         <label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${departmentOptions}</select></label>
         ${isFormal ? `<label class="company-field">${copy("Company role", "公司权限角色")}<select class="company-form-control" name="role"><option value="operator">${copy("Operator", "操作员")}</option><option value="viewer">${copy("Viewer", "只读成员")}</option><option value="admin">${copy("Admin", "管理员")}</option><option value="owner">${copy("Owner", "所有者")}</option></select></label>` : ""}
+        </div>
         <footer><button class="family-button family-button--secondary" type="button" data-editor-close>${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit">${copy("Add human", "添加真人成员")}</button></footer>
       </form>
     </dialog>
-    <dialog class="editor-dialog family-overlay family-modal" data-agent-dialog aria-labelledby="agent-dialog-title">
+    <dialog class="editor-dialog editor-dialog--framed family-overlay family-modal" data-agent-dialog aria-labelledby="agent-dialog-title">
       <form method="dialog" data-agent-form><header><div><p class="family-kicker">AGENT COLLEAGUE</p><h2 id="agent-dialog-title">${copy("Add an Agent colleague", "添加 Agent 同事")}</h2></div><button class="family-overlay-close" type="button" data-editor-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header>
+        <div class="editor-dialog-body">
         <p>${isDemo ? copy("This creates a simulated demo colleague. It never connects to a real model or execution system.", "这里创建的是模拟 Agent，不会连接真实模型或执行系统。") : copy("This creates a local draft. Runtime, model, permission, and data access remain disabled until separately verified.", "这里只创建本地草稿。运行环境、模型、权限和数据访问需要单独校验后才会启用。")}</p>
         <label class="company-field">${copy("Agent name", "Agent 名称")}<input class="company-form-control" name="name" required maxlength="120" placeholder="${copy("Example: Research Assistant", "例如：研究助理")}"></label>
         <label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" placeholder="${copy("Example: Market Research Agent", "例如：市场研究 Agent")}"></label>
@@ -530,6 +534,7 @@ function organizationView(
         <label class="company-field">${copy("Accountable human", "真人负责人")}<select class="company-form-control" name="accountableHumanId">${humanOptions}</select></label>
         ${isFormal ? `<label class="company-field">${copy("Runtime Connector", "运行 Connector")}<select class="company-form-control" name="runtimeConnectorId">${connectorOptions}</select></label>` : ""}
         <label class="company-field">${copy("Autonomy level", "自主等级")}<select class="company-form-control" name="autonomyLevel"><option value="1">${copy("L1 · Recommend only", "L1 · 仅提供建议")}</option><option value="2" selected>${copy("L2 · Execute low-risk actions", "L2 · 可执行低风险操作")}</option><option value="3">${copy("L3 · Act within explicit boundaries", "L3 · 可在明确边界内自主执行")}</option></select></label>
+        </div>
         <footer><button class="family-button family-button--secondary" type="button" data-editor-close>${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit">${copy("Add Agent", "添加 Agent")}</button></footer>
       </form>
     </dialog>
@@ -1002,6 +1007,14 @@ export function mountCompanyOS(
   root.lang = initialLocale;
   host.mountElement.replaceChildren(root);
   const dialogReturnTargets = new WeakMap<HTMLDialogElement, HTMLElement>();
+  const keepDialogControlVisible = (dialog: HTMLDialogElement, target: HTMLElement): void => {
+    if (!target.matches("input, textarea, select")) return;
+    const footer = dialog.querySelector<HTMLElement>("footer");
+    const scroller = target.closest<HTMLElement>(".editor-dialog-body") ?? target.closest<HTMLElement>("form");
+    if (!footer || !scroller) return;
+    const overlap = target.getBoundingClientRect().bottom - footer.getBoundingClientRect().top;
+    if (overlap > 0) scroller.scrollTop += overlap + 12;
+  };
   const showManagedDialog = (
     dialog: HTMLDialogElement | null | undefined,
     trigger?: HTMLElement | null,
@@ -1027,6 +1040,10 @@ export function mountCompanyOS(
         if (event.target === dialog && !dialog.hasAttribute("data-static-backdrop") && dialog.getAttribute("aria-busy") !== "true") {
           dialog.close();
         }
+      });
+      dialog.addEventListener("focusin", (event) => {
+        const target = event.target;
+        if (target instanceof HTMLElement) keepDialogControlVisible(dialog, target);
       });
     }
     if (!dialog.open) dialog.showModal();
@@ -1070,10 +1087,18 @@ export function mountCompanyOS(
   const handleFrontDoorFishPageShow = (event: PageTransitionEvent): void => {
     if (event.persisted) attemptFrontDoorFishPlayback();
   };
+  const handleViewportResize = (): void => {
+    const dialog = root.querySelector<HTMLDialogElement>("dialog[open]");
+    const target = document.activeElement;
+    if (dialog && target instanceof HTMLElement && dialog.contains(target)) {
+      requestAnimationFrame(() => keepDialogControlVisible(dialog, target));
+    }
+  };
   document.addEventListener("keydown", handleGlobalKeydown);
   document.addEventListener("pointerdown", handleGlobalPointerdown);
   document.addEventListener("visibilitychange", handleFrontDoorFishVisibility);
   window.addEventListener("pageshow", handleFrontDoorFishPageShow);
+  window.addEventListener("resize", handleViewportResize);
 
   const failureCopy = (failure: ReturnType<typeof formalWebFailure>): string => ({
     UNAUTHORIZED: copy("Sign in with your enterprise identity to continue.", "请先使用企业身份登录。"),
@@ -2606,6 +2631,7 @@ export function mountCompanyOS(
       document.removeEventListener("pointerdown", handleGlobalPointerdown);
       document.removeEventListener("visibilitychange", handleFrontDoorFishVisibility);
       window.removeEventListener("pageshow", handleFrontDoorFishPageShow);
+      window.removeEventListener("resize", handleViewportResize);
       host.mountElement.replaceChildren();
     },
   };

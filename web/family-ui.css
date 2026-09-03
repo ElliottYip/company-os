@@ -213,7 +213,8 @@
 .family-data-grid { overflow: hidden; border: 1px solid var(--family-line); border-radius: var(--family-radius-control); background: var(--family-surface); }
 .family-data-grid > * { border-right: 1px solid var(--family-line); border-bottom: 1px solid var(--family-line); }
 .family-field { display: grid; gap: 0.35rem; color: var(--family-ink-muted); font-size: var(--type-supporting); line-height: var(--leading-compact); }
-.family-control { width: 100%; border: 1px solid var(--family-line-strong); border-radius: var(--family-radius-control); background: var(--family-surface); color: var(--family-ink); padding: 0.625rem 0.7rem; }
+.family-control { width: 100%; min-height: var(--control-height-comfortable); border: 1px solid var(--family-line-strong); border-radius: var(--family-radius-control); background: var(--family-surface); color: var(--family-ink); padding: 0 var(--space-3); line-height: var(--leading-compact); }
+textarea.family-control { min-height: 6rem; padding-block: var(--space-3); line-height: var(--leading-body); }
 
 .family-overlay {
   z-index: var(--z-overlay);

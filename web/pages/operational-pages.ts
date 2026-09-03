@@ -75,6 +75,20 @@ function emptyState(title: string, description: string): string {
   return `<div class="product-empty-state"><strong>${title}</strong><p>${description}</p></div>`;
 }
 
+function activityTime(value: string, locale: CompanyOSLocale): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.valueOf())) return value;
+  return new Intl.DateTimeFormat(locale === "zh-CN" ? "zh-CN" : "en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  }).format(date);
+}
+
 export type InboxFilter = "needs-me" | "assigned" | "resolved";
 
 const TERMINAL_ATTEMPT_STATUSES = new Set(["SUCCEEDED", "FAILED", "CANCELLED", "TIMED_OUT"]);
@@ -242,7 +256,7 @@ export function agentsPage(
   };
   return `<section class="page-stage product-list-page" data-section="agents" aria-labelledby="agents-title">
     ${pageHeader("agents-title", c(locale, "AGENTS", "Agent"), c(locale, "Agent colleagues with equal Connector contracts and explicit human ownership.", "所有 Agent 通过统一的 Connector 合约接入，并明确绑定真人负责人。"), `${organization.agents.length}`)}
-    <section class="admin-surface product-list-surface">${organization.agents.map((agent) => { const running = agent.id === state.responsibility.executingAgentId && state.phase !== "READY"; const lifecycle = options.lifecycle.agents.find(({ agentId }) => agentId === agent.id); const contract = options.responsibilities.contracts.find(({ agentId }) => agentId === agent.id); const status = running ? "running" : lifecycle?.status ?? "pending_approval"; const reason = lifecycle?.eligibility.invokabilityReason ?? "pending_approval"; return `<article class="product-record-row product-record-row--static agent-lifecycle-row"><span class="record-monogram record-monogram--agent">AI</span><span><small>${escapeHtml(agent.runtimeConnectorId)}</small><strong>${escapeHtml(agent.name)}</strong><em>${escapeHtml(agent.role)} · ${c(locale, "accountable to", "真人负责人")} ${escapeHtml(principalName(organization, agent.accountableHumanId))}</em><small>${c(locale, "Invocation", "执行资格")}: ${escapeHtml(enumLabel(locale, reason))} · ${c(locale, "Responsibility", "责任合同")}: ${escapeHtml(enumLabel(locale, contract?.status ?? "MISSING"))}</small>${responsibilityPolicy(agent.id)}${transferForm(agent.id, agent.accountableHumanId)}</span><div class="agent-lifecycle-controls"><span class="status-pill ${running ? "status-pill--demo" : ""}">${escapeHtml(enumLabel(locale, status, true))}</span>${responsibilityAction(agent.id)}${actionButtons(agent.id, status)}</div></article>`; }).join("") || emptyState(c(locale, "No Agents yet", "暂无 Agent"), c(locale, "Add an Agent from Organization, then bind responsibility and runtime capabilities before execution.", "请先在组织页添加 Agent，再绑定责任合同与运行能力。"))}</section>
+    <section class="admin-surface product-list-surface">${organization.agents.map((agent) => { const running = agent.id === state.responsibility.executingAgentId && state.phase !== "READY"; const lifecycle = options.lifecycle.agents.find(({ agentId }) => agentId === agent.id); const contract = options.responsibilities.contracts.find(({ agentId }) => agentId === agent.id); const status = running ? "running" : lifecycle?.status ?? "pending_approval"; const reason = lifecycle?.eligibility.invokabilityReason ?? "pending_approval"; return `<article class="product-record-row product-record-row--static agent-lifecycle-row"><span class="record-monogram record-monogram--agent">AI</span><span><small>${escapeHtml(agent.runtimeConnectorId)}</small><strong>${escapeHtml(agent.name)}</strong><em>${escapeHtml(agent.role)} · ${c(locale, "accountable to", "真人负责人")} ${escapeHtml(principalName(organization, agent.accountableHumanId))}</em><small>${c(locale, "Invocation", "执行资格")}: ${escapeHtml(enumLabel(locale, reason))} · ${c(locale, "Responsibility", "责任合同")}: ${escapeHtml(enumLabel(locale, contract?.status ?? "MISSING"))}</small>${responsibilityPolicy(agent.id)}${transferForm(agent.id, agent.accountableHumanId)}</span><div class="agent-lifecycle-controls"><span class="status-pill ${running ? "status-pill--demo" : ""}">${escapeHtml(enumLabel(locale, status, true))}</span>${responsibilityAction(agent.id)}${actionButtons(agent.id, status)}</div></article>`; }).join("") || `<div class="product-empty-state"><strong>${c(locale, "No Agents yet", "暂无 Agent")}</strong><p>${c(locale, "Add an Agent from Organization, then bind responsibility and runtime capabilities before execution.", "请先在组织页添加 Agent，再绑定责任合同与运行能力。")}</p><button class="family-button family-button--primary" type="button" data-section-target="organization">${c(locale, "Go to Organization", "前往组织页")}</button></div>`}</section>
   </section>`;
 }
 
@@ -286,7 +300,7 @@ export function activityPage(
   const entries = formalActivity?.items.map((item) => ({ ...item, isFixture: false })) ?? state.events;
   return `<section class="page-stage product-list-page" data-section="activity" aria-labelledby="activity-title">
     ${pageHeader("activity-title", c(locale, "ACTIVITY", "动态"), c(locale, "Chronological structured events with stable codes and original record text.", "结构化事件按时间排列；事件代码和原始记录保持不变。"), `${state.events.length}`)}
-    <section class="admin-surface activity-timeline">${entries.length ? entries.map((event) => `<article><time>${escapeHtml(event.occurredAt)}</time><span class="activity-dot" aria-hidden="true"></span><div><small>${escapeHtml(event.type)}</small><strong>${escapeHtml(event.summary)}</strong><em>${event.isFixture ? c(locale, "Deterministic fixture", "确定性演示数据") : c(locale, "Formal event", "正式事件")}</em></div></article>`).join("") : emptyState(c(locale, "No activity yet", "尚无活动"), c(locale, "Activity appears after a goal is assigned or a company configuration changes.", "分配目标或公司配置发生变化后，活动会显示在这里。"))}</section>
+    <section class="admin-surface activity-timeline">${entries.length ? entries.map((event) => `<article><time datetime="${escapeHtml(event.occurredAt)}">${escapeHtml(activityTime(event.occurredAt, locale))}</time><span class="activity-dot" aria-hidden="true"></span><div><small>${escapeHtml(event.type)}</small><strong>${escapeHtml(event.summary)}</strong><em>${event.isFixture ? c(locale, "Deterministic fixture", "确定性演示数据") : c(locale, "Formal event", "正式事件")}</em></div></article>`).join("") : emptyState(c(locale, "No activity yet", "尚无活动"), c(locale, "Activity appears after a goal is assigned or a company configuration changes.", "分配目标或公司配置发生变化后，活动会显示在这里。"))}</section>
   </section>`;
 }
 

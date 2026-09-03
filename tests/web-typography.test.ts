@@ -165,6 +165,7 @@ test("organization secondary views keep one scan grid and reflow before the tabl
   assert.match(styles, /\.organization-people\s*\{\s*display:\s*grid;\s*\}/s);
   assert.match(styles, /\.colleague-row\s*\{[^}]*border-bottom:\s*1px solid var\(--family-line\);[^}]*border-radius:\s*0;/s);
   assert.match(styles, /@media \(max-width: 1180px\)[\s\S]*?\.control-page-title--actions\s*\{\s*flex-direction:\s*column;\s*\}[\s\S]*?\.organization-grid\s*\{\s*grid-template-columns:\s*1fr;\s*\}/);
+  assert.match(styles, /@media \(max-width: 860px\)[\s\S]*?\.portfolio-recent-work table\s*\{[^}]*table-layout:\s*fixed;[^}]*\}[\s\S]*?\.portfolio-recent-work th:nth-child\(3\),[\s\S]*?display:\s*none;/);
   assert.doesNotMatch(styles, /\.colleague-row:hover\s*\{\s*background:\s*#f8f8f6;/);
   assert.doesNotMatch(styles, /\.roster-row:hover\s*\{\s*background:\s*#fafaf8;/);
 });
@@ -210,9 +211,9 @@ test("primary shell copy never drops below the label size", () => {
 test("customer-facing text families use semantic size and weight roles", () => {
   for (const selector of [
     ".topbar p",
-    ".event-row time",
-    ".event-row div strong",
-    ".event-row div p",
+    ".event-row-meta time",
+    ".event-row-meta strong",
+    ".event-row-content > p",
     ".work-item-body h2",
     ".work-summary",
     ".work-facts dt, .contract-facts dt",
@@ -245,7 +246,7 @@ test("customer-facing text families use semantic size and weight roles", () => {
 });
 
 test("working surfaces do not fork the shared page geometry or component shape", () => {
-  assert.match(styles, /\.control-task-list, \.control-task-detail\s*\{[^}]*margin:\s*0;/s);
+  assert.match(styles, /\.control-task-list, \.control-task-detail\s*\{[^}]*margin:\s*0 auto;/s);
   assert.match(styles, /\.control-accountability, \.control-administration\s*\{[^}]*margin:\s*0;/s);
   assert.match(styles, /\.control-organization\s*\{[^}]*margin:\s*0;/s);
   assert.match(styles, /\.responsibility-policy-row\s*\{[^}]*border-radius:\s*var\(--family-radius-panel\)/s);
