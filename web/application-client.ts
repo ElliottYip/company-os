@@ -710,7 +710,7 @@ function formalAccessProjection(payload: unknown): FormalAccessStatus {
   if (!recordValue(payload) || payload.schemaVersion !== 1 || payload.mode !== "FORMAL" ||
       !["managed-cloud", "self-hosted"].includes(String(payload.deploymentProfile)) ||
       !["BLOCKED", "AUTHENTICATION_REQUIRED", "READY"].includes(String(payload.entryState)) ||
-      !recordValue(payload.identityProvider) || payload.identityProvider.protocol !== "OIDC" ||
+      !recordValue(payload.identityProvider) || !["OIDC", "OAUTH2"].includes(String(payload.identityProvider.protocol)) ||
       typeof payload.identityProvider.configured !== "boolean" || !recordValue(payload.session) ||
       typeof payload.session.authenticated !== "boolean" || !recordValue(payload.capabilities) ||
       !Array.isArray(payload.blockers)) throw new Error("FORMAL_ACCESS_PROJECTION_INVALID");

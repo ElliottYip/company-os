@@ -710,6 +710,23 @@ test("formal Web rejects an access projection that enables company capabilities 
   await assert.rejects(client.formalAccess(), /FORMAL_ACCESS_PROJECTION_INVALID/);
 });
 
+test("formal Web accepts an OAuth2 identity access projection used by an existing formal deployment", async () => {
+  const client = createFormalApplicationClient({
+    baseUrl: "https://company-os.example", webOrigin: "https://app.company-os.example",
+    fetcher: async () => response({
+      schemaVersion: 1, mode: "FORMAL", deploymentProfile: "managed-cloud", entryState: "READY",
+      identityProvider: { protocol: "OAUTH2", providerId: "enterprise-social", configured: true },
+      session: { authenticated: true },
+      capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,
+        execution: true, approval: true, governance: true }, blockers: [],
+    }),
+  });
+
+  const access = await client.formalAccess();
+  assert.equal(access.identityProvider.protocol, "OAUTH2");
+  assert.equal(access.entryState, "READY");
+});
+
 test("formal Web rejects private credential references or cross-tenant records in administration", async () => {
   const base = {
     schemaVersion: 1, mode: "PRODUCTION", viewer: { actorId: "human-one", displayName: "Human One" },

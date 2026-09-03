@@ -11,7 +11,7 @@ export interface FormalAccessStatus {
   readonly mode: "FORMAL";
   readonly deploymentProfile: "managed-cloud" | "self-hosted";
   readonly entryState: FormalAccessEntryState;
-  readonly identityProvider: { readonly protocol: "OIDC"; readonly configured: boolean };
+  readonly identityProvider: { readonly protocol: "OIDC" | "OAUTH2"; readonly configured: boolean };
   readonly session: { readonly authenticated: boolean };
   readonly capabilities: Readonly<Record<FormalAccessCapability, boolean>>;
   readonly blockers: readonly {
