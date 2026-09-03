@@ -379,7 +379,9 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     }), { timeout: 15_000 }).toBe("SUCCEEDED");
     await page.reload();
     await page.getByRole("button", { name: "Evidence", exact: true }).first().click();
-    await expect(page.getByText("evidence-browser-live", { exact: true })).toBeVisible();
+    const evidenceDetail = page.getByRole("dialog", { name: "evidence-browser-live", exact: true });
+    await expect(evidenceDetail).toBeVisible();
+    await expect(evidenceDetail.getByText("evidence-browser-live", { exact: true })).toBeVisible();
     await expect(page.getByText("result-browser-live", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Activity", exact: true }).first().click();
     await expect(page.getByText("Published after exact human approval", { exact: true })).toBeVisible();
