@@ -94,6 +94,6 @@ test("PostgreSQL legacy bootstrap requires the existing owner and is atomic and 
       /LEGACY_TENANT_BOOTSTRAP_CONFLICT/);
   } finally {
     await database.close();
-    await isolated.drop();
+    await isolated.dispose();
   }
 });
