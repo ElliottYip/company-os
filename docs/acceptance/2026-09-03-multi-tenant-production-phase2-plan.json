@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_PRODUCTION_PHASE2_FEATURE_DISABLED",
+  "scope": "ADDITIVE_PRODUCTION_MIGRATION_AND_FEATURE_DISABLED_RUNTIME_REPLACEMENT",
+  "preconditions": {
+    "composeSha256": "7d3c4922c1785eb764d640cb2933d69690406aa4ffc88ffdf7b7fec34ea33a97",
+    "apiImage": "sha256:989710cca8c4981708c9084f1f005cb00579ab6ec3aeb412321a33493f42e228",
+    "webImage": "sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8",
+    "schemaMigrations": 7,
+    "controlTotals": {
+      "authAccounts": 1,
+      "authSessions": 1,
+      "authUsers": 1,
+      "companies": 1,
+      "events": 1,
+      "permissionGrants": 8,
+      "invites": 0,
+      "memberships": 1
+    },
+    "encryptedBackupDigest": "sha256:fba61cebbda1ca826f55913587cd4f6a50635ed572fe18e7ac684b6bb04c43dd",
+    "isolatedRestoreEvidence": "docs/acceptance/2026-09-03-multi-tenant-production-rehearsal.json"
+  },
+  "latestReadOnlyPreflight": {
+    "checkedAt": "2026-09-03T05:19:03Z",
+    "status": "PASS_NO_DRIFT",
+    "composeSha256": "7d3c4922c1785eb764d640cb2933d69690406aa4ffc88ffdf7b7fec34ea33a97",
+    "apiImage": "sha256:989710cca8c4981708c9084f1f005cb00579ab6ec3aeb412321a33493f42e228",
+    "webImage": "sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8",
+    "webIndexSha256": "b291c99b6b1ccba39ef27ec01d1907345320206b1ae1efd59ddbf1c2581f696e",
+    "schemaMigrations": 7,
+    "apiHealth": "PASS",
+    "apiDatabaseReadiness": "PASS",
+    "webStatus": 200,
+    "controlTotalsMatched": true
+  },
+  "candidate": {
+    "composeSource": "deploy/compose.feishu-production.yml",
+    "composeSourceSha256": "a75d1218332bb807af25ae7b7254376c258a47ad28da08f4e689bd3b4d5bb373",
+    "releaseId": "0.1.0-multi-tenant.1-06b5a53fb6e4",
+    "apiImage": "sha256:06b5a53fb6e48d6ccf8afde10b0b97431b01a53aaa7aa1aa66c967c113e49567",
+    "webImage": "sha256:8467e9c12c42406c51cf3861f4e64f07c3118a3c718cc8b9249f8c96d65d0c51",
+    "webArchive": "/tmp/company-os-web-multi-tenant-provider-aware-amd64.tar.gz",
+    "webArchiveSha256": "79a6fe65f87bb07316edc931a0eec6c7cd8c80215e35b6af0e9f821f9213edf5",
+    "multiTenantSaasEnabled": false,
+    "unrestrictedTenantSignup": false
+  },
+  "orderedActions": [
+    "Recheck every precondition and stop on drift.",
+    "Create a new root-only rollback snapshot from the current Compose file and active image coordinates.",
+    "Install the validated candidate Compose file without starting services.",
+    "Run the candidate migrate service once and require the journal to advance from 7 to 8.",
+    "Recheck all control totals before replacing a runtime.",
+    "Replace API and require health, database readiness, legacy Feishu authorization routing, session persistence, and current company access.",
+    "Replace Web and require release identity, root response, security headers, and unchanged front-door behavior.",
+    "Recheck production migration count, control totals, API/Web health, Compose digest, and current Zhejiang Leike access."
+  ],
+  "rollback": {
+    "runtimeFailure": "Restore the newly snapshotted API/Web image coordinates without reversing migration 0008.",
+    "schemaCompatibilityFailure": "Keep production untouched or switch to the already authenticated parallel restored database; never restore over the live volume.",
+    "preserveConcurrentWebBaseline": true
+  },
+  "firstAttempt": {
+    "databaseMigration": "PASS_7_TO_8",
+    "preExistingControlTotalsMatched": true,
+    "runtimeRoleProvisioning": "PASS",
+    "candidateApiHealth": "PASS",
+    "candidateApiDatabaseReadiness": "PASS",
+    "candidateWebHealth": "PASS",
+    "candidateWebIndexPreserved": true,
+    "browserAdmission": "FAIL_FORMAL_OIDC_START",
+    "rootCause": "The independently deployed baseline Web bundle hard-coded enterprise-oidc while the authoritative access projection selected feishu.",
+    "reproducedWithPreAttemptApi": true,
+    "runtimeRollback": "PASS",
+    "rollbackSnapshot": "/srv/company-os/feishu-production/rollback/20260903T052255Z-multi-tenant-phase2",
+    "productionSchemaMigrationsAfterRollback": 8,
+    "productionApiImageAfterRollback": "sha256:989710cca8c4981708c9084f1f005cb00579ab6ec3aeb412321a33493f42e228",
+    "productionWebImageAfterRollback": "sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8"
+  },
+  "successfulRetry": {
+    "completedAt": "2026-09-03T05:40:39Z",
+    "rollbackSnapshot": "/srv/company-os/feishu-production/rollback/20260903T053753Z-provider-aware-retry",
+    "remoteArchiveSha256Matched": true,
+    "remoteImageIdMatched": true,
+    "providerAwareCanary": "PASS",
+    "legacyLoginWithPreAttemptApi": "PASS_REAL_CHROMIUM_TO_FEISHU",
+    "legacyLoginWithCandidateApi": "PASS_REAL_CHROMIUM_TO_FEISHU",
+    "oauthPkce": "S256",
+    "oauthCallback": "https://api.anc.raft.xin/api/auth/oauth2/callback/feishu",
+    "productionComposeSha256": "a75d1218332bb807af25ae7b7254376c258a47ad28da08f4e689bd3b4d5bb373",
+    "productionApiImage": "sha256:06b5a53fb6e48d6ccf8afde10b0b97431b01a53aaa7aa1aa66c967c113e49567",
+    "productionWebImage": "sha256:8467e9c12c42406c51cf3861f4e64f07c3118a3c718cc8b9249f8c96d65d0c51",
+    "productionSchemaMigrations": 8,
+    "preExistingControlTotalsMatched": true,
+    "newTenantRows": 0,
+    "apiHealth": "PASS",
+    "apiDatabaseReadiness": "PASS",
+    "webHealth": "PASS",
+    "startPage": "PASS",
+    "postDeployCompanyOsErrors": 0
+  },
+  "legacyTenantReservationPatch": {
+    "status": "PASS_PRODUCTION_FEATURE_DISABLED",
+    "apiImage": "sha256:1016d4db7202d351565a944d5968019b1ad87827633d9bb570f6d4ce1a650bf7",
+    "archiveSha256": "211e6b054f31a77e5fa0bb447351bc72f06e7197e336a10995a67d460d6be648",
+    "rollbackSnapshot": "/srv/company-os/feishu-production/rollback/20260903T054902Z-legacy-tenant-reservation",
+    "legacySessionPreserved": true,
+    "controlTotalsMatched": true,
+    "featureStillDisabled": true
+  },
+  "authorizationRequired": false,
+  "artifactAdmissionRequired": false
+}

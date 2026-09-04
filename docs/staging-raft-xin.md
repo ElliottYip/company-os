@@ -70,6 +70,8 @@ arguments:
 - `runtime-database-url`
 - `runtime-database-password`
 - `oidc-client-secret`
+- `feishu-app-secret` (when `COMPANY_OS_IDENTITY_PROVIDER=FEISHU`; mutually
+  exclusive with `oidc-client-secret` for runtime use)
 - `session-signing-key`
 - `agent-node-bearer-token`
 - `data-node-bearer-token`

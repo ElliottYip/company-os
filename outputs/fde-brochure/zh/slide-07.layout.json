@@ -1,0 +1,1044 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/2dmmmr",
+    "id": "2dmmmr",
+    "slide": 7,
+    "layoutId": "fab22e04-50bf-4c5f-a7f9-5ea3174ff17f",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "fe74f555-b039-412c-9392-40818b4701d4",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 559,
+      "height": 794
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "+mn-lt"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "fab22e04-50bf-4c5f-a7f9-5ea3174ff17f",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "fe74f555-b039-412c-9392-40818b4701d4",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "fe74f555-b039-412c-9392-40818b4701d4",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zipwrmho",
+      "id": "1",
+      "bbox": [
+        42,
+        24,
+        390,
+        17
+      ],
+      "geometry": "rect",
+      "text": "我们怎么开始",
+      "textPreview": "我们怎么开始",
+      "resolvedFontSize": 9,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 9,
+        "typeface": "+mn-lt",
+        "color": "#67676B",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "我们怎么开始"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "我们怎么开始",
+          "resolvedTextStyle": {
+            "fontSize": 9,
+            "color": "#67676B",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "我们怎么开始",
+              "fontSize": 9,
+              "color": "#67676B",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0jydkryt",
+      "id": "2",
+      "bbox": [
+        489,
+        24,
+        28,
+        17
+      ],
+      "geometry": "rect",
+      "text": "07",
+      "textPreview": "07",
+      "resolvedFontSize": 9,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 9,
+        "typeface": "+mn-lt",
+        "color": "#67676B",
+        "alignment": "right",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "0"
+          },
+          {
+            "index": 2,
+            "text": "7"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "07",
+          "resolvedTextStyle": {
+            "fontSize": 9,
+            "color": "#67676B",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "07",
+              "fontSize": 9,
+              "color": "#67676B",
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/lk7etwze",
+      "id": "3",
+      "bbox": [
+        42,
+        54,
+        475,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D7D8DC",
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qdwvehgr",
+      "id": "4",
+      "bbox": [
+        42,
+        77,
+        475,
+        103
+      ],
+      "geometry": "rect",
+      "text": "先做一次诊断，\n再决定要不要开发",
+      "textPreview": "先做一次诊断， | 再决定要不要开发",
+      "resolvedFontSize": 40,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 40,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "先做一次诊断，"
+          },
+          {
+            "index": 2,
+            "text": "再决定要不要开发"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "先做一次诊断，",
+          "resolvedTextStyle": {
+            "fontSize": 40,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "先做一次诊断，",
+              "fontSize": 40,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "再决定要不要开发",
+          "resolvedTextStyle": {
+            "fontSize": 40,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "再决定要不要开发",
+              "fontSize": 40,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/re5wn2hc",
+      "id": "5",
+      "bbox": [
+        42,
+        207,
+        72,
+        55
+      ],
+      "geometry": "rect",
+      "text": "01",
+      "textPreview": "01",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 39,
+        "typeface": "+mn-lt",
+        "color": "#165DFF",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "01"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "01",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "color": "#165DFF",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "01",
+              "fontSize": 39,
+              "color": "#165DFF",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cfydg7yx",
+      "id": "6",
+      "bbox": [
+        133,
+        209,
+        384,
+        71
+      ],
+      "geometry": "rect",
+      "text": "先确认企业为什么要做 AI：省时间、少出错、增加收入，还是改善整个公司的工作方式。",
+      "textPreview": "先确认企业为什么要做 AI：省时间、少出错、增加收入，还是改善整个公司的工作方式。",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "先确认企业为什么要做"
+          },
+          {
+            "index": 2,
+            "text": "AI：省时间、少出错、增加收入，还是改善整个公司的工"
+          },
+          {
+            "index": 3,
+            "text": "作方式。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "先确认企业为什么要做 AI：省时间、少出错、增加收入，还是改善整个公司的工作方式。",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "先确认企业为什么要做 AI：省时间、少出错、增加收入，还是改善整个公司的工作方式。",
+              "fontSize": 14,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dg7epczi",
+      "id": "7",
+      "bbox": [
+        133,
+        290,
+        384,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D7D8DC",
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/a90fq1gb",
+      "id": "8",
+      "bbox": [
+        42,
+        308,
+        72,
+        55
+      ],
+      "geometry": "rect",
+      "text": "02",
+      "textPreview": "02",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 39,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "02"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "02",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "02",
+              "fontSize": 39,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/va9wz6xg",
+      "id": "9",
+      "bbox": [
+        133,
+        310,
+        384,
+        71
+      ],
+      "geometry": "rect",
+      "text": "我们会看员工实际使用的表格、文件、聊天工具和业务系统，也会看正常流程之外的各种例外。",
+      "textPreview": "我们会看员工实际使用的表格、文件、聊天工具和业务系统，也会看正常流程之外的各种例外。",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "我们会看员工实际使用的表格、文件、聊天工具和业务系"
+          },
+          {
+            "index": 2,
+            "text": "统，也会看正常流程之外的各种例外。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "我们会看员工实际使用的表格、文件、聊天工具和业务系统，也会看正常流程之外的各种例外。",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#0C0C0D",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "我们会看员工实际使用的表格、文件、聊天工具和业务系统，也会看正常流程之外的各种例外。",
+              "fontSize": 14,
+              "color": "#0C0C0D",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/72587yx8",
+      "id": "10",
+      "bbox": [
+        133,
+        391,
+        384,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D7D8DC",
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/61w7etgn",
+      "id": "11",
+      "bbox": [
+        42,
+        409,
+        72,
+        55
+      ],
+      "geometry": "rect",
+      "text": "03",
+      "textPreview": "03",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 39,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "03"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "03",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "03",
+              "fontSize": 39,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/t4nq98fe",
+      "id": "12",
+      "bbox": [
+        133,
+        411,
+        384,
+        71
+      ],
+      "geometry": "rect",
+      "text": "按价值、难度、数据条件、风险和验证时间排序。不是所有问题都要用 AI。",
+      "textPreview": "按价值、难度、数据条件、风险和验证时间排序。不是所有问题都要用 AI。",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "按价值、难度、数据条件、风险和验证时间排序。不是所"
+          },
+          {
+            "index": 2,
+            "text": "有问题都要用 AI。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "按价值、难度、数据条件、风险和验证时间排序。不是所有问题都要用 AI。",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#0C0C0D",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "按价值、难度、数据条件、风险和验证时间排序。不是所有问题都要用 AI。",
+              "fontSize": 14,
+              "color": "#0C0C0D",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/83epg3yt",
+      "id": "13",
+      "bbox": [
+        133,
+        492,
+        384,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D7D8DC",
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/v658bixk",
+      "id": "14",
+      "bbox": [
+        42,
+        510,
+        72,
+        55
+      ],
+      "geometry": "rect",
+      "text": "04",
+      "textPreview": "04",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 39,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "04"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "04",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "04",
+              "fontSize": 39,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/u5wridgz",
+      "id": "15",
+      "bbox": [
+        133,
+        512,
+        384,
+        71
+      ],
+      "geometry": "rect",
+      "text": "只选一项工作，先约定负责人、数据、范围和判断结果的指标，再做出能用的版本。",
+      "textPreview": "只选一项工作，先约定负责人、数据、范围和判断结果的指标，再做出能用的版本。",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "只选一项工作，先约定负责人、数据、范围和判断结果的"
+          },
+          {
+            "index": 2,
+            "text": "指标，再做出能用的版本。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "只选一项工作，先约定负责人、数据、范围和判断结果的指标，再做出能用的版本。",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#0C0C0D",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "只选一项工作，先约定负责人、数据、范围和判断结果的指标，再做出能用的版本。",
+              "fontSize": 14,
+              "color": "#0C0C0D",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h87qdsfa",
+      "id": "16",
+      "bbox": [
+        133,
+        593,
+        384,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D7D8DC",
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/g7y9knyp",
+      "id": "17",
+      "bbox": [
+        42,
+        611,
+        72,
+        55
+      ],
+      "geometry": "rect",
+      "text": "05",
+      "textPreview": "05",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 39,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "05"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "05",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "color": "#0C0C0D",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "05",
+              "fontSize": 39,
+              "color": "#0C0C0D",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3ap8fixg",
+      "id": "18",
+      "bbox": [
+        133,
+        613,
+        384,
+        71
+      ],
+      "geometry": "rect",
+      "text": "真实用户用过以后，再决定继续修改、推广到其他部门，还是停止。",
+      "textPreview": "真实用户用过以后，再决定继续修改、推广到其他部门，还是停止。",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14,
+        "typeface": "+mn-lt",
+        "color": "#0C0C0D",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "真实用户用过以后，再决定继续修改、推广到其他部门，"
+          },
+          {
+            "index": 2,
+            "text": "还是停止。"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "真实用户用过以后，再决定继续修改、推广到其他部门，还是停止。",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "color": "#0C0C0D",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "真实用户用过以后，再决定继续修改、推广到其他部门，还是停止。",
+              "fontSize": 14,
+              "color": "#0C0C0D",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i9grmdgv",
+      "id": "19",
+      "bbox": [
+        133,
+        694,
+        384,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D7D8DC",
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

@@ -76,8 +76,9 @@ test("self-hosted encrypted backups are opt-in, scheduled, and keep the key outs
   assert.match(compose, /backup:\n[\s\S]*profiles: \["backup"\]/);
   assert.match(compose, /postgres-encrypted-backup\.ts/);
   assert.match(compose, /company_os_backups:\/backup/);
-  assert.match(compose, /COMPANY_OS_BACKUP_ENCRYPTION_KEY: \$\{COMPANY_OS_BACKUP_ENCRYPTION_KEY:-\}/);
-  assert.match(example, /COMPANY_OS_BACKUP_ENCRYPTION_KEY=CHANGE_ME_BASE64_32_BYTE_KEY/);
+  assert.match(compose, /COMPANY_OS_BACKUP_ENCRYPTION_KEY_FILE: \/run\/company-os\/backup-secrets\/backup-encryption-key/);
+  assert.doesNotMatch(compose, /COMPANY_OS_BACKUP_ENCRYPTION_KEY:/);
+  assert.match(example, /COMPANY_OS_BACKUP_SECRET_DIRECTORY=\/etc\/company-os\/backup-secrets/);
   assert.match(example, /COMPANY_OS_BACKUP_INTERVAL_SECONDS=86400/);
   const scripts = JSON.parse(packageJsonSource).scripts;
   assert.equal(scripts["ops:encrypted-backup"],
@@ -143,6 +144,17 @@ test("production images are pinned, non-root, health checked, and independently 
     "npm audit --omit=dev --omit=optional --audit-level=moderate");
   assert.equal(packageJson.scripts["release:sbom"],
     "npm sbom --omit=dev --omit=optional --sbom-format cyclonedx");
+});
+
+test("the production tenant overlay preserves the immutable front door and adds only tenant entry assets", async () => {
+  const dockerfile = await read("deploy/Dockerfile.web-preserved-home");
+  assert.match(dockerfile,
+    /ARG COMPANY_OS_BASE_WEB_IMAGE=ghcr\.io\/elliottyip\/company-os-web@sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8/);
+  assert.match(dockerfile, /FROM --platform=\$BUILDPLATFORM node:22\.12\.0-bookworm-slim AS tenant-build/);
+  assert.match(dockerfile, /tenant-dist\/tenant\.html \.\/web\/dist\/tenant\.html/);
+  assert.match(dockerfile, /tenant-dist\/assets \.\/web\/dist\/assets/);
+  assert.doesNotMatch(dockerfile, /COPY[^\n]*(?:web\/dist\/index\.html|web\/index\.html)/);
+  assert.match(dockerfile, /^USER node$/m);
 });
 
 test("Codex Agent Node image pins the CLI and never bakes authentication or full-access flags", async () => {

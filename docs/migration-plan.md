@@ -31,15 +31,12 @@
 - Serializer compatibility for event kinds 30179–30189, 30624–30627, 46021,
   `snake_case`, and `schema_version`.
 
-## Pre-3D reception status
+## Reception status
 
 The listed independent slices are complete: credential access is reference-only
 and audited, both profiles share the durable operational contract, Demo has a
 real-browser responsibility loop, Agent Boss/formal administration projections
-are versioned, every egress decision persists, and Office Compiler/renderer
-conformance is frozen at `1.0`.
+are versioned, and every egress decision persists.
 
 See `docs/deployment-migration-handoff.md` for runtime upgrade/rollback. Any
-future Raft adapter migration remains a separate, compatibility-tested change;
-the next visual phase may consume the frozen contracts but must not move 3D
-business logic into Raft Web.
+future Raft adapter migration remains a separate, compatibility-tested change.

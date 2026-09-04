@@ -1,0 +1,492 @@
+[
+  {
+    "slide": 2,
+    "marker": "sh/a10jqpsj",
+    "text": "sh/x4r21kru",
+    "label": "Agents take on repetitive execution.",
+    "markerTop": 548.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/w3i1sfa9",
+    "text": "sh/r65knqtk",
+    "label": "People remain responsible for goals, judgment, and review.",
+    "markerTop": 596.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/q5wjelsz",
+    "text": "sh/ove9o7yd",
+    "label": "One manager can direct several agents.",
+    "markerTop": 644.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/9wnqhczy",
+    "text": "sh/mtwrmxg7",
+    "label": "Companies can turn working knowledge into reusable workflows and Skills.",
+    "markerTop": 692.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/nu58f2hs",
+    "text": "sh/wjy9sry9",
+    "label": "In 2025, Microsoft introduced the idea of the Agent Boss: an employee who builds, delegates to, and manages agents.",
+    "markerTop": 757.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/xk7qlczu",
+    "text": "sh/ahwrqhgj",
+    "label": "OpenAI defines agents as systems that can complete workflows on a user’s behalf, rather than simply answer questions.",
+    "markerTop": 797.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/bip8jmho",
+    "text": "sh/cnupgny5",
+    "label": "Google describes enterprise agents as systems that connect models with company data, tools, memory, orchestration, and runtime infrastructure.",
+    "markerTop": 837.15
+  },
+  {
+    "slide": 2,
+    "marker": "sh/do3q9szq",
+    "text": "sh/t8byxkn2",
+    "label": "Anthropic’s research suggests that people tend to decide what should be done, while agents make more of the execution decisions about how to do it.",
+    "markerTop": 877.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/0ba143al",
+    "text": "sh/rm1k7yt4",
+    "label": "Employees have subscriptions but use them only occasionally.",
+    "markerTop": 240.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/ql8jytsj",
+    "text": "sh/doj29oba",
+    "label": "A demo looked good, but nobody used it after launch.",
+    "markerTop": 271.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/sna103ap",
+    "text": "sh/3ihk3et8",
+    "label": "Other companies’ cases do not fit the way this company works.",
+    "markerTop": 302.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/ih8ju9sn",
+    "text": "sh/kbm987y5",
+    "label": "Every department has ideas, but nobody can set priorities.",
+    "markerTop": 333.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/5cva1cfq",
+    "text": "sh/i94r6xgz",
+    "label": "Information is scattered across chat, spreadsheets, PDFs, drives, and personal computers.",
+    "markerTop": 364.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/jadsz2xk",
+    "text": "sh/w72947yt",
+    "label": "Leaders worry about security and do not know how much authority an agent should have.",
+    "markerTop": 395.15
+  },
+  {
+    "slide": 5,
+    "marker": "sh/yhkbe1o7",
+    "text": "sh/l4bupwny",
+    "label": "Use an existing product when it already solves the problem.",
+    "markerTop": 598.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/n6dcr65o",
+    "text": "sh/m5kbi1oj",
+    "label": "Build a Skill when a Skill is enough.",
+    "markerTop": 689.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/x4vedgvm",
+    "text": "sh/ahkvi1cb",
+    "label": "Integrate with existing systems when the workflow crosses tools.",
+    "markerTop": 780.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/k7mxovud",
+    "text": "sh/58vehgvy",
+    "label": "Create a database or knowledge base when the data must be organized first.",
+    "markerTop": 871.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/j6dwfqds",
+    "text": "sh/sb6xsvu9",
+    "label": "Design the division of work between people and agents when the workflow is suitable.",
+    "markerTop": 962.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/87ipkzal",
+    "text": "sh/98rqt4r6",
+    "label": "Company-specific Skills",
+    "markerTop": 376.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/ml07i9sv",
+    "text": "sh/7m98ru9g",
+    "label": "Quotation, entry, reconciliation, and reporting automation",
+    "markerTop": 428.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/oryp8fah",
+    "text": "sh/pc76hkr2",
+    "label": "Document, spreadsheet, and image processing",
+    "markerTop": 402.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/h4bupgn6",
+    "text": "sh/w32twb6l",
+    "label": "Small custom SaaS",
+    "markerTop": 454.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/j6dcr65c",
+    "text": "sh/i54bylor",
+    "label": "Interviews and workflow mapping",
+    "markerTop": 609.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/twfux0ne",
+    "text": "sh/svmt4v6t",
+    "label": "ERP, CRM, collaboration, and messaging integrations",
+    "markerTop": 659.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/cbe5g3ih",
+    "text": "sh/dcnm98zm",
+    "label": "Progress, result, and activity records",
+    "markerTop": 709.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/qpwnet0b",
+    "text": "sh/bq547yhw",
+    "label": "Role-specific agents",
+    "markerTop": 634.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/0fy5k3id",
+    "text": "sh/lg76d8zy",
+    "label": "Exception handling and human approval",
+    "markerTop": 684.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/jet8nm1c",
+    "text": "sh/idk7ehkr",
+    "label": "Operational databases",
+    "markerTop": 847.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/50bqpcj2",
+    "text": "sh/4f2pgr2h",
+    "label": "Data cleanup and consistent naming",
+    "markerTop": 897.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/va98j210",
+    "text": "sh/u907axkf",
+    "label": "Trusted data for agents",
+    "markerTop": 947.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/hcrqlcj6",
+    "text": "sh/wbipc72l",
+    "label": "Enterprise knowledge bases",
+    "markerTop": 872.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/7698f214",
+    "text": "sh/m5076xkj",
+    "label": "Permissions and usage boundaries",
+    "markerTop": 922.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/fq9cfqxc",
+    "text": "sh/0r2t8vyx",
+    "label": "Identify work suitable for AI across departments",
+    "markerTop": 507.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/1sbuh0fi",
+    "text": "sh/ql0b21gv",
+    "label": "Redesign how people and agents divide the work",
+    "markerTop": 585.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/rm9sb6xg",
+    "text": "sh/9gfeh4zy",
+    "label": "Set permissions, approvals, and accountability",
+    "markerTop": 663.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/8f6x8jid",
+    "text": "sh/7exwfehs",
+    "label": "Define the pilot sequence and expansion plan",
+    "markerTop": 741.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/mdof6907",
+    "text": "sh/lcfed4z2",
+    "label": "Train the company’s own Agent Bosses",
+    "markerTop": 819.15
+  },
+  {
+    "slide": 8,
+    "marker": "sh/g72x4zyd",
+    "text": "sh/ri9g7uhw",
+    "label": "A map of the current workflow",
+    "markerTop": 290.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/tkby9kzm",
+    "text": "sh/sjix0zy1",
+    "label": "The problem and pilot boundary",
+    "markerTop": 290.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/id0fu50z",
+    "text": "sh/o7ydoret",
+    "label": "A working prototype or system",
+    "markerTop": 393.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/m5gvmhwn",
+    "text": "sh/n6pwfmd8",
+    "label": "The data and permissions used",
+    "markerTop": 393.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/1k7edwv2",
+    "text": "sh/ehgvihwr",
+    "label": "Responsibilities for people and agents",
+    "markerTop": 496.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/kfixwbe1",
+    "text": "sh/lgbepgvm",
+    "label": "Human approval points",
+    "markerTop": 496.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/svydgb65",
+    "text": "sh/7u5w765k",
+    "label": "A before-and-after comparison method",
+    "markerTop": 599.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/5sne5wne",
+    "text": "sh/kredcr6t",
+    "label": "A recommendation to continue, adjust, or stop",
+    "markerTop": 599.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/w3ed8r6x",
+    "text": "sh/m9sb2x4v",
+    "label": "Who owns the outcome",
+    "markerTop": 842.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/na1sb2lg",
+    "text": "sh/8bat47ml",
+    "label": "What completion means",
+    "markerTop": 842.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/9w3uds36",
+    "text": "sh/y5sbed4j",
+    "label": "What is outside this pilot",
+    "markerTop": 918.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/z61s7il4",
+    "text": "sh/07atgnmp",
+    "label": "How the result will be judged",
+    "markerTop": 918.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/hcji5o7a",
+    "text": "sh/wba1cjqp",
+    "label": "Processing time: [before] → [after]",
+    "markerTop": 775.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/va103ep4",
+    "text": "sh/u9sja98z",
+    "label": "Manual steps: [before] → [after]",
+    "markerTop": 814.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/xgzitk76",
+    "text": "sh/cf6h0fql",
+    "label": "Errors or rework: [before] → [after]",
+    "markerTop": 853.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/2l4faloj",
+    "text": "sh/nmdg3q54",
+    "label": "Business result: [customer-confirmed result]",
+    "markerTop": 892.65
+  },
+  {
+    "slide": 10,
+    "marker": "sh/ydcnatkn",
+    "text": "sh/l036l83y",
+    "label": "Give agents clear goals and completion criteria",
+    "markerTop": 285.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/725onyl4",
+    "text": "sh/m1cnetkj",
+    "label": "Decide which work can be delegated",
+    "markerTop": 369.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/d87uxg3m",
+    "text": "sh/q5gb21kb",
+    "label": "Review the process and the result",
+    "markerTop": 453.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/0bit8b2d",
+    "text": "sh/1cru1g3y",
+    "label": "Handle exceptions, request changes, or stop a task",
+    "markerTop": 537.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/fapcz6ls",
+    "text": "sh/ozitcv29",
+    "label": "Manage data, tools, and permissions",
+    "markerTop": 621.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/xwnupgvy",
+    "text": "sh/wvetgbud",
+    "label": "Turn good practices into shared Skills",
+    "markerTop": 705.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/atwbelcn",
+    "text": "sh/lk7ut0va",
+    "label": "Remain accountable for the business outcome",
+    "markerTop": 789.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/250zy18b",
+    "text": "sh/98rytw72",
+    "label": "One to three areas worth examining first",
+    "markerTop": 387.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/72t03qp0",
+    "text": "sh/61kzalof",
+    "label": "An initial judgment on whether AI fits the work",
+    "markerTop": 505.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/9gza9sze",
+    "text": "sh/mdobedg3",
+    "label": "The data, systems, and people required",
+    "markerTop": 623.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/0b6tc3yx",
+    "text": "sh/1cfa58zi",
+    "label": "A recommendation: buy software, build a Skill, create custom SaaS, organize data, or redesign the workflow",
+    "markerTop": 741.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/zaxs3yhc",
+    "text": "sh/cn6t83y1",
+    "label": "An honest view on whether a pilot is worthwhile",
+    "markerTop": 859.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/dofa18z6",
+    "text": "sh/tsnip0ny",
+    "label": "The problem does not need AI",
+    "markerTop": 387.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/7650nq5s",
+    "text": "sh/65wzelo7",
+    "label": "The data is not ready",
+    "markerTop": 505.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/k3uhcb6h",
+    "text": "sh/j2lgjq5w",
+    "label": "Fix the workflow before building",
+    "markerTop": 623.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/p07ixkn6",
+    "text": "sh/4zyhofml",
+    "label": "An existing product is better value",
+    "markerTop": 741.15
+  }
+]

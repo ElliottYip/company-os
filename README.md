@@ -72,7 +72,10 @@ Start with [the product charter](docs/product-charter.md),
 [architecture](docs/architecture.md), and [source manifest](docs/source-manifest.md).
 The distinction between implemented contracts and production-complete evidence
 is maintained in the
-[production maturity baseline](docs/production-maturity-baseline.md).
+[production maturity baseline](docs/production-maturity-baseline.md). The
+current source-tree verdict and the customer-owned gates that still prevent a
+production-complete claim are recorded in the
+[product-readiness audit](docs/acceptance/2026-08-31-product-readiness-audit.md).
 
 The formal Web and API are independently deployable. One immutable Web build
 receives its public API origin at container start, so managed-cloud and
@@ -103,6 +106,25 @@ API or written to Company OS events.
 The included `@company-os/http-secret-broker` package connects an
 enterprise-operated HTTPS Broker without moving Secret material into Company
 OS. See [the HTTP Secret Broker runbook](docs/http-secret-broker.md).
+
+The maintained Codex Agent Node can be admitted locally with
+`npm run test:codex:local`. Company members, personal Codex logins, and the
+shared company execution identity remain separate; see the
+[Codex team onboarding guide](docs/codex-team-onboarding.md).
+
+Before attempting a direct local Agent connection, run the read-only,
+secret-free preflight:
+
+```bash
+npm run agent:preflight
+```
+
+It reports whether the Connector package, deployment-secret source, Codex CLI
+and authenticated Agent Node health are ready. It never prints the Agent Node
+address or bearer value. Direct connection supports self-hosted or otherwise
+network-reachable Agent Nodes. A hosted Company OS service cannot reach a
+laptop's `localhost`; outbound hosted-laptop pairing is not included in this
+test release. See the [test-release contract](docs/specs/local-agent-test-release.md).
 
 Formal Work dispatch can declare a bounded execution-preparation plan. Company
 OS evaluates the exact data contracts and obtains short-lived, opaque Broker

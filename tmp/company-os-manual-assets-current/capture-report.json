@@ -1,0 +1,123 @@
+{
+  "baseUrl": "http://127.0.0.1:4173/",
+  "report": [
+    {
+      "file": "01-welcome.png",
+      "section": "welcome",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "统一管理与治理企业中的每一个 AI Agent。"
+    },
+    {
+      "file": "02-dashboard.png",
+      "section": "office",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "Agent 资产组合"
+    },
+    {
+      "file": "03-search.png",
+      "section": "search",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "Agent 资产组合"
+    },
+    {
+      "file": "04-agents.png",
+      "section": "agents",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "Agents"
+    },
+    {
+      "file": "05-tasks.png",
+      "section": "work",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "跨来源任务"
+    },
+    {
+      "file": "06-goals.png",
+      "section": "goals",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "目标"
+    },
+    {
+      "file": "07-projects.png",
+      "section": "projects",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "项目"
+    },
+    {
+      "file": "08-approvals.png",
+      "section": "approvals",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "审批"
+    },
+    {
+      "file": "09-evidence.png",
+      "section": "evidence",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "证据"
+    },
+    {
+      "file": "10-responsibility.png",
+      "section": "responsibility",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "责任链"
+    },
+    {
+      "file": "11-governance.png",
+      "section": "connectors",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "治理"
+    },
+    {
+      "file": "12-usage.png",
+      "section": "usage",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "用量与计费"
+    },
+    {
+      "file": "13-settings.png",
+      "section": "settings",
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "horizontalOverflow": false,
+      "heading": "设置"
+    }
+  ],
+  "browserProblems": []
+}

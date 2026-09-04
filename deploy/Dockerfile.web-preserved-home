@@ -1,0 +1,16 @@
+ARG COMPANY_OS_BASE_WEB_IMAGE=ghcr.io/elliottyip/company-os-web@sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8
+
+FROM --platform=$BUILDPLATFORM node:22.12.0-bookworm-slim AS tenant-build
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY brokers ./brokers
+COPY connectors ./connectors
+RUN npm ci --ignore-scripts
+COPY web ./web
+RUN npx vite build --config web/vite.tenant.config.mjs
+
+FROM ${COMPANY_OS_BASE_WEB_IMAGE}
+COPY --from=tenant-build --chown=node:node /app/web/tenant-dist/tenant.html ./web/dist/tenant.html
+COPY --from=tenant-build --chown=node:node /app/web/tenant-dist/assets ./web/dist/assets
+COPY --chown=node:node scripts/serve-web.mjs ./scripts/serve-web.mjs
+USER node

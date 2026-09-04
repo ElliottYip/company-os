@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Company OS · Raft and Leico horizontal end card</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    body {
+      display: grid;
+      place-items: center;
+      color: #171717;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .frame {
+      display: grid;
+      width: 1920px;
+      height: 1080px;
+      place-items: center;
+      background: #fff;
+    }
+    .brand-line {
+      display: flex;
+      /* Optical correction based on the visible logo/text bounds, not the
+         padded SVG and flex boxes. */
+      transform: translate(15px, 1px);
+      align-items: center;
+      justify-content: center;
+      gap: 76px;
+    }
+    .product {
+      margin: 0 24px 0 0;
+      white-space: nowrap;
+      font-size: 66px;
+      font-weight: 560;
+      line-height: 1;
+      letter-spacing: -3px;
+    }
+    .raft-slot {
+      position: relative;
+      width: 220px;
+      height: 120px;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+    .raft-logo {
+      display: block;
+      width: 220px;
+      height: 220px;
+      transform: translateY(-50px);
+    }
+    .leico-slot {
+      display: grid;
+      width: 240px;
+      height: 120px;
+      place-items: center;
+    }
+    /* Replace this node with the supplied transparent Leico SVG/PNG. */
+    .leico-placeholder {
+      white-space: nowrap;
+      font-size: 58px;
+      font-weight: 620;
+      line-height: 1;
+      letter-spacing: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" aria-label="Company OS end card">
+    <section class="brand-line" aria-label="Company OS, Raft and Leico">
+      <h1 class="product">Company OS</h1>
+      <div class="raft-slot">
+        <img
+          class="raft-logo"
+          src="../company-os-end-card-v1/raft-logo-mark.svg"
+          alt="Raft"
+        >
+      </div>
+      <div class="leico-slot" id="leico-logo-slot">
+        <div class="leico-placeholder">LEICO</div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

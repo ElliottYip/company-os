@@ -150,7 +150,7 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
       }
       if (String(input).endsWith("/api/v1/companies")) return response({
         schemaVersion: 1,
-        companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }],
+        companies: [{ id: "company-one", name: "Company One", slug: "company-one", membershipRole: "owner" }],
         isInstanceAdmin: true,
       });
       if (String(input).endsWith("/administration")) return response({
@@ -237,7 +237,7 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   await client.signOut();
   assert.deepEqual(await client.companies(), {
     schemaVersion: 1,
-    companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }],
+    companies: [{ id: "company-one", name: "Company One", slug: "company-one", membershipRole: "owner" }],
     isInstanceAdmin: true,
   });
   await client.claimFirstAdmin();
@@ -811,6 +811,37 @@ test("formal Web applies the same JSON response boundary to OIDC start", async (
     client.beginFormalSignIn(),
     /FORMAL_API_RESPONSE_CONTENT_TYPE_INVALID/,
   );
+});
+
+test("formal Web starts the Feishu provider announced by the access boundary", async () => {
+  const calls: { readonly url: string; readonly init?: RequestInit }[] = [];
+  const client = createFormalApplicationClient({
+    baseUrl: "https://company-os.example",
+    webOrigin: "https://app.company-os.example",
+    fetcher: async (input, init) => {
+      calls.push({ url: String(input), init });
+      if (String(input).endsWith("/api/v1/access")) return response({
+        schemaVersion: 1,
+        mode: "FORMAL",
+        deploymentProfile: "self-hosted",
+        entryState: "AUTHENTICATION_REQUIRED",
+        identityProvider: { protocol: "OAUTH2", providerId: "feishu", configured: true },
+        session: { authenticated: false },
+        capabilities: {
+          diagnostics: true, identitySettings: true, companyData: false,
+          companyMutation: false, execution: false, approval: false, governance: false,
+        },
+        blockers: [{ code: "FORMAL_IDENTITY_REQUIRED", parameters: {} }],
+      });
+      return response({ url: "https://accounts.feishu.cn/open-apis/authen/v1/authorize", redirect: true });
+    },
+  });
+
+  await client.formalAccess();
+  assert.equal(await client.beginFormalSignIn(), "https://accounts.feishu.cn/open-apis/authen/v1/authorize");
+  const signIn = calls.find(({ url }) => url.endsWith("/api/auth/sign-in/social"));
+  assert.ok(signIn);
+  assert.equal(JSON.parse(String(signIn.init?.body)).provider, "feishu");
 });
 
 test("formal Web bounds the complete request and maps network failures to stable errors", async () => {

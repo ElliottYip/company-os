@@ -4,10 +4,11 @@ Company OS formal mode uses the same authentication architecture proven in the
 audited Paperclip server: Better Auth, durable Postgres sessions, scoped
 cookies, trusted origins, database-backed rate limiting, and request-scoped
 session resolution. Company OS replaces Paperclip email/password with Better
-Auth Generic OAuth for mandatory enterprise OIDC.
+Auth Generic OAuth for mandatory enterprise identity. Deployments may use a
+standard OIDC provider or a tenant-owned Feishu OAuth application.
 
-Enterprise OIDC is mandatory for formal identity and formal capabilities, not
-for opening the product. Before OIDC is configured, a user may create an
+Enterprise identity is mandatory for formal identity and formal capabilities,
+not for opening the product. Before a provider is configured, a user may create an
 isolated, session-scoped local company draft and browse the product. That draft
 cannot open an existing company, access enterprise data or Secrets, execute a
 real Agent, publish a production approval, or act as a verified principal. See
@@ -15,8 +16,11 @@ ADR 0018.
 
 ## Required server configuration
 
+### Standard OIDC
+
 ```text
 COMPANY_OS_PUBLIC_URL=https://company.example.com
+COMPANY_OS_IDENTITY_PROVIDER=OIDC
 COMPANY_OS_OIDC_ISSUER=https://identity.example.com
 COMPANY_OS_OIDC_DISCOVERY_URL=https://identity.example.com/.well-known/openid-configuration
 COMPANY_OS_OIDC_CLIENT_ID=company-os
@@ -49,6 +53,80 @@ The `/oauth2` segment is owned by Better Auth Generic OAuth and is part of the
 deployment contract. Releases before ADR 0021 documented a shorter callback;
 that value is incompatible with strict providers and must be replaced in both
 the IdP client and service environment during upgrade.
+
+### Feishu OAuth
+
+Use a separate enterprise self-built app named `Company OS`; do not add these
+permissions to an unrelated bot or automation app.
+
+```text
+COMPANY_OS_PUBLIC_URL=https://company.example.com
+COMPANY_OS_IDENTITY_PROVIDER=FEISHU
+COMPANY_OS_FEISHU_APP_ID=<app id>
+COMPANY_OS_FEISHU_APP_SECRET=<secret reference injected at runtime>
+COMPANY_OS_FEISHU_TENANT_KEY=<the one permitted company tenant key>
+COMPANY_OS_FEISHU_REDIRECT_URI=https://company.example.com/api/auth/oauth2/callback/feishu
+COMPANY_OS_SESSION_SIGNING_KEY=<at least 32 bytes, injected at runtime>
+COMPANY_OS_DATABASE_URL=postgres://...
+COMPANY_OS_INSTANCE_ID=production
+```
+
+Register the callback exactly. Company OS uses authorization code flow with
+S256 PKCE, validates OAuth state through durable database storage, accepts only
+the fixed official Feishu hosts, and rejects a profile whose `tenant_key` does
+not equal `COMPANY_OS_FEISHU_TENANT_KEY`. The stable Feishu `union_id`, not an
+email address, is the authentication subject. Feishu states that phone and
+email values are administrator-imported rather than verified in real time.
+Company OS prefers `enterprise_email`, then `email`; when both are absent it
+derives a stable non-deliverable `@identity.invalid` local alias from the
+already verified tenant and subject so login does not fail merely because the
+tenant has no mail attributes. The alias must never be used for email delivery.
+
+Login needs only these user scopes:
+
+- `auth:user.id:read`
+- `contact:user.email:readonly`
+
+Do not grant message, document, calendar, approval, attendance, or write
+permissions. OAuth login alone does not expose the company organization tree.
+
+### Optional read-only Feishu directory import
+
+Organization import is a separate server-to-server boundary using a short-lived
+`tenant_access_token`. The adapter reads the recursive department list and the
+direct members of each department, then emits the vendor-neutral
+`EnterpriseDirectorySourcePort` snapshot. It never returns the Feishu token,
+phone number, employee number, or unrelated profile fields.
+
+After the secret file and non-secret coordinates are installed, operators can
+verify the live read-only boundary without printing employee records or secret
+material:
+
+```sh
+COMPANY_OS_FEISHU_APP_ID=<app-id> \
+COMPANY_OS_FEISHU_APP_SECRET_FILE=/run/company-os/secrets/feishu-app-secret \
+COMPANY_OS_FEISHU_TENANT_KEY=<tenant-key> \
+npm run ops:verify:feishu-directory
+```
+
+The command returns only aggregate counts and a deterministic structural digest.
+It rejects duplicate identities, orphan departments, orphan human memberships,
+malformed responses, unbounded pagination, and a mismatched tenant.
+
+In Feishu Developer Console, request only the current read-only permissions
+shown for these two official APIs:
+
+- `GET /open-apis/contact/v3/departments/0/children`: basic directory and
+  department organization information.
+- `GET /open-apis/contact/v3/users/find_by_department`: user basic information,
+  user organization information, and user email information only if invitation
+  matching needs it.
+
+The app's **通讯录权限范围** controls which records are returned. Reading from
+root department `0` requires the administrator to set that range to **全部成员**.
+For least privilege, select only the departments Company OS actually manages
+unless a complete company mirror is required. No directory permission is
+needed merely to enable Feishu login.
 
 ## First start
 

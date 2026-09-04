@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "status": "PRODUCTION_HEALTHY_DNS_CLEANUP_PENDING",
+  "releaseId": "0.1.0-multi-tenant.4-fa45a35de445",
+  "purpose": "Require a one-use operator-issued invitation code before a company can start shared-domain SaaS registration.",
+  "images": {
+    "api": "sha256:fa45a35de445e4e58397cd8048127b91fbf4ff2761df9fcc6b8c448fcee75359",
+    "web": "sha256:1cb132abd9a4bf44825379f38fe5823e621ab772c4ff4c92ef13dcb4e8a28c5c"
+  },
+  "admission": {
+    "multiTenantSaasEnabled": true,
+    "unrestrictedSignupEnabled": false,
+    "issuedInviteCount": 20,
+    "runtimeStoresPlaintextCodes": false,
+    "digestAlgorithm": "HMAC-SHA-256",
+    "redemption": "ATOMIC_ONE_USE_WITH_TENANT_PROVISIONING"
+  },
+  "migration": {
+    "name": "0009_tenant_signup_invites",
+    "mode": "ADDITIVE",
+    "result": "PASS"
+  },
+  "verification": {
+    "fullSuite": "PASS_796_TESTS_791_PASSED_5_SKIPPED",
+    "realPostgresInviteTransaction": "PASS_3_OF_3_WITH_ZERO_SKIPS",
+    "browserSuite": "PASS_21_PASSED_5_SKIPPED",
+    "dependencyAudit": "PASS_ZERO_RUNTIME_VULNERABILITIES",
+    "validInviteWithDummyApp": "422_IDENTITY_BINDING_VERIFICATION_FAILED",
+    "invalidInvite": "403_TENANT_SIGNUP_NOT_ALLOWED",
+    "probePersistence": "ZERO_REGISTRATIONS_BINDINGS_SECRETS_REDEMPTIONS",
+    "health": "PASS",
+    "readyConfiguration": "PASS",
+    "readyDatabase": "PASS",
+    "newFatalLogs": 0
+  },
+  "repair": {
+    "discoveredBy": "REAL_POSTGRES_FOREIGN_KEY_TEST",
+    "issue": "INVITE_REDEMPTION_WAS_ATTEMPTED_BEFORE_ITS_REGISTRATION_PARENT",
+    "productionProtection": "REGISTRATION_DISABLED_BEFORE_REPAIR",
+    "resolution": "REGISTRATION_INSERT_THEN_INVITE_REDEMPTION_IN_ONE_ROLLBACK_SAFE_TRANSACTION",
+    "result": "VERIFIED_AND_REDEPLOYED"
+  },
+  "rollback": {
+    "directory": "/srv/company-os/feishu-production/rollback/20260903T070000Z-tenant-invite-gate",
+    "databaseBackup": "company_os.before-tenant-invite-gate.dump",
+    "previousCompose": "compose.before-tenant-invite-gate.yml"
+  },
+  "remaining": [
+    "Delete the two confirmed legacy test DNS A records after AliCloud console authentication",
+    "Complete a real second-company two-user acceptance when a non-Zhejiang-Leike Feishu app is available"
+  ]
+}

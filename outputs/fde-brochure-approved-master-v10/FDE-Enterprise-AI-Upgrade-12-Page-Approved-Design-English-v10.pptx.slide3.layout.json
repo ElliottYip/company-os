@@ -1,0 +1,1521 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/ofy9wn61",
+    "id": "ofy9wn61",
+    "slide": 3,
+    "layoutId": "/ppt/slideLayouts/slideLayout1.xml",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 794,
+      "height": 1123
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "fontScheme": {
+      "name": "Office",
+      "majorFont": {
+        "latinTypeface": "Calibri Light",
+        "eastAsianTypeface": "Calibri Light",
+        "complexScriptTypeface": "Calibri Light"
+      },
+      "minorFont": {
+        "latinTypeface": "Calibri",
+        "eastAsianTypeface": "Calibri",
+        "complexScriptTypeface": "Calibri"
+      }
+    },
+    "typefaces": [
+      "Calibri",
+      "Calibri Light"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "/ppt/slideLayouts/slideLayout1.xml",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "/ppt/slideMasters/slideMaster1.xml",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sfix03y9",
+      "id": "26",
+      "bbox": [
+        54,
+        54,
+        686,
+        72
+      ],
+      "geometry": "rect",
+      "text": "The numbers are already moving",
+      "textPreview": "The numbers are already moving",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The numbers are already moving"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The numbers are already moving",
+          "resolvedTextStyle": {
+            "fontSize": 42,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The numbers are already moving",
+              "fontSize": 42,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cza94vmx",
+      "id": "2",
+      "bbox": [
+        54,
+        160,
+        165,
+        70
+      ],
+      "geometry": "rect",
+      "text": "81%",
+      "textPreview": "81%",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "81%"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "81%",
+          "resolvedTextStyle": {
+            "fontSize": 51,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "81%",
+              "fontSize": 51,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/d0jax03i",
+      "id": "3",
+      "bbox": [
+        235,
+        160,
+        385,
+        104
+      ],
+      "geometry": "rect",
+      "text": "Microsoft’s 2025 Work Trend Index surveyed 31,000 workers across 31 countries. 81% of surveyed leaders expected agents to enter their company’s AI strategy within 12–18 months.",
+      "textPreview": "Microsoft’s 2025 Work Trend Index surveyed 31,000 workers across 31 countries. 81% of surveyed leaders expected agents to enter their com...",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Microsoft’s 2025 Work Trend Index surveyed 31,000"
+          },
+          {
+            "index": 2,
+            "text": "workers across 31 countries. 81% of surveyed"
+          },
+          {
+            "index": 3,
+            "text": "leaders expected agents to enter their company’s AI"
+          },
+          {
+            "index": 4,
+            "text": "strategy within 12–18 months."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Microsoft’s 2025 Work Trend Index surveyed 31,000 workers across 31 countries. 81% of surveyed leaders expected agents to enter their company’s AI strategy within 12–18 months.",
+          "resolvedTextStyle": {
+            "fontSize": 14.31,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Microsoft’s 2025 Work Trend Index surveyed 31,000 workers across 31 countries. 81% of surveyed leaders expected agents to enter their company’s AI strategy within 12–18 months.",
+              "fontSize": 14.31,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/298ryl4v",
+      "id": "4",
+      "bbox": [
+        640,
+        163,
+        100,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Microsoft · 2025",
+      "textPreview": "Microsoft · 2025",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Microsoft · 2025"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Microsoft · 2025",
+          "resolvedTextStyle": {
+            "fontSize": 9.2,
+            "color": "#656563",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Microsoft · 2025",
+              "fontSize": 9.2,
+              "color": "#656563"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3ah8rqlg",
+      "id": "5",
+      "bbox": [
+        54,
+        286,
+        686,
+        0.45
+      ],
+      "geometry": "rect",
+      "fillColor": "#D8D8D3",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/obq90bml",
+      "id": "6",
+      "bbox": [
+        54,
+        324,
+        165,
+        70
+      ],
+      "geometry": "rect",
+      "text": "1M+",
+      "textPreview": "1M+",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "1M+"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "1M+",
+          "resolvedTextStyle": {
+            "fontSize": 51,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "1M+",
+              "fontSize": 51,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pcjqtg36",
+      "id": "7",
+      "bbox": [
+        235,
+        324,
+        385,
+        104
+      ],
+      "geometry": "rect",
+      "text": "In 2025, OpenAI reported more than one million business customers.",
+      "textPreview": "In 2025, OpenAI reported more than one million business customers.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "In 2025, OpenAI reported more than one million"
+          },
+          {
+            "index": 2,
+            "text": "business customers."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "In 2025, OpenAI reported more than one million business customers.",
+          "resolvedTextStyle": {
+            "fontSize": 14.31,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "In 2025, OpenAI reported more than one million business customers.",
+              "fontSize": 14.31,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/m5cra54z",
+      "id": "8",
+      "bbox": [
+        640,
+        327,
+        100,
+        24
+      ],
+      "geometry": "rect",
+      "text": "OpenAI · 2025",
+      "textPreview": "OpenAI · 2025",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "OpenAI · 2025"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "OpenAI · 2025",
+          "resolvedTextStyle": {
+            "fontSize": 9.2,
+            "color": "#656563",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "OpenAI · 2025",
+              "fontSize": 9.2,
+              "color": "#656563"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/n6ls3alk",
+      "id": "9",
+      "bbox": [
+        54,
+        450,
+        686,
+        0.45
+      ],
+      "geometry": "rect",
+      "fillColor": "#D8D8D3",
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/n2l4fq98",
+      "id": "10",
+      "bbox": [
+        54,
+        488,
+        165,
+        70
+      ],
+      "geometry": "rect",
+      "text": "108×",
+      "textPreview": "108×",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "108×"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "108×",
+          "resolvedTextStyle": {
+            "fontSize": 51,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "108×",
+              "fontSize": 51,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/m1c3mlsn",
+      "id": "11",
+      "bbox": [
+        235,
+        488,
+        385,
+        104
+      ],
+      "geometry": "rect",
+      "text": "Since February, weekly active Codex users grew 108× in legal, 41× in sales, 41× in recruiting, and 26× in marketing.",
+      "textPreview": "Since February, weekly active Codex users grew 108× in legal, 41× in sales, 41× in recruiting, and 26× in marketing.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Since February, weekly active Codex users grew 108×"
+          },
+          {
+            "index": 2,
+            "text": "in legal, 41× in sales, 41× in recruiting, and 26× in"
+          },
+          {
+            "index": 3,
+            "text": "marketing."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Since February, weekly active Codex users grew 108× in legal, 41× in sales, 41× in recruiting, and 26× in marketing.",
+          "resolvedTextStyle": {
+            "fontSize": 14.31,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Since February, weekly active Codex users grew 108× in legal, 41× in sales, 41× in recruiting, and 26× in marketing.",
+              "fontSize": 14.31,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/943mhgre",
+      "id": "12",
+      "bbox": [
+        640,
+        491,
+        100,
+        24
+      ],
+      "geometry": "rect",
+      "text": "OpenAI · 2026",
+      "textPreview": "OpenAI · 2026",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "OpenAI · 2026"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "OpenAI · 2026",
+          "resolvedTextStyle": {
+            "fontSize": 9.2,
+            "color": "#656563",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "OpenAI · 2026",
+              "fontSize": 9.2,
+              "color": "#656563"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/83ulovat",
+      "id": "13",
+      "bbox": [
+        54,
+        614,
+        686,
+        0.45
+      ],
+      "geometry": "rect",
+      "fillColor": "#D8D8D3",
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/v6l4jq94",
+      "id": "14",
+      "bbox": [
+        54,
+        672,
+        180,
+        30
+      ],
+      "geometry": "rect",
+      "fillColor": "#F4D9D5",
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/a5c3ql8z",
+      "id": "15",
+      "bbox": [
+        66,
+        672,
+        340,
+        30
+      ],
+      "geometry": "rect",
+      "text": "PUBLIC EXAMPLES ALREADY IN PRODUCTION",
+      "textPreview": "PUBLIC EXAMPLES ALREADY IN PRODUCTION",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "PUBLIC EXAMPLES ALREADY IN PRODUCTION"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "PUBLIC EXAMPLES ALREADY IN PRODUCTION",
+          "resolvedTextStyle": {
+            "fontSize": 10.51,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "PUBLIC EXAMPLES ALREADY IN PRODUCTION",
+              "fontSize": 10.51,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/x8nml0ra",
+      "id": "16",
+      "bbox": [
+        54,
+        735,
+        85,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Cisco:",
+      "textPreview": "Cisco:",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Cisco:"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Cisco:",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Cisco:",
+              "fontSize": 12,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/w7ulsvqp",
+      "id": "17",
+      "bbox": [
+        140,
+        735,
+        250,
+        98
+      ],
+      "geometry": "rect",
+      "text": "OpenAI reports that Codex reduced code review time by 50% and shortened some projects from weeks to days.",
+      "textPreview": "OpenAI reports that Codex reduced code review time by 50% and shortened some projects from weeks to days.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "OpenAI reports that Codex reduced code"
+          },
+          {
+            "index": 2,
+            "text": "review time by 50% and shortened some"
+          },
+          {
+            "index": 3,
+            "text": "projects from weeks to days."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "OpenAI reports that Codex reduced code review time by 50% and shortened some projects from weeks to days.",
+          "resolvedTextStyle": {
+            "fontSize": 11.4,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "OpenAI reports that Codex reduced code review time by 50% and shortened some projects from weeks to days.",
+              "fontSize": 11.4,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ja54na9g",
+      "id": "18",
+      "bbox": [
+        406,
+        735,
+        85,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Carlyle:",
+      "textPreview": "Carlyle:",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Carlyle:"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Carlyle:",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Carlyle:",
+              "fontSize": 12,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i9w3u58v",
+      "id": "19",
+      "bbox": [
+        492,
+        735,
+        250,
+        98
+      ],
+      "geometry": "rect",
+      "text": "Its multi-agent due diligence framework reportedly cut development time by more than 50% and improved agent accuracy by 30%.",
+      "textPreview": "Its multi-agent due diligence framework reportedly cut development time by more than 50% and improved agent accuracy by 30%.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Its multi-agent due diligence framework"
+          },
+          {
+            "index": 2,
+            "text": "reportedly cut development time by more"
+          },
+          {
+            "index": 3,
+            "text": "than 50% and improved agent accuracy by"
+          },
+          {
+            "index": 4,
+            "text": "30%."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Its multi-agent due diligence framework reportedly cut development time by more than 50% and improved agent accuracy by 30%.",
+          "resolvedTextStyle": {
+            "fontSize": 11.4,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Its multi-agent due diligence framework reportedly cut development time by more than 50% and improved agent accuracy by 30%.",
+              "fontSize": 11.4,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/e10f2twf",
+      "id": "20",
+      "bbox": [
+        54,
+        853,
+        85,
+        24
+      ],
+      "geometry": "rect",
+      "text": "TELUS:",
+      "textPreview": "TELUS:",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "TELUS:"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "TELUS:",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "TELUS:",
+              "fontSize": 12,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/f29gbyx0",
+      "id": "21",
+      "bbox": [
+        140,
+        853,
+        250,
+        98
+      ],
+      "geometry": "rect",
+      "text": "A Google Cloud customer story reports $53.9 million in annual savings, 87% faster issue resolution, and 30% of calls resolved proactively with AI.",
+      "textPreview": "A Google Cloud customer story reports $53.9 million in annual savings, 87% faster issue resolution, and 30% of calls resolved proactively...",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A Google Cloud customer story reports"
+          },
+          {
+            "index": 2,
+            "text": "$53.9 million in annual savings, 87% faster"
+          },
+          {
+            "index": 3,
+            "text": "issue resolution, and 30% of calls resolved"
+          },
+          {
+            "index": 4,
+            "text": "proactively with AI."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A Google Cloud customer story reports $53.9 million in annual savings, 87% faster issue resolution, and 30% of calls resolved proactively with AI.",
+          "resolvedTextStyle": {
+            "fontSize": 11.4,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A Google Cloud customer story reports $53.9 million in annual savings, 87% faster issue resolution, and 30% of calls resolved proactively with AI.",
+              "fontSize": 11.4,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 22,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/03ix43e5",
+      "id": "22",
+      "bbox": [
+        406,
+        853,
+        85,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Lowe’s:",
+      "textPreview": "Lowe’s:",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Lowe’s:"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Lowe’s:",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#070707",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Lowe’s:",
+              "fontSize": 12,
+              "color": "#070707",
+              "bold": true
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 23,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/14ryd8fq",
+      "id": "23",
+      "bbox": [
+        492,
+        853,
+        250,
+        98
+      ],
+      "geometry": "rect",
+      "text": "OpenAI reports that Lowe’s provides AI-powered project guidance to associates across more than 1,700 stores.",
+      "textPreview": "OpenAI reports that Lowe’s provides AI-powered project guidance to associates across more than 1,700 stores.",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "OpenAI reports that Lowe’s provides"
+          },
+          {
+            "index": 2,
+            "text": "AI-powered project guidance to associates"
+          },
+          {
+            "index": 3,
+            "text": "across more than 1,700 stores."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "OpenAI reports that Lowe’s provides AI-powered project guidance to associates across more than 1,700 stores.",
+          "resolvedTextStyle": {
+            "fontSize": 11.4,
+            "color": "#070707",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "OpenAI reports that Lowe’s provides AI-powered project guidance to associates across more than 1,700 stores.",
+              "fontSize": 11.4,
+              "color": "#070707"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 24,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6d0fytg3",
+      "id": "24",
+      "bbox": [
+        54,
+        1080,
+        40,
+        15
+      ],
+      "geometry": "rect",
+      "text": "3",
+      "textPreview": "3",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "3"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "3",
+          "resolvedTextStyle": {
+            "fontSize": 8.8,
+            "color": "#656563",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "3",
+              "fontSize": 8.8,
+              "color": "#656563"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 25,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/re9g7yxo",
+      "id": "25",
+      "bbox": [
+        530,
+        1080,
+        210,
+        15
+      ],
+      "geometry": "rect",
+      "text": "FDE enterprise AI upgrade",
+      "textPreview": "FDE enterprise AI upgrade",
+      "resolvedFontSize": 24,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 24,
+        "typeface": "Calibri",
+        "color": "tx1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "FDE enterprise AI upgrade"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "FDE enterprise AI upgrade",
+          "resolvedTextStyle": {
+            "fontSize": 8.8,
+            "color": "#656563",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "FDE enterprise AI upgrade",
+              "fontSize": 8.8,
+              "color": "#656563"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

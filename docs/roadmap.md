@@ -22,22 +22,22 @@ capability has one best reference plus a separate reuse/license boundary and a
 single `GO/NARROW/PARTNER/STOP` judgment.
 
 ADR 0010 accepts the responsibility-first Company System of Record + Agent Boss
-shape. The audit freeze is lifted. Work resumes at A–G below; generic capability
-work is admitted only when it supports that architecture, and formal 3D asset
-production remains behind stage H.
+shape. The audit freeze is lifted. Work resumes across the responsibility-first
+control-plane capabilities below; generic work is admitted only when it supports
+that architecture.
 
-### A. Constitution and boundaries — Pre-3D complete
+### A. Constitution and boundaries — complete
 
 Product charter, ADRs, dependency rules, migration-manifest format, independent
 build/configuration/data lifecycle, and source provenance.
 
-### B. Independent scaffold and contracts — Pre-3D complete
+### B. Independent scaffold and contracts — complete
 
 Domain/application foundation and ports. Equal connector SDK with validation,
 idempotency, versioning, timeout, cancellation, progress, approvals, evidence,
 results, and runtime proof.
 
-### C. Owned design system — Pre-3D complete
+### C. Owned design system — complete
 
 Raft-influenced Company OS tokens and accessible base components. Legally
 tracked fish assets; no runtime imports from Raft.
@@ -68,16 +68,6 @@ and revisioned company budget policies. External provider packages remain
 optional; missing runtimes and unpriced usage fail closed rather than producing
 invented activity or spend.
 
-### G. Office Compiler Pre-3D — contract frozen
-
-Spatial modules, entity/state model, deterministic layout compilation, and
-replaceable renderer/asset contracts independent of 2D DOM.
-
-### H. 3D production — next separate goal, not started
-
-Reusable characters, rooms, furniture, rigs, actions, renderer, and asset QA,
-only after Pre-3D contracts and the product loop are validated.
-
 ## Product phases
 
 1. **Model/data foundation:** multi-vendor access, key security, provider
@@ -85,13 +75,11 @@ only after Pre-3D contracts and the product loop are validated.
    connectors, authorization persistence, Web administration, security tests.
 2. **Agent Boss MVP:** organizations, people, agents, accountable roles, tasks,
    progress, model/data permissions, approvals, work and responsibility records.
-3. **Virtual office:** finish spatial compilation/Pre-3D semantics before 3D
-   characters, furniture, actions, and renderer.
-4. **Training/certification:** Agent Boss education, role management, human and
+3. **Training/certification:** Agent Boss education, role management, human and
    agent capability certification. AgentBoss School v0.1 now includes an
    issuer-reviewed Foundations course credential and opt-in Yearbook; production
    issuance still requires the operational public-key/reviewer process.
-5. **Enterprise pilots/templates:** validate ratios, boundaries, and cost before
+4. **Enterprise pilots/templates:** validate ratios, boundaries, and cost before
    producing sales, support, finance, engineering, and industry templates.
 
 ## Quality gates for every phase

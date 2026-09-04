@@ -32,6 +32,19 @@ Plain HTTP is rejected. The
 `COMPANY_OS_HTTP_AGENT_NODE_ALLOW_INSECURE_LOOPBACK=true` override accepts only
 `localhost`, `127.0.0.1`, or `::1` and exists solely for isolated tests.
 
+Before restarting the formal service, run `npm run agent:preflight`. The
+command checks the installed package selection, authentication source, Codex
+CLI version and authenticated Agent Node health. Its JSON result contains
+stable PASS/BLOCKED codes and sanitized capability metadata only; it never
+prints the configured base URL or bearer value. A READY preflight does not
+register the runtime in a company and is not customer or production
+acceptance.
+
+The direct HTTP transport is initiated by Company OS. It therefore works only
+when the Agent Node is reachable from the API service, including self-hosted
+loopback and approved private-network deployments. It does not connect a
+laptop's `localhost` to a hosted control plane through the browser.
+
 ## Node API v1
 
 Every request carries:

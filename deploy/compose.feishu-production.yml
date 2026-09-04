@@ -1,0 +1,138 @@
+name: company-os-feishu-prod
+
+x-api-runtime: &api-runtime
+  image: company-os-api@sha256:fa45a35de445e4e58397cd8048127b91fbf4ff2761df9fcc6b8c448fcee75359
+  user: "0:0"
+  read_only: true
+  init: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  tmpfs:
+    - /tmp:size=32m,mode=1777
+  networks: [internal]
+  volumes:
+    - /etc/company-os/feishu-secrets:/run/company-os/secrets:ro
+
+services:
+  postgres:
+    image: postgres:16.15-bookworm@sha256:bb3e1a57e5407e0a5280b4211980a5e537f4abd234a87014ac979849a78dd825
+    restart: unless-stopped
+    user: "999:999"
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+      - /var/run/postgresql:size=16m,uid=999,gid=999,mode=3777
+    environment:
+      POSTGRES_DB: company_os
+      POSTGRES_USER: company_os_owner
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-password
+    volumes:
+      - /etc/company-os/feishu-secrets/postgres-password:/run/secrets/postgres-password:ro
+      - postgres_data:/var/lib/postgresql/data
+    networks: [internal]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U company_os_owner -d company_os"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  migrate:
+    <<: *api-runtime
+    restart: "no"
+    command: ["node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]
+    environment:
+      COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/migration-database-url
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  provision-runtime:
+    <<: *api-runtime
+    restart: "no"
+    command: ["node", "--experimental-strip-types", "scripts/provision-postgres-runtime-role.ts"]
+    environment:
+      COMPANY_OS_MIGRATION_DATABASE_URL_FILE: /run/company-os/secrets/migration-database-url
+      COMPANY_OS_RUNTIME_DATABASE_USER: company_os_runtime
+      COMPANY_OS_RUNTIME_DATABASE_PASSWORD_FILE: /run/company-os/secrets/runtime-database-password
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
+  api:
+    <<: *api-runtime
+    restart: unless-stopped
+    cap_add: [SETGID, SETUID]
+    environment:
+      COMPANY_OS_RELEASE_ID: 0.1.0-multi-tenant.4-fa45a35de445
+      COMPANY_OS_PROFILE: managed-cloud
+      COMPANY_OS_EXPOSURE: public
+      COMPANY_OS_RUNTIME_MODE: formal
+      COMPANY_OS_PUBLIC_DEMO_ENABLED: "false"
+      COMPANY_OS_HOST: 0.0.0.0
+      COMPANY_OS_PORT: 4310
+      COMPANY_OS_PUBLIC_URL: https://api.anc.raft.xin
+      COMPANY_OS_WEB_ORIGINS: https://anc.raft.xin
+      COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/runtime-database-url
+      COMPANY_OS_IDENTITY_PROVIDER: FEISHU
+      COMPANY_OS_FEISHU_APP_ID: cli_aa1c82532478dbb5
+      COMPANY_OS_FEISHU_APP_SECRET_FILE: /run/company-os/secrets/feishu-app-secret
+      COMPANY_OS_FEISHU_TENANT_KEY: 1bca98d52405d75f
+      COMPANY_OS_FEISHU_REDIRECT_URI: https://api.anc.raft.xin/api/auth/oauth2/callback/feishu
+      COMPANY_OS_SESSION_SIGNING_KEY_FILE: /run/company-os/secrets/session-signing-key
+      COMPANY_OS_MULTI_TENANT_SAAS_ENABLED: "true"
+      COMPANY_OS_TENANT_PUBLIC_SIGNUP_UNRESTRICTED: "false"
+      COMPANY_OS_TENANT_SIGNUP_APP_ALLOWLIST: ""
+      COMPANY_OS_TENANT_SIGNUP_INVITE_HMAC_KEY_FILE: /run/company-os/secrets/tenant-signup-invite-hmac-key
+      COMPANY_OS_TENANT_SIGNUP_INVITE_DIGESTS_FILE: /run/company-os/secrets/tenant-signup-invite-digests
+      COMPANY_OS_TENANT_SIGNUPS_PER_MINUTE: "20"
+      COMPANY_OS_TENANT_WEB_BASE_URL: https://anc.raft.xin
+      COMPANY_OS_TENANT_SECRET_KEY_VERSION: key-v1
+      COMPANY_OS_TENANT_SECRET_MASTER_KEY_FILE: /run/company-os/secrets/tenant-secret-master-key
+      COMPANY_OS_INSTANCE_ID: company-os-feishu-production
+      COMPANY_OS_TRUSTED_PROXY_CIDRS: 172.31.29.1/32
+      COMPANY_OS_CONNECTOR_PACKAGES: ""
+      COMPANY_OS_SECRET_BROKER_PACKAGE: ""
+      COMPANY_OS_MODEL_PROVIDER_PACKAGES: ""
+      COMPANY_OS_DATA_CONNECTOR_PACKAGES: ""
+      COMPANY_OS_FEDERATED_SOURCE_PACKAGES: ""
+      COMPANY_OS_METRICS_ENABLED: "false"
+      COMPANY_OS_RUNTIME_UID: "1000"
+      COMPANY_OS_RUNTIME_GID: "1000"
+    ports:
+      - "127.0.0.1:4611:4310"
+    depends_on:
+      provision-runtime: { condition: service_completed_successfully }
+
+  web:
+    image: company-os-web@sha256:1cb132abd9a4bf44825379f38fe5823e621ab772c4ff4c92ef13dcb4e8a28c5c
+    restart: unless-stopped
+    read_only: true
+    init: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    environment:
+      COMPANY_OS_RELEASE_ID: 0.1.0-multi-tenant.4-fa45a35de445
+      COMPANY_OS_WEB_HOST: 0.0.0.0
+      COMPANY_OS_WEB_PORT: 8080
+      COMPANY_OS_WEB_MODE: formal
+      COMPANY_OS_WEB_API_URL: https://api.anc.raft.xin
+    ports:
+      - "127.0.0.1:4610:8080"
+    networks: [internal]
+    depends_on:
+      api: { condition: service_healthy }
+
+networks:
+  internal:
+    name: company-os-feishu-prod_internal
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.29.0/24
+
+volumes:
+  postgres_data:
+    name: company-os-feishu-prod-postgres

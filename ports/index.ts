@@ -19,7 +19,6 @@ export * from "./identity-port.ts";
 export * from "./model-provider-port.ts";
 export * from "./model-provider-runtime-port.ts";
 export * from "./model-runtime-security-port.ts";
-export * from "./office-renderer-port.ts";
 export * from "./organization-principal-port.ts";
 export * from "./company-access-store-port.ts";
 export * from "./company-profile-store-port.ts";

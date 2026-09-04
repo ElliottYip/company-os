@@ -1,0 +1,69 @@
+{"kind":"deck","id":"pr/28dd2f","name":"Deck"}
+{"kind":"layout","layoutId":"40c07b5b-bdb8-4883-bc56-48f31d39f6d2","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"b9cee0e3-930f-4c9f-b679-02975aca9d1c","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/efp5p9","slide":1,"title":"FDE","textShapes":2}
+{"kind":"textbox","id":"sh/j2t8fmhc","slide":1,"text":"FDE","textPreview":"FDE","textChars":3,"textLines":1,"bbox":[34,35,90,25]}
+{"kind":"textbox","id":"sh/k32poryx","slide":1,"text":"企业想做 AI 升级，\n第一步从哪里\n开始？","textPreview":"企业想做 AI 升级， | 第一步从哪里 | 开始？","textChars":22,"textLines":3,"bbox":[34,139,544,215]}
+{"kind":"image","id":"im/on6pkfqd","slide":1,"name":"","alt":"Abstract blue technology light path","bbox":[34,390,544,352]}
+{"kind":"notes","id":"nt/efp5p9","slide":1,"text":""}
+{"kind":"slide","id":"sl/lsy2l2","slide":2,"title":"AI 已经可以","textShapes":18}
+{"kind":"textbox","id":"sh/uh0rq14z","slide":2,"text":"AI 已经可以\n自己干活","textPreview":"AI 已经可以 | 自己干活","textChars":12,"textLines":2,"bbox":[34,39,544,107]}
+{"kind":"textbox","id":"sh/hkrqlgna","slide":2,"text":"过去，我们手动完成工作每一步。","textPreview":"过去，我们手动完成工作每一步。","textChars":15,"textLines":1,"bbox":[34,161,544,21]}
+{"kind":"textbox","id":"sh/gji9sbmp","slide":2,"text":"现在，Agent 可以读资料、查数据、调用工具、完成一连串任务。碰到需要审核的事，再交给人判断。","textPreview":"现在，Agent 可以读资料、查数据、调用工具、完成一连串任务。碰到需要审核的事，再交给人判断。","textChars":48,"textLines":1,"bbox":[34,194,544,54]}
+{"kind":"shape","id":"sh/3mt8n65g","slide":2,"bbox":[34,267,544,47]}
+{"kind":"textbox","id":"sh/2l0rul4v","slide":2,"text":"公司的运作效率，会随着 AI Native 程度拉开差距。","textPreview":"公司的运作效率，会随着 AI Native 程度拉开差距。","textChars":29,"textLines":1,"bbox":[48,282,516,21]}
+{"kind":"textbox","id":"sh/pobqpgnm","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[34,352,36,18]}
+{"kind":"textbox","id":"sh/4n29wbm1","slide":2,"text":"重复工作交给 Agent","textPreview":"重复工作交给 Agent","textChars":12,"textLines":1,"bbox":[92,350,200,24]}
+{"kind":"textbox","id":"sh/rqt8rq5s","slide":2,"text":"Microsoft：员工将开始构建、分配和管理 Agent。","textPreview":"Microsoft：员工将开始构建、分配和管理 Agent。","textChars":30,"textLines":1,"bbox":[310,350,268,42]}
+{"kind":"shape","id":"sh/qpkryl47","slide":2,"bbox":[92,404,486,1]}
+{"kind":"textbox","id":"sh/c7q58reh","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[34,426,36,18]}
+{"kind":"textbox","id":"sh/d8z61wv2","slide":2,"text":"人负责目标、判断和审核","textPreview":"人负责目标、判断和审核","textChars":11,"textLines":1,"bbox":[92,424,200,24]}
+{"kind":"textbox","id":"sh/q58n61wb","slide":2,"text":"OpenAI：Agent 能代表用户完成工作流。","textPreview":"OpenAI：Agent 能代表用户完成工作流。","textChars":24,"textLines":1,"bbox":[310,424,268,42]}
+{"kind":"shape","id":"sh/b6hoz6dw","slide":2,"bbox":[92,478,486,1]}
+{"kind":"textbox","id":"sh/0vq5cbet","slide":2,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[34,500,36,18]}
+{"kind":"textbox","id":"sh/lwj65gve","slide":2,"text":"一个负责人可以带多个 Agent","textPreview":"一个负责人可以带多个 Agent","textChars":16,"textLines":1,"bbox":[92,498,200,24]}
+{"kind":"textbox","id":"sh/yt8na1wn","slide":2,"text":"Google：企业 Agent 要连接数据、工具、记忆和运行环境。","textPreview":"Google：企业 Agent 要连接数据、工具、记忆和运行环境。","textChars":33,"textLines":1,"bbox":[310,498,268,42]}
+{"kind":"shape","id":"sh/zuho36d8","slide":2,"bbox":[92,552,486,1]}
+{"kind":"textbox","id":"sh/8za5gbep","slide":2,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[34,574,36,18]}
+{"kind":"textbox","id":"sh/90j69gva","slide":2,"text":"公司积累能反复使用的流程和 Skill","textPreview":"公司积累能反复使用的流程和 Skill","textChars":19,"textLines":1,"bbox":[92,572,200,24]}
+{"kind":"textbox","id":"sh/hgf6tgne","slide":2,"text":"Anthropic：人更多决定做什么，Agent 更多负责怎么做。","textPreview":"Anthropic：人更多决定做什么，Agent 更多负责怎么做。","textChars":33,"textLines":1,"bbox":[310,572,268,42]}
+{"kind":"textbox","id":"sh/wf65kbmt","slide":2,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[34,760,24,14]}
+{"kind":"textbox","id":"sh/vexor658","slide":2,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[408,760,170,14]}
+{"kind":"notes","id":"nt/lsy2l2","slide":2,"text":"[Sources]\n- https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-the-frontier-firm-is-born\n- https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/\n- https://cloud.google.com/resources/core-concepts-ai-agents\n- https://www.anthropic.com/research/claude-code-expertise\n[/Sources]"}
+{"kind":"slide","id":"sl/71sug4","slide":3,"title":"这些数字已经发生","textShapes":29}
+{"kind":"textbox","id":"sh/jet0na98","slide":3,"text":"这些数字已经发生","textPreview":"这些数字已经发生","textChars":8,"textLines":1,"bbox":[34,42,544,30]}
+{"kind":"textbox","id":"sh/kf2hgvqt","slide":3,"text":"企业 AI 已经从演示进入真实业务。下面的数据来自 Microsoft、OpenAI 及厂商公开客户资料。","textPreview":"企业 AI 已经从演示进入真实业务。下面的数据来自 Microsoft、OpenAI 及厂商公开客户资料。","textChars":53,"textLines":1,"bbox":[34,107,544,35]}
+{"kind":"textbox","id":"sh/l0vip0re","slide":3,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[34,184,33,18]}
+{"kind":"textbox","id":"sh/a9kzal8r","slide":3,"text":"81%","textPreview":"81%","textChars":3,"textLines":1,"bbox":[89,181,100,38]}
+{"kind":"textbox","id":"sh/bat0jq9w","slide":3,"text":"的受访领导者预计，未来 12—18 个月 Agent 会进入公司的 AI 战略。","textPreview":"的受访领导者预计，未来 12—18 个月 Agent 会进入公司的 AI 战略。","textChars":40,"textLines":1,"bbox":[207,182,245,35]}
+{"kind":"textbox","id":"sh/wb2hcvqh","slide":3,"text":"Microsoft · 31 个国家 / 31,000 名员工","textPreview":"Microsoft · 31 个国家 / 31,000 名员工","textChars":31,"textLines":1,"bbox":[469,183,109,31]}
+{"kind":"shape","id":"sh/xcbil0r2","slide":3,"bbox":[89,242,489,1]}
+{"kind":"textbox","id":"sh/u54jmp8v","slide":3,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[34,276,33,18]}
+{"kind":"textbox","id":"sh/f6d0vupg","slide":3,"text":"100万+","textPreview":"100万+","textChars":5,"textLines":1,"bbox":[89,273,100,38]}
+{"kind":"textbox","id":"sh/n2lg3mt4","slide":3,"text":"家企业客户在使用 OpenAI 产品。","textPreview":"家企业客户在使用 OpenAI 产品。","textChars":19,"textLines":1,"bbox":[207,274,245,35]}
+{"kind":"textbox","id":"sh/m1czu1cj","slide":3,"text":"OpenAI · 2025","textPreview":"OpenAI · 2025","textChars":13,"textLines":1,"bbox":[469,275,109,31]}
+{"kind":"shape","id":"sh/943i5wbu","slide":3,"bbox":[89,334,489,1]}
+{"kind":"textbox","id":"sh/83uhwrup","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[34,368,33,18]}
+{"kind":"textbox","id":"sh/vq5076t0","slide":3,"text":"108×","textPreview":"108×","textChars":4,"textLines":1,"bbox":[89,365,100,38]}
+{"kind":"textbox","id":"sh/a5czy1cf","slide":3,"text":"自 2 月以来，Codex 在法务部门的周活跃用户增长。","textPreview":"自 2 月以来，Codex 在法务部门的周活跃用户增长。","textChars":28,"textLines":1,"bbox":[207,366,245,35]}
+{"kind":"textbox","id":"sh/xsni9gb6","slide":3,"text":"销售 41× · 招聘 41× · 市场 26×","textPreview":"销售 41× · 招聘 41× · 市场 26×","textChars":24,"textLines":1,"bbox":[469,367,109,31]}
+{"kind":"shape","id":"sh/wreh0bul","slide":3,"bbox":[89,426,489,1]}
+{"kind":"textbox","id":"sh/ju50b6tc","slide":3,"text":"已经进入生产的公开案例","textPreview":"已经进入生产的公开案例","textChars":11,"textLines":1,"bbox":[34,477,544,20]}
+{"kind":"textbox","id":"sh/itwz2lcr","slide":3,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[34,523,34,16]}
+{"kind":"textbox","id":"sh/e10bq90v","slide":3,"text":"Cisco","textPreview":"Cisco","textChars":5,"textLines":1,"bbox":[89,522,91,18]}
+{"kind":"textbox","id":"sh/f29sjehg","slide":3,"text":"代码评审时间缩短 50%；部分项目从数周缩短到数天。","textPreview":"代码评审时间缩短 50%；部分项目从数周缩短到数天。","textChars":26,"textLines":1,"bbox":[198,522,380,31]}
+{"kind":"shape","id":"sh/032tsji1","slide":3,"bbox":[89,557,489,1]}
+{"kind":"textbox","id":"sh/14bulozm","slide":3,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[34,572,34,16]}
+{"kind":"textbox","id":"sh/qx0bm90z","slide":3,"text":"Carlyle","textPreview":"Carlyle","textChars":7,"textLines":1,"bbox":[89,571,91,18]}
+{"kind":"textbox","id":"sh/ry9sfuhk","slide":3,"text":"多 Agent 尽调系统开发时间减少超过 50%，准确率提高 30%。","textPreview":"多 Agent 尽调系统开发时间减少超过 50%，准确率提高 30%。","textChars":35,"textLines":1,"bbox":[198,571,380,31]}
+{"kind":"shape","id":"sh/szitozi5","slide":3,"bbox":[89,606,489,1]}
+{"kind":"textbox","id":"sh/d0rah4zq","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[34,621,34,16]}
+{"kind":"textbox","id":"sh/atkbyt03","slide":3,"text":"TELUS","textPreview":"TELUS","textChars":5,"textLines":1,"bbox":[89,620,91,18]}
+{"kind":"textbox","id":"sh/budcryho","slide":3,"text":"每年节省 5,390 万美元；问题解决速度提高 87%。","textPreview":"每年节省 5,390 万美元；问题解决速度提高 87%。","textChars":28,"textLines":1,"bbox":[198,620,380,31]}
+{"kind":"shape","id":"sh/lofehsj6","slide":3,"bbox":[89,655,489,1]}
+{"kind":"textbox","id":"sh/kn6don2l","slide":3,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[34,670,34,16]}
+{"kind":"textbox","id":"sh/zmxwfi10","slide":3,"text":"Lowe’s","textPreview":"Lowe’s","textChars":6,"textLines":1,"bbox":[89,669,91,18]}
+{"kind":"textbox","id":"sh/yl4vmdkf","slide":3,"text":"在 1,700 多家门店为员工提供 AI 项目指导工具。","textPreview":"在 1,700 多家门店为员工提供 AI 项目指导工具。","textChars":28,"textLines":1,"bbox":[198,669,380,31]}
+{"kind":"textbox","id":"sh/x0vedsju","slide":3,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[34,760,24,14]}
+{"kind":"textbox","id":"sh/czmdkn29","slide":3,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[408,760,170,14]}
+{"kind":"notes","id":"nt/71sug4","slide":3,"text":"[Sources]\n- https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-the-frontier-firm-is-born\n- https://openai.com/index/1-million-businesses-putting-ai-to-work/\n- https://openai.com/index/how-enterprises-put-ai-to-work/\n- https://openai.com/index/introducing-openai-frontier/\n- https://cloud.google.com/customers/telus-gemini-enterprise-cx\n[/Sources]"}

@@ -215,6 +215,7 @@ export interface CompanyDirectoryProjection {
   readonly companies: readonly {
     readonly id: string;
     readonly name: string;
+    readonly slug?: string;
     readonly membershipRole: "owner" | "admin" | "operator" | "viewer";
   }[];
   readonly isInstanceAdmin: boolean;
@@ -665,12 +666,17 @@ function companyDirectoryProjection(payload: unknown): CompanyDirectoryProjectio
   if (!recordValue(payload) || payload.schemaVersion !== 1 || !Array.isArray(payload.companies) ||
       typeof payload.isInstanceAdmin !== "boolean") throw new Error("COMPANY_DIRECTORY_PROJECTION_INVALID");
   const ids = new Set<string>();
+  const slugs = new Set<string>();
   for (const company of payload.companies) {
     if (!recordValue(company) || !portableWebId(company.id) || ids.has(company.id) ||
-        !boundedText(company.name, 120) || company.name.length === 0 || !COMPANY_ROLES.has(String(company.membershipRole))) {
+        !boundedText(company.name, 120) || company.name.length === 0 ||
+        (company.slug !== undefined && (typeof company.slug !== "string" ||
+          !/^[a-z0-9](?:[a-z0-9-]{1,46}[a-z0-9])$/.test(company.slug) || slugs.has(company.slug))) ||
+        !COMPANY_ROLES.has(String(company.membershipRole))) {
       throw new Error("COMPANY_DIRECTORY_PROJECTION_INVALID");
     }
     ids.add(company.id);
+    if (company.slug !== undefined) slugs.add(company.slug);
   }
   return structuredClone(payload) as unknown as CompanyDirectoryProjection;
 }
@@ -710,17 +716,25 @@ function formalAccessProjection(payload: unknown): FormalAccessStatus {
   if (!recordValue(payload) || payload.schemaVersion !== 1 || payload.mode !== "FORMAL" ||
       !["managed-cloud", "self-hosted"].includes(String(payload.deploymentProfile)) ||
       !["BLOCKED", "AUTHENTICATION_REQUIRED", "READY"].includes(String(payload.entryState)) ||
-      !recordValue(payload.identityProvider) || payload.identityProvider.protocol !== "OIDC" ||
+      !recordValue(payload.identityProvider) || !["OIDC", "OAUTH2"].includes(String(payload.identityProvider.protocol)) ||
       typeof payload.identityProvider.configured !== "boolean" || !recordValue(payload.session) ||
       typeof payload.session.authenticated !== "boolean" || !recordValue(payload.capabilities) ||
       !Array.isArray(payload.blockers)) throw new Error("FORMAL_ACCESS_PROJECTION_INVALID");
+  const protocol = payload.identityProvider.protocol;
+  const providerId = payload.identityProvider.providerId ??
+    (protocol === "OIDC" ? "enterprise-oidc" : undefined);
+  if ((protocol === "OIDC" && providerId !== "enterprise-oidc") ||
+      (protocol === "OAUTH2" && providerId !== "feishu")) {
+    throw new Error("FORMAL_ACCESS_PROJECTION_INVALID");
+  }
   const capabilities = payload.capabilities;
   const capabilityNames = ["diagnostics", "identitySettings", "companyData", "companyMutation", "execution", "approval", "governance"] as const;
   if (capabilityNames.some((name) => typeof capabilities[name] !== "boolean")) {
     throw new Error("FORMAL_ACCESS_PROJECTION_INVALID");
   }
   for (const blocker of payload.blockers) {
-    if (!recordValue(blocker) || !["FORMAL_OIDC_NOT_CONFIGURED", "FORMAL_IDENTITY_RUNTIME_UNAVAILABLE", "FORMAL_IDENTITY_REQUIRED"].includes(String(blocker.code)) ||
+    if (!recordValue(blocker) || !["FORMAL_OIDC_NOT_CONFIGURED", "FORMAL_FEISHU_NOT_CONFIGURED",
+      "FORMAL_IDENTITY_RUNTIME_UNAVAILABLE", "FORMAL_IDENTITY_REQUIRED"].includes(String(blocker.code)) ||
         !recordValue(blocker.parameters) || Object.values(blocker.parameters).some((values) =>
           !Array.isArray(values) || values.some((value) => !boundedText(value, 160)))) {
       throw new Error("FORMAL_ACCESS_PROJECTION_INVALID");
@@ -736,7 +750,8 @@ function formalAccessProjection(payload: unknown): FormalAccessStatus {
       (payload.entryState === "BLOCKED" && (payload.session.authenticated || !companyDisabled || payload.blockers.length !== 1))) {
     throw new Error("FORMAL_ACCESS_PROJECTION_INVALID");
   }
-  return structuredClone(payload) as unknown as FormalAccessStatus;
+  return structuredClone({ ...payload,
+    identityProvider: { ...payload.identityProvider, providerId } }) as unknown as FormalAccessStatus;
 }
 
 function formalWorkCatalogPage(payload: unknown, expectedCompanyId: string): FormalWorkCatalog {
@@ -1106,6 +1121,7 @@ export function createFormalApplicationClient(
   const baseUrl = options.baseUrl.replace(/\/$/, "");
   const webOrigin = new URL(options.webOrigin).origin;
   let selectedCompanyId = options.companyId ?? null;
+  let signInProviderId: "enterprise-oidc" | "feishu" = "enterprise-oidc";
   const accessEndpoint = `${baseUrl}/api/v1/access`;
   const companiesEndpoint = `${baseUrl}/api/v1/companies`;
 
@@ -1245,7 +1261,9 @@ export function createFormalApplicationClient(
     mode: "FORMAL",
     async formalAccess() {
       const payload = await getJson(accessEndpoint);
-      return formalAccessProjection(payload);
+      const projection = formalAccessProjection(payload);
+      signInProviderId = projection.identityProvider.providerId;
+      return projection;
     },
     async beginFormalSignIn(callbackPath = "/") {
       if (!callbackPath.startsWith("/") || callbackPath.startsWith("//")) {
@@ -1256,7 +1274,7 @@ export function createFormalApplicationClient(
         headers: { accept: "application/json", "content-type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          provider: "enterprise-oidc",
+          provider: signInProviderId,
           callbackURL: new URL(callbackPath, `${webOrigin}/`).href,
         }),
       });

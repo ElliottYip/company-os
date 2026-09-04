@@ -3,7 +3,7 @@
 ## Agent Boss deterministic vertical
 
 The Company OS-owned Web exposes four projections over the same deterministic
-application state: Office, Work and Approvals, Responsibility, and Connectors.
+application state: Dashboard, Work and Approvals, Responsibility, and Connectors.
 The customer shell does not import or embed competitor pages. Stable section and
 event codes are independent of display copy.
 
@@ -38,6 +38,3 @@ one-click reset, rejection, explicit formal unauthorized state, absence of
 document-level horizontal overflow, and zero console errors/warnings at 320,
 768, 1024, and 1440 px. CI installs a pinned Chromium while local macOS uses the
 installed Chrome channel; both run the same five Playwright cases.
-
-This is a Pre-3D structural renderer. It intentionally does not claim to be the
-final office renderer or a substitute for approved human/office 3D assets.

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_LOCAL_CODEX_ADMISSION",
+  "recordedAt": "2026-09-01T01:09:38.645Z",
+  "codexVersion": "codex-cli 0.144.1",
+  "authentication": "LOCAL_CODEX_SESSION",
+  "sandbox": "read-only",
+  "approvalPolicy": "never",
+  "ephemeral": true,
+  "outcome": "PASS",
+  "summary": "The Company OS Codex Agent Node enforced the read-only execution boundary for the synthetic probe.",
+  "resultReference": "codex-result-6c01d95fa0760d4354eae56321626f59",
+  "resultDigest": "sha256:9c7b08ec2eff9716660e5ea23c7f3d13133de38fa588bbc1116737a493571a88",
+  "usage": {
+    "inputTokens": 77946,
+    "cachedInputTokens": 56576,
+    "outputTokens": 716
+  },
+  "notClaimed": [
+    "customer staging acceptance",
+    "production acceptance",
+    "side-effecting execution"
+  ]
+}

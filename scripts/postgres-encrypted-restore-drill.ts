@@ -6,6 +6,7 @@ import { spawn } from "node:child_process";
 import { Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import postgres from "postgres";
+import { readSecretFileEnvironment } from "../adapters/config/secret-file-environment.ts";
 import { createCompanyDatabase } from "../adapters/persistence/postgres/company-database.ts";
 import {
   backupEncryptionKey,
@@ -21,6 +22,16 @@ export function assertEncryptedRestoreTarget(targetUrl: string, backupPath: stri
   if (!isAbsolute(backupPath) || !backupPath.endsWith(".dump.enc")) {
     throw new Error("ENCRYPTED_RESTORE_BACKUP_PATH_INVALID");
   }
+}
+
+export function encryptedRestoreSchemaValidation(
+  value: string | undefined,
+): "CURRENT" | "CONNECTIVITY_ONLY" {
+  const normalized = value?.trim() || "CURRENT";
+  if (normalized !== "CURRENT" && normalized !== "CONNECTIVITY_ONLY") {
+    throw new Error("ENCRYPTED_RESTORE_SCHEMA_VALIDATION_INVALID");
+  }
+  return normalized;
 }
 
 function decipher(manifest: EncryptedBackupManifest, key: Buffer) {
@@ -109,13 +120,19 @@ export async function runEncryptedPostgresRestoreDrill(input: {
 }
 
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], "file:").href) {
-  const targetUrl = process.env.COMPANY_OS_RESTORE_DATABASE_URL;
+  const targetUrl = await readSecretFileEnvironment("COMPANY_OS_RESTORE_DATABASE_URL");
   const backupPath = process.env.COMPANY_OS_ENCRYPTED_BACKUP_PATH;
-  if (!targetUrl || !backupPath) throw new Error("ENCRYPTED_RESTORE_CONFIGURATION_REQUIRED");
+  const encryptionKey = await readSecretFileEnvironment("COMPANY_OS_BACKUP_ENCRYPTION_KEY");
+  if (!targetUrl || !backupPath || !encryptionKey) {
+    throw new Error("ENCRYPTED_RESTORE_CONFIGURATION_REQUIRED");
+  }
   const result = await runEncryptedPostgresRestoreDrill({
     targetUrl,
     backupPath,
-    encryptionKey: backupEncryptionKey(process.env.COMPANY_OS_BACKUP_ENCRYPTION_KEY),
+    encryptionKey: backupEncryptionKey(encryptionKey),
+    schemaValidation: encryptedRestoreSchemaValidation(
+      process.env.COMPANY_OS_RESTORE_SCHEMA_VALIDATION,
+    ),
   });
   process.stdout.write(`${JSON.stringify(result)}\n`);
 }

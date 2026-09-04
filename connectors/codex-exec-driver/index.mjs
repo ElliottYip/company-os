@@ -23,7 +23,7 @@ function loopback(hostname) {
 }
 
 function codexEnvironment(environment = process.env) {
-  const allowed = ["HOME", "CODEX_HOME", "CODEX_ACCESS_TOKEN", "OPENAI_API_KEY", "HTTPS_PROXY", "HTTP_PROXY",
+  const allowed = ["HOME", "PATH", "CODEX_HOME", "CODEX_ACCESS_TOKEN", "OPENAI_API_KEY", "HTTPS_PROXY", "HTTP_PROXY",
     "NO_PROXY", "SSL_CERT_FILE", "SSL_CERT_DIR", "NODE_EXTRA_CA_CERTS", "LANG", "LC_ALL"];
   return Object.fromEntries(allowed.flatMap((key) => environment[key] === undefined ? [] : [[key, environment[key]]]));
 }

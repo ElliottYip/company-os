@@ -206,13 +206,18 @@ the ciphertext digest matches. It does not connect to PostgreSQL. Database
 restore remains the separate, explicit empty-target command below:
 
 ```sh
-COMPANY_OS_RESTORE_DATABASE_URL=<empty-drill-database-secret> \
+COMPANY_OS_RESTORE_DATABASE_URL_FILE=/absolute/private/empty-drill-database-url \
 COMPANY_OS_ENCRYPTED_BACKUP_PATH=/absolute/protected/path/company-os.dump.enc \
-COMPANY_OS_BACKUP_ENCRYPTION_KEY=<deployment-secret> \
+COMPANY_OS_BACKUP_ENCRYPTION_KEY_FILE=/absolute/private/backup-encryption-key \
 npm run ops:encrypted-restore-drill
 ```
 
 The target must be an empty database explicitly named for restore/drill/test.
+When rehearsing an upgrade from a previous release, set
+`COMPANY_OS_RESTORE_SCHEMA_VALIDATION=CONNECTIVITY_ONLY`, restore first, then
+run the candidate migration exactly once and validate the current schema. The
+default remains `CURRENT`, so an ordinary disaster-recovery drill fails closed
+if the restored schema does not match the running release.
 `npm run test:encrypted-backup:postgres16` runs the complete disposable
 PostgreSQL 16 dump → encrypt → authenticate → direct-stream restore admission
 and verifies the retained event plus absence of plaintext artifacts.

@@ -1,4 +1,4 @@
-# Company OS Pre-3D threat model
+# Company OS threat model
 
 Status: Active design constraint  
 Method: STRIDE plus AI-agent abuse cases
@@ -26,7 +26,6 @@ are prohibited from this development program.
 7. Application → event/evidence store and backup.
 8. managed-cloud control plane ↔ customer-local execution plane.
 9. Demo template/runtime ↔ formal organization state.
-10. Office scene → replaceable renderer and future asset runtime.
 
 ## Primary abuse cases and required controls
 
@@ -45,7 +44,6 @@ are prohibited from this development program.
 | Oversized/recursive input exhausts service | D | Request/payload/record/depth/time bounds and rate policy |
 | Store or backup is silently modified | T/R | Digest chain, corruption detection, append sequence, restore validation |
 | Error/log exposes secret or private record | I | Field allowlists, redaction, stable public errors, no stack traces |
-| Office renderer gains business authority | E | Renderer consumes immutable scene only; no identity/store/execution imports |
 
 Secret material remains in a deployment-selected broker and never crosses the
 Company OS domain/application boundary. Formal access records the authorized

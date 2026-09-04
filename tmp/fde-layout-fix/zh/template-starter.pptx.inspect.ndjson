@@ -1,0 +1,366 @@
+{"kind":"deck","id":"pr/de3yau","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/2epdg1","slide":1,"title":"FDE","textShapes":4}
+{"kind":"shape","id":"sh/xg3itoju","slide":1,"name":"full-page-frosted-veil","bbox":[54,455,686,463]}
+{"kind":"textbox","id":"sh/cfuh0ji9","slide":1,"text":"FDE","textPreview":"FDE","textChars":3,"textLines":1,"bbox":[98,51.25,80,24]}
+{"kind":"textbox","id":"sh/bel0ry14","slide":1,"text":"企业想做 AI 升级，\n第一步从哪里开始？","textPreview":"企业想做 AI 升级， | 第一步从哪里开始？","textChars":21,"textLines":2,"bbox":[54,118,686,160]}
+{"kind":"textbox","id":"sh/adczyt0j","slide":1,"text":"FDE 走进业务现场，帮你找准第一个问题，\n再把它做成有人用、看得到结果的系统。","textPreview":"FDE 走进业务现场，帮你找准第一个问题， | 再把它做成有人用、看得到结果的系统。","textChars":40,"textLines":2,"bbox":[54,300,686,78]}
+{"kind":"textbox","id":"sh/l4nix8j6","slide":1,"text":"业务诊断｜流程改造｜Skill｜定制 SaaS｜数据库｜Agent","textPreview":"业务诊断｜流程改造｜Skill｜定制 SaaS｜数据库｜Agent","textChars":33,"textLines":1,"bbox":[54,965,470,42]}
+{"kind":"image","id":"im/v6tove5o","slide":1,"name":"","bbox":[54,42,34,34]}
+{"kind":"image","id":"im/w7254j69","slide":1,"name":"","bbox":[54,455,686,463]}
+{"kind":"notes","id":"nt/2epdg1","slide":1,"text":"[Sources]\n- Project-owned Raft logo supplied by the user: /Users/elliottye/Desktop/raft-logo-mark.svg; white rounded-square background removed while preserving the orange mark\n- User-provided and approved orange abstract cover visual: /Users/elliottye/Desktop/exec-eaa585b7-6630-4b2c-bcab-341d9bb5e79c.png\n[/Sources]"}
+{"kind":"slide","id":"sl/hejbs9","slide":2,"title":"AI 已经可以","textShapes":15}
+{"kind":"textbox","id":"sh/32tgzq1c","slide":2,"text":"AI 已经可以\n自己干活","textPreview":"AI 已经可以 | 自己干活","textChars":12,"textLines":2,"bbox":[54,66,686,170]}
+{"kind":"textbox","id":"sh/sfit0zql","slide":2,"text":"过去，我们手动完成工作每一步。","textPreview":"过去，我们手动完成工作每一步。","textChars":15,"textLines":1,"bbox":[54,266,686,34]}
+{"kind":"textbox","id":"sh/tgbat4r6","slide":2,"text":"现在，Agent 可以读资料、查数据、调用工具、完成一连串任务。\n碰到需要审核的事，再交给人判断。","textPreview":"现在，Agent 可以读资料、查数据、调用工具、完成一连串任务。 | 碰到需要审核的事，再交给人判断。","textChars":49,"textLines":2,"bbox":[54,325,686,92]}
+{"kind":"textbox","id":"sh/u1kb298r","slide":2,"text":"公司的工作方式也会跟着变：","textPreview":"公司的工作方式也会跟着变：","textChars":13,"textLines":1,"bbox":[54,452,310,24]}
+{"kind":"shape","id":"sh/f2tsve9c","slide":2,"bbox":[54,511.65,11,0.7]}
+{"kind":"textbox","id":"sh/g32t4jqh","slide":2,"text":"重复工作交给 Agent；","textPreview":"重复工作交给 Agent；","textChars":13,"textLines":1,"bbox":[78,490,662,44]}
+{"kind":"shape","id":"sh/h4buxor2","slide":2,"bbox":[54,558.65,11,0.7]}
+{"kind":"textbox","id":"sh/25kb698n","slide":2,"text":"人负责目标、判断和审核；","textPreview":"人负责目标、判断和审核；","textChars":12,"textLines":1,"bbox":[78,537,662,44]}
+{"kind":"shape","id":"sh/36tcze98","slide":2,"bbox":[54,605.65,11,0.7]}
+{"kind":"textbox","id":"sh/na5cvih0","slide":2,"text":"一个负责人可以带多个 Agent；","textPreview":"一个负责人可以带多个 Agent；","textChars":17,"textLines":1,"bbox":[78,584,662,44]}
+{"kind":"shape","id":"sh/2pwv2x0f","slide":2,"bbox":[54,652.65,11,0.7]}
+{"kind":"textbox","id":"sh/pcnuxsz6","slide":2,"text":"公司积累的不只是文件，还有能反复使用的流程和 Skill。","textPreview":"公司积累的不只是文件，还有能反复使用的流程和 Skill。","textChars":29,"textLines":1,"bbox":[78,631,662,44]}
+{"kind":"shape","id":"sh/obed4nil","slide":2,"bbox":[54,721.65,11,0.7]}
+{"kind":"textbox","id":"sh/fmlcriho","slide":2,"text":"Microsoft 在 2025 年提出 Agent Boss：员工将开始构建、分配和管理 Agent。","textPreview":"Microsoft 在 2025 年提出 Agent Boss：员工将开始构建、分配和管理 Agent。","textChars":52,"textLines":1,"bbox":[78,704,662,36]}
+{"kind":"shape","id":"sh/elcvyd0j","slide":2,"bbox":[54,759.65,11,0.7]}
+{"kind":"textbox","id":"sh/1onutszu","slide":2,"text":"OpenAI 把 Agent 定义为能够代表用户完成工作流的系统，不只是聊天机器人。","textPreview":"OpenAI 把 Agent 定义为能够代表用户完成工作流的系统，不只是聊天机器人。","textChars":42,"textLines":1,"bbox":[78,742,662,36]}
+{"kind":"shape","id":"sh/0nud0ni9","slide":2,"bbox":[54,797.65,11,0.7]}
+{"kind":"textbox","id":"sh/zipw32h8","slide":2,"text":"Google 认为企业 Agent 要连接公司的数据、工具、记忆和运行环境，才能真正工作。","textPreview":"Google 认为企业 Agent 要连接公司的数据、工具、记忆和运行环境，才能真正工作。","textChars":45,"textLines":1,"bbox":[78,780,662,36]}
+{"kind":"shape","id":"sh/yhgvahgn","slide":2,"bbox":[54,835.65,11,0.7]}
+{"kind":"textbox","id":"sh/ud0f210v","slide":2,"text":"Anthropic 发现，人在实际协作中更多决定“做什么”，Agent 更多负责“怎么做”。","textPreview":"Anthropic 发现，人在实际协作中更多决定“做什么”，Agent 更多负责“怎么做”。","textChars":46,"textLines":1,"bbox":[78,818,662,36]}
+{"kind":"shape","id":"sh/ve9gv61g","slide":2,"bbox":[54,860,686,0.9]}
+{"kind":"textbox","id":"sh/gf2x4bi1","slide":2,"text":"公司的运作效率，会随着AI Native程度拉开差距。","textPreview":"公司的运作效率，会随着AI Native程度拉开差距。","textChars":27,"textLines":1,"bbox":[54,888,686,75]}
+{"kind":"textbox","id":"sh/h0byxgjm","slide":2,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/i1kz6l0r","slide":2,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/hejbs9","slide":2,"text":"[Sources]\n- https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-the-frontier-firm-is-born\n- https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/\n- https://cloud.google.com/resources/core-concepts-ai-agents\n- https://www.anthropic.com/research/claude-code-expertise\n[/Sources]\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/nqi7wg","slide":3,"title":"这些数字已经发生","textShapes":21}
+{"kind":"textbox","id":"sh/gjy9c3mh","slide":3,"text":"这些数字已经发生","textPreview":"这些数字已经发生","textChars":8,"textLines":1,"bbox":[54,54,686,72]}
+{"kind":"textbox","id":"sh/wjq10jyx","slide":3,"text":"81%","textPreview":"81%","textChars":3,"textLines":1,"bbox":[54,160,165,70]}
+{"kind":"textbox","id":"sh/xkz2tofi","slide":3,"text":"Microsoft 2025 Work Trend Index 调查了\n31 个国家的 31,000 名员工。\n81% 的受访领导者预计，未来 12—18 个月\nAgent 会进入公司的 AI 战略。","textPreview":"Microsoft 2025 Work Trend Index 调查了 | 31 个国家的 31,000 名员工。 | 81% 的受访领导者预计，未来 12—18 个月 | Agent 会进入公司的 AI 战略。","textChars":100,"textLines":4,"bbox":[235,160,385,104]}
+{"kind":"textbox","id":"sh/mdoju9gv","slide":3,"text":"Microsoft · 2025","textPreview":"Microsoft · 2025","textChars":16,"textLines":1,"bbox":[640,163,100,24]}
+{"kind":"shape","id":"sh/nex0nexg","slide":3,"bbox":[54,286,686,0.45]}
+{"kind":"textbox","id":"sh/ofq1wjy1","slide":3,"text":"100万+","textPreview":"100万+","textChars":5,"textLines":1,"bbox":[54,324,165,70]}
+{"kind":"textbox","id":"sh/9gz2pofm","slide":3,"text":"OpenAI 2025 年公布，\n已有超过 100 万家企业客户在使用其产品。","textPreview":"OpenAI 2025 年公布， | 已有超过 100 万家企业客户在使用其产品。","textChars":39,"textLines":2,"bbox":[235,324,385,104]}
+{"kind":"textbox","id":"sh/69sj6dwz","slide":3,"text":"OpenAI · 2025","textPreview":"OpenAI · 2025","textChars":13,"textLines":1,"bbox":[640,327,100,24]}
+{"kind":"shape","id":"sh/7a1kzyxk","slide":3,"bbox":[54,450,686,0.45]}
+{"kind":"textbox","id":"sh/bm1grahg","slide":3,"text":"108×","textPreview":"108×","textChars":4,"textLines":1,"bbox":[54,488,165,70]}
+{"kind":"textbox","id":"sh/alsfi5gv","slide":3,"text":"OpenAI 2026 年的企业使用数据中，\n自 2 月以来，\nCodex 周活跃用户在法务部门增长 108 倍，\n在销售和招聘部门均增长 41 倍，\n在市场部门增长 26 倍。","textPreview":"OpenAI 2026 年的企业使用数据中， | 自 2 月以来， | Codex 周活跃用户在法务部门增长 108 倍， | 在销售和招聘部门均增长 41 倍， | 在市场部门增长 26 倍。","textChars":89,"textLines":5,"bbox":[235,488,385,104]}
+{"kind":"textbox","id":"sh/xo3yt0zm","slide":3,"text":"OpenAI · 2026","textPreview":"OpenAI · 2026","textChars":13,"textLines":1,"bbox":[640,491,100,24]}
+{"kind":"shape","id":"sh/cnaxkvy1","slide":3,"bbox":[54,614,686,0.45]}
+{"kind":"shape","id":"sh/zqlgvahs","slide":3,"bbox":[54,672,180,30]}
+{"kind":"textbox","id":"sh/ypcfm5g7","slide":3,"text":"已经进入生产的公开案例","textPreview":"已经进入生产的公开案例","textChars":11,"textLines":1,"bbox":[54,672,180,30]}
+{"kind":"textbox","id":"sh/lc3yxkfi","slide":3,"text":"Cisco：","textPreview":"Cisco：","textChars":6,"textLines":1,"bbox":[54,735,85,24]}
+{"kind":"textbox","id":"sh/kruxofyx","slide":3,"text":"OpenAI 公布的客户资料显示，Codex\n帮助其把代码评审时间缩短 50%，\n部分项目从数周缩短到数天。","textPreview":"OpenAI 公布的客户资料显示，Codex | 帮助其把代码评审时间缩短 50%， | 部分项目从数周缩短到数天。","textChars":54,"textLines":3,"bbox":[140,735,250,98]}
+{"kind":"textbox","id":"sh/7elgzuxo","slide":3,"text":"Carlyle：","textPreview":"Carlyle：","textChars":8,"textLines":1,"bbox":[406,735,85,24]}
+{"kind":"textbox","id":"sh/mdczqpg3","slide":3,"text":"其多 Agent 尽调系统的开发时间\n减少超过 50%，\nAgent 准确率提高 30%。","textPreview":"其多 Agent 尽调系统的开发时间 | 减少超过 50%， | Agent 准确率提高 30%。","textChars":45,"textLines":3,"bbox":[492,735,250,98]}
+{"kind":"textbox","id":"sh/2l0red4n","slide":3,"text":"TELUS：","textPreview":"TELUS：","textChars":6,"textLines":1,"bbox":[54,853,85,24]}
+{"kind":"textbox","id":"sh/3m9s7i58","slide":3,"text":"Google Cloud 客户案例称，\n其 AI 系统每年节省 5,390 万美元，\n客户问题解决速度提高 87%，\n30% 的来电由 AI 主动解决。","textPreview":"Google Cloud 客户案例称， | 其 AI 系统每年节省 5,390 万美元， | 客户问题解决速度提高 87%， | 30% 的来电由 AI 主动解决。","textChars":76,"textLines":4,"bbox":[140,853,250,98]}
+{"kind":"textbox","id":"sh/4ni9gnmt","slide":3,"text":"Lowe’s：","textPreview":"Lowe’s：","textChars":7,"textLines":1,"bbox":[406,853,85,24]}
+{"kind":"textbox","id":"sh/pora9sne","slide":3,"text":"OpenAI 客户资料显示，\nLowe’s 已在 1,700 多家门店\n为员工提供 AI 项目指导工具。","textPreview":"OpenAI 客户资料显示， | Lowe’s 已在 1,700 多家门店 | 为员工提供 AI 项目指导工具。","textChars":52,"textLines":3,"bbox":[492,853,250,98]}
+{"kind":"textbox","id":"sh/uhgrad4r","slide":3,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/fips3i5w","slide":3,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/nqi7wg","slide":3,"text":"[Sources]\n- https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-the-frontier-firm-is-born\n- https://openai.com/index/1-million-businesses-putting-ai-to-work/\n- https://openai.com/index/how-enterprises-put-ai-to-work/\n- https://openai.com/index/introducing-openai-frontier/\n- https://cloud.google.com/customers/telus-gemini-enterprise-cx\n[/Sources]\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/vsrrjo","slide":4,"title":"想要升级提效，","textShapes":28}
+{"kind":"textbox","id":"sh/twb29sji","slide":4,"text":"想要升级提效，\n但不知道从哪里入手","textPreview":"想要升级提效， | 但不知道从哪里入手","textChars":17,"textLines":2,"bbox":[54,54,686,108]}
+{"kind":"textbox","id":"sh/pgrm147q","slide":4,"text":"很多企业已经试过 AI：","textPreview":"很多企业已经试过 AI：","textChars":12,"textLines":1,"bbox":[54,180,686,22]}
+{"kind":"shape","id":"sh/ofy58zq5","slide":4,"bbox":[54,228.15,11,0.7]}
+{"kind":"textbox","id":"sh/fqp4vup8","slide":4,"text":"买过会员，员工偶尔问几个问题；","textPreview":"买过会员，员工偶尔问几个问题；","textChars":15,"textLines":1,"bbox":[78,216,662,25]}
+{"kind":"shape","id":"sh/epgn2p83","slide":4,"bbox":[54,257.15,11,0.7]}
+{"kind":"textbox","id":"sh/1c7mxk7e","slide":4,"text":"做过 Demo，演示时很好，上线后没人用；","textPreview":"做过 Demo，演示时很好，上线后没人用；","textChars":21,"textLines":1,"bbox":[78,245,662,25]}
+{"kind":"shape","id":"sh/gby54zqt","slide":4,"bbox":[54,286.15,11,0.7]}
+{"kind":"textbox","id":"sh/rm54rapc","slide":4,"text":"看了很多案例，回到自己公司却套不上；","textPreview":"看了很多案例，回到自己公司却套不上；","textChars":18,"textLines":1,"bbox":[78,274,662,25]}
+{"kind":"shape","id":"sh/6lw3y58r","slide":4,"bbox":[54,315.15,11,0.7]}
+{"kind":"textbox","id":"sh/snq9gvqh","slide":4,"text":"每个部门都说有需求，但排不出先后；","textPreview":"每个部门都说有需求，但排不出先后；","textChars":17,"textLines":1,"bbox":[78,303,662,25]}
+{"kind":"shape","id":"sh/d8jqp07m","slide":4,"bbox":[54,344.15,11,0.7]}
+{"kind":"textbox","id":"sh/ql8rel8b","slide":4,"text":"想建知识库，资料却散在微信、Excel、PDF、网盘和员工电脑里；","textPreview":"想建知识库，资料却散在微信、Excel、PDF、网盘和员工电脑里；","textChars":33,"textLines":1,"bbox":[78,332,662,25]}
+{"kind":"shape","id":"sh/rmh8nqpw","slide":4,"bbox":[54,373.15,11,0.7]}
+{"kind":"textbox","id":"sh/4jq9cvq5","slide":4,"text":"担心数据安全，也不知道 Agent 能开放多大权限。","textPreview":"担心数据安全，也不知道 Agent 能开放多大权限。","textChars":26,"textLines":1,"bbox":[78,361,662,25]}
+{"kind":"textbox","id":"sh/5kzqlg7q","slide":4,"text":"AI 升级横跨了四件事","textPreview":"AI 升级横跨了四件事","textChars":11,"textLines":1,"bbox":[414,425,326,22]}
+{"kind":"textbox","id":"sh/ih8ral8z","slide":4,"text":"老板想要的结果","textPreview":"老板想要的结果","textChars":7,"textLines":1,"bbox":[414,463,326,28]}
+{"kind":"shape","id":"sh/3ih8jqpk","slide":4,"bbox":[414,495,326,0.45]}
+{"kind":"textbox","id":"sh/ofa9ofq9","slide":4,"text":"一线员工的工作流程","textPreview":"一线员工的工作流程","textChars":9,"textLines":1,"bbox":[414,501,326,28]}
+{"kind":"shape","id":"sh/pg3axk7u","slide":4,"bbox":[414,533,326,0.45]}
+{"kind":"textbox","id":"sh/xwzq1kzy","slide":4,"text":"数据和系统在哪里","textPreview":"数据和系统在哪里","textChars":8,"textLines":1,"bbox":[414,539,326,28]}
+{"kind":"shape","id":"sh/wvq98fit","slide":4,"bbox":[414,571,326,0.45]}
+{"kind":"textbox","id":"sh/bux8zah8","slide":4,"text":"技术怎么做出来","textPreview":"技术怎么做出来","textChars":7,"textLines":1,"bbox":[414,577,326,28]}
+{"kind":"textbox","id":"sh/ator650n","slide":4,"text":"少一层，项目就容易停住。","textPreview":"少一层，项目就容易停住。","textChars":12,"textLines":1,"bbox":[414,619,326,26]}
+{"kind":"textbox","id":"sh/98fqx0z2","slide":4,"text":"为什么自己做容易卡住","textPreview":"为什么自己做容易卡住","textChars":10,"textLines":1,"bbox":[54,690,686,22]}
+{"kind":"textbox","id":"sh/o7694vih","slide":4,"text":"只听老板","textPreview":"只听老板","textChars":4,"textLines":1,"bbox":[54,728,170,30]}
+{"kind":"textbox","id":"sh/n6x8vqhw","slide":4,"text":"方向很大，但找不到具体从哪项工作开始。","textPreview":"方向很大，但找不到具体从哪项工作开始。","textChars":19,"textLines":1,"bbox":[245,728,495,40]}
+{"kind":"shape","id":"sh/m5or250b","slide":4,"bbox":[54,766,686,0.45]}
+{"kind":"textbox","id":"sh/14fqt0z6","slide":4,"text":"只听一线","textPreview":"只听一线","textChars":4,"textLines":1,"bbox":[54,772,170,30]}
+{"kind":"textbox","id":"sh/03690vil","slide":4,"text":"会得到很多零散需求，却不知道哪个最值得投入。","textPreview":"会得到很多零散需求，却不知道哪个最值得投入。","textChars":22,"textLines":1,"bbox":[245,772,495,40]}
+{"kind":"shape","id":"sh/q9kna1g3","slide":4,"bbox":[54,810,686,0.45]}
+{"kind":"textbox","id":"sh/rato36xo","slide":4,"text":"只找软件公司","textPreview":"只找软件公司","textChars":6,"textLines":1,"bbox":[54,816,170,30]}
+{"kind":"textbox","id":"sh/cbm5cry9","slide":4,"text":"对方需要清楚的需求文档，但企业现在最缺的就是清楚的需求。","textPreview":"对方需要清楚的需求文档，但企业现在最缺的就是清楚的需求。","textChars":28,"textLines":1,"bbox":[245,816,495,40]}
+{"kind":"shape","id":"sh/dcv65wfu","slide":4,"bbox":[54,854,686,0.45]}
+{"kind":"textbox","id":"sh/25kn6hg7","slide":4,"text":"直接买标准产品","textPreview":"直接买标准产品","textChars":7,"textLines":1,"bbox":[54,860,170,30]}
+{"kind":"textbox","id":"sh/36tozmxs","slide":4,"text":"上线很快，但公司的流程不一定适合它。","textPreview":"上线很快，但公司的流程不一定适合它。","textChars":18,"textLines":1,"bbox":[245,860,495,40]}
+{"kind":"shape","id":"sh/47258ryd","slide":4,"bbox":[54,898,686,0.45]}
+{"kind":"textbox","id":"sh/p8b61wfy","slide":4,"text":"一开始就建大平台","textPreview":"一开始就建大平台","textChars":8,"textLines":1,"bbox":[54,904,170,30]}
+{"kind":"textbox","id":"sh/uh0n2hgv","slide":4,"text":"钱和时间先花出去了，业务价值还没有验证。","textPreview":"钱和时间先花出去了，业务价值还没有验证。","textChars":20,"textLines":1,"bbox":[245,904,495,40]}
+{"kind":"textbox","id":"sh/fi9ovmxg","slide":4,"text":"企业需要一个人把业务、产品和技术接在一起。这就是 FDE 的工作。","textPreview":"企业需要一个人把业务、产品和技术接在一起。这就是 FDE 的工作。","textChars":33,"textLines":1,"bbox":[54,970,686,32]}
+{"kind":"textbox","id":"sh/7utk7i1c","slide":4,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/mtk3edkr","slide":4,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/vsrrjo","slide":4,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/wt3mh6","slide":5,"title":"FDE 从模糊问题开始，","textShapes":10}
+{"kind":"textbox","id":"sh/x4ze1w3u","slide":5,"text":"FDE 从模糊问题开始，\n做到结果出来","textPreview":"FDE 从模糊问题开始， | 做到结果出来","textChars":19,"textLines":2,"bbox":[54,58,686,135]}
+{"kind":"textbox","id":"sh/elsrul8n","slide":5,"text":"Forward Deployed Engineer 不是坐在客户办公室写代码的人。\n\nFDE 先去现场看真实工作：\n老板为什么想做 AI，一线每天怎么操作，数据放在哪里，\n哪些地方最耗时间、最容易错、最影响客户。","textPreview":"Forward Deployed Engineer 不是坐在客户办公室写代码的人。 |  | FDE 先去现场看真实工作： | 老板为什么想做 AI，一线每天怎么操作，数据放在哪里， | 哪些地方最耗时间、最容易错、最影响客户。","textChars":106,"textLines":5,"bbox":[54,235,686,185]}
+{"kind":"shape","id":"sh/zm183qp8","slide":5,"bbox":[54,447,686,60]}
+{"kind":"textbox","id":"sh/cjq9svqh","slide":5,"text":"问题看清后，再决定怎么做：","textPreview":"问题看清后，再决定怎么做：","textChars":13,"textLines":1,"bbox":[72,466,650,28]}
+{"kind":"shape","id":"sh/dkjq1072","slide":5,"bbox":[54,598.65,11,0.7]}
+{"kind":"textbox","id":"sh/qx8rql8r","slide":5,"text":"现成软件能解决，就直接用现成软件；","textPreview":"现成软件能解决，就直接用现成软件；","textChars":17,"textLines":1,"bbox":[78,555,662,88]}
+{"kind":"shape","id":"sh/rih8zqpw","slide":5,"bbox":[78,641,662,0.45]}
+{"kind":"shape","id":"sh/wfu94fq1","slide":5,"bbox":[54,689.65,11,0.7]}
+{"kind":"textbox","id":"sh/xg3adk76","slide":5,"text":"一个 Skill 能解决，就不做大系统；","textPreview":"一个 Skill 能解决，就不做大系统；","textChars":20,"textLines":1,"bbox":[78,646,662,88]}
+{"kind":"shape","id":"sh/187ux8va","slide":5,"bbox":[78,732,662,0.45]}
+{"kind":"shape","id":"sh/g7yt43ep","slide":5,"bbox":[54,780.65,11,0.7]}
+{"kind":"textbox","id":"sh/f6psvyd4","slide":5,"text":"需要连接原有系统，就做集成；","textPreview":"需要连接原有系统，就做集成；","textChars":14,"textLines":1,"bbox":[78,737,662,88]}
+{"kind":"shape","id":"sh/e5gb2twj","slide":5,"bbox":[78,823,662,0.45]}
+{"kind":"shape","id":"sh/t4natove","slide":5,"bbox":[54,871.65,11,0.7]}
+{"kind":"textbox","id":"sh/s3et0jet","slide":5,"text":"需要整理数据，就先建数据库或知识库；","textPreview":"需要整理数据，就先建数据库或知识库；","textChars":18,"textLines":1,"bbox":[78,828,662,88]}
+{"kind":"shape","id":"sh/r25sryd8","slide":5,"bbox":[78,914,662,0.45]}
+{"kind":"shape","id":"sh/61wbytwn","slide":5,"bbox":[54,962.65,11,0.7]}
+{"kind":"textbox","id":"sh/x0ru5svi","slide":5,"text":"一条流程适合 Agent，就把人和 Agent 的分工设计清楚。","textPreview":"一条流程适合 Agent，就把人和 Agent 的分工设计清楚。","textChars":32,"textLines":1,"bbox":[78,919,662,88]}
+{"kind":"textbox","id":"sh/czitcnex","slide":5,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/w3qd8rm9","slide":5,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/wt3mh6","slide":5,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/pefcdn","slide":6,"title":"从一个小工具，","textShapes":30}
+{"kind":"textbox","id":"sh/7ytgb218","slide":6,"text":"从一个小工具，\n到一次公司级 AI 升级","textPreview":"从一个小工具， | 到一次公司级 AI 升级","textChars":20,"textLines":2,"bbox":[54,52,686,135]}
+{"kind":"shape","id":"sh/zqpg7ilg","slide":6,"bbox":[54,294,385,0.8]}
+{"kind":"textbox","id":"sh/epgfed4v","slide":6,"text":"一个具体问题","textPreview":"一个具体问题","textChars":6,"textLines":1,"bbox":[54,319,385,33]}
+{"kind":"shape","id":"sh/9wryds3i","slide":6,"bbox":[54,376.65,9,0.7]}
+{"kind":"textbox","id":"sh/8vihk7mx","slide":6,"text":"企业专属 Skill","textPreview":"企业专属 Skill","textChars":10,"textLines":1,"bbox":[78,365,361,24]}
+{"kind":"shape","id":"sh/nu9gb2lc","slide":6,"bbox":[54,428.65,9,0.7]}
+{"kind":"textbox","id":"sh/mtgzix4r","slide":6,"text":"报价、录单、对账、报告自动化","textPreview":"报价、录单、对账、报告自动化","textChars":14,"textLines":1,"bbox":[78,417,361,24]}
+{"kind":"shape","id":"sh/x0ryhc3e","slide":6,"bbox":[54,402.65,9,0.7]}
+{"kind":"textbox","id":"sh/wziho7mt","slide":6,"text":"文档、表格和图片处理","textPreview":"文档、表格和图片处理","textChars":10,"textLines":1,"bbox":[78,391,361,24]}
+{"kind":"shape","id":"sh/ydovydoj","slide":6,"bbox":[54,454.65,9,0.7]}
+{"kind":"textbox","id":"sh/zexw7i54","slide":6,"text":"小型定制 SaaS","textPreview":"小型定制 SaaS","textChars":9,"textLines":1,"bbox":[78,443,361,24]}
+{"kind":"shape","id":"sh/0f6d0n6p","slide":6,"bbox":[54,476,385,0.45]}
+{"kind":"textbox","id":"sh/lgfe9snu","slide":6,"text":"适合：问题明确，希望尽快看到效果。","textPreview":"适合：问题明确，希望尽快看到效果。","textChars":17,"textLines":1,"bbox":[54,492,385,34]}
+{"kind":"shape","id":"sh/mhof2xof","slide":6,"bbox":[54,531,385,0.8]}
+{"kind":"textbox","id":"sh/nixwb250","slide":6,"text":"一条业务流程","textPreview":"一条业务流程","textChars":6,"textLines":1,"bbox":[54,556,385,33]}
+{"kind":"shape","id":"sh/8j6x476l","slide":6,"bbox":[54,609.15,9,0.7]}
+{"kind":"textbox","id":"sh/9kzedcn6","slide":6,"text":"访谈和流程整理","textPreview":"访谈和流程整理","textChars":7,"textLines":1,"bbox":[78,598,361,23]}
+{"kind":"shape","id":"sh/2l4vqtob","slide":6,"bbox":[54,659.15,9,0.7]}
+{"kind":"textbox","id":"sh/3mdwzypw","slide":6,"text":"ERP、CRM、飞书、钉钉、企微等系统连接","textPreview":"ERP、CRM、飞书、钉钉、企微等系统连接","textChars":21,"textLines":1,"bbox":[78,648,361,23]}
+{"kind":"shape","id":"sh/rq9s7u5o","slide":6,"bbox":[54,709.15,9,0.7]}
+{"kind":"textbox","id":"sh/6p0by943","slide":6,"text":"进度、结果和操作记录","textPreview":"进度、结果和操作记录","textChars":10,"textLines":1,"bbox":[78,698,361,23]}
+{"kind":"shape","id":"sh/tsra943u","slide":6,"bbox":[54,634.15,9,0.7]}
+{"kind":"textbox","id":"sh/srit0zm9","slide":6,"text":"多角色 Agent","textPreview":"多角色 Agent","textChars":9,"textLines":1,"bbox":[78,623,361,23]}
+{"kind":"shape","id":"sh/j29s3u5c","slide":6,"bbox":[54,684.15,9,0.7]}
+{"kind":"textbox","id":"sh/i10bup47","slide":6,"text":"异常处理和人工确认","textPreview":"异常处理和人工确认","textChars":9,"textLines":1,"bbox":[78,673,361,23]}
+{"kind":"shape","id":"sh/5ora54ni","slide":6,"bbox":[54,727,385,0.45]}
+{"kind":"textbox","id":"sh/43itwzmx","slide":6,"text":"适合：工作跨多人、跨系统，靠人工反复传递。","textPreview":"适合：工作跨多人、跨系统，靠人工反复传递。","textChars":21,"textLines":1,"bbox":[54,738,385,27]}
+{"kind":"shape","id":"sh/3ytcfelw","slide":6,"bbox":[54,768,385,0.8]}
+{"kind":"textbox","id":"sh/2xkb6t4b","slide":6,"text":"一套数据基础","textPreview":"一套数据基础","textChars":6,"textLines":1,"bbox":[54,793,385,33]}
+{"kind":"shape","id":"sh/03ep0b2t","slide":6,"bbox":[54,847.15,9,0.7]}
+{"kind":"textbox","id":"sh/l4nqtg3e","slide":6,"text":"业务数据库","textPreview":"业务数据库","textChars":5,"textLines":1,"bbox":[78,836,361,23]}
+{"kind":"shape","id":"sh/y1c7ylkn","slide":6,"bbox":[54,897.15,9,0.7]}
+{"kind":"textbox","id":"sh/z258r6l8","slide":6,"text":"数据整理和统一命名","textPreview":"数据整理和统一命名","textChars":9,"textLines":1,"bbox":[78,886,361,23]}
+{"kind":"shape","id":"sh/87e94v2p","slide":6,"bbox":[54,947.15,9,0.7]}
+{"kind":"textbox","id":"sh/98nqx03a","slide":6,"text":"为 Agent 提供可信的数据","textPreview":"为 Agent 提供可信的数据","textChars":15,"textLines":1,"bbox":[78,936,361,23]}
+{"kind":"shape","id":"sh/m5w72lkz","slide":6,"bbox":[54,872.15,9,0.7]}
+{"kind":"textbox","id":"sh/n658vql4","slide":6,"text":"企业知识库","textPreview":"企业知识库","textChars":5,"textLines":1,"bbox":[78,861,361,23]}
+{"kind":"shape","id":"sh/wvy98v21","slide":6,"bbox":[54,922.15,9,0.7]}
+{"kind":"textbox","id":"sh/hw7q10jm","slide":6,"text":"权限和使用范围","textPreview":"权限和使用范围","textChars":7,"textLines":1,"bbox":[78,911,361,23]}
+{"kind":"shape","id":"sh/hsfi1w3a","slide":6,"bbox":[54,964,385,0.45]}
+{"kind":"textbox","id":"sh/wr6hsr2p","slide":6,"text":"适合：资料很多，但找不到、用不准、无法共享。","textPreview":"适合：资料很多，但找不到、用不准、无法共享。","textChars":22,"textLines":1,"bbox":[54,973,385,31]}
+{"kind":"shape","id":"sh/vqd0zmlk","slide":6,"bbox":[474,294,266,712]}
+{"kind":"shape","id":"sh/u54zq1kz","slide":6,"bbox":[496,294,222,3]}
+{"kind":"textbox","id":"sh/94vixw3e","slide":6,"text":"一次公司级升级","textPreview":"一次公司级升级","textChars":7,"textLines":1,"bbox":[498,336,218,100]}
+{"kind":"shape","id":"sh/83mhor2t","slide":6,"bbox":[498,507.15,10,0.7]}
+{"kind":"textbox","id":"sh/72d0vml8","slide":6,"text":"找出各部门适合 AI 的工作","textPreview":"找出各部门适合 AI 的工作","textChars":14,"textLines":1,"bbox":[522,470,194,75]}
+{"kind":"shape","id":"sh/m14zmhkn","slide":6,"bbox":[498,585.15,10,0.7]}
+{"kind":"textbox","id":"sh/d0zi9gji","slide":6,"text":"重新设计人和 Agent 的分工","textPreview":"重新设计人和 Agent 的分工","textChars":16,"textLines":1,"bbox":[522,548,194,75]}
+{"kind":"shape","id":"sh/szqh0b2x","slide":6,"bbox":[498,663.15,10,0.7]}
+{"kind":"textbox","id":"sh/a50fud0f","slide":6,"text":"建立权限、审批和责任记录","textPreview":"建立权限、审批和责任记录","textChars":12,"textLines":1,"bbox":[522,626,194,75]}
+{"kind":"shape","id":"sh/b69w3i10","slide":6,"bbox":[498,741.15,10,0.7]}
+{"kind":"textbox","id":"sh/c72xwnil","slide":6,"text":"制定试点顺序和后续计划","textPreview":"制定试点顺序和后续计划","textChars":11,"textLines":1,"bbox":[522,704,194,75]}
+{"kind":"shape","id":"sh/x8be5sj6","slide":6,"bbox":[498,819.15,10,0.7]}
+{"kind":"textbox","id":"sh/210fqd0j","slide":6,"text":"培训企业自己的 Agent Boss","textPreview":"培训企业自己的 Agent Boss","textChars":18,"textLines":1,"bbox":[522,782,194,75]}
+{"kind":"shape","id":"sh/n29wzy14","slide":6,"bbox":[498,930,218,0.45]}
+{"kind":"textbox","id":"sh/o3ixs3ip","slide":6,"text":"适合：老板希望系统推进，\n不想让各部门各自尝试。","textPreview":"适合：老板希望系统推进， | 不想让各部门各自尝试。","textChars":24,"textLines":2,"bbox":[498,952,218,66]}
+{"kind":"textbox","id":"sh/p4re18ju","slide":6,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/mxkf2x0n","slide":6,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/pefcdn","slide":6,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/bm23ia","slide":7,"title":"先做一次诊断，","textShapes":13}
+{"kind":"textbox","id":"sh/gre5kj6d","slide":7,"text":"先做一次诊断，\n再决定要不要开发","textPreview":"先做一次诊断， | 再决定要不要开发","textChars":16,"textLines":2,"bbox":[54,58,686,140]}
+{"kind":"textbox","id":"sh/dw32dwzu","slide":7,"text":"1.","textPreview":"1.","textChars":2,"textLines":1,"bbox":[54,253,30,18]}
+{"kind":"textbox","id":"sh/sva1kri9","slide":7,"text":"先确认企业为什么要做 AI：省时间、少出错、增加收入，还是改善整个公司的工作方式。","textPreview":"先确认企业为什么要做 AI：省时间、少出错、增加收入，还是改善整个公司的工作方式。","textChars":41,"textLines":1,"bbox":[101,252,639,145]}
+{"kind":"shape","id":"sh/3q1k7mhc","slide":7,"bbox":[101,399,639,0.45]}
+{"kind":"textbox","id":"sh/ipsjeh0r","slide":7,"text":"2.","textPreview":"2.","textChars":2,"textLines":1,"bbox":[54,406,30,18]}
+{"kind":"textbox","id":"sh/5sj29czi","slide":7,"text":"我们会看员工实际使用的表格、文件、聊天工具和业务系统，\n也会看正常流程之外的各种例外。","textPreview":"我们会看员工实际使用的表格、文件、聊天工具和业务系统， | 也会看正常流程之外的各种例外。","textChars":43,"textLines":2,"bbox":[101,405,639,145]}
+{"kind":"shape","id":"sh/4ra1grix","slide":7,"bbox":[101,552,639,0.45]}
+{"kind":"textbox","id":"sh/nmlkj6hw","slide":7,"text":"3.","textPreview":"3.","textChars":2,"textLines":1,"bbox":[54,559,30,18]}
+{"kind":"textbox","id":"sh/mlc3q10b","slide":7,"text":"按价值、难度、数据条件、风险和验证时间排序。不是所有问题都要用 AI。","textPreview":"按价值、难度、数据条件、风险和验证时间排序。不是所有问题都要用 AI。","textChars":35,"textLines":1,"bbox":[101,558,639,145]}
+{"kind":"shape","id":"sh/cjy5sn6l","slide":7,"bbox":[101,705,639,0.45]}
+{"kind":"textbox","id":"sh/xk76l876","slide":7,"text":"4.","textPreview":"4.","textChars":2,"textLines":1,"bbox":[54,712,30,18]}
+{"kind":"textbox","id":"sh/ahgnqdof","slide":7,"text":"只选一项工作，先约定负责人、数据、范围和判断结果的指标，再做出能用的版本。","textPreview":"只选一项工作，先约定负责人、数据、范围和判断结果的指标，再做出能用的版本。","textChars":37,"textLines":1,"bbox":[101,711,639,145]}
+{"kind":"shape","id":"sh/bipojip0","slide":7,"bbox":[101,858,639,0.45]}
+{"kind":"textbox","id":"sh/ofe5o369","slide":7,"text":"5.","textPreview":"5.","textChars":2,"textLines":1,"bbox":[54,865,30,18]}
+{"kind":"textbox","id":"sh/pgn6h87u","slide":7,"text":"真实用户用过以后，再决定继续修改、推广到其他部门，还是停止。","textPreview":"真实用户用过以后，再决定继续修改、推广到其他部门，还是停止。","textChars":30,"textLines":1,"bbox":[101,864,639,145]}
+{"kind":"textbox","id":"sh/2twnmtoj","slide":7,"text":"7","textPreview":"7","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/ne5ofypo","slide":7,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/bm23ia","slide":7,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/fuh39c","slide":8,"title":"不交一个演示，","textShapes":17}
+{"kind":"textbox","id":"sh/v2183qxw","slide":8,"text":"不交一个演示，\n交一套能验证的东西","textPreview":"不交一个演示， | 交一套能验证的东西","textChars":17,"textLines":2,"bbox":[54,55,686,126]}
+{"kind":"textbox","id":"sh/9gfqlw3y","slide":8,"text":"根据项目范围，试点通常包括：","textPreview":"根据项目范围，试点通常包括：","textChars":14,"textLines":1,"bbox":[54,196,686,30]}
+{"kind":"shape","id":"sh/8f69sbmd","slide":8,"bbox":[54,290.65,11,0.7]}
+{"kind":"textbox","id":"sh/zqx8fm5w","slide":8,"text":"原来的工作流程图；","textPreview":"原来的工作流程图；","textChars":9,"textLines":1,"bbox":[78,266,315,50]}
+{"kind":"shape","id":"sh/yp4rmh4b","slide":8,"bbox":[78,335,315,0.45]}
+{"kind":"shape","id":"sh/lcfqhwn2","slide":8,"bbox":[413,290.65,11,0.7]}
+{"kind":"textbox","id":"sh/kb69ormh","slide":8,"text":"找到的问题和改造范围；","textPreview":"找到的问题和改造范围；","textChars":11,"textLines":1,"bbox":[437,266,315,50]}
+{"kind":"shape","id":"sh/jmhsrql0","slide":8,"bbox":[437,335,315,0.45]}
+{"kind":"shape","id":"sh/il8ryl4f","slide":8,"bbox":[54,393.65,11,0.7]}
+{"kind":"textbox","id":"sh/076d436x","slide":8,"text":"可以运行的原型或系统；","textPreview":"可以运行的原型或系统；","textChars":11,"textLines":1,"bbox":[78,369,315,50]}
+{"kind":"shape","id":"sh/l8fux87i","slide":8,"bbox":[78,438,315,0.45]}
+{"kind":"shape","id":"sh/y54v2to7","slide":8,"bbox":[413,393.65,11,0.7]}
+{"kind":"textbox","id":"sh/z6xcvyps","slide":8,"text":"使用的数据和权限说明；","textPreview":"使用的数据和权限说明；","textChars":11,"textLines":1,"bbox":[437,369,315,50]}
+{"kind":"shape","id":"sh/c3md0361","slide":8,"bbox":[437,438,315,0.45]}
+{"kind":"shape","id":"sh/d4vut87m","slide":8,"bbox":[54,496.65,11,0.7]}
+{"kind":"textbox","id":"sh/q14vytov","slide":8,"text":"人和 Agent 各自负责什么；","textPreview":"人和 Agent 各自负责什么；","textChars":16,"textLines":1,"bbox":[78,472,315,50]}
+{"kind":"shape","id":"sh/b2dcrypg","slide":8,"bbox":[78,541,315,0.45]}
+{"kind":"shape","id":"sh/ozmtwj65","slide":8,"bbox":[413,496.65,11,0.7]}
+{"kind":"textbox","id":"sh/p0vupo7a","slide":8,"text":"哪些动作需要人工确认；","textPreview":"哪些动作需要人工确认；","textChars":11,"textLines":1,"bbox":[437,472,315,50]}
+{"kind":"shape","id":"sh/5wnatkze","slide":8,"bbox":[437,541,315,0.45]}
+{"kind":"shape","id":"sh/4vet0fit","slide":8,"bbox":[54,599.65,11,0.7]}
+{"kind":"textbox","id":"sh/julsrah8","slide":8,"text":"上线前后的对比方法；","textPreview":"上线前后的对比方法；","textChars":10,"textLines":1,"bbox":[78,575,315,50]}
+{"kind":"shape","id":"sh/itcry50n","slide":8,"bbox":[78,644,315,0.45]}
+{"kind":"shape","id":"sh/hs3ap0z2","slide":8,"bbox":[413,599.65,11,0.7]}
+{"kind":"textbox","id":"sh/w7u9wvih","slide":8,"text":"继续做、调整或停止的建议。","textPreview":"继续做、调整或停止的建议。","textChars":13,"textLines":1,"bbox":[437,575,315,50]}
+{"kind":"shape","id":"sh/v6lsnqhc","slide":8,"bbox":[437,644,315,0.45]}
+{"kind":"shape","id":"sh/u5cru50r","slide":8,"bbox":[54,725,686,260]}
+{"kind":"textbox","id":"sh/1o7a14zm","slide":8,"text":"我们会提前写清楚：","textPreview":"我们会提前写清楚：","textChars":9,"textLines":1,"bbox":[80,758,420,24]}
+{"kind":"shape","id":"sh/g3ytszy1","slide":8,"bbox":[80,842.65,11,0.7]}
+{"kind":"textbox","id":"sh/y987m1gj","slide":8,"text":"谁负责；","textPreview":"谁负责；","textChars":4,"textLines":1,"bbox":[105,822,280,42]}
+{"kind":"shape","id":"sh/zah8v6x4","slide":8,"bbox":[415,842.65,11,0.7]}
+{"kind":"textbox","id":"sh/kbapory9","slide":8,"text":"做到哪里算完成；","textPreview":"做到哪里算完成；","textChars":8,"textLines":1,"bbox":[440,822,280,42]}
+{"kind":"shape","id":"sh/lcjqxwfu","slide":8,"bbox":[80,918.65,11,0.7]}
+{"kind":"textbox","id":"sh/a587ihg7","slide":8,"text":"什么不在这次范围内；","textPreview":"什么不在这次范围内；","textChars":10,"textLines":1,"bbox":[105,898,280,42]}
+{"kind":"shape","id":"sh/b6hormxs","slide":8,"bbox":[415,918.65,11,0.7]}
+{"kind":"textbox","id":"sh/c7qpkryd","slide":8,"text":"怎么判断有没有效果。","textPreview":"怎么判断有没有效果。","textChars":10,"textLines":1,"bbox":[440,898,280,42]}
+{"kind":"textbox","id":"sh/x8zqtwfy","slide":8,"text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/u1s7ulwr","slide":8,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/fuh39c","slide":8,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/60252y","slide":9,"title":"这些项目，","textShapes":18}
+{"kind":"textbox","id":"sh/fy90j214","slide":9,"text":"这些项目，\n已经在真实业务中落地","textPreview":"这些项目， | 已经在真实业务中落地","textChars":16,"textLines":2,"bbox":[54,48,686,118]}
+{"kind":"textbox","id":"sh/pgrixwny","slide":9,"text":"深受信赖","textPreview":"深受信赖","textChars":4,"textLines":1,"bbox":[54,276,686,24]}
+{"kind":"textbox","id":"sh/gr25wr6p","slide":9,"text":"案例一｜跨境电商 / 商品上架运营","textPreview":"案例一｜跨境电商 / 商品上架运营","textChars":17,"textLines":1,"bbox":[54,530,686,24]}
+{"kind":"textbox","id":"sh/1cbm5w7a","slide":9,"text":"原来怎么做","textPreview":"原来怎么做","textChars":5,"textLines":1,"bbox":[54,572,322,24]}
+{"kind":"textbox","id":"sh/2dkny1ov","slide":9,"text":"运营人员从供应商 Excel、聊天记录和图片文件中\n整理商品资料，再逐项翻译、补齐属性\n并录入多个平台。","textPreview":"运营人员从供应商 Excel、聊天记录和图片文件中 | 整理商品资料，再逐项翻译、补齐属性 | 并录入多个平台。","textChars":52,"textLines":3,"bbox":[54,608,322,102]}
+{"kind":"textbox","id":"sh/3et47650","slide":9,"text":"我们发现的问题","textPreview":"我们发现的问题","textChars":7,"textLines":1,"bbox":[54,736,322,24]}
+{"kind":"textbox","id":"sh/zid4v6l8","slide":9,"text":"真正拖慢上新的不是“写文案”，而是商品属性不完整、资料版本混乱，以及多平台规则需要反复人工核对。","textPreview":"真正拖慢上新的不是“写文案”，而是商品属性不完整、资料版本混乱，以及多平台规则需要反复人工核对。","textChars":48,"textLines":1,"bbox":[54,772,322,82]}
+{"kind":"textbox","id":"sh/yh43m14n","slide":9,"text":"我们做了什么","textPreview":"我们做了什么","textChars":6,"textLines":1,"bbox":[418,572,322,24]}
+{"kind":"textbox","id":"sh/lkvmxg3e","slide":9,"text":"建立商品资料库和上架工作流；\nAgent 负责整理、翻译与规则检查，\n运营人员只处理异常并最终确认。","textPreview":"建立商品资料库和上架工作流； | Agent 负责整理、翻译与规则检查， | 运营人员只处理异常并最终确认。","textChars":50,"textLines":3,"bbox":[418,608,322,82]}
+{"kind":"textbox","id":"sh/0jmlobmt","slide":9,"text":"上线后的变化","textPreview":"上线后的变化","textChars":6,"textLines":1,"bbox":[418,719,322,24]}
+{"kind":"shape","id":"sh/betkrmlc","slide":9,"bbox":[418,775.65,8,0.7]}
+{"kind":"textbox","id":"sh/qtk3i14r","slide":9,"text":"资料整理：分散查找 → 集中生成","textPreview":"资料整理：分散查找 → 集中生成","textChars":16,"textLines":1,"bbox":[442,758,298,36]}
+{"kind":"shape","id":"sh/dgb2tw32","slide":9,"bbox":[418,814.65,8,0.7]}
+{"kind":"textbox","id":"sh/cf2lkrmx","slide":9,"text":"人工步骤：逐项复制 → 异常处理与确认","textPreview":"人工步骤：逐项复制 → 异常处理与确认","textChars":19,"textLines":1,"bbox":[442,797,298,36]}
+{"kind":"shape","id":"sh/3qtknml0","slide":9,"bbox":[418,853.65,8,0.7]}
+{"kind":"textbox","id":"sh/2p03eh4f","slide":9,"text":"错误返工：上架后发现 → 发布前检查","textPreview":"错误返工：上架后发现 → 发布前检查","textChars":18,"textLines":1,"bbox":[442,836,298,36]}
+{"kind":"shape","id":"sh/svy1on2d","slide":9,"bbox":[418,892.65,8,0.7]}
+{"kind":"textbox","id":"sh/tw7ihsjy","slide":9,"text":"业务影响：新品上架节奏更稳定","textPreview":"业务影响：新品上架节奏更稳定","textChars":14,"textLines":1,"bbox":[442,875,298,36]}
+{"kind":"shape","id":"sh/6tgzmdk7","slide":9,"bbox":[54,926,686,0.45]}
+{"kind":"textbox","id":"sh/7up0fi1s","slide":9,"text":"案例二｜家具制造工厂 / 订单转生产","textPreview":"案例二｜家具制造工厂 / 订单转生产","textChars":18,"textLines":1,"bbox":[54,956,290,24]}
+{"kind":"textbox","id":"sh/gzi1sn2p","slide":9,"text":"销售订单来自微信、Excel 和图纸。我们把尺寸、面料、\n五金与工艺要求结构化，连接订单库、BOM 和生产工单，\n并在投产前提示缺项、冲突和版本变化。","textPreview":"销售订单来自微信、Excel 和图纸。我们把尺寸、面料、 | 五金与工艺要求结构化，连接订单库、BOM 和生产工单， | 并在投产前提示缺项、冲突和版本变化。","textChars":75,"textLines":3,"bbox":[350,954,390,68]}
+{"kind":"textbox","id":"sh/hkrilsju","slide":9,"text":"9","textPreview":"9","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/uxgjqxkj","slide":9,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"shape","id":"sh/vutonaho","slide":9,"bbox":[313,400,168,29.74]}
+{"kind":"shape","id":"sh/hwv6pkzu","slide":9,"bbox":[555,400.25,165,29.46]}
+{"kind":"image","id":"im/1cfitojq","slide":9,"name":"","bbox":[88.5,320.5,148,49.33]}
+{"kind":"image","id":"im/gb6h0j25","slide":9,"name":"","bbox":[329,319.5,136,51]}
+{"kind":"image","id":"im/0fe1wnqh","slide":9,"name":"","bbox":[557.5,315,160,60]}
+{"kind":"image","id":"im/1gnipsr2","slide":9,"name":"","bbox":[96.5,390.5,132,49.5]}
+{"kind":"notes","id":"nt/60252y","slide":9,"text":"[Sources]\nhttps://press.siemens.com/global/en/pressrelease/siemens-introduces-ai-agents-industrial-automation\nhttps://www.bosch.com/research/bcai/industrial-ai/\nhttps://www.se.com/ww/en/about-us/newsroom/news/press-releases/Schneider-Electric-unveils-next-generation-agentic-manufacturing-capabilities-powered-by-Microsoft-Azure-AI-at-Hannover-Messe-2026-69e08de2ddabef15890a48f3/\nhttps://new.abb.com/process-automation/genix/abb-genix-copilot\nhttps://commons.wikimedia.org/wiki/File:Siemens-logo.svg\nhttps://commons.wikimedia.org/wiki/File:Bosch-logo.svg\nhttps://commons.wikimedia.org/wiki/File:SchneiderElectric_Logo.svg\nhttps://commons.wikimedia.org/wiki/File:ABB_logo.svg\n[/Sources]\n\n[Sources]\nhttps://commons.wikimedia.org/wiki/File:Toyota_logo.svg\nhttps://commons.wikimedia.org/wiki/File:BMW.svg\nhttps://commons.wikimedia.org/wiki/File:Honeywell_logo.svg\nhttps://commons.wikimedia.org/wiki/File:Caterpillar_logo.svg\n[/Sources]\n\n[Sources]\nCase narratives use the user's previously approved anonymous cross-border e-commerce and furniture manufacturing copy. No company identity or measured outcome is asserted.\n[/Sources]"}
+{"kind":"slide","id":"sl/2hfvkb","slide":10,"title":"系统上线了，","textShapes":15}
+{"kind":"textbox","id":"sh/p8vat4z2","slide":10,"text":"系统上线了，\n还要有人会带 Agent 工作","textPreview":"系统上线了， | 还要有人会带 Agent 工作","textChars":22,"textLines":2,"bbox":[54,55,686,130]}
+{"kind":"textbox","id":"sh/sjip8z61","slide":10,"text":"FDE 负责把企业 AI 升级做出来。\n\n系统上线后，企业自己的管理者和员工要学会：","textPreview":"FDE 负责把企业 AI 升级做出来。 |  | 系统上线后，企业自己的管理者和员工要学会：","textChars":42,"textLines":3,"bbox":[54,245,300,140]}
+{"kind":"textbox","id":"sh/tkb6h47m","slide":10,"text":"我们把这套培训叫做 Agent Boss。","textPreview":"我们把这套培训叫做 Agent Boss。","textChars":21,"textLines":1,"bbox":[54,470,300,68]}
+{"kind":"textbox","id":"sh/elk7a9o7","slide":10,"text":"它不是一门提示词课，\n也不是教员工多用几个 AI 工具。\n它教企业的人怎么管理一支\n由人和 Agent 组成的团队。","textPreview":"它不是一门提示词课， | 也不是教员工多用几个 AI 工具。 | 它教企业的人怎么管理一支 | 由人和 Agent 组成的团队。","textChars":58,"textLines":4,"bbox":[54,570,300,150]}
+{"kind":"shape","id":"sh/fmt8jepc","slide":10,"bbox":[420,285.15,11,0.7]}
+{"kind":"textbox","id":"sh/0n2pcj6x","slide":10,"text":"给 Agent 说清目标和完成标准；","textPreview":"给 Agent 说清目标和完成标准；","textChars":18,"textLines":1,"bbox":[444,245,296,81]}
+{"kind":"shape","id":"sh/1obqloni","slide":10,"bbox":[444,324,296,0.45]}
+{"kind":"shape","id":"sh/2pk7eto3","slide":10,"bbox":[420,369.15,11,0.7]}
+{"kind":"textbox","id":"sh/nqt8ne5o","slide":10,"text":"判断哪些工作可以交出去；","textPreview":"判断哪些工作可以交出去；","textChars":12,"textLines":1,"bbox":[444,329,296,81]}
+{"kind":"shape","id":"sh/rm1wfi90","slide":10,"bbox":[444,408,296,0.45]}
+{"kind":"shape","id":"sh/qlsv6d8f","slide":10,"bbox":[420,453.15,11,0.7]}
+{"kind":"textbox","id":"sh/do3ehsr6","slide":10,"text":"检查 Agent 的过程和结果；","textPreview":"检查 Agent 的过程和结果；","textChars":16,"textLines":1,"bbox":[444,413,296,81]}
+{"kind":"shape","id":"sh/cnud8nql","slide":10,"bbox":[444,492,296,0.45]}
+{"kind":"shape","id":"sh/3i1wby94","slide":10,"bbox":[420,537.15,11,0.7]}
+{"kind":"textbox","id":"sh/ihsv2t8j","slide":10,"text":"处理异常、退回修改或暂停任务；","textPreview":"处理异常、退回修改或暂停任务；","textChars":15,"textLines":1,"bbox":[444,497,296,81]}
+{"kind":"shape","id":"sh/5kjed8ra","slide":10,"bbox":[444,576,296,0.45]}
+{"kind":"shape","id":"sh/4jad43qp","slide":10,"bbox":[420,621.15,11,0.7]}
+{"kind":"textbox","id":"sh/ne5wn298","slide":10,"text":"管好数据、工具和权限；","textPreview":"管好数据、工具和权限；","textChars":11,"textLines":1,"bbox":[444,581,296,81]}
+{"kind":"shape","id":"sh/mdcfex8n","slide":10,"bbox":[444,660,296,0.45]}
+{"kind":"shape","id":"sh/il072lw7","slide":10,"bbox":[420,705.15,11,0.7]}
+{"kind":"textbox","id":"sh/jm98vqxs","slide":10,"text":"把好用的方法做成团队共同使用的 Skill；","textPreview":"把好用的方法做成团队共同使用的 Skill；","textChars":22,"textLines":1,"bbox":[444,665,296,81]}
+{"kind":"shape","id":"sh/knip4ved","slide":10,"bbox":[444,744,296,0.45]}
+{"kind":"shape","id":"sh/5orqx0fy","slide":10,"bbox":[420,789.15,11,0.7]}
+{"kind":"textbox","id":"sh/6p0r65wj","slide":10,"text":"对最后的业务结果负责。","textPreview":"对最后的业务结果负责。","textChars":11,"textLines":1,"bbox":[444,749,296,81]}
+{"kind":"shape","id":"sh/7q98zaxo","slide":10,"bbox":[54,905,686,102]}
+{"kind":"textbox","id":"sh/sr298fe9","slide":10,"text":"AgentBoss School 已开源","textPreview":"AgentBoss School 已开源","textChars":20,"textLines":1,"bbox":[79,941,275,35]}
+{"kind":"textbox","id":"sh/tsbq1kfu","slide":10,"text":"github.com/ElliottYip/agentboss-school\nMIT · v0.7.1","textPreview":"github.com/ElliottYip/agentboss-school | MIT · v0.7.1","textChars":51,"textLines":2,"bbox":[390,941,330,48]}
+{"kind":"textbox","id":"sh/mtg7u1gz","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/nup8n6xk","slide":10,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/2hfvkb","slide":10,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]\n\n[Sources]\n- https://github.com/ElliottYip/agentboss-school (public repository verified 2026-08-25)\n[/Sources]"}
+{"kind":"slide","id":"sl/u3ongb","slide":11,"title":"先帮你找到第一步","textShapes":16}
+{"kind":"textbox","id":"sh/alkvix8j","slide":11,"text":"先帮你找到第一步","textPreview":"先帮你找到第一步","textChars":8,"textLines":1,"bbox":[54,62,686,82]}
+{"kind":"textbox","id":"sh/h4j2xcfu","slide":11,"text":"展会期间，我们提供免费的企业 AI 诊断。","textPreview":"展会期间，我们提供免费的企业 AI 诊断。","textChars":21,"textLines":1,"bbox":[54,186,686,40]}
+{"kind":"textbox","id":"sh/w3al47e9","slide":11,"text":"你会拿到","textPreview":"你会拿到","textChars":4,"textLines":1,"bbox":[54,280,300,24]}
+{"kind":"textbox","id":"sh/7yhkrixs","slide":11,"text":"我们也可能直接告诉你：","textPreview":"我们也可能直接告诉你：","textChars":11,"textLines":1,"bbox":[420,280,320,24]}
+{"kind":"shape","id":"sh/mx83ydw7","slide":11,"bbox":[54,387.15,11,0.7]}
+{"kind":"textbox","id":"sh/90z2tsfy","slide":11,"text":"目前最值得先看的 1—3 项工作；","textPreview":"目前最值得先看的 1—3 项工作；","textChars":17,"textLines":1,"bbox":[78,330,291,115]}
+{"kind":"shape","id":"sh/8zql0ned","slide":11,"bbox":[78,443,291,0.45]}
+{"kind":"shape","id":"sh/ru1k3mxw","slide":11,"bbox":[54,505.15,11,0.7]}
+{"kind":"textbox","id":"sh/6ts3ahwr","slide":11,"text":"这些工作适不适合用 AI；","textPreview":"这些工作适不适合用 AI；","textChars":13,"textLines":1,"bbox":[78,448,291,115]}
+{"kind":"shape","id":"sh/kj29kn2l","slide":11,"bbox":[78,561,291,0.45]}
+{"kind":"shape","id":"sh/lkbats36","slide":11,"bbox":[54,623.15,11,0.7]}
+{"kind":"textbox","id":"sh/yhkridkv","slide":11,"text":"需要哪些数据、系统和人员参与；","textPreview":"需要哪些数据、系统和人员参与；","textChars":15,"textLines":1,"bbox":[78,566,291,115]}
+{"kind":"shape","id":"sh/zitsrilg","slide":11,"bbox":[78,679,291,0.45]}
+{"kind":"shape","id":"sh/cfi9g32p","slide":11,"bbox":[54,741.15,11,0.7]}
+{"kind":"textbox","id":"sh/xgrap83a","slide":11,"text":"更适合买现成软件、做 Skill、\n定制 SaaS、建数据库，还是先改流程；","textPreview":"更适合买现成软件、做 Skill、 | 定制 SaaS、建数据库，还是先改流程；","textChars":38,"textLines":2,"bbox":[78,684,291,115]}
+{"kind":"shape","id":"sh/at0redkj","slide":11,"bbox":[78,797,291,0.45]}
+{"kind":"shape","id":"sh/be98nil4","slide":11,"bbox":[54,859.15,11,0.7]}
+{"kind":"textbox","id":"sh/ori9c32t","slide":11,"text":"是否值得做一个小试点。","textPreview":"是否值得做一个小试点。","textChars":11,"textLines":1,"bbox":[78,802,291,115]}
+{"kind":"shape","id":"sh/psrql83y","slide":11,"bbox":[420,387.15,11,0.7]}
+{"kind":"textbox","id":"sh/5wzyt0rq","slide":11,"text":"这个问题不需要 AI；","textPreview":"这个问题不需要 AI；","textChars":11,"textLines":1,"bbox":[444,330,296,115]}
+{"kind":"shape","id":"sh/4bqx0vq5","slide":11,"bbox":[444,443,296,0.45]}
+{"kind":"shape","id":"sh/jahgrq9k","slide":11,"bbox":[420,505.15,11,0.7]}
+{"kind":"textbox","id":"sh/i98fyl8z","slide":11,"text":"现在的数据条件还做不了；","textPreview":"现在的数据条件还做不了；","textChars":12,"textLines":1,"bbox":[444,448,296,115]}
+{"kind":"shape","id":"sh/h8zyp0ru","slide":11,"bbox":[444,561,296,0.45]}
+{"kind":"shape","id":"sh/w76xwvq9","slide":11,"bbox":[420,623.15,11,0.7]}
+{"kind":"textbox","id":"sh/v6xgnq9o","slide":11,"text":"先把流程理顺，再考虑开发；","textPreview":"先把流程理顺，再考虑开发；","textChars":13,"textLines":1,"bbox":[444,566,296,115]}
+{"kind":"shape","id":"sh/u5ofuls3","slide":11,"bbox":[444,679,296,0.45]}
+{"kind":"shape","id":"sh/14jy1kry","slide":11,"bbox":[420,741.15,11,0.7]}
+{"kind":"textbox","id":"sh/g3ah8fqd","slide":11,"text":"买现成产品更划算。","textPreview":"买现成产品更划算。","textChars":9,"textLines":1,"bbox":[444,684,296,115]}
+{"kind":"shape","id":"sh/y94vmhov","slide":11,"bbox":[420,846,320,125]}
+{"kind":"textbox","id":"sh/zadwvmpg","slide":11,"text":"免费诊断不承诺完整方案，也不接触未经授权的敏感数据。","textPreview":"免费诊断不承诺完整方案，也不接触未经授权的敏感数据。","textChars":26,"textLines":1,"bbox":[446,883,268,68]}
+{"kind":"textbox","id":"sh/kbmdor61","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/lcvexw7m","slide":11,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/u3ongb","slide":11,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/0ignj4","slide":12,"title":"你的企业，","textShapes":16}
+{"kind":"textbox","id":"sh/f2lwbetg","slide":12,"text":"你的企业，\n最应该先改哪项工作？","textPreview":"你的企业， | 最应该先改哪项工作？","textChars":16,"textLines":2,"bbox":[54,62,686,160]}
+{"kind":"textbox","id":"sh/atobqpk3","slide":12,"text":"加我飞书好友，并发送：","textPreview":"加我飞书好友，并发送：","textChars":11,"textLines":1,"bbox":[54,372,330,30]}
+{"kind":"textbox","id":"sh/xwzul43e","slide":12,"text":"1.","textPreview":"1.","textChars":2,"textLines":1,"bbox":[54,433,28,24]}
+{"kind":"textbox","id":"sh/cv6tsz29","slide":12,"text":"企业和行业；","textPreview":"企业和行业；","textChars":6,"textLines":1,"bbox":[88,432,330,44]}
+{"kind":"textbox","id":"sh/qxkbel4j","slide":12,"text":"2.","textPreview":"2.","textChars":2,"textLines":1,"bbox":[54,493,28,24]}
+{"kind":"textbox","id":"sh/8n6p0b65","slide":12,"text":"最想改善的一项工作；","textPreview":"最想改善的一项工作；","textChars":10,"textLines":1,"bbox":[88,492,330,44]}
+{"kind":"textbox","id":"sh/mlo7y1of","slide":12,"text":"3.","textPreview":"3.","textChars":2,"textLines":1,"bbox":[54,553,28,24]}
+{"kind":"textbox","id":"sh/7mxo765k","slide":12,"text":"现在怎么做；","textPreview":"现在怎么做；","textChars":6,"textLines":1,"bbox":[88,552,330,44]}
+{"kind":"textbox","id":"sh/hszqdgn2","slide":12,"text":"4.","textPreview":"4.","textChars":2,"textLines":1,"bbox":[54,613,28,24]}
+{"kind":"textbox","id":"sh/upo721ob","slide":12,"text":"谁负责这项业务；","textPreview":"谁负责这项业务；","textChars":8,"textLines":1,"bbox":[88,612,330,44]}
+{"kind":"textbox","id":"sh/cvmpsr6x","slide":12,"text":"5.","textPreview":"5.","textChars":2,"textLines":1,"bbox":[54,673,28,24]}
+{"kind":"textbox","id":"sh/xwv61cni","slide":12,"text":"方便沟通的时间。","textPreview":"方便沟通的时间。","textChars":8,"textLines":1,"bbox":[88,672,330,44]}
+{"kind":"textbox","id":"sh/tg3e9oba","slide":12,"text":"扫码加飞书｜发送现状即可预约","textPreview":"扫码加飞书｜发送现状即可预约","textChars":14,"textLines":1,"bbox":[440,682,300,42]}
+{"kind":"shape","id":"sh/relw7et4","slide":12,"bbox":[54,900,686,0.9]}
+{"kind":"textbox","id":"sh/6dcve9cj","slide":12,"text":"想做 AI 升级，就从一个看得清、做得完的问题开始。","textPreview":"想做 AI 升级，就从一个看得清、做得完的问题开始。","textChars":26,"textLines":1,"bbox":[54,928,686,42]}
+{"kind":"textbox","id":"sh/14nedob6","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/g3udkjul","slide":12,"text":"FDE 企业 AI 升级","textPreview":"FDE 企业 AI 升级","textChars":12,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"image","id":"im/lszmlo3q","slide":12,"name":"","bbox":[460,372,280,280]}
+{"kind":"notes","id":"nt/0ignj4","slide":12,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]\n\n[Sources]\n- User-provided Feishu contact QR code: /Users/elliottye/Downloads/IMG_0263.JPG\n[/Sources]"}

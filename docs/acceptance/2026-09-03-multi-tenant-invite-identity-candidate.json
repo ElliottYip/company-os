@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "PRODUCTION_DEPLOYED_AND_HEALTHY",
+  "purpose": "Persist an invited SaaS member's binding-scoped external identity in the same transaction as membership, grants, and the organization event, and reject a session from another Feishu provider before side effects.",
+  "image": {
+    "id": "sha256:3bee30c5ea374ea71a0fc8d94da26d7ac3d0e5075500466018deff760079483b",
+    "architecture": "linux/amd64",
+    "runtimeUser": "node",
+    "archive": "/tmp/company-os-api-multi-tenant-invite-identity-amd64.tar.gz",
+    "archiveSha256": "1e897632f498622df91c6efb4ea73c9331813eb3a5f9cef4b4852cf8b9c2cf0c",
+    "archiveBytes": 88585872
+  },
+  "verification": {
+    "realPostgresTransaction": "PASS",
+    "sameTenantMemberExternalIdentity": "PASS",
+    "crossTenantProviderDeniedBeforeMembership": "PASS",
+    "fullTestSuite": "PASS_791_TESTS_786_PASSED_5_SKIPPED",
+    "browserSuite": "PASS_21_PASSED_5_SKIPPED",
+    "boundaryChecks": "PASS",
+    "secretScan": "PASS",
+    "dependencyAudit": "PASS_ZERO_VULNERABILITIES",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "restrictedContainerSmoke": "PASS"
+  },
+  "production": {
+    "uploaded": true,
+    "deployed": true,
+    "currentApiImage": "sha256:fa45a35de445e4e58397cd8048127b91fbf4ff2761df9fcc6b8c448fcee75359",
+    "multiTenantFeatureEnabled": true,
+    "unrestrictedSignupEnabled": false
+  }
+}

@@ -113,6 +113,17 @@ test("workbench offers a local company draft while formal capabilities stay behi
   assert.match(mountSource, /data-new-task-dialog/);
 });
 
+test("local Agent connection is visible before runtime discovery and remains secret-free", () => {
+  assert.match(mountSource, /data-connect-local-agent/);
+  assert.match(mountSource, /Connect local Agent/);
+  assert.match(mountSource, /data-gate-panel="agent-connection"/);
+  assert.match(mountSource, /LOCAL AGENT DIRECT CONNECTION/);
+  assert.match(mountSource, /hosted Company OS deployment cannot reach localhost/);
+  assert.match(mountSource, /COMPANY_OS_CONNECTOR_PACKAGES=@company-os\/http-agent-node-connector/);
+  assert.match(mountSource, /Credentials never enter the browser/);
+  assert.doesNotMatch(mountSource, /name="(?:bearerToken|agentToken|connectorSecret|agentPassword)"/i);
+});
+
 test("dashboard prioritizes accountable humans, decisions, active work and evidence", () => {
   assert.match(mountSource, /DASHBOARD/);
   assert.match(mountSource, /high-risk action needs a human decision/);

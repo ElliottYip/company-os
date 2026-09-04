@@ -6,6 +6,7 @@ name: ${COMPANY_OS_COMPOSE_PROJECT:?set the site-scoped Compose project}
 # file must never join an existing production network or reuse its volumes.
 x-api-image: &api-image ${COMPANY_OS_API_IMAGE:?set an immutable API image digest}
 x-api-security: &api-security
+  user: "0:0"
   read_only: true
   init: true
   cap_drop: [ALL]
@@ -21,9 +22,11 @@ services:
   reference-data-node:
     image: ${COMPANY_OS_REFERENCE_DATA_NODE_IMAGE:?set the immutable acceptance Data Node image digest}
     restart: unless-stopped
+    user: "0:0"
     read_only: true
     init: true
     cap_drop: [ALL]
+    cap_add: [SETGID, SETUID]
     security_opt: [no-new-privileges:true]
     tmpfs:
       - /tmp:size=16m,mode=1777
@@ -37,6 +40,8 @@ services:
       COMPANY_OS_REFERENCE_DATA_NODE_CATALOG_FILE: /app/connectors/http-data-node-reference/fixtures/acceptance-fixtures.json
       COMPANY_OS_REFERENCE_DATA_NODE_STATE_FILE: /var/lib/company-os-data-node/protocol-state.json
       COMPANY_OS_REFERENCE_DATA_NODE_BEARER_TOKEN_FILE: /run/secrets/data-node-bearer-token
+      COMPANY_OS_RUNTIME_UID: "1000"
+      COMPANY_OS_RUNTIME_GID: "1000"
     ports:
       - "127.0.0.1:${COMPANY_OS_REFERENCE_DATA_NODE_PORT:?set the site Data Node loopback port}:4321"
     volumes:
@@ -74,6 +79,7 @@ services:
     <<: *api-security
     image: *api-image
     restart: unless-stopped
+    cap_add: [SETGID, SETUID]
     cpus: 0.55
     mem_limit: 640m
     pids_limit: 128
@@ -89,11 +95,16 @@ services:
       COMPANY_OS_WEB_ORIGINS: ${COMPANY_OS_WEB_ORIGINS:?set the exact site Web origins}
       COMPANY_OS_DATABASE_URL_FILE: /run/company-os/secrets/runtime-database-url
       NODE_EXTRA_CA_CERTS: /run/company-os/secrets/internal-ca-cert.pem
-      COMPANY_OS_OIDC_ISSUER: ${COMPANY_OS_OIDC_ISSUER:?set the staging OIDC issuer}
-      COMPANY_OS_OIDC_DISCOVERY_URL: ${COMPANY_OS_OIDC_DISCOVERY_URL:?set the staging OIDC discovery URL}
-      COMPANY_OS_OIDC_CLIENT_ID: ${COMPANY_OS_OIDC_CLIENT_ID:?set the product-scoped OIDC client ID}
+      COMPANY_OS_IDENTITY_PROVIDER: ${COMPANY_OS_IDENTITY_PROVIDER:-OIDC}
+      COMPANY_OS_OIDC_ISSUER: ${COMPANY_OS_OIDC_ISSUER:-}
+      COMPANY_OS_OIDC_DISCOVERY_URL: ${COMPANY_OS_OIDC_DISCOVERY_URL:-}
+      COMPANY_OS_OIDC_CLIENT_ID: ${COMPANY_OS_OIDC_CLIENT_ID:-}
       COMPANY_OS_OIDC_CLIENT_SECRET_FILE: /run/company-os/secrets/oidc-client-secret
-      COMPANY_OS_OIDC_REDIRECT_URI: ${COMPANY_OS_OIDC_REDIRECT_URI:?set the site OIDC callback}
+      COMPANY_OS_OIDC_REDIRECT_URI: ${COMPANY_OS_OIDC_REDIRECT_URI:-}
+      COMPANY_OS_FEISHU_APP_ID: ${COMPANY_OS_FEISHU_APP_ID:-}
+      COMPANY_OS_FEISHU_APP_SECRET_FILE: /run/company-os/secrets/feishu-app-secret
+      COMPANY_OS_FEISHU_TENANT_KEY: ${COMPANY_OS_FEISHU_TENANT_KEY:-}
+      COMPANY_OS_FEISHU_REDIRECT_URI: ${COMPANY_OS_FEISHU_REDIRECT_URI:-}
       COMPANY_OS_SESSION_SIGNING_KEY_FILE: /run/company-os/secrets/session-signing-key
       COMPANY_OS_INSTANCE_ID: ${COMPANY_OS_INSTANCE_ID:?set the stable site instance ID}
       COMPANY_OS_RETENTION_POLICY_ID: ${COMPANY_OS_RETENTION_POLICY_ID:-standard-retention}
@@ -118,6 +129,8 @@ services:
       COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL: ${COMPANY_OS_HTTP_SECRET_BROKER_BASE_URL:?set the HTTPS Vault Broker URL}
       COMPANY_OS_HTTP_SECRET_BROKER_BEARER_TOKEN_FILE: /run/company-os/secrets/secret-broker-bearer-token
       COMPANY_OS_METRICS_ENABLED: "false"
+      COMPANY_OS_RUNTIME_UID: "1000"
+      COMPANY_OS_RUNTIME_GID: "1000"
     ports:
       - "127.0.0.1:${COMPANY_OS_API_LOOPBACK_PORT:?set the site API loopback port}:4310"
     depends_on:

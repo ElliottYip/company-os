@@ -23,9 +23,8 @@ During the audit gate, do not expand generic implementations of Agent,
 Goal, Task, Run, Budget, Artifact, Heartbeat, scheduling, runtime management,
 generic approval, generic observability, plugin hosting, or connector lifecycle.
 Existing correct independent boundaries, responsibility semantics, deterministic
-Demo, design system, and Pre-3D contracts remained in place. The gate is now
-closed: responsibility-first implementation may resume, while formal 3D assets
-remain excluded.
+Demo, and design system remained in place. The gate is now closed:
+responsibility-first implementation may resume.
 
 Allowed work during the freeze is audit infrastructure, read-only source
 inspection, provenance and license records, threat/data-model analysis,
@@ -183,6 +182,5 @@ explicit; and at least three mutually exclusive product shapes plus a final
 recommendation are delivered.
 
 The reports are complete and direction B is confirmed. Responsibility-first
-Agent-management and Pre-3D implementation may resume under ADR 0010; generic
-work without a direction-B consumer and formal 3D asset production remain out
-of scope.
+Agent-management implementation may resume under ADR 0010; generic work without
+a direction-B consumer remains out of scope.

@@ -9,13 +9,12 @@ core <- ports <- application <- adapters
                  connector-sdk    web
 ```
 
-- `core` owns organization, responsibility, work, event, and renderer-neutral
-  office scene semantics.
+- `core` owns organization, responsibility, work, and event semantics.
 - `ports` defines replaceable system boundaries using core types.
 - `application` coordinates use cases and deterministic Demo behavior.
 - `adapters` maps infrastructure and product-specific identity/runtime concerns.
 - `connector-sdk` is a versioned provider-neutral edge contract.
-- `web` is an independently built composition root and DOM renderer adapter.
+- `web` is an independently built composition root and product UI adapter.
 
 `core`, `ports`, and `application` cannot import outward layers. A source scanner
 also rejects host, transport, vendor, Web-framework, and browser vocabulary in
@@ -36,7 +35,6 @@ these layers.
 | `ApprovalPublicationPort` | Publish exact high-risk requests and human decisions |
 | `AuditEvidencePort` | Record evidence and project the first-class responsibility chain |
 | `ResponsibilityContractPort` | Persist revisioned Agent-to-accountable-human contracts |
-| `OfficeRendererPort` | Render a versioned office scene without owning organization logic |
 
 ## Connector contract
 
@@ -134,18 +132,6 @@ claim to be a production Agent or identity service.
 host-owned element, optional base path, and navigation callback. The host cannot
 inject or own Company OS use cases. A future Raft Web adapter may call this
 contract or link to the standalone domain.
-
-## Pre-3D Office Compiler
-
-`compileOfficeScene` converts organization structure into versioned modules and
-entity states. `OfficeRendererPort` consumes this description. The current DOM
-adapter is replaceable; no domain rule references DOM, images, camera, geometry,
-Blender, GLB, or Three.js.
-
-The conformance gate checks OfficeScene/AssetManifest/ActionSequence versions,
-entity/asset kind, occupancy, every work state, and the locomotion, workstation,
-door, handheld-prop and seating slots. It validates semantics only; it does not
-manufacture a fake final 3D appearance.
 
 ## Framework sources
 

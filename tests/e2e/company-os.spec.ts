@@ -25,7 +25,7 @@ test("runtime API configuration drives the public Demo client across origins", a
   expect(sessionRequests).toEqual(["http://127.0.0.1:4310/api/demo/v2/sessions"]);
 });
 
-test("first run creates a local company draft while formal capabilities remain gated", async ({ page }) => {
+test("the unchanged front door opens the later provider-neutral onboarding choice", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Enterprise management and governance for every AI agent." })).toBeVisible();
   await expect(page.getByText("Company OS provides ANC, a unified control layer for Agent identity, ownership, access, cost, risk, and lifecycle across teams, runtimes, and external platforms.")).toBeVisible();
@@ -33,43 +33,121 @@ test("first run creates a local company draft while formal capabilities remain g
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeHidden();
 
   await page.getByRole("button", { name: /Set up Company OS/ }).click();
-  await expect(page.getByRole("dialog", { name: "What is your company called?" })).toBeVisible();
-  await page.getByLabel("Company name").fill("Northstar Studio");
-  await page.getByLabel("Company mission").fill("Build reliable operations with accountable humans and Agents.");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByLabel("Department name").fill("Operations");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByLabel("Human name").fill("Alex Chen");
-  await page.getByLabel("Role and responsibility").fill("Operations Lead");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByLabel("Agent name").fill("Research Assistant");
-  await page.getByLabel("Agent role").fill("Prepare evidence-backed operating briefs");
-  await page.getByRole("button", { name: "Continue" }).click();
-  await expect(page.getByText("Northstar Studio", { exact: true }).last()).toBeVisible();
-  await page.getByRole("button", { name: "Create company" }).click();
+  await expect(page).toHaveURL(/\/start$/);
+  await expect(page.getByRole("heading", { name: "选择公司的使用方式" })).toBeVisible();
+  const shared = page.getByRole("radio", { name: /统一域名 SaaS/ });
+  const independent = page.getByRole("radio", { name: /独立部署/ });
+  await expect(shared).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("heading", { name: "创建托管公司空间" })).toBeVisible();
+  await expect(page.locator('[data-shared-tenant-form] select[name="identityProvider"]'))
+    .toContainText("飞书 OAuth · 当前可用");
+  await expect(page.getByText("身份平台与授权范围由你控制")).toBeVisible();
+  await expect(page.getByText(/组织架构等额外权限必须由管理员另行启用/)).toBeVisible();
+  await expect(page.getByLabel(/Client Secret \/ App Secret/)).toHaveAttribute("type", "password");
+  await expect(page.getByLabel("注册邀请码")).toHaveAttribute("required", "");
 
-  await expect(page.getByText("Local draft — formal capabilities are not connected")).toBeVisible();
-  await expect(page.getByText("Northstar Studio", { exact: true }).first()).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Company OS sections" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Configure formal access/ })).toBeVisible();
-  await page.getByRole("button", { name: /Configure formal access/ }).click();
-  await expect(page.getByRole("heading", { name: "Connect enterprise identity" })).toBeVisible();
-  await expect(page.locator(".formal-gate-code code")).toHaveText("FORMAL_OIDC_NOT_CONFIGURED");
-  await expect(page.getByRole("navigation", { name: "Restricted formal navigation" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Identity settings" })).toBeEnabled();
-  await expect(page.getByRole("button", { name: "Diagnostics" })).toBeEnabled();
-  await expect(page.getByRole("button", { name: "Organization" })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Tasks" })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Approvals" })).toBeDisabled();
-  await expect(page.getByRole("button", { name: "Governance" })).toBeDisabled();
-  await expect(page.getByText("Coral Labs", { exact: true })).toBeHidden();
+  await shared.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(independent).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("heading", { name: "生成独立部署交接单" })).toBeVisible();
+  await expect(page.getByLabel("身份接入方式")).toContainText("标准 OIDC");
+  await expect(page.getByLabel("身份接入方式")).toContainText("自建身份适配器");
+  await expect(page.locator("[data-independent-tenant-form] input[name=appSecret]")).toHaveCount(0);
+});
 
-  await page.getByRole("button", { name: "Back" }).click();
-  await expect(page.getByText("Local draft — formal capabilities are not connected")).toBeVisible();
+test("local Agent connection stays visible and actionable before a runtime is installed", async ({ page }) => {
+  await page.goto("/");
+  const entry = page.getByRole("button", { name: /Connect local Agent/ });
+  await expect(entry).toBeVisible();
+  await entry.click();
 
-  await page.reload();
-  await page.getByRole("button", { name: /Sign in to Company OS/ }).click();
-  await expect(page.getByRole("heading", { name: "Connect enterprise identity" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Connect an Agent runtime" })).toBeVisible();
+  await expect(page.getByText("npm run agent:preflight")).toBeVisible();
+  await expect(page.getByText(/hosted Company OS deployment cannot reach localhost/)).toBeVisible();
+  await expect(page.locator('input[type="password"]')).toHaveCount(0);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.getByRole("heading", { name: "Connect an Agent runtime" })).toBeVisible();
+  await expect(page.getByText("npm run agent:preflight")).toBeVisible();
+});
+
+test("managed onboarding returns the exact tenant callback before first identity login", async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as Window & { __COMPANY_OS_CONFIG__?: unknown }).__COMPANY_OS_CONFIG__ = {
+      apiBaseUrl: "https://api.company.test",
+      mode: "formal",
+    };
+  });
+  await page.route("https://api.company.test/api/v1/tenant-registrations", async (route) => {
+    const origin = route.request().headers().origin ?? "http://127.0.0.1:4173";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: {
+        "access-control-allow-origin": origin,
+        "access-control-allow-methods": "POST, OPTIONS",
+        "access-control-allow-headers": "content-type",
+        "access-control-allow-credentials": "true",
+      } });
+      return;
+    }
+    await route.fulfill({ status: 201, contentType: "application/json", headers: {
+      "access-control-allow-origin": origin,
+      "access-control-allow-credentials": "true",
+    }, body: JSON.stringify({
+      id: "registration-alpha",
+      slug: "alpha-company",
+      providerId: "feishu-binding-alpha",
+      tenantDisplayName: "Alpha Company",
+      callbackUri: "https://api.company.test/api/auth/oauth2/callback/feishu-binding-alpha",
+    }) });
+  });
+  await page.goto("/start");
+  const form = page.locator("[data-shared-tenant-form]");
+  await form.locator('input[name="companyName"]').fill("Alpha Company");
+  await form.locator('input[name="slug"]').fill("alpha-company");
+  await form.locator('input[name="appId"]').fill("cli_alpha");
+  await form.locator('input[name="appSecret"]').fill("alpha-company-secret-material-1234");
+  await form.locator('input[name="inviteCode"]').fill("COS-23456-789AB-CDEFG-HJKLM");
+  await form.getByRole("button", { name: "验证身份平台并创建" }).click();
+
+  await expect(page.getByLabel("OAuth 回调地址")).toHaveValue(
+    "https://api.company.test/api/auth/oauth2/callback/feishu-binding-alpha",
+  );
+  await expect(page.getByRole("button", { name: "复制回调地址" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "已保存回调地址，继续企业身份登录" })).toBeVisible();
+  await expect(form.locator('input[name="appSecret"]')).toHaveValue("");
+});
+
+test("tenant OAuth landing atomically activates the company and selects it", async ({ page }) => {
+  await page.route("**/api/v1/tenant-registrations/by-slug/alpha-company/complete", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+      status: "COMPLETED", registrationId: "server-owned-registration",
+      companyId: "company-alpha", ownerUserId: "owner-alpha", slug: "alpha-company",
+    }) });
+  });
+  await page.route("**/api/v1/access", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+      schemaVersion: 1, mode: "FORMAL", deploymentProfile: "managed-cloud", entryState: "BLOCKED",
+      identityProvider: { protocol: "OAUTH2", providerId: "feishu", configured: true },
+      session: { authenticated: true }, capabilities: { diagnostics: true, identitySettings: true,
+        companyData: false, companyMutation: false, execution: false, approval: false, governance: false },
+      blockers: [{ code: "FORMAL_COMPANY_PROVISIONING_PENDING", parameters: {} }],
+    }) });
+  });
+
+  await page.goto("/t/alpha-company");
+  await expect(page).toHaveURL(/\/alpha-company\/$/);
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("company-os.selected-company")))
+    .toBe("company-alpha");
+});
+
+test("tenant landing asks for that tenant's identity when no session exists", async ({ page }) => {
+  await page.route("**/api/v1/tenant-registrations/by-slug/alpha-company/complete", async (route) => {
+    await route.fulfill({ status: 401, contentType: "application/json", body: JSON.stringify({
+      error: { code: "FORMAL_IDENTITY_REQUIRED", parameters: {} },
+    }) });
+  });
+  await page.goto("/t/alpha-company");
+  await expect(page.getByRole("button", { name: "使用企业身份登录" })).toBeVisible();
 });
 
 test("configured formal entry redirects directly to enterprise SSO and preserves the return path", async ({ page }) => {
@@ -167,6 +245,7 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   let signedOut = false;
   let restoreInspectionCount = 0;
   let restoreCommandCount = 0;
+  let secondConnectorRegistered = false;
   await page.route("**/api/v1/access", async (route) => route.fulfill({
     status: 200,
     contentType: "application/json",
@@ -201,7 +280,8 @@ test("verified formal identity reaches explicit admin claim and atomic company c
       contentType: "application/json",
       body: JSON.stringify({
         schemaVersion: 1,
-        companies: created ? [{ id: "company-one", name: organization.company.name, membershipRole: "owner" }] : [],
+        companies: created ? [{ id: "company-one", name: organization.company.name,
+          slug: "company-one", membershipRole: "owner" }] : [],
         isInstanceAdmin: claimed,
       }),
     });
@@ -323,6 +403,14 @@ test("verified formal identity reaches explicit admin claim and atomic company c
       }) });
       return;
     }
+    if (url.endsWith("/connectors") && route.request().method() === "POST") {
+      const body = route.request().postDataJSON() as Record<string, unknown>;
+      expect(body).toEqual({ connectorId: "connector-two", executionResidency: "CUSTOMER_ENVIRONMENT", expectedRevision: 1 });
+      expect(JSON.stringify(body)).not.toMatch(/token|secret|credential|password/i);
+      secondConnectorRegistered = true;
+      await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({ revision: 2, connectors: [] }) });
+      return;
+    }
     if (url.includes("/agents/") && url.endsWith("/approve") && route.request().method() === "POST") {
       const body = route.request().postDataJSON() as { expectedRevision: number };
       expect(body.expectedRevision).toBe(agentLifecycleRevision);
@@ -347,13 +435,21 @@ test("verified formal identity reaches explicit admin claim and atomic company c
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
         schemaVersion: 1, mode: "PRODUCTION", viewer: { actorId: "human-one", displayName: "Human One" },
         retentionPolicyId: "standard-retention",
-        connectorCatalog: { revision: 1, connectors: [{
+        connectorCatalog: { revision: secondConnectorRegistered ? 2 : 1, connectors: [{
           id: "connector-one", companyId: "company-one", displayName: "Codex Connector",
           protocolVersion: "1.0", operations: ["SUBMIT", "PROGRESS", "PAUSE", "RESUME", "CANCEL", "EVIDENCE", "RESULT"],
           maximumTimeoutSeconds: 3600, executionResidency: "CUSTOMER_ENVIRONMENT",
           status: "ENABLED", secretConfigured: false, runtimeHealth: "HEALTHY",
-        }] },
-        runtimeConnectors: [], secretBrokerRuntime: null, runtimeModelProviders: [], runtimeDataConnectors: [],
+        }, ...(secondConnectorRegistered ? [{
+          id: "connector-two", companyId: "company-one", displayName: "Local Codex Node",
+          protocolVersion: "1.0", operations: ["SUBMIT", "PROGRESS", "PAUSE", "RESUME", "CANCEL", "EVIDENCE", "RESULT"],
+          maximumTimeoutSeconds: 3600, executionResidency: "CUSTOMER_ENVIRONMENT",
+          status: "ENABLED", secretConfigured: false, runtimeHealth: "HEALTHY",
+        }] : [])] },
+        runtimeConnectors: [{ connectorId: "connector-two", displayName: "Local Codex Node",
+          protocolVersion: "1.0", maximumTimeoutSeconds: 3600, supportsPause: true, supportsResume: true,
+          supportsCancellation: true, supportsEvidence: true, health: "HEALTHY",
+          registered: secondConnectorRegistered }], secretBrokerRuntime: null, runtimeModelProviders: [], runtimeDataConnectors: [],
         runtimeFederatedSources: [],
         governance: { revision: 0, modelRoutingPolicies: [], dataAuthorizationContracts: [] },
         toolAccess: { companyId: "company-one", revision: 0, profiles: [], entries: [], bindings: [], policies: [] },
@@ -483,6 +579,14 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   await page.getByRole("button", { name: "Create organization" }).click();
   await expect(page.getByText("Coral Labs", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Production", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Governance", exact: true }).first().click();
+  await expect(page.getByRole("heading", { name: "Connect an Agent runtime" })).toBeVisible();
+  await expect(page.getByText(/1 runtime\(s\) reported by the server/)).toBeVisible();
+  const runtimeForm = page.locator("[data-register-connector-form]");
+  await expect(runtimeForm.getByRole("option", { name: /Local Codex Node/ })).toHaveCount(1);
+  await runtimeForm.getByRole("button", { name: "Register runtime" }).click();
+  await expect.poll(() => secondConnectorRegistered).toBe(true);
+  await expect(page.getByRole("heading", { name: "Local Codex Node" })).toBeVisible();
   await page.getByRole("button", { name: "Organization", exact: true }).first().click();
   await page.getByRole("button", { name: "Add department", exact: true }).click();
   const departmentDialog = page.getByRole("dialog", { name: "Department" });
@@ -622,7 +726,7 @@ test("enterprise OIDC invite acceptance creates membership before opening compan
   await page.route("**/api/v1/companies", async (route) => route.fulfill({
     status: 200, contentType: "application/json", body: JSON.stringify({
       schemaVersion: 1,
-      companies: [{ id: "company-one", name: "Coral Labs", membershipRole: "operator" }],
+      companies: [{ id: "company-one", name: "Coral Labs", slug: "coral-labs", membershipRole: "operator" }],
       isInstanceAdmin: false,
     }),
   }));
@@ -663,7 +767,7 @@ test("Demo Work projects Observed and Federated sources without claiming dispatc
   await expect(page.getByRole("link", { name: "Open source fixture" })).toHaveCount(2);
 });
 
-test("formal Governance renders an installed Federated Source capability and retained health", async ({ page }) => {
+test("formal tenant deep links and company switching use authorized server slugs", async ({ page }) => {
   const organization = {
     company: { id: "company-one", name: "Company One", purpose: "Operate", locale: "en-US" },
     departments: [{ id: "operations", name: "Operations", mandate: "Operate" }],
@@ -679,7 +783,10 @@ test("formal Governance renders an installed Federated Source capability and ret
       capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,
         execution: true, approval: true, governance: true }, blockers: [] });
     if (url.endsWith("/companies")) return json({ schemaVersion: 1,
-      companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }], isInstanceAdmin: true });
+      companies: [
+        { id: "company-one", name: "Company One", slug: "company-one", membershipRole: "owner" },
+        { id: "company-two", name: "Harbor", slug: "harbor", membershipRole: "operator" },
+      ], isInstanceAdmin: true });
     if (url.endsWith("/human-members")) return json({ schemaVersion: 1, members: [{ userId: "human-one",
       displayName: "Human One", email: "human@example.com", role: "owner", status: "active",
       createdAt: "2026-08-25T00:00:00.000Z", updatedAt: "2026-08-25T00:00:00.000Z" }] });
@@ -709,7 +816,8 @@ test("formal Governance renders an installed Federated Source capability and ret
       work: [], attempts: [], pendingApprovals: [], generatedAt: "2026-08-25T00:10:00.000Z" });
   });
 
-  await page.goto("/?mode=formal");
+  await page.goto("/company-one/connectors");
+  await expect(page).toHaveURL(/\/company-one\/connectors$/);
   await page.getByRole("button", { name: "Governance" }).click();
   await expect(page.getByRole("heading", { name: "Federated sources" })).toBeVisible();
   const source = page.getByRole("article").filter({ hasText: "paperclip-alpha" });
@@ -717,6 +825,34 @@ test("formal Governance renders an installed Federated Source capability and ret
   await expect(source).toContainText("SYNCHRONIZE_FEDERATED_RECORDS");
   await expect(source).toContainText("HEALTHY");
   await expect(source).toContainText("2026-08-25T00:10:00.000Z");
+  await page.locator("[data-company-menu-trigger]").click();
+  await page.getByRole("menuitemradio", { name: /Harbor/ }).click();
+  await expect(page).toHaveURL(/\/harbor\/$/);
+});
+
+test("formal tenant paths fail closed when the authenticated identity is not a member", async ({ page }) => {
+  let companyDataRequests = 0;
+  await page.route("**/api/v1/**", async (route) => {
+    const url = route.request().url();
+    if (url.endsWith("/access")) return route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify({ schemaVersion: 1, mode: "FORMAL", deploymentProfile: "managed-cloud",
+        entryState: "READY", identityProvider: { protocol: "OAUTH2", providerId: "feishu", configured: true },
+        session: { authenticated: true }, capabilities: { diagnostics: true, identitySettings: true,
+          companyData: true, companyMutation: true, execution: true, approval: true, governance: true }, blockers: [] }) });
+    if (url.endsWith("/companies")) return route.fulfill({ status: 200, contentType: "application/json",
+      body: JSON.stringify({ schemaVersion: 1, companies: [{ id: "company-one", name: "Company One",
+        slug: "company-one", membershipRole: "owner" }], isInstanceAdmin: false }) });
+    companyDataRequests += 1;
+    return route.fulfill({ status: 500, contentType: "application/json",
+      body: JSON.stringify({ error: { code: "MUST_NOT_READ_OTHER_TENANT", parameters: {} } }) });
+  });
+
+  await page.goto("/unknown-company/");
+  await expect(page.getByRole("heading", {
+    name: "This company path is unknown or unavailable to your identity.",
+  })).toBeVisible();
+  await expect(page.getByText("MUST_NOT_READ_OTHER_TENANT", { exact: true })).toHaveCount(0);
+  expect(companyDataRequests).toBe(0);
 });
 
 test("formal running Work requests cancellation and waits for Connector confirmation", async ({ page }) => {
@@ -746,7 +882,7 @@ test("formal running Work requests cancellation and waits for Connector confirma
       capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,
         execution: true, approval: true, governance: true }, blockers: [] });
     if (url.endsWith("/companies")) return json({ schemaVersion: 1,
-      companies: [{ id: "company-one", name: "Company One", membershipRole: "owner" }], isInstanceAdmin: true });
+      companies: [{ id: "company-one", name: "Company One", slug: "company-one", membershipRole: "owner" }], isInstanceAdmin: true });
     if (url.endsWith("/human-members")) return json({ schemaVersion: 1, members: [{ userId: "human-one",
       displayName: "Human One", email: "human@example.com", role: "owner", status: "active",
       createdAt: "2026-08-25T00:00:00.000Z", updatedAt: "2026-08-25T00:00:00.000Z" }] });

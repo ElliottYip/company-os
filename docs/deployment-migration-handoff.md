@@ -1,6 +1,6 @@
 # Deployment and migration handoff
 
-Status: Pre-3D contract frozen on 2026-08-20.
+Status: deployment contract frozen on 2026-08-20.
 
 ## One codebase, two profiles
 
@@ -53,7 +53,3 @@ Paperclip and all other audited competitors are absent from runtime, build,
 deployment and data formats. Raft may mount or link Company OS through the narrow
 host contract and provide Raft-specific Identity/Connector/serializer adapters;
 it cannot own Company OS business logic or its database lifecycle.
-
-The next separate goal may create 3D assets against `OfficeScene 1.0`,
-`AssetManifest 1.0` and `ActionSequence 1.0`. It must not change these deployment
-or responsibility boundaries implicitly.

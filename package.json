@@ -58,6 +58,8 @@
     "test:resilience:http": "node --experimental-strip-types scripts/http-resilience-admission.ts",
     "test:soak:http": "node --experimental-strip-types scripts/http-soak-admission.ts",
     "test:customer-boundaries:tls": "node scripts/run-customer-boundary-tls-admission.mjs",
+    "test:codex:local": "node scripts/run-local-codex-admission.mjs",
+    "agent:preflight": "node --experimental-strip-types scripts/local-agent-preflight.mjs",
     "test:vault:compatibility": "node scripts/run-vault-compatibility-admission.mjs",
     "test:upgrade:postgres16": "node scripts/run-postgres-upgrade-admission.mjs",
     "test:upgrade:postgres-major": "node scripts/run-postgres-major-version-admission.mjs",
@@ -66,8 +68,6 @@
     "typecheck": "tsc --noEmit",
     "check:boundaries": "node scripts/check-boundaries.mjs",
     "check:independence": "node scripts/check-independent-runtime.mjs",
-    "check:3d-assets": "node scripts/check-3d-assets.mjs",
-    "check:3d-performance": "node scripts/check-web-3d-performance-budget.mjs",
     "check:research": "node scripts/check-upstream-governance.mjs",
     "check:protocols": "node scripts/generate-execution-plane-openapi.mjs",
     "check:connector-bundles": "node scripts/build-federated-source-reference.mjs",
@@ -82,7 +82,7 @@
     "security:dependencies": "npm audit --omit=dev --omit=optional --audit-level=moderate",
     "security": "npm run security:secrets && npm run security:dependencies",
     "build": "vite build --config web/vite.config.mjs && node scripts/check-built-web-runtime-config-order.mjs",
-    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:3d-assets && npm run check:research && npm run check:protocols && npm run check:connector-bundles && npm run check:web-interactions && npm run security && npm run typecheck && npm run build && npm run check:3d-performance && npm run test:e2e"
+    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:research && npm run check:protocols && npm run check:connector-bundles && npm run check:web-interactions && npm run security && npm run typecheck && npm run build && npm run test:e2e"
   },
   "devDependencies": {
     "@playwright/test": "1.55.1",
@@ -101,14 +101,12 @@
     "@company-os/federated-source-reference": "file:connectors/federated-source-reference",
     "@company-os/http-secret-broker": "file:brokers/http-secret-broker",
     "@dagrejs/dagre": "^1.1.5",
-    "@types/three": "^0.185.4",
     "@xyflow/react": "^12.8.5",
     "better-auth": "1.6.25",
     "drizzle-orm": "^0.45.2",
     "lucide": "^1.33.0",
     "postgres": "^3.4.9",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "three": "^0.185.1"
+    "react-dom": "^19.1.1"
   }
 }

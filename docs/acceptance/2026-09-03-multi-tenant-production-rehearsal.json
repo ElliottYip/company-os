@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_NO_TRAFFIC_REHEARSAL",
+  "executedAt": "2026-09-03T05:04:14Z",
+  "productionMutation": {
+    "databaseMigrated": false,
+    "serviceRestarted": false,
+    "trafficChanged": false
+  },
+  "candidate": {
+    "architecture": "linux/amd64",
+    "apiImage": "sha256:06b5a53fb6e48d6ccf8afde10b0b97431b01a53aaa7aa1aa66c967c113e49567",
+    "webImage": "sha256:14d768963d25fadb804c4d88339ec9c9ed271bbe98dd7c3712d82bb8fcf999e8",
+    "operationsImage": "sha256:2d1cb2a530084dc07009b22e673ae0c74a115f7eaac3325697d2e944aef52974",
+    "mainArchiveSha256": "033e842156f41cfbec6c1bfcb6988a3d085de928bc2d507aa02deaede97c62ff",
+    "operationsArchiveSha256": "2d2a0e387e857a344c7ca6846625dc7c6121907379939f4670d446a360f29ee3",
+    "remoteHashesMatched": true,
+    "loadedWithoutStartingProductionServices": true
+  },
+  "backup": {
+    "algorithm": "AES-256-GCM",
+    "ciphertextPath": "/srv/company-os/feishu-production/backups/20260903T0452Z-multi-tenant-prep/company-os-20260903T045612370Z-9e9580e8.dump.enc",
+    "ciphertextDigest": "sha256:fba61cebbda1ca826f55913587cd4f6a50635ed572fe18e7ac684b6bb04c43dd",
+    "manifestSha256": "923fef162d5f7095f411f0b96ca67dc2e4b9ba54800ee49df06f0b13c4456357",
+    "ciphertextBytes": 46896,
+    "plaintextDumpArtifacts": 0,
+    "databaseCoordinateSource": "PRIVATE_FILE",
+    "encryptionKeySource": "PRIVATE_FILE"
+  },
+  "isolatedRestore": {
+    "postgresMajor": 16,
+    "network": "company-os-mt-drill-20260903t0452z",
+    "networkExternalAccess": false,
+    "hostDatabasePortPublished": false,
+    "databaseContainer": "company-os-mt-drill-postgres-20260903t0452z",
+    "databaseVolume": "company-os-mt-drill-20260903t0452z-postgres",
+    "databaseRetainedStopped": true,
+    "restoreTargetValidation": "CONNECTIVITY_ONLY",
+    "authenticatedRestore": "PASS",
+    "restoredCiphertextDigest": "sha256:fba61cebbda1ca826f55913587cd4f6a50635ed572fe18e7ac684b6bb04c43dd",
+    "migration": {
+      "before": 7,
+      "after": 8,
+      "candidateMigrationAppliedOnce": true
+    },
+    "controlTotalsBeforeAndAfter": {
+      "authAccounts": 1,
+      "authSessions": 1,
+      "authUsers": 1,
+      "companies": 1,
+      "events": 1,
+      "permissionGrants": 8,
+      "invites": 0,
+      "memberships": 1
+    },
+    "multiTenantTablesAfter": 4,
+    "multiTenantRowsAfter": 0,
+    "requiredConstraintsFound": 6,
+    "requiredUniqueIndexesFound": 6,
+    "prohibitedPlaintextColumnsFound": 0
+  },
+  "copyOnlyCanary": {
+    "apiHealth": "PASS",
+    "apiReadiness": "PASS",
+    "databaseReadiness": "PASS",
+    "legacyFeishuAuthorizationOrigin": "https://accounts.feishu.cn",
+    "legacyFeishuAuthorizationPath": "/open-apis/authen/v1/authorize",
+    "unknownTenantCallbackStatus": 404,
+    "apiProcessUid": 1000,
+    "apiProcessGid": 1000,
+    "apiEffectiveCapabilities": 0,
+    "apiNoNewPrivileges": true,
+    "webRootStatus": 200,
+    "webStartStatus": 200,
+    "webRuntimeConfigStatus": 200,
+    "temporaryApiAndWebRemoved": true
+  },
+  "productionAfter": {
+    "apiHealth": "PASS",
+    "webStatus": 200,
+    "schemaMigrations": 7,
+    "controlTotals": {
+      "authAccounts": 1,
+      "authSessions": 1,
+      "authUsers": 1,
+      "companies": 1,
+      "events": 1,
+      "permissionGrants": 8,
+      "invites": 0,
+      "memberships": 1
+    },
+    "apiImage": "sha256:989710cca8c4981708c9084f1f005cb00579ab6ec3aeb412321a33493f42e228",
+    "webImage": "sha256:7b5c0f43baa5ec9c86ab484cab14ad6e5fd3bb20ac23df9bcf732db1ed8004e8",
+    "composeSha256": "7d3c4922c1785eb764d640cb2933d69690406aa4ffc88ffdf7b7fec34ea33a97"
+  },
+  "notes": [
+    "The active Web image was independently changed before this rehearsal. The rehearsal recorded and preserved that newer baseline.",
+    "The rehearsed Web candidate sha256:14d768963d25fadb804c4d88339ec9c9ed271bbe98dd7c3712d82bb8fcf999e8 was superseded after a content audit found that it did not retain the active front-door asset set; it must not be deployed.",
+    "The replacement preserved-home Web candidate sha256:9a560d27159e21d1594bae3b9c7bb22f84b31ff4704bd0a2c56e6d52ed1781db retains all 111 baseline files byte-for-byte and adds only the tenant entry document/assets; it requires separate remote artifact admission before cutover.",
+    "Optional Connector, model, Secret Broker and Data runtimes remain intentionally uninstalled and degraded, matching the existing deployment."
+  ]
+}

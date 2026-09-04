@@ -50,7 +50,23 @@ implements those generic invariants and imports no Paperclip package, schema,
 session type or runtime service. See ADR 0017 and ADR 0029.
 
 The current read-only driver deliberately implements restart-as-resume rather
-than pretending to preserve a vendor session. Before enabling side effects, add
-process-group termination escalation, inactivity/liveness evidence and a
-provider-native durable continuation contract, then admit each capability with
-focused restart and idempotency tests.
+than pretending to preserve a vendor session. Before enabling side effects,
+retain the current process-group termination escalation and add
+inactivity/liveness evidence plus a provider-native durable continuation
+contract, then admit each capability with focused restart and idempotency tests.
+
+## Local admission
+
+Run one real, synthetic, read-only Codex execution against the current trusted
+host login with:
+
+```bash
+npm run test:codex:local
+```
+
+The command uses a disposable empty workspace and retains only bounded evidence.
+The runtime environment must retain `PATH`: the pinned `codex` launcher uses
+`/usr/bin/env node`, while the driver still excludes unrelated application and
+Connector credentials. See
+[`codex-team-onboarding.md`](codex-team-onboarding.md) for personal, human, and
+shared execution identity boundaries.

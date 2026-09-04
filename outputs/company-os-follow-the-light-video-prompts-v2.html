@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Company OS · Follow the Light · Video Prompts V2</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b0d10;--panel:#14171c;--line:#2a3039;--text:#f2f4f7;--muted:#9aa5b1;--accent:#f0b35d;--code:#0a0c0f}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+    main{max-width:1180px;margin:auto;padding:48px 24px 100px}.eyebrow{color:var(--accent);letter-spacing:.16em;text-transform:uppercase;font-size:12px}h1{font-size:clamp(34px,6vw,72px);line-height:1;margin:12px 0 18px}h2{font-size:26px;margin:0}.intro{max-width:780px;color:var(--muted);font-size:17px}
+    .contract{margin:32px 0;padding:22px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,#171b21,#101216)}.contract code{color:#ffd99e}.note{color:var(--muted);font-size:14px}
+    .scene{margin-top:34px;border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}.scene-head{display:flex;gap:14px;align-items:center;padding:20px 22px;border-bottom:1px solid var(--line)}.scene-head input{width:20px;height:20px}.scene-meta{color:var(--accent);font-size:13px}.body{padding:22px}.reference{width:100%;aspect-ratio:2.39/1;object-fit:cover;border-radius:12px;background:#090a0c;margin-bottom:18px}.actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:14px 0}.copy{border:1px solid #49515e;background:#222832;color:white;border-radius:10px;padding:9px 14px;cursor:pointer}.copy:hover{border-color:var(--accent)}pre{white-space:pre-wrap;word-break:break-word;background:var(--code);border:1px solid #252a31;border-radius:12px;padding:18px;color:#dfe7ef;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;margin:0}.status{font-size:12px;color:#8ee6a6;min-width:52px}.footer{margin-top:40px;color:var(--muted);border-top:1px solid var(--line);padding-top:24px}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Company OS · Director Package</div>
+  <h1>Follow the Light</h1>
+  <p class="intro">6 个参考图绑定的视频生成提示词：5 个宏大环境镜头，1 个生活化人物镜头。四位真实说话者接力描绘未来工作方式；除 Shot 05 的现场语音外，全部为画外人声。全片无 BGM，只保留人声与真实环境音。</p>
+
+  <section class="contract">
+    <h2>Style Contract</h2>
+    <p><code>现实电影感 + 纪录片观察感</code> · 16:9 输出，构图保护 2.39:1 · 5 wide landscapes + 1 human detail · natural color · one camera move per clip.</p>
+    <p class="note">声音铁律：NO BGM。人物说话必须像真实对话或语音留言，不使用广告腔。禁止视频会议、数字游民摆拍、悬崖边电脑、科幻 UI、AI 塑料脸与旅游宣传片式过饱和。</p>
+  </section>
+
+  <section class="contract">
+    <h2>Locked Voice Script</h2>
+    <p><strong>01 · Maya:</strong> “We used to build companies around a place. Same room. Same hours.”</p>
+    <p><strong>02 · Jonah:</strong> “Then work moved online. But somehow, we were still spending our days proving we were online.”</p>
+    <p><strong>03 · Leila:</strong> “In the company ahead, you don’t stay inside the work all day. You set the direction, and agents carry it forward.”</p>
+    <p><strong>04 · Daniel:</strong> “They keep the context, coordinate the work, and bring you in when judgment is actually needed.”</p>
+    <p><strong>05 · Maya:</strong> “Sometimes, work is a two-minute voice note from the road. Then life keeps moving—and so does the company.”</p>
+    <p><strong>06 · Jonah:</strong> “People lead. Agents keep the work moving. Company OS keeps it all connected.”</p>
+    <p class="note">01–04 与 06 为画外人声；05 是人物在船舱内录制的现场语音。所有人声自然、不完美、无广告播音腔。NO BGM THROUGHOUT.</p>
+  </section>
+
+  <section class="scene" data-id="shot-01">
+    <div class="scene-head"><input type="checkbox" aria-label="完成镜头 1"><div><div class="scene-meta">SHOT 01 · 8s · EXTREME WIDE</div><h2>Fjord Ferry at Dawn</h2></div></div>
+    <div class="body">
+      <img class="reference" src="company-os-visual-direction-v2/01-fjord-ferry-dawn.png" alt="Fjord ferry reference">
+      <div class="actions"><span class="note">Image1 role: first_frame + environment</span><button class="copy">复制提示词</button><span class="status"></span></div>
+      <pre>## 参考图使用
+Image1: first-frame and environment reference only. Lock the monumental fjord geography, the small ferry at frame-left, the dawn direction, the person as a tiny incidental silhouette, and the initial 2.39:1 composition. Do not enlarge the person, change the vessel into a yacht, or transfer accidental facial details.
+
+## 风格提示词
+Ultra-photorealistic large-format documentary cinema, restrained premium technology brand film, natural 35mm grain, physically believable water, cloud, snow and wind. Present-day realism, no science fiction. The landscape is the subject; technology remains incidental.
+
+## 首帧直方图 / 色板约束
+Approximately 45% deep blue-charcoal shadows, 35% cool midtones, 20% soft amber highlights. Preserve detail in the mountain blacks and roll off the sunrise gently; no crushed silhouettes, no HDR halos, no oversaturated orange. These tonal constraints control the environment only and must not distort the small human figure.
+
+## 人物状态
+One adult traveler remains tiny on the exterior side deck at lower-left, body turned three-quarters toward the fjord, practical dark coat, relaxed shoulders, both hands resting naturally near the rail. The traveler never looks at camera and never becomes the visual center.
+
+## 动作提示词
+00:00-00:02: Begin exactly from Image1. The ferry advances slowly into the fjord; a narrow wake spreads with real water resistance. The traveler steadies against a light crosswind.
+00:02-00:05: A light crosswind moves the coat hem and loose hair after the gust, not before it. The traveler subtly shifts weight with the vessel.
+00:05-00:07: The traveler keeps watching the horizon while the ferry continues forward.
+00:07-00:08: Hold the small figure and ferry in a stable cuttable composition for one second.
+Explicitly forbid: waving, posing, turning toward camera, walking away, climbing the railing, dramatic gestures.
+
+## 表演 / 微表情
+The face is too small to perform for camera. Use only believable body rhythm: one quiet breath, slight chin lift toward the light, shoulders settling with the vessel. No visible smile or heroic pose.
+
+## 脸部稳定 / 身份保护
+Keep the head and body anatomically stable at small scale. No duplicate figure, warped limbs, melted face, enlarged head, or floating phone. Do not invent close-up facial detail.
+
+## 运镜镜头提示词
+Extreme wide establishing shot, high but physically plausible camera position from the ferry structure, rectilinear ultra-wide geography with straight horizon and no fisheye. One main movement only: extremely slow forward drift, almost static. No orbit, drone dive, zoom, fast pan, shake, or internal cut.
+
+## 光影材质提示词
+Motivated dawn source from frame-right. Amber light touches the water path and cloud edges first; mountains remain cool and dimensional. Snow stays matte, ferry metal slightly wet, water heavy and cold, coat fabric wind-responsive.
+
+## 音效提示词
+MAYA voice-over, natural English-speaking woman in her late 30s, intimate but not whispered, thoughtful and unpolished, never an announcer. No visible person speaks. Verbatim: “We used to build companies around a place. Same room. Same hours.”
+Ambience: low ferry engine vibration, cold wind, water against the hull, one distant seabird. Keep ambience alive beneath the narration. Absolutely no BGM, no UI beep, no cinematic boom.
+
+## 转场锚点
+The low ferry-engine rumble continues across the cut and becomes the low rolling sound of the snow train in Shot 02.
+
+## 负面提示词
+No readable text, subtitles, watermark, logo, hologram, interface overlay, luxury yacht, tourist pose, influencer styling, fantasy mountains, aurora, cyberpunk color, time lapse, fast cloud motion, duplicate people, extra limbs, plastic skin, aggressive camera motion, auto BGM.</pre>
+    </div>
+  </section>
+
+  <section class="scene" data-id="shot-02">
+    <div class="scene-head"><input type="checkbox" aria-label="完成镜头 2"><div><div class="scene-meta">SHOT 02 · 9s · EXTREME WIDE</div><h2>Snowfield Train</h2></div></div>
+    <div class="body">
+      <img class="reference" src="company-os-visual-direction-v2/02-snowfield-train.png" alt="Snowfield train reference">
+      <div class="actions"><span class="note">Image1 role: first_frame + environment</span><button class="copy">复制提示词</button><span class="status"></span></div>
+      <pre>## 参考图使用
+Image1: first-frame and environment reference. Lock the real passenger train, rural platform shelter, layered snow mountains, two tiny waiting travelers, screen direction and winter scale. Do not copy random face details or turn the platform into a modern city station.
+
+## 风格提示词
+Ultra-photorealistic Arctic location photography, large-format cinematic film still, quiet documentary realism, real snow texture and practical travel clothing. Expansive but not heroic or futuristic.
+
+## 首帧直方图 / 色板约束
+55% textured snow highlights, 35% pale blue-gray midtones, 10% soft charcoal shadows. Keep visible ridge and track detail in the white field. White point stays below clipping; no gray muddy snow and no blue monochrome cast. Human faces remain readable if visible.
+
+## 人物状态
+Two ordinary travelers wait beside the small shelter at frame-left. One holds practical luggage while both watch the arriving train. They are tiny scale references inside the snowfield, dressed for weather rather than fashion.
+
+## 动作提示词
+00:00-00:02: Begin from Image1. The train approaches slowly from frame-right along the fixed track; fine snow is pushed outward close to the wheels.
+00:02-00:05: A wind gust crosses left-to-right. One traveler tightens a hand around the bag strap; the other shifts weight heel-to-toe while watching the front carriage.
+00:05-00:08: The train decelerates naturally; wheel rotation slows and suspension settles.
+00:08-00:09: Hold with the train nearly aligned to the platform and both travelers still standing.
+Explicitly forbid: boarding, running, waving, falling, posing, walking onto the track.
+
+## 表演 / 微表情
+Restrained anticipation only: eyes follow the engine before the head turns, one blink against wind, jaw relaxed. No broad smile, fear, or dramatic reaction.
+
+## 脸部稳定 / 身份保护
+Keep both identities separate and anatomically correct. No fused bodies, duplicate luggage, extra arms, stretched faces, or floating feet. Do not enlarge them relative to the environment.
+
+## 运镜镜头提示词
+Extreme wide rectilinear geography, camera fixed 20–25 meters from the travelers, distant observational lens compression, one main movement only: barely perceptible slow push-in. No orbit, drone flight, zoom pulse, pan, shake, or cut.
+
+## 光影材质提示词
+Diffuse overcast source from upper-left. Snow dust follows train movement and wind direction. Metal carriages remain cold and matte with soft reflections; clothing has realistic weight and delayed wind response.
+
+## 音效提示词
+JONAH voice-over, natural English-speaking man in his 30s, conversational, lightly self-aware, no corporate polish. No visible person speaks. Verbatim: “Then work moved online. But somehow, we were still spending our days proving we were online.”
+Ambience: low diesel-electric train roll, wheel rhythm, soft winter wind, fabric movement, distant brake hiss. Keep the train present but never mask the words. Absolutely no BGM, no horn blast, no station announcement, no exaggerated impact.
+
+## 转场锚点
+The final wheel-and-track rhythm cuts on beat to the dinghy scraping over small shoreline stones in Shot 03.
+
+## 负面提示词
+No readable signage, text, logo, watermark, modern city platform, fantasy locomotive, flying snow explosion, blizzard disaster, tourist crowd, video call, laptop, extra people, warped tracks, sliding train, wheel deformation, plastic faces, oversaturated blue, camera orbit, auto BGM.</pre>
+    </div>
+  </section>
+
+  <section class="scene" data-id="shot-03">
+    <div class="scene-head"><input type="checkbox" aria-label="完成镜头 3"><div><div class="scene-meta">SHOT 03 · 10s · VERY WIDE ACTION</div><h2>Alpine Lake</h2></div></div>
+    <div class="body">
+      <img class="reference" src="company-os-visual-direction-v2/03-alpine-lake.png" alt="Alpine lake reference">
+      <div class="actions"><span class="note">Image1 role: first_frame + blocking</span><button class="copy">复制提示词</button><span class="status"></span></div>
+      <pre>## 参考图使用
+Image1: first-frame and blocking reference. Lock the enormous lake, mountain ring, reflective sky, rocky shore, father at frame-left, daughter beside the worn dinghy, jacket and unattended phone on shore. Do not transfer any brand marks on the boat or invent a visible phone interface.
+
+## 风格提示词
+Ultra-photorealistic cinematic documentary, large-format landscape with an authentic family moment, subtle 35mm grain, natural body proportions and imperfect clothing. Quietly emotional, never sentimental advertising.
+
+## 首帧直方图 / 色板约束
+20% grounded shore shadows, 45% natural green-gray and skin midtones, 35% soft sky and water highlights. Preserve reflection detail; no clipped clouds, neon turquoise water or excessive mirror symmetry. Faces stay in natural midtone even when small.
+
+## 人物状态
+Father and daughter are already holding the dinghy at the waterline, focused on a shared physical task. The phone remains face-up but unattended on the jacket behind them. Both look at the boat and water, never at camera or phone.
+
+## 动作提示词
+00:00-00:02: Begin from Image1. Father shifts weight forward, hands compress the rubber edge; daughter braces both feet on wet stones.
+00:02-00:06: Together they push the dinghy 40–60 centimeters into the shallows. Stones resist, hull flexes slightly, water displaces and ripples spread outward. Clothing and hair react gently to the breeze after body movement.
+00:06-00:08: The dinghy begins to float; father releases one hand, daughter steadies the side.
+00:08-00:10: Hold the completed contact with both still at the waterline for a cuttable ending.
+Explicitly forbid: looking at phone, entering the boat, falling, jumping, hugging, waving, turning to camera.
+
+## 表演 / 微表情
+Concentration and shared familiarity: father checks the daughter’s grip with one brief side glance; daughter presses lips slightly, then shoulders soften when the boat floats. No performed joy or commercial smile.
+
+## 脸部稳定 / 身份保护
+Keep realistic family resemblance, correct hands, feet and joint movement. No extra fingers, merged arms, changing ages, enlarged heads, duplicated child, or rubber-body deformation.
+
+## 运镜镜头提示词
+Very wide 2.39:1 frame, camera low and 8–12 meters from subjects, natural perspective with mountains fully dominant. One movement only: slow restrained push toward the waterline. No orbit, crane, drone, zoom, fast tracking, shake, or cut.
+
+## 光影材质提示词
+Late-afternoon source from upper-right creates soft rim on shoulders and small specular movement on water. Rocks remain wet and irregular; dinghy rubber flexes under hand pressure; jacket fabric stays heavy on ground.
+
+## 音效提示词
+LEILA voice-over, natural English-speaking woman in her early 30s, calm, clear and reflective, as if speaking to colleagues rather than an audience. No visible person speaks. Verbatim: “In the company ahead, you don’t stay inside the work all day. You set the direction, and agents carry it forward.”
+Ambience: small water movement, dinghy rubbing over stones, shoes shifting on gravel, one quiet child breath, distant birds. Let the physical sounds breathe between phrases. Absolutely no BGM, no laughter track, no notification, no dramatic swell.
+
+## 转场锚点
+The expanding lake ripple cuts to the first Atlantic wave line in Shot 04.
+
+## 负面提示词
+No readable text, logo, watermark, phone UI, tourist pose, luxury resort, influencer family, staged hug, perfect fashion, fantasy lake, neon water, duplicated mountains, extra limbs, deformed hands, floating objects, rapid camera, auto BGM.</pre>
+    </div>
+  </section>
+
+  <section class="scene" data-id="shot-04">
+    <div class="scene-head"><input type="checkbox" aria-label="完成镜头 4"><div><div class="scene-meta">SHOT 04 · 9s · EXTREME WIDE</div><h2>Atlantic Cliffs at Dinner</h2></div></div>
+    <div class="body">
+      <img class="reference" src="company-os-visual-direction-v2/04-atlantic-cliffs-v2-real.png" alt="Atlantic cliffs documentary reference">
+      <div class="actions"><span class="note">Image1 role: first_frame + environment</span><button class="copy">复制提示词</button><span class="status"></span></div>
+      <pre>## 参考图使用
+Image1: first-frame and environment reference. Lock the monumental Atlantic cliffs, rough sea, coastal village scale, garden table at lower-right, four small friends and broken-cloud light direction. Keep people incidental and do not restore the stronger orange cast or convert the setting into a luxury villa or tourist overlook.
+
+## 风格提示词
+Ultra-photorealistic global brand-film location photography, candid friendship, natural 35mm color and imperfect domestic objects. Large-scale landscape with ordinary humor, grounded present day.
+
+## 首帧直方图 / 色板约束
+30% textured cliff shadows, 50% cool-neutral land and sea midtones, 20% restrained warm cloud highlights. Preserve highlight roll-off around the broken cloud; no orange wash, crushed people or HDR edge halos. Human skin remains natural and non-waxy.
+
+## 人物状态
+Four friends in their 30s–40s prepare a casual garden dinner. One brings a bowl, one arranges mismatched plates, one crouches at a small charcoal grill, and one pulls a chair into place. Everyone is occupied with a different practical task; nobody uses a phone or addresses camera.
+
+## 动作提示词
+00:00-00:02: Begin exactly from Image1. Wind moves plants and loose clothing left-to-right; ocean waves advance far below. All four friends continue separate small preparations.
+00:02-00:05: The bowl-carrier places the bowl with natural weight while the grill person tries the lighter once; it fails. The chair scrapes a short distance over uneven ground.
+00:05-00:08: The plate arranger corrects one crooked plate. The grill person shields the lighter from wind and tries once more; a small flame catches without a flare.
+00:08-00:09: Hold the group continuing their tasks, never assembling into a pose.
+Explicitly forbid: phone use, group toast, cheering, posing, dancing, hugging, turning toward camera, entering or leaving frame.
+
+## 表演 / 微表情
+Underplayed familiarity: one brief glance between two friends after the failed lighter, a quiet amused exhale, then attention returns to the task. Hands remain busy and gestures stay small.
+
+## 脸部稳定 / 身份保护
+Keep all four identities separate, correct scale and anatomy. No face fusion, duplicated person, extra arms, changing clothes, oversized heads or waxy skin. Do not sharpen tiny faces unnaturally.
+
+## 运镜镜头提示词
+Extreme wide 2.39:1 master shot, camera 20–25 meters from the group with cliffs and sea dominant. One main movement only: extremely slow lateral reveal to the right, less than one meter equivalent. No orbit, drone rise, push-pull zoom, fast pan, shake, or cut.
+
+## 光影材质提示词
+Motivated sunset source from upper-left behind cloud. Warm rim on shoulders and table edges; cliff faces retain deep structure. Smoke from barbecue follows wind and stays thin. Wood, ceramic, cloth and vegetation remain tactile and imperfect.
+
+## 音效提示词
+DANIEL voice-over, natural English-speaking man in his early 40s, grounded and concise, no announcer weight. No visible person speaks. Verbatim: “They keep the context, coordinate the work, and bring you in when judgment is actually needed.”
+Ambience: Atlantic wind, distant surf, plates on wood, one lighter click, low natural table conversation too indistinct to understand. The narration remains clear. Absolutely no BGM, no notification beep, no triumphant sound.
+
+## 转场锚点
+The second lighter click and small natural flame cut to the warm wall lamp inside the ferry cabin in Shot 05.
+
+## 负面提示词
+No readable text, logo, watermark, corporate party, luxury villa, influencer dinner, staged smiles, phone, video call, laptop, fantasy cliffs, oversized sunset, orange color wash, face fusion, extra limbs, fast camera, auto BGM.</pre>
+    </div>
+  </section>
+
+  <section class="scene" data-id="shot-05">
+    <div class="scene-head"><input type="checkbox" aria-label="完成镜头 5"><div><div class="scene-meta">SHOT 05 · 10s · HUMAN DETAIL</div><h2>Ferry Cabin Voice Note</h2></div></div>
+    <div class="body">
+      <img class="reference" src="company-os-visual-direction-v2/05-ferry-cabin-v2-real.png" alt="Ferry cabin documentary reference">
+      <div class="actions"><span class="note">Image1 role: first_frame + identity state</span><button class="copy">复制提示词</button><span class="status"></span></div>
+      <pre>## 参考图使用
+Image1: first-frame and temporary identity-state reference. Lock the woman’s broad age, natural asymmetry, tied flyaway hair, faded T-shirt, loose trousers, mismatched wool socks, unmade ferry bed, large fjord window, phone position and mixed dawn light. Do not transfer accidental screen content or change the cabin into a hotel.
+
+## 风格提示词
+Ultra-photorealistic candid human documentary cinema, restrained premium technology film, natural pores, believable hands, real fabric wrinkles and quiet 35mm grain. Future-of-work feeling comes from behavior, not visual effects.
+
+## 首帧直方图 / 色板约束
+40% cabin shadows, 40% cool natural midtones, 20% soft exterior highlights and one warm lamp practical. Keep the face in readable midtone with small eye catchlight; do not silhouette or beauty-fill the face. Fjord highlights remain below clipping.
+
+## 人物状态
+Woman in her late 30s sits sideways near the edge of the unmade bed with one knee raised. One elbow rests loosely on that knee while she holds the phone at a comfortable chest-to-mouth distance; the other hand casually holds a single sock. She is half-awake and unperformed, not polished or energetic.
+
+## 动作提示词
+00:00-00:02: Begin exactly from Image1. She draws one quiet morning breath and adjusts the loose sock in her resting hand; gaze remains slightly past the phone toward the floor.
+00:02-00:07: She records one short voice note. Mouth movement stays naturally synchronized; her sock hand becomes still for half a second between the two sentences.
+00:07-00:09: She finishes and lowers the phone loosely to her knee, then looks once toward the fjord without changing posture.
+00:09-00:10: Hold the quiet seated state with the landscape still dominant.
+Explicitly forbid: reaching under bed, standing, looking at camera, waving phone, showing screen, exaggerated smile, lying down, leaving frame.
+
+## 表演 / 微表情
+Eyes remain slightly sleepy; one blink before speaking, small brow focus at the sentence break, quiet exhale after finishing, jaw releases. No smile is required. Both hands keep natural weight and never pose.
+
+## 脸部稳定 / 身份保护
+Preserve the reference face shape, age, asymmetry, skin texture, eye spacing, nose and mouth position. No beautification, face slimming, age change, makeup, mask skin, warped jaw, uneven eye size, extra fingers or fused phone.
+
+## 运镜镜头提示词
+Medium-wide environmental portrait, camera at seated eye height about 4–5 meters away, natural perspective. One main movement only: very slow 5% push-in. No orbit, rack-focus gimmick, sudden zoom, handheld shake, pan, or cut.
+
+## 光影材质提示词
+Cold dawn from the window is the key source; dim warm lamp remains secondary. Preserve skin midtones, cotton wrinkles, wool sock texture, imperfect bedding and slight window reflections. No glossy commercial polish.
+
+## 音效提示词
+MAYA diegetic voice note, natural English-speaking woman in her late 30s, slightly sleepy low-mid register, intimate phone distance, unhurried, warm but not sentimental, no announcer polish.
+MAYA verbatim: “Sometimes, work is a two-minute voice note from the road. Then life keeps moving—and so does the company.”
+Physical behavior during line: she keeps searching for the sock; the hand pauses briefly between the two sentences.
+Ambience: low ferry vibration, distant water, bedding and clothing rustle. Dip ambience slightly under speech but never mute the room. Absolutely no BGM, no send chime, no AI voice.
+
+## 转场锚点
+The tail of the ferry-room vibration becomes the broad high-plateau wind over the first desert frame in Shot 06.
+
+## 负面提示词
+No subtitles, readable text, logo, watermark, video meeting, laptop, hologram, beauty retouch, fashion makeup, influencer pose, perfect hotel room, broad smile, extra fingers, warped phone, lip-sync drift, voice change, camera orbit, auto BGM.</pre>
+    </div>
+  </section>
+
+  <section class="scene" data-id="shot-06">
+    <div class="scene-head"><input type="checkbox" aria-label="完成镜头 6"><div><div class="scene-meta">SHOT 06 · 8s · EXTREME WIDE</div><h2>High Desert After Rain</h2></div></div>
+    <div class="body">
+      <img class="reference" src="company-os-visual-direction-v2/08-high-desert-plateau.png" alt="High desert plateau reference">
+      <div class="actions"><span class="note">Image1 role: first_frame + environment</span><button class="copy">复制提示词</button><span class="status"></span></div>
+      <pre>## 参考图使用
+Image1: first-frame and environment reference. Lock the immense post-rain high-desert plateau, layered rust-red and violet mountains, low dark cloud ceiling, pale gravel plain, shallow fragmented puddles, diagonal dirt road, small distant minibus and two nearly invisible travelers. Do not enlarge the people or vehicle, add buildings, beautify the weather, or convert the bus into a luxury camper.
+
+## 风格提示词
+Ultra-photorealistic high-altitude desert observational cinema, high-budget documentary realism, subdued natural color, restrained 35mm grain, physically believable cloud, wind, puddles and road dust. Vast but ordinary, present-day and lightly inhabited; never a tourism commercial or science-fiction future.
+
+## 首帧直方图 / 色板约束
+35% deep cloud and mountain shadows, 50% muted stone, rust and violet midtones, 15% pale gravel and broken puddle highlights. Preserve geological layers and cloud texture. No white clipping, HDR halos, glowing reflections, teal-orange split or artificially dramatic contrast. Do not brighten the tiny people or bus.
+
+## 人物状态
+Two fully clothed adult travelers stand near the distant minibus, each less than one percent of frame height and almost easy to miss. One stretches after the long ride while the other slowly walks a few steps along the roadside. No visible device and no performance for camera.
+
+## 动作提示词
+00:00-00:02: Begin exactly from Image1. Dark clouds travel slowly across the mountain layers; a small breeze disturbs only the nearest tough grass. The minibus remains parked.
+00:02-00:06: One traveler stretches both arms briefly and lets them fall; the other takes three unhurried steps beside the road. A shallow puddle changes only with fine wind ripples.
+00:06-00:08: Both settle into stillness and look toward the mountains. Hold the enormous empty plateau for a cuttable final second.
+Explicitly forbid: bus driving, door opening, waving, running, posing, raising a phone, looking at camera, approaching foreground, added people, dramatic weather transformation.
+
+## 表演 / 微表情
+No visible facial performance because both people are extremely small. Use only ordinary post-travel body rhythm, natural arm weight, three believable steps and slight clothing response to wind. No heroic silhouette or emotional gesture.
+
+## 脸部稳定 / 身份保护
+Keep both tiny bodies anatomically stable, separate and consistently scaled. Do not invent face detail. No duplicate traveler, changing clothing, enlarged head, extra limbs, sliding feet, floating body or sudden scale drift.
+
+## 运镜镜头提示词
+Extreme wide 2.39:1 geography from a real roadside tripod at human height, rectilinear 40mm spherical perspective. One main movement only: an almost imperceptible slow push of less than three percent toward the road bend. No drone rise, orbit, zoom pulse, pan, tilt, handheld shake, speed ramp, time lapse or internal cut.
+
+## 光影材质提示词
+Diffuse post-storm daylight from the open sky, with no direct sunbeam. Pale gravel remains matte and irregular; puddles reflect broken pieces of cloud rather than forming mirrors; mountains retain dry geological strata in muted rust and violet; the old minibus is dusty and non-glossy.
+
+## 音效提示词
+JONAH voice-over, the same natural English-speaking man heard in Shot 02, now quieter and certain without sounding triumphant. No visible person speaks. Verbatim: “People lead. Agents keep the work moving. Company OS keeps it all connected.”
+Ambience: broad high-plateau wind, faint grit across the road, distant cooling engine tick, sparse bird call and almost inaudible boots on gravel. Leave one full second of landscape ambience after the final words. Absolutely no BGM, no sonic logo, no UI chime, no artificial AI voice.
+
+## 转场锚点
+Hold the high-desert wide shot for one second after “connected.” The wind continues under a simple Company OS end card or a real product capture; do not introduce music at the logo.
+
+## 负面提示词
+No subtitles, readable generated text, logo, watermark, dunes, safari, luxury camper, tourism campaign polish, glowing puddles, sun rays, golden hour, fantasy storm, sci-fi structure, laptop, phone, hologram, model pose, foreground person, extra people, duplicate bus, sliding feet, scale drift, drone motion, auto BGM.</pre>
+    </div>
+  </section>
+
+  <section class="contract">
+    <h2>片尾与真实产品画面</h2>
+    <p>建议在 Shot 06 最后一句之后继续保留 1 秒山谷风声，再出现极简 Company OS 片尾。若加入任务、证据、权限和审批画面，只使用真实产品录屏，不让视频模型生成可读 UI；产品段同样不加 BGM。</p>
+  </section>
+
+  <p class="footer">Reference images and prompts are project-local. Generate one shot at a time. If a shot fails, diagnose the single dominant failure—camera, identity, action physics, audio, or reference transfer—and change one variable only.</p>
+</main>
+<script>
+  document.querySelectorAll('.scene').forEach(scene=>{
+    const key='company-os-follow-light-'+scene.dataset.id;
+    const box=scene.querySelector('input[type="checkbox"]');
+    box.checked=localStorage.getItem(key)==='1';
+    box.addEventListener('change',()=>localStorage.setItem(key,box.checked?'1':'0'));
+    const button=scene.querySelector('.copy');
+    const status=scene.querySelector('.status');
+    button.addEventListener('click',async()=>{
+      await navigator.clipboard.writeText(scene.querySelector('pre').innerText);
+      status.textContent='已复制';
+      setTimeout(()=>status.textContent='',1400);
+    });
+  });
+</script>
+</body>
+</html>

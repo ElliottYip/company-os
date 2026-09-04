@@ -106,6 +106,7 @@ test("Codex driver executes through stdin in a read-only sandbox and publishes r
   assert.match(calls[0].input, /Verify the acceptance boundary/);
   assert.ok(!calls[0].args.includes(calls[0].input));
   assert.equal(calls[0].env.COMPANY_OS_HTTP_AGENT_NODE_BEARER_TOKEN, undefined);
+  assert.equal(calls[0].env.PATH, process.env.PATH);
   const state = await readFile(join(directory, "state", "work-one.json"), "utf8");
   assert.doesNotMatch(state, /private-session/);
 });

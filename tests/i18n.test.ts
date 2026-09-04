@@ -12,8 +12,8 @@ import {
 } from "../web/i18n/index.ts";
 
 test("existing Demo copy keeps fixture and responsibility safety terminology", () => {
-  assert.equal(t("office.fixtureAgent"), "Simulated Agent");
-  assert.equal(t("office.accountableHuman"), "Accountable human");
+  assert.equal(t("demo.executors"), "2 simulated Agents");
+  assert.match(t("demo.accountability"), /human remains accountable/);
   assert.match(t("demo.safetyFooter"), /responsibility bindings/);
   assert.doesNotMatch(Object.values(en).join("\n"), /人类用户|审核机器人|提示词合同|思维链|模型真相|智能等级/);
 });

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-03T07:16:41Z",
+  "status": "PASS_ACCOUNT_FREE_BOUNDARY_SMOKE",
+  "scope": "Public shared-domain tenant entry through the pre-identity fail-closed boundary",
+  "production": {
+    "webBaseUrl": "https://anc.raft.xin",
+    "apiBaseUrl": "https://api.anc.raft.xin",
+    "reportedReleaseId": "0.1.0-multi-tenant.4-fa45a35de445",
+    "apiImage": "company-os-api@sha256:fa45a35de445e4e58397cd8048127b91fbf4ff2761df9fcc6b8c448fcee75359",
+    "webImage": "company-os-web@sha256:905940030e8b8591ecd7d6dfd376c2d1c1deac8c8eec4c464d3ed405c5212a8e",
+    "apiHealth": "healthy",
+    "webHealth": "healthy",
+    "postgresHealth": "healthy"
+  },
+  "command": "npm run ops:smoke:multi-tenant-public",
+  "probe": {
+    "usesRealAccount": false,
+    "usesValidInvitation": false,
+    "usesCustomerSecret": false,
+    "probeSlug": "smoke-6b2c303bfb4f",
+    "start": "200",
+    "invalidInvitation": "403_TENANT_SIGNUP_NOT_ALLOWED",
+    "unknownTenantSignIn": "404_TENANT_AUTH_ROUTE_NOT_FOUND",
+    "unknownBindingCallback": "404_TENANT_AUTH_ROUTE_NOT_FOUND",
+    "databaseCountsBefore": {
+      "tenantRegistrations": 0,
+      "identityBindings": 0,
+      "invitationRedemptions": 0
+    },
+    "databaseCountsAfter": {
+      "tenantRegistrations": 0,
+      "identityBindings": 0,
+      "invitationRedemptions": 0
+    }
+  },
+  "verification": {
+    "smokeUnitTests": "PASS_2_OF_2",
+    "accountFreeOidcAndPostgresE2E": "PASS_4_OF_4_WITH_ZERO_SKIPS",
+    "accountFreeOidcCoverage": [
+      "Two isolated S256 PKCE identity sessions",
+      "First Owner membership creation",
+      "Tenant-bound second-member invitation acceptance",
+      "Cross-tenant invitation identity rejection",
+      "Atomic PostgreSQL registration and one-use invitation persistence"
+    ],
+    "disposablePostgresRemovedAfterTest": true,
+    "typecheck": "PASS",
+    "fullUnitSuite": "PASS_798_TOTAL_793_PASSED_5_SKIPPED"
+  },
+  "notProvenByThisSmoke": [
+    "Real Feishu authorization-code completion against a customer-owned app",
+    "Feishu-specific Owner creation from a real external tenant identity",
+    "Feishu-specific second-member invitation acceptance",
+    "Organization-directory access"
+  ],
+  "operatorDecision": {
+    "legacyTestDnsRecords": "RETAINED_BY_USER_REQUEST",
+    "productionMutationDuringSmoke": false
+  }
+}

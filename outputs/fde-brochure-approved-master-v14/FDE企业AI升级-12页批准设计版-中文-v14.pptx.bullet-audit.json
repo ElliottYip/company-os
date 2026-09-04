@@ -1,0 +1,492 @@
+[
+  {
+    "slide": 2,
+    "marker": "sh/a10jqpsj",
+    "text": "sh/x4r21kru",
+    "label": "重复工作交给 Agent；",
+    "markerTop": 551.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/w3i1sfa9",
+    "text": "sh/r65knqtk",
+    "label": "人负责目标、判断和审核；",
+    "markerTop": 598.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/q5wjelsz",
+    "text": "sh/ove9o7yd",
+    "label": "一个负责人可以带多个 Agent；",
+    "markerTop": 645.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/9wnqhczy",
+    "text": "sh/mtwrmxg7",
+    "label": "公司积累的不只是文件，还有能反复使用的流程和 Skill。",
+    "markerTop": 692.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/nu58f2hs",
+    "text": "sh/wjy9sry9",
+    "label": "Microsoft 在 2025 年提出 Agent Boss：员工将开始构建、分配和管理 Agent。",
+    "markerTop": 761.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/xk7qlczu",
+    "text": "sh/ahwrqhgj",
+    "label": "OpenAI 把 Agent 定义为能够代表用户完成工作流的系统，不只是聊天机器人。",
+    "markerTop": 799.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/bip8jmho",
+    "text": "sh/cnupgny5",
+    "label": "Google 认为企业 Agent 要连接公司的数据、工具、记忆和运行环境，才能真正工作。",
+    "markerTop": 837.65
+  },
+  {
+    "slide": 2,
+    "marker": "sh/do3q9szq",
+    "text": "sh/t8byxkn2",
+    "label": "Anthropic 发现，人在实际协作中更多决定“做什么”，Agent 更多负责“怎么做”。",
+    "markerTop": 875.65
+  },
+  {
+    "slide": 4,
+    "marker": "sh/0ba143al",
+    "text": "sh/rm1k7yt4",
+    "label": "买过会员，员工偶尔问几个问题；",
+    "markerTop": 240.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/ql8jytsj",
+    "text": "sh/doj29oba",
+    "label": "做过 Demo，演示时很好，上线后没人用；",
+    "markerTop": 271.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/sna103ap",
+    "text": "sh/3ihk3et8",
+    "label": "看了很多案例，回到自己公司却套不上；",
+    "markerTop": 302.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/ih8ju9sn",
+    "text": "sh/kbm987y5",
+    "label": "每个部门都说有需求，但排不出先后；",
+    "markerTop": 333.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/5cva1cfq",
+    "text": "sh/i94r6xgz",
+    "label": "想建知识库，资料却散在微信、Excel、PDF、网盘和员工电脑里；",
+    "markerTop": 364.15
+  },
+  {
+    "slide": 4,
+    "marker": "sh/jadsz2xk",
+    "text": "sh/w72947yt",
+    "label": "担心数据安全，也不知道 Agent 能开放多大权限。",
+    "markerTop": 395.15
+  },
+  {
+    "slide": 5,
+    "marker": "sh/yhkbe1o7",
+    "text": "sh/l4bupwny",
+    "label": "现成软件能解决，就直接用现成软件；",
+    "markerTop": 598.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/n6dcr65o",
+    "text": "sh/m5kbi1oj",
+    "label": "一个 Skill 能解决，就不做大系统；",
+    "markerTop": 689.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/x4vedgvm",
+    "text": "sh/ahkvi1cb",
+    "label": "需要连接原有系统，就做集成；",
+    "markerTop": 780.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/k7mxovud",
+    "text": "sh/58vehgvy",
+    "label": "需要整理数据，就先建数据库或知识库；",
+    "markerTop": 871.65
+  },
+  {
+    "slide": 5,
+    "marker": "sh/j6dwfqds",
+    "text": "sh/sb6xsvu9",
+    "label": "一条流程适合 Agent，就把人和 Agent 的分工设计清楚。",
+    "markerTop": 962.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/87ipkzal",
+    "text": "sh/98rqt4r6",
+    "label": "企业专属 Skill",
+    "markerTop": 376.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/ml07i9sv",
+    "text": "sh/7m98ru9g",
+    "label": "报价、录单、对账、报告自动化",
+    "markerTop": 428.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/oryp8fah",
+    "text": "sh/pc76hkr2",
+    "label": "文档、表格和图片处理",
+    "markerTop": 402.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/h4bupgn6",
+    "text": "sh/w32twb6l",
+    "label": "小型定制 SaaS",
+    "markerTop": 454.65
+  },
+  {
+    "slide": 6,
+    "marker": "sh/j6dcr65c",
+    "text": "sh/i54bylor",
+    "label": "访谈和流程整理",
+    "markerTop": 609.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/twfux0ne",
+    "text": "sh/svmt4v6t",
+    "label": "ERP、CRM、飞书、钉钉、企微等系统连接",
+    "markerTop": 659.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/cbe5g3ih",
+    "text": "sh/dcnm98zm",
+    "label": "进度、结果和操作记录",
+    "markerTop": 709.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/qpwnet0b",
+    "text": "sh/bq547yhw",
+    "label": "多角色 Agent",
+    "markerTop": 634.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/0fy5k3id",
+    "text": "sh/lg76d8zy",
+    "label": "异常处理和人工确认",
+    "markerTop": 684.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/jet8nm1c",
+    "text": "sh/idk7ehkr",
+    "label": "业务数据库",
+    "markerTop": 847.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/50bqpcj2",
+    "text": "sh/4f2pgr2h",
+    "label": "数据整理和统一命名",
+    "markerTop": 897.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/va98j210",
+    "text": "sh/u907axkf",
+    "label": "为 Agent 提供可信的数据",
+    "markerTop": 947.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/hcrqlcj6",
+    "text": "sh/wbipc72l",
+    "label": "企业知识库",
+    "markerTop": 872.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/7698f214",
+    "text": "sh/m5076xkj",
+    "label": "权限和使用范围",
+    "markerTop": 922.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/fq9cfqxc",
+    "text": "sh/0r2t8vyx",
+    "label": "找出各部门适合 AI 的工作",
+    "markerTop": 507.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/1sbuh0fi",
+    "text": "sh/ql0b21gv",
+    "label": "重新设计人和 Agent 的分工",
+    "markerTop": 585.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/rm9sb6xg",
+    "text": "sh/9gfeh4zy",
+    "label": "建立权限、审批和责任记录",
+    "markerTop": 663.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/8f6x8jid",
+    "text": "sh/7exwfehs",
+    "label": "制定试点顺序和后续计划",
+    "markerTop": 741.15
+  },
+  {
+    "slide": 6,
+    "marker": "sh/mdof6907",
+    "text": "sh/lcfed4z2",
+    "label": "培训企业自己的 Agent Boss",
+    "markerTop": 819.15
+  },
+  {
+    "slide": 8,
+    "marker": "sh/g72x4zyd",
+    "text": "sh/ri9g7uhw",
+    "label": "原来的工作流程图；",
+    "markerTop": 290.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/tkby9kzm",
+    "text": "sh/sjix0zy1",
+    "label": "找到的问题和改造范围；",
+    "markerTop": 290.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/id0fu50z",
+    "text": "sh/o7ydoret",
+    "label": "可以运行的原型或系统；",
+    "markerTop": 393.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/m5gvmhwn",
+    "text": "sh/n6pwfmd8",
+    "label": "使用的数据和权限说明；",
+    "markerTop": 393.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/1k7edwv2",
+    "text": "sh/ehgvihwr",
+    "label": "人和 Agent 各自负责什么；",
+    "markerTop": 496.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/kfixwbe1",
+    "text": "sh/lgbepgvm",
+    "label": "哪些动作需要人工确认；",
+    "markerTop": 496.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/svydgb65",
+    "text": "sh/7u5w765k",
+    "label": "上线前后的对比方法；",
+    "markerTop": 599.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/5sne5wne",
+    "text": "sh/kredcr6t",
+    "label": "继续做、调整或停止的建议。",
+    "markerTop": 599.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/w3ed8r6x",
+    "text": "sh/m9sb2x4v",
+    "label": "谁负责；",
+    "markerTop": 842.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/na1sb2lg",
+    "text": "sh/8bat47ml",
+    "label": "做到哪里算完成；",
+    "markerTop": 842.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/9w3uds36",
+    "text": "sh/y5sbed4j",
+    "label": "什么不在这次范围内；",
+    "markerTop": 918.65
+  },
+  {
+    "slide": 8,
+    "marker": "sh/z61s7il4",
+    "text": "sh/07atgnmp",
+    "label": "怎么判断有没有效果。",
+    "markerTop": 918.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/hcji5o7a",
+    "text": "sh/wba1cjqp",
+    "label": "处理时间：[原来] → [现在]",
+    "markerTop": 775.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/va103ep4",
+    "text": "sh/u9sja98z",
+    "label": "人工步骤：[原来] → [现在]",
+    "markerTop": 814.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/xgzitk76",
+    "text": "sh/cf6h0fql",
+    "label": "错误或返工：[原来] → [现在]",
+    "markerTop": 853.65
+  },
+  {
+    "slide": 9,
+    "marker": "sh/2l4faloj",
+    "text": "sh/nmdg3q54",
+    "label": "对业务的影响：[客户确认的结果]",
+    "markerTop": 892.65
+  },
+  {
+    "slide": 10,
+    "marker": "sh/ydcnatkn",
+    "text": "sh/l036l83y",
+    "label": "给 Agent 说清目标和完成标准；",
+    "markerTop": 285.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/725onyl4",
+    "text": "sh/m1cnetkj",
+    "label": "判断哪些工作可以交出去；",
+    "markerTop": 369.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/d87uxg3m",
+    "text": "sh/q5gb21kb",
+    "label": "检查 Agent 的过程和结果；",
+    "markerTop": 453.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/0bit8b2d",
+    "text": "sh/1cru1g3y",
+    "label": "处理异常、退回修改或暂停任务；",
+    "markerTop": 537.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/fapcz6ls",
+    "text": "sh/ozitcv29",
+    "label": "管好数据、工具和权限；",
+    "markerTop": 621.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/xwnupgvy",
+    "text": "sh/wvetgbud",
+    "label": "把好用的方法做成团队共同使用的 Skill；",
+    "markerTop": 705.15
+  },
+  {
+    "slide": 10,
+    "marker": "sh/atwbelcn",
+    "text": "sh/lk7ut0va",
+    "label": "对最后的业务结果负责。",
+    "markerTop": 789.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/250zy18b",
+    "text": "sh/98rytw72",
+    "label": "目前最值得先看的 1—3 项工作；",
+    "markerTop": 387.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/72t03qp0",
+    "text": "sh/61kzalof",
+    "label": "这些工作适不适合用 AI；",
+    "markerTop": 505.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/9gza9sze",
+    "text": "sh/mdobedg3",
+    "label": "需要哪些数据、系统和人员参与；",
+    "markerTop": 623.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/0b6tc3yx",
+    "text": "sh/1cfa58zi",
+    "label": "更适合买现成软件、做 Skill、定制 SaaS、建数据库，还是先改流程；",
+    "markerTop": 741.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/zaxs3yhc",
+    "text": "sh/cn6t83y1",
+    "label": "是否值得做一个小试点。",
+    "markerTop": 859.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/dofa18z6",
+    "text": "sh/tsnip0ny",
+    "label": "这个问题不需要 AI；",
+    "markerTop": 387.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/7650nq5s",
+    "text": "sh/65wzelo7",
+    "label": "现在的数据条件还做不了；",
+    "markerTop": 505.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/k3uhcb6h",
+    "text": "sh/j2lgjq5w",
+    "label": "先把流程理顺，再考虑开发；",
+    "markerTop": 623.15
+  },
+  {
+    "slide": 11,
+    "marker": "sh/p07ixkn6",
+    "text": "sh/4zyhofml",
+    "label": "买现成产品更划算。",
+    "markerTop": 741.15
+  }
+]

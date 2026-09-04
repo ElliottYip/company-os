@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Company OS · Raft and Leico end card</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    body {
+      display: grid;
+      place-items: center;
+      color: #171717;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .frame {
+      display: grid;
+      width: 1920px;
+      height: 1080px;
+      place-items: center;
+      background: #fff;
+    }
+    .lockup {
+      display: flex;
+      transform: translateY(-10px);
+      flex-direction: column;
+      align-items: center;
+    }
+    .product {
+      margin: 0 0 68px;
+      font-size: 68px;
+      font-weight: 560;
+      line-height: 1;
+      letter-spacing: -3px;
+    }
+    .brands {
+      display: grid;
+      grid-template-columns: 280px 280px;
+      align-items: center;
+      justify-items: center;
+      column-gap: 72px;
+    }
+    .logo-slot {
+      display: grid;
+      width: 280px;
+      height: 168px;
+      place-items: center;
+    }
+    .raft-logo {
+      display: block;
+      width: 240px;
+      height: 240px;
+    }
+    /* Replace this node with the supplied transparent Leico SVG/PNG. */
+    .leico-placeholder {
+      font-size: 62px;
+      font-weight: 620;
+      line-height: 1;
+      letter-spacing: 6px;
+    }
+  </style>
+</head>
+<body>
+  <main class="frame" aria-label="Company OS end card">
+    <div class="lockup">
+      <h1 class="product">Company OS</h1>
+      <section class="brands" aria-label="Raft and Leico">
+        <div class="logo-slot">
+          <img
+            class="raft-logo"
+            src="../company-os-end-card-v1/raft-logo-mark.svg"
+            alt="Raft"
+          >
+        </div>
+        <div class="logo-slot" id="leico-logo-slot">
+          <div class="leico-placeholder">LEICO</div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

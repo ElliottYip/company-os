@@ -11,14 +11,12 @@
 4. Raft Identity is represented by a default adapter contract only. No real
    session, credential, or production identity data is used.
 5. The three fish PNGs and a narrow, adapted subset of visual tokens/button
-   rules are the only Raft visual materials copied in phase one. No office
-   scene, GLB, Blender, Three.js, or other 3D asset is included.
+   rules are the only Raft visual materials copied in phase one.
 6. The source repository's top-level Apache-2.0 license is retained alongside
    copied material. Because selected visual files are uncommitted in the source
    worktree, their exact status and hashes must remain documented.
-7. A deterministic Demo Mode and renderer-neutral Pre-3D contract belong in the
-   foundation; real paid agents, production identity/data, and 3D implementation
-   remain outside this scaffold delivery.
+7. A deterministic Demo Mode belongs in the foundation; real paid agents and
+   production identity/data remain outside this scaffold delivery.
 
 ## Objective
 
@@ -61,7 +59,7 @@ dedicated import scanner and strict compilation.
 - `core/`: domain values and entities; zero vendor/framework dependencies.
 - `ports/`: replaceable interfaces for identity, organization/principals,
   event/data storage, agent execution, model providers, data connectors,
-  approval publication, audit/evidence, and office rendering.
+  approval publication, and audit/evidence.
 - `application/`: use cases coordinating ports and returning presentation-safe
   control-plane read models.
 - `adapters/`: replaceable edge implementations, including default Raft
@@ -125,7 +123,6 @@ Never:
 - Depend inward layers on Raft Agent, Buzz/Raft UI, NIP-07, Nostr kinds, or a
   specific relay.
 - Treat demo connector records as real agents.
-- Enter Blender, GLB, Three.js, or 3D asset work in phase one.
 
 ## Success criteria
 
@@ -145,8 +142,6 @@ Never:
    are delivered in `docs/`.
 9. Demo contracts model deterministic task, approval, evidence, responsibility,
    and reset behavior without external side effects.
-10. Office state compiles to a renderer-neutral scene contract with no 3D
-    runtime dependency.
 
 ## Open questions deferred beyond phase one
 

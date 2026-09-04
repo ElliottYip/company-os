@@ -1,10 +1,12 @@
 # Company OS production maturity baseline
 
-Status: active completion contract, updated 2026-08-27.
+Status: active completion contract, updated 2026-08-31.
 
-The current requirement-by-requirement status and remaining external gates are
-recorded in
-`docs/acceptance/2026-08-26-active-goal-completion-audit.md`.
+The current repository-level decision, exact verified source tree, and
+remaining external gates are recorded in
+`docs/acceptance/2026-08-31-product-readiness-audit.md`. The earlier
+`docs/acceptance/2026-08-26-active-goal-completion-audit.md` is retained as
+historical evidence and must not be used as the current release judgment.
 
 This document separates implemented product contracts from production evidence.
 Passing an in-memory or adapter-level test does not by itself prove that an

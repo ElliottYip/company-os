@@ -1,0 +1,366 @@
+{"kind":"deck","id":"pr/v59909","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/wet21s","slide":1,"title":"FDE","textShapes":4}
+{"kind":"shape","id":"sh/i98nu98n","slide":1,"name":"full-page-frosted-veil","bbox":[54,455,686,463]}
+{"kind":"textbox","id":"sh/3ahonu98","slide":1,"text":"FDE","textPreview":"FDE","textChars":3,"textLines":1,"bbox":[98,51.25,80,24]}
+{"kind":"textbox","id":"sh/4bqpwzqt","slide":1,"text":"AI matters.\nThe hard part is knowing where to start.","textPreview":"AI matters. | The hard part is knowing where to start.","textChars":52,"textLines":2,"bbox":[54,118,686,160]}
+{"kind":"textbox","id":"sh/5cz6p4ry","slide":1,"text":"An FDE works inside your business to identify the first problem worth solving,\nthen builds a system people will use and outcomes you can measure.","textPreview":"An FDE works inside your business to identify the first problem worth solving, | then builds a system people will use and outcomes you ca...","textChars":145,"textLines":2,"bbox":[54,322,686,78]}
+{"kind":"textbox","id":"sh/qd87y98j","slide":1,"text":"Assessment | Workflow redesign | Skills | Custom SaaS | Data | Agents","textPreview":"Assessment | Workflow redesign | Skills | Custom SaaS | Data | Agents","textChars":69,"textLines":1,"bbox":[54,965,470,42]}
+{"kind":"image","id":"im/4jahgna1","slide":1,"name":"","bbox":[54,42,34,34]}
+{"kind":"image","id":"im/ji1g729g","slide":1,"name":"","bbox":[54,455,686,463]}
+{"kind":"notes","id":"nt/wet21s","slide":1,"text":"[Sources]\n- Project-owned Raft logo supplied by the user: /Users/elliottye/Desktop/raft-logo-mark.svg; white rounded-square background removed while preserving the orange mark\n- User-provided and approved orange abstract cover visual: /Users/elliottye/Desktop/exec-eaa585b7-6630-4b2c-bcab-341d9bb5e79c.png\n[/Sources]"}
+{"kind":"slide","id":"sl/41ek5q","slide":2,"title":"AI can now","textShapes":15}
+{"kind":"textbox","id":"sh/t4fu5gjm","slide":2,"text":"AI can now\nexecute real work","textPreview":"AI can now | execute real work","textChars":28,"textLines":2,"bbox":[54,66,686,170]}
+{"kind":"textbox","id":"sh/e1g3yh0v","slide":2,"text":"Until recently, every step required a person.","textPreview":"Until recently, every step required a person.","textChars":45,"textLines":1,"bbox":[54,266,686,34]}
+{"kind":"textbox","id":"sh/f2p47m1g","slide":2,"text":"Agents can read documents, retrieve data, use tools, and carry a task through multiple steps. People step in when judgment or approval is required.","textPreview":"Agents can read documents, retrieve data, use tools, and carry a task through multiple steps. People step in when judgment or approval is...","textChars":147,"textLines":1,"bbox":[54,325,686,92]}
+{"kind":"textbox","id":"sh/o7i54bid","slide":2,"text":"HOW THE OPERATING MODEL CHANGES","textPreview":"HOW THE OPERATING MODEL CHANGES","textChars":31,"textLines":1,"bbox":[54,452,310,24]}
+{"kind":"shape","id":"sh/p8rmdgzy","slide":2,"bbox":[54,498.65,11,0.7]}
+{"kind":"textbox","id":"sh/250n2107","slide":2,"text":"Agents handle repeatable execution.","textPreview":"Agents handle repeatable execution.","textChars":35,"textLines":1,"bbox":[78,477,662,44]}
+{"kind":"shape","id":"sh/3694b6hs","slide":2,"bbox":[54,545.65,11,0.7]}
+{"kind":"textbox","id":"sh/4bels7it","slide":2,"text":"People set goals, exercise judgment, and review results.","textPreview":"People set goals, exercise judgment, and review results.","textChars":56,"textLines":1,"bbox":[78,524,662,44]}
+{"kind":"shape","id":"sh/5cnm1cje","slide":2,"bbox":[54,592.65,11,0.7]}
+{"kind":"textbox","id":"sh/p43ax8b6","slide":2,"text":"One manager can supervise multiple agents.","textPreview":"One manager can supervise multiple agents.","textChars":42,"textLines":1,"bbox":[78,571,662,44]}
+{"kind":"shape","id":"sh/o3u9o3ul","slide":2,"bbox":[54,639.65,11,0.7]}
+{"kind":"textbox","id":"sh/32lsvyt0","slide":2,"text":"Working knowledge becomes reusable workflows and Skills.","textPreview":"Working knowledge becomes reusable workflows and Skills.","textChars":56,"textLines":1,"bbox":[78,618,662,44]}
+{"kind":"shape","id":"sh/21crmdcf","slide":2,"bbox":[54,686.65,11,0.7]}
+{"kind":"textbox","id":"sh/d8na1sb2","slide":2,"text":"Microsoft's 2025 Work Trend Index describes an Agent Boss as an employee who builds, delegates to, and manages agents.","textPreview":"Microsoft's 2025 Work Trend Index describes an Agent Boss as an employee who builds, delegates to, and manages agents.","textChars":118,"textLines":1,"bbox":[78,665,662,44]}
+{"kind":"shape","id":"sh/c7etsnuh","slide":2,"bbox":[54,733.65,11,0.7]}
+{"kind":"textbox","id":"sh/b65szitc","slide":2,"text":"OpenAI defines agents as systems that complete workflows on a user's behalf, not just answer questions.","textPreview":"OpenAI defines agents as systems that complete workflows on a user's behalf, not just answer questions.","textChars":103,"textLines":1,"bbox":[78,712,662,44]}
+{"kind":"shape","id":"sh/q5wbqdcr","slide":2,"bbox":[54,780.65,11,0.7]}
+{"kind":"textbox","id":"sh/lwna5sbe","slide":2,"text":"Google describes enterprise agents as models connected to company data, tools, memory, orchestration, and runtime infrastructure.","textPreview":"Google describes enterprise agents as models connected to company data, tools, memory, orchestration, and runtime infrastructure.","textChars":129,"textLines":1,"bbox":[78,759,662,44]}
+{"kind":"shape","id":"sh/0vetwnut","slide":2,"bbox":[54,827.65,11,0.7]}
+{"kind":"textbox","id":"sh/kfmdsbip","slide":2,"text":"Anthropic's research suggests that people decide what work should be done, while agents increasingly decide how to execute it.","textPreview":"Anthropic's research suggests that people decide what work should be done, while agents increasingly decide how to execute it.","textChars":126,"textLines":1,"bbox":[78,806,662,44]}
+{"kind":"shape","id":"sh/5gvu1gja","slide":2,"bbox":[54,860,686,0.9]}
+{"kind":"textbox","id":"sh/yd4vq1kz","slide":2,"text":"How well a company works with agents will increasingly shape its operating efficiency.","textPreview":"How well a company works with agents will increasingly shape its operating efficiency.","textChars":86,"textLines":1,"bbox":[54,888,686,75]}
+{"kind":"textbox","id":"sh/jedcz61k","slide":2,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/s36dwbi1","slide":2,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/41ek5q","slide":2,"text":"[Sources]\n- https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-the-frontier-firm-is-born\n- https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents/\n- https://cloud.google.com/resources/core-concepts-ai-agents\n- https://www.anthropic.com/research/claude-code-expertise\n[/Sources]\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/nac6k2","slide":3,"title":"The shift is already underway","textShapes":21}
+{"kind":"textbox","id":"sh/ql87qpwz","slide":3,"text":"The shift is already underway","textPreview":"The shift is already underway","textChars":29,"textLines":1,"bbox":[54,54,686,72]}
+{"kind":"textbox","id":"sh/6t07yh0f","slide":3,"text":"81%","textPreview":"81%","textChars":3,"textLines":1,"bbox":[54,160,165,70]}
+{"kind":"textbox","id":"sh/7u98rm10","slide":3,"text":"Microsoft's 2025 Work Trend Index surveyed 31,000 employees across 31 countries. Among leaders surveyed, 81% expected agents to enter their AI strategy within 12-18 months.","textPreview":"Microsoft's 2025 Work Trend Index surveyed 31,000 employees across 31 countries. Among leaders surveyed, 81% expected agents to enter the...","textChars":172,"textLines":1,"bbox":[235,160,385,104]}
+{"kind":"textbox","id":"sh/k7ipwri9","slide":3,"text":"Microsoft · 2025","textPreview":"Microsoft · 2025","textChars":16,"textLines":1,"bbox":[640,163,100,24]}
+{"kind":"shape","id":"sh/l8rqpcju","slide":3,"bbox":[54,286,686,0.45]}
+{"kind":"textbox","id":"sh/y507uh03","slide":3,"text":"1M+","textPreview":"1M+","textChars":3,"textLines":1,"bbox":[54,324,165,70]}
+{"kind":"textbox","id":"sh/j698nm1o","slide":3,"text":"OpenAI reported more than one million business customers in 2025.","textPreview":"OpenAI reported more than one million business customers in 2025.","textChars":65,"textLines":1,"bbox":[235,324,385,104]}
+{"kind":"textbox","id":"sh/w3yps7id","slide":3,"text":"OpenAI · 2025","textPreview":"OpenAI · 2025","textChars":13,"textLines":1,"bbox":[640,327,100,24]}
+{"kind":"shape","id":"sh/x47qlcji","slide":3,"bbox":[54,450,686,0.45]}
+{"kind":"textbox","id":"sh/5gzqhony","slide":3,"text":"108×","textPreview":"108×","textChars":4,"textLines":1,"bbox":[54,488,165,70]}
+{"kind":"textbox","id":"sh/4fqpoj6d","slide":3,"text":"Since February, weekly active Codex users grew 108x in legal, 41x in sales, 41x in recruiting, and 26x in marketing.","textPreview":"Since February, weekly active Codex users grew 108x in legal, 41x in sales, 41x in recruiting, and 26x in marketing.","textChars":116,"textLines":1,"bbox":[235,488,385,104]}
+{"kind":"textbox","id":"sh/jeh8fe5s","slide":3,"text":"OpenAI · 2026","textPreview":"OpenAI · 2026","textChars":13,"textLines":1,"bbox":[640,491,100,24]}
+{"kind":"shape","id":"sh/ido7mto7","slide":3,"bbox":[54,614,686,0.45]}
+{"kind":"shape","id":"sh/hcfqdo7m","slide":3,"bbox":[54,672,180,30]}
+{"kind":"textbox","id":"sh/wb6pkj6h","slide":3,"text":"LIVE EXAMPLES","textPreview":"LIVE EXAMPLES","textChars":13,"textLines":1,"bbox":[54,672,180,30]}
+{"kind":"textbox","id":"sh/vax8bepw","slide":3,"text":"Cisco:","textPreview":"Cisco:","textChars":6,"textLines":1,"bbox":[54,735,85,24]}
+{"kind":"textbox","id":"sh/u9o7i9ob","slide":3,"text":"OpenAI reports that Codex cut code review\ntime by 50%, with some projects moving\nfrom weeks to days.","textPreview":"OpenAI reports that Codex cut code review | time by 50%, with some projects moving | from weeks to days.","textChars":100,"textLines":3,"bbox":[140,735,250,98]}
+{"kind":"textbox","id":"sh/98f6947q","slide":3,"text":"Carlyle:","textPreview":"Carlyle:","textChars":8,"textLines":1,"bbox":[406,735,85,24]}
+{"kind":"textbox","id":"sh/876pgz65","slide":3,"text":"Its multi-agent due diligence framework\nreportedly cut development time by more\nthan 50% and improved agent accuracy\nby 30%.","textPreview":"Its multi-agent due diligence framework | reportedly cut development time by more | than 50% and improved agent accuracy | by 30%.","textChars":124,"textLines":4,"bbox":[492,735,250,98]}
+{"kind":"textbox","id":"sh/0rapwze1","slide":3,"text":"TELUS:","textPreview":"TELUS:","textChars":6,"textLines":1,"bbox":[54,853,85,24]}
+{"kind":"textbox","id":"sh/lsjqp4fm","slide":3,"text":"A Google Cloud customer story reports\n$53.9 million in annual savings, 87% faster\nissue resolution, and proactive AI resolution\nfor 30% of calls.","textPreview":"A Google Cloud customer story reports | $53.9 million in annual savings, 87% faster | issue resolution, and proactive AI resolution | for...","textChars":145,"textLines":4,"bbox":[140,853,250,98]}
+{"kind":"textbox","id":"sh/yp87u9wv","slide":3,"text":"Lowe’s:","textPreview":"Lowe’s:","textChars":7,"textLines":1,"bbox":[406,853,85,24]}
+{"kind":"textbox","id":"sh/zqh8nexg","slide":3,"text":"OpenAI reports that Lowe's provides\nAI project guidance to associates in more\nthan 1,700 stores.","textPreview":"OpenAI reports that Lowe's provides | AI project guidance to associates in more | than 1,700 stores.","textChars":96,"textLines":3,"bbox":[492,853,250,98]}
+{"kind":"textbox","id":"sh/cnqpsze5","slide":3,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/dozql4fa","slide":3,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/nac6k2","slide":3,"text":"[Sources]\n- https://www.microsoft.com/en-us/worklab/work-trend-index/2025-the-year-the-frontier-firm-is-born\n- https://openai.com/index/1-million-businesses-putting-ai-to-work/\n- https://openai.com/index/how-enterprises-put-ai-to-work/\n- https://openai.com/index/introducing-openai-frontier/\n- https://cloud.google.com/customers/telus-gemini-enterprise-cx\n[/Sources]\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/ex2139","slide":4,"title":"Companies want AI gains.","textShapes":28}
+{"kind":"textbox","id":"sh/d8je10nm","slide":4,"text":"Companies want AI gains.\nFew know where to begin.","textPreview":"Companies want AI gains. | Few know where to begin.","textChars":49,"textLines":2,"bbox":[54,54,686,108]}
+{"kind":"textbox","id":"sh/hwn2twfi","slide":4,"text":"WHY EARLY AI EFFORTS STALL","textPreview":"WHY EARLY AI EFFORTS STALL","textChars":26,"textLines":1,"bbox":[54,180,686,22]}
+{"kind":"shape","id":"sh/gvel0rex","slide":4,"bbox":[54,228.15,11,0.7]}
+{"kind":"textbox","id":"sh/76lknmxg","slide":4,"text":"Employees have AI subscriptions but use them sporadically.","textPreview":"Employees have AI subscriptions but use them sporadically.","textChars":58,"textLines":1,"bbox":[78,216,662,25]}
+{"kind":"shape","id":"sh/65c3uhwv","slide":4,"bbox":[54,257.15,11,0.7]}
+{"kind":"textbox","id":"sh/ts32pwfm","slide":4,"text":"A demo impressed people, but no one used it after launch.","textPreview":"A demo impressed people, but no one used it after launch.","textChars":57,"textLines":1,"bbox":[78,245,662,25]}
+{"kind":"shape","id":"sh/87ulwre1","slide":4,"bbox":[54,286.15,11,0.7]}
+{"kind":"textbox","id":"sh/r254z6xk","slide":4,"text":"Case studies from other companies do not match how the business actually works.","textPreview":"Case studies from other companies do not match how the business actually works.","textChars":79,"textLines":1,"bbox":[78,274,662,25]}
+{"kind":"shape","id":"sh/q1w36lwf","slide":4,"bbox":[54,315.15,11,0.7]}
+{"kind":"textbox","id":"sh/wvqxkfyd","slide":4,"text":"Every department has ideas. No one has a way to prioritize them.","textPreview":"Every department has ideas. No one has a way to prioritize them.","textChars":64,"textLines":1,"bbox":[78,303,662,25]}
+{"kind":"shape","id":"sh/xgzetkfy","slide":4,"bbox":[54,344.15,11,0.7]}
+{"kind":"textbox","id":"sh/at8fi5g7","slide":4,"text":"Knowledge is scattered across chats, spreadsheets, PDFs, shared drives, and personal devices.","textPreview":"Knowledge is scattered across chats, spreadsheets, PDFs, shared drives, and personal devices.","textChars":93,"textLines":1,"bbox":[78,332,662,25]}
+{"kind":"shape","id":"sh/vuhwraxs","slide":4,"bbox":[54,373.15,11,0.7]}
+{"kind":"textbox","id":"sh/8r6xgvyh","slide":4,"text":"Leaders are unsure where security boundaries and agent authority should sit.","textPreview":"Leaders are unsure where security boundaries and agent authority should sit.","textChars":76,"textLines":1,"bbox":[78,361,662,25]}
+{"kind":"textbox","id":"sh/9sfep0f2","slide":4,"text":"An AI upgrade crosses four boundaries","textPreview":"An AI upgrade crosses four boundaries","textChars":37,"textLines":1,"bbox":[414,425,326,22]}
+{"kind":"textbox","id":"sh/mpove5gb","slide":4,"text":"What leadership wants to achieve","textPreview":"What leadership wants to achieve","textChars":32,"textLines":1,"bbox":[414,463,326,28]}
+{"kind":"shape","id":"sh/nqxwnaxw","slide":4,"bbox":[414,495,326,0.45]}
+{"kind":"textbox","id":"sh/0n6dcvy5","slide":4,"text":"How frontline work actually gets done","textPreview":"How frontline work actually gets done","textChars":37,"textLines":1,"bbox":[414,501,326,28]}
+{"kind":"shape","id":"sh/lofel0fq","slide":4,"bbox":[414,533,326,0.45]}
+{"kind":"textbox","id":"sh/1k7upw7e","slide":4,"text":"Where data and systems live","textPreview":"Where data and systems live","textChars":27,"textLines":1,"bbox":[414,539,326,28]}
+{"kind":"shape","id":"sh/0jytgrq9","slide":4,"bbox":[414,571,326,0.45]}
+{"kind":"textbox","id":"sh/fipcnmpo","slide":4,"text":"How the solution is built","textPreview":"How the solution is built","textChars":25,"textLines":1,"bbox":[414,577,326,28]}
+{"kind":"textbox","id":"sh/ehwbeh83","slide":4,"text":"Miss one of these layers and the project usually stalls.","textPreview":"Miss one of these layers and the project usually stalls.","textChars":56,"textLines":1,"bbox":[414,619,326,26]}
+{"kind":"textbox","id":"sh/dgnulc7i","slide":4,"text":"WHY INTERNAL AI PROJECTS STALL","textPreview":"WHY INTERNAL AI PROJECTS STALL","textChars":30,"textLines":1,"bbox":[54,690,686,22]}
+{"kind":"textbox","id":"sh/sfetc7qx","slide":4,"text":"Start with leadership only","textPreview":"Start with leadership only","textChars":26,"textLines":1,"bbox":[54,728,170,30]}
+{"kind":"textbox","id":"sh/re5cj29c","slide":4,"text":"The ambition is clear; the first practical use case is not.","textPreview":"The ambition is clear; the first practical use case is not.","textChars":59,"textLines":1,"bbox":[245,728,495,40]}
+{"kind":"shape","id":"sh/qdwbax8r","slide":4,"bbox":[54,766,686,0.45]}
+{"kind":"textbox","id":"sh/xcruxg7m","slide":4,"text":"Start with frontline teams only","textPreview":"Start with frontline teams only","textChars":31,"textLines":1,"bbox":[54,772,170,30]}
+{"kind":"textbox","id":"sh/cbidobq1","slide":4,"text":"You collect requests, but cannot tell which one deserves investment.","textPreview":"You collect requests, but cannot tell which one deserves investment.","textChars":68,"textLines":1,"bbox":[245,772,495,40]}
+{"kind":"shape","id":"sh/alsj29kn","slide":4,"bbox":[54,810,686,0.45]}
+{"kind":"textbox","id":"sh/vm10ve18","slide":4,"text":"Start with a software vendor","textPreview":"Start with a software vendor","textChars":28,"textLines":1,"bbox":[54,816,170,30]}
+{"kind":"textbox","id":"sh/wna14j2d","slide":4,"text":"Vendors need clear requirements, which is often what the company lacks.","textPreview":"Vendors need clear requirements, which is often what the company lacks.","textChars":71,"textLines":1,"bbox":[245,816,495,40]}
+{"kind":"shape","id":"sh/x8jixojy","slide":4,"bbox":[54,854,686,0.45]}
+{"kind":"textbox","id":"sh/mh8zypkb","slide":4,"text":"Buy an off-the-shelf product","textPreview":"Buy an off-the-shelf product","textChars":28,"textLines":1,"bbox":[54,860,170,30]}
+{"kind":"textbox","id":"sh/nih0rulw","slide":4,"text":"Deployment is fast; the workflow may not fit.","textPreview":"Deployment is fast; the workflow may not fit.","textChars":45,"textLines":1,"bbox":[245,860,495,40]}
+{"kind":"shape","id":"sh/8jqh0z2h","slide":4,"bbox":[54,898,686,0.45]}
+{"kind":"textbox","id":"sh/9kzit4j2","slide":4,"text":"Build a platform first","textPreview":"Build a platform first","textChars":22,"textLines":1,"bbox":[54,904,170,30]}
+{"kind":"textbox","id":"sh/6dcjatkv","slide":4,"text":"Time and budget are committed before business value is proven.","textPreview":"Time and budget are committed before business value is proven.","textChars":62,"textLines":1,"bbox":[245,904,495,40]}
+{"kind":"textbox","id":"sh/rel03y10","slide":4,"text":"The missing role connects business reality, product decisions, and implementation. That is the FDE.","textPreview":"The missing role connects business reality, product decisions, and implementation. That is the FDE.","textChars":99,"textLines":1,"bbox":[54,970,686,32]}
+{"kind":"textbox","id":"sh/r6hwzq5g","slide":4,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/q58f6lov","slide":4,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/ex2139","slide":4,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/epze6x","slide":5,"title":"An FDE starts with ambiguity","textShapes":10}
+{"kind":"textbox","id":"sh/e9cje14f","slide":5,"text":"An FDE starts with ambiguity\nand stays until the result can be tested","textPreview":"An FDE starts with ambiguity | and stays until the result can be tested","textChars":69,"textLines":2,"bbox":[54,58,686,135]}
+{"kind":"textbox","id":"sh/vytsbixc","slide":5,"text":"A Forward Deployed Engineer is not simply a developer working on-site.\n\nThe work begins inside the business: what leadership needs, how employees work, where the data lives, and where delays, errors, or handoffs cause problems.","textPreview":"A Forward Deployed Engineer is not simply a developer working on-site. |  | The work begins inside the business: what leadership needs, h...","textChars":227,"textLines":3,"bbox":[54,235,686,185]}
+{"kind":"shape","id":"sh/axkb2dwr","slide":5,"bbox":[54,447,686,60]}
+{"kind":"textbox","id":"sh/5ovuhsfe","slide":5,"text":"Once the problem is clear, the FDE selects the right way to solve it:","textPreview":"Once the problem is clear, the FDE selects the right way to solve it:","textChars":69,"textLines":1,"bbox":[72,466,650,28]}
+{"kind":"shape","id":"sh/knmt8ne9","slide":5,"bbox":[54,598.65,11,0.7]}
+{"kind":"textbox","id":"sh/j2dcfixo","slide":5,"text":"Use an existing product if it already solves the problem.","textPreview":"Use an existing product if it already solves the problem.","textChars":57,"textLines":1,"bbox":[78,555,662,88]}
+{"kind":"shape","id":"sh/i1kb6dw3","slide":5,"bbox":[78,641,662,0.45]}
+{"kind":"shape","id":"sh/lsra5ofa","slide":5,"bbox":[54,689.65,11,0.7]}
+{"kind":"textbox","id":"sh/07itwjep","slide":5,"text":"Build a Skill when that is enough.","textPreview":"Build a Skill when that is enough.","textChars":34,"textLines":1,"bbox":[78,646,662,88]}
+{"kind":"shape","id":"sh/md83ix8z","slide":5,"bbox":[78,732,662,0.45]}
+{"kind":"shape","id":"sh/7yhkr2pk","slide":5,"bbox":[54,780.65,11,0.7]}
+{"kind":"textbox","id":"sh/8zqlk7q5","slide":5,"text":"Integrate existing systems when the workflow spans multiple tools.","textPreview":"Integrate existing systems when the workflow spans multiple tools.","textChars":66,"textLines":1,"bbox":[78,737,662,88]}
+{"kind":"shape","id":"sh/90z2tc7q","slide":5,"bbox":[78,823,662,0.45]}
+{"kind":"shape","id":"sh/u1s3mh8b","slide":5,"bbox":[54,871.65,11,0.7]}
+{"kind":"textbox","id":"sh/v21kvmpw","slide":5,"text":"Create a database or knowledge base when data needs to be structured first.","textPreview":"Create a database or knowledge base when data needs to be structured first.","textChars":75,"textLines":1,"bbox":[78,828,662,88]}
+{"kind":"shape","id":"sh/w3alorqh","slide":5,"bbox":[78,914,662,0.45]}
+{"kind":"shape","id":"sh/h4j2xw7m","slide":5,"bbox":[54,962.65,11,0.7]}
+{"kind":"textbox","id":"sh/i5s3qh87","slide":5,"text":"Design the handoff between people and agents when the workflow is suitable.","textPreview":"Design the handoff between people and agents when the workflow is suitable.","textChars":75,"textLines":1,"bbox":[78,919,662,88]}
+{"kind":"textbox","id":"sh/j61kzmps","slide":5,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/falk7m50","slide":5,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/epze6x","slide":5,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/1d0i5j","slide":6,"title":"From a focused tool","textShapes":30}
+{"kind":"textbox","id":"sh/4j6983u9","slide":6,"text":"From a focused tool\nto an enterprise-wide AI program","textPreview":"From a focused tool | to an enterprise-wide AI program","textChars":52,"textLines":2,"bbox":[54,52,686,135]}
+{"kind":"shape","id":"sh/q54r65ov","slide":6,"bbox":[54,294,385,0.8]}
+{"kind":"textbox","id":"sh/b6d8fapg","slide":6,"text":"One focused problem","textPreview":"One focused problem","textChars":19,"textLines":1,"bbox":[54,319,385,33]}
+{"kind":"shape","id":"sh/0b69cf6x","slide":6,"bbox":[54,376.65,9,0.7]}
+{"kind":"textbox","id":"sh/lcfalk7i","slide":6,"text":"Company-specific Skills","textPreview":"Company-specific Skills","textChars":23,"textLines":1,"bbox":[78,365,361,24]}
+{"kind":"shape","id":"sh/y94ra5or","slide":6,"bbox":[54,428.65,9,0.7]}
+{"kind":"textbox","id":"sh/zadsjapc","slide":6,"text":"Quotation, data entry, reconciliation, and reporting automation","textPreview":"Quotation, data entry, reconciliation, and reporting automation","textChars":63,"textLines":1,"bbox":[78,417,361,24]}
+{"kind":"shape","id":"sh/gf290v6t","slide":6,"bbox":[54,402.65,9,0.7]}
+{"kind":"textbox","id":"sh/1gbq907e","slide":6,"text":"Document, spreadsheet, and image processing","textPreview":"Document, spreadsheet, and image processing","textChars":43,"textLines":1,"bbox":[78,391,361,24]}
+{"kind":"shape","id":"sh/p0fqx4ja","slide":6,"bbox":[54,454.65,9,0.7]}
+{"kind":"textbox","id":"sh/oz6pozip","slide":6,"text":"Small custom SaaS applications","textPreview":"Small custom SaaS applications","textChars":30,"textLines":1,"bbox":[78,443,361,24]}
+{"kind":"shape","id":"sh/3yx8vu14","slide":6,"bbox":[54,476,385,0.45]}
+{"kind":"textbox","id":"sh/2x47mp0j","slide":6,"text":"Best when the problem is clear and results are needed quickly.","textPreview":"Best when the problem is clear and results are needed quickly.","textChars":62,"textLines":1,"bbox":[54,492,385,34]}
+{"kind":"shape","id":"sh/d4fq14j6","slide":6,"bbox":[54,531,385,0.8]}
+{"kind":"textbox","id":"sh/c36pszil","slide":6,"text":"One business workflow","textPreview":"One business workflow","textChars":21,"textLines":1,"bbox":[54,556,385,33]}
+{"kind":"shape","id":"sh/b2x8zu10","slide":6,"bbox":[54,609.15,9,0.7]}
+{"kind":"textbox","id":"sh/q1o7qp0v","slide":6,"text":"Discovery interviews and workflow mapping","textPreview":"Discovery interviews and workflow mapping","textChars":41,"textLines":1,"bbox":[78,598,361,23]}
+{"kind":"shape","id":"sh/lszq5oji","slide":6,"bbox":[54,659.15,9,0.7]}
+{"kind":"textbox","id":"sh/0rqpwjix","slide":6,"text":"Integrations across ERP, CRM, collaboration, and messaging tools","textPreview":"Integrations across ERP, CRM, collaboration, and messaging tools","textChars":64,"textLines":1,"bbox":[78,648,361,23]}
+{"kind":"shape","id":"sh/47i1o7u5","slide":6,"bbox":[54,709.15,9,0.7]}
+{"kind":"textbox","id":"sh/58rihcbq","slide":6,"text":"Progress, outcome, and activity logs","textPreview":"Progress, outcome, and activity logs","textChars":36,"textLines":1,"bbox":[78,698,361,23]}
+{"kind":"shape","id":"sh/ilgjmhcf","slide":6,"bbox":[54,634.15,9,0.7]}
+{"kind":"textbox","id":"sh/jmp0fmtk","slide":6,"text":"Role-specific agents","textPreview":"Role-specific agents","textChars":20,"textLines":1,"bbox":[78,623,361,23]}
+{"kind":"shape","id":"sh/sbi1sruh","slide":6,"bbox":[54,684.15,9,0.7]}
+{"kind":"textbox","id":"sh/tcrilwb2","slide":6,"text":"Exception handling and human approval","textPreview":"Exception handling and human approval","textChars":37,"textLines":1,"bbox":[78,673,361,23]}
+{"kind":"shape","id":"sh/690jqhcb","slide":6,"bbox":[54,727,385,0.45]}
+{"kind":"textbox","id":"sh/ra90jmtw","slide":6,"text":"Best when work crosses teams and systems through manual handoffs.","textPreview":"Best when work crosses teams and systems through manual handoffs.","textChars":65,"textLines":1,"bbox":[54,732,385,36]}
+{"kind":"shape","id":"sh/8fe1gnux","slide":6,"bbox":[54,768,385,0.8]}
+{"kind":"textbox","id":"sh/9g7i9svi","slide":6,"text":"A data foundation","textPreview":"A data foundation","textChars":17,"textLines":1,"bbox":[54,793,385,33]}
+{"kind":"shape","id":"sh/bad4fad0","slide":6,"bbox":[54,847.15,9,0.7]}
+{"kind":"textbox","id":"sh/q943m5wf","slide":6,"text":"Operational databases","textPreview":"Operational databases","textChars":21,"textLines":1,"bbox":[78,836,361,23]}
+{"kind":"shape","id":"sh/dcvmh0v6","slide":6,"bbox":[54,897.15,9,0.7]}
+{"kind":"textbox","id":"sh/cbmlovel","slide":6,"text":"Data cleanup and consistent naming","textPreview":"Data cleanup and consistent naming","textChars":34,"textLines":1,"bbox":[78,886,361,23]}
+{"kind":"shape","id":"sh/36d4bqd4","slide":6,"bbox":[54,947.15,9,0.7]}
+{"kind":"textbox","id":"sh/25k3ilwj","slide":6,"text":"Trusted data for agents","textPreview":"Trusted data for agents","textChars":23,"textLines":1,"bbox":[78,936,361,23]}
+{"kind":"shape","id":"sh/p8vmd0va","slide":6,"bbox":[54,872.15,9,0.7]}
+{"kind":"textbox","id":"sh/o7mlkvep","slide":6,"text":"Enterprise knowledge bases","textPreview":"Enterprise knowledge bases","textChars":26,"textLines":1,"bbox":[78,861,361,23]}
+{"kind":"shape","id":"sh/f2t476ds","slide":6,"bbox":[54,922.15,9,0.7]}
+{"kind":"textbox","id":"sh/e1k3elwn","slide":6,"text":"Permissions and access boundaries","textPreview":"Permissions and access boundaries","textChars":33,"textLines":1,"bbox":[78,911,361,23]}
+{"kind":"shape","id":"sh/up47i9s7","slide":6,"bbox":[54,964,385,0.45]}
+{"kind":"textbox","id":"sh/vad8be9c","slide":6,"text":"Best when information is difficult to find, share, or trust.","textPreview":"Best when information is difficult to find, share, or trust.","textChars":60,"textLines":1,"bbox":[54,973,385,31]}
+{"kind":"shape","id":"sh/wbmpkjax","slide":6,"bbox":[474,294,266,712]}
+{"kind":"shape","id":"sh/hcfqdori","slide":6,"bbox":[496,294,222,3]}
+{"kind":"textbox","id":"sh/ml47e9sv","slide":6,"text":"Enterprise AI\nprogram","textPreview":"Enterprise AI | program","textChars":21,"textLines":2,"bbox":[498,336,218,100]}
+{"kind":"shape","id":"sh/7md87etg","slide":6,"bbox":[498,507.15,10,0.7]}
+{"kind":"textbox","id":"sh/8nmpgza1","slide":6,"text":"Identify work suitable for AI across departments","textPreview":"Identify work suitable for AI across departments","textChars":48,"textLines":1,"bbox":[522,470,194,75]}
+{"kind":"shape","id":"sh/9ovq94bm","slide":6,"bbox":[498,585.15,10,0.7]}
+{"kind":"textbox","id":"sh/yhk7apsz","slide":6,"text":"Redesign how people and agents divide the work","textPreview":"Redesign how people and agents divide the work","textChars":46,"textLines":1,"bbox":[522,548,194,75]}
+{"kind":"shape","id":"sh/zito3utk","slide":6,"bbox":[498,663.15,10,0.7]}
+{"kind":"textbox","id":"sh/1cjapsb2","slide":6,"text":"Define permissions, approvals, and accountability","textPreview":"Define permissions, approvals, and accountability","textChars":49,"textLines":1,"bbox":[522,626,194,75]}
+{"kind":"shape","id":"sh/0batgnuh","slide":6,"bbox":[498,741.15,10,0.7]}
+{"kind":"textbox","id":"sh/fahsn2tw","slide":6,"text":"Set the pilot sequence and expansion plan","textPreview":"Set the pilot sequence and expansion plan","textChars":41,"textLines":1,"bbox":[522,704,194,75]}
+{"kind":"shape","id":"sh/e98bexcb","slide":6,"bbox":[498,819.15,10,0.7]}
+{"kind":"textbox","id":"sh/d8zalsbq","slide":6,"text":"Train the company's Agent Bosses","textPreview":"Train the company's Agent Bosses","textChars":32,"textLines":1,"bbox":[522,782,194,75]}
+{"kind":"shape","id":"sh/s7q9cnu5","slide":6,"bbox":[498,930,218,0.45]}
+{"kind":"textbox","id":"sh/r6hsjid0","slide":6,"text":"Best when leadership wants one coordinated program.","textPreview":"Best when leadership wants one coordinated program.","textChars":51,"textLines":1,"bbox":[498,952,218,66]}
+{"kind":"textbox","id":"sh/q58radcf","slide":6,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/54zah8vu","slide":6,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/1d0i5j","slide":6,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/3hdlub","slide":7,"title":"Diagnose first.","textShapes":13}
+{"kind":"textbox","id":"sh/wfux0n6h","slide":7,"text":"Diagnose first.\nBuild only what is worth building.","textPreview":"Diagnose first. | Build only what is worth building.","textChars":50,"textLines":2,"bbox":[54,58,686,140]}
+{"kind":"textbox","id":"sh/9gvapwri","slide":7,"text":"1.","textPreview":"1.","textChars":2,"textLines":1,"bbox":[54,253,30,18]}
+{"kind":"textbox","id":"sh/8fm9wrax","slide":7,"text":"Define the business objective: save time, reduce errors, increase revenue, or change how work gets done.","textPreview":"Define the business objective: save time, reduce errors, increase revenue, or change how work gets done.","textChars":104,"textLines":1,"bbox":[101,252,639,145]}
+{"kind":"shape","id":"sh/v2dsr69o","slide":7,"bbox":[101,399,639,0.45]}
+{"kind":"textbox","id":"sh/a14by183","slide":7,"text":"2.","textPreview":"2.","textChars":2,"textLines":1,"bbox":[54,406,30,18]}
+{"kind":"textbox","id":"sh/x4vatwru","slide":7,"text":"Observe the spreadsheets, files, messages, and systems employees actually use, including exceptions outside the official process.","textPreview":"Observe the spreadsheets, files, messages, and systems employees actually use, including exceptions outside the official process.","textChars":129,"textLines":1,"bbox":[101,405,639,145]}
+{"kind":"shape","id":"sh/w3mt0bq9","slide":7,"bbox":[101,552,639,0.45]}
+{"kind":"textbox","id":"sh/b69sf29k","slide":7,"text":"3.","textPreview":"3.","textChars":2,"textLines":1,"bbox":[54,559,30,18]}
+{"kind":"textbox","id":"sh/ql0rmxsz","slide":7,"text":"Rank opportunities by value, difficulty, data readiness, risk, and time to validation. Some problems do not need AI.","textPreview":"Rank opportunities by value, difficulty, data readiness, risk, and time to validation. Some problems do not need AI.","textChars":116,"textLines":1,"bbox":[101,558,639,145]}
+{"kind":"shape","id":"sh/snex8r6p","slide":7,"bbox":[101,705,639,0.45]}
+{"kind":"textbox","id":"sh/t8ny1cna","slide":7,"text":"4.","textPreview":"4.","textChars":2,"textLines":1,"bbox":[54,712,30,18]}
+{"kind":"textbox","id":"sh/6lcf6hoj","slide":7,"text":"Choose one job. Agree on the owner, data, scope, and success metric before building the first usable version.","textPreview":"Choose one job. Agree on the owner, data, scope, and success metric before building the first usable version.","textChars":109,"textLines":1,"bbox":[101,711,639,145]}
+{"kind":"shape","id":"sh/rm5gzm54","slide":7,"bbox":[101,858,639,0.45]}
+{"kind":"textbox","id":"sh/gbehcr61","slide":7,"text":"5.","textPreview":"5.","textChars":2,"textLines":1,"bbox":[54,865,30,18]}
+{"kind":"textbox","id":"sh/1cny5wn6","slide":7,"text":"Once real users have tried it, decide whether to improve it, expand it, or stop.","textPreview":"Once real users have tried it, decide whether to improve it, expand it, or stop.","textChars":80,"textLines":1,"bbox":[101,864,639,145]}
+{"kind":"textbox","id":"sh/e9wzahov","slide":7,"text":"7","textPreview":"7","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/fa5g3m5g","slide":7,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/3hdlub","slide":7,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/iykjwm","slide":8,"title":"A pilot should prove value,","textShapes":17}
+{"kind":"textbox","id":"sh/4zypo36d","slide":8,"text":"A pilot should prove value,\nnot just demo it.","textPreview":"A pilot should prove value, | not just demo it.","textChars":45,"textLines":2,"bbox":[54,55,686,126]}
+{"kind":"textbox","id":"sh/w76lgvyx","slide":8,"text":"Depending on scope, a pilot may include:","textPreview":"Depending on scope, a pilot may include:","textChars":40,"textLines":1,"bbox":[54,196,686,30]}
+{"kind":"shape","id":"sh/hsf290fi","slide":8,"bbox":[54,290.65,11,0.7]}
+{"kind":"textbox","id":"sh/ito3i5gn","slide":8,"text":"A map of the current workflow","textPreview":"A map of the current workflow","textChars":29,"textLines":1,"bbox":[78,266,315,50]}
+{"kind":"shape","id":"sh/juxkbax8","slide":8,"bbox":[78,335,315,0.45]}
+{"kind":"shape","id":"sh/4v6lkfyt","slide":8,"bbox":[413,290.65,11,0.7]}
+{"kind":"textbox","id":"sh/5wf2dkfe","slide":8,"text":"A defined problem and pilot boundary","textPreview":"A defined problem and pilot boundary","textChars":36,"textLines":1,"bbox":[437,266,315,50]}
+{"kind":"shape","id":"sh/yxkj61gj","slide":8,"bbox":[437,335,315,0.45]}
+{"kind":"shape","id":"sh/zytkz6h4","slide":8,"bbox":[54,393.65,11,0.7]}
+{"kind":"textbox","id":"sh/vq1crqx4","slide":8,"text":"A working prototype or system","textPreview":"A working prototype or system","textChars":29,"textLines":1,"bbox":[78,369,315,50]}
+{"kind":"shape","id":"sh/u5sbylgz","slide":8,"bbox":[78,438,315,0.45]}
+{"kind":"shape","id":"sh/hs3ut0fa","slide":8,"bbox":[413,393.65,11,0.7]}
+{"kind":"textbox","id":"sh/wrut0vyp","slide":8,"text":"The data and permissions it uses","textPreview":"The data and permissions it uses","textChars":32,"textLines":1,"bbox":[437,369,315,50]}
+{"kind":"shape","id":"sh/721cnqx8","slide":8,"bbox":[437,438,315,0.45]}
+{"kind":"shape","id":"sh/m1sbulgn","slide":8,"bbox":[54,496.65,11,0.7]}
+{"kind":"textbox","id":"sh/94jup0fe","slide":8,"text":"Clear responsibilities for people and agents","textPreview":"Clear responsibilities for people and agents","textChars":44,"textLines":1,"bbox":[78,472,315,50]}
+{"kind":"shape","id":"sh/83atwvyt","slide":8,"bbox":[78,541,315,0.45]}
+{"kind":"shape","id":"sh/zyhcj6xc","slide":8,"bbox":[413,496.65,11,0.7]}
+{"kind":"textbox","id":"sh/yx8bq1gr","slide":8,"text":"Human approval points","textPreview":"Human approval points","textChars":21,"textLines":1,"bbox":[437,472,315,50]}
+{"kind":"shape","id":"sh/2t8v210j","slide":8,"bbox":[437,541,315,0.45]}
+{"kind":"shape","id":"sh/3uhcv614","slide":8,"bbox":[54,599.65,11,0.7]}
+{"kind":"textbox","id":"sh/ovqd4bip","slide":8,"text":"A before-and-after comparison method","textPreview":"A before-and-after comparison method","textChars":36,"textLines":1,"bbox":[78,575,315,50]}
+{"kind":"shape","id":"sh/pwzuxgja","slide":8,"bbox":[78,644,315,0.45]}
+{"kind":"shape","id":"sh/qx8v6l0f","slide":8,"bbox":[413,599.65,11,0.7]}
+{"kind":"textbox","id":"sh/byhczq10","slide":8,"text":"A recommendation to continue, adjust, or stop","textPreview":"A recommendation to continue, adjust, or stop","textChars":45,"textLines":1,"bbox":[437,575,315,50]}
+{"kind":"shape","id":"sh/czqd8vil","slide":8,"bbox":[437,644,315,0.45]}
+{"kind":"shape","id":"sh/d0ju1gj6","slide":8,"bbox":[54,725,686,260]}
+{"kind":"textbox","id":"sh/y1sval0r","slide":8,"text":"BEFORE WORK BEGINS, WE AGREE ON","textPreview":"BEFORE WORK BEGINS, WE AGREE ON","textChars":31,"textLines":1,"bbox":[80,758,420,24]}
+{"kind":"shape","id":"sh/z21c3q1c","slide":8,"bbox":[80,842.65,11,0.7]}
+{"kind":"textbox","id":"sh/t8n6po7q","slide":8,"text":"Who owns the outcome","textPreview":"Who owns the outcome","textChars":20,"textLines":1,"bbox":[105,822,280,42]}
+{"kind":"shape","id":"sh/87epgj65","slide":8,"bbox":[415,842.65,11,0.7]}
+{"kind":"textbox","id":"sh/765onepk","slide":8,"text":"What completion means","textPreview":"What completion means","textChars":21,"textLines":1,"bbox":[440,822,280,42]}
+{"kind":"shape","id":"sh/65w7e9oz","slide":8,"bbox":[80,918.65,11,0.7]}
+{"kind":"textbox","id":"sh/hw76to7m","slide":8,"text":"What is outside this pilot","textPreview":"What is outside this pilot","textChars":26,"textLines":1,"bbox":[105,898,280,42]}
+{"kind":"shape","id":"sh/gvepkj61","slide":8,"bbox":[415,918.65,11,0.7]}
+{"kind":"textbox","id":"sh/vu5orypg","slide":8,"text":"How the result will be judged","textPreview":"How the result will be judged","textChars":29,"textLines":1,"bbox":[440,898,280,42]}
+{"kind":"textbox","id":"sh/u9w7itob","slide":8,"text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/5076x87y","slide":8,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/iykjwm","slide":8,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/nczfmn","slide":9,"title":"These projects are already live","textShapes":18}
+{"kind":"textbox","id":"sh/twn6pkni","slide":9,"text":"These projects are already live\nin real business operations","textPreview":"These projects are already live | in real business operations","textChars":59,"textLines":2,"bbox":[54,48,686,118]}
+{"kind":"textbox","id":"sh/7uxkje94","slide":9,"text":"TRUSTED BY","textPreview":"TRUSTED BY","textChars":10,"textLines":1,"bbox":[54,276,686,24]}
+{"kind":"textbox","id":"sh/6hkzudkb","slide":9,"text":"CASE 1 | CROSS-BORDER E-COMMERCE","textPreview":"CASE 1 | CROSS-BORDER E-COMMERCE","textChars":32,"textLines":1,"bbox":[54,530,686,24]}
+{"kind":"textbox","id":"sh/7itgni1w","slide":9,"text":"Before","textPreview":"Before","textChars":6,"textLines":1,"bbox":[54,572,322,24]}
+{"kind":"textbox","id":"sh/gnmh0nid","slide":9,"text":"Operators pulled product details from supplier spreadsheets, chat messages, and image folders. They translated, normalized, and re-entered each listing across multiple marketplaces.","textPreview":"Operators pulled product details from supplier spreadsheets, chat messages, and image folders. They translated, normalized, and re-entere...","textChars":181,"textLines":1,"bbox":[54,608,322,102]}
+{"kind":"textbox","id":"sh/hovitsjy","slide":9,"text":"What we found","textPreview":"What we found","textChars":13,"textLines":1,"bbox":[54,736,322,24]}
+{"kind":"textbox","id":"sh/p4rydsb2","slide":9,"text":"The bottleneck was incomplete attributes, conflicting source files, and repeated manual checks against marketplace rules, not the copy itself.","textPreview":"The bottleneck was incomplete attributes, conflicting source files, and repeated manual checks against marketplace rules, not the copy it...","textChars":142,"textLines":1,"bbox":[54,772,322,82]}
+{"kind":"textbox","id":"sh/o3ih4nah","slide":9,"text":"What we delivered","textPreview":"What we delivered","textChars":17,"textLines":1,"bbox":[418,572,322,24]}
+{"kind":"textbox","id":"sh/329gbitw","slide":9,"text":"We built a product-data hub and listing workflow. Agents organize, translate, and validate listings against marketplace rules; operators handle exceptions and approve publication.","textPreview":"We built a product-data hub and listing workflow. Agents organize, translate, and validate listings against marketplace rules; operators ...","textChars":179,"textLines":1,"bbox":[418,608,322,82]}
+{"kind":"textbox","id":"sh/210z2dsb","slide":9,"text":"What changed","textPreview":"What changed","textChars":12,"textLines":1,"bbox":[418,719,322,24]}
+{"kind":"shape","id":"sh/d8byhsby","slide":9,"bbox":[418,775.65,8,0.7]}
+{"kind":"textbox","id":"sh/c72h87ad","slide":9,"text":"Scattered files became one product workflow","textPreview":"Scattered files became one product workflow","textChars":43,"textLines":1,"bbox":[442,758,298,36]}
+{"kind":"shape","id":"sh/b69gf2t8","slide":9,"bbox":[418,814.65,8,0.7]}
+{"kind":"textbox","id":"sh/q50z6xsn","slide":9,"text":"Manual data entry became exception review","textPreview":"Manual data entry became exception review","textChars":41,"textLines":1,"bbox":[442,797,298,36]}
+{"kind":"shape","id":"sh/tc7y58bu","slide":9,"bbox":[418,853.65,8,0.7]}
+{"kind":"textbox","id":"sh/sbyhw3u9","slide":9,"text":"Checks moved from after publication to before release","textPreview":"Checks moved from after publication to before release","textChars":53,"textLines":1,"bbox":[442,836,298,36]}
+{"kind":"shape","id":"sh/y5cnq54v","slide":9,"bbox":[418,892.65,8,0.7]}
+{"kind":"textbox","id":"sh/j6l4ja5g","slide":9,"text":"Business impact: a more consistent listing cadence","textPreview":"Business impact: a more consistent listing cadence","textChars":50,"textLines":1,"bbox":[442,875,298,36]}
+{"kind":"shape","id":"sh/k7u5sfm1","slide":9,"bbox":[54,926,686,0.45]}
+{"kind":"textbox","id":"sh/l83mlknm","slide":9,"text":"CASE 2 | FURNITURE MANUFACTURING","textPreview":"CASE 2 | FURNITURE MANUFACTURING","textChars":32,"textLines":1,"bbox":[54,956,290,24]}
+{"kind":"textbox","id":"sh/69cnup47","slide":9,"text":"Orders arrived through chat, spreadsheets, and drawings. We structured dimensions, fabrics, hardware, and process data; connected orders, BOMs, and work orders; and flagged missing or conflicting information before production.","textPreview":"Orders arrived through chat, spreadsheets, and drawings. We structured dimensions, fabrics, hardware, and process data; connected orders,...","textChars":226,"textLines":1,"bbox":[350,954,390,68]}
+{"kind":"textbox","id":"sh/7a5onu5c","slide":9,"text":"9","textPreview":"9","textChars":1,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/8ve5wzmx","slide":9,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"shape","id":"sh/94v29wv6","slide":9,"bbox":[313,400,168,29.74]}
+{"kind":"shape","id":"sh/n2dk76dg","slide":9,"bbox":[555,400.25,165,29.46]}
+{"kind":"image","id":"im/n6p8n25g","slide":9,"name":"","bbox":[88.5,320.5,148,49.33]}
+{"kind":"image","id":"im/25gruxov","slide":9,"name":"","bbox":[329,319.5,136,51]}
+{"kind":"image","id":"im/y1kbm183","slide":9,"name":"","bbox":[557.5,315,160,60]}
+{"kind":"image","id":"im/z2tcf6po","slide":9,"name":"","bbox":[96.5,390.5,132,49.5]}
+{"kind":"notes","id":"nt/nczfmn","slide":9,"text":"[Sources]\nhttps://press.siemens.com/global/en/pressrelease/siemens-introduces-ai-agents-industrial-automation\nhttps://www.bosch.com/research/bcai/industrial-ai/\nhttps://www.se.com/ww/en/about-us/newsroom/news/press-releases/Schneider-Electric-unveils-next-generation-agentic-manufacturing-capabilities-powered-by-Microsoft-Azure-AI-at-Hannover-Messe-2026-69e08de2ddabef15890a48f3/\nhttps://new.abb.com/process-automation/genix/abb-genix-copilot\nhttps://commons.wikimedia.org/wiki/File:Siemens-logo.svg\nhttps://commons.wikimedia.org/wiki/File:Bosch-logo.svg\nhttps://commons.wikimedia.org/wiki/File:SchneiderElectric_Logo.svg\nhttps://commons.wikimedia.org/wiki/File:ABB_logo.svg\n[/Sources]\n\n[Sources]\nhttps://commons.wikimedia.org/wiki/File:Toyota_logo.svg\nhttps://commons.wikimedia.org/wiki/File:BMW.svg\nhttps://commons.wikimedia.org/wiki/File:Honeywell_logo.svg\nhttps://commons.wikimedia.org/wiki/File:Caterpillar_logo.svg\n[/Sources]\n\n[Sources]\nCase narratives use the user's previously approved anonymous cross-border e-commerce and furniture manufacturing copy. No company identity or measured outcome is asserted.\n[/Sources]"}
+{"kind":"slide","id":"sl/wilcpr","slide":10,"title":"Managers must learn","textShapes":15}
+{"kind":"textbox","id":"sh/5gny9gbi","slide":10,"text":"Managers must learn\nto lead agents","textPreview":"Managers must learn | to lead agents","textChars":34,"textLines":2,"bbox":[54,55,686,130]}
+{"kind":"textbox","id":"sh/8zadk7md","slide":10,"text":"FDE delivery builds the company's AI systems.\n\nAfter launch, managers and employees need to know how to:","textPreview":"FDE delivery builds the company's AI systems. |  | After launch, managers and employees need to know how to:","textChars":104,"textLines":3,"bbox":[54,245,300,140]}
+{"kind":"textbox","id":"sh/t03edcny","slide":10,"text":"Agent Boss training builds that capability.","textPreview":"Agent Boss training builds that capability.","textChars":43,"textLines":1,"bbox":[54,470,300,68]}
+{"kind":"textbox","id":"sh/ytsvex4b","slide":10,"text":"The course focuses on managing work shared by humans and agents, rather than prompt writing or a tour of AI tools.","textPreview":"The course focuses on managing work shared by humans and agents, rather than prompt writing or a tour of AI tools.","textChars":114,"textLines":1,"bbox":[54,570,300,150]}
+{"kind":"shape","id":"sh/ju1c7i5w","slide":10,"bbox":[420,285.15,11,0.7]}
+{"kind":"textbox","id":"sh/kvadgnmh","slide":10,"text":"Set clear goals and completion criteria","textPreview":"Set clear goals and completion criteria","textChars":39,"textLines":1,"bbox":[444,245,296,81]}
+{"kind":"shape","id":"sh/lwju9sn2","slide":10,"bbox":[444,324,296,0.45]}
+{"kind":"shape","id":"sh/a58vad4f","slide":10,"bbox":[420,369.15,11,0.7]}
+{"kind":"textbox","id":"sh/b6hc3i5k","slide":10,"text":"Decide which work to delegate","textPreview":"Decide which work to delegate","textChars":29,"textLines":1,"bbox":[444,329,296,81]}
+{"kind":"shape","id":"sh/rqdsbeps","slide":10,"bbox":[444,408,296,0.45]}
+{"kind":"shape","id":"sh/qp4b2987","slide":10,"bbox":[420,453.15,11,0.7]}
+{"kind":"textbox","id":"sh/dsvad47y","slide":10,"text":"Review both the process and the result","textPreview":"Review both the process and the result","textChars":38,"textLines":1,"bbox":[444,413,296,81]}
+{"kind":"shape","id":"sh/srmt4zqd","slide":10,"bbox":[444,492,296,0.45]}
+{"kind":"shape","id":"sh/fudsfep4","slide":10,"bbox":[420,537.15,11,0.7]}
+{"kind":"textbox","id":"sh/et4b698j","slide":10,"text":"Handle exceptions, request changes, or stop a task","textPreview":"Handle exceptions, request changes, or stop a task","textChars":50,"textLines":1,"bbox":[444,497,296,81]}
+{"kind":"shape","id":"sh/1wfuho7u","slide":10,"bbox":[444,576,296,0.45]}
+{"kind":"shape","id":"sh/0v6t8jqp","slide":10,"bbox":[420,621.15,11,0.7]}
+{"kind":"textbox","id":"sh/vyts3upk","slide":10,"text":"Manage data, tools, and permissions","textPreview":"Manage data, tools, and permissions","textChars":35,"textLines":1,"bbox":[444,581,296,81]}
+{"kind":"shape","id":"sh/uxkrup8z","slide":10,"bbox":[444,660,296,0.45]}
+{"kind":"shape","id":"sh/yd8v2xsn","slide":10,"bbox":[420,705.15,11,0.7]}
+{"kind":"textbox","id":"sh/ze1wb298","slide":10,"text":"Turn working practices into shared Skills","textPreview":"Turn working practices into shared Skills","textChars":41,"textLines":1,"bbox":[444,665,296,81]}
+{"kind":"shape","id":"sh/kfad4nat","slide":10,"bbox":[444,744,296,0.45]}
+{"kind":"shape","id":"sh/lgjedsre","slide":10,"bbox":[420,789.15,11,0.7]}
+{"kind":"textbox","id":"sh/ap8vydsr","slide":10,"text":"Stay accountable for business outcomes","textPreview":"Stay accountable for business outcomes","textChars":38,"textLines":1,"bbox":[444,749,296,81]}
+{"kind":"shape","id":"sh/bqhw7i9c","slide":10,"bbox":[54,905,686,102]}
+{"kind":"textbox","id":"sh/crqd0nax","slide":10,"text":"AgentBoss School is open source","textPreview":"AgentBoss School is open source","textChars":31,"textLines":1,"bbox":[79,941,275,35]}
+{"kind":"textbox","id":"sh/xcze9sr2","slide":10,"text":"github.com/ElliottYip/agentboss-school\nMIT · v0.7.1","textPreview":"github.com/ElliottYip/agentboss-school | MIT · v0.7.1","textChars":51,"textLines":2,"bbox":[390,941,330,48]}
+{"kind":"textbox","id":"sh/2lovudsf","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/nmxw3y90","slide":10,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/wilcpr","slide":10,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]\n\n[Sources]\n- https://github.com/ElliottYip/agentboss-school (public repository verified 2026-08-25)\n[/Sources]"}
+{"kind":"slide","id":"sl/fgrxv8","slide":11,"title":"Start with the right first problem","textShapes":16}
+{"kind":"textbox","id":"sh/hszat87y","slide":11,"text":"Start with the right first problem","textPreview":"Start with the right first problem","textChars":34,"textLines":1,"bbox":[54,62,686,82]}
+{"kind":"textbox","id":"sh/ovahsfm5","slide":11,"text":"During the event, we offer a complimentary enterprise AI assessment.","textPreview":"During the event, we offer a complimentary enterprise AI assessment.","textChars":68,"textLines":1,"bbox":[54,186,686,40]}
+{"kind":"textbox","id":"sh/pwjilk3q","slide":11,"text":"YOU WILL LEAVE WITH","textPreview":"YOU WILL LEAVE WITH","textChars":19,"textLines":1,"bbox":[54,280,300,24]}
+{"kind":"textbox","id":"sh/ep8zml43","slide":11,"text":"WE MAY ALSO RECOMMEND","textPreview":"WE MAY ALSO RECOMMEND","textChars":21,"textLines":1,"bbox":[420,280,320,24]}
+{"kind":"shape","id":"sh/fqh0fql8","slide":11,"bbox":[54,387.15,11,0.7]}
+{"kind":"textbox","id":"sh/grqhovmt","slide":11,"text":"One to three areas to examine first","textPreview":"One to three areas to examine first","textChars":35,"textLines":1,"bbox":[78,330,291,115]}
+{"kind":"shape","id":"sh/1szih03e","slide":11,"bbox":[78,443,291,0.45]}
+{"kind":"shape","id":"sh/61ozil4r","slide":11,"bbox":[54,505.15,11,0.7]}
+{"kind":"textbox","id":"sh/r2xgbqlc","slide":11,"text":"An initial view on whether AI fits the work","textPreview":"An initial view on whether AI fits the work","textChars":43,"textLines":1,"bbox":[78,448,291,115]}
+{"kind":"shape","id":"sh/rmp4z6l4","slide":11,"bbox":[78,561,291,0.45]}
+{"kind":"shape","id":"sh/qlg3q1kj","slide":11,"bbox":[54,623.15,11,0.7]}
+{"kind":"textbox","id":"sh/d87m1g3a","slide":11,"text":"The data, systems, and people required","textPreview":"The data, systems, and people required","textChars":38,"textLines":1,"bbox":[78,566,291,115]}
+{"kind":"shape","id":"sh/snylsb2p","slide":11,"bbox":[78,679,291,0.45]}
+{"kind":"shape","id":"sh/fa943qlg","slide":11,"bbox":[54,741.15,11,0.7]}
+{"kind":"textbox","id":"sh/e903ulkv","slide":11,"text":"A recommendation to buy software, build a Skill, create custom SaaS, organize the data, or redesign the workflow","textPreview":"A recommendation to buy software, build a Skill, create custom SaaS, organize the data, or redesign the workflow","textChars":112,"textLines":1,"bbox":[78,684,291,115]}
+{"kind":"shape","id":"sh/1crm5036","slide":11,"bbox":[78,797,291,0.45]}
+{"kind":"shape","id":"sh/0bilwv2l","slide":11,"bbox":[54,859.15,11,0.7]}
+{"kind":"textbox","id":"sh/ve5krmlw","slide":11,"text":"A candid view on whether a pilot is worthwhile","textPreview":"A candid view on whether a pilot is worthwhile","textChars":46,"textLines":1,"bbox":[78,802,291,115]}
+{"kind":"shape","id":"sh/udw3ihkb","slide":11,"bbox":[420,387.15,11,0.7]}
+{"kind":"textbox","id":"sh/y947qp4z","slide":11,"text":"The problem does not need AI","textPreview":"The problem does not need AI","textChars":28,"textLines":1,"bbox":[444,330,296,115]}
+{"kind":"shape","id":"sh/zadozu5k","slide":11,"bbox":[444,443,296,0.45]}
+{"kind":"shape","id":"sh/kbmpszm5","slide":11,"bbox":[420,505.15,11,0.7]}
+{"kind":"textbox","id":"sh/lcv614nq","slide":11,"text":"The data is not ready","textPreview":"The data is not ready","textChars":21,"textLines":1,"bbox":[444,448,296,115]}
+{"kind":"shape","id":"sh/a5k7mp43","slide":11,"bbox":[444,561,296,0.45]}
+{"kind":"shape","id":"sh/b6tovu5o","slide":11,"bbox":[420,623.15,11,0.7]}
+{"kind":"textbox","id":"sh/c72pozmt","slide":11,"text":"Fix the workflow before building","textPreview":"Fix the workflow before building","textChars":32,"textLines":1,"bbox":[444,566,296,115]}
+{"kind":"shape","id":"sh/x8v6x4ne","slide":11,"bbox":[444,679,296,0.45]}
+{"kind":"shape","id":"sh/2hkni54r","slide":11,"bbox":[420,741.15,11,0.7]}
+{"kind":"textbox","id":"sh/n2tora5c","slide":11,"text":"An existing product offers better value","textPreview":"An existing product offers better value","textChars":39,"textLines":1,"bbox":[444,684,296,115]}
+{"kind":"shape","id":"sh/5wzax87u","slide":11,"bbox":[420,846,320,125]}
+{"kind":"textbox","id":"sh/4vq94n69","slide":11,"text":"The assessment is not a full implementation plan and does not require access to unauthorized sensitive data.","textPreview":"The assessment is not a full implementation plan and does not require access to unauthorized sensitive data.","textChars":108,"textLines":1,"bbox":[446,883,268,68]}
+{"kind":"textbox","id":"sh/3uhsvipo","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/it8r2doj","slide":11,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"notes","id":"nt/fgrxv8","slide":11,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]"}
+{"kind":"slide","id":"sl/87okvg","slide":12,"title":"Where should your company","textShapes":16}
+{"kind":"textbox","id":"sh/7yxgfexk","slide":12,"text":"Where should your company\nstart with AI?","textPreview":"Where should your company | start with AI?","textChars":40,"textLines":2,"bbox":[54,62,686,160]}
+{"kind":"textbox","id":"sh/e1wzyhsj","slide":12,"text":"ADD ME ON FEISHU AND SEND:","textPreview":"ADD ME ON FEISHU AND SEND:","textChars":26,"textLines":1,"bbox":[72,372,330,30]}
+{"kind":"textbox","id":"sh/14ni9cbu","slide":12,"text":"1.","textPreview":"1.","textChars":2,"textLines":1,"bbox":[72,433,28,24]}
+{"kind":"textbox","id":"sh/g3eh0ra9","slide":12,"text":"Company and industry","textPreview":"Company and industry","textChars":20,"textLines":1,"bbox":[106,432,330,44]}
+{"kind":"textbox","id":"sh/6xwzuxs7","slide":12,"text":"2.","textPreview":"2.","textChars":2,"textLines":1,"bbox":[72,493,28,24]}
+{"kind":"textbox","id":"sh/wrapgnah","slide":12,"text":"The area you most want to improve","textPreview":"The area you most want to improve","textChars":33,"textLines":1,"bbox":[106,492,330,44]}
+{"kind":"textbox","id":"sh/aps7edsb","slide":12,"text":"3.","textPreview":"3.","textChars":2,"textLines":1,"bbox":[72,553,28,24]}
+{"kind":"textbox","id":"sh/vq18ni9w","slide":12,"text":"How the work is done today","textPreview":"How the work is done today","textChars":26,"textLines":1,"bbox":[106,552,330,44]}
+{"kind":"textbox","id":"sh/9ojql8rq","slide":12,"text":"4.","textPreview":"4.","textChars":2,"textLines":1,"bbox":[72,613,28,24]}
+{"kind":"textbox","id":"sh/ml87atsz","slide":12,"text":"Who owns the process","textPreview":"Who owns the process","textChars":20,"textLines":1,"bbox":[106,612,330,44]}
+{"kind":"textbox","id":"sh/sju9o7a9","slide":12,"text":"5.","textPreview":"5.","textChars":2,"textLines":1,"bbox":[72,673,28,24]}
+{"kind":"textbox","id":"sh/tk3qxsru","slide":12,"text":"When you would like to talk","textPreview":"When you would like to talk","textChars":27,"textLines":1,"bbox":[106,672,330,44]}
+{"kind":"textbox","id":"sh/h4fyl8f2","slide":12,"text":"ADD ME ON FEISHU TO RESERVE A SESSION","textPreview":"ADD ME ON FEISHU TO RESERVE A SESSION","textChars":37,"textLines":1,"bbox":[422,682,300,42]}
+{"kind":"shape","id":"sh/f2xgjyxw","slide":12,"bbox":[54,900,686,0.9]}
+{"kind":"textbox","id":"sh/u1ozqtgb","slide":12,"text":"Start with one problem you can define, solve, and measure.","textPreview":"Start with one problem you can define, solve, and measure.","textChars":58,"textLines":1,"bbox":[54,928,686,42]}
+{"kind":"textbox","id":"sh/t0fyhofq","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[54,1080,40,15]}
+{"kind":"textbox","id":"sh/sz6hojy5","slide":12,"text":"FDE enterprise AI upgrade","textPreview":"FDE enterprise AI upgrade","textChars":25,"textLines":1,"bbox":[530,1080,210,15]}
+{"kind":"image","id":"im/pof2dcby","slide":12,"name":"","bbox":[442,372,280,280]}
+{"kind":"notes","id":"nt/87okvg","slide":12,"text":"\n\n[Sources]\n- docs/marketing/assets/fde-logo-orange-v1.png\n[/Sources]\n\n[Sources]\n- User-provided Feishu contact QR code: /Users/elliottye/Downloads/IMG_0263.JPG\n[/Sources]"}

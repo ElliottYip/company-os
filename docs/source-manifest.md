@@ -1,5 +1,37 @@
 # Source and migration manifest
 
+## Company OS “Follow the Light” real-photo references (2026-09-02)
+
+The V3 visual-reference pass uses real location photographs to anchor geology,
+weather, atmospheric depth, and photographic imperfection. These photographs
+are licensed under the [Unsplash License](https://unsplash.com/license), which
+allows free commercial and non-commercial use and modification. They are not
+described as copyright-free or public-domain works. Photographer attribution is
+retained here even though the license does not require it.
+
+| Photographer / source page | License | SHA-256 | Project copy | Intended role |
+|---|---|---|---|---|
+| Filipe Freitas · [Lake Louise](https://unsplash.com/photos/snowy-mountains-overlook-a-frozen-lake-with-a-cabin-foocj3x5IWo) | Unsplash License | `4490b70125c642ab5ec553a0fbea4d3f00ad5e08c53435a52fc2cc9cda5d583a` | `outputs/company-os-follow-the-light-v3-photo-references/sources/01-lake-louise-filipe-freitas.jpg` | Shot 01 real mountain/lake/cabin environment reference |
+| Himmel S · [Jungfrau mountain train](https://unsplash.com/photos/a-train-traveling-down-a-snow-covered-mountain-side-SJ6H6VtO4K8) | Unsplash License | `54dcfc44d6da0568194e41301db89967c4545f0496351f2824d375065523c1e6` | `outputs/company-os-follow-the-light-v3-photo-references/sources/03-jungfrau-train-himmel-s.jpg` | Shot 03 real train and alpine-scale reference |
+| Georgi Kalaydzhiev · [Faroe Islands cliffs](https://unsplash.com/photos/small-lighthouse-on-a-rugged-cliff-overlooking-the-sea-bwJ1mH9c01Y) | Unsplash License | `32115c1aeab64858a7f7afabbb87f5ef800e003a57b1fdd7c33b070123a188cc` | `outputs/company-os-follow-the-light-v3-photo-references/sources/04-faroe-cliffs-georgi-kalaydzhiev.jpg` | Shots 04–05 real basalt coast reference |
+| Art Markiv · [Grand Canyon](https://unsplash.com/photos/grand-canyon-arizona-0WyRXGnWMNY) | Unsplash License | `f2bddc67d799b4bff78271159c067a834db153ca1951b05bccfbdbaff582c9af` | `outputs/company-os-follow-the-light-v3-photo-references/sources/06-grand-canyon-art-markiv.jpg` | Shot 06 real canyon geology and storm-light reference |
+| Josh Duke · [Newport Beach sunset](https://unsplash.com/photos/silhouette-of-people-standing-on-beach-during-sunset-O7fF03gWHOY) | Unsplash License | `3e0c6845a165b8c7812e3d156ec71ae7f0dd9e398ba8eb30bf5e7ecf7cc40b5a` | `outputs/company-os-follow-the-light-v3-photo-references/sources/07-newport-beach-josh-duke.jpg` | Rejected Shot 07 option retained for provenance |
+| Anthony Adu · [Surfers at sunset](https://unsplash.com/photos/a-group-of-people-with-surfboards-on-a-beach-I9XeK1_BLnc) | Unsplash License | `8acbd6043489ee679b63792f20ef059bfa7410597da3f792d63478fea536ca05` | `outputs/company-os-follow-the-light-v3-photo-references/sources/07-surfers-anthony-adu.jpg` | Shot 07 real coastal activity reference |
+| Mikhail Nilov · [Side-view laptop hand](https://www.pexels.com/photo/side-view-of-a-hand-on-a-laptop-keyboard-7989228/) | Pexels License | `bbf08078d50ec137b5461ec38709318dd0b470f80b7ad4bcb16beb075d68938c` | `outputs/company-os-follow-the-light-v3-photo-references/sources/device-macbook-side-mikhail-nilov.jpg` | Shot 02 laptop/hand perspective reference only |
+| Thai Nguyen · [iPhone Air side view](https://unsplash.com/photos/hand-holding-a-black-smartphone-from-the-side-cdmKr4ew15I) | Unsplash License | `c0d1d391dcbdd3e437723af1aac7e58abd66be1facafba7b98525e237e35dba6` | `outputs/company-os-follow-the-light-v3-photo-references/sources/device-iphone-side-thai-nguyen.jpg` | Shot 05 phone/hand perspective reference only |
+
+## Company OS film end-card brand assets (2026-09-02)
+
+The Company OS concept film end card uses the official Raft mark from the
+user-owned Generator repository. The mark is copied byte-for-byte into the
+project-local output so the end card remains self-contained. A temporary
+typographic `LEICO` placeholder reserves the second-logo position until the
+user supplies the official Leico artwork; it is not a final or redrawn logo.
+
+| Supplied source | SHA-256 | Owned copy | Role |
+|---|---|---|---|
+| `/Users/elliottye/Gnerator/public/raft-logo-mark.svg` | `ee6acf7dffe955227a1b9bd39825c4776cca951bc84cdaa852456f3a44c93725` | `outputs/company-os-end-card-v1/raft-logo-mark.svg` | Official Raft mark in the `Raft × Leico` end card |
+
 ## FDE user-supplied logo (2026-08-24)
 
 The user supplied the following FDE logo directly for use in the bilingual
@@ -79,19 +111,16 @@ contracts, documented in ADR 0005.
 
 ## Visual source audit and copies
 
-The three fish assets and empty office reference were untracked in the source
-worktree at audit time. They were user-approved for this Company OS visual layer
-and copied byte-for-byte.
+The three fish assets were untracked in the source worktree at audit time. They
+were user-approved for the Company OS workforce graph and copied byte-for-byte.
 The repository's Apache-2.0 license was copied to
-`docs/licenses/RAFT-APACHE-2.0.txt`. The empty office PNG is a composition and
-atmosphere reference, not a runtime background or a substitute for future 3D.
+`docs/licenses/RAFT-APACHE-2.0.txt`.
 
 | Source | Source status | SHA-256 | Owned copy | Dependencies |
 |---|---|---|---|---|
 | `web/src/assets/raft-office/characters/raft-fish-bumble.png` | untracked | `1529b8a1f66cbef716e29437ffb7c110b4dee4e04c8ed7a410a72e5e63a3d3ba` | `web/assets/fish/raft-fish-bumble.png` | PNG only |
 | `web/src/assets/raft-office/characters/raft-fish-fizz.png` | untracked | `ac1c32e85264091df04fe97867f554cfa58c2a54fc43c4d9b087c531fa649cdb` | `web/assets/fish/raft-fish-fizz.png` | PNG only |
 | `web/src/assets/raft-office/characters/raft-fish-honey.png` | untracked | `c928cf6df88acd1b875e4f8ab18d521a588f87ea4d608e67a91ddd156b6ae3a9` | `web/assets/fish/raft-fish-honey.png` | PNG only |
-| `web/src/assets/raft-office/scenes/coral-labs-office-empty-v1.png` | untracked | `71160eec6c5ac8370c17ca07bc14627ebd84c0f4993ed126250dc6eff85440bc` | `web/assets/scenes/coral-labs-office-empty-v1.png` | PNG only; reference-only |
 | `LICENSE` | committed | `108cb15997e51b75a8d18b0c1e2c52bd3879d051ab02118973387df1e4aab584` | `docs/licenses/RAFT-APACHE-2.0.txt` | none |
 
 ## Visual code received and references inspected
@@ -140,130 +169,14 @@ atmosphere reference, not a runtime background or a substitute for future 3D.
   surface, pale grey-green rail, dense navigation, compact toolbar, thin
   controls, and activity-led content hierarchy were reimplemented in
   `web/styles.css` and `web/family-ui.css`. The screenshots were not copied.
-- `web/src/features/company-os/ui/FishAvatarPicker.tsx` and office catalog files:
-  inspected for fish naming/alt-text behavior only; imports and code not copied.
+- `web/src/features/company-os/ui/FishAvatarPicker.tsx`: inspected for fish
+  naming/alt-text behavior only; imports and code not copied.
 - `web/src/features/company-os/office-assets/RaftFishAvatar.tsx` (untracked):
   inspected for asset selection, decorative alt behavior, and shadow treatment;
   React/Tailwind code was not copied.
 - `web/src/features/company-os/ui/ClayAvatarPicker.tsx`: inspected and rejected as
-  a visual target. Its nested CSS circles and torso blocks cannot represent
-  embodied, riggable people coexisting in an office.
+  a visual target for the workforce graph.
 
-The separately supplied concept image path
-`/Users/elliottye/Desktop/exec-7e0f5b06-5518-4639-94b0-126d28cb7610.png`
-did not exist when audited on 2026-08-18, including a same-name search under
-`Documents` and `.codex`. Its user-specified information architecture is recorded
-in `docs/visual-baseline.md`, but its pixels are not claimed as inspected.
-
-## Generated 3D provenance
-
-The following files are Company OS production inputs/outputs, not copied Raft
-assets. Generation metadata is secret-free; the provider credential was passed
-only through the process environment.
-
-| Asset | SHA-256 | Status |
-|---|---|---|
-| `assets/3d/references/fish-bumble-multiview-v2/side-pair-approved.png` | `d2ecddcf14ae90dad5f261bd4e348d2a43b6032508591b657cb86f4966acec56` | Image-generated bilateral reference approved by user |
-| `assets/3d/references/fish-bumble-multiview-v2/01-left-final.png` | `8933052b00720f638784496dbe0897b4ef734fc947b53ce39d0d80b547106a79` | Authoritative left profile crop |
-| `assets/3d/references/fish-bumble-multiview-v2/02-right-final.png` | `63f5bc70f1f8cdad3e312d925e956a96e6d51ac9c6f98d5c9086a7645bb0419b` | Authoritative right profile crop |
-| `assets/3d/generated/fish-bumble-3d-v4/base_basic_pbr.glb` | `c1353ced515c18c43dc3abefdcfb07396776a7287d93a34b06bdff688869e5d0` | User-approved canonical Bumble base mesh |
-| `assets/3d/generated/fish-bumble-3d-v4/generation.json` | `f6096157a1bb7994ef01e06caffd118cdd1835525ef5b072f40cda5748c45d88` | Hyper3D request/output provenance; contains no credential |
-| `assets/3d/references/fish-fizz-multiview-v2/side-pair-approved.png` | `cc219218572f9455f62cdd81ac53ef2c06efdd8dca9d44c61f228084f2a906c6` | Image-generated bilateral Fizz reference approved by user |
-| `assets/3d/references/fish-fizz-multiview-v2/01-left-final.png` | `8ea091e643336b4b1d79b5fabc55121c12d44436672503ab53e18ea7fc7b48c0` | Authoritative Fizz left profile crop |
-| `assets/3d/references/fish-fizz-multiview-v2/02-right-final.png` | `18bbd0a5d51c15cd3e57ee95c827bf18741d2d2e38c5d12498d8a6f80273ae16` | Authoritative Fizz right profile crop |
-| `assets/3d/generated/fish-fizz-3d-v3/base_basic_pbr.glb` | `96c7a84e52e589602e85fbadefe5ba43917d618d7a7918d56fb3c3157444913f` | User-approved canonical Fizz base mesh |
-| `assets/3d/generated/fish-fizz-3d-v3/generation.json` | `f1cdb688cb66f26908c00e61331090f7a1f06006ff63ab96780817196d43c6f3` | Hyper3D request/output provenance; contains no credential |
-| `assets/3d/references/fish-honey-multiview-v2/side-pair-approved.png` | `df59398cfebfae3983de6bc13f52ed8a7c54e24ef1e805072ae7bf3d04fdba7d` | Image-generated bilateral Honey reference approved by user |
-| `assets/3d/references/fish-honey-multiview-v2/01-left-final.png` | `13c77e5458f971fd09092865c1c627070dcb9982468f57f0ecaad00e3ad323a3` | Authoritative Honey left profile crop |
-| `assets/3d/references/fish-honey-multiview-v2/02-right-final.png` | `ff2b8d6927a5afd8175e2f2b8dcb45e601ef8b326dabe0379ed83dca075855c9` | Authoritative Honey right profile crop |
-| `assets/3d/generated/fish-honey-3d-v2/base_basic_pbr.glb` | `aaad376feef32b9c889a2e9e76d693b69df30681cda65d8d7676564de8359eb8` | User-approved canonical Honey base mesh |
-| `assets/3d/generated/fish-honey-3d-v2/generation.json` | `522e8b1c24dc09a2ded1827c8b0fb441f3812c722039952f3646f23c0ad71498` | Hyper3D request/output provenance; contains no credential |
-
-### Environment asset production
-
-- `assets/3d/environment/sources/*.blend` are the 79 compact, independently
-  editable Blender masters for the canonical environment catalog. They were
-  generated procedurally inside Company OS, contain no external textures or
-  provider payloads, and are distributed with the project under Apache-2.0.
-- `assets/3d/environment/qa/rooms/*.png` and
-  `assets/3d/environment/qa/reception-reference/room-reception.png` are
-  Company OS-generated visual admission renders. The approved reception art
-  direction master is retained at
-  `assets/3d/environment/references/reception-art-direction-v1.png`; it is a
-  Company OS-generated reference, not copied third-party artwork.
-- `assets/3d/environment/hyper3d-sources/*/multiview-v1/` contains
-  Company OS-generated five-view modeling inputs. It does not copy Raft source
-  code or brand assets.
-- `assets/3d/environment/hyper3d-generated-multiview/*/v*/` contains immutable
-  Hyper3D Rodin API outputs. Each directory carries its own secret-free
-  `generation.json`, provider preview, render, and GLB. The user authorized paid
-  generation; credentials were loaded ephemerally and are not stored.
-- `assets/3d/environment/parametric-generated/*/v1/` contains GLBs exported from
-  Company OS-owned `.blend` sources under `assets/3d/environment/sources/`.
-  These architectural and flat modules use no external generation provider.
-- Batch-level costs, recovery behavior, visual decisions, byte counts, mesh
-  inspection, and admission status are recorded under
-  `outputs/3d-asset-batch-03-results/` through
-  `outputs/3d-asset-batch-10-results/` and
-  `outputs/3d-asset-parametric-results/`.
-
-Generated candidates are not automatically canonical runtime assets. Provider
-outputs remain source candidates until a separately hashed, optimized derivative
-passes room-level visual and performance admission.
-
-## Generated static 2.5D Web assets
-
-These assets were generated for Company OS in this workspace and are not copied
-from an external repository. Full-resolution masters remain under
-`outputs/office-2-5d-modules-v1/`; the Web copies are resized runtime
-derivatives. No provider credential or production data is stored in them.
-
-The person-office stage below was generated with the built-in image generation
-tool on 2026-08-21. Tencent Marvis screenshots were used only to understand the
-fixed-stage information architecture (two desk columns plus utility spaces);
-no Marvis pixels, character art, logos, text, or code are included in the
-runtime asset. Company OS's own approved clay-office concept supplied the
-material, palette, and lighting reference.
-
-| Runtime asset | SHA-256 | Role |
-|---|---|---|
-| `outputs/company-os-person-office-stage-rejected-v1.png` | `7b33a8dcf85af8a7a18028c4ce6419aebfa3eb5ce598ff1aba99c63dda940c96` | Rejected combined-stage experiment; retained for comparison and not bundled at runtime |
-| `web/assets/scenes/person-office/base-room-v1.webp` | `0a0b9a893d00e99e37eab4436738a17340864e1f98c62a7de7c6e5860b89fb79` | Runtime empty, zero-yaw architectural base layer; PNG master retained in outputs |
-| `web/assets/scenes/person-office/workstation-v1.webp` | `f4b1a64d4257c9272c1b2e39b2be1713e3e683d3db82153998f8815f418db1c3` | Single transparent workstation reused for all six desk positions |
-| `web/assets/scenes/person-office/workstation-desk-v2.webp` | `cff7ce6c1e51c79bb99ebe444d121870b4df08ef74a7ec960d907863c5df1cf8` | Project-local alpha derivative of `workstation-v1.webp`; chair pixels removed so the desk can render behind and in front of a seated actor independently |
-| `web/assets/scenes/person-office/workstation-chair-v1.webp` | `6970151db5bede9c1e2a918830e9a46ca4307634dc7a404ac0fde419f8302a67` | Project-local alpha derivative of `workstation-v1.webp`; exact chair pixels retained as a separate renderer layer |
-| `web/assets/scenes/person-office/pantry-v1.webp` | `9fa32747f5d4226f81f491f73e709d807874c763054cb883d4cdef8d178656e1` | Transparent pantry module and counter occlusion source |
-| `web/assets/scenes/person-office/restroom-v1.webp` | `bf03c2ef30061f9c2f7a11ecd50f61db08fca23e5bfb3a472a17d095fc38414c` | Transparent front-open restroom and half-wall occlusion source |
-| `web/assets/scenes/person-office/balcony-v1.webp` | `11c441aaad579b329561194033cd604d629af7b7d10c2c34b58ba82a3cec1c14` | Transparent balcony module and railing occlusion source |
-| `web/assets/scenes/person-office/restroom-v2.webp` | `62690b6789eeeeba248e85d13d7681e3184b481f1b70caf53f637c712c8fd6ae` | Right-open restroom layer used by the open person-office stage |
-| `web/assets/scenes/person-office/balcony-v2.webp` | `32be115a0025a9f3c1c6af0c4894df8cd0b80ed8d8a06df71967d5175aab4d1e` | Right-open balcony with a true-alpha background for the unbounded office surface |
-| `web/assets/characters/stage/human-work-rear-v1.webp` | `f3b853dacad47b08c91086146d36d695ba5359c9775d0dbec94b08b24d68b8e4` | Rear workstation pose; Company OS generated derivative |
-| `web/assets/characters/stage/human-walk-left-sheet-v1.webp` | `a9a6033241b81b8758c8576a595875777eb133be99888103f967ffe16967a7aa` | Four-frame human walk cycle |
-| `web/assets/characters/stage/human-talk-left-sheet-v1.webp` | `14c4f729969c1028ffe25832814ee770a12373e1846cf14bbe326fcd54e19d67` | Four-frame standing conversation cycle |
-| `web/assets/characters/stage/bumble-work-rear-v1.webp` | `db8d9ff2569660ce078ba5a7ffe80fa3cc505a832cc4010d0fff47f02550b6a8` | Rear workstation pose derived from the approved Bumble identity |
-| `web/assets/characters/stage/bumble-swim-left-sheet-v1.webp` | `f38da586bf8b1fc50a87bdfc7ae22a036cf8c0b810be738b280f1da5d563b023` | Four-frame horizontal hover-swim cycle; no walk/feet pose |
-| `web/assets/characters/stage/bumble-talk-left-sheet-v1.webp` | `be56c94f5980e60e7aa9a428206e9a334c39a36d961e0521278c3fa36a9ec515` | Four-frame horizontal conversation cycle |
-| `web/assets/characters/stage/fizz-work-rear-v1.webp` | `22e20b459523313f6e5dc24640f0a1db7b35c8bc8791daeb1dae8164308a5e8b` | Rear workstation pose derived from the approved Fizz identity |
-| `web/assets/characters/stage/fizz-swim-left-sheet-v1.webp` | `89eca81522e12e2cf56944784abca187ca5e3678eeb0309332096ca61dd84508` | Four-frame horizontal hover-swim cycle; no walk/feet pose |
-| `web/assets/characters/stage/fizz-talk-left-sheet-v1.webp` | `5c30ddca6813854ccacc28c603e70953cf0a324e687c4211e37373649bfe699c` | Four-frame horizontal conversation cycle |
-| `web/assets/characters/stage/honey-work-rear-v1.webp` | `f38b2737ba072ed8e7a920b664571d997e81b53e6faaa1b039b40f5192c8d498` | Rear workstation pose derived from the approved Honey identity |
-| `web/assets/characters/stage/honey-swim-left-sheet-v1.webp` | `40cb8e74aa3b5edfd8115df217515c4e95719a3c036905b67bb55abd716381e5` | Four-frame horizontal hover-swim cycle; no walk/feet pose |
-| `web/assets/characters/stage/honey-talk-left-sheet-v1.webp` | `4e66c2a13f060e92b13d8a21445bca7b0c1f8d1503f0139116f068f391f8dbf6` | Four-frame horizontal conversation cycle |
-| `web/assets/scenes/modules/work-capacity-2.png` | `7a100b973a7337e2c191697bd7fc90dddcf5f5c20f639a8fb19bf1d5136fc41e` | Two-seat room background |
-| `web/assets/scenes/modules/work-capacity-3.png` | `5c9d0df43667a6c0e65b7898813cc6071e7354678561d2c2f7737bee8f39865b` | Three-seat default room background |
-| `web/assets/scenes/modules/work-capacity-4.png` | `840c9a789c994653f9e70efd0206f51c7ce869031e09109f8bd59aea8fa326d6` | Four-seat room background |
-| `web/assets/scenes/modules/work-capacity-8.png` | `98209ea060cbf309916e08c2f0acee7d7d650614a1233cfe4dbca813bfd613bb` | Eight-seat room background |
-| `web/assets/scenes/modules/meeting-project.png` | `2993b8fa36befcbc7560c06aa89ef9d18205298c230f2ff5590a54eaa390446e` | Meeting/project room background |
-| `web/assets/scenes/modules/reception.png` | `e133aa951a733c8f70fb23cec2d556495c19c410921b4e83683df2d98e5e3ffb` | Reception background |
-| `web/assets/scenes/modules/connector-lounge.png` | `893caa4f32ca6e1813e9cd20483ec628daceb27ed8656b1fc7145ce1b6beac1d` | Connector room background |
-| `web/assets/scenes/modules/pantry.png` | `71dbcd23b0ac6c97967cff82427ddbbbf4b1bad299d9f4e8cf7e3637a434d381` | Unoccupied pantry background |
-| `web/assets/scenes/modules/restroom.png` | `d059810fad007def64fa5218afaea18cebc00a8ca4e2b9d428ca12578cbf26d3` | Unoccupied restroom background |
-| `web/assets/characters/humans/terracotta-short-hair.png` | `db8e6e0dbeafd2d07d680a9900e28af8925147e212f3dff03174561c6c606d17` | Clean-alpha seated human sprite |
-| `outputs/avatar-style-studies/rejected-clay-professional-lead-v1.png` | `722bb58dda70d7e4e88ee514f8b75f8a49e37d939ce639abd94d9e7df8efb3aa` | Rejected built-in image-generation study from 2026-08-24; retained outside runtime for comparison; no external brand asset or production identity |
-| `web/assets/characters/agents/fizz-work-front-right.png` | `1ca53d70343e262d23a28aa32756077dad1dd4ed595c0ad0293866c809c33c97` | Clean-alpha yellow work-pose candidate |
-| `web/assets/characters/agents/bumble-work-front-right.png` | `13d6e30772394ce4f9e80d6e8e1ede0e4af04ece8f9d4f6fedc9ce90a4a4c584` | Clean-alpha blue work-pose candidate |
-| `web/assets/scenes/modules/team-room-1h2a-male.png` | `e9d8979cfa231d5cb662db97203b4b5901d8a8c30a3323d6874ca593c7071d32` | Admitted fixed room: one male accountable human and two Demo Agent fish |
-| `web/assets/scenes/modules/team-room-1h2a-female.png` | `4b5dae1f653bc3bc3ae2e1d3bf4ec5ebdf2b8cd70dc3719d087d20bcb7ba98f2` | Admitted fixed room: one female accountable human and two Demo Agent fish |
 
 ## Workforce graph open-source dependencies
 
@@ -841,3 +754,15 @@ personal/company text and redundant caption.
 - Source file: `/Users/elliottye/Downloads/IMG_0263.JPG`
 - Provenance: supplied by the user for placement in the brochure
 - Use: FDE brochure slide 12 contact QR code only
+
+## Company OS film — official Leico wordmark (2026-09-02)
+
+The `Follow the Light` end card uses the user-supplied Leico wordmark as an
+official project brand asset. The wordmark is cropped deterministically from
+its white background; its lettering and accent mark are not regenerated or
+redrawn.
+
+- Source file: `/Users/elliottye/Desktop/img_v3_02155_d79d851e-f25b-4568-b491-a006b6de757g.jpg`
+- SHA-256: `20843be10344564fb5216deba328cdbe0dbbbfb7b901602e5de9cb118bec46df`
+- Provenance: supplied by the user for the Company OS end card
+- Use: Company OS / Raft / Leico end-card composition only
