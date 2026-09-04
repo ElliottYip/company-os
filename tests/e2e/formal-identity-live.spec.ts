@@ -540,7 +540,7 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     await page.getByRole("tab", { name: "Profile" }).click();
     await page.getByRole("button", { name: "Sign out" }).click();
     await expect(page.getByRole("heading", { name: "Sign in with enterprise identity" })).toBeVisible();
-    await expect(page.locator(".formal-gate-code code")).toHaveText("FORMAL_IDENTITY_REQUIRED");
+    await expect(page.getByText("FORMAL_IDENTITY_REQUIRED", { exact: true })).toBeVisible();
   } finally {
     await stopBackend();
     await edge.close();
