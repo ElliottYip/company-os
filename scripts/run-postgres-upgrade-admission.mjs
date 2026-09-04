@@ -19,6 +19,18 @@ const databaseUser = "company_os";
 const marker = `upgrade-${suffix}`;
 const temporaryDirectory = await mkdtemp(join(tmpdir(), "company-os-upgrade-"));
 const baselineMigrations = join(temporaryDirectory, "migrations");
+const migrationsDirectory = new URL("../adapters/persistence/postgres/migrations/", import.meta.url);
+const baselineMigrationTag = "0004_human_invites";
+const migrationJournal = JSON.parse(await readFile(new URL("meta/_journal.json", migrationsDirectory), "utf8"));
+const baselineMigrationIndex = migrationJournal.entries.findIndex(({ tag }) =>
+  tag === baselineMigrationTag);
+const currentMigrationTag = migrationJournal.entries.at(-1)?.tag;
+if (baselineMigrationIndex < 0 || !currentMigrationTag ||
+    migrationJournal.entries.some(({ tag }) => !/^\d{4}_[a-z0-9_]+$/.test(tag))) {
+  throw new Error("UPGRADE_ADMISSION_MIGRATION_JOURNAL_INVALID");
+}
+const baselineMigrationCount = baselineMigrationIndex + 1;
+const currentMigrationCount = migrationJournal.entries.length;
 
 function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -69,16 +81,13 @@ async function psql(database, statement, options = {}) {
 }
 
 async function prepareBaselineMigrations() {
-  const source = new URL("../adapters/persistence/postgres/migrations/", import.meta.url);
-  await cp(source, baselineMigrations, { recursive: true });
-  await rm(join(baselineMigrations, "0005_durable_control_plane.sql"));
-  await rm(join(baselineMigrations, "0006_instance_maintenance.sql"));
-  await rm(join(baselineMigrations, "0007_instance_acceptance_window.sql"));
+  await cp(migrationsDirectory, baselineMigrations, { recursive: true });
+  for (const { tag } of migrationJournal.entries.slice(baselineMigrationCount)) {
+    await rm(join(baselineMigrations, `${tag}.sql`));
+  }
   const journalPath = join(baselineMigrations, "meta", "_journal.json");
   const journal = JSON.parse(await readFile(journalPath, "utf8"));
-  journal.entries = journal.entries.filter(({ tag }) =>
-    !["0005_durable_control_plane", "0006_instance_maintenance",
-      "0007_instance_acceptance_window"].includes(tag));
+  journal.entries = journal.entries.slice(0, baselineMigrationCount);
   await writeFile(journalPath, `${JSON.stringify(journal, null, 2)}\n`, { mode: 0o600 });
 }
 
@@ -136,11 +145,14 @@ try {
     "node", "--experimental-strip-types", "scripts/migrate-postgres.ts"]);
 
   const upgraded = await psql(sourceDatabase,
-    "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations), to_regclass('public.company_os_connector_outbox'), to_regclass('public.company_os_instance_maintenance'), EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='company_os_instance_maintenance' AND column_name='acceptance_binding'), payload->>'marker' FROM company_os_domain_event WHERE id='upgrade-event';");
+    "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations), to_regclass('public.company_os_connector_outbox'), to_regclass('public.company_os_instance_maintenance'), EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='company_os_instance_maintenance' AND column_name='acceptance_binding'), to_regclass('public.company_os_tenant_registration'), to_regclass('public.company_os_tenant_signup_invite_redemption'), payload->>'marker' FROM company_os_domain_event WHERE id='upgrade-event';");
   const upgradedFields = upgraded.stdout.trim().split("|");
-  if (upgradedFields[0] !== "7" || upgradedFields[1] !== "company_os_connector_outbox" ||
+  if (upgradedFields[0] !== String(currentMigrationCount) ||
+      upgradedFields[1] !== "company_os_connector_outbox" ||
       upgradedFields[2] !== "company_os_instance_maintenance" ||
-      upgradedFields[3] !== "t" || upgradedFields[4] !== marker) {
+      upgradedFields[3] !== "t" || upgradedFields[4] !== "company_os_tenant_registration" ||
+      upgradedFields[5] !== "company_os_tenant_signup_invite_redemption" ||
+      upgradedFields[6] !== marker) {
     throw new Error("UPGRADE_ADMISSION_CURRENT_SCHEMA_MISMATCH");
   }
 
@@ -159,14 +171,15 @@ try {
     "pg_restore", "--exit-on-error", "--no-owner", "--no-privileges",
     "--username", databaseUser, "--dbname", rollbackDatabase, "/tmp/company-os-pre-upgrade.dump"]);
   const rollback = await psql(rollbackDatabase,
-    "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations), to_regclass('public.company_os_connector_outbox') IS NULL, payload->>'marker' FROM company_os_domain_event WHERE id='upgrade-event';");
+    "SELECT (SELECT count(*) FROM drizzle.__drizzle_migrations), to_regclass('public.company_os_connector_outbox') IS NULL, to_regclass('public.company_os_tenant_registration') IS NULL, payload->>'marker' FROM company_os_domain_event WHERE id='upgrade-event';");
   const rollbackFields = rollback.stdout.trim().split("|");
-  if (rollbackFields[0] !== "4" || rollbackFields[1] !== "t" || rollbackFields[2] !== marker) {
+  if (rollbackFields[0] !== String(baselineMigrationCount) || rollbackFields[1] !== "t" ||
+      rollbackFields[2] !== "t" || rollbackFields[3] !== marker) {
     throw new Error("UPGRADE_ADMISSION_ROLLBACK_DATA_MISMATCH");
   }
 
   process.stdout.write(`${JSON.stringify({ schemaVersion: 1, status: "PASS",
-    fromMigration: "0004_human_invites", toMigration: "0007_instance_acceptance_window",
+    fromMigration: baselineMigrationTag, toMigration: currentMigrationTag,
     rollback: "PARALLEL_RESTORE_VERIFIED" })}\n`);
 } finally {
   await cleanup();
