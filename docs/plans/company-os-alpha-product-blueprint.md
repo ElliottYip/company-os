@@ -1,7 +1,7 @@
 # Company OS Alpha product blueprint
 
 Date: 2026-09-05  
-Status: proposed for user review before implementation
+Status: approved; implementation in progress
 
 Requirement-level ownership and proof are tracked in
 [`company-os-alpha-traceability.md`](company-os-alpha-traceability.md). The

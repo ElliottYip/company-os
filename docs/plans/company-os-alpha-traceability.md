@@ -1,7 +1,7 @@
 # Company OS Alpha requirement traceability
 
 Date: 2026-09-05  
-Status: implementation control document; awaiting blueprint approval
+Status: approved implementation control document; execution in progress
 
 This matrix prevents a green build or a visually polished happy path from being
 mistaken for a complete Alpha. A requirement is complete only when its named
@@ -11,12 +11,12 @@ authoritative evidence exists and contradicting evidence has been resolved.
 
 | ID | Requirement | Implementation owner | Required authoritative evidence | Current state |
 |---|---|---|---|---|
-| A-01 | Agent may be created before a Runtime exists | Agent identity/application | Agent-first browser journey persists `DRAFT_UNBOUND` across reload | Missing journey |
-| A-02 | Runtime may be registered before an Agent exists | Runtime registry | Runtime-first browser journey persists a registered healthy Runtime | Partial; registration exists |
-| A-03 | Agent and Runtime can be bound later without profile mutation | Agent-runtime binding | revisioned bind API, event, projection, conflict tests, browser proof | Missing |
-| A-04 | Rebind/unbind is safe with active or uncertain Work | Agent-runtime binding + Work | active/unknown Work denial or admitted drain policy; no orphaned authority | Missing |
+| A-01 | Agent may be created before a Runtime exists | Agent identity/application | Agent-first browser journey persists `DRAFT_UNBOUND` across reload | Complete; formal E2E creates unbound first |
+| A-02 | Runtime may be registered before an Agent exists | Runtime registry | Runtime-first browser journey persists a registered healthy Runtime | Complete in formal E2E |
+| A-03 | Agent and Runtime can be bound later without profile mutation | Agent-runtime binding | revisioned bind API, event, projection, conflict tests, browser proof | Complete; domain/API/Web/E2E evidence |
+| A-04 | Rebind/unbind is safe with active or uncertain Work | Agent-runtime binding + Work | active/unknown Work denial or admitted drain policy; no orphaned authority | Complete; non-terminal Attempt denial tests |
 | A-05 | Readiness explains every missing prerequisite | Agent dossier | projection and screenshot for each blocker, with reachable next action | Missing |
-| A-06 | One canonical Agent dossier is reachable everywhere | Web IA | Agents/Organization/Work/Approval/Alert/Case/Runtime link tests | Missing |
+| A-06 | One canonical Agent dossier is reachable everywhere | Web IA | Agents/Organization/Work/Approval/Alert/Case/Runtime link tests | Partial; Agents and Organization converge; later objects pending |
 | A-07 | Identity and tenancy fail closed | identity adapters/application | role and wrong-tenant API/browser negative cases | Existing; extend for new commands |
 | A-08 | Responsibility precedes execution | responsibility/application | missing/stale contract denial and activation journey | Existing; integrate into readiness |
 | A-09 | Permission, tool, data and Secret authority is explicit | governance/application | exact authority snapshot and blocked-state browser evidence | Partial; catalogs exist |
@@ -34,9 +34,9 @@ authoritative evidence exists and contradicting evidence has been resolved.
 | V-02 | Goals/projects/assets/budgets are linked without full SPM/PPM | planning projection | link validation and portfolio browser journey | Missing links |
 | S-01 | Shadow AI is an intake and resolution workflow, not invented control | discovery/risk | discovered/unmanaged state, owner assignment, connector admission | Missing |
 | S-02 | Duplicate review preserves history | asset governance | match evidence, merge/retire decision, historical reference tests | Missing |
-| U-01 | No primary information or action is hidden at 390/768/1440 | Web layout | current-run screenshots plus covered-element/truncation assertions | Contradicted by current audit |
-| U-02 | Dialogs/sheets remain usable with keyboard and screen reader | Web components | focus trap/return, Escape, labels, viewport bounds, action reachability | Partial; current responsive detail fails |
-| U-03 | Fixed navigation never covers content or focus | Web shell | safe-area and intersection assertions on long/detail pages | Contradicted by current audit |
+| U-01 | No primary information or action is hidden at 390/768/1440 | Web layout | current-run screenshots plus covered-element/truncation assertions | Partial; Agent detail corrected at all three widths |
+| U-02 | Dialogs/sheets remain usable with keyboard and screen reader | Web components | focus trap/return, Escape, labels, viewport bounds, action reachability | Partial; Agent detail corrected; full page matrix pending |
+| U-03 | Fixed navigation never covers content or focus | Web shell | safe-area and intersection assertions on long/detail pages | Partial; negative-margin defect removed; full matrix pending |
 | U-04 | Every visible control is real or truthfully blocked | Web/application | control inventory mapped to operation or stable blocked reason | Existing guard is insufficient |
 | Q-01 | Demo and Formal truth remain separate | composition/Web | no formal mutation from Demo; no fixture claims in Formal | Existing; re-run full matrix |
 | Q-02 | Real non-Fixture Connector passes end to end | Connector/acceptance | customer-authorized or project-owned non-Fixture trace, work, evidence, recovery | Missing final acceptance |
@@ -116,4 +116,3 @@ docs/acceptance/alpha/
 
 Screenshots belong under one immutable per-release directory and must identify
 route, state, viewport, language, role, data mode, and expected primary action.
-
