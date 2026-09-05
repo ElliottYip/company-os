@@ -47,7 +47,9 @@ try {
       return issue;
     });
     if (problems.length) throw new Error(`RISK_RESPONSIVE_${viewport.name}:${problems.join(",")}`);
-    await page.screenshot({ path: resolve(`docs/audits/2026-09-05-alpha-flow-audit/risk-access-case-${viewport.name}.png`), fullPage: true });
+    if (process.env.COMPANY_OS_WRITE_ALPHA_EVIDENCE === "true") {
+      await page.screenshot({ path: resolve(`docs/audits/2026-09-05-alpha-flow-audit/risk-access-case-${viewport.name}.png`), fullPage: true });
+    }
     await page.keyboard.press("Tab");
     if (!await page.evaluate(() => document.activeElement !== document.body)) throw new Error(`RISK_KEYBOARD_${viewport.name}`);
     await page.close();

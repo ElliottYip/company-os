@@ -75,7 +75,9 @@ try {
         ? [{ tag: node.tagName, name: node.getAttribute("name"), className: node.className,
           left: Math.round(box.left), right: Math.round(box.right), width: Math.round(box.width) }] : [];
     }));
-    await page.screenshot({ path: resolve(`docs/audits/2026-09-05-alpha-flow-audit/ai-control-${viewport.name}.png`), fullPage: true });
+    if (process.env.COMPANY_OS_WRITE_ALPHA_EVIDENCE === "true") {
+      await page.screenshot({ path: resolve(`docs/audits/2026-09-05-alpha-flow-audit/ai-control-${viewport.name}.png`), fullPage: true });
+    }
     if (outside.length) throw new Error(`AI_CONTROL_INTERACTIVE_OUTSIDE_VIEWPORT_${viewport.name}:${JSON.stringify(outside)}`);
     await page.keyboard.press("Tab");
     if (!await page.evaluate(() => document.activeElement !== document.body)) throw new Error(`AI_CONTROL_KEYBOARD_FOCUS_MISSING_${viewport.name}`);
