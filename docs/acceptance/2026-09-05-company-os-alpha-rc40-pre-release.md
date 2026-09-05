@@ -1,7 +1,14 @@
 # Company OS Alpha RC40 pre-release qualification
 
 Date: 2026-09-05
-Status: **REPOSITORY-QUALIFIED; IMMUTABLE PUBLICATION PENDING**
+Status: **FAILED CLOUD QUALIFICATION; NOT PUBLISHED**
+
+RC40 passed local qualification but its tag-triggered run `33955643269` exposed
+one stale CI-only browser journey: the real PostgreSQL/OIDC test still expected
+Runtime selection inside Agent creation. The product intentionally removed that
+field in favor of reviewed late binding. Qualification timed out waiting for
+the absent field, and the publish job was skipped. The tag remains immutable;
+the correction is carried by RC41.
 
 ## Outcome
 

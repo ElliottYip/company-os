@@ -288,8 +288,17 @@ test("real browser completes OIDC, company switching, persistence, and sign-out 
     const agentDialog = page.getByRole("dialog", { name: "Add an Agent colleague" });
     await agentDialog.getByLabel("Agent name").fill("Publishing Assistant");
     await agentDialog.getByLabel("Role", { exact: true }).fill("Publish approved reports with evidence");
-    await agentDialog.getByLabel("Runtime Connector").selectOption("http-agent-node");
+    await expect(agentDialog.getByText(/Create the Agent first, then attach a discovered runtime/)).toBeVisible();
     await agentDialog.getByRole("button", { name: "Add Agent", exact: true }).click();
+
+    await page.getByRole("button", { name: "Governance", exact: true }).first().click();
+    await page.getByRole("button", {
+      name: "Attach Publishing Assistant to Enterprise HTTP Agent Node", exact: true,
+    }).click();
+    const bindingDialog = page.getByRole("dialog", { name: "Publishing Assistant details" });
+    await expect(bindingDialog.getByLabel("Available runtime")).toHaveValue("http-agent-node");
+    await bindingDialog.getByLabel("Reason").fill("Approve the registered enterprise runtime");
+    await bindingDialog.getByRole("button", { name: "Review and bind" }).click();
 
     await page.getByRole("button", { name: "Agents", exact: true }).first().click();
     await page.getByText("Action policy", { exact: true }).click();
