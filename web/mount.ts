@@ -79,6 +79,7 @@ import {
   inboxPage,
   projectsPage,
   usagePage,
+  operationalRiskPage,
   type InboxFilter,
 } from "./pages/operational-pages.ts";
 import { agentPortfolioPage } from "./pages/agent-portfolio-pages.ts";
@@ -100,6 +101,7 @@ export type CompanyOSSection =
   | "evidence"
   | "activity"
   | "responsibility"
+  | "risk"
   | "connectors"
   | "usage"
   | "settings";
@@ -135,6 +137,7 @@ function sections(): readonly {
     { id: "evidence", label: t("nav.evidence"), group: "CONTROL" },
     { id: "activity", label: t("nav.activity"), group: "CONTROL" },
     { id: "responsibility", label: t("nav.responsibility"), group: "CONTROL" },
+    { id: "risk", label: t("nav.risk"), group: "CONTROL" },
     { id: "connectors", label: t("nav.connectors"), group: "ADMIN" },
     { id: "usage", label: t("nav.usage"), group: "ADMIN" },
     { id: "settings", label: t("nav.settings"), group: "ADMIN" },
@@ -164,6 +167,7 @@ function sectionIcon(section: CompanyOSSection): string {
     evidence: FileCheck2,
     activity: Clock3,
     responsibility: Scale,
+    risk: ShieldCheck,
     connectors: Workflow,
     usage: ChartNoAxesColumnIncreasing,
     settings: Settings,
@@ -939,7 +943,7 @@ function mobileNavigation(section: CompanyOSSection): string {
     { id: "work", label: t("nav.workApprovals") },
     { id: "organization", label: t("nav.organization") },
     { id: "connectors", label: t("nav.connectors") },
-    { id: "settings", label: t("nav.settings") },
+    { id: "risk", label: t("nav.risk") },
   ];
   return `<nav class="mobile-bottom-nav" aria-label="Company OS mobile navigation">
     ${items.slice(0, 2).map((item) => `<button type="button" data-section-target="${item.id}"${section === item.id ? ' aria-current="page"' : ""}>${sectionIcon(item.id)}<span>${item.label}</span></button>`).join("")}
@@ -1301,8 +1305,9 @@ export function mountCompanyOS(
     let workCatalog: FormalWorkCatalog | null;
     let formalActivity: Awaited<ReturnType<CompanyOSApplicationClient["activity"]>> | null;
     let accountabilityLedger: Awaited<ReturnType<CompanyOSApplicationClient["accountabilityLedger"]>>;
+    let operationalRisk: Awaited<ReturnType<CompanyOSApplicationClient["operationalRisk"]>>;
     try {
-      [state, organization, assignmentOptions, administration, planning, memberDirectory, workCatalog, formalActivity, accountabilityLedger] = await Promise.all([
+      [state, organization, assignmentOptions, administration, planning, memberDirectory, workCatalog, formalActivity, accountabilityLedger, operationalRisk] = await Promise.all([
         application.snapshot(),
         application.organization(),
         application.assignmentOptions(),
@@ -1312,6 +1317,7 @@ export function mountCompanyOS(
         application.mode === "FORMAL" ? application.workCatalog() : Promise.resolve(null),
         application.mode === "FORMAL" ? application.activity() : Promise.resolve(null),
         application.accountabilityLedger(),
+        application.mode === "FORMAL" ? application.operationalRisk() : Promise.resolve(null),
       ]);
     } catch (error) {
       if (application.mode === "FORMAL" && error instanceof Error && error.message === "ORGANIZATION_NOT_FOUND" && formalDirectory?.companies.length) {
@@ -1380,6 +1386,7 @@ export function mountCompanyOS(
       case "evidence": main = evidencePage(pageState, locale, accountabilityLedger); break;
       case "activity": main = activityPage(pageState, locale, formalActivity); break;
       case "responsibility": main = responsibilityView(pageState, organization, activeWorkTitle); break;
+      case "risk": main = operationalRiskPage(operationalRisk, organization, locale); break;
       case "connectors": main = connectorsView(application.mode, administration, isDemo, organization, latestSecretManagement); break;
       case "usage": main = usagePage(administration, locale); break;
       case "settings": main = settingsView(application.mode, locale, memberDirectory, organization, administration); break;
@@ -2136,6 +2143,22 @@ export function mountCompanyOS(
             contracts,
           });
         });
+      });
+    });
+    root.querySelectorAll<HTMLFormElement>("[data-ai-case-form]").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (application.mode !== "FORMAL") return;
+        const caseId = form.dataset.caseId;
+        const operation = form.dataset.caseOperation as import("../core/operational-risk.ts").AiCaseOperation | undefined;
+        const expectedRevision = Number(form.dataset.caseRevision);
+        if (!caseId || !operation || !Number.isSafeInteger(expectedRevision)) return;
+        const data = new FormData(form);
+        const optional = (name: string) => String(data.get(name) ?? "").trim();
+        void runAction(() => application.manageAiCase(caseId, { operation, expectedRevision,
+          reason: optional("reason"), ...(optional("rootCause") ? { rootCause: optional("rootCause") } : {}),
+          ...(optional("remediation") ? { remediation: optional("remediation") } : {}),
+          ...(optional("prevention") ? { prevention: optional("prevention") } : {}) }));
       });
     });
     root.querySelectorAll<HTMLFormElement>("[data-responsibility-transfer-form]").forEach((form) => {

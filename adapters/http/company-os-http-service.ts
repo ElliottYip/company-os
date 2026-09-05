@@ -96,6 +96,8 @@ export interface CompanyOsHttpServiceOptions {
   readonly formalApi?: {
     getAgentBoss(request: IncomingMessage, companyId: string): Promise<unknown>;
     getAdministration?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    getOperationalRisk?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    manageAiCase?(request: IncomingMessage, companyId: string, caseId: string, input: unknown): Promise<unknown>;
     listPortfolioAgents?(request: IncomingMessage, companyId: string): Promise<unknown>;
     synchronizePortfolioAgent?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     synchronizeFederatedSource?(
@@ -999,6 +1001,25 @@ function agentRuntimeBindingCommand(value: unknown): {
   };
 }
 
+function aiCaseCommand(value: unknown, operation: string): Record<string, unknown> | null {
+  const operations = new Set([
+    "START_INVESTIGATION", "START_REMEDIATION", "REQUEST_REVIEW", "RECOVER", "CLOSE", "REOPEN",
+  ]);
+  if (!operations.has(operation) || !value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  const allowed = new Set(["expectedRevision", "reason", "rootCause", "remediation", "prevention"]);
+  if (Object.keys(input).some((key) => !allowed.has(key)) ||
+      !Number.isSafeInteger(input.expectedRevision) || Number(input.expectedRevision) < 0 ||
+      typeof input.reason !== "string" || !input.reason.trim() || [...input.reason].length > 1_000 ||
+      ["rootCause", "remediation", "prevention"].some((key) => input[key] !== undefined &&
+        (typeof input[key] !== "string" || !(input[key] as string).trim() || [...(input[key] as string)].length > 4_000))) {
+    return null;
+  }
+  return { operation, expectedRevision: Number(input.expectedRevision), reason: input.reason.trim(),
+    ...Object.fromEntries(["rootCause", "remediation", "prevention"].flatMap((key) =>
+      typeof input[key] === "string" ? [[key, input[key].trim()]] : [])) };
+}
+
 function secretReferenceManagementCommand(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const input = value as Record<string, unknown>;
@@ -1617,6 +1638,27 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       if (method === "GET" && administrationRoute) {
         if (!options.formalApi?.getAdministration) throw new Error("FORMAL_API_UNAVAILABLE");
         sendJson(res, 200, await options.formalApi.getAdministration(req, administrationRoute[1] as string));
+        return;
+      }
+      const operationalRiskRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/operational-risk$/,
+      );
+      if (method === "GET" && operationalRiskRoute) {
+        if (!options.formalApi?.getOperationalRisk) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getOperationalRisk(req, operationalRiskRoute[1] as string));
+        return;
+      }
+      const aiCaseActionRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-cases\/([a-z0-9][a-z0-9-]{0,63})\/actions\/(start-investigation|start-remediation|request-review|recover|close|reopen)$/,
+      );
+      if (method === "POST" && aiCaseActionRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.formalApi?.manageAiCase) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const operation = (aiCaseActionRoute[3] as string).replaceAll("-", "_").toUpperCase();
+        const command = aiCaseCommand(await readJson(req, maxBodyBytes), operation);
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.manageAiCase(req,
+          aiCaseActionRoute[1] as string, aiCaseActionRoute[2] as string, command));
         return;
       }
       const portfolioAgentsRoute = path.match(

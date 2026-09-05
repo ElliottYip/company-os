@@ -1,5 +1,6 @@
 import type { CompanyWorkState } from "../../application/company-operations.ts";
 import type { AdministrationProjection } from "../../application/get-administration-projection.ts";
+import type { OperationalRiskProjection } from "../../application/get-operational-risk-projection.ts";
 import type { OrganizationDraft } from "../../core/organization.ts";
 import type { PlanningCatalog } from "../../core/planning.ts";
 import type { CompanyOSLocale } from "../i18n/index.ts";
@@ -76,6 +77,36 @@ function emptyState(title: string, description: string): string {
 }
 
 export type InboxFilter = "needs-me" | "assigned" | "resolved";
+
+export function operationalRiskPage(
+  risk: OperationalRiskProjection | null,
+  organization: OrganizationDraft,
+  locale: CompanyOSLocale,
+): string {
+  const actionFor = (status: string) => ({ CONTAINED: "START_INVESTIGATION", INVESTIGATING: "START_REMEDIATION",
+    REMEDIATING: "REQUEST_REVIEW", REVIEW: "RECOVER", RECOVERED: "CLOSE", CLOSED: "REOPEN",
+  })[status] ?? null;
+  const cases = risk?.cases ?? [];
+  const alerts = risk?.alerts ?? [];
+  const actionLabel = (operation: string) => c(locale, ({ START_INVESTIGATION: "Start investigation",
+    START_REMEDIATION: "Start remediation", REQUEST_REVIEW: "Request review", RECOVER: "Resume execution",
+    CLOSE: "Close Case", REOPEN: "Reopen Case" } as Record<string, string>)[operation] ?? operation,
+  ({ START_INVESTIGATION: "开始调查", START_REMEDIATION: "开始整改", REQUEST_REVIEW: "提交复核",
+    RECOVER: "恢复执行", CLOSE: "关闭 Case", REOPEN: "重新打开" } as Record<string, string>)[operation] ?? operation);
+  const caseRows = cases.map((record) => {
+    const operation = actionFor(record.status);
+    const fields = operation === "START_REMEDIATION"
+      ? `<label class="family-field">${c(locale, "Root cause", "根因")}<textarea class="family-control" name="rootCause" maxlength="2000" required></textarea></label>`
+      : operation === "REQUEST_REVIEW"
+        ? `<label class="family-field">${c(locale, "Remediation", "整改措施")}<textarea class="family-control" name="remediation" maxlength="2000" required></textarea></label><label class="family-field">${c(locale, "Prevention", "预防措施")}<textarea class="family-control" name="prevention" maxlength="2000" required></textarea></label>` : "";
+    return `<article class="admin-surface risk-case-card"><header><div><p class="family-kicker">${escapeHtml(record.id)} · rev ${record.revision}</p><h2>${escapeHtml(record.summary)}</h2></div><span class="status-pill ${record.status === "CLOSED" || record.status === "RECOVERED" ? "status-pill--demo" : "status-pill--human"}">${escapeHtml(enumLabel(locale, record.status))}</span></header><dl class="settings-list"><div><dt>${c(locale, "Agent", "Agent")}</dt><dd><button type="button" class="inline-record-link" data-open-agent-detail="${escapeHtml(record.agentId)}">${escapeHtml(principalName(organization, record.agentId))}</button></dd></div><div><dt>${c(locale, "Work", "任务")}</dt><dd>${escapeHtml(record.workId)}</dd></div><div><dt>${c(locale, "Accountable human", "真人负责人")}</dt><dd>${escapeHtml(principalName(organization, record.accountableHumanId))}</dd></div><div><dt>${c(locale, "Containment", "遏制状态")}</dt><dd>${escapeHtml(enumLabel(locale, record.containment))}</dd></div></dl>${record.rootCause ? `<p><strong>${c(locale, "Root cause", "根因")}:</strong> ${escapeHtml(record.rootCause)}</p>` : ""}${record.remediation ? `<p><strong>${c(locale, "Remediation", "整改")}:</strong> ${escapeHtml(record.remediation)}</p>` : ""}${operation ? `<form class="formal-work-form risk-case-form" data-ai-case-form data-case-id="${escapeHtml(record.id)}" data-case-operation="${operation}" data-case-revision="${record.revision}">${fields}<label class="family-field">${c(locale, "Decision reason", "处理原因")}<textarea class="family-control" name="reason" maxlength="1000" required></textarea></label><button class="family-button family-button--primary" type="submit">${actionLabel(operation)}</button></form>` : `<p class="family-kicker">${record.status === "RECOVERY_REQUESTED" ? c(locale, "Waiting for Connector recovery confirmation", "正在等待 Connector 确认恢复") : record.status === "OPEN" ? c(locale, "Waiting for durable containment confirmation", "正在等待持久化遏制确认") : c(locale, "No action available", "当前无可用操作")}</p>`}</article>`;
+  }).join("");
+  const edges = (risk?.accessEdges ?? []).map((edge) => {
+    const trace = risk?.traces.find(({ id }) => id === edge.traceId);
+    return `<article class="product-record-row product-record-row--static"><span class="record-monogram">→</span><span><small>${escapeHtml(edge.operation)} · ${escapeHtml(edge.authorityId)}</small><strong>${escapeHtml(edge.subjectAgentId)} → ${escapeHtml(edge.resourceType)}:${escapeHtml(edge.resourceId)}</strong><em>${escapeHtml(trace?.workId ?? edge.traceId)} · ${escapeHtml(trace?.recordedAt ?? edge.spanId)}</em></span></article>`;
+  }).join("");
+  return `<section class="page-stage product-list-page" data-section="risk" aria-labelledby="risk-title">${pageHeader("risk-title", c(locale, "RISK & AI CASES", "风险与 AI CASE"), c(locale, "Runtime access paths, policy alerts, durable containment, investigation, remediation, and verified recovery in one chain.", "把运行访问路径、策略告警、持久化遏制、调查、整改与确认恢复串成一条可审计链。"), `${alerts.filter(({ status }) => status !== "RESOLVED").length} ${c(locale, "active alerts", "个活跃告警")}`)}<section class="risk-overview-grid"><div class="admin-surface"><h2>${c(locale, "Access Map", "Access Map")}</h2><p>${c(locale, "Bounded resource relationships only; prompts, outputs, credentials, and enterprise records are excluded.", "仅展示有限资源关系；提示词、输出、凭据与企业数据原文不会进入控制面。")}</p><div class="product-list-surface">${edges || emptyState(c(locale, "No observed access path", "暂无访问路径"), c(locale, "Paths appear after a formal Connector reports a bounded runtime trace.", "正式 Connector 上报有限运行 Trace 后，路径会显示在这里。"))}</div></div><div><h2>${c(locale, "AI Cases", "AI Case")}</h2>${caseRows || `<section class="admin-surface">${emptyState(c(locale, "No AI Case", "暂无 AI Case"), c(locale, "A Case opens only when an enabled rule detects a real Connector observation.", "仅当启用的规则命中真实 Connector 观测时才会创建 Case。"))}</section>`}</div></section></section>`;
+}
 
 const TERMINAL_ATTEMPT_STATUSES = new Set(["SUCCEEDED", "FAILED", "CANCELLED", "TIMED_OUT"]);
 const TERMINAL_WORK_STATUSES = new Set(["COMPLETED", "FAILED", "CANCELLED"]);

@@ -21,6 +21,7 @@ export const en = {
   "nav.evidence": "Evidence",
   "nav.activity": "Activity",
   "nav.responsibility": "Accountability",
+  "nav.risk": "Risk & Cases",
   "nav.connectors": "Governance",
   "nav.usage": "Usage & Billing",
   "nav.settings": "Settings",

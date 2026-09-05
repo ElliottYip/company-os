@@ -165,6 +165,10 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
           policySummaries: [], totalReportedCostCents: 0, unpricedEventCount: 0 },
         egressDecisions: [], generatedAt: projection.generatedAt,
       });
+      if (String(input).endsWith("/operational-risk")) return response({
+        schemaVersion: 1, companyId: "company-one", traces: [], accessEdges: [],
+        violations: [], alerts: [], cases: [], generatedAt: projection.generatedAt,
+      });
       if (String(input).endsWith("/accountability-ledger")) return response({
         schemaVersion: 1, companyId: "company-one", approvals: [], evidence: [],
         generatedAt: projection.generatedAt,
@@ -282,6 +286,13 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   assert.equal(options.viewerId, "human-one");
   assert.deepEqual(options.agents[0]?.allowedActionIds, ["read-knowledge", "publish-content"]);
   assert.equal((await client.administration())?.governance.revision, 1);
+  assert.equal((await client.operationalRisk())?.companyId, "company-one");
+  await client.manageAiCase("case-one", { operation: "START_INVESTIGATION", expectedRevision: 0,
+    reason: "Inspect access path" });
+  const caseCommand = calls.find(({ url }) => url.endsWith("/ai-cases/case-one/actions/start-investigation"));
+  assert.deepEqual(JSON.parse(String(caseCommand?.init?.body)), {
+    expectedRevision: 0, reason: "Inspect access path",
+  });
   assert.equal((await client.accountabilityLedger())?.companyId, "company-one");
   const planning = await client.planning();
   assert.equal(planning.revision, 1);
@@ -740,6 +751,22 @@ test("formal Web rejects private credential references or cross-tenant records i
       companyId: "company-one", fetcher: async () => response(payload),
     });
     await assert.rejects(client.administration(), /ADMINISTRATION_PROJECTION_INVALID/);
+  }
+});
+
+test("formal Web rejects private or cross-tenant operational risk records", async () => {
+  const base = { schemaVersion: 1, companyId: "company-one", traces: [], accessEdges: [],
+    violations: [], alerts: [], cases: [], generatedAt: "2026-09-05T00:00:00.000Z" };
+  for (const payload of [
+    { ...base, traces: [{ id: "trace-one", companyId: "company-other", rawPrompt: "forbidden" }] },
+    { ...base, cases: [{ id: "case-one", companyId: "company-one", status: "OPEN",
+      workId: "work-one", agentId: "agent-one", accountableHumanId: "human-one",
+      ownerHumanId: "human-one", revision: 0, summary: "Risk", alertIds: [], rawOutput: "forbidden" }] },
+  ]) {
+    const client = createFormalApplicationClient({ baseUrl: "https://company-os.example",
+      webOrigin: "https://app.company-os.example", companyId: "company-one",
+      fetcher: async () => response(payload) });
+    await assert.rejects(client.operationalRisk(), /OPERATIONAL_RISK_PROJECTION_INVALID|ADMINISTRATION_PROJECTION_INVALID/);
   }
 });
 

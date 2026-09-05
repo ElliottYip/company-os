@@ -13,6 +13,8 @@ async function withService(
   formalApi?: {
     getAgentBoss(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
     getAdministration?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
+    getOperationalRisk?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
+    manageAiCase?(request: import("node:http").IncomingMessage, companyId: string, caseId: string, input: unknown): Promise<unknown>;
     getAccountabilityLedger?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
     exportAccountability?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     getPlanning?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
@@ -1273,6 +1275,36 @@ test("formal API exposes a separate sanitized administration projection", async 
     async getAdministration(_request, companyId) {
       assert.equal(companyId, "company-one");
       return { schemaVersion: 1, connectorCatalog: { revision: 2 } };
+    },
+  });
+});
+
+test("formal API exposes operational risk and accepts only bounded revisioned AI Case actions", async () => {
+  const calls: unknown[] = [];
+  await withService(async (baseUrl) => {
+    const read = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk`);
+    assert.equal(read.status, 200);
+    assert.deepEqual(await read.json(), { schemaVersion: 1, companyId: "company-one", cases: [] });
+    const changed = await fetch(`${baseUrl}/api/v1/companies/company-one/ai-cases/case-one/actions/start-investigation`, {
+      method: "POST", headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ expectedRevision: 0, reason: "Inspect access path" }),
+    });
+    assert.equal(changed.status, 200);
+    const invalid = await fetch(`${baseUrl}/api/v1/companies/company-one/ai-cases/case-one/actions/recover`, {
+      method: "POST", headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ expectedRevision: 1, reason: "Reviewed", privateTrace: "forbidden" }),
+    });
+    assert.equal(invalid.status, 422);
+    assert.deepEqual(calls, [{ companyId: "company-one", caseId: "case-one",
+      input: { operation: "START_INVESTIGATION", expectedRevision: 0, reason: "Inspect access path" } }]);
+  }, {
+    async getAgentBoss() { return {}; },
+    async getOperationalRisk(_request, companyId) {
+      return { schemaVersion: 1, companyId, cases: [] };
+    },
+    async manageAiCase(_request, companyId, caseId, input) {
+      calls.push({ companyId, caseId, input });
+      return { id: caseId, status: "INVESTIGATING", revision: 1 };
     },
   });
 });

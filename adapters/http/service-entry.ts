@@ -90,6 +90,8 @@ import { EventBackedToolAccessCatalogStore } from "../storage/event-backed-tool-
 import { EventBackedUsageBudgetStore } from "../storage/event-backed-usage-budget-store.ts";
 import { CollectConnectorObservations } from "../../application/collect-connector-observations.ts";
 import { ProcessOperationalRiskObservation } from "../../application/process-operational-risk-observation.ts";
+import { GetOperationalRiskProjection } from "../../application/get-operational-risk-projection.ts";
+import { ManageAiCase } from "../../application/manage-ai-case.ts";
 import { IngestConnectorUsage } from "../../application/ingest-connector-usage.ts";
 import { WorkAttemptService } from "../../application/work-attempt-service.ts";
 import { RequestWorkCancellation } from "../../application/request-work-cancellation.ts";
@@ -852,6 +854,21 @@ const server = createCompanyOsHttpService({
       },
       async getAdministration(request, companyId) {
         return (await formalAgentBossApi(request, companyId)).getAdministration(companyId);
+      },
+      async getOperationalRisk(request, companyId) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        return new GetOperationalRiskProjection({ identity: context.identity, events: formalEvents })
+          .execute(companyId);
+      },
+      async manageAiCase(request, companyId, caseId, input) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageAiCase({ identity: context.identity, events: formalEvents,
+          executionPorts: formalExecutionPorts, now: context.now, nextId: nextPostgresRecordId,
+        }).execute({ companyId, caseId,
+          ...(input as Omit<import("../../application/manage-ai-case.ts").ManageAiCaseInput,
+            "companyId" | "caseId">) });
       },
       async listPortfolioAgents(request, companyId) {
         return (await formalPortfolioApi(request, companyId)).listAgents(companyId);

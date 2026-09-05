@@ -674,6 +674,18 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
 .product-empty-state strong { font-size: 14px; }
 .product-empty-state p { max-width: 620px; margin: 7px auto 0; color: var(--family-ink-muted); font-size: 11px; line-height: 1.6; }
 .product-empty-state button { margin-top: 14px; border: 1px solid var(--family-line); border-radius: 8px; background: #f5f5f3; padding: 8px 11px; color: var(--family-ink-faint); font: inherit; font-size: var(--type-control); line-height: var(--leading-compact); }
+.risk-overview-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 16px; }
+.risk-overview-grid > div { min-width: 0; }
+.risk-overview-grid h2 { margin: 0 0 8px; font-size: var(--type-title); }
+.risk-overview-grid > .admin-surface { align-self: start; padding: 18px; }
+.risk-overview-grid > .admin-surface > p { margin: 0 0 16px; color: var(--family-ink-muted); font-size: var(--type-supporting); line-height: var(--leading-body); }
+.risk-case-card { min-width: 0; margin-bottom: 12px; padding: 18px; overflow: hidden; }
+.risk-case-card header { display: flex; min-width: 0; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.risk-case-card header > div { min-width: 0; }
+.risk-case-card h2 { overflow-wrap: anywhere; }
+.risk-case-card > p { color: var(--family-ink-muted); font-size: var(--type-supporting); line-height: var(--leading-body); overflow-wrap: anywhere; }
+.risk-case-form { margin-top: 16px; }
+.inline-record-link { border: 0; background: transparent; padding: 0; color: var(--family-accent); font: inherit; font-weight: 700; cursor: pointer; text-align: left; }
 .approval-detail-card { padding: 18px; }
 .approval-detail-card h2 { margin: 10px 0 0; font-size: 18px; }
 .approval-detail-card header p { margin: 5px 0 0; color: var(--family-ink-muted); font-size: 11px; }
@@ -727,6 +739,7 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
   .work-main-column { border-right: 0; border-bottom: 1px solid var(--family-line); }
   .task-record-panel[data-task-panel="detail"] { grid-template-columns: 1fr; }
   .task-properties { border-top: 1px solid var(--family-line); border-left: 0; }
+  .risk-overview-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
@@ -811,6 +824,13 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
   .formal-gate-code { align-items: flex-start; flex-direction: column; }
   .formal-gate-code code { overflow-wrap: anywhere; }
   .control-page-title { margin-inline: -16px; padding-inline: 16px; }
+  .risk-case-card { padding: 14px; }
+  .risk-case-card header { flex-direction: column; gap: 8px; }
+  .risk-case-card .settings-list > div { padding-inline: 0; }
+  .risk-overview-grid .product-record-row { grid-template-columns: 30px minmax(0, 1fr); }
+  .risk-overview-grid .product-record-row small,
+  .risk-overview-grid .product-record-row strong,
+  .risk-overview-grid .product-record-row em { white-space: normal; overflow-wrap: anywhere; }
   .control-agent-grid, .control-metric-grid { grid-template-columns: 1fr; }
   .control-agent-card { border-right: 0; border-bottom: 1px solid var(--family-line); }
   .control-agent-card:last-child { border-bottom: 0; }

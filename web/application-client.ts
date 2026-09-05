@@ -3,6 +3,8 @@ import { DEMO_COMPANY } from "../adapters/demo/demo-company.ts";
 import type { CompanyWorkState } from "../application/company-operations.ts";
 import type { AgentBossProjection } from "../application/get-agent-boss-projection.ts";
 import type { AdministrationProjection } from "../application/get-administration-projection.ts";
+import type { OperationalRiskProjection } from "../application/get-operational-risk-projection.ts";
+import type { AiCaseOperation } from "../core/operational-risk.ts";
 import type { FormalWorkCatalog } from "../application/formal-agent-boss-api.ts";
 import type { WorkRunTimelinePage } from "../application/get-work-run-timeline.ts";
 import type { CompanyActivityPage } from "../application/get-company-activity.ts";
@@ -76,6 +78,15 @@ export interface CompanyOSApplicationClient {
     readonly reason: string;
   }): Promise<OrganizationDraft>;
   administration(): Promise<AdministrationProjection | null>;
+  operationalRisk(): Promise<OperationalRiskProjection | null>;
+  manageAiCase(caseId: string, input: {
+    readonly operation: AiCaseOperation;
+    readonly expectedRevision: number;
+    readonly reason: string;
+    readonly rootCause?: string;
+    readonly remediation?: string;
+    readonly prevention?: string;
+  }): Promise<void>;
   planning(): Promise<PlanningCatalog>;
   replacePlanning(input: PlanningCatalog): Promise<PlanningCatalog>;
   createGoal(input: {
@@ -408,6 +419,8 @@ export function createDemoApplicationClient(): CompanyOSApplicationClient {
     },
     async archiveDepartment() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async administration() { return null; },
+    async operationalRisk() { return null; },
+    async manageAiCase() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async planning() { return structuredClone(planning); },
     async replacePlanning(input) {
       planning = validatePlanningCatalog({ ...input, revision: planning.revision + 1 }, organization);
@@ -1133,6 +1146,37 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
   return structuredClone({ ...payload, runtimeFederatedSources, agentRuntimeBindings }) as unknown as AdministrationProjection;
 }
 
+function operationalRiskProjection(payload: unknown, expectedCompanyId: string): OperationalRiskProjection {
+  if (!recordValue(payload) || payload.schemaVersion !== 1 || payload.companyId !== expectedCompanyId ||
+      !Array.isArray(payload.traces) || !Array.isArray(payload.accessEdges) ||
+      !Array.isArray(payload.violations) || !Array.isArray(payload.alerts) || !Array.isArray(payload.cases) ||
+      !validDate(payload.generatedAt)) throw new Error("OPERATIONAL_RISK_PROJECTION_INVALID");
+  const statuses = new Set(["OPEN", "CONTAINED", "INVESTIGATING", "REMEDIATING", "REVIEW",
+    "RECOVERY_REQUESTED", "RECOVERED", "CLOSED"]);
+  const alertStatuses = new Set(["OPEN", "CONTAINED", "RESOLVED"]);
+  for (const record of [...payload.traces, ...payload.accessEdges, ...payload.violations,
+    ...payload.alerts, ...payload.cases]) {
+    if (!recordValue(record) || record.companyId !== expectedCompanyId || !portableWebId(record.id)) {
+      throw new Error("OPERATIONAL_RISK_PROJECTION_INVALID");
+    }
+  }
+  for (const record of payload.cases) {
+    if (!recordValue(record) || !statuses.has(String(record.status)) || !portableWebId(record.workId) ||
+        !portableWebId(record.agentId) || !portableWebId(record.accountableHumanId) ||
+        !portableWebId(record.ownerHumanId) || !Number.isSafeInteger(record.revision) || Number(record.revision) < 0 ||
+        !boundedText(record.summary, 1_000) || !Array.isArray(record.alertIds) ||
+        record.alertIds.some((id) => !portableWebId(id))) throw new Error("OPERATIONAL_RISK_PROJECTION_INVALID");
+  }
+  for (const record of payload.alerts) {
+    if (!recordValue(record) || !alertStatuses.has(String(record.status)) ||
+        !["LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(String(record.severity))) {
+      throw new Error("OPERATIONAL_RISK_PROJECTION_INVALID");
+    }
+  }
+  assertSanitizedProjection(payload, expectedCompanyId);
+  return structuredClone(payload) as unknown as OperationalRiskProjection;
+}
+
 export function createFormalApplicationClient(
   options: FormalApplicationClientOptions,
 ): CompanyOSApplicationClient {
@@ -1416,6 +1460,15 @@ export function createFormalApplicationClient(
     async administration() {
       const payload = await getJson(companyEndpoint("/administration"));
       return administrationProjection(payload, companyId());
+    },
+    async operationalRisk() {
+      return operationalRiskProjection(await getJson(companyEndpoint("/operational-risk")), companyId());
+    },
+    async manageAiCase(caseId, input) {
+      if (!PORTABLE_WEB_ID.test(caseId)) throw new Error("AI_CASE_ID_INVALID");
+      const action = input.operation.toLowerCase().replaceAll("_", "-");
+      const { operation: _operation, ...body } = input;
+      await command(`/api/v1/companies/${encodeURIComponent(companyId())}/ai-cases/${encodeURIComponent(caseId)}/actions/${action}`, body);
     },
     async planning() {
       const payload = await getJson(companyEndpoint("/planning-catalog"));

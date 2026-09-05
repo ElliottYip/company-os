@@ -23,6 +23,7 @@ export const zhCN: Readonly<Record<CompanyOSMessageKey, string>> = {
   "nav.evidence": "证据",
   "nav.activity": "动态",
   "nav.responsibility": "责任链",
+  "nav.risk": "风险与 Case",
   "nav.connectors": "接入与治理",
   "nav.usage": "用量与计费",
   "nav.settings": "设置",
