@@ -3,6 +3,7 @@ export * from "./connector-runtime-security-port.ts";
 export * from "./content-digest-port.ts";
 export * from "./planning-store-port.ts";
 export * from "./agent-lifecycle-port.ts";
+export * from "./agent-runtime-binding-port.ts";
 export * from "./approval-publication-port.ts";
 export * from "./deployment-drain-state-port.ts";
 export * from "./instance-maintenance-port.ts";
