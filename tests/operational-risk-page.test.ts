@@ -26,11 +26,15 @@ test("risk page keeps Access Map and the next revisioned AI Case action in one b
       status: "CONTAINED", revision: 1, containment: "PAUSE_SUCCEEDED", summary: "越权导出",
       rootCause: null, remediation: null, prevention: null, openedAt: "2026-09-05T08:00:00.000Z",
       updatedAt: "2026-09-05T08:01:00.000Z", closedAt: null }],
-    generatedAt: "2026-09-05T08:01:00.000Z" }, organization, "zh-CN");
+    generatedAt: "2026-09-05T08:01:00.000Z" }, organization, "zh-CN", { companyId: "company-one",
+      revision: 2, rules: [{ id: "block-export", resourceType: "DATA", resourceId: "supplier-data",
+        operation: "EXPORT", severity: "CRITICAL", summary: "禁止导出" }] });
   assert.match(html, /data-section="risk"/);
   assert.match(html, /agent-one → DATA_SOURCE:supplier-data/);
   assert.match(html, /data-open-agent-detail="agent-one"/);
   assert.match(html, /data-case-operation="START_INVESTIGATION"/);
   assert.match(html, /data-case-revision="1"/);
+  assert.match(html, /data-risk-rule-form/);
+  assert.match(html, /data-delete-risk-rule="block-export"/);
   assert.doesNotMatch(html, /rawPrompt|credentialReference|rawOutput/);
 });

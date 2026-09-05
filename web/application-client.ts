@@ -4,7 +4,12 @@ import type { CompanyWorkState } from "../application/company-operations.ts";
 import type { AgentBossProjection } from "../application/get-agent-boss-projection.ts";
 import type { AdministrationProjection } from "../application/get-administration-projection.ts";
 import type { OperationalRiskProjection } from "../application/get-operational-risk-projection.ts";
-import type { AiCaseOperation } from "../core/operational-risk.ts";
+import { validateOperationalRiskRuleCatalog, type AiCaseOperation, type OperationalRiskRule,
+  type OperationalRiskRuleCatalog } from "../core/operational-risk.ts";
+import { validateAiAssetGraph, type AiAsset, type AiAssetGraph, type AiAssetRelationship } from "../core/ai-asset.ts";
+import { projectEvaluationTrends, validateAiEvaluationCatalog, type AiEvaluationCatalog,
+  type EvaluationDataset, type EvaluationResult, type EvaluationTemplate, type EvaluationTrend } from "../core/ai-evaluation.ts";
+import type { ValueMeasurement, ValueScopeType, VerifiedValueSummary } from "../core/ai-value.ts";
 import type { FormalWorkCatalog } from "../application/formal-agent-boss-api.ts";
 import type { WorkRunTimelinePage } from "../application/get-work-run-timeline.ts";
 import type { CompanyActivityPage } from "../application/get-company-activity.ts";
@@ -87,6 +92,27 @@ export interface CompanyOSApplicationClient {
     readonly remediation?: string;
     readonly prevention?: string;
   }): Promise<void>;
+  operationalRiskRules(): Promise<OperationalRiskRuleCatalog | null>;
+  replaceOperationalRiskRules(input: { readonly expectedRevision: number;
+    readonly rules: readonly OperationalRiskRule[] }): Promise<OperationalRiskRuleCatalog>;
+  aiAssets(): Promise<AiAssetGraph | null>;
+  upsertAiAsset(input: { readonly expectedGraphRevision: number; readonly expectedAssetRevision: number | null;
+    readonly asset: Omit<AiAsset, "companyId" | "revision" | "createdAt" | "updatedAt" | "canonicalAssetId"> }): Promise<AiAssetGraph>;
+  addAiAssetRelationship(input: { readonly expectedGraphRevision: number;
+    readonly relationship: Omit<AiAssetRelationship, "companyId"> }): Promise<AiAssetGraph>;
+  reviewShadowAi(reviewId: string, operation: "ASSIGN" | "ADMIT" | "REJECT", input: Record<string, unknown>): Promise<AiAssetGraph>;
+  reviewDuplicateAsset(reviewId: string, operation: "MERGE" | "DISMISS", input: Record<string, unknown>): Promise<AiAssetGraph>;
+  aiEvaluations(): Promise<{ readonly catalog: AiEvaluationCatalog; readonly trends: readonly EvaluationTrend[] } | null>;
+  upsertEvaluationTemplate(input: { readonly expectedCatalogRevision: number; readonly expectedTemplateRevision: number | null;
+    readonly template: Omit<EvaluationTemplate, "companyId" | "revision"> }): Promise<void>;
+  upsertEvaluationDataset(input: { readonly expectedCatalogRevision: number; readonly expectedDatasetRevision: number | null;
+    readonly dataset: Omit<EvaluationDataset, "companyId" | "revision"> }): Promise<void>;
+  recordEvaluationResult(input: { readonly expectedCatalogRevision: number;
+    readonly result: Omit<EvaluationResult, "companyId" | "evaluatorReference" | "evaluatorVersion" | "thresholdBps" | "outcome"> }): Promise<void>;
+  aiValue(input: { readonly scopeType: ValueScopeType; readonly scopeId: string;
+    readonly periodStart: string; readonly periodEnd: string }): Promise<VerifiedValueSummary | null>;
+  recordAiValue(input: { readonly expectedRevision: number;
+    readonly measurement: Omit<ValueMeasurement, "companyId"> }): Promise<void>;
   planning(): Promise<PlanningCatalog>;
   replacePlanning(input: PlanningCatalog): Promise<PlanningCatalog>;
   createGoal(input: {
@@ -421,6 +447,19 @@ export function createDemoApplicationClient(): CompanyOSApplicationClient {
     async administration() { return null; },
     async operationalRisk() { return null; },
     async manageAiCase() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async operationalRiskRules() { return null; },
+    async replaceOperationalRiskRules() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async aiAssets() { return null; },
+    async upsertAiAsset() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async addAiAssetRelationship() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async reviewShadowAi() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async reviewDuplicateAsset() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async aiEvaluations() { return null; },
+    async upsertEvaluationTemplate() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async upsertEvaluationDataset() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async recordEvaluationResult() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async aiValue() { return null; },
+    async recordAiValue() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async planning() { return structuredClone(planning); },
     async replacePlanning(input) {
       planning = validatePlanningCatalog({ ...input, revision: planning.revision + 1 }, organization);
@@ -1177,6 +1216,42 @@ function operationalRiskProjection(payload: unknown, expectedCompanyId: string):
   return structuredClone(payload) as unknown as OperationalRiskProjection;
 }
 
+function operationalRiskRuleProjection(payload: unknown, expectedCompanyId: string): OperationalRiskRuleCatalog {
+  try {
+    if (!recordValue(payload) || payload.companyId !== expectedCompanyId) throw new Error();
+    const catalog = validateOperationalRiskRuleCatalog(payload as unknown as OperationalRiskRuleCatalog);
+    assertSanitizedProjection(catalog, expectedCompanyId);
+    return catalog;
+  } catch {
+    throw new Error("OPERATIONAL_RISK_RULE_PROJECTION_INVALID");
+  }
+}
+
+function aiAssetProjection(payload: unknown, expectedCompanyId: string): AiAssetGraph {
+  try { const graph = validateAiAssetGraph(payload as AiAssetGraph);
+    if (graph.companyId !== expectedCompanyId) throw new Error(); assertSanitizedProjection(graph, expectedCompanyId); return graph;
+  } catch { throw new Error("AI_ASSET_PROJECTION_INVALID"); }
+}
+function aiEvaluationProjection(payload: unknown, expectedCompanyId: string) {
+  try {
+    if (!recordValue(payload) || !recordValue(payload.catalog) || !Array.isArray(payload.trends)) throw new Error();
+    const catalog = validateAiEvaluationCatalog(payload.catalog as unknown as AiEvaluationCatalog);
+    if (catalog.companyId !== expectedCompanyId || JSON.stringify(projectEvaluationTrends(catalog)) !== JSON.stringify(payload.trends)) throw new Error();
+    assertSanitizedProjection(payload, expectedCompanyId); return { catalog, trends: structuredClone(payload.trends) as EvaluationTrend[] };
+  } catch { throw new Error("AI_EVALUATION_PROJECTION_INVALID"); }
+}
+function aiValueProjection(payload: unknown): VerifiedValueSummary {
+  if (!recordValue(payload) || !["COMPANY", "PROJECT", "AGENT", "ASSET"].includes(String(payload.scopeType)) ||
+      !portableWebId(payload.scopeId) || !validDate(payload.periodStart) || !validDate(payload.periodEnd) ||
+      !Number.isSafeInteger(payload.ledgerRevision) || Number(payload.ledgerRevision) < 0 ||
+      ![payload.verifiedHoursSavedMinutes, payload.verifiedOutcomeValueCents, payload.verifiedCostCents].every((value) => Number.isSafeInteger(value) && Number(value) >= 0) ||
+      !(payload.verifiedAdoptionBps === null || Number.isSafeInteger(payload.verifiedAdoptionBps) && Number(payload.verifiedAdoptionBps) >= 0 && Number(payload.verifiedAdoptionBps) <= 10_000) ||
+      !(payload.verifiedNetValueCents === null || Number.isSafeInteger(payload.verifiedNetValueCents)) ||
+      !Array.isArray(payload.unavailableReasons) || !Array.isArray(payload.evidenceReferences) ||
+      payload.evidenceReferences.some((id) => !portableWebId(id))) throw new Error("AI_VALUE_PROJECTION_INVALID");
+  return structuredClone(payload) as unknown as VerifiedValueSummary;
+}
+
 export function createFormalApplicationClient(
   options: FormalApplicationClientOptions,
 ): CompanyOSApplicationClient {
@@ -1470,6 +1545,37 @@ export function createFormalApplicationClient(
       const { operation: _operation, ...body } = input;
       await command(`/api/v1/companies/${encodeURIComponent(companyId())}/ai-cases/${encodeURIComponent(caseId)}/actions/${action}`, body);
     },
+    async operationalRiskRules() {
+      return operationalRiskRuleProjection(await getJson(companyEndpoint("/operational-risk-rules")), companyId());
+    },
+    async replaceOperationalRiskRules(input) {
+      const payload = await putJson(companyEndpoint("/operational-risk-rules").slice(baseUrl.length), input);
+      return operationalRiskRuleProjection(payload, companyId());
+    },
+    async aiAssets() { return aiAssetProjection(await getJson(companyEndpoint("/ai-assets")), companyId()); },
+    async upsertAiAsset(input) {
+      return aiAssetProjection(await postJson(companyEndpoint("/ai-assets").slice(baseUrl.length), input), companyId());
+    },
+    async addAiAssetRelationship(input) {
+      return aiAssetProjection(await postJson(companyEndpoint("/ai-asset-relationships").slice(baseUrl.length), input), companyId());
+    },
+    async reviewShadowAi(reviewId, operation, input) {
+      if (!PORTABLE_WEB_ID.test(reviewId)) throw new Error("SHADOW_AI_REVIEW_ID_INVALID");
+      return aiAssetProjection(await postJson(companyEndpoint(`/shadow-ai-reviews/${encodeURIComponent(reviewId)}/actions/${operation.toLowerCase()}`).slice(baseUrl.length), input), companyId());
+    },
+    async reviewDuplicateAsset(reviewId, operation, input) {
+      if (!PORTABLE_WEB_ID.test(reviewId)) throw new Error("DUPLICATE_ASSET_REVIEW_ID_INVALID");
+      return aiAssetProjection(await postJson(companyEndpoint(`/duplicate-asset-reviews/${encodeURIComponent(reviewId)}/actions/${operation.toLowerCase()}`).slice(baseUrl.length), input), companyId());
+    },
+    async aiEvaluations() { return aiEvaluationProjection(await getJson(companyEndpoint("/ai-evaluations")), companyId()); },
+    async upsertEvaluationTemplate(input) { await command(companyEndpoint("/evaluation-templates").slice(baseUrl.length), input); },
+    async upsertEvaluationDataset(input) { await command(companyEndpoint("/evaluation-datasets").slice(baseUrl.length), input); },
+    async recordEvaluationResult(input) { await command(companyEndpoint("/evaluation-results").slice(baseUrl.length), input); },
+    async aiValue(input) {
+      const query = new URLSearchParams(input as unknown as Record<string, string>);
+      return aiValueProjection(await getJson(companyEndpoint(`/ai-value?${query}`)));
+    },
+    async recordAiValue(input) { await command(companyEndpoint("/ai-value-measurements").slice(baseUrl.length), input); },
     async planning() {
       const payload = await getJson(companyEndpoint("/planning-catalog"));
       return planningProjection(payload, companyId());

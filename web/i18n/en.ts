@@ -22,6 +22,7 @@ export const en = {
   "nav.activity": "Activity",
   "nav.responsibility": "Accountability",
   "nav.risk": "Risk & Cases",
+  "nav.assets": "AI Assets",
   "nav.connectors": "Governance",
   "nav.usage": "Usage & Billing",
   "nav.settings": "Settings",

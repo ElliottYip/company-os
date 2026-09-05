@@ -8,6 +8,23 @@ async function enterDemo(page: Page): Promise<void> {
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeVisible();
 }
 
+function formalAlphaRead(url: string, companyId = "company-one"): unknown | undefined {
+  const path = new URL(url).pathname;
+  if (path.endsWith("/operational-risk")) return { schemaVersion: 1, companyId, traces: [], accessEdges: [],
+    violations: [], alerts: [], cases: [], generatedAt: "2026-09-05T00:00:00.000Z" };
+  if (path.endsWith("/operational-risk-rules")) return { companyId, revision: 0, rules: [] };
+  if (path.endsWith("/ai-assets")) return { companyId, revision: 0, assets: [], relationships: [],
+    shadowReviews: [], duplicateReviews: [] };
+  if (path.endsWith("/ai-evaluations")) return { catalog: { companyId, revision: 0, templates: [],
+    datasets: [], results: [] }, trends: [] };
+  if (path.endsWith("/ai-value")) return { ledgerRevision: 0, scopeType: "COMPANY", scopeId: companyId,
+    periodStart: "2026-09-01T00:00:00.000Z", periodEnd: "2026-10-01T00:00:00.000Z",
+    verifiedHoursSavedMinutes: 0, verifiedAdoptionBps: null, verifiedOutcomeValueCents: 0,
+    verifiedCostCents: 0, verifiedNetValueCents: null,
+    unavailableReasons: ["NO_VERIFIED_ADOPTION", "NO_VERIFIED_OUTCOME_VALUE"], evidenceReferences: [] };
+  return undefined;
+}
+
 test("runtime API configuration drives the public Demo client across origins", async ({ page }) => {
   await page.addInitScript(() => {
     (window as Window & { __COMPANY_OS_CONFIG__?: unknown }).__COMPANY_OS_CONFIG__ = {
@@ -319,6 +336,9 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   };
   await page.route("**/api/v1/companies/company-one/**", async (route) => {
     const url = route.request().url();
+    const alpha = formalAlphaRead(url); if (alpha !== undefined) {
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(alpha) }); return;
+    }
     if (url.endsWith("/human-members/human-jordan") && route.request().method() === "PATCH") {
       jordanRole = (route.request().postDataJSON() as { role: string }).role;
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
@@ -804,6 +824,7 @@ test("formal tenant deep links and company switching use authorized server slugs
   await page.route("**/api/v1/**", async (route) => {
     const url = route.request().url();
     const json = (body: unknown) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+    const alpha = formalAlphaRead(url); if (alpha !== undefined) return json(alpha);
     if (url.endsWith("/access")) return json({ schemaVersion: 1, mode: "FORMAL", deploymentProfile: "self-hosted",
       entryState: "READY", identityProvider: { protocol: "OIDC", configured: true }, session: { authenticated: true },
       capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,
@@ -903,6 +924,7 @@ test("formal running Work requests cancellation and waits for Connector confirma
   await page.route("**/api/v1/**", async (route) => {
     const url = route.request().url();
     const json = (body: unknown, status = 200) => route.fulfill({ status, contentType: "application/json", body: JSON.stringify(body) });
+    const alpha = formalAlphaRead(url); if (alpha !== undefined) return json(alpha);
     if (url.endsWith("/access")) return json({ schemaVersion: 1, mode: "FORMAL", deploymentProfile: "self-hosted",
       entryState: "READY", identityProvider: { protocol: "OIDC", configured: true }, session: { authenticated: true },
       capabilities: { diagnostics: true, identitySettings: true, companyData: true, companyMutation: true,

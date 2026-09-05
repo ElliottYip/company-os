@@ -24,6 +24,8 @@ export class ProcessOperationalRiskObservation {
     readonly events: DurableControlPlaneStorePort;
     readonly executionPorts: readonly AgentExecutionPort[];
     readonly nextId: () => Identifier;
+    readonly assetDiscovery?: { execute(input: { readonly trace: RuntimeTrace;
+      readonly accountableHumanId: Identifier; readonly actorId: Identifier }): Promise<unknown> };
   };
   readonly #attempts: WorkAttemptService;
 
@@ -31,6 +33,8 @@ export class ProcessOperationalRiskObservation {
     readonly events: DurableControlPlaneStorePort;
     readonly executionPorts: readonly AgentExecutionPort[];
     readonly nextId: () => Identifier;
+    readonly assetDiscovery?: { execute(input: { readonly trace: RuntimeTrace;
+      readonly accountableHumanId: Identifier; readonly actorId: Identifier }): Promise<unknown> };
   }) {
     this.#dependencies = dependencies;
     this.#attempts = new WorkAttemptService(dependencies.events);
@@ -38,14 +42,15 @@ export class ProcessOperationalRiskObservation {
 
   async execute(input: ProcessOperationalRiskObservationInput) {
     const trace = validateRuntimeTrace(input.trace);
-    const existing = await this.#dependencies.events.read(input.companyId, { types: ["operational-risk.assessed"] });
-    if (existing.some((event) => (event.payload as { trace?: RuntimeTrace }).trace?.id === trace.id)) {
-      return { status: "REPLAYED" as const, trace, accessEdges: [], violations: [], alerts: [], cases: [] };
-    }
     const attempt = await this.#attempts.load(input.companyId, input.attemptId);
     if (!attempt) throw new Error("WORK_ATTEMPT_NOT_FOUND");
     if (trace.companyId !== input.companyId || trace.attemptId !== attempt.id || trace.workId !== attempt.workId ||
         trace.agentId !== attempt.agentId) throw new Error("RUNTIME_TRACE_AUTHORITY_MISMATCH");
+    const existing = await this.#dependencies.events.read(input.companyId, { types: ["operational-risk.assessed"] });
+    if (existing.some((event) => (event.payload as { trace?: RuntimeTrace }).trace?.id === trace.id)) {
+      await this.#discoverAssets(trace, attempt.authority.accountableHumanId, attempt.authority.connectorId);
+      return { status: "REPLAYED" as const, trace, accessEdges: [], violations: [], alerts: [], cases: [] };
+    }
     const evaluated = evaluateOperationalRisk(trace, input.rules, this.#dependencies.nextId);
     const alerts: RiskAlert[] = [];
     const cases: AiCase[] = [];
@@ -88,7 +93,12 @@ export class ProcessOperationalRiskObservation {
     }] : [];
     await this.#dependencies.events.commit({ event, publications,
       expectedEventSequence: (await this.#dependencies.events.read(input.companyId)).length });
+    await this.#discoverAssets(trace, attempt.authority.accountableHumanId, attempt.authority.connectorId);
     return { status: "RECORDED" as const, trace, ...evaluated, alerts, cases };
+  }
+
+  async #discoverAssets(trace: RuntimeTrace, accountableHumanId: Identifier, actorId: Identifier): Promise<void> {
+    await this.#dependencies.assetDiscovery?.execute({ trace, accountableHumanId, actorId });
   }
 
   async #containment(connectorId: Identifier, severities: readonly string[]): Promise<RiskContainment> {

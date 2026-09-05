@@ -53,6 +53,38 @@ export interface OperationalRiskRule {
   readonly summary: string;
 }
 
+export interface OperationalRiskRuleCatalog {
+  readonly companyId: Identifier;
+  readonly revision: number;
+  readonly rules: readonly OperationalRiskRule[];
+}
+
+export function validateOperationalRiskRuleCatalog(value: OperationalRiskRuleCatalog): OperationalRiskRuleCatalog {
+  id(value.companyId, "OPERATIONAL_RISK_RULE_COMPANY_INVALID");
+  if (!Number.isSafeInteger(value.revision) || value.revision < 0) {
+    throw new Error("OPERATIONAL_RISK_RULE_REVISION_INVALID");
+  }
+  if (!Array.isArray(value.rules) || value.rules.length > 250) throw new Error("OPERATIONAL_RISK_RULE_COUNT_INVALID");
+  const ids = new Set<string>();
+  const rules = value.rules.map((rule) => {
+    const ruleId = id(rule.id, "OPERATIONAL_RISK_RULE_ID_INVALID");
+    if (ids.has(ruleId)) throw new Error("OPERATIONAL_RISK_RULE_ID_DUPLICATE");
+    ids.add(ruleId);
+    if (!["MODEL", "TOOL", "DATA", "ASSET"].includes(rule.resourceType)) {
+      throw new Error("OPERATIONAL_RISK_RULE_RESOURCE_TYPE_INVALID");
+    }
+    if (!["LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(rule.severity)) {
+      throw new Error("OPERATIONAL_RISK_RULE_SEVERITY_INVALID");
+    }
+    return { id: ruleId, resourceType: rule.resourceType,
+      resourceId: id(rule.resourceId, "OPERATIONAL_RISK_RULE_RESOURCE_ID_INVALID"),
+      ...(rule.operation ? { operation: text(rule.operation, 120, "OPERATIONAL_RISK_RULE_OPERATION_INVALID") } : {}),
+      severity: rule.severity,
+      summary: text(rule.summary, 1_000, "OPERATIONAL_RISK_RULE_SUMMARY_INVALID") };
+  });
+  return { companyId: value.companyId, revision: value.revision, rules };
+}
+
 export interface PolicyViolation {
   readonly id: Identifier;
   readonly companyId: Identifier;

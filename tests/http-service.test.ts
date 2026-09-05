@@ -15,6 +15,12 @@ async function withService(
     getAdministration?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
     getOperationalRisk?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
     manageAiCase?(request: import("node:http").IncomingMessage, companyId: string, caseId: string, input: unknown): Promise<unknown>;
+    getOperationalRiskRules?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
+    replaceOperationalRiskRules?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    getAiAssets?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
+    upsertAiAsset?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    getAiEvaluations?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
+    getAiValue?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     getAccountabilityLedger?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
     exportAccountability?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     getPlanning?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
@@ -170,6 +176,14 @@ test("formal company closure accepts only an exact digest-bound archive command"
         retentionPolicyId: "standard-retention", reason: "Close" }),
     });
     assert.equal(invalid.status, 422);
+    const rules = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk-rules`);
+    assert.equal(rules.status, 200);
+    const replaced = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk-rules`, {
+      method: "PUT", headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ expectedRevision: 0, rules: [{ id: "block-export", resourceType: "DATA",
+        resourceId: "supplier-data", operation: "EXPORT", severity: "CRITICAL", summary: "Block export" }] }),
+    });
+    assert.equal(replaced.status, 200);
     assert.deepEqual(calls, [{ companyId: "company-one", retentionPolicyId: "standard-retention" }]);
   }, undefined, undefined, undefined, {
     async listCompanies() { return {}; },
@@ -1306,6 +1320,47 @@ test("formal API exposes operational risk and accepts only bounded revisioned AI
       calls.push({ companyId, caseId, input });
       return { id: caseId, status: "INVESTIGATING", revision: 1 };
     },
+    async getOperationalRiskRules(_request, companyId) { return { companyId, revision: 0, rules: [] }; },
+    async replaceOperationalRiskRules(_request, companyId, input) {
+      assert.equal(companyId, "company-one");
+      return { companyId, revision: 1, ...(input as object) };
+    },
+  });
+});
+
+test("formal AI control routes expose assets, evaluations, and verified value through bounded commands", async () => {
+  const mutations: unknown[] = [];
+  await withService(async (baseUrl) => {
+    assert.equal((await fetch(`${baseUrl}/api/v1/companies/company-one/ai-assets`)).status, 200);
+    const body = { expectedGraphRevision: 0, expectedAssetRevision: null, asset: { id: "model-one",
+      type: "MODEL", name: "Model One", provider: "provider-one", ownerHumanId: "human-one",
+      departmentId: null, purpose: "Approved inference", goalIds: [], projectIds: [], environment: "PRODUCTION",
+      version: "1", source: { type: "MANUAL", referenceId: "registration-one",
+        observedAt: "2026-09-05T10:00:00.000Z" }, riskLevel: "LOW", lifecycle: "ACTIVE",
+      governanceDepth: "GOVERNED" } };
+    const saved = await fetch(`${baseUrl}/api/v1/companies/company-one/ai-assets`, { method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" }, body: JSON.stringify(body) });
+    assert.equal(saved.status, 200);
+    const relationship = { expectedGraphRevision: 1, relationship: { id: "relationship-one",
+      fromAssetId: "model-one", toAssetId: "dataset-one", type: "EVALUATES",
+      evidenceReference: "trace-one", observedAt: "2026-09-05T10:00:00.000Z" } };
+    const related = await fetch(`${baseUrl}/api/v1/companies/company-one/ai-asset-relationships`, { method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" }, body: JSON.stringify(relationship) });
+    assert.equal(related.status, 200);
+    const rejected = await fetch(`${baseUrl}/api/v1/companies/company-one/ai-assets`, { method: "POST",
+      headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify({ ...body, privateSession: "forbidden" }) });
+    assert.equal(rejected.status, 422);
+    assert.equal((await fetch(`${baseUrl}/api/v1/companies/company-one/ai-evaluations`)).status, 200);
+    const value = await fetch(`${baseUrl}/api/v1/companies/company-one/ai-value?scopeType=COMPANY&scopeId=company-one&periodStart=2026-09-01T00%3A00%3A00.000Z&periodEnd=2026-10-01T00%3A00%3A00.000Z`);
+    assert.equal(value.status, 200);
+    assert.deepEqual(mutations, [{ companyId: "company-one", input: body }, { companyId: "company-one", input: relationship }]);
+  }, { async getAgentBoss() { return {}; },
+    async getAiAssets(_request, companyId) { return { companyId, revision: 0, assets: [], relationships: [], shadowReviews: [], duplicateReviews: [] }; },
+    async upsertAiAsset(_request, companyId, input) { mutations.push({ companyId, input }); return { companyId, revision: 1 }; },
+    async addAiAssetRelationship(_request, companyId, input) { mutations.push({ companyId, input }); return { companyId, revision: 2 }; },
+    async getAiEvaluations(_request, companyId) { return { catalog: { companyId, revision: 0, templates: [], datasets: [], results: [] }, trends: [] }; },
+    async getAiValue(_request, companyId, input) { return { companyId, ...input }; },
   });
 });
 

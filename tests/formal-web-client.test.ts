@@ -169,6 +169,10 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
         schemaVersion: 1, companyId: "company-one", traces: [], accessEdges: [],
         violations: [], alerts: [], cases: [], generatedAt: projection.generatedAt,
       });
+      if (String(input).endsWith("/operational-risk-rules")) return response({
+        companyId: "company-one", revision: init?.method === "PUT" ? 1 : 0,
+        rules: init?.method === "PUT" ? JSON.parse(String(init.body)).rules : [],
+      });
       if (String(input).endsWith("/accountability-ledger")) return response({
         schemaVersion: 1, companyId: "company-one", approvals: [], evidence: [],
         generatedAt: projection.generatedAt,
@@ -293,6 +297,10 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   assert.deepEqual(JSON.parse(String(caseCommand?.init?.body)), {
     expectedRevision: 0, reason: "Inspect access path",
   });
+  assert.equal((await client.operationalRiskRules())?.revision, 0);
+  assert.equal((await client.replaceOperationalRiskRules({ expectedRevision: 0, rules: [{ id: "block-export",
+    resourceType: "DATA", resourceId: "supplier-data", operation: "EXPORT", severity: "CRITICAL",
+    summary: "Block export" }] })).revision, 1);
   assert.equal((await client.accountabilityLedger())?.companyId, "company-one");
   const planning = await client.planning();
   assert.equal(planning.revision, 1);
@@ -768,6 +776,31 @@ test("formal Web rejects private or cross-tenant operational risk records", asyn
       fetcher: async () => response(payload) });
     await assert.rejects(client.operationalRisk(), /OPERATIONAL_RISK_PROJECTION_INVALID|ADMINISTRATION_PROJECTION_INVALID/);
   }
+});
+
+test("formal Web admits only tenant-bound AI asset, evaluation, and verified-value projections", async () => {
+  const client = createFormalApplicationClient({ baseUrl: "https://company-os.example",
+    webOrigin: "https://app.company-os.example", companyId: "company-one", fetcher: async (input) => {
+      const url = String(input);
+      if (url.includes("/ai-value?")) return response({ ledgerRevision: 0, scopeType: "COMPANY", scopeId: "company-one",
+        periodStart: "2026-09-01T00:00:00.000Z", periodEnd: "2026-10-01T00:00:00.000Z",
+        verifiedHoursSavedMinutes: 0, verifiedAdoptionBps: null, verifiedOutcomeValueCents: 0,
+        verifiedCostCents: 0, verifiedNetValueCents: null,
+        unavailableReasons: ["NO_VERIFIED_OUTCOME_VALUE"], evidenceReferences: [] });
+      if (url.endsWith("/ai-evaluations")) return response({ catalog: { companyId: "company-one",
+        revision: 0, templates: [], datasets: [], results: [] }, trends: [] });
+      return response({ companyId: "company-one", revision: 0, assets: [], relationships: [],
+        shadowReviews: [], duplicateReviews: [] });
+    } });
+  assert.equal((await client.aiAssets())?.companyId, "company-one");
+  assert.equal((await client.aiEvaluations())?.catalog.revision, 0);
+  assert.equal((await client.aiValue({ scopeType: "COMPANY", scopeId: "company-one",
+    periodStart: "2026-09-01T00:00:00.000Z", periodEnd: "2026-10-01T00:00:00.000Z" }))?.verifiedNetValueCents, null);
+  const invalid = createFormalApplicationClient({ baseUrl: "https://company-os.example",
+    webOrigin: "https://app.company-os.example", companyId: "company-one",
+    fetcher: async () => response({ companyId: "company-other", revision: 0, assets: [], relationships: [],
+      shadowReviews: [], duplicateReviews: [] }) });
+  await assert.rejects(invalid.aiAssets(), /AI_ASSET_PROJECTION_INVALID/);
 });
 
 test("formal Web accepts an earlier administration projection without federated sources during rolling upgrade", async () => {

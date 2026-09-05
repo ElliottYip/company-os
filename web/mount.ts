@@ -83,6 +83,7 @@ import {
   type InboxFilter,
 } from "./pages/operational-pages.ts";
 import { agentPortfolioPage } from "./pages/agent-portfolio-pages.ts";
+import { aiControlPage } from "./pages/ai-control-pages.ts";
 import {
   createPublicDemoClient,
   type PublicDemoPortfolioSnapshot,
@@ -102,6 +103,7 @@ export type CompanyOSSection =
   | "activity"
   | "responsibility"
   | "risk"
+  | "assets"
   | "connectors"
   | "usage"
   | "settings";
@@ -138,6 +140,7 @@ function sections(): readonly {
     { id: "activity", label: t("nav.activity"), group: "CONTROL" },
     { id: "responsibility", label: t("nav.responsibility"), group: "CONTROL" },
     { id: "risk", label: t("nav.risk"), group: "CONTROL" },
+    { id: "assets", label: t("nav.assets"), group: "CONTROL" },
     { id: "connectors", label: t("nav.connectors"), group: "ADMIN" },
     { id: "usage", label: t("nav.usage"), group: "ADMIN" },
     { id: "settings", label: t("nav.settings"), group: "ADMIN" },
@@ -168,6 +171,7 @@ function sectionIcon(section: CompanyOSSection): string {
     activity: Clock3,
     responsibility: Scale,
     risk: ShieldCheck,
+    assets: Network,
     connectors: Workflow,
     usage: ChartNoAxesColumnIncreasing,
     settings: Settings,
@@ -944,6 +948,7 @@ function mobileNavigation(section: CompanyOSSection): string {
     { id: "organization", label: t("nav.organization") },
     { id: "connectors", label: t("nav.connectors") },
     { id: "risk", label: t("nav.risk") },
+    { id: "assets", label: t("nav.assets") },
   ];
   return `<nav class="mobile-bottom-nav" aria-label="Company OS mobile navigation">
     ${items.slice(0, 2).map((item) => `<button type="button" data-section-target="${item.id}"${section === item.id ? ' aria-current="page"' : ""}>${sectionIcon(item.id)}<span>${item.label}</span></button>`).join("")}
@@ -1306,8 +1311,14 @@ export function mountCompanyOS(
     let formalActivity: Awaited<ReturnType<CompanyOSApplicationClient["activity"]>> | null;
     let accountabilityLedger: Awaited<ReturnType<CompanyOSApplicationClient["accountabilityLedger"]>>;
     let operationalRisk: Awaited<ReturnType<CompanyOSApplicationClient["operationalRisk"]>>;
+    let operationalRiskRules: Awaited<ReturnType<CompanyOSApplicationClient["operationalRiskRules"]>>;
+    let aiAssets: Awaited<ReturnType<CompanyOSApplicationClient["aiAssets"]>>;
+    let aiEvaluations: Awaited<ReturnType<CompanyOSApplicationClient["aiEvaluations"]>>;
+    let aiValue: Awaited<ReturnType<CompanyOSApplicationClient["aiValue"]>>;
     try {
-      [state, organization, assignmentOptions, administration, planning, memberDirectory, workCatalog, formalActivity, accountabilityLedger, operationalRisk] = await Promise.all([
+      const valuePeriodStart = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1)).toISOString();
+      const valuePeriodEnd = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() + 1, 1)).toISOString();
+      [state, organization, assignmentOptions, administration, planning, memberDirectory, workCatalog, formalActivity, accountabilityLedger, operationalRisk, operationalRiskRules, aiAssets, aiEvaluations, aiValue] = await Promise.all([
         application.snapshot(),
         application.organization(),
         application.assignmentOptions(),
@@ -1318,6 +1329,11 @@ export function mountCompanyOS(
         application.mode === "FORMAL" ? application.activity() : Promise.resolve(null),
         application.accountabilityLedger(),
         application.mode === "FORMAL" ? application.operationalRisk() : Promise.resolve(null),
+        application.mode === "FORMAL" ? application.operationalRiskRules() : Promise.resolve(null),
+        application.mode === "FORMAL" ? application.aiAssets() : Promise.resolve(null),
+        application.mode === "FORMAL" ? application.aiEvaluations() : Promise.resolve(null),
+        application.mode === "FORMAL" ? application.aiValue({ scopeType: "COMPANY",
+          scopeId: selectedFormalCompanyId!, periodStart: valuePeriodStart, periodEnd: valuePeriodEnd }) : Promise.resolve(null),
       ]);
     } catch (error) {
       if (application.mode === "FORMAL" && error instanceof Error && error.message === "ORGANIZATION_NOT_FOUND" && formalDirectory?.companies.length) {
@@ -1386,7 +1402,9 @@ export function mountCompanyOS(
       case "evidence": main = evidencePage(pageState, locale, accountabilityLedger); break;
       case "activity": main = activityPage(pageState, locale, formalActivity); break;
       case "responsibility": main = responsibilityView(pageState, organization, activeWorkTitle); break;
-      case "risk": main = operationalRiskPage(operationalRisk, organization, locale); break;
+      case "risk": main = operationalRiskPage(operationalRisk, organization, locale, operationalRiskRules); break;
+      case "assets": main = aiControlPage({ graph: aiAssets, evaluations: aiEvaluations, value: aiValue, risk: operationalRisk,
+        organization, locale }); break;
       case "connectors": main = connectorsView(application.mode, administration, isDemo, organization, latestSecretManagement); break;
       case "usage": main = usagePage(administration, locale); break;
       case "settings": main = settingsView(application.mode, locale, memberDirectory, organization, administration); break;
@@ -2160,6 +2178,121 @@ export function mountCompanyOS(
           ...(optional("remediation") ? { remediation: optional("remediation") } : {}),
           ...(optional("prevention") ? { prevention: optional("prevention") } : {}) }));
       });
+    });
+    root.querySelector<HTMLFormElement>("[data-risk-rule-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (application.mode !== "FORMAL" || !operationalRiskRules) return;
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      const operation = String(data.get("operation") ?? "").trim();
+      void runAction(() => application.replaceOperationalRiskRules({ expectedRevision: operationalRiskRules.revision,
+        rules: [...operationalRiskRules.rules, { id: String(data.get("id") ?? ""),
+          resourceType: String(data.get("resourceType") ?? "DATA") as "DATA" | "TOOL" | "MODEL" | "ASSET",
+          resourceId: String(data.get("resourceId") ?? ""), ...(operation ? { operation } : {}),
+          severity: String(data.get("severity") ?? "CRITICAL") as "LOW" | "MEDIUM" | "HIGH" | "CRITICAL",
+          summary: String(data.get("summary") ?? "") }] }));
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-delete-risk-rule]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (application.mode !== "FORMAL" || !operationalRiskRules) return;
+        const ruleId = button.dataset.deleteRiskRule;
+        if (!ruleId) return;
+        void runAction(() => application.replaceOperationalRiskRules({ expectedRevision: operationalRiskRules.revision,
+          rules: operationalRiskRules.rules.filter(({ id }) => id !== ruleId) }));
+      });
+    });
+    root.querySelectorAll<HTMLSelectElement>('[data-ai-asset-form][data-asset-id] select[name="ownerHumanId"]').forEach((control) => {
+      control.disabled = true;
+      control.title = copy("Ownership changes require the Shadow AI review workflow.", "责任人变更必须通过 Shadow AI 审查流程。");
+    });
+    root.querySelectorAll<HTMLFormElement>("[data-ai-asset-form]").forEach((form) => form.addEventListener("submit", (event) => {
+      event.preventDefault(); if (application.mode !== "FORMAL" || !aiAssets) return;
+      const data = new FormData(form); const owner = String(data.get("ownerHumanId") ?? "");
+      const list = (name: string) => String(data.get(name) ?? "").split(",").map((value) => value.trim()).filter(Boolean);
+      const id = String(data.get("id") ?? ""); const existing = aiAssets.assets.find((asset) => asset.id === id);
+      const now = new Date().toISOString();
+      void runAction(() => application.upsertAiAsset({ expectedGraphRevision: aiAssets.revision,
+        expectedAssetRevision: existing?.revision ?? null, asset: { id,
+          type: String(data.get("type") ?? "AGENT") as import("../core/ai-asset.ts").AiAssetType,
+          name: String(data.get("name") ?? ""), provider: existing?.provider ?? null,
+          ownerHumanId: existing ? existing.ownerHumanId : owner || null,
+          departmentId: existing?.departmentId ?? null, purpose: String(data.get("purpose") ?? ""), goalIds: list("goalIds"),
+          projectIds: list("projectIds"), environment: existing?.environment ?? "PRODUCTION", version: String(data.get("version") ?? ""),
+          source: existing?.source ?? { type: "MANUAL", referenceId: id, observedAt: now },
+          riskLevel: existing?.riskLevel ?? "NOT_ASSESSED", lifecycle: existing?.lifecycle ?? (owner ? "ACTIVE" : "DISCOVERED"),
+          governanceDepth: existing?.governanceDepth ?? (owner ? "GOVERNED" : "UNMANAGED") } }));
+    }));
+    root.querySelector<HTMLFormElement>("[data-ai-asset-relationship-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault(); if (application.mode !== "FORMAL" || !aiAssets) return;
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      void runAction(() => application.addAiAssetRelationship({ expectedGraphRevision: aiAssets.revision,
+        relationship: { id: String(data.get("id") ?? ""), fromAssetId: String(data.get("fromAssetId") ?? ""),
+          toAssetId: String(data.get("toAssetId") ?? ""),
+          type: String(data.get("type") ?? "USES") as import("../core/ai-asset.ts").AiAssetRelationshipType,
+          evidenceReference: String(data.get("evidenceReference") ?? ""), observedAt: new Date().toISOString() } }));
+    });
+    root.querySelectorAll<HTMLFormElement>("[data-shadow-review-form]").forEach((form) => {
+      form.addEventListener("submit", (event) => { event.preventDefault(); if (application.mode !== "FORMAL" || !aiAssets) return;
+        const data = new FormData(form); const reviewId = form.dataset.reviewId; const operation = form.dataset.operation as "ASSIGN" | "ADMIT" | "REJECT";
+        if (!reviewId) return; void runAction(() => application.reviewShadowAi(reviewId, operation, {
+          expectedGraphRevision: aiAssets.revision, expectedReviewRevision: Number(form.dataset.reviewRevision),
+          reason: String(data.get("reason") ?? ""), ...(operation === "ASSIGN" ?
+            { assignedHumanId: String(data.get("assignedHumanId") ?? "") } :
+            operation === "ADMIT" ? { governanceDepth: String(data.get("governanceDepth") ?? "OBSERVED") } : {}) }));
+      });
+    });
+    root.querySelectorAll<HTMLFormElement>("[data-duplicate-review-form]").forEach((form) => {
+      form.addEventListener("submit", (event) => { event.preventDefault(); if (application.mode !== "FORMAL" || !aiAssets) return;
+        const data = new FormData(form); const submitter = (event as SubmitEvent).submitter as HTMLButtonElement | null;
+        const operation = submitter?.value as "MERGE" | "DISMISS"; const reviewId = form.dataset.reviewId;
+        if (!reviewId || !operation) return; void runAction(() => application.reviewDuplicateAsset(reviewId, operation, {
+          expectedGraphRevision: aiAssets.revision, expectedReviewRevision: Number(form.dataset.reviewRevision),
+          reason: String(data.get("reason") ?? ""), ...(operation === "MERGE" ?
+            { canonicalAssetId: String(data.get("canonicalAssetId") ?? "") } : {}) }));
+      });
+    });
+    root.querySelector<HTMLFormElement>("[data-evaluation-template-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault(); if (application.mode !== "FORMAL" || !aiEvaluations) return;
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      void runAction(() => application.upsertEvaluationTemplate({ expectedCatalogRevision: aiEvaluations.catalog.revision,
+        expectedTemplateRevision: null, template: { id: String(data.get("id") ?? ""), name: String(data.get("name") ?? ""),
+          dimension: String(data.get("dimension") ?? "TASK_COMPLETION") as import("../core/ai-evaluation.ts").EvaluationDimension,
+          evaluatorKind: "HUMAN", evaluatorReference: String(data.get("evaluatorReference") ?? ""),
+          evaluatorVersion: String(data.get("evaluatorVersion") ?? ""),
+          passThresholdBps: Math.round(Number(data.get("passPercent")) * 100), regressionToleranceBps: 500,
+          status: "ACTIVE" } }));
+    });
+    root.querySelector<HTMLFormElement>("[data-evaluation-dataset-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault(); if (application.mode !== "FORMAL" || !aiEvaluations) return;
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      void runAction(() => application.upsertEvaluationDataset({ expectedCatalogRevision: aiEvaluations.catalog.revision,
+        expectedDatasetRevision: null, dataset: { id: String(data.get("id") ?? ""), name: String(data.get("name") ?? ""),
+          assetId: String(data.get("assetId") ?? ""), itemCount: Number(data.get("itemCount")),
+          contentDigest: String(data.get("contentDigest") ?? "") as `sha256:${string}`,
+          evidenceReferences: [String(data.get("evidenceReference") ?? "")], recordedAt: new Date().toISOString() } }));
+    });
+    root.querySelector<HTMLFormElement>("[data-evaluation-result-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault(); if (application.mode !== "FORMAL" || !aiEvaluations) return;
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      void runAction(() => application.recordEvaluationResult({ expectedCatalogRevision: aiEvaluations.catalog.revision,
+        result: { id: String(data.get("id") ?? ""), templateId: String(data.get("templateId") ?? ""),
+          assetId: String(data.get("assetId") ?? ""), datasetId: String(data.get("datasetId") ?? ""), traceId: null,
+          scoreBps: Math.round(Number(data.get("scorePercent")) * 100),
+          evidenceReferences: [String(data.get("evidenceReference") ?? "")], observedAt: new Date().toISOString() } }));
+    });
+    root.querySelector<HTMLFormElement>("[data-ai-value-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault(); if (application.mode !== "FORMAL" || !aiValue || !selectedFormalCompanyId) return;
+      const data = new FormData(event.currentTarget as HTMLFormElement);
+      const metric = String(data.get("metric") ?? "OUTCOME_VALUE_CENTS") as import("../core/ai-value.ts").ValueMetric;
+      const denominator = String(data.get("denominator") ?? "");
+      const companyId = selectedFormalCompanyId;
+      const asInstant = (name: string) => new Date(String(data.get(name) ?? "")).toISOString();
+      void runAction(() => application.recordAiValue({ expectedRevision: aiValue.ledgerRevision,
+        measurement: { id: String(data.get("id") ?? ""), scopeType: "COMPANY", scopeId: companyId,
+          metric, numerator: Number(data.get("numerator")), denominator: metric === "ADOPTION" ? Number(denominator) : null,
+          method: String(data.get("method") ?? ""), sourceReference: String(data.get("sourceReference") ?? ""),
+          sourceDigest: String(data.get("sourceDigest") ?? "") as `sha256:${string}`,
+          confidence: String(data.get("confidence") ?? "VERIFIED") as "VERIFIED" | "ESTIMATED",
+          periodStart: asInstant("periodStart"), periodEnd: asInstant("periodEnd"), recordedAt: new Date().toISOString() } }));
     });
     root.querySelectorAll<HTMLFormElement>("[data-responsibility-transfer-form]").forEach((form) => {
       form.addEventListener("submit", (event) => {

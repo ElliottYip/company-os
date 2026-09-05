@@ -72,6 +72,7 @@
     "check:protocols": "node scripts/generate-execution-plane-openapi.mjs",
     "check:connector-bundles": "node scripts/build-federated-source-reference.mjs",
     "check:web-interactions": "node scripts/check-web-interactions.mjs",
+    "check:ai-control-responsive": "node --experimental-strip-types scripts/verify-ai-control-responsive.ts",
     "research:paperclip:inventory": "node research/paperclip/generate-repository-inventory.mjs --write",
     "research:paperclip:inventory:check": "node research/paperclip/generate-repository-inventory.mjs --check",
     "research:paperclip:complete": "node research/paperclip/generate-repository-inventory.mjs --complete",

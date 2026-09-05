@@ -92,6 +92,10 @@ import { CollectConnectorObservations } from "../../application/collect-connecto
 import { ProcessOperationalRiskObservation } from "../../application/process-operational-risk-observation.ts";
 import { GetOperationalRiskProjection } from "../../application/get-operational-risk-projection.ts";
 import { ManageAiCase } from "../../application/manage-ai-case.ts";
+import { OperationalRiskRuleRegistry, loadOperationalRiskRules } from "../../application/operational-risk-rule-registry.ts";
+import { AiAssetRegistry, DiscoverTraceAiAssets } from "../../application/ai-asset-registry.ts";
+import { AiEvaluationRegistry } from "../../application/ai-evaluation-registry.ts";
+import { AiValueRegistry } from "../../application/ai-value-registry.ts";
 import { IngestConnectorUsage } from "../../application/ingest-connector-usage.ts";
 import { WorkAttemptService } from "../../application/work-attempt-service.ts";
 import { RequestWorkCancellation } from "../../application/request-work-cancellation.ts";
@@ -870,6 +874,85 @@ const server = createCompanyOsHttpService({
           ...(input as Omit<import("../../application/manage-ai-case.ts").ManageAiCaseInput,
             "companyId" | "caseId">) });
       },
+      async getOperationalRiskRules(request, companyId) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        return new OperationalRiskRuleRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).load(companyId);
+      },
+      async replaceOperationalRiskRules(request, companyId, input) {
+        if (!formalEvents) throw new Error("FORMAL_API_UNAVAILABLE");
+        const context = await formalCompanyContext(request, companyId);
+        return new OperationalRiskRuleRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).replace(companyId,
+          input as { expectedRevision: number; rules: import("../../core/operational-risk.ts").OperationalRiskRule[] });
+      },
+      async getAiAssets(request, companyId) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiAssetRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).load(companyId);
+      },
+      async upsertAiAsset(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiAssetRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).upsertAsset(companyId,
+          input as Parameters<AiAssetRegistry["upsertAsset"]>[1]);
+      },
+      async addAiAssetRelationship(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiAssetRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).addRelationship(companyId,
+          input as Parameters<AiAssetRegistry["addRelationship"]>[1]);
+      },
+      async reviewShadowAi(request, companyId, reviewId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiAssetRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).reviewShadow(companyId, reviewId,
+          input as Parameters<AiAssetRegistry["reviewShadow"]>[2]);
+      },
+      async reviewDuplicateAsset(request, companyId, reviewId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiAssetRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).reviewDuplicate(companyId, reviewId,
+          input as Parameters<AiAssetRegistry["reviewDuplicate"]>[2]);
+      },
+      async getAiEvaluations(request, companyId) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiEvaluationRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).load(companyId);
+      },
+      async upsertEvaluationTemplate(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiEvaluationRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).upsertTemplate(companyId,
+          input as Parameters<AiEvaluationRegistry["upsertTemplate"]>[1]);
+      },
+      async upsertEvaluationDataset(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiEvaluationRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).upsertDataset(companyId,
+          input as Parameters<AiEvaluationRegistry["upsertDataset"]>[1]);
+      },
+      async recordEvaluationResult(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiEvaluationRegistry({ identity: context.identity, events: formalEvents,
+          now: context.now, nextId: nextPostgresRecordId }).recordResult(companyId,
+          input as Parameters<AiEvaluationRegistry["recordResult"]>[1]);
+      },
+      async recordAiValue(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiValueRegistry({ identity: context.identity, events: formalEvents,
+          costs: new EventBackedUsageBudgetStore(formalEvents, nextPostgresRecordId),
+          now: context.now, nextId: nextPostgresRecordId }).record(companyId,
+          input as Parameters<AiValueRegistry["record"]>[1]);
+      },
+      async getAiValue(request, companyId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new AiValueRegistry({ identity: context.identity, events: formalEvents,
+          costs: new EventBackedUsageBudgetStore(formalEvents, nextPostgresRecordId),
+          now: context.now, nextId: nextPostgresRecordId }).summarize(companyId,
+          input as Parameters<AiValueRegistry["summarize"]>[1]);
+      },
       async listPortfolioAgents(request, companyId) {
         return (await formalPortfolioApi(request, companyId)).listAgents(companyId);
       },
@@ -1425,7 +1508,7 @@ const stopConnectorSupervisor = formalEvents && companyAccessStore
   ? startConnectorCommandSupervisor(new RedriveConnectorCommands({
       listCompanyIds: () => companyAccessStore.listCompanyIds(),
       deliver: async (companyId) => {
-        const collectObservations = () => new CollectConnectorObservations({
+        const collectObservations = async () => new CollectConnectorObservations({
           store: formalEvents,
           executionPorts: formalExecutionPorts,
           approvals: new EventBackedApprovalStore(formalEvents, companyId, nextPostgresRecordId, () => new Date().toISOString()),
@@ -1437,8 +1520,9 @@ const stopConnectorSupervisor = formalEvents && companyAccessStore
             events: formalEvents,
             executionPorts: formalExecutionPorts,
             nextId: nextPostgresRecordId,
+            assetDiscovery: new DiscoverTraceAiAssets({ events: formalEvents, nextId: nextPostgresRecordId }),
           }),
-          riskRules: [],
+          riskRules: (await loadOperationalRiskRules(formalEvents, companyId)).rules,
           nextId: nextPostgresRecordId,
         }).execute(companyId);
         const deliver = () => connectorDelivery({

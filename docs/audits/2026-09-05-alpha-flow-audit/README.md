@@ -140,3 +140,19 @@ approval, and later company operations.
 ![Corrected Agent detail tablet](16-agent-detail-tablet-fixed.png)
 
 ![Corrected Agent detail desktop](17-agent-detail-desktop-fixed.png)
+
+### 10. AI assets, evaluation, Shadow review, and verified value
+
+The expanded AI control page was rendered with long multilingual identifiers,
+an open Shadow review, an evaluation regression, an AI Case link, and verified
+value evidence. Automated Chromium checks at 390, 768, and 1440 pixels assert
+zero horizontal overflow, no interactive control outside the viewport, and a
+reachable keyboard focus target. The check first failed on intrinsic-width
+form controls at 390 pixels; the grid tracks were corrected to `minmax(0, 1fr)`
+before these passing images were generated.
+
+![AI control mobile](ai-control-mobile.png)
+
+![AI control tablet](ai-control-tablet.png)
+
+![AI control desktop](ai-control-desktop.png)

@@ -4,6 +4,9 @@ import type { DemoPortfolioSnapshot } from "../../core/demo-portfolio.ts";
 import type { OrganizationDraft } from "../../core/organization.ts";
 import { BoundedHttpMetrics } from "./bounded-http-metrics.ts";
 import type { PublicDemoRequestLimiter } from "./public-demo-request-limiter.ts";
+import { aiAssetCommand, aiAssetRelationshipCommand, duplicateReviewCommand,
+  evaluationDatasetCommand, evaluationResultCommand, evaluationTemplateCommand, shadowReviewCommand,
+  valueMeasurementCommand } from "./ai-control-http-contract.ts";
 
 export interface DemoApplicationClient {
   snapshot(): Promise<CompanyWorkState>;
@@ -98,6 +101,19 @@ export interface CompanyOsHttpServiceOptions {
     getAdministration?(request: IncomingMessage, companyId: string): Promise<unknown>;
     getOperationalRisk?(request: IncomingMessage, companyId: string): Promise<unknown>;
     manageAiCase?(request: IncomingMessage, companyId: string, caseId: string, input: unknown): Promise<unknown>;
+    getOperationalRiskRules?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    replaceOperationalRiskRules?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    getAiAssets?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    upsertAiAsset?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    addAiAssetRelationship?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    reviewShadowAi?(request: IncomingMessage, companyId: string, reviewId: string, input: unknown): Promise<unknown>;
+    reviewDuplicateAsset?(request: IncomingMessage, companyId: string, reviewId: string, input: unknown): Promise<unknown>;
+    getAiEvaluations?(request: IncomingMessage, companyId: string): Promise<unknown>;
+    upsertEvaluationTemplate?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    upsertEvaluationDataset?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    recordEvaluationResult?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    recordAiValue?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
+    getAiValue?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     listPortfolioAgents?(request: IncomingMessage, companyId: string): Promise<unknown>;
     synchronizePortfolioAgent?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     synchronizeFederatedSource?(
@@ -1020,6 +1036,25 @@ function aiCaseCommand(value: unknown, operation: string): Record<string, unknow
       typeof input[key] === "string" ? [[key, input[key].trim()]] : [])) };
 }
 
+function operationalRiskRulesCommand(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (Object.keys(input).some((key) => !["expectedRevision", "rules"].includes(key)) ||
+      !Number.isSafeInteger(input.expectedRevision) || Number(input.expectedRevision) < 0 ||
+      !Array.isArray(input.rules) || input.rules.length > 250) return null;
+  for (const value of input.rules) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    const rule = value as Record<string, unknown>;
+    if (Object.keys(rule).some((key) => !["id", "resourceType", "resourceId", "operation", "severity", "summary"].includes(key)) ||
+        !requiredId(rule.id) || !["MODEL", "TOOL", "DATA", "ASSET"].includes(String(rule.resourceType)) ||
+        !requiredId(rule.resourceId) || rule.operation !== undefined &&
+          (typeof rule.operation !== "string" || !rule.operation.trim() || [...rule.operation].length > 120) ||
+        !["LOW", "MEDIUM", "HIGH", "CRITICAL"].includes(String(rule.severity)) ||
+        typeof rule.summary !== "string" || !rule.summary.trim() || [...rule.summary].length > 1_000) return null;
+  }
+  return structuredClone(input);
+}
+
 function secretReferenceManagementCommand(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const input = value as Record<string, unknown>;
@@ -1647,6 +1682,89 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
         if (!options.formalApi?.getOperationalRisk) throw new Error("FORMAL_API_UNAVAILABLE");
         sendJson(res, 200, await options.formalApi.getOperationalRisk(req, operationalRiskRoute[1] as string));
         return;
+      }
+      const operationalRiskRulesRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/operational-risk-rules$/,
+      );
+      if (method === "GET" && operationalRiskRulesRoute) {
+        if (!options.formalApi?.getOperationalRiskRules) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getOperationalRiskRules(req, operationalRiskRulesRoute[1] as string));
+        return;
+      }
+      if (method === "PUT" && operationalRiskRulesRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        if (!options.formalApi?.replaceOperationalRiskRules) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        const command = operationalRiskRulesCommand(await readJson(req, maxBodyBytes));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.replaceOperationalRiskRules(req,
+          operationalRiskRulesRoute[1] as string, command));
+        return;
+      }
+      const aiAssetsRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-assets$/);
+      if (method === "GET" && aiAssetsRoute) {
+        if (!options.formalApi?.getAiAssets) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getAiAssets(req, aiAssetsRoute[1] as string)); return;
+      }
+      if (method === "POST" && aiAssetsRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = aiAssetCommand(await readJson(req, maxBodyBytes));
+        if (!command || !options.formalApi?.upsertAiAsset) throw new Error(command ? "FORMAL_COMMAND_UNAVAILABLE" : "INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.upsertAiAsset(req, aiAssetsRoute[1] as string, command)); return;
+      }
+      const aiAssetRelationshipsRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-asset-relationships$/);
+      if (method === "POST" && aiAssetRelationshipsRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = aiAssetRelationshipCommand(await readJson(req, maxBodyBytes));
+        if (!command || !options.formalApi?.addAiAssetRelationship) throw new Error(command ? "FORMAL_COMMAND_UNAVAILABLE" : "INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.addAiAssetRelationship(req, aiAssetRelationshipsRoute[1] as string, command)); return;
+      }
+      const shadowReviewRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/shadow-ai-reviews\/([a-z0-9][a-z0-9-]{0,127})\/actions\/(assign|admit|reject)$/);
+      if (method === "POST" && shadowReviewRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = shadowReviewCommand(await readJson(req, maxBodyBytes), (shadowReviewRoute[3] as string).toUpperCase());
+        if (!command || !options.formalApi?.reviewShadowAi) throw new Error(command ? "FORMAL_COMMAND_UNAVAILABLE" : "INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.reviewShadowAi(req, shadowReviewRoute[1]!, shadowReviewRoute[2]!, command)); return;
+      }
+      const duplicateReviewRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/duplicate-asset-reviews\/([a-z0-9][a-z0-9-]{0,127})\/actions\/(merge|dismiss)$/);
+      if (method === "POST" && duplicateReviewRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = duplicateReviewCommand(await readJson(req, maxBodyBytes), (duplicateReviewRoute[3] as string).toUpperCase());
+        if (!command || !options.formalApi?.reviewDuplicateAsset) throw new Error(command ? "FORMAL_COMMAND_UNAVAILABLE" : "INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.reviewDuplicateAsset(req, duplicateReviewRoute[1]!, duplicateReviewRoute[2]!, command)); return;
+      }
+      const aiEvaluationsRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-evaluations$/);
+      if (method === "GET" && aiEvaluationsRoute) {
+        if (!options.formalApi?.getAiEvaluations) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getAiEvaluations(req, aiEvaluationsRoute[1]!)); return;
+      }
+      const evaluationCommands: readonly [RegExp, "upsertEvaluationTemplate" | "upsertEvaluationDataset" | "recordEvaluationResult", (value: unknown) => Record<string, unknown> | null][] = [
+        [/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/evaluation-templates$/, "upsertEvaluationTemplate", evaluationTemplateCommand],
+        [/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/evaluation-datasets$/, "upsertEvaluationDataset", evaluationDatasetCommand],
+        [/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/evaluation-results$/, "recordEvaluationResult", evaluationResultCommand],
+      ];
+      if (method === "POST") for (const [pattern, handler, parse] of evaluationCommands) {
+        const match = path.match(pattern); if (!match) continue;
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = parse(await readJson(req, maxBodyBytes)); const methodHandler = options.formalApi?.[handler];
+        if (!command || !methodHandler) throw new Error(command ? "FORMAL_COMMAND_UNAVAILABLE" : "INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await methodHandler(req, match[1]!, command)); return;
+      }
+      const aiValueMeasurementsRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-value-measurements$/);
+      if (method === "POST" && aiValueMeasurementsRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = valueMeasurementCommand(await readJson(req, maxBodyBytes));
+        if (!command || !options.formalApi?.recordAiValue) throw new Error(command ? "FORMAL_COMMAND_UNAVAILABLE" : "INVALID_FORMAL_COMMAND");
+        sendJson(res, 200, await options.formalApi.recordAiValue(req, aiValueMeasurementsRoute[1]!, command)); return;
+      }
+      const aiValueRoute = path.match(/^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-value$/);
+      if (method === "GET" && aiValueRoute) {
+        const scopeType = requestUrl.searchParams.get("scopeType"); const scopeId = requestUrl.searchParams.get("scopeId");
+        const periodStart = requestUrl.searchParams.get("periodStart"); const periodEnd = requestUrl.searchParams.get("periodEnd");
+        if (!["COMPANY", "PROJECT", "AGENT", "ASSET"].includes(String(scopeType)) || !scopeId || !/^[a-z0-9][a-z0-9-]{0,127}$/.test(scopeId) ||
+            !periodStart || !periodEnd || !Number.isFinite(Date.parse(periodStart)) || !Number.isFinite(Date.parse(periodEnd)) ||
+            [...requestUrl.searchParams.keys()].some((key) => !["scopeType", "scopeId", "periodStart", "periodEnd"].includes(key))) throw new Error("INVALID_FORMAL_COMMAND");
+        if (!options.formalApi?.getAiValue) throw new Error("FORMAL_API_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.getAiValue(req, aiValueRoute[1]!, { scopeType, scopeId, periodStart, periodEnd })); return;
       }
       const aiCaseActionRoute = path.match(
         /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/ai-cases\/([a-z0-9][a-z0-9-]{0,63})\/actions\/(start-investigation|start-remediation|request-review|recover|close|reopen)$/,
