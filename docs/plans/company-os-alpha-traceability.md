@@ -21,12 +21,12 @@ authoritative evidence exists and contradicting evidence has been resolved.
 | A-08 | Responsibility precedes execution | responsibility/application | missing/stale contract denial and activation journey | Existing; integrate into readiness |
 | A-09 | Permission, tool, data and Secret authority is explicit | governance/application | exact authority snapshot and blocked-state browser evidence | Partial; catalogs exist |
 | A-10 | Work/Attempt/Run remains durable execution truth | Work application | restart, idempotency, cancel, timeout, unknown outcome, safe retry | Existing; extend binding revision |
-| R-01 | Runtime observations include bounded Trace/Span facts | observation domain/port | schema validation, ingestion limits, projection, real Connector trace | Missing |
-| R-02 | Tool and data access are visible without raw secret/session content | observation + governance | rejection tests for forbidden fields; admitted references/digests | Missing |
-| R-03 | Policy violations become actionable alerts | risk application | deterministic rule-to-alert integration and browser evidence | Missing |
-| R-04 | Access Map explains the exact authority path | access projection | subject-to-resource path with policy/grant/evidence links | Missing |
-| R-05 | Containment uses only declared Connector capabilities | risk + connector command | capability-negative tests and real pause/resume proof | Partial primitives; missing loop |
-| R-06 | AI Case closes the incident lifecycle | case domain/application | contain, assign, investigate, remediate, review, recover, close/reopen tests | Missing |
+| R-01 | Runtime observations include bounded Trace/Span facts | observation domain/port | schema validation, ingestion limits, projection, real Connector trace | Partial; bounded schema and ingestion hook complete; projection/real trace pending |
+| R-02 | Tool and data access are visible without raw secret/session content | observation + governance | rejection tests for forbidden fields; admitted references/digests | Partial; non-representable private fields and rejection tests complete |
+| R-03 | Policy violations become actionable alerts | risk application | deterministic rule-to-alert integration and browser evidence | Partial; deterministic domain/application pipeline complete; operator rule UI pending |
+| R-04 | Access Map explains the exact authority path | access projection | subject-to-resource path with policy/grant/evidence links | Partial; authority-bound edges complete; projection/UI pending |
+| R-05 | Containment uses only declared Connector capabilities | risk + connector command | capability-negative tests and real pause/resume proof | Partial; declared-capability enforcement tested; durable delivery/recovery pending |
+| R-06 | AI Case closes the incident lifecycle | case domain/application | contain, assign, investigate, remediate, review, recover, close/reopen tests | Partial; ordered revisioned state machine complete; command/UI loop pending |
 | G-01 | Unified AI assets cover Model/Prompt/Dataset/Tool/MCP/Workflow/KB | AI asset graph | CRUD/sync/version/provenance projection and browser dossier | Missing |
 | G-02 | Asset impact is navigable | graph projection | changed version to affected Agent/Run/Policy/Case path | Missing |
 | E-01 | Evaluation templates/datasets/scores/trends are evidence-backed | evaluation domain | score provenance, threshold/regression tests, trend UI | Missing |
