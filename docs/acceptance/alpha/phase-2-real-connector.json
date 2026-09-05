@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_LOCAL_CODEX_ADMISSION",
+  "recordedAt": "2026-09-05T07:57:29.692Z",
+  "codexVersion": "codex-cli 0.144.1",
+  "authentication": "LOCAL_CODEX_SESSION",
+  "sandbox": "read-only",
+  "approvalPolicy": "never",
+  "ephemeral": true,
+  "outcome": "PASS",
+  "summary": "The Company OS Codex Agent Node enforced the read-only execution boundary for the authorized synthetic verification.",
+  "resultReference": "codex-result-6c01d95fa0760d4354eae56321626f59",
+  "resultDigest": "sha256:e6e0b4a0784ac4d6bb45d865f35e8e2480b4aadfa1d315e0fcf077304a6bcae9",
+  "usage": {
+    "inputTokens": 117666,
+    "cachedInputTokens": 96640,
+    "outputTokens": 851
+  },
+  "notClaimed": [
+    "customer staging acceptance",
+    "production acceptance",
+    "side-effecting execution",
+    "Company OS HTTP control-plane end-to-end acceptance",
+    "real pause and resume acceptance"
+  ]
+}

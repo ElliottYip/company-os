@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_LOCAL_CODEX_HTTP_ADMISSION",
+  "recordedAt": "2026-09-05T08:02:21.443Z",
+  "connector": {
+    "connectorId": "http-agent-node",
+    "protocolVersion": "1.0",
+    "health": "HEALTHY",
+    "authentication": "FILE_INJECTED_BEARER"
+  },
+  "execution": {
+    "sandbox": "read-only",
+    "syntheticInput": true,
+    "sideEffectsAllowed": false,
+    "observedStatuses": [
+      "WORKING",
+      "AWAITING_APPROVAL",
+      "WORKING",
+      "COMPLETED"
+    ],
+    "pauseConfirmed": true,
+    "approvalReference": "approval-local-alpha",
+    "resumeConfirmed": true,
+    "outcome": "PASS"
+  },
+  "evidence": {
+    "resultReference": "codex-result-c0c1a9a9125e8dfd323e2fdb1976d234",
+    "resultDigest": "sha256:8b1d0727d6432f0a9bc44c9bc69ca5c7a9c84082cb340ae36a062b0ad1194dbc",
+    "usage": {
+      "usageReference": "codex-usage-c0c1a9a9125e8dfd323e2fdb1976d234",
+      "biller": "openai",
+      "billingType": "unknown",
+      "costStatus": "unpriced",
+      "inputTokens": 184978,
+      "cachedInputTokens": 160256,
+      "outputTokens": 1202,
+      "costCents": 0,
+      "occurredAt": "2026-09-05T08:01:19.639Z"
+    }
+  },
+  "notClaimed": [
+    "customer staging acceptance",
+    "production acceptance",
+    "enterprise data access"
+  ]
+}

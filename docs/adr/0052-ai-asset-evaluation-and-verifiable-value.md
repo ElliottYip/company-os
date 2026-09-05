@@ -23,4 +23,4 @@ Value measurements retain source reference, digest, method, period, and `VERIFIE
 - Trace discovery never imports prompts, outputs, credentials, private sessions, or enterprise record bodies.
 - Shadow AI and duplicate handling are review workflows, not silent automatic deletion or invented control.
 - “No verified result” and “unpriced cost” are first-class product states.
-- API and Web admission, browser journeys, real Connector evidence, and release acceptance remain required before these capabilities are Alpha-complete.
+- API and Web admission, browser journeys, current-run real Connector evidence, and release acceptance are separate gates; local Connector acceptance never implies customer staging or production acceptance.

@@ -234,9 +234,10 @@ export function createCodexExecDriver(options) {
     } catch { throw new Error("CODEX_EXECUTION_STATE_UNAVAILABLE"); }
   }
   async function recordFailure(workId, state, context, code) {
-    if (state.status === "CANCELLED" || state.status === "PAUSED") return;
-    state.status = "FAILED"; state.sequence += 1; await persist(workId, state);
-    await context.recordObservation(workId, { workId, sequence: state.sequence, status: "FAILED",
+    const current = await load(workId);
+    if (current.status !== "WORKING" || current.sequence !== state.sequence) return;
+    current.status = "FAILED"; current.sequence += 1; await persist(workId, current);
+    await context.recordObservation(workId, { workId, sequence: current.sequence, status: "FAILED",
       summary: code, evidenceRefs: [], recordedAt: now() });
   }
   async function run(workId, state, context, approvalId) {
@@ -264,15 +265,16 @@ export function createCodexExecDriver(options) {
     active.set(workId, { child, stop });
     try {
       const { stdout } = await waitForProcess(child, promptFor(state.submission, approvalId), timeoutSeconds * 1000, stop);
-      if (["CANCELLED", "PAUSED"].includes(state.status)) return;
+      const current = await load(workId);
+      if (current.status !== "WORKING" || current.sequence !== state.sequence) return;
       const parsed = parseCodexExecJsonl(stdout);
       const artifact = artifactFile(stateDirectory, workId);
       const encoded = `${JSON.stringify(parsed.result)}\n`; await writeFile(artifact, encoded, { mode: 0o600 });
-      const reference = portableReference("codex-result", workId); state.status = "COMPLETED"; state.sequence += 1;
-      state.resultDigest = digest(encoded); await persist(workId, state);
-      await context.recordObservation(workId, { workId, sequence: state.sequence, status: "COMPLETED",
+      const reference = portableReference("codex-result", workId); current.status = "COMPLETED"; current.sequence += 1;
+      current.resultDigest = digest(encoded); await persist(workId, current);
+      await context.recordObservation(workId, { workId, sequence: current.sequence, status: "COMPLETED",
         summary: parsed.result.summary, evidenceRefs: [reference], evidenceOutputs: [{ evidenceReference: reference,
-          contentDigest: state.resultDigest }], resultReference: reference, recordedAt: now(),
+          contentDigest: current.resultDigest }], resultReference: reference, recordedAt: now(),
         usageOutputs: [{ usageReference: portableReference("codex-usage", workId), biller: "openai", billingType: "unknown",
           costStatus: "unpriced", inputTokens: parsed.usage.inputTokens, cachedInputTokens: parsed.usage.cachedInputTokens,
           outputTokens: parsed.usage.outputTokens, costCents: 0, occurredAt: now() }] });

@@ -111,6 +111,40 @@ test("Codex driver executes through stdin in a read-only sandbox and publishes r
   assert.doesNotMatch(state, /private-session/);
 });
 
+test("pause and immediate resume fence the interrupted Codex generation before it can publish a conflicting sequence", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "company-os-codex-fencing-"));
+  const children: Array<EventEmitter & { stdin: Writable; stdout: PassThrough; stderr: PassThrough;
+    kill(signal: string): void }> = [];
+  const spawn = () => {
+    const child = new EventEmitter() as EventEmitter & { stdin: Writable; stdout: PassThrough; stderr: PassThrough;
+      kill(signal: string): void };
+    child.stdout = new PassThrough(); child.stderr = new PassThrough();
+    child.stdin = new Writable({ write(_chunk, _encoding, callback) { callback(); } });
+    child.kill = (signal) => queueMicrotask(() => child.emit("exit", null, signal));
+    children.push(child); return child;
+  };
+  const driver = createCodexExecDriver({ binary: "/usr/local/bin/codex", workspaceRoot: directory,
+    stateDirectory: join(directory, "state"), spawn, terminationGraceSeconds: 1,
+    now: () => "2026-09-05T10:00:00.000Z" });
+  const observations = new Map<number, any>();
+  const context = { async recordObservation(_workId: string, value: any) {
+    if (observations.has(value.sequence)) throw new Error("TEST_OBSERVATION_CONFLICT"); observations.set(value.sequence, value);
+  } };
+  await driver.submit({ workId: "work-fenced", deployment: { id: "deployment-one" },
+    runtimeProof: { digest: `sha256:${"a".repeat(64)}` }, request: { id: "work-fenced", companyId: "company-one",
+      agentId: "agent-one", goal: "Verify generation fencing", input: { actionReferences: ["inspect"] } } }, context);
+  await driver.command({ workId: "work-fenced", operation: "PAUSE" }, context);
+  await driver.command({ workId: "work-fenced", operation: "RESUME", approvalId: "approval-one" }, context);
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  await driver.command({ workId: "work-fenced", operation: "CANCEL" }, context);
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  assert.deepEqual([...observations.values()].map(({ sequence, status }) => ({ sequence, status })), [
+    { sequence: 1, status: "WORKING" }, { sequence: 2, status: "AWAITING_APPROVAL" },
+    { sequence: 3, status: "WORKING" }, { sequence: 4, status: "CANCELLED" },
+  ]);
+  assert.equal(children.length, 2);
+});
+
 test("Codex driver redeems an exact model grant into child-only environment without persisting material", async () => {
   const directory = await mkdtemp(join(tmpdir(), "company-os-codex-redemption-"));
   const calls: Array<{ args: string[]; input: string; env: Record<string, string> }> = []; const redemptions: unknown[] = [];

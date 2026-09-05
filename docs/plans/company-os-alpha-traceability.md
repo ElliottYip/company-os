@@ -25,7 +25,7 @@ authoritative evidence exists and contradicting evidence has been resolved.
 | R-02 | Tool and data access are visible without raw secret/session content | observation + governance | rejection tests for forbidden fields; admitted references/digests | Partial; sanitized Access Map Web admission and rejection tests complete; real Connector proof pending |
 | R-03 | Policy violations become actionable alerts | risk application | deterministic rule-to-alert integration and browser evidence | Partial; tenant-versioned operator rule UI and deterministic alert pipeline complete; browser evidence pending |
 | R-04 | Access Map explains the exact authority path | access projection | subject-to-resource path with policy/grant/evidence links | Partial; projection and responsive UI complete; real-run screenshot pending |
-| R-05 | Containment uses only declared Connector capabilities | risk + connector command | capability-negative tests and real pause/resume proof | Partial; durable pause/resume outbox and delivery confirmation tested; real Connector proof pending |
+| R-05 | Containment uses only declared Connector capabilities | risk + connector command | capability-negative tests and real pause/resume proof | Complete for Alpha scope; durable outbox confirmation plus a real authenticated HTTP Agent Node/Codex `WORKING→AWAITING_APPROVAL→WORKING→COMPLETED` run are retained |
 | R-06 | AI Case closes the incident lifecycle | case domain/application | contain, assign, investigate, remediate, review, recover, close/reopen tests | Partial; authorized API/Web command loop and recovery confirmation complete; browser evidence pending |
 | G-01 | Unified AI assets cover Model/Prompt/Dataset/Tool/MCP/Workflow/KB | AI asset graph | CRUD/sync/version/provenance projection and browser dossier | Partial; revisioned registry, Trace sync, strict API, edit/relationship Web dossier and responsive evidence complete; real Connector sync pending |
 | G-02 | Asset impact is navigable | graph projection | changed version to affected Agent/Run/Policy/Case path | Partial; evidence relationships, goals/projects, evaluation and AI Case links are visible; Run/policy impact pending |
@@ -39,7 +39,7 @@ authoritative evidence exists and contradicting evidence has been resolved.
 | U-03 | Fixed navigation never covers content or focus | Web shell | safe-area and intersection assertions on long/detail pages | Partial; negative-margin defect removed; full matrix pending |
 | U-04 | Every visible control is real or truthfully blocked | Web/application | control inventory mapped to operation or stable blocked reason | Existing guard is insufficient |
 | Q-01 | Demo and Formal truth remain separate | composition/Web | no formal mutation from Demo; no fixture claims in Formal | Existing; re-run full matrix |
-| Q-02 | Real non-Fixture Connector passes end to end | Connector/acceptance | customer-authorized or project-owned non-Fixture trace, work, evidence, recovery | Missing final acceptance |
+| Q-02 | Real non-Fixture Connector passes end to end | Connector/acceptance | customer-authorized or project-owned non-Fixture trace, work, evidence, recovery | Complete for project-owned Alpha scope; local authenticated HTTP Agent Node executed real Codex, pause/resume and evidence/usage admission. Customer staging and enterprise data remain explicitly unclaimed |
 | Q-03 | Alpha release is immutable and reproducible | release pipeline | full verify, manifest, SBOM, image digests, release CI, rollback evidence | Pending final phase |
 
 ## Phase 1 change map

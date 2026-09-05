@@ -59,6 +59,7 @@
     "test:soak:http": "node --experimental-strip-types scripts/http-soak-admission.ts",
     "test:customer-boundaries:tls": "node scripts/run-customer-boundary-tls-admission.mjs",
     "test:codex:local": "node scripts/run-local-codex-admission.mjs",
+    "test:codex:http-local": "node scripts/run-local-codex-http-admission.mjs",
     "agent:preflight": "node --experimental-strip-types scripts/local-agent-preflight.mjs",
     "test:vault:compatibility": "node scripts/run-vault-compatibility-admission.mjs",
     "test:upgrade:postgres16": "node scripts/run-postgres-upgrade-admission.mjs",
