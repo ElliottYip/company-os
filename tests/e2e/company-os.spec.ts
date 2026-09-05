@@ -653,6 +653,9 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   await page.getByRole("button", { name: "Agents", exact: true }).first().click();
   await page.getByRole("button", { name: "Details & runtime", exact: true }).click();
   const bindingDialog = page.getByRole("dialog", { name: "Research Assistant details" });
+  await expect(bindingDialog.getByRole("heading", { name: "Complete these prerequisites" })).toBeVisible();
+  await expect(bindingDialog.getByText("1/4", { exact: true })).toBeVisible();
+  await expect(bindingDialog.getByRole("button", { name: "Fix now" })).toHaveCount(3);
   await bindingDialog.getByLabel("Available runtime").selectOption("connector-two");
   await bindingDialog.getByLabel("Reason").fill("Approved local execution runtime");
   await bindingDialog.getByRole("button", { name: "Review and bind" }).click();
@@ -671,6 +674,11 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   await page.getByRole("button", { name: "Approve", exact: true }).click();
   await expect(page.getByText("IDLE", { exact: true })).toBeVisible();
   await expect(page.getByText(/Invocation: eligible/)).toBeVisible();
+  await page.getByRole("button", { name: "Details & runtime", exact: true }).click();
+  const readyDialog = page.getByRole("dialog", { name: "Research Assistant details" });
+  await expect(readyDialog.getByRole("heading", { name: "Ready for governed work" })).toBeVisible();
+  await expect(readyDialog.getByText("4/4", { exact: true })).toBeVisible();
+  await readyDialog.getByRole("button", { name: "Close" }).click();
   await page.getByRole("button", { name: "Organization", exact: true }).first().click();
   await page.locator('[data-colleague-detail="human-human-one"]').first().click();
   const humanProfile = page.getByRole("dialog", { name: "Human One details" });

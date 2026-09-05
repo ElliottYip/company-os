@@ -716,6 +716,20 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
 .ai-value-grid small { color: var(--family-ink-muted); }
 .ai-value-grid strong { font-size: var(--type-title); overflow-wrap: anywhere; }
 .ai-control-section > p { padding: 0 18px 18px; color: var(--family-ink-muted); overflow-wrap: anywhere; }
+.agent-readiness { display: grid; gap: 12px; border-top: 1px solid var(--family-line); padding: 18px 20px; }
+.agent-readiness > header { display: flex; min-width: 0; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.agent-readiness h3 { margin: 4px 0 0; font-size: var(--type-section-title); }
+.agent-readiness ol { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.agent-readiness li { display: grid; min-width: 0; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 9px; border: 1px solid var(--family-line); border-radius: 9px; padding: 9px 10px; }
+.agent-readiness li > span { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; background: var(--family-success-soft); color: var(--family-success); font-weight: 800; }
+.agent-readiness li[data-readiness-state="blocked"] > span { background: var(--family-warning-soft); color: var(--family-warning); }
+.agent-readiness li strong, .agent-readiness li small { display: block; overflow-wrap: anywhere; }
+.agent-readiness li small { margin-top: 2px; color: var(--family-ink-muted); }
+.agent-readiness li button { border: 0; background: transparent; color: var(--family-accent); font: inherit; font-weight: 700; cursor: pointer; }
+.agent-readiness dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.agent-readiness dl > div { min-width: 0; border-radius: 8px; background: var(--family-surface-subtle); padding: 8px 10px; }
+.agent-readiness dt { color: var(--family-ink-faint); font-size: var(--type-label); }
+.agent-readiness dd { margin: 3px 0 0; font-size: var(--type-supporting); overflow-wrap: anywhere; }
 .approval-detail-card { padding: 18px; }
 .approval-detail-card h2 { margin: 10px 0 0; font-size: 18px; }
 .approval-detail-card header p { margin: 5px 0 0; color: var(--family-ink-muted); font-size: 11px; }
@@ -873,6 +887,10 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
   .ai-value-grid > div:last-child { border-bottom: 0; }
   .ai-review-card header { flex-direction: column; }
   .ai-asset-row dl { grid-template-columns: 1fr; }
+  .agent-readiness { padding-inline: 14px; }
+  .agent-readiness li { grid-template-columns: 24px minmax(0, 1fr); }
+  .agent-readiness li button { grid-column: 2; justify-self: start; }
+  .agent-readiness dl { grid-template-columns: 1fr; }
   .control-agent-grid, .control-metric-grid { grid-template-columns: 1fr; }
   .control-agent-card { border-right: 0; border-bottom: 1px solid var(--family-line); }
   .control-agent-card:last-child { border-bottom: 0; }
