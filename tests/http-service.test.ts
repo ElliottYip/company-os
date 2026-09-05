@@ -176,20 +176,33 @@ test("formal company closure accepts only an exact digest-bound archive command"
         retentionPolicyId: "standard-retention", reason: "Close" }),
     });
     assert.equal(invalid.status, 422);
-    const rules = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk-rules`);
-    assert.equal(rules.status, 200);
-    const replaced = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk-rules`, {
-      method: "PUT", headers: { "content-type": "application/json", origin: "http://allowed.test" },
-      body: JSON.stringify({ expectedRevision: 0, rules: [{ id: "block-export", resourceType: "DATA",
-        resourceId: "supplier-data", operation: "EXPORT", severity: "CRITICAL", summary: "Block export" }] }),
-    });
-    assert.equal(replaced.status, 200);
     assert.deepEqual(calls, [{ companyId: "company-one", retentionPolicyId: "standard-retention" }]);
   }, undefined, undefined, undefined, {
     async listCompanies() { return {}; },
     async archiveCompany(_request, companyId, input) {
       calls.push({ companyId, retentionPolicyId: (input as { retentionPolicyId: string }).retentionPolicyId });
       return { companyId, status: "archived" };
+    },
+  });
+});
+
+test("formal operational risk rules are readable and revision-replaced through their own boundary", async () => {
+  const calls: unknown[] = [];
+  const replacement = { expectedRevision: 0, rules: [{ id: "block-export", resourceType: "DATA",
+    resourceId: "supplier-data", operation: "EXPORT", severity: "CRITICAL", summary: "Block export" }] };
+  await withService(async (baseUrl) => {
+    const rules = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk-rules`);
+    assert.equal(rules.status, 200);
+    const replaced = await fetch(`${baseUrl}/api/v1/companies/company-one/operational-risk-rules`, {
+      method: "PUT", headers: { "content-type": "application/json", origin: "http://allowed.test" },
+      body: JSON.stringify(replacement),
+    });
+    assert.equal(replaced.status, 200);
+    assert.deepEqual(calls, [{ companyId: "company-one", input: replacement }]);
+  }, { async getAgentBoss() { return {}; },
+    async getOperationalRiskRules(_request, companyId) { return { companyId, revision: 0, rules: [] }; },
+    async replaceOperationalRiskRules(_request, companyId, input) {
+      calls.push({ companyId, input }); return { companyId, revision: 1, rules: replacement.rules };
     },
   });
 });
