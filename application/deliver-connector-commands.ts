@@ -22,6 +22,7 @@ type ConnectorCommand = {
   readonly connectorId: Identifier;
   readonly idempotencyKey: string;
   readonly approvalRequestId?: Identifier | null;
+  readonly controlReason?: "APPROVAL" | "RISK";
 };
 
 export interface ConnectorDeliveryOutcome {
@@ -49,6 +50,9 @@ function command(publication: OutboxPublication): ConnectorCommand {
   if ((value.operation === "PAUSE" || value.operation === "RESUME") &&
       typeof value.approvalRequestId !== "string") {
     throw new Error("CONNECTOR_COMMAND_APPROVAL_REQUIRED");
+  }
+  if (value.controlReason !== undefined && !["APPROVAL", "RISK"].includes(String(value.controlReason))) {
+    throw new Error("CONNECTOR_COMMAND_INVALID");
   }
   return value as unknown as ConnectorCommand;
 }
@@ -131,7 +135,15 @@ export class DeliverConnectorCommands {
     for (const publications of partitions.values()) {
       for (const publication of publications) {
         try {
+          const payload = command(publication);
+          if (payload.controlReason === "RISK" && await this.#riskDeliveryRecorded(companyId, publication.id)) {
+            await this.#store.markPublicationDelivered(companyId, publication.id, this.#now());
+            outcomes.push({ publicationId: publication.id, partitionKey: publication.partitionKey,
+              status: "DELIVERED", code: "CONNECTOR_COMMAND_DELIVERED" });
+            continue;
+          }
           await this.#deliver(companyId, publication, contexts);
+          if (payload.controlReason === "RISK") await this.#recordRiskDelivery(companyId, publication, payload);
           await this.#store.markPublicationDelivered(companyId, publication.id, this.#now());
           outcomes.push({
             publicationId: publication.id,
@@ -151,6 +163,24 @@ export class DeliverConnectorCommands {
       }
     }
     return outcomes;
+  }
+
+  async #riskDeliveryRecorded(companyId: Identifier, publicationId: Identifier): Promise<boolean> {
+    return (await this.#store.read(companyId, { types: ["risk-containment.delivered", "risk-recovery.delivered"] })).some((event) =>
+      (event.payload as { publicationId?: Identifier }).publicationId === publicationId);
+  }
+
+  async #recordRiskDelivery(companyId: Identifier, publication: OutboxPublication,
+    payload: ConnectorCommand): Promise<void> {
+    const occurredAt = this.#now();
+    await this.#store.append({
+      id: this.#nextId(), companyId, type: payload.operation === "RESUME"
+        ? "risk-recovery.delivered" : "risk-containment.delivered", occurredAt,
+      actorId: payload.connectorId, correlationId: payload.workId, provenance: "PRODUCTION",
+      payload: { publicationId: publication.id, caseId: payload.approvalRequestId,
+        attemptId: payload.attemptId, workId: payload.workId, operation: payload.operation,
+        outcome: payload.operation === "RESUME" ? "RECOVERY_SUCCEEDED" : "PAUSE_SUCCEEDED" },
+    }, (await this.#store.read(companyId)).length);
   }
 
   async #portContexts() {
@@ -197,7 +227,8 @@ export class DeliverConnectorCommands {
       throw new Error("CONNECTOR_CANCEL_UNSUPPORTED");
     }
     if (payload.operation === "PAUSE") {
-      await context.port.pause(payload.workId, `approval:${payload.approvalRequestId}`);
+      await context.port.pause(payload.workId,
+        `${payload.controlReason === "RISK" ? "risk" : "approval"}:${payload.approvalRequestId}`);
       return;
     }
     if (payload.operation === "RESUME") {

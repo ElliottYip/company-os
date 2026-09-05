@@ -57,12 +57,15 @@ test("AI Case lifecycle requires ordered review and can reopen without erasing h
   const review = transitionAiCase(remediating, { operation: "REQUEST_REVIEW", expectedRevision: 3,
     actorId: "human-one", reason: "Policy corrected", remediation: "Restricted the export grant",
     prevention: "Require two-person export review", occurredAt: "2026-09-05T08:04:00.000Z" });
-  const recovered = transitionAiCase(review, { operation: "RECOVER", expectedRevision: 4,
+  const recoveryRequested = transitionAiCase(review, { operation: "RECOVER", expectedRevision: 4,
     actorId: "human-one", reason: "Review passed", occurredAt: "2026-09-05T08:05:00.000Z" });
-  const closed = transitionAiCase(recovered, { operation: "CLOSE", expectedRevision: 5,
+  assert.equal(recoveryRequested.status, "RECOVERY_REQUESTED");
+  const recovered = { ...recoveryRequested, status: "RECOVERED" as const, revision: 6,
+    updatedAt: "2026-09-05T08:05:30.000Z" };
+  const closed = transitionAiCase(recovered, { operation: "CLOSE", expectedRevision: 6,
     actorId: "human-one", reason: "Monitoring stable", occurredAt: "2026-09-05T08:06:00.000Z" });
   assert.equal(closed.status, "CLOSED");
   assert.equal(closed.closedAt, "2026-09-05T08:06:00.000Z");
-  assert.equal(transitionAiCase(closed, { operation: "REOPEN", expectedRevision: 6,
+  assert.equal(transitionAiCase(closed, { operation: "REOPEN", expectedRevision: 7,
     actorId: "human-one", reason: "Regression detected", occurredAt: "2026-09-05T08:07:00.000Z" }).status, "OPEN");
 });

@@ -174,6 +174,11 @@ export class CollectConnectorObservations {
             projectId: scope.projectId, goalId: scope.goalId,
           });
         }
+        if (!recorded && observation.runtimeTrace) {
+          if (!this.#dependencies.riskObservation) throw new Error("OPERATIONAL_RISK_PROCESSOR_REQUIRED");
+          await this.#dependencies.riskObservation.execute({ companyId, attemptId: initial.id,
+            trace: observation.runtimeTrace, rules: this.#dependencies.riskRules ?? [] });
+        }
         if (!recorded) {
           const event: CompanyDomainEvent = {
             id: this.#dependencies.nextId(), companyId, type: "connector.observation.recorded",
@@ -184,11 +189,6 @@ export class CollectConnectorObservations {
           await this.#dependencies.store.append(event, (await this.#dependencies.store.read(companyId)).length);
           recordedObservations.set(observation.sequence, observation);
           latestSequence = observation.sequence;
-        }
-        if (!recorded && observation.runtimeTrace) {
-          if (!this.#dependencies.riskObservation) throw new Error("OPERATIONAL_RISK_PROCESSOR_REQUIRED");
-          await this.#dependencies.riskObservation.execute({ companyId, attemptId: initial.id,
-            trace: observation.runtimeTrace, rules: this.#dependencies.riskRules ?? [] });
         }
         await this.#applyTerminal(companyId, initial.id, observation);
         await this.#applyApproval(companyId, initial.id, observation);

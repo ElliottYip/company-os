@@ -21,10 +21,14 @@ reasoning therefore have no representable field.
 
 Resource-bearing spans produce append-only `AccessMapEdge` records. Explicit
 operator-owned risk rules match those edges and produce `PolicyViolation` and
-`RiskAlert` records. High or critical violations request a pause only when the
-selected `AgentExecutionPort` declares `supportsPause`; unsupported and failed
-containment remain visible states. High or critical alerts open an `AiCase`
-owned by the Work authority snapshot's accountable human.
+`RiskAlert` records. One assessment event stores the Trace, access edges,
+violations, alerts and Cases atomically. High or critical violations enqueue a
+pause command in the same durable transaction only when the selected
+`AgentExecutionPort` declares `supportsPause`; the initial state is
+`PAUSE_REQUESTED`, never an unverified success claim. Unsupported containment
+remains visible. The existing Connector outbox redrives the pause and marks it
+delivered only after the execution port accepts it. High or critical alerts
+open an `AiCase` owned by the Work authority snapshot's accountable human.
 
 AI Cases move through containment, investigation, remediation, review,
 recovery, closure, and explicit reopen with optimistic revision checks. Later

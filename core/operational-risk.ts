@@ -80,7 +80,7 @@ export interface RiskAlert {
   readonly resolvedAt: string | null;
 }
 
-export type AiCaseStatus = "OPEN" | "CONTAINED" | "INVESTIGATING" | "REMEDIATING" | "REVIEW" | "RECOVERED" | "CLOSED";
+export type AiCaseStatus = "OPEN" | "CONTAINED" | "INVESTIGATING" | "REMEDIATING" | "REVIEW" | "RECOVERY_REQUESTED" | "RECOVERED" | "CLOSED";
 
 export interface AiCase {
   readonly id: Identifier;
@@ -223,7 +223,7 @@ export function transitionAiCase(current: AiCase, command: AiCaseTransition): Ai
   }
   const status: Record<AiCaseOperation, AiCaseStatus> = {
     CONFIRM_CONTAINMENT: "CONTAINED", START_INVESTIGATION: "INVESTIGATING",
-    START_REMEDIATION: "REMEDIATING", REQUEST_REVIEW: "REVIEW", RECOVER: "RECOVERED",
+    START_REMEDIATION: "REMEDIATING", REQUEST_REVIEW: "REVIEW", RECOVER: "RECOVERY_REQUESTED",
     CLOSE: "CLOSED", REOPEN: "OPEN",
   };
   return {
