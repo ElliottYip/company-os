@@ -445,10 +445,9 @@ function organizationView(
   const humanOptions = organization.humans
     .map((human) => `<option value="${escapeHtml(human.id)}">${escapeHtml(human.name)} · ${escapeHtml(human.title)}</option>`)
     .join("");
-  const connectorOptions = administration?.connectorCatalog.connectors.length
-    ? administration.connectorCatalog.connectors.map((connector) =>
-      `<option value="${escapeHtml(connector.id)}"${connector.status === "DISABLED" ? " disabled" : ""}>${escapeHtml(connector.displayName)} · ${escapeHtml(connector.status)}</option>`).join("")
-    : `<option value="connector-unbound">${copy("Unbound draft", "未绑定草稿")}</option>`;
+  const bindableConnectors = administration?.connectorCatalog.connectors.filter((connector) =>
+    connector.status === "ENABLED" && administration.runtimeConnectors.some((runtime) =>
+      runtime.connectorId === connector.id && runtime.registered && runtime.health !== "UNAVAILABLE")) ?? [];
   const departments = organization.departments.map((department) => {
     const humans = organization.humans.filter((human) => human.departmentId === department.id);
     const agents = organization.agents.filter((agent) => agent.departmentId === department.id);
@@ -485,9 +484,19 @@ function organizationView(
   }).join("");
   const agentDetails = organization.agents.map((agent) => {
     const department = organization.departments.find((candidate) => candidate.id === agent.departmentId);
+    const binding = administration?.agentRuntimeBindings.bindings.find((candidate) => candidate.agentId === agent.id);
+    const bindingStatus = binding?.status ?? (agent.runtimeConnectorId === "connector-unbound"
+      ? "UNBOUND" : "BOUND_UNVERIFIED");
+    const bindingRevision = binding?.revision ?? 0;
+    const selectedConnectorId = binding?.connectorId ?? (agent.runtimeConnectorId === "connector-unbound"
+      ? null : agent.runtimeConnectorId);
+    const runtimeOptions = bindableConnectors.length
+      ? bindableConnectors.map((connector) => `<option value="${escapeHtml(connector.id)}"${connector.id === selectedConnectorId ? " selected" : ""}>${escapeHtml(connector.displayName)} · ${escapeHtml(connector.id)}</option>`).join("")
+      : `<option value="" disabled>${copy("No healthy registered runtime", "暂无健康且已注册的运行环境")}</option>`;
+    const bindingForm = isFormal ? `<form class="colleague-profile-form agent-runtime-binding-form" data-agent-runtime-binding-form data-agent-id="${escapeHtml(agent.id)}"><h3>${copy("Runtime binding", "运行环境绑定")}</h3><p>${copy("Create the Agent first, then attach a discovered runtime. Every bind, rebind, and unbind is authorized and revision checked.", "先创建 Agent，再绑定已发现的运行环境。绑定、换绑和解绑都会经过授权与版本校验。")}</p><label class="company-field">${copy("Available runtime", "可用运行环境")}<select class="company-form-control" name="connectorId"${bindableConnectors.length ? "" : " disabled"}>${runtimeOptions}</select></label><label class="company-field">${copy("Reason", "变更原因")}<input class="company-form-control" name="reason" required maxlength="1000" placeholder="${copy("Why this runtime is appropriate", "说明为何选择此运行环境")}"></label><footer><button class="family-button family-button--primary" type="submit" name="operation" value="BIND"${bindableConnectors.length ? "" : " disabled"}>${selectedConnectorId ? copy("Review and rebind", "审核并换绑") : copy("Review and bind", "审核并绑定")}</button>${selectedConnectorId ? `<button class="family-button family-button--danger" type="submit" name="operation" value="UNBIND">${copy("Review and unbind", "审核并解绑")}</button>` : ""}</footer><input type="hidden" name="expectedRevision" value="${bindingRevision}"></form>` : "";
     const editDepartmentOptions = organization.departments.map((candidate) =>
       `<option value="${escapeHtml(candidate.id)}"${candidate.id === agent.departmentId ? " selected" : ""}>${escapeHtml(candidate.name)}</option>`).join("");
-    return `<dialog class="colleague-detail-dialog" data-detail-dialog="agent-${escapeHtml(agent.id)}" aria-label="${escapeHtml(agent.name)} ${copy("details", "详情")}"><header><span class="colleague-avatar colleague-avatar--agent">AI</span><div><p class="family-kicker">${copy("AGENT COLLEAGUE", "AGENT 同事")}</p><h2>${escapeHtml(agent.name)}</h2><p>${escapeHtml(agent.role)}</p></div><button type="button" data-detail-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header><dl><div><dt>${copy("Accountable human", "真人负责人")}</dt><dd>${escapeHtml(principalName(organization, agent.accountableHumanId))}</dd></div><div><dt>${copy("Department", "部门")}</dt><dd>${escapeHtml(department?.name ?? copy("Unassigned", "未分配"))}</dd></div><div><dt>${copy("Autonomy level", "自主等级")}</dt><dd>L${agent.autonomyLevel} · ${copy("High-risk actions still require a matching human approval", "高风险操作仍须由对应的真人负责人审批")}</dd></div><div><dt>${copy("Runtime connection", "运行环境")}</dt><dd>${isDemo ? copy("Demo simulation; no model, shell, relay, or enterprise system connection", "演示环境未连接模型、Shell、Relay 或企业系统") : escapeHtml(agent.runtimeConnectorId)}</dd></div><div><dt>${copy("Data access", "数据权限")}</dt><dd>${isDemo ? copy("Unauthorized; deterministic fixtures only", "未授权，仅使用固定演示数据") : copy("Controlled by data authorization contracts and egress policy", "受数据授权合同和数据出口策略约束")}</dd></div><div><dt>${copy("Status", "状态")}</dt><dd>${isDemo ? copy("Demo simulation", "演示数据") : copy("Awaiting Connector and authorization verification", "等待 Connector 与授权校验")}</dd></div></dl>${editable ? `<form class="colleague-profile-form" data-agent-profile-form><input type="hidden" name="agentId" value="${escapeHtml(agent.id)}"><label class="company-field">${copy("Agent name", "Agent 名称")}<input class="company-form-control" name="name" required maxlength="120" value="${escapeHtml(agent.name)}"></label><label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" value="${escapeHtml(agent.role)}"></label><label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${editDepartmentOptions}</select></label><p class="profile-boundary-note">${copy("Responsibility, autonomy and runtime use their own reviewed commands.", "责任人、自主等级和运行环境需通过各自的审核命令修改。")}</p><button class="family-button family-button--primary" type="submit">${copy("Save profile", "保存资料")}</button></form>` : ""}</dialog>`;
+    return `<dialog class="colleague-detail-dialog" data-detail-dialog="agent-${escapeHtml(agent.id)}" aria-label="${escapeHtml(agent.name)} ${copy("details", "详情")}"><header><span class="colleague-avatar colleague-avatar--agent">AI</span><div><p class="family-kicker">${copy("AGENT COLLEAGUE", "AGENT 同事")}</p><h2>${escapeHtml(agent.name)}</h2><p>${escapeHtml(agent.role)}</p></div><button type="button" data-detail-close aria-label="${copy("Close", "关闭")}">${iconSvg(X)}</button></header><dl><div><dt>${copy("Accountable human", "真人负责人")}</dt><dd>${escapeHtml(principalName(organization, agent.accountableHumanId))}</dd></div><div><dt>${copy("Department", "部门")}</dt><dd>${escapeHtml(department?.name ?? copy("Unassigned", "未分配"))}</dd></div><div><dt>${copy("Autonomy level", "自主等级")}</dt><dd>L${agent.autonomyLevel} · ${copy("High-risk actions still require a matching human approval", "高风险操作仍须由对应的真人负责人审批")}</dd></div><div><dt>${copy("Runtime connection", "运行环境")}</dt><dd>${isDemo ? copy("Demo simulation; no model, shell, relay, or enterprise system connection", "演示环境未连接模型、Shell、Relay 或企业系统") : selectedConnectorId ? escapeHtml(selectedConnectorId) : copy("Not bound", "未绑定")}</dd></div><div><dt>${copy("Binding state", "绑定状态")}</dt><dd><span class="status-pill ${bindingStatus === "VERIFIED" ? "status-pill--demo" : "status-pill--unbound"}">${escapeHtml(bindingStatus)}</span> · ${copy("revision", "版本")} ${bindingRevision}</dd></div><div><dt>${copy("Data access", "数据权限")}</dt><dd>${isDemo ? copy("Unauthorized; deterministic fixtures only", "未授权，仅使用固定演示数据") : copy("Controlled by data authorization contracts and egress policy", "受数据授权合同和数据出口策略约束")}</dd></div></dl>${editable ? `<form class="colleague-profile-form" data-agent-profile-form><input type="hidden" name="agentId" value="${escapeHtml(agent.id)}"><label class="company-field">${copy("Agent name", "Agent 名称")}<input class="company-form-control" name="name" required maxlength="120" value="${escapeHtml(agent.name)}"></label><label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" value="${escapeHtml(agent.role)}"></label><label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${editDepartmentOptions}</select></label><p class="profile-boundary-note">${copy("Responsibility, autonomy and runtime use their own reviewed commands.", "责任人、自主等级和运行环境需通过各自的审核命令修改。")}</p><button class="family-button family-button--primary" type="submit">${copy("Save profile", "保存资料")}</button></form>${bindingForm}` : ""}</dialog>`;
   }).join("");
   const disabled = editable ? "" : " disabled aria-disabled=\"true\"";
   return `<section class="page-stage control-organization" data-section="organization" aria-labelledby="organization-title">
@@ -530,7 +539,7 @@ function organizationView(
         <label class="company-field">${copy("Role", "岗位")}<input class="company-form-control" name="role" required maxlength="120" placeholder="${copy("Example: Market Research Agent", "例如：市场研究 Agent")}"></label>
         <label class="company-field">${copy("Department", "部门")}<select class="company-form-control" name="departmentId">${departmentOptions}</select></label>
         <label class="company-field">${copy("Accountable human", "真人负责人")}<select class="company-form-control" name="accountableHumanId">${humanOptions}</select></label>
-        ${isFormal ? `<label class="company-field">${copy("Runtime Connector", "运行 Connector")}<select class="company-form-control" name="runtimeConnectorId">${connectorOptions}</select></label>` : ""}
+        ${isFormal ? `<p class="profile-boundary-note">${copy("Create the Agent first, then attach a discovered runtime from its detail page.", "先创建 Agent，再从详情页绑定已发现的运行环境。")}</p>` : ""}
         <label class="company-field">${copy("Autonomy level", "自主等级")}<select class="company-form-control" name="autonomyLevel"><option value="1">${copy("L1 · Recommend only", "L1 · 仅提供建议")}</option><option value="2" selected>${copy("L2 · Execute low-risk actions", "L2 · 可执行低风险操作")}</option><option value="3">${copy("L3 · Act within explicit boundaries", "L3 · 可在明确边界内自主执行")}</option></select></label>
         <footer><button class="family-button family-button--secondary" type="button" data-editor-close>${copy("Cancel", "取消")}</button><button class="family-button family-button--primary" type="submit">${copy("Add Agent", "添加 Agent")}</button></footer>
       </form>
@@ -1416,6 +1425,20 @@ export function mountCompanyOS(
         navigateTo(button.dataset.sectionTarget as CompanyOSSection);
       });
     });
+    root.querySelectorAll<HTMLButtonElement>("[data-open-agent-detail]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const agentId = button.dataset.openAgentDetail;
+        if (!agentId) return;
+        section = "organization";
+        selectedWorkId = null;
+        host.onNavigate?.(`${host.basePath ?? ""}/organization`.replace(/\/+/g, "/"));
+        void render().then(() => {
+          root.querySelector<HTMLButtonElement>('[data-org-tab="agents"]')?.click();
+          const dialog = root.querySelector<HTMLDialogElement>(`[data-detail-dialog="agent-${CSS.escape(agentId)}"]`);
+          if (dialog && !dialog.open) dialog.showModal();
+        });
+      });
+    });
     root.querySelector<HTMLButtonElement>("[data-demo-trigger-governed]")?.addEventListener("click", () => {
       void runAction(async () => {
         publicDemoSnapshot = await publicDemoClient.action({ action: "TRIGGER_GOVERNED" });
@@ -2217,6 +2240,23 @@ export function mountCompanyOS(
           role: String(data.get("role") ?? ""),
           departmentId: String(data.get("departmentId") ?? ""),
         })));
+      });
+    });
+    root.querySelectorAll<HTMLFormElement>("[data-agent-runtime-binding-form]").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (application.mode !== "FORMAL") return;
+        const submitter = (event as SubmitEvent).submitter as HTMLButtonElement | null;
+        const operation = submitter?.value === "UNBIND" ? "UNBIND" as const : "BIND" as const;
+        const data = new FormData(form);
+        const agentId = form.dataset.agentId;
+        if (!agentId) return;
+        void runAction(() => application.changeAgentRuntimeBinding(agentId, {
+          operation,
+          connectorId: operation === "BIND" ? String(data.get("connectorId") ?? "") : null,
+          expectedRevision: Number(data.get("expectedRevision") ?? 0),
+          reason: String(data.get("reason") ?? ""),
+        }));
       });
     });
     root.querySelector<HTMLFormElement>("[data-human-form]")?.addEventListener("submit", (event) => {

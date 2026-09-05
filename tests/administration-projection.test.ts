@@ -28,6 +28,11 @@ test("formal administration projection sanitizes Connector, model, data and egre
       maximumTimeoutSeconds: 600, executionResidency: "CUSTOMER_ENVIRONMENT" as const,
       secretReferenceId: "secret-connector-one", status: "ENABLED" as const,
     }] }; }, async replace() { throw new Error("unused"); } },
+    agentRuntimeBindings: { async load() { return { revision: 1, bindings: [{
+      companyId: "company-one", agentId: "agent-one", connectorId: "connector-one",
+      capabilityDigest: `sha256:${"c".repeat(64)}`, revision: 1, status: "VERIFIED" as const,
+      changedBy: "human-one", reason: "Approved runtime", changedAt: "2026-08-20T17:59:00.000Z",
+    }] }; }, async record() { throw new Error("unused"); } },
     governance: { async load() { return {
       revision: 3, companyId: "company-one",
       modelRoutingPolicies: [{ id: "model-policy-one", companyId: "company-one", routes: [{
@@ -108,6 +113,7 @@ test("formal administration projection sanitizes Connector, model, data and egre
   }).execute("company-one");
 
   assert.equal(projection.connectorCatalog.connectors[0]?.secretConfigured, true);
+  assert.equal(projection.agentRuntimeBindings.bindings[0]?.status, "VERIFIED");
   assert.equal(projection.retentionPolicyId, "standard-retention");
   assert.equal(projection.connectorCatalog.connectors[0]?.runtimeHealth, "DEGRADED");
   assert.deepEqual(projection.runtimeConnectors, [{

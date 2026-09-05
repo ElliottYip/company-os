@@ -74,7 +74,9 @@ import { EventBackedConnectorCatalogStore } from "../storage/event-backed-connec
 import { EventBackedGovernanceCatalogStore } from "../storage/event-backed-governance-catalog-store.ts";
 import { EventBackedGenericWorkStore } from "../storage/event-backed-generic-work-store.ts";
 import { EventBackedAgentLifecycleStore } from "../storage/event-backed-agent-lifecycle-store.ts";
+import { EventBackedAgentRuntimeBindingStore } from "../storage/event-backed-agent-runtime-binding-store.ts";
 import { ManageAgentLifecycle } from "../../application/manage-agent-lifecycle.ts";
+import { ManageAgentRuntimeBinding } from "../../application/manage-agent-runtime-binding.ts";
 import { ScheduleWorkAttempt } from "../../application/schedule-work-attempt.ts";
 import { DeliverConnectorCommands } from "../../application/deliver-connector-commands.ts";
 import { Sha256ConnectorRuntimeSecurity } from "../connectors/sha256-connector-runtime-security.ts";
@@ -597,6 +599,7 @@ async function formalAgentBossApi(request: import("node:http").IncomingMessage, 
     }),
     administration: new GetAdministrationProjection({
       identity: context.identity, connectors, governance, events: formalEvents,
+      agentRuntimeBindings: new EventBackedAgentRuntimeBindingStore(formalEvents, nextPostgresRecordId),
       executionPorts: formalExecutionPorts, secretBroker: formalSecretBroker,
       modelProviders: formalModelProviders, toolAccess, usageBudget,
       dataConnectors: formalDataConnectors,
@@ -1168,6 +1171,24 @@ const server = createCompanyOsHttpService({
       },
       async transitionAgentLifecycle(request, companyId, agentId, input) {
         return (await formalAgentBossApi(request, companyId)).transitionAgentLifecycle(companyId, agentId, input as never);
+      },
+      async changeAgentRuntimeBinding(request, companyId, agentId, input) {
+        const context = await formalCompanyContext(request, companyId);
+        return new ManageAgentRuntimeBinding({
+          identity: context.identity,
+          events: formalEvents,
+          structure: new EventBackedOrganizationPrincipalStore(formalEvents),
+          lifecycle: new EventBackedAgentLifecycleStore(formalEvents, nextPostgresRecordId),
+          connectors: new EventBackedConnectorCatalogStore(formalEvents, nextPostgresRecordId),
+          responsibilities: new EventBackedResponsibilityContractStore(formalEvents, nextPostgresRecordId),
+          bindings: new EventBackedAgentRuntimeBindingStore(formalEvents, nextPostgresRecordId),
+          executionPorts: formalExecutionPorts,
+          runtimeSecurity: connectorRuntimeSecurity,
+          now: context.now,
+        }).execute({ companyId, agentId, ...(input as {
+          operation: "BIND" | "UNBIND"; connectorId: string | null;
+          expectedRevision: number; reason: string;
+        }) });
       },
       async transferResponsibility(request, companyId, agentId, input) {
         const context = await formalCompanyContext(request, companyId);

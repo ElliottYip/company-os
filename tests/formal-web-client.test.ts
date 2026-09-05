@@ -331,6 +331,8 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   await client.registerConnectorRuntime({ connectorId: "connector-two",
     executionResidency: "CUSTOMER_ENVIRONMENT", expectedRevision: 2 });
   await client.setConnectorStatus("connector-one", { status: "DISABLED", expectedRevision: 3 });
+  await client.changeAgentRuntimeBinding("agent-one", { operation: "BIND", connectorId: "connector-two",
+    expectedRevision: 0, reason: "Attach the approved local runtime." });
   await client.createDataAuthorizationContract({
     id: "finance-read", dataSourceId: "finance-warehouse", authorizedAgentIds: ["agent-one"],
     authorizedOperations: ["READ"], allowedPurposes: ["monthly-close"],
@@ -377,6 +379,8 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   const connectorPut = calls.find(({ url, init }) => url.endsWith("/connector-catalog") && init?.method === "PUT");
   const connectorPost = calls.find(({ url, init }) => url.endsWith("/connectors") && init?.method === "POST");
   const connectorPatch = calls.find(({ url, init }) => url.endsWith("/connectors/connector-one") && init?.method === "PATCH");
+  const runtimeBindingPost = calls.find(({ url, init }) =>
+    url.endsWith("/agents/agent-one/runtime-binding") && init?.method === "POST");
   const dataPost = calls.find(({ url, init }) => url.endsWith("/data-authorization-contracts") && init?.method === "POST");
   const dataPatch = calls.find(({ url, init }) => url.endsWith("/data-authorization-contracts/finance-read") && init?.method === "PATCH");
   const modelPost = calls.find(({ url, init }) => url.endsWith("/model-routes") && init?.method === "POST");
@@ -402,6 +406,7 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   assert.ok(connectorPut);
   assert.ok(connectorPost);
   assert.ok(connectorPatch);
+  assert.ok(runtimeBindingPost);
   assert.ok(dataPost);
   assert.ok(dataPatch);
   assert.ok(modelPost);
@@ -427,6 +432,10 @@ test("formal Web client consumes only the stable Agent Boss projection", async (
   assert.equal(JSON.parse(String(connectorPut.init?.body)).expectedRevision, 1);
   assert.equal(JSON.parse(String(connectorPost.init?.body)).connectorId, "connector-two");
   assert.equal(JSON.parse(String(connectorPatch.init?.body)).status, "DISABLED");
+  assert.deepEqual(JSON.parse(String(runtimeBindingPost.init?.body)), {
+    operation: "BIND", connectorId: "connector-two", expectedRevision: 0,
+    reason: "Attach the approved local runtime.",
+  });
   assert.equal(JSON.parse(String(dataPost.init?.body)).dataSourceId, "finance-warehouse");
   assert.equal(JSON.parse(String(dataPatch.init?.body)).status, "SUSPENDED");
   assert.equal(JSON.parse(String(modelPost.init?.body)).providerAdapterId, "provider-one");

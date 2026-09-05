@@ -109,6 +109,12 @@ export interface CompanyOSApplicationClient {
     readonly status: "ENABLED" | "DISABLED";
     readonly expectedRevision: number;
   }): Promise<void>;
+  changeAgentRuntimeBinding(agentId: string, input: {
+    readonly operation: "BIND" | "UNBIND";
+    readonly connectorId: string | null;
+    readonly expectedRevision: number;
+    readonly reason: string;
+  }): Promise<void>;
   createDataAuthorizationContract(input: {
     readonly id: string;
     readonly dataSourceId: string;
@@ -477,6 +483,7 @@ export function createDemoApplicationClient(): CompanyOSApplicationClient {
     async replaceConnectorCatalog() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async registerConnectorRuntime() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async setConnectorStatus() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
+    async changeAgentRuntimeBinding() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async createDataAuthorizationContract() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async setDataAuthorizationStatus() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
     async createModelRoute() { throw new Error("FORMAL_MUTATION_NOT_CONFIGURED"); },
@@ -1050,11 +1057,16 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
   const runtimeFederatedSources = recordValue(payload) && payload.runtimeFederatedSources === undefined
     ? []
     : recordValue(payload) ? payload.runtimeFederatedSources : undefined;
+  const agentRuntimeBindings = recordValue(payload) && payload.agentRuntimeBindings === undefined
+    ? { revision: 0, bindings: [] }
+    : recordValue(payload) ? payload.agentRuntimeBindings : undefined;
   if (!recordValue(payload) || payload.schemaVersion !== 1 || payload.mode !== "PRODUCTION" ||
       !recordValue(payload.viewer) || !portableWebId(payload.viewer.actorId) || !boundedText(payload.viewer.displayName, 160) ||
       !portableWebId(payload.retentionPolicyId) ||
       !recordValue(payload.connectorCatalog) || !Number.isSafeInteger(payload.connectorCatalog.revision) ||
       Number(payload.connectorCatalog.revision) < 0 || !Array.isArray(payload.connectorCatalog.connectors) ||
+      !recordValue(agentRuntimeBindings) || !Number.isSafeInteger(agentRuntimeBindings.revision) ||
+      Number(agentRuntimeBindings.revision) < 0 || !Array.isArray(agentRuntimeBindings.bindings) ||
       !Array.isArray(payload.runtimeConnectors) || !(payload.secretBrokerRuntime === null || recordValue(payload.secretBrokerRuntime)) ||
       !Array.isArray(payload.runtimeModelProviders) || !Array.isArray(payload.runtimeDataConnectors) ||
       !Array.isArray(runtimeFederatedSources) ||
@@ -1070,6 +1082,17 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
       !Number.isSafeInteger(payload.usageBudget.unpricedEventCount) || Number(payload.usageBudget.unpricedEventCount) < 0 ||
       !Array.isArray(payload.egressDecisions) || !validDate(payload.generatedAt)) {
     throw new Error("ADMINISTRATION_PROJECTION_INVALID");
+  }
+  for (const binding of agentRuntimeBindings.bindings) {
+    if (!recordValue(binding) || binding.companyId !== expectedCompanyId || !portableWebId(binding.agentId) ||
+        !(binding.connectorId === null || portableWebId(binding.connectorId)) ||
+        !(binding.capabilityDigest === null || /^sha256:[a-f0-9]{64}$/.test(String(binding.capabilityDigest))) ||
+        !Number.isSafeInteger(binding.revision) || Number(binding.revision) < 0 ||
+        !["UNBOUND", "BOUND_UNVERIFIED", "VERIFIED", "REVOKED"].includes(String(binding.status)) ||
+        !(binding.changedBy === null || portableWebId(binding.changedBy)) ||
+        !(binding.reason === null || boundedText(binding.reason, 1_000)) || !validDate(binding.changedAt)) {
+      throw new Error("ADMINISTRATION_PROJECTION_INVALID");
+    }
   }
   const health = new Set(["HEALTHY", "DEGRADED", "UNAVAILABLE"]);
   for (const connector of payload.runtimeConnectors) {
@@ -1107,7 +1130,7 @@ function administrationProjection(payload: unknown, expectedCompanyId: string): 
         !health.has(String(connector.health))) throw new Error("ADMINISTRATION_PROJECTION_INVALID");
   }
   assertSanitizedProjection(payload, expectedCompanyId);
-  return structuredClone({ ...payload, runtimeFederatedSources }) as unknown as AdministrationProjection;
+  return structuredClone({ ...payload, runtimeFederatedSources, agentRuntimeBindings }) as unknown as AdministrationProjection;
 }
 
 export function createFormalApplicationClient(
@@ -1440,6 +1463,10 @@ export function createFormalApplicationClient(
     async setConnectorStatus(connectorId, input) {
       if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(connectorId)) throw new Error("CONNECTOR_ID_INVALID");
       await patchJson(companyEndpoint(`/connectors/${encodeURIComponent(connectorId)}`).slice(baseUrl.length), input);
+    },
+    async changeAgentRuntimeBinding(agentId, input) {
+      if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(agentId)) throw new Error("AGENT_ID_INVALID");
+      await postJson(companyEndpoint(`/agents/${encodeURIComponent(agentId)}/runtime-binding`).slice(baseUrl.length), input);
     },
     async createDataAuthorizationContract(input) {
       await postJson(companyEndpoint("/data-authorization-contracts").slice(baseUrl.length), input);

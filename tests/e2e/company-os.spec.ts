@@ -310,6 +310,8 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   let responsibilityRevision = 0;
   let agentLifecycleStatus = "pending_approval";
   let agentLifecycleRevision = 0;
+  let agentRuntimeBindingRevision = 0;
+  let agentRuntimeBindings: Record<string, unknown>[] = [];
   let jordanRole = "operator";
   let planning = {
     companyId: "company-one", revision: 0,
@@ -423,6 +425,22 @@ test("verified formal identity reaches explicit admin claim and atomic company c
       }) });
       return;
     }
+    if (url.includes("/agents/") && url.endsWith("/runtime-binding") && route.request().method() === "POST") {
+      const body = route.request().postDataJSON() as Record<string, unknown>;
+      expect(body).toEqual({ operation: "BIND", connectorId: "connector-two", expectedRevision: 0,
+        reason: "Approved local execution runtime" });
+      const agentId = url.match(/\/agents\/([^/]+)\/runtime-binding$/)?.[1] ?? "";
+      agentRuntimeBindingRevision += 1;
+      agentRuntimeBindings = [{ companyId: "company-one", agentId, connectorId: "connector-two",
+        capabilityDigest: `sha256:${"d".repeat(64)}`, revision: 1, status: "VERIFIED",
+        changedBy: "human-one", reason: body.reason, changedAt: "2026-08-24T10:00:30.000Z" }];
+      organization = { ...organization, agents: organization.agents.map((agent) =>
+        agent.id === agentId ? { ...agent, runtimeConnectorId: "connector-two" } : agent) };
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
+        binding: agentRuntimeBindings[0], organization,
+      }) });
+      return;
+    }
     if (url.endsWith("/human-invites") && route.request().method() === "POST") {
       const token = "company_os_invite_0123456789abcdefghijklmnopqrstuvwxyz";
       await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify({
@@ -446,6 +464,7 @@ test("verified formal identity reaches explicit admin claim and atomic company c
           maximumTimeoutSeconds: 3600, executionResidency: "CUSTOMER_ENVIRONMENT",
           status: "ENABLED", secretConfigured: false, runtimeHealth: "HEALTHY",
         }] : [])] },
+        agentRuntimeBindings: { revision: agentRuntimeBindingRevision, bindings: agentRuntimeBindings },
         runtimeConnectors: [{ connectorId: "connector-two", displayName: "Local Codex Node",
           protocolVersion: "1.0", maximumTimeoutSeconds: 3600, supportsPause: true, supportsResume: true,
           supportsCancellation: true, supportsEvidence: true, health: "HEALTHY",
@@ -608,9 +627,16 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   const agentDialog = page.getByRole("dialog", { name: "Add an Agent colleague" });
   await agentDialog.getByLabel("Agent name").fill("Research Assistant");
   await agentDialog.getByLabel("Role", { exact: true }).fill("Market Research");
-  await agentDialog.getByLabel("Runtime Connector").selectOption("connector-one");
+  await expect(agentDialog.getByText(/Create the Agent first, then attach a discovered runtime/)).toBeVisible();
   await agentDialog.getByRole("button", { name: "Add Agent" }).click();
   await expect(page.getByText("Research Assistant", { exact: true }).first()).toBeVisible();
+  await page.getByRole("button", { name: "Agents", exact: true }).first().click();
+  await page.getByRole("button", { name: "Details & runtime", exact: true }).click();
+  const bindingDialog = page.getByRole("dialog", { name: "Research Assistant details" });
+  await bindingDialog.getByLabel("Available runtime").selectOption("connector-two");
+  await bindingDialog.getByLabel("Reason").fill("Approved local execution runtime");
+  await bindingDialog.getByRole("button", { name: "Review and bind" }).click();
+  await expect.poll(() => agentRuntimeBindingRevision).toBe(1);
   await page.getByRole("button", { name: "Agents", exact: true }).first().click();
   await expect(page.getByText("PENDING_APPROVAL", { exact: true })).toBeVisible();
   await expect(page.getByText(/Responsibility: DRAFT/)).toBeVisible();

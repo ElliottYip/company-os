@@ -148,6 +148,7 @@ export interface CompanyOsHttpServiceOptions {
     replaceGovernanceCatalog?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     replaceResponsibilityContracts?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     transitionAgentLifecycle?(request: IncomingMessage, companyId: string, agentId: string, input: unknown): Promise<unknown>;
+    changeAgentRuntimeBinding?(request: IncomingMessage, companyId: string, agentId: string, input: unknown): Promise<unknown>;
     transferResponsibility?(request: IncomingMessage, companyId: string, agentId: string, input: unknown): Promise<unknown>;
     exportCompany?(request: IncomingMessage, companyId: string): Promise<unknown>;
     beginSecretReferenceManagement?(request: IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
@@ -971,6 +972,30 @@ function agentLifecycleCommand(value: unknown, operation: string): {
     ...(operation === "PAUSE" && input.pauseReason
       ? { pauseReason: input.pauseReason as "manual" | "budget" | "system" }
       : {}),
+  };
+}
+
+function agentRuntimeBindingCommand(value: unknown): {
+  readonly operation: "BIND" | "UNBIND";
+  readonly connectorId: string | null;
+  readonly expectedRevision: number;
+  readonly reason: string;
+} | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const input = value as Record<string, unknown>;
+  if (!["BIND", "UNBIND"].includes(String(input.operation)) ||
+      !Number.isSafeInteger(input.expectedRevision) || Number(input.expectedRevision) < 0 ||
+      typeof input.reason !== "string" || !input.reason.trim() || input.reason.length > 1_000 ||
+      Object.keys(input).some((key) => !["operation", "connectorId", "expectedRevision", "reason"].includes(key))) {
+    return null;
+  }
+  if (input.operation === "BIND" && !requiredId(input.connectorId)) return null;
+  if (input.operation === "UNBIND" && input.connectorId !== null) return null;
+  return {
+    operation: input.operation as "BIND" | "UNBIND",
+    connectorId: input.connectorId as string | null,
+    expectedRevision: Number(input.expectedRevision),
+    reason: input.reason.trim(),
   };
 }
 
@@ -2166,6 +2191,19 @@ export function createCompanyOsHttpService(options: CompanyOsHttpServiceOptions)
       const responsibilityTransferRoute = path.match(
         /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/agents\/([a-z0-9][a-z0-9-]{0,63})\/responsibility-transfers$/,
       );
+      const agentRuntimeBindingRoute = path.match(
+        /^\/api\/v1\/companies\/([a-z0-9][a-z0-9-]{0,63})\/agents\/([a-z0-9][a-z0-9-]{0,63})\/runtime-binding$/,
+      );
+      if (method === "POST" && agentRuntimeBindingRoute) {
+        if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
+        const command = agentRuntimeBindingCommand(await readJson(req, maxBodyBytes));
+        if (!command) throw new Error("INVALID_FORMAL_COMMAND");
+        if (!options.formalApi?.changeAgentRuntimeBinding) throw new Error("FORMAL_COMMAND_UNAVAILABLE");
+        sendJson(res, 200, await options.formalApi.changeAgentRuntimeBinding(
+          req, agentRuntimeBindingRoute[1] as string, agentRuntimeBindingRoute[2] as string, command,
+        ));
+        return;
+      }
       if (method === "POST" && responsibilityTransferRoute) {
         if (!isAllowedOrigin(req, allowedOrigins)) throw new Error("ORIGIN_NOT_ALLOWED");
         const command = responsibilityTransferCommand(await readJson(req, maxBodyBytes));

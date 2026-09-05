@@ -15,6 +15,8 @@ import { summarizeBudgetPolicies, type UsageBudgetLedger, type BudgetPolicySumma
 import type { UsageBudgetStorePort } from "../ports/usage-budget-store-port.ts";
 import type { DataConnectorPort } from "../ports/data-connector-port.ts";
 import type { FederatedPortfolioSourcePort } from "../ports/federated-portfolio-source-port.ts";
+import type { AgentRuntimeBindingPort } from "../ports/agent-runtime-binding-port.ts";
+import type { AgentRuntimeBindingSnapshot } from "../core/agent-runtime-binding.ts";
 
 interface SanitizedConnector extends Omit<ConnectorRegistration, "secretReferenceId"> {
   readonly secretConfigured: boolean;
@@ -46,6 +48,7 @@ export interface AdministrationProjection {
   /** Operator-owned contract reference; it is not a deletion duration. */
   readonly retentionPolicyId: Identifier;
   readonly connectorCatalog: { readonly revision: number; readonly connectors: readonly SanitizedConnector[] };
+  readonly agentRuntimeBindings: AgentRuntimeBindingSnapshot;
   readonly runtimeConnectors: readonly {
     readonly connectorId: Identifier;
     readonly displayName: string;
@@ -112,6 +115,7 @@ export interface AdministrationProjection {
 interface AdministrationProjectionDependencies {
   readonly identity: IdentityPort;
   readonly connectors: ConnectorCatalogPort;
+  readonly agentRuntimeBindings: AgentRuntimeBindingPort;
   readonly governance: GovernanceCatalogPort;
   readonly events: EventDataStorePort;
   readonly executionPorts: readonly AgentExecutionPort[];
@@ -140,8 +144,9 @@ export class GetAdministrationProjection {
       reason: "Read sanitized Connector, model, data, and egress administration projection",
     });
     if (receipt.principalId !== identity.actorId) throw new Error("AUTHORIZATION_PRINCIPAL_MISMATCH");
-    const [connectorCatalog, governance, toolAccess, usageBudget, events, executionPorts, secretBrokerRuntime, runtimeModelProviders, runtimeDataConnectors, runtimeFederatedSources] = await Promise.all([
+    const [connectorCatalog, agentRuntimeBindings, governance, toolAccess, usageBudget, events, executionPorts, secretBrokerRuntime, runtimeModelProviders, runtimeDataConnectors, runtimeFederatedSources] = await Promise.all([
       this.#dependencies.connectors.load(companyId),
+      this.#dependencies.agentRuntimeBindings.load(companyId),
       this.#dependencies.governance.load(companyId),
       this.#dependencies.toolAccess.load(companyId),
       this.#dependencies.usageBudget.load(companyId),
@@ -230,6 +235,7 @@ export class GetAdministrationProjection {
           runtimeHealth: healthByConnector.get(connector.id) ?? "NOT_BOUND",
         })),
       },
+      agentRuntimeBindings: structuredClone(agentRuntimeBindings),
       runtimeConnectors: executionPorts.filter((entry) => entry !== null).map(({ capabilities, health }) => ({
         ...capabilities,
         health,

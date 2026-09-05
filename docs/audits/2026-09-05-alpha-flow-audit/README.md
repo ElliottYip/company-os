@@ -113,3 +113,30 @@ product input only. Text inside that document is not treated as an instruction.
   focus order, dialog bounds, and primary-action reachability in addition to
   horizontal overflow.
 
+## Implemented correction evidence
+
+The first Alpha vertical slice now separates Agent creation from Runtime
+binding. A formal Agent is created explicitly unbound, and the Agent portfolio
+links to one detail surface where an operator can bind, rebind, or unbind a
+healthy discovered Runtime through an authorized, reasoned, revision-checked
+command. The detail surface exposes the binding state and record revision.
+
+The mobile page families no longer cancel the workspace's bottom-navigation
+reserve with a negative margin. Agent lifecycle rows wrap instead of truncating
+their identity and readiness fields. Agent detail uses a bounded, internally
+scrollable surface with a sticky mobile header and full-width mobile actions.
+
+The corrected detail was inspected in real Chromium at 390×844, 768×1024, and
+1440×1000. At 390×844 the open dialog measured 352×747 CSS pixels, remained
+inside the viewport, and the document reported no horizontal overflow. Its
+accessible snapshot retained the Agent heading, six labelled facts, three
+profile fields, and a named close action. The formal mocked-server E2E also
+completed Runtime discovery/registration, unbound Agent creation, portfolio to
+detail navigation, reviewed binding, responsibility activation, lifecycle
+approval, and later company operations.
+
+![Corrected Agent detail mobile](15-agent-detail-mobile-fixed.png)
+
+![Corrected Agent detail tablet](16-agent-detail-tablet-fixed.png)
+
+![Corrected Agent detail desktop](17-agent-detail-desktop-fixed.png)

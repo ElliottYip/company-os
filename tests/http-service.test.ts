@@ -39,6 +39,7 @@ async function withService(
     replaceGovernanceCatalog?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     replaceResponsibilityContracts?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
     transitionAgentLifecycle?(request: import("node:http").IncomingMessage, companyId: string, agentId: string, input: unknown): Promise<unknown>;
+    changeAgentRuntimeBinding?(request: import("node:http").IncomingMessage, companyId: string, agentId: string, input: unknown): Promise<unknown>;
     transferResponsibility?(request: import("node:http").IncomingMessage, companyId: string, agentId: string, input: unknown): Promise<unknown>;
     exportCompany?(request: import("node:http").IncomingMessage, companyId: string): Promise<unknown>;
     beginSecretReferenceManagement?(request: import("node:http").IncomingMessage, companyId: string, input: unknown): Promise<unknown>;
@@ -856,6 +857,45 @@ test("formal responsibility transfer is tenant and Agent bound with an exact com
     async transferResponsibility(_request, companyId, agentId, input) {
       received = { companyId, agentId, input };
       return { responsibilityRevision: 8, organization: { company: { id: companyId } } };
+    },
+  });
+});
+
+test("formal Agent runtime binding uses one exact revisioned command route", async () => {
+  const calls: unknown[] = [];
+  await withService(async (baseUrl) => {
+    const bound = await fetch(`${baseUrl}/api/v1/companies/company-one/agents/agent-one/runtime-binding`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({ operation: "BIND", connectorId: "connector-one", expectedRevision: 0,
+        reason: "Attach the approved local runtime." }),
+    });
+    assert.equal(bound.status, 200);
+    const unbound = await fetch(`${baseUrl}/api/v1/companies/company-one/agents/agent-one/runtime-binding`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({ operation: "UNBIND", connectorId: null, expectedRevision: 1,
+        reason: "Retire this runtime binding." }),
+    });
+    assert.equal(unbound.status, 200);
+    const invalid = await fetch(`${baseUrl}/api/v1/companies/company-one/agents/agent-one/runtime-binding`, {
+      method: "POST",
+      headers: { origin: "http://allowed.test", "content-type": "application/json" },
+      body: JSON.stringify({ operation: "BIND", connectorId: "connector-one", expectedRevision: 2,
+        reason: "Valid reason", credential: "must-never-cross-this-boundary" }),
+    });
+    assert.equal(invalid.status, 422);
+    assert.deepEqual(calls, [
+      { companyId: "company-one", agentId: "agent-one", input: { operation: "BIND",
+        connectorId: "connector-one", expectedRevision: 0, reason: "Attach the approved local runtime." } },
+      { companyId: "company-one", agentId: "agent-one", input: { operation: "UNBIND",
+        connectorId: null, expectedRevision: 1, reason: "Retire this runtime binding." } },
+    ]);
+  }, {
+    async getAgentBoss() { return {}; },
+    async changeAgentRuntimeBinding(_request, companyId, agentId, input) {
+      calls.push({ companyId, agentId, input });
+      return { binding: { agentId }, organization: {} };
     },
   });
 });

@@ -124,6 +124,13 @@ test("local Agent connection is visible before runtime discovery and remains sec
   assert.doesNotMatch(mountSource, /name="(?:bearerToken|agentToken|connectorSecret|agentPassword)"/i);
 });
 
+test("Agent creation and runtime binding are separate, reviewable journeys", () => {
+  assert.match(mountSource, /data-agent-runtime-binding-form/);
+  assert.match(mountSource, /application\.changeAgentRuntimeBinding/);
+  assert.match(mountSource, /Create the Agent first, then attach a discovered runtime/);
+  assert.doesNotMatch(mountSource, /data-agent-form[\s\S]{0,3000}name="runtimeConnectorId"/);
+});
+
 test("dashboard prioritizes accountable humans, decisions, active work and evidence", () => {
   assert.match(mountSource, /DASHBOARD/);
   assert.match(mountSource, /high-risk action needs a human decision/);
