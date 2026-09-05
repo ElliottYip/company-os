@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_ALPHA_RESPONSIVE_ACCESSIBILITY",
+  "recordedAt": "2026-09-05T08:20:00.000Z",
+  "outcome": "PASS",
+  "viewports": [
+    { "name": "mobile", "width": 390, "height": 844 },
+    { "name": "tablet", "width": 768, "height": 1024 },
+    { "name": "desktop", "width": 1440, "height": 1000 }
+  ],
+  "coverage": {
+    "acceptedPages": 17,
+    "checks": ["document overflow", "interactive control bounds", "mobile navigation reserve", "keyboard focus", "dialog bounds", "last-action reachability", "Escape close", "focus return"],
+    "expandedSurfaces": ["new task", "Agent detail", "blocked readiness", "ready readiness", "AI Asset detail", "risk rule", "Access Map", "AI Case"]
+  },
+  "browserTests": [
+    "every accepted product page remains inside the mobile viewport",
+    "every accepted product page remains inside the tablet viewport",
+    "every accepted product page remains inside the desktop viewport",
+    "expanded Agent and task surfaces remain usable at mobile",
+    "expanded Agent and task surfaces remain usable at tablet",
+    "expanded Agent and task surfaces remain usable at desktop"
+  ]
+}

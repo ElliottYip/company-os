@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_ALPHA_AI_ASSET_EVALUATION",
+  "recordedAt": "2026-09-05T08:20:00.000Z",
+  "outcome": "PASS",
+  "assetTypes": ["AGENT", "MODEL", "PROMPT", "DATASET", "TOOL", "MCP_SERVER", "WORKFLOW", "KNOWLEDGE_BASE"],
+  "capabilities": ["revisioned inventory", "provenance", "relationships", "impact links", "templates", "datasets", "scores", "thresholds", "regression trends"],
+  "proof": [
+    "Trace discovery is idempotent and creates bounded relationships",
+    "generic edits cannot bypass governance review fields",
+    "evaluation results freeze evaluator provenance",
+    "responsive AI control evidence passes at 390/768/1440"
+  ]
+}

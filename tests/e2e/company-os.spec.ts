@@ -8,6 +8,59 @@ async function enterDemo(page: Page): Promise<void> {
   await expect(page.getByText("DEMO FIXTURE · NO EXTERNAL CALLS")).toBeVisible();
 }
 
+async function expectResponsiveSurface(page: Page, mobile: boolean): Promise<void> {
+  const problems = await page.evaluate((hasMobileNavigation) => {
+    const issue: string[] = [];
+    const width = document.documentElement.clientWidth;
+    if (document.documentElement.scrollWidth > width + 1) issue.push(`document-overflow:${document.documentElement.scrollWidth - width}`);
+    const selector = "button,input,select,textarea,a[href],summary,[tabindex]";
+    for (const element of document.querySelectorAll<HTMLElement>(selector)) {
+      const style = getComputedStyle(element);
+      const box = element.getBoundingClientRect();
+      if (style.display === "none" || style.visibility === "hidden" || box.width === 0 || box.height === 0) continue;
+      if (box.left < -1 || box.right > width + 1) {
+        issue.push(`control-outside:${element.tagName.toLowerCase()}:${element.getAttribute("aria-label") ?? element.textContent?.trim().slice(0, 40) ?? ""}:${Math.round(box.left)}-${Math.round(box.right)}`);
+      }
+    }
+    if (hasMobileNavigation) {
+      const navigation = document.querySelector<HTMLElement>(".mobile-bottom-nav");
+      const workspace = document.querySelector<HTMLElement>(".workspace");
+      if (!navigation || !workspace) issue.push("mobile-shell-missing");
+      else {
+        const reserve = Number.parseFloat(getComputedStyle(workspace).paddingBottom);
+        if (reserve + 1 < navigation.getBoundingClientRect().height) issue.push(`mobile-navigation-reserve:${reserve}`);
+      }
+    }
+    return issue;
+  }, mobile);
+  expect(problems).toEqual([]);
+  await page.keyboard.press("Tab");
+  await expect.poll(() => page.evaluate(() => document.activeElement !== document.body)).toBe(true);
+}
+
+async function expectOpenDialogUsable(page: Page): Promise<void> {
+  const dialog = page.locator("dialog[open]");
+  await expect(dialog).toBeVisible();
+  const problems = await dialog.evaluate((element) => {
+    const box = element.getBoundingClientRect();
+    const issue: string[] = [];
+    if (box.left < -1 || box.top < -1 || box.right > innerWidth + 1 || box.bottom > innerHeight + 1) {
+      issue.push(`dialog-outside:${Math.round(box.left)},${Math.round(box.top)},${Math.round(box.right)},${Math.round(box.bottom)}`);
+    }
+    for (const control of element.querySelectorAll<HTMLElement>("button,input,select,textarea,summary")) {
+      const controlBox = control.getBoundingClientRect();
+      const style = getComputedStyle(control);
+      if (style.display === "none" || style.visibility === "hidden" || controlBox.width === 0 || controlBox.height === 0) continue;
+      if (controlBox.left < box.left - 1 || controlBox.right > box.right + 1) issue.push(`dialog-control-outside:${control.tagName.toLowerCase()}`);
+    }
+    return issue;
+  });
+  expect(problems).toEqual([]);
+  const lastVisibleControl = dialog.locator("button:visible,input:not([type=hidden]):visible,select:visible,textarea:visible,summary:visible").last();
+  await lastVisibleControl.scrollIntoViewIfNeeded();
+  await expect(lastVisibleControl).toBeVisible();
+}
+
 function formalAlphaRead(url: string, companyId = "company-one"): unknown | undefined {
   const path = new URL(url).pathname;
   if (path.endsWith("/operational-risk")) return { schemaVersion: 1, companyId, traces: [], accessEdges: [],
@@ -650,13 +703,23 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   await expect(agentDialog.getByText(/Create the Agent first, then attach a discovered runtime/)).toBeVisible();
   await agentDialog.getByRole("button", { name: "Add Agent" }).click();
   await expect(page.getByText("Research Assistant", { exact: true }).first()).toBeVisible();
-  await page.getByRole("button", { name: "Agents", exact: true }).first().click();
-  await page.getByRole("button", { name: "Details & runtime", exact: true }).click();
+  await page.getByRole("button", { name: "Governance", exact: true }).first().click();
+  await page.getByRole("button", { name: "Attach Research Assistant to Local Codex Node", exact: true }).click();
   const bindingDialog = page.getByRole("dialog", { name: "Research Assistant details" });
   await expect(bindingDialog.getByRole("heading", { name: "Complete these prerequisites" })).toBeVisible();
   await expect(bindingDialog.getByText("1/4", { exact: true })).toBeVisible();
   await expect(bindingDialog.getByRole("button", { name: "Fix now" })).toHaveCount(3);
-  await bindingDialog.getByLabel("Available runtime").selectOption("connector-two");
+  await expect(bindingDialog.getByLabel("Available runtime")).toHaveValue("connector-two");
+  for (const viewport of [{ name: "mobile", width: 390, height: 844 }, { name: "tablet", width: 768, height: 1024 },
+    { name: "desktop", width: 1440, height: 1000 }]) {
+    await page.setViewportSize(viewport);
+    await expectOpenDialogUsable(page);
+    await page.locator("dialog[open]").evaluate((dialog) => dialog.scrollTo(0, 0));
+    await page.evaluate(() => window.scrollTo(0, 0));
+    if (process.env.COMPANY_OS_WRITE_ALPHA_EVIDENCE === "true") {
+      await page.screenshot({ path: `docs/audits/2026-09-05-alpha-flow-audit/agent-readiness-blocked-${viewport.name}.png` });
+    }
+  }
   await bindingDialog.getByLabel("Reason").fill("Approved local execution runtime");
   await bindingDialog.getByRole("button", { name: "Review and bind" }).click();
   await expect.poll(() => agentRuntimeBindingRevision).toBe(1);
@@ -678,6 +741,16 @@ test("verified formal identity reaches explicit admin claim and atomic company c
   const readyDialog = page.getByRole("dialog", { name: "Research Assistant details" });
   await expect(readyDialog.getByRole("heading", { name: "Ready for governed work" })).toBeVisible();
   await expect(readyDialog.getByText("4/4", { exact: true })).toBeVisible();
+  for (const viewport of [{ name: "mobile", width: 390, height: 844 }, { name: "tablet", width: 768, height: 1024 },
+    { name: "desktop", width: 1440, height: 1000 }]) {
+    await page.setViewportSize(viewport);
+    await expectOpenDialogUsable(page);
+    await page.locator("dialog[open]").evaluate((dialog) => dialog.scrollTo(0, 0));
+    await page.evaluate(() => window.scrollTo(0, 0));
+    if (process.env.COMPANY_OS_WRITE_ALPHA_EVIDENCE === "true") {
+      await page.screenshot({ path: `docs/audits/2026-09-05-alpha-flow-audit/agent-readiness-ready-${viewport.name}.png` });
+    }
+  }
   await readyDialog.getByRole("button", { name: "Close" }).click();
   await page.getByRole("button", { name: "Organization", exact: true }).first().click();
   await page.locator('[data-colleague-detail="human-human-one"]').first().click();
@@ -1008,6 +1081,13 @@ test("formal running Work requests cancellation and waits for Connector confirma
   await page.goto("/?mode=formal");
   await page.getByRole("button", { name: "Tasks", exact: true }).first().click();
   await page.getByRole("listitem").filter({ hasText: "Review customer evidence" }).click();
+  await expect(page.getByText("Default deny · no permission reference", { exact: true })).toBeVisible();
+  await expect(page.getByText("No enterprise data contract", { exact: true })).toBeVisible();
+  await page.locator('.task-properties [data-open-agent-detail="agent-one"]').click();
+  await expect(page.getByRole("dialog", { name: "Agent One details" })).toBeVisible();
+  await page.getByRole("dialog", { name: "Agent One details" }).getByRole("button", { name: "Close" }).click();
+  await page.getByRole("button", { name: "Tasks", exact: true }).first().click();
+  await page.getByRole("listitem").filter({ hasText: "Review customer evidence" }).click();
   await page.getByRole("tab", { name: /Activity/ }).click();
   await expect(page.getByRole("tabpanel", { name: "Activity" })).toContainText("Connector accepted the work");
   await page.getByRole("tab", { name: "Details" }).click();
@@ -1126,5 +1206,50 @@ for (const viewport of [
     await expect(page.getByRole("heading", { name: "ACCOUNTABILITY" })).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(browserProblems).toEqual([]);
+  });
+}
+
+for (const viewport of [
+  { name: "mobile", width: 390, height: 844 },
+  { name: "tablet", width: 768, height: 1024 },
+  { name: "desktop", width: 1440, height: 1000 },
+] as const) {
+  test(`expanded Agent and task surfaces remain usable at ${viewport.name}`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await enterDemo(page);
+    const taskOpener = viewport.width <= 860 ? page.locator(".mobile-create") : page.locator(".company-rail [data-open-new-task]");
+    await taskOpener.click();
+    await expectOpenDialogUsable(page);
+    await page.keyboard.press("Escape");
+    await expect(page.locator("dialog[open]")).toHaveCount(0);
+    await expect(taskOpener).toBeFocused();
+
+    await page.locator('.company-rail nav [data-section-target="organization"]').evaluate((button: HTMLElement) => button.click());
+    await expect(page.locator('.page-stage[data-section="organization"]')).toBeVisible();
+    const agentOpener = page.locator('[data-colleague-detail^="agent-"]').first();
+    await agentOpener.click();
+    await expectOpenDialogUsable(page);
+    await page.keyboard.press("Escape");
+    await expect(page.locator("dialog[open]")).toHaveCount(0);
+    await expect(agentOpener).toBeFocused();
+  });
+}
+
+for (const viewport of [
+  { name: "mobile", width: 390, height: 844 },
+  { name: "tablet", width: 768, height: 1024 },
+  { name: "desktop", width: 1440, height: 1000 },
+] as const) {
+  test(`every accepted product page remains inside the ${viewport.name} viewport`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await enterDemo(page);
+    for (const section of ["office", "inbox", "work", "goals", "projects", "organization", "humans", "agents",
+      "approvals", "evidence", "activity", "responsibility", "connectors", "risk", "assets", "usage", "settings"]) {
+      if (!await page.locator(`.page-stage[data-section="${section}"]`).count()) {
+        await page.locator(`.company-rail nav [data-section-target="${section}"]`).evaluate((button: HTMLElement) => button.click());
+      }
+      await expect(page.locator(`.page-stage[data-section="${section}"]`)).toBeVisible();
+      await expectResponsiveSurface(page, viewport.width <= 860);
+    }
   });
 }

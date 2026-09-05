@@ -2,8 +2,18 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { aiControlPage } from "../web/pages/ai-control-pages.ts";
 
-test("AI control page exposes inventory, Shadow review, evaluation, and honest unavailable value", () => {
-  const html = aiControlPage({ locale: "zh-CN", risk: null, organization: { company: { id: "company-one", name: "公司",
+test("AI control page exposes inventory, impact paths, Shadow review, evaluation, and honest unavailable value", () => {
+  const html = aiControlPage({ locale: "zh-CN", risk: { schemaVersion: 1, companyId: "company-one",
+    traces: [{ id: "trace-one", companyId: "company-one", workId: "work-one", attemptId: "attempt-one",
+      agentId: "agent-one", spans: [], recordedAt: "2026-09-05T10:00:00.000Z" }],
+    accessEdges: [{ id: "edge-one", companyId: "company-one", traceId: "trace-one", spanId: "span-one",
+      subjectAgentId: "agent-one", resourceType: "MODEL", resourceId: "model-one", operation: "INFER",
+      authorityId: "policy-grant-one" }],
+    violations: [{ id: "violation-one", companyId: "company-one", traceId: "trace-one", ruleId: "policy-one",
+      severity: "HIGH", agentId: "agent-one", workId: "work-one", attemptId: "attempt-one",
+      accessEdgeIds: ["edge-one"], summary: "模型策略命中", observedAt: "2026-09-05T10:00:00.000Z" }],
+    alerts: [], cases: [],
+    generatedAt: "2026-09-05T10:00:00.000Z" }, organization: { company: { id: "company-one", name: "公司",
     purpose: "治理", locale: "zh-CN" }, departments: [], humans: [{ id: "human-one", name: "负责人",
       title: "Owner", departmentId: "operations", avatarId: "avatar-one" }], agents: [] },
     graph: { companyId: "company-one", revision: 1, relationships: [], duplicateReviews: [],
@@ -27,6 +37,9 @@ test("AI control page exposes inventory, Shadow review, evaluation, and honest u
   assert.match(html, /data-ai-asset-relationship-form/);
   assert.match(html, /data-evaluation-template-form/);
   assert.match(html, /影响与来源/);
+  assert.match(html, /work-one \/ attempt-one/);
+  assert.match(html, /policy-one/);
+  assert.match(html, /data-section-target="risk"/);
   assert.match(html, /data-operation="REJECT"/);
   assert.match(html, /不可用/);
   assert.doesNotMatch(html, /rawPrompt|rawOutput|credentialReference/);

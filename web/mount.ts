@@ -242,6 +242,12 @@ function fixtureAgentSuffix(name: string, state: CompanyWorkState): string {
     : "";
 }
 
+function authorityReferenceList(ids: readonly string[], empty: string): string {
+  return ids.length
+    ? `<ul class="authority-reference-list">${ids.map((id) => `<li><code>${escapeHtml(id)}</code></li>`).join("")}</ul>`
+    : `<span class="authority-reference-empty">${empty}</span>`;
+}
+
 function responsibilityChain(
   state: CompanyWorkState,
   organization: OrganizationDraft,
@@ -395,7 +401,7 @@ function workView(
       <div class="task-record-tabs" role="tablist" aria-label="${copy("Task record views", "任务记录视图")}"><button type="button" role="tab" aria-selected="true" data-task-tab="detail">${copy("Details", "详情")}</button><button type="button" role="tab" aria-selected="false" data-task-tab="activity">${copy("Activity", "活动")} <span>${state.events.length}</span></button><button type="button" role="tab" aria-selected="false" data-task-tab="evidence">${copy("Deliverables and evidence", "交付物与证据")} <span>${state.responsibility.evidenceIds.length + (state.responsibility.resultId ? 1 : 0)}</span></button><button type="button" role="tab" aria-selected="false" data-task-tab="responsibility">${copy("Responsibility", "责任")}</button></div>
       <div class="task-record-panel" role="tabpanel" aria-label="${copy("Details", "详情")}" data-task-panel="detail">
         <div class="task-record-primary"><p class="family-kicker">${copy("CURRENT GOAL", "当前目标")}</p><h3>${escapeHtml(workGoal)}</h3>${workBody}<div class="task-actions" data-task-actions></div></div>
-        <aside class="task-properties" aria-label="${copy("Task properties", "任务属性")}"><h3>${copy("Task properties", "任务属性")}</h3><dl><div><dt>${copy("Status", "状态")}</dt><dd>${statusCopy(state)}</dd></div><div><dt>${copy("Accountable human", "真人负责人")}</dt><dd>${escapeHtml(accountableHuman)}</dd></div><div><dt>${copy("Executing Agent", "执行 Agent")}</dt><dd>${escapeHtml(executingAgent)}${fixtureAgentSuffix(executingAgent, state)}</dd></div><div><dt>${copy("Permissions", "权限")}</dt><dd>${state.responsibility.permissionIds.length} ${copy("bound", "项已绑定")}</dd></div><div><dt>${copy("Data contracts", "数据授权合同")}</dt><dd>${state.responsibility.dataAuthorizationIds.length} ${copy("bound", "份已绑定")}</dd></div><div><dt>${copy("Approval", "审批")}</dt><dd>${state.responsibility.approvalIds.length ? copy("Exact action bound", "仅对当前操作有效") : copy("Not requested", "无需审批")}</dd></div><div><dt>${copy("Result", "结果")}</dt><dd>${state.responsibility.resultId ? copy("Recorded", "已记录") : copy("Awaiting a verifiable result", "等待可核验结果")}</dd></div></dl></aside>
+        <aside class="task-properties" aria-label="${copy("Task properties", "任务属性")}"><h3>${copy("Task properties", "任务属性")}</h3><dl><div><dt>${copy("Status", "状态")}</dt><dd>${statusCopy(state)}</dd></div><div><dt>${copy("Accountable human", "真人负责人")}</dt><dd>${escapeHtml(accountableHuman)}</dd></div><div><dt>${copy("Executing Agent", "执行 Agent")}</dt><dd><button type="button" class="inline-record-link" data-open-agent-detail="${escapeHtml(state.responsibility.executingAgentId)}">${escapeHtml(executingAgent)}</button>${fixtureAgentSuffix(executingAgent, state)}</dd></div><div><dt>${copy("Permission authority", "权限授权")}</dt><dd>${authorityReferenceList(state.responsibility.permissionIds, copy("Default deny · no permission reference", "默认拒绝 · 无权限引用"))}</dd></div><div><dt>${copy("Data authority", "数据授权")}</dt><dd>${authorityReferenceList(state.responsibility.dataAuthorizationIds, copy("No enterprise data contract", "无企业数据授权合同"))}</dd></div><div><dt>${copy("Approval", "审批")}</dt><dd>${state.responsibility.approvalIds.length ? copy("Exact action bound", "仅对当前操作有效") : copy("Not requested", "无需审批")}</dd></div><div><dt>${copy("Result", "结果")}</dt><dd>${state.responsibility.resultId ? copy("Recorded", "已记录") : copy("Awaiting a verifiable result", "等待可核验结果")}</dd></div></dl></aside>
       </div>
       <div class="task-record-panel" role="tabpanel" aria-label="${copy("Activity", "活动")}" data-task-panel="activity" hidden>${eventFeed(state)}</div>
       <div class="task-record-panel" role="tabpanel" aria-label="${copy("Deliverables and evidence", "交付物与证据")}" data-task-panel="evidence" hidden>${evidenceArtifacts(state)}</div>
@@ -680,7 +686,18 @@ function connectorsView(
   const runtimeConnectors = administration?.runtimeConnectors ?? [];
   const federatedSources = administration?.runtimeFederatedSources ?? [];
   const registeredRows = administration?.connectorCatalog.connectors
-    .map((connector) => `<article class="connector-row family-list-row"><span class="connector-orb ${connector.runtimeHealth === "HEALTHY" ? "connector-orb--green" : ""}"></span><div><h2>${escapeHtml(connector.displayName)}</h2><p>${connector.operations.join(" · ")} · ${escapeHtml(connector.executionResidency)}</p><small>${connector.secretConfigured ? copy("Secret reference configured", "已配置 Secret 引用") : copy("No secret reference", "未配置 Secret 引用")}</small></div><div>${raftStatus(connector.runtimeHealth === "NOT_BOUND" ? copy("Runtime not bound", "未绑定运行环境") : connector.runtimeHealth, connector.runtimeHealth === "HEALTHY" ? "working" : "neutral")}<button type="button" class="agent-lifecycle-action" data-connector-status="${connector.status === "ENABLED" ? "DISABLED" : "ENABLED"}" data-connector-id="${escapeHtml(connector.id)}">${connector.status === "ENABLED" ? copy("Disable", "停用") : copy("Enable", "启用")}</button></div></article>`)
+    .map((connector) => {
+      const boundIds = new Set(administration.agentRuntimeBindings.bindings
+        .filter(({ connectorId, status }) => connectorId === connector.id && status !== "UNBOUND")
+        .map(({ agentId }) => agentId));
+      const attached = organization.agents.filter(({ id }) => boundIds.has(id));
+      const attachable = organization.agents.filter(({ id }) => !administration.agentRuntimeBindings.bindings
+        .some(({ agentId, status }) => agentId === id && status !== "UNBOUND"));
+      const agentLinks = [...attached.map((agent) => ({ agent, label: copy("Open", "查看") })),
+        ...attachable.map((agent) => ({ agent, label: copy("Attach", "绑定") }))]
+        .map(({ agent, label }) => `<button type="button" class="inline-record-link" data-open-agent-detail="${escapeHtml(agent.id)}" data-proposed-connector-id="${escapeHtml(connector.id)}" aria-label="${label} ${escapeHtml(agent.name)} ${copy("to", "到")} ${escapeHtml(connector.displayName)}">${label} ${escapeHtml(agent.name)}</button>`).join("");
+      return `<article class="connector-row family-list-row"><span class="connector-orb ${connector.runtimeHealth === "HEALTHY" ? "connector-orb--green" : ""}"></span><div><h2>${escapeHtml(connector.displayName)}</h2><p>${connector.operations.join(" · ")} · ${escapeHtml(connector.executionResidency)}</p><small>${connector.secretConfigured ? copy("Secret reference configured", "已配置 Secret 引用") : copy("No secret reference", "未配置 Secret 引用")}</small>${agentLinks ? `<div class="runtime-agent-links">${agentLinks}</div>` : ""}</div><div>${raftStatus(connector.runtimeHealth === "NOT_BOUND" ? copy("Runtime not bound", "未绑定运行环境") : connector.runtimeHealth, connector.runtimeHealth === "HEALTHY" ? "working" : "neutral")}<button type="button" class="agent-lifecycle-action" data-connector-status="${connector.status === "ENABLED" ? "DISABLED" : "ENABLED"}" data-connector-id="${escapeHtml(connector.id)}">${connector.status === "ENABLED" ? copy("Disable", "停用") : copy("Enable", "启用")}</button></div></article>`;
+    })
     .join("") ?? "";
   const runtimeOnlyRows = runtimeConnectors.filter(({ registered }) => !registered)
     .map((connector) => `<article class="connector-row family-list-row"><span class="connector-orb ${connector.health === "HEALTHY" ? "connector-orb--green" : ""}"></span><div><h2>${escapeHtml(connector.displayName)}</h2><p>${escapeHtml(connector.connectorId)} · protocol ${escapeHtml(connector.protocolVersion)} · ${connector.maximumTimeoutSeconds}s maximum</p><small>Runtime package installed; register it in this company before Agent admission.</small></div>${raftStatus(connector.health === "HEALTHY" ? "Installed · unregistered" : connector.health, connector.health === "HEALTHY" ? "working" : "neutral")}</article>`)
@@ -1472,6 +1489,7 @@ export function mountCompanyOS(
     root.querySelectorAll<HTMLButtonElement>("[data-open-agent-detail]").forEach((button) => {
       button.addEventListener("click", () => {
         const agentId = button.dataset.openAgentDetail;
+        const proposedConnectorId = button.dataset.proposedConnectorId;
         if (!agentId) return;
         section = "organization";
         selectedWorkId = null;
@@ -1479,7 +1497,13 @@ export function mountCompanyOS(
         void render().then(() => {
           root.querySelector<HTMLButtonElement>('[data-org-tab="agents"]')?.click();
           const dialog = root.querySelector<HTMLDialogElement>(`[data-detail-dialog="agent-${CSS.escape(agentId)}"]`);
-          if (dialog && !dialog.open) dialog.showModal();
+          if (dialog && !dialog.open) {
+            const connector = dialog.querySelector<HTMLSelectElement>('[name="connectorId"]');
+            if (connector && proposedConnectorId && [...connector.options].some(({ value }) => value === proposedConnectorId)) {
+              connector.value = proposedConnectorId;
+            }
+            dialog.showModal();
+          }
         });
       });
     });

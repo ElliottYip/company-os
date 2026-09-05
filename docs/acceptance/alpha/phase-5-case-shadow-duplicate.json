@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_ALPHA_CASE_SHADOW_DUPLICATE",
+  "recordedAt": "2026-09-05T08:20:00.000Z",
+  "outcome": "PASS",
+  "aiCaseLifecycle": ["OPEN", "CONTAINED", "INVESTIGATING", "REMEDIATING", "REVIEW", "RECOVERY_REQUESTED", "RECOVERED", "CLOSED", "REOPEN"],
+  "shadowActions": ["assign owner", "admit", "reject"],
+  "duplicateActions": ["merge preserving history", "dismiss preserving evidence"],
+  "boundary": "Discovery records evidence and review state; it never invents control over an unconnected system."
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_ALPHA_COST_VALUE",
+  "recordedAt": "2026-09-05T08:20:00.000Z",
+  "outcome": "PASS",
+  "requirements": ["source reference", "content digest", "method", "period", "verification status"],
+  "rules": [
+    "verified totals exclude estimates",
+    "unpriced usage remains unpriced",
+    "net value is withheld without verified outcome and fully priced cost",
+    "goals and projects link to AI Assets without introducing full SPM or PPM"
+  ]
+}

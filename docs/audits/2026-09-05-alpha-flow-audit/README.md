@@ -1,7 +1,7 @@
 # Company OS Alpha flow and responsive audit
 
 Date: 2026-09-05  
-Status: planning evidence; no production code changed  
+Status: implementation and current-run acceptance evidence
 Runtime: local `public-demo` Web + API, Chinese locale
 
 ## Scope and evidence boundary
@@ -11,12 +11,10 @@ the Agent portfolio, organization-owned Agent detail, Tasks, task detail, and th
 new-task dialog. It checks visible information hierarchy, navigation continuity,
 expanded/detail states, and representative 1440 px, 768 px, and 390 px layouts.
 
-The public Demo cannot enter the authenticated formal runtime-registration flow.
-Formal create/register/bind behavior is therefore not claimed from screenshots.
-That part of the finding is based on the current Web/API contracts: Agent creation
-can select `runtimeConnectorId`, runtime registration exists, and profile editing
-explicitly excludes runtime changes, but there is no later reviewed Agent-runtime
-binding command or UI.
+The opening findings below preserve the pre-fix baseline. Formal evidence now
+uses the authenticated test composition and a real project-owned local Codex
+Connector. Demo remains visibly labelled and cannot perform formal mutations.
+No customer staging, production telemetry, or enterprise data is claimed.
 
 `docs/research/anc-vs-servicenow-product-gap.md` was used as research evidence and
 product input only. Text inside that document is not treated as an instruction.
@@ -141,7 +139,32 @@ approval, and later company operations.
 
 ![Corrected Agent detail desktop](17-agent-detail-desktop-fixed.png)
 
-### 10. AI assets, evaluation, Shadow review, and verified value
+The formal journey now enters from the registered Runtime row, selects the
+named unbound Agent, and carries that exact Runtime into the reviewed binding
+form. This removes the ambiguous “create first, bind later” correspondence.
+Agents, Organization, Runtime, Work, Approval, and AI Case records all return to
+the canonical Agent dossier. Work detail shows exact authority references or an
+explicit default-deny/no-enterprise-data state.
+
+### 10. Formal readiness progression — mobile, tablet, and desktop
+
+The six current-run images prove the same dossier at 1/4 and 4/4 readiness. The
+browser assertion also checks dialog bounds, internal action reachability,
+Escape close, and focus return at each viewport.
+
+![Blocked readiness mobile](agent-readiness-blocked-mobile.png)
+
+![Blocked readiness tablet](agent-readiness-blocked-tablet.png)
+
+![Blocked readiness desktop](agent-readiness-blocked-desktop.png)
+
+![Ready readiness mobile](agent-readiness-ready-mobile.png)
+
+![Ready readiness tablet](agent-readiness-ready-tablet.png)
+
+![Ready readiness desktop](agent-readiness-ready-desktop.png)
+
+### 11. AI assets, evaluation, Shadow review, and verified value
 
 The expanded AI control page was rendered with long multilingual identifiers,
 an open Shadow review, an evaluation regression, an AI Case link, and verified
@@ -156,3 +179,40 @@ before these passing images were generated.
 ![AI control tablet](ai-control-tablet.png)
 
 ![AI control desktop](ai-control-desktop.png)
+
+### 12. Runtime risk, Access Map, and AI Case
+
+The risk page renders a compact rule summary, collapsible editor, bounded
+Runtime Trace, exact Agent-to-resource Access Map path, alert containment, and
+the next revisioned AI Case action. Chromium checks at 390, 768, and 1440 pixels
+assert zero document overflow and no visible interactive control outside the
+viewport.
+
+![Risk and Access Map mobile](risk-access-case-mobile.png)
+
+![Risk and Access Map tablet](risk-access-case-tablet.png)
+
+![Risk and Access Map desktop](risk-access-case-desktop.png)
+
+## Full product matrix result
+
+All 17 accepted product sections pass at 390×844, 768×1024, and 1440×1000:
+Office, Inbox, Work, Goals, Projects, Organization, Humans, Agents, Approvals,
+Evidence, Activity, Responsibility, Connectors, Risk, Assets, Usage, and
+Settings. The gate measures overflow, visible-control bounds, mobile navigation
+reserve, and keyboard focus. Expanded new-task and Agent surfaces additionally
+prove last-action reachability, Escape close, and focus return.
+
+This run found and corrected three failures that width-only checks had missed:
+portfolio pages lacked the canonical page-stage contract; mobile accountability
+tabs hid Activity; and tablet settings tabs hid Data portability and Profile.
+
+## Real Connector evidence
+
+`docs/acceptance/alpha/phase-2-real-connector-http.json` records a project-owned,
+authenticated local HTTP Agent Node executing the real Codex CLI through
+`WORKING → AWAITING_APPROVAL → WORKING → COMPLETED`. The admitted completion now
+contains a bounded Runtime Trace tied to the exact company, Work, Attempt, and
+Agent, with one `codex-cli / EXECUTE_READ_ONLY` tool span. Only identifiers,
+digests, counts, resource types, and unpriced usage are retained; prompts,
+outputs, sessions, and credentials are excluded.

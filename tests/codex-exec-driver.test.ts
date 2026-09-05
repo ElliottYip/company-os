@@ -92,12 +92,18 @@ test("Codex driver executes through stdin in a read-only sandbox and publishes r
     stateDirectory: join(directory, "state"), model: "gpt-5.6-terra", spawn: fakeCodex(output, calls),
     now: () => "2026-08-26T12:00:00.000Z" });
   const observations: any[] = [];
-  await driver.submit({ workId: "work-one", deployment: { id: "deployment-one" }, runtimeProof: { digest: `sha256:${"a".repeat(64)}` },
+  await driver.submit({ workId: "work-one", deployment: { id: "deployment-one" }, runtimeProof: {
+    proofId: "proof-one", digest: `sha256:${"a".repeat(64)}` },
     request: { id: "work-one", companyId: "company-one", agentId: "agent-one", goal: "Verify the acceptance boundary",
-      input: { actionReferences: ["inspect"] } } }, { async recordObservation(_workId: string, value: unknown) { observations.push(value); } });
+      input: { workAttemptId: "attempt-one", actionReferences: ["inspect"] } } },
+  { async recordObservation(_workId: string, value: unknown) { observations.push(value); } });
   await observationsUntil(observations, 2);
   assert.equal(observations[0].status, "WORKING"); assert.equal(observations[1].status, "COMPLETED");
   assert.match(observations[1].evidenceOutputs[0].contentDigest, /^sha256:[a-f0-9]{64}$/);
+  assert.deepEqual(observations[1].runtimeTrace.spans[0].resource, {
+    type: "TOOL", id: "codex-cli", operation: "EXECUTE_READ_ONLY", authorityId: "proof-one",
+  });
+  assert.equal(observations[1].runtimeTrace.attemptId, "attempt-one");
   assert.doesNotMatch(JSON.stringify(observations), /private-session|Verify the acceptance boundary/);
   assert.deepEqual(calls[0].args.slice(0, 8), ["--ask-for-approval", "never", "exec", "--json", "--ephemeral",
     "--ignore-user-config", "--skip-git-repo-check", "--sandbox"]);

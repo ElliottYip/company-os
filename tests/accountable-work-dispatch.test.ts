@@ -484,6 +484,7 @@ test("formal dispatch persists one Work and one Attempt before delivering one Co
   assert.equal((first.connectorDelivery?.[0] as { status?: string })?.status, "DELIVERED");
   assert.equal(submissions, 1);
   assert.deepEqual(submittedInput, {
+    workAttemptId: "formal-dispatch-5",
     actionReferences: ["read-knowledge", "publish-content"],
     permissionReferences: ["receipt-work"],
     dataAuthorizationReferences: ["prepared-contract-one"],

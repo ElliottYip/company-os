@@ -74,6 +74,7 @@
     "check:connector-bundles": "node scripts/build-federated-source-reference.mjs",
     "check:web-interactions": "node scripts/check-web-interactions.mjs",
     "check:ai-control-responsive": "node --experimental-strip-types scripts/verify-ai-control-responsive.ts",
+    "check:risk-responsive": "node --experimental-strip-types scripts/verify-operational-risk-responsive.ts",
     "research:paperclip:inventory": "node research/paperclip/generate-repository-inventory.mjs --write",
     "research:paperclip:inventory:check": "node research/paperclip/generate-repository-inventory.mjs --check",
     "research:paperclip:complete": "node research/paperclip/generate-repository-inventory.mjs --complete",
@@ -84,7 +85,7 @@
     "security:dependencies": "npm audit --omit=dev --omit=optional --audit-level=moderate",
     "security": "npm run security:secrets && npm run security:dependencies",
     "build": "vite build --config web/vite.config.mjs && node scripts/check-built-web-runtime-config-order.mjs",
-    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:research && npm run check:protocols && npm run check:connector-bundles && npm run check:web-interactions && npm run security && npm run typecheck && npm run build && npm run test:e2e"
+    "verify": "npm test && npm run check:boundaries && npm run check:independence && npm run check:research && npm run check:protocols && npm run check:connector-bundles && npm run check:web-interactions && npm run check:ai-control-responsive && npm run check:risk-responsive && npm run security && npm run typecheck && npm run build && npm run test:e2e"
   },
   "devDependencies": {
     "@playwright/test": "1.55.1",

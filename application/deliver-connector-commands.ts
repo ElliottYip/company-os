@@ -74,6 +74,7 @@ function workRequest(
     requestedBy: work.requestedBy,
     goal: work.goal,
     input: {
+      workAttemptId: attempt.id,
       actionReferences: [...work.actionIds],
       permissionReferences: [...attempt.authority.permissionIds],
       dataAuthorizationReferences: [...attempt.authority.dataAuthorizationIds],

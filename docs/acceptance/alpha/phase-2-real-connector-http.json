@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordType": "COMPANY_OS_LOCAL_CODEX_HTTP_ADMISSION",
-  "recordedAt": "2026-09-05T08:02:21.443Z",
+  "recordedAt": "2026-09-05T08:12:03.024Z",
   "connector": {
     "connectorId": "http-agent-node",
     "protocolVersion": "1.0",
@@ -24,18 +24,26 @@
     "outcome": "PASS"
   },
   "evidence": {
-    "resultReference": "codex-result-c0c1a9a9125e8dfd323e2fdb1976d234",
-    "resultDigest": "sha256:8b1d0727d6432f0a9bc44c9bc69ca5c7a9c84082cb340ae36a062b0ad1194dbc",
+    "resultReference": "codex-result-fffc3b0a8ebb99bc974b855795fe900f",
+    "resultDigest": "sha256:5a5b21f21933e767030a0a809784548ed2ac810dd41611f93208bce03d691b43",
     "usage": {
-      "usageReference": "codex-usage-c0c1a9a9125e8dfd323e2fdb1976d234",
+      "usageReference": "codex-usage-fffc3b0a8ebb99bc974b855795fe900f",
       "biller": "openai",
       "billingType": "unknown",
       "costStatus": "unpriced",
-      "inputTokens": 184978,
-      "cachedInputTokens": 160256,
-      "outputTokens": 1202,
+      "inputTokens": 135643,
+      "cachedInputTokens": 105344,
+      "outputTokens": 663,
       "costCents": 0,
-      "occurredAt": "2026-09-05T08:01:19.639Z"
+      "occurredAt": "2026-09-05T08:12:02.971Z"
+    },
+    "runtimeTrace": {
+      "traceId": "trace-fffc3b0a8ebb99bc974b855795fe900f",
+      "attemptId": "attempt-local-alpha",
+      "spanCount": 1,
+      "resourceTypes": [
+        "TOOL"
+      ]
     }
   },
   "notClaimed": [

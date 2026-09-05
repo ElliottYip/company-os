@@ -4,7 +4,7 @@ import test from "node:test";
 import { checkWebInteractions, checkWebInteractionSources } from "../scripts/check-web-interactions.mjs";
 
 test("customer Web admits no dead buttons, bare forms, placeholder links, or inline handlers", async () => {
-  assert.deepEqual(await checkWebInteractions(), { checkedFiles: 4, status: "PASS" });
+  assert.deepEqual(await checkWebInteractions(), { checkedFiles: 7, status: "PASS" });
 });
 
 test("interaction guard reports the exact source location of a dead control", async () => {

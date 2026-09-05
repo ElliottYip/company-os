@@ -686,6 +686,13 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
 .risk-case-card h2 { overflow-wrap: anywhere; }
 .risk-case-card > p { color: var(--family-ink-muted); font-size: var(--type-supporting); line-height: var(--leading-body); overflow-wrap: anywhere; }
 .risk-case-form { margin-top: 16px; }
+.risk-rule-editor { margin-top: 14px; border-top: 1px solid var(--family-line); padding-top: 12px; }
+.risk-rule-editor > summary { min-height: 42px; align-content: center; color: var(--family-ink); font-size: var(--type-control); font-weight: 700; cursor: pointer; }
+.risk-rule-editor > .formal-work-form { margin-top: 10px; }
+.runtime-agent-links { display: flex; flex-wrap: wrap; gap: 7px 12px; margin-top: 9px; }
+.authority-reference-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.authority-reference-list code { overflow-wrap: anywhere; font-size: 11px; }
+.authority-reference-empty { color: var(--family-ink-muted); font-size: 11px; line-height: var(--leading-body); }
 .inline-record-link { border: 0; background: transparent; padding: 0; color: var(--family-accent); font: inherit; font-weight: 700; cursor: pointer; text-align: left; }
 .ai-control-section { min-width: 0; margin-bottom: 16px; overflow: hidden; }
 .ai-control-section > header { padding: 18px 18px 0; }
@@ -791,8 +798,8 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
 }
 
 @media (max-width: 860px) {
-  .accountability-tabs { gap: 16px; padding-right: 24px; scroll-padding-inline: 16px; scrollbar-width: none; }
-  .accountability-tabs::-webkit-scrollbar { display: none; }
+  .accountability-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; padding-right: 0; overflow: visible; }
+  .accountability-tabs button { justify-content: center; min-width: 0; }
   .administration-tabs { padding-right: 24px; scroll-padding-inline: 16px; }
   .company-os { display: block; height: auto; min-height: 100vh; overflow: visible; background: #fff; }
   .company-rail { position: static; width: 100%; height: auto; border-right: 0; border-bottom: 1px solid var(--family-line); }
@@ -826,9 +833,10 @@ button.product-record-row:hover { background: var(--family-surface-subtle); }
   .product-list-page > .control-page-title { margin-inline: 0; }
   .control-settings > :not(.control-page-title) { margin-right: 16px; margin-left: 16px; }
   .settings-layout { grid-template-columns: 1fr; gap: 10px; }
-  .settings-navigation { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--family-line); padding: 0 0 8px; scrollbar-width: none; }
-  .settings-navigation::-webkit-scrollbar { display: none; }
-  .settings-navigation button { min-width: max-content; }
+  .settings-navigation { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); border-right: 0; border-bottom: 1px solid var(--family-line); padding: 0 0 8px; }
+  .settings-navigation button { min-width: 0; min-height: 44px; text-align: center; }
+  .organization-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0 12px; }
+  .organization-tabs button { justify-content: center; min-width: 0; }
   .settings-list > div { grid-template-columns: 1fr; gap: 5px; }
   .settings-member-row { grid-template-columns: 1fr; align-items: stretch; }
   .settings-list .status-pill { justify-self: start; }

@@ -5,7 +5,10 @@ const sourceFiles = [
   "web/mount.ts",
   "web/tenant-onboarding.ts",
   "web/tenant-activation.ts",
+  "web/invite-acceptance.ts",
   "web/pages/operational-pages.ts",
+  "web/pages/ai-control-pages.ts",
+  "web/pages/agent-portfolio-pages.ts",
 ];
 
 function lineNumber(source, index) {

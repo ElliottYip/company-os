@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_ALPHA_AGENT_RUNTIME_BINDING",
+  "recordedAt": "2026-09-05T08:20:00.000Z",
+  "outcome": "PASS",
+  "journey": [
+    "discover and register Runtime before Agent",
+    "create Agent explicitly unbound",
+    "open the Agent from the selected Runtime record",
+    "preserve the selected Runtime in the binding review",
+    "bind with reason and expected revision",
+    "activate responsibility and approve lifecycle",
+    "reach 4/4 governed execution readiness"
+  ],
+  "entryPoints": ["Agents", "Organization", "Runtime", "Work", "Approval", "AI Case"],
+  "evidence": {
+    "browserTest": "verified formal identity reaches explicit admin claim and atomic company creation",
+    "blockedReadiness": "1/4",
+    "readyReadiness": "4/4"
+  },
+  "notClaimed": ["automatic binding", "profile-field runtime mutation", "production deployment"]
+}

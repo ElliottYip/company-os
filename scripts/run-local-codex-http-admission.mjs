@@ -10,7 +10,7 @@ export function createLocalCodexHttpAdmissionRecord(observations, capabilities, 
   const statuses = observations.map(({ status }) => status);
   const completed = observations.findLast(({ status }) => TERMINAL.has(status));
   if (completed?.status !== "COMPLETED" || !completed.resultReference || !completed.evidenceOutputs?.length ||
-      !completed.usageOutputs?.length || !statuses.includes("AWAITING_APPROVAL") ||
+      !completed.usageOutputs?.length || !completed.runtimeTrace?.spans?.length || !statuses.includes("AWAITING_APPROVAL") ||
       statuses.filter((status) => status === "WORKING").length < 2 ||
       PRIVATE_MATERIAL.test(observations.map(({ summary }) => summary).join("\n"))) {
     throw new Error("LOCAL_CODEX_HTTP_ADMISSION_INCOMPLETE");
@@ -23,7 +23,9 @@ export function createLocalCodexHttpAdmissionRecord(observations, capabilities, 
       approvalReference: "approval-local-alpha", resumeConfirmed: true, outcome: "PASS" },
     evidence: { resultReference: completed.resultReference,
       resultDigest: completed.evidenceOutputs.find(({ evidenceReference }) => evidenceReference === completed.resultReference)?.contentDigest,
-      usage: completed.usageOutputs[0] },
+      usage: completed.usageOutputs[0], runtimeTrace: { traceId: completed.runtimeTrace.id,
+        attemptId: completed.runtimeTrace.attemptId, spanCount: completed.runtimeTrace.spans.length,
+        resourceTypes: [...new Set(completed.runtimeTrace.spans.flatMap(({ resource }) => resource ? [resource.type] : []))] } },
     notClaimed: ["customer staging acceptance", "production acceptance", "enterprise data access"] };
 }
 
@@ -66,7 +68,7 @@ export async function runLocalCodexHttpAdmission(environment = process.env) {
     const now = new Date();
     const request = { id: workId, companyId: "local-company", agentId, requestedBy: "local-human",
       goal: "Verify the authenticated Company OS HTTP Agent Node pause, exact approval resume, and evidence boundary using synthetic non-production input.",
-      input: { actionReferences: ["verify-read-only-http-boundary"], permissionReferences: [],
+      input: { workAttemptId: "attempt-local-alpha", actionReferences: ["verify-read-only-http-boundary"], permissionReferences: [],
         dataAuthorizationReferences: [], responsibilityContractId: "local-contract", responsibilityContractRevision: 1 },
       idempotencyKey: `${workId}-v1`, timeoutAt: new Date(now.getTime() + 300_000).toISOString() };
     const proof = { proofId: "local-proof", connectorId: capabilities.connectorId, issuedAt: now.toISOString(),

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "recordType": "COMPANY_OS_ALPHA_RUNTIME_GOVERNANCE",
+  "recordedAt": "2026-09-05T08:20:00.000Z",
+  "outcome": "PASS",
+  "realConnectorEvidence": "phase-2-real-connector-http.json",
+  "realTrace": {
+    "resourceType": "TOOL",
+    "resourceId": "codex-cli",
+    "operation": "EXECUTE_READ_ONLY",
+    "attemptBound": true
+  },
+  "governanceChain": ["RuntimeTrace", "AccessMapEdge", "PolicyViolation", "RiskAlert", "durable pause", "AI Case", "review", "recovery", "close or reopen"],
+  "proof": [
+    "HTTP adapter rejects malformed RuntimeTrace input",
+    "critical violation atomically records Access Map and queues one pause",
+    "unsupported containment remains explicit",
+    "risk and AI Case responsive evidence passes at 390/768/1440"
+  ],
+  "notClaimed": ["customer staging acceptance", "production telemetry", "raw prompt or output ingestion"]
+}

@@ -5,7 +5,8 @@ import { createLocalCodexHttpAdmissionRecord } from "../scripts/run-local-codex-
 const capabilities = { connectorId: "http-agent-node", protocolVersion: "1.0" };
 const completed = { status: "COMPLETED", summary: "Synthetic verification completed", resultReference: "result-one",
   evidenceOutputs: [{ evidenceReference: "result-one", contentDigest: `sha256:${"a".repeat(64)}` }],
-  usageOutputs: [{ usageReference: "usage-one", inputTokens: 10, cachedInputTokens: 2, outputTokens: 3 }] };
+  usageOutputs: [{ usageReference: "usage-one", inputTokens: 10, cachedInputTokens: 2, outputTokens: 3 }],
+  runtimeTrace: { id: "trace-one", attemptId: "attempt-one", spans: [{ resource: { type: "TOOL" } }] } };
 
 test("HTTP Codex admission accepts token accounting fields while scanning only observation text for private material", () => {
   const result = createLocalCodexHttpAdmissionRecord([
@@ -15,6 +16,8 @@ test("HTTP Codex admission accepts token accounting fields while scanning only o
   ], capabilities, "2026-09-05T08:02:21.443Z");
   assert.equal(result.execution.outcome, "PASS");
   assert.equal(result.evidence.usage.inputTokens, 10);
+  assert.deepEqual(result.evidence.runtimeTrace, { traceId: "trace-one", attemptId: "attempt-one",
+    spanCount: 1, resourceTypes: ["TOOL"] });
 });
 
 test("HTTP Codex admission rejects incomplete recovery sequences and private summary text", () => {

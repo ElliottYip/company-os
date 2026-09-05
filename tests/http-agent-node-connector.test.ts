@@ -84,14 +84,25 @@ test("separately packaged HTTP Agent Node connector passes conformance and survi
       usageOutputs: [{ usageReference: "usage-one", biller: "provider-one", billingType: "metered_api",
         costStatus: "reported", inputTokens: 10, cachedInputTokens: 0, outputTokens: 5, costCents: 4,
         occurredAt: "2026-08-18T08:01:00.000Z" }], resultReference: "result-one",
+      runtimeTrace: { id: "trace-one", companyId: "company-one", workId: "work-usage", attemptId: "attempt-one",
+        agentId: "agent-one", recordedAt: "2026-08-18T08:02:00.000Z", spans: [{ id: "span-one",
+          parentSpanId: null, kind: "TOOL", name: "Bounded tool execution", startedAt: "2026-08-18T08:01:00.000Z",
+          endedAt: "2026-08-18T08:02:00.000Z", status: "OK", resource: { type: "TOOL", id: "tool-one",
+            operation: "EXECUTE", authorityId: "proof-one" } }] },
       recordedAt: "2026-08-18T08:02:00.000Z" }]);
     assert.equal((await restarted.observe("work-usage"))[0]?.usageOutputs?.[0]?.costCents, 4);
+    assert.equal((await restarted.observe("work-usage"))[0]?.runtimeTrace?.spans[0]?.resource?.id, "tool-one");
     observations.set("work-bad-usage", [{ workId: "work-bad-usage", sequence: 1, status: "WORKING",
       summary: "Malformed usage", evidenceRefs: [], usageOutputs: [{ usageReference: "usage-one",
         biller: "provider-one", billingType: "metered_api", costStatus: "reported",
         inputTokens: -1, cachedInputTokens: 0, outputTokens: 0, costCents: 0,
         occurredAt: "2026-08-18T08:01:00.000Z" }], recordedAt: "2026-08-18T08:02:00.000Z" }]);
     await assert.rejects(restarted.observe("work-bad-usage"), /HTTP_AGENT_NODE_OBSERVATION_INVALID/);
+    observations.set("work-bad-trace", [{ workId: "work-bad-trace", sequence: 1, status: "WORKING",
+      summary: "Malformed trace", evidenceRefs: [], runtimeTrace: { id: "trace-one", companyId: "company-one",
+        workId: "other-work", attemptId: "attempt-one", agentId: "agent-one", spans: [],
+        recordedAt: "2026-08-18T08:02:00.000Z" }, recordedAt: "2026-08-18T08:02:00.000Z" }]);
+    await assert.rejects(restarted.observe("work-bad-trace"), /HTTP_AGENT_NODE_RUNTIME_TRACE_INVALID/);
     assert.ok(requests.length > 6);
     assert.ok(requests.every(({ authorization }) => authorization === "Bearer synthetic-test-token"));
     const serializedBodies = JSON.stringify(requests.map(({ body }) => body));

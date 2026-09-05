@@ -115,6 +115,19 @@ function modelBindingFor(submission) {
   return binding;
 }
 
+function runtimeTraceFor(state, recordedAt) {
+  const request = state.submission?.request;
+  const proof = state.submission?.runtimeProof;
+  const attemptId = request?.input?.workAttemptId;
+  if (!request || !ID.test(attemptId) || !ID.test(proof?.proofId)) return undefined;
+  return { id: portableReference("trace", state.workId), companyId: request.companyId,
+    workId: state.workId, attemptId, agentId: request.agentId,
+    spans: [{ id: portableReference("span", state.workId), parentSpanId: null, kind: "TOOL",
+      name: "Codex CLI read-only execution", startedAt: state.generationStartedAt ?? recordedAt,
+      endedAt: recordedAt, status: "OK", resource: { type: "TOOL", id: "codex-cli",
+        operation: "EXECUTE_READ_ONLY", authorityId: proof.proofId } }], recordedAt };
+}
+
 async function redeemedModelEnvironment(submission, redemption, now) {
   const binding = modelBindingFor(submission); if (!binding) return { environment: {}, modelReference: null };
   if (!redemption || typeof redemption.redeem !== "function") throw new Error("CODEX_SECRET_REDEMPTION_REQUIRED");
@@ -272,12 +285,14 @@ export function createCodexExecDriver(options) {
       const encoded = `${JSON.stringify(parsed.result)}\n`; await writeFile(artifact, encoded, { mode: 0o600 });
       const reference = portableReference("codex-result", workId); current.status = "COMPLETED"; current.sequence += 1;
       current.resultDigest = digest(encoded); await persist(workId, current);
+      const recordedAt = now();
       await context.recordObservation(workId, { workId, sequence: current.sequence, status: "COMPLETED",
         summary: parsed.result.summary, evidenceRefs: [reference], evidenceOutputs: [{ evidenceReference: reference,
-          contentDigest: current.resultDigest }], resultReference: reference, recordedAt: now(),
+          contentDigest: current.resultDigest }], resultReference: reference, runtimeTrace: runtimeTraceFor(current, recordedAt),
+        recordedAt,
         usageOutputs: [{ usageReference: portableReference("codex-usage", workId), biller: "openai", billingType: "unknown",
           costStatus: "unpriced", inputTokens: parsed.usage.inputTokens, cachedInputTokens: parsed.usage.cachedInputTokens,
-          outputTokens: parsed.usage.outputTokens, costCents: 0, occurredAt: now() }] });
+          outputTokens: parsed.usage.outputTokens, costCents: 0, occurredAt: recordedAt }] });
     } catch (error) {
       const code = error instanceof Error && /^CODEX_[A-Z0-9_]+$/.test(error.message) ? error.message : "CODEX_EXEC_FAILED";
       await recordFailure(workId, state, context, code);
@@ -297,7 +312,7 @@ export function createCodexExecDriver(options) {
     },
     async submit(submission, context) {
       const workId = submission?.workId; promptFor(submission);
-      const state = { schemaVersion: 1, workId, status: "WORKING", sequence: 1, submission };
+      const state = { schemaVersion: 1, workId, status: "WORKING", sequence: 1, generationStartedAt: now(), submission };
       await persist(workId, state);
       await context.recordObservation(workId, { workId, sequence: 1, status: "WORKING",
         summary: "Codex accepted bounded read-only work", evidenceRefs: [], recordedAt: now() });
@@ -318,7 +333,7 @@ export function createCodexExecDriver(options) {
         return;
       }
       if (command.operation === "RESUME" && state.status === "PAUSED" && ID.test(command.approvalId)) {
-        state.status = "WORKING"; state.sequence += 1; await persist(command.workId, state);
+        state.status = "WORKING"; state.sequence += 1; state.generationStartedAt = now(); await persist(command.workId, state);
         await context.recordObservation(command.workId, { workId: command.workId, sequence: state.sequence,
           status: "WORKING", summary: "Codex execution resumed after exact human approval", evidenceRefs: [], recordedAt: now() });
         void run(command.workId, state, context, command.approvalId); return;

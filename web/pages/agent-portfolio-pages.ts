@@ -30,9 +30,10 @@ export function agentPortfolioPage(
       <h1>${title}</h1><p>${description}</p></div>
       ${badge(c("DEMO FIXTURE · NO EXTERNAL CALLS", "演示数据 · 无外部调用"), "demo")}
     </header>`;
+  const page = (content: string) => `<section class="page-stage portfolio-page" data-section="${section}">${content}</section>`;
 
   if (section === "agents") {
-    return `${heading(c("Agents", "Agents"), c(
+    return page(`${heading(c("Agents", "Agents"), c(
       "One inventory across Personal, Shared, and Federated Agents—with the actual management boundary visible.",
       "统一管理个人、共享与联邦 Agent，并明确展示 ANC 的实际管理边界。",
     ))}
@@ -47,11 +48,11 @@ export function agentPortfolioPage(
         <div><dt>${c("Privacy", "隐私边界")}</dt><dd>${escapeHtml(agent.privacyBoundary)}</dd></div>
         <div><dt>${c("Runtime", "运行环境")}</dt><dd>${escapeHtml(agent.runtimeReference ?? "—")}</dd></div>
         <div><dt>${c("Lifecycle", "生命周期")}</dt><dd>${escapeHtml(agent.lifecycleStatus)}</dd></div></dl>
-      </article>`).join("")}</section>`;
+      </article>`).join("")}</section>`);
   }
 
   if (section === "work") {
-    return `${heading(c("Work across sources", "跨来源任务"), c(
+    return page(`${heading(c("Work across sources", "跨来源任务"), c(
       "Observed and Federated records return to their source. Governed work alone claims ANC-enforced authority.",
       "Observed 与 Federated 任务返回原系统；只有 Governed 任务声明由 ANC 强制治理。",
     ))}
@@ -60,12 +61,12 @@ export function agentPortfolioPage(
       <h3>${escapeHtml(work.title)}</h3><p>${escapeHtml(work.summary)}</p>
       <small>${c("Agent", "执行 Agent")} ${escapeHtml(work.agentId)} · ${c("Source revision", "来源版本")} ${work.sourceRevision}</small></div>
       <div><strong>${escapeHtml(work.status)}</strong><span>${money(work.costCents)}</span>
-      ${work.source.returnUrl ? `<a href="${escapeHtml(work.source.returnUrl)}" target="_blank" rel="noreferrer">${c("Open source fixture", "打开来源演示")}</a>` : ""}</div></article>`).join("")}</section>`;
+      ${work.source.returnUrl ? `<a href="${escapeHtml(work.source.returnUrl)}" target="_blank" rel="noreferrer">${c("Open source fixture", "打开来源演示")}</a>` : ""}</div></article>`).join("")}</section>`);
   }
 
   if (section === "approvals") {
     const governed = snapshot.governed;
-    return `${heading(c("Approvals", "审批"), c(
+    return page(`${heading(c("Approvals", "审批"), c(
       "Only actions that ANC actually governs appear here.",
       "这里只处理 ANC 真正能够治理的高风险动作。",
     ))}
@@ -82,11 +83,11 @@ export function agentPortfolioPage(
         : governed.phase === "AWAITING_APPROVAL"
         ? `<button type="button" data-demo-decision="APPROVED">${c("Approve", "批准")}</button><button class="danger" type="button" data-demo-decision="REJECTED">${c("Reject", "拒绝")}</button>`
         : badge(governed.phase, governed.phase === "APPROVED" ? "healthy" : "")}</div>
-    </section>`;
+    </section>`);
   }
 
   if (section === "connectors") {
-    return `${heading(c("Governance", "治理"), c(
+    return page(`${heading(c("Governance", "治理"), c(
       "Identity, data, credential references, Connector health, management depth, and external sync.",
       "统一管理身份、数据、Credential 引用、Connector 健康、管理深度与外部同步。",
     ))}
@@ -103,11 +104,11 @@ export function agentPortfolioPage(
         "The workspace and Run below are deterministic reference data, not a live platform connection.",
         "下方 Workspace 与 Run 是确定性参考数据，不代表真实平台连接。",
       )}</p>${badge("DEMO_FIXTURE")}</article>
-    </section>`;
+    </section>`);
   }
 
   if (section === "usage") {
-    return `${heading(c("Usage & Billing", "用量与计费"), c(
+    return page(`${heading(c("Usage & Billing", "用量与计费"), c(
       "Subscriptions, seats, quotas, renewal dates, credential status, allocation, and exceptions.",
       "统一展示订阅、席位、额度、续费日期、Credential 状态、成本分摊与异常。",
     ))}
@@ -115,10 +116,10 @@ export function agentPortfolioPage(
       ${snapshot.commercial.subscriptions.map((item) => `<article><p class="family-kicker">SUBSCRIPTION</p><h3>${escapeHtml(item.id)}</h3><strong>${money(item.periodCostCents)}</strong><p>${item.seatCount} ${c("seat", "席位")} · ${item.quotaUnits.toLocaleString()} ${item.quotaUnit}</p><small>${c("Renews", "续费日")} ${escapeHtml(item.renewalAt)}</small></article>`).join("")}
       ${snapshot.commercial.credentials.map((item) => `<article><p class="family-kicker">CREDENTIAL</p><h3>${escapeHtml(item.id)}</h3>${badge(item.status, item.status === "VALID" ? "healthy" : "")}<p>${escapeHtml(item.policyStatus)} · ${c("reference only", "仅引用")}</p><button type="button" data-demo-renewal-target="${escapeHtml(item.id)}" data-demo-renewal-type="CREDENTIAL">${c("Request renewal", "申请续期")}</button></article>`).join("")}
       ${snapshot.commercial.renewals.map((item) => `<article><p class="family-kicker">RENEWAL</p><h3>${escapeHtml(item.targetId)}</h3>${badge(item.status)}<p>${escapeHtml(item.reason)}</p></article>`).join("")}
-    </section>`;
+    </section>`);
   }
 
-  return `${heading(c("Agent Portfolio", "Agent 资产组合"), c(
+  return page(`${heading(c("Agent Portfolio", "Agent 资产组合"), c(
     "Identity, ownership, permission, usage, cost, lifecycle, evidence, and responsibility—without replacing Agent runtimes.",
     "统一管理身份、归属、权限、用量、成本、生命周期、证据与责任，但不替代 Agent Runtime。",
   ))}
@@ -134,6 +135,5 @@ export function agentPortfolioPage(
   <ol><li>${c("Compare management depth in Agents.", "在 Agents 中比较管理深度。")}</li>
   <li>${c("Open Observed and Federated Work.", "打开 Observed 与 Federated Work。")}</li>
   <li>${c("Trigger and decide a Governed approval.", "触发并处理 Governed 审批。")}</li>
-  <li>${c("Request a credential renewal in Usage & Billing.", "在用量与计费中提交 Credential 续期。")}</li></ol></section>`;
+  <li>${c("Request a credential renewal in Usage & Billing.", "在用量与计费中提交 Credential 续期。")}</li></ol></section>`);
 }
-

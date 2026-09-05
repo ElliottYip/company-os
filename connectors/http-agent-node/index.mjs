@@ -7,6 +7,9 @@ const STATUS = new Set([
   "PENDING", "WORKING", "WAITING", "BLOCKED", "AWAITING_APPROVAL", "COMPLETED", "FAILED", "CANCELLED",
 ]);
 const BILLING_TYPES = new Set(["metered_api", "subscription_included", "subscription_overage", "credits", "fixed", "unknown"]);
+const TRACE_KINDS = new Set(["WORKFLOW", "MODEL", "TOOL", "DATA"]);
+const RESOURCE_TYPES = new Set(["MODEL", "TOOL", "DATA", "ASSET"]);
+const RESOURCE_OPERATION = /^[A-Z][A-Z0-9:_-]{0,63}$/;
 const FORBIDDEN_KEY = /(?:^|_)(?:credential|password|secret|token|private[_-]?reasoning|chain[_-]?of[_-]?thought|external[_-]?session|session[_-]?id)(?:$|_)/i;
 
 function deploymentSecret(environment, name) {
@@ -124,6 +127,32 @@ function responseFailure(status) {
   return "HTTP_AGENT_NODE_REQUEST_REJECTED";
 }
 
+function validateRuntimeTrace(trace, workId) {
+  if (!trace || typeof trace !== "object" || Array.isArray(trace) || trace.workId !== workId ||
+      ![trace.id, trace.companyId, trace.attemptId, trace.agentId].every((value) => typeof value === "string" && ID.test(value)) ||
+      !Array.isArray(trace.spans) || trace.spans.length < 1 || trace.spans.length > 256 ||
+      typeof trace.recordedAt !== "string" || !Number.isFinite(Date.parse(trace.recordedAt))) {
+    throw new Error("HTTP_AGENT_NODE_RUNTIME_TRACE_INVALID");
+  }
+  const ids = new Set();
+  for (const span of trace.spans) {
+    if (!span || typeof span !== "object" || Array.isArray(span) || !ID.test(span.id) || ids.has(span.id) ||
+        span.parentSpanId !== null && !ID.test(span.parentSpanId) || !TRACE_KINDS.has(span.kind) ||
+        typeof span.name !== "string" || !span.name.trim() || span.name.length > 160 || !["OK", "ERROR"].includes(span.status) ||
+        !Number.isFinite(Date.parse(span.startedAt)) || !Number.isFinite(Date.parse(span.endedAt)) ||
+        Date.parse(span.endedAt) < Date.parse(span.startedAt) || Date.parse(span.endedAt) > Date.parse(trace.recordedAt)) {
+      throw new Error("HTTP_AGENT_NODE_RUNTIME_TRACE_INVALID");
+    }
+    ids.add(span.id);
+    if (span.resource !== null && (!span.resource || typeof span.resource !== "object" || Array.isArray(span.resource) ||
+        !RESOURCE_TYPES.has(span.resource.type) || !ID.test(span.resource.id) || !ID.test(span.resource.authorityId) ||
+        !RESOURCE_OPERATION.test(span.resource.operation))) throw new Error("HTTP_AGENT_NODE_RUNTIME_TRACE_INVALID");
+  }
+  if (trace.spans.some((span) => span.parentSpanId !== null && !ids.has(span.parentSpanId))) {
+    throw new Error("HTTP_AGENT_NODE_RUNTIME_TRACE_INVALID");
+  }
+}
+
 function validateObservation(value, workId) {
   if (!value || typeof value !== "object" || Array.isArray(value) || value.workId !== workId ||
       !Number.isSafeInteger(value.sequence) || value.sequence < 1 || !STATUS.has(value.status) ||
@@ -151,6 +180,7 @@ function validateObservation(value, workId) {
         typeof usage.occurredAt !== "string" || !Number.isFinite(Date.parse(usage.occurredAt))))) {
     throw new Error("HTTP_AGENT_NODE_OBSERVATION_INVALID");
   }
+  if (value.runtimeTrace !== undefined) validateRuntimeTrace(value.runtimeTrace, workId);
   secretFree(value);
   return structuredClone(value);
 }
