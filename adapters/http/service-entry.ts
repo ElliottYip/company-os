@@ -89,6 +89,7 @@ import { EventBackedPlanningStore } from "../storage/event-backed-planning-store
 import { EventBackedToolAccessCatalogStore } from "../storage/event-backed-tool-access-catalog-store.ts";
 import { EventBackedUsageBudgetStore } from "../storage/event-backed-usage-budget-store.ts";
 import { CollectConnectorObservations } from "../../application/collect-connector-observations.ts";
+import { ProcessOperationalRiskObservation } from "../../application/process-operational-risk-observation.ts";
 import { IngestConnectorUsage } from "../../application/ingest-connector-usage.ts";
 import { WorkAttemptService } from "../../application/work-attempt-service.ts";
 import { RequestWorkCancellation } from "../../application/request-work-cancellation.ts";
@@ -1415,6 +1416,12 @@ const stopConnectorSupervisor = formalEvents && companyAccessStore
             store: new EventBackedUsageBudgetStore(formalEvents, nextPostgresRecordId),
             nextId: nextPostgresRecordId,
           }),
+          riskObservation: new ProcessOperationalRiskObservation({
+            events: formalEvents,
+            executionPorts: formalExecutionPorts,
+            nextId: nextPostgresRecordId,
+          }),
+          riskRules: [],
           nextId: nextPostgresRecordId,
         }).execute(companyId);
         const deliver = () => connectorDelivery({

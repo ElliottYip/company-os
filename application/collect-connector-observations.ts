@@ -4,6 +4,7 @@ import type { AgentExecutionPort } from "../ports/agent-execution-port.ts";
 import type { ApprovalPublicationPort } from "../ports/approval-publication-port.ts";
 import type { DurableControlPlaneStorePort } from "../ports/durable-control-plane-store-port.ts";
 import { WorkAttemptService } from "./work-attempt-service.ts";
+import { validateRuntimeTrace, type OperationalRiskRule } from "../core/operational-risk.ts";
 
 export interface ConnectorObservationOutcome {
   readonly attemptId: Identifier;
@@ -67,8 +68,14 @@ function validate(observation: WorkObservation, attempt: WorkAttempt): WorkObser
       throw new Error("CONNECTOR_APPROVAL_REQUEST_INVALID");
     }
   } else if (observation.approvalRequest) throw new Error("CONNECTOR_APPROVAL_REQUEST_INVALID");
+  const runtimeTrace = observation.runtimeTrace ? validateRuntimeTrace(observation.runtimeTrace) : undefined;
+  if (runtimeTrace && (runtimeTrace.companyId !== attempt.companyId || runtimeTrace.workId !== attempt.workId ||
+      runtimeTrace.attemptId !== attempt.id || runtimeTrace.agentId !== attempt.agentId ||
+      Date.parse(runtimeTrace.recordedAt) > Date.parse(observation.recordedAt))) {
+    throw new Error("RUNTIME_TRACE_AUTHORITY_MISMATCH");
+  }
   return structuredClone({ ...observation, summary: observation.summary.trim(), evidenceOutputs: outputs,
-    usageOutputs: usage });
+    usageOutputs: usage, ...(runtimeTrace ? { runtimeTrace } : {}) });
 }
 
 /** Pulls ordered, bounded Connector observations into the durable responsibility record. */
@@ -86,6 +93,12 @@ export class CollectConnectorObservations {
       readonly projectId: Identifier | null;
       readonly goalId: Identifier | null;
     }): Promise<readonly unknown[]> };
+    readonly riskObservation?: { execute(input: {
+      readonly companyId: Identifier; readonly attemptId: Identifier;
+      readonly trace: NonNullable<WorkObservation["runtimeTrace"]>;
+      readonly rules: readonly OperationalRiskRule[];
+    }): Promise<unknown> };
+    readonly riskRules?: readonly OperationalRiskRule[];
     readonly nextId: () => Identifier;
   };
   constructor(dependencies: {
@@ -100,6 +113,12 @@ export class CollectConnectorObservations {
       readonly projectId: Identifier | null;
       readonly goalId: Identifier | null;
     }): Promise<readonly unknown[]> };
+    readonly riskObservation?: { execute(input: {
+      readonly companyId: Identifier; readonly attemptId: Identifier;
+      readonly trace: NonNullable<WorkObservation["runtimeTrace"]>;
+      readonly rules: readonly OperationalRiskRule[];
+    }): Promise<unknown> };
+    readonly riskRules?: readonly OperationalRiskRule[];
     readonly nextId: () => Identifier;
   }) { this.#dependencies = dependencies; this.#attempts = new WorkAttemptService(dependencies.store); }
 
@@ -165,6 +184,11 @@ export class CollectConnectorObservations {
           await this.#dependencies.store.append(event, (await this.#dependencies.store.read(companyId)).length);
           recordedObservations.set(observation.sequence, observation);
           latestSequence = observation.sequence;
+        }
+        if (!recorded && observation.runtimeTrace) {
+          if (!this.#dependencies.riskObservation) throw new Error("OPERATIONAL_RISK_PROCESSOR_REQUIRED");
+          await this.#dependencies.riskObservation.execute({ companyId, attemptId: initial.id,
+            trace: observation.runtimeTrace, rules: this.#dependencies.riskRules ?? [] });
         }
         await this.#applyTerminal(companyId, initial.id, observation);
         await this.#applyApproval(companyId, initial.id, observation);

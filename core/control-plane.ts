@@ -1,3 +1,5 @@
+import type { RuntimeTrace } from "./operational-risk.ts";
+
 export type Identifier = string;
 
 export type PrincipalKind = "HUMAN" | "SERVICE";
@@ -71,6 +73,8 @@ export interface WorkObservation {
     readonly action: ExactAction;
     readonly expiresAt: string;
   };
+  /** Bounded execution metadata only; raw prompts, payloads, credentials and private reasoning are forbidden. */
+  readonly runtimeTrace?: RuntimeTrace;
   readonly recordedAt: string;
 }
 
